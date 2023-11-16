@@ -1,0 +1,18 @@
+{
+  "gymnastics-plugin:open-sample-modal": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "E"
+    }
+  ],
+  "gymnastics-plugin:open-gymnastics-modal-simple": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "X"
+    }
+  ]
+}

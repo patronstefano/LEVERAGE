@@ -1,0 +1,212 @@
+{
+  "main": {
+    "id": "cb0733c6598ece26",
+    "type": "split",
+    "children": [
+      {
+        "id": "42f534294e59d132",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b18d511c90651579",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "backlinks": false,
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b1a4a1f413a2ebbc",
+    "type": "split",
+    "children": [
+      {
+        "id": "3029328386f8f51b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9569a45c7489dc5b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "7507966f3825b304",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "3832c5c55b7405cf",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          },
+          {
+            "id": "5574ed18254df4c6",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 256.5
+  },
+  "right": {
+    "id": "6419b5e73993b7ce",
+    "type": "split",
+    "children": [
+      {
+        "id": "104c3d434dd5a762",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "282b489e6cc57453",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "README.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "466f0954e515fdbb",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "README.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "32408f4d95018147",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "2c45b348d9212f7b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "README.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "graph:Open graph view": false,
+      "switcher:Open quick switcher": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "dbfolder:Create a new database table": false,
+      "cmdr:Restore graph node positions": false,
+      "cmdr:Split down": false,
+      "gymnastics-plugin:Check a gymnastics exercise": false
+    }
+  },
+  "active": "b18d511c90651579",
+  "lastOpenFiles": [
+    "MY DATA/My Exercises/PH - Mozzato Nicolò.md",
+    "DATABASE/Exercises DB.md",
+    "DATABASE/Results DB.md",
+    "DATABASE/Gymnasts DB.md",
+    "MAG CODE OF POINTS/MAG CODE OF POINTS DB.md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/EG III - Acrobatic elements backward.md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/Floor Exercise.md",
+    "MAG CODE OF POINTS/MAG CODE OF POINTS.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Element Group and Dismount Requirements.md",
+    "DATABASE/Teams DB.md",
+    "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/From dorsal hang, uprise fwd. to support rw..md",
+    "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs with 1 t..md",
+    "README.md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/EG II - Acrobatic elements forward.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Difficulty Values and Difficulty Score.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Determination of the Final Score.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Short Exercise.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Repetitions.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/General Rules.md",
+    "MAG CODE OF POINTS/EXERCISE RULES/Connection Values.md",
+    "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs straight or piked with 1 turn..md",
+    "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs straight with 2 turn..md",
+    "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs piked or straight..md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Butterfly with 2 twist..md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Butterfly with 1 twist fwd. or bwd..md",
+    "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Any standing scale with 180° straddle, no handhold (2 s.)..md",
+    "DEMO.mov",
+    "MAG CODE OF POINTS/PDF/TABLE OF ADDITIONAL ELEMENTS.pdf",
+    "MAG CODE OF POINTS/PDF/ADDITIONAL ELEMENTS.pdf",
+    "MAG CODE OF POINTS/PDF/MAG SYMBOLOGY DOCUMENT.pdf",
+    "Senza nome",
+    "MAG CODE OF POINTS/EXERCISE RULES",
+    "MAG CODE OF POINTS/PDF/MAG CODE OF POINTS.pdf",
+    "Senza nome.canvas",
+    "RESULTS/My Results",
+    "RESULTS",
+    "Senza nome 1.canvas",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/27I-1.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/27I-2.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/27S-1.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/PNG/124S.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/48S.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/48I.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/47S-2.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/47S-1.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/47I-2.png",
+    "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/PNG/47I-1.png"
+  ]
+}

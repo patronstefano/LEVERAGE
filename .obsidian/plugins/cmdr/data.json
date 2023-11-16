@@ -1,0 +1,55 @@
+{
+  "confirmDeletion": true,
+  "showAddCommand": true,
+  "debug": false,
+  "editorMenu": [],
+  "fileMenu": [],
+  "leftRibbon": [
+    {
+      "id": "persistent-graph:restore-node-positions",
+      "icon": "aperture",
+      "name": "Restore graph node positions",
+      "mode": "any",
+      "color": "#000000"
+    },
+    {
+      "id": "workspace:split-horizontal",
+      "icon": "lucide-separator-horizontal",
+      "name": "Split down",
+      "mode": "any"
+    }
+  ],
+  "rightRibbon": [],
+  "titleBar": [],
+  "statusBar": [],
+  "pageHeader": [],
+  "macros": [],
+  "explorer": [],
+  "hide": {
+    "statusbar": [],
+    "leftRibbon": [
+      "Inserisci modello",
+      "Apri selezione rapida",
+      "Crea nuova lavagna",
+      "Create a new database table",
+      "Apri nota del giorno",
+      "Create new canvas",
+      "Apri riquadro comandi",
+      "Open quick switcher",
+      "Open today's daily note",
+      "Insert template",
+      "Open command palette"
+    ]
+  },
+  "spacing": "8",
+  "advancedToolbar": {
+    "rowHeight": 48,
+    "rowCount": 1,
+    "spacing": 0,
+    "buttonWidth": 48,
+    "columnLayout": false,
+    "mappedIcons": [],
+    "tooltips": false,
+    "heightOffset": 0
+  }
+}

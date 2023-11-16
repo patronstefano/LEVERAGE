@@ -1,0 +1,9 @@
+{
+	"id": "gymnastics-plugin",
+	"name": "Gymnastics Plugin",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "This is a plugin for gymnastics users of Obsidian. This plugin checks the correct composition of a gymnastics exercise and calculates its Difficulty Score, in accordance with the rules of the 2022-2024 Code of Points of Men’s Artistic Gymnastics.",
+	"author": "Stefano Patron",
+	"isDesktopOnly": false
+}

@@ -1,0 +1,4190 @@
+{
+  "nodePositions": [
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/EG I - Non-acrobatic elements.md",
+      "x": -3364.301513671875,
+      "y": -7484.54345703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/1 circle or flair..md",
+      "x": -727.9947509765625,
+      "y": -6952.84814453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Any standing scale (2 s.)..md",
+      "x": -1381.3441162109375,
+      "y": -6607.27490234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Any standing scale with 180° straddle, no handhold (2 s.)..md",
+      "x": -2306.951904296875,
+      "y": -5826.76171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Butterfly with 1 twist fwd. or bwd..md",
+      "x": -3346.146728515625,
+      "y": -6260.45556640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Butterfly with 2 twist..md",
+      "x": -1873.2806396484375,
+      "y": -6448.7939453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Butterfly..md",
+      "x": -2757.851318359375,
+      "y": -7124.81884765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Circles or flair to handstand..md",
+      "x": -3066.5263671875,
+      "y": -6638.681640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Cross or side split (stop required)..md",
+      "x": -2327.407958984375,
+      "y": -6342.91796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Endo roll piked to handstand (2 s.). (legs together)..md",
+      "x": -1395.2347412109375,
+      "y": -8014.0361328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Endo roll to handstand (2 s.)..md",
+      "x": -2119.08203125,
+      "y": -6668.0078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair hopping with 360° t. bwd. thr. hdst andback to flair (2 hops)..md",
+      "x": -1999.791748046875,
+      "y": -5602.3408203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair or circle to hdst. continue to flair or circle..md",
+      "x": -2787.075439453125,
+      "y": -7516.1103515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair with 1 spindle (in 2 circles)..md",
+      "x": -3447.598876953125,
+      "y": -6991.9580078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair with more than 270° spindle (in 2 circles) directly to handstand..md",
+      "x": -969.3628540039062,
+      "y": -7253.85107421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair with more than 270º spindle (in 2 circles) directlyto handstand and continue to circle or flair..md",
+      "x": -2618.232421875,
+      "y": -6152.5712890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair with ½ spindle to handstand..md",
+      "x": -1045.1712646484375,
+      "y": -7914.01806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Flair with ½ spindle..md",
+      "x": -2905.010498046875,
+      "y": -6340.49951171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Forward walkover..md",
+      "x": -1256.0751953125,
+      "y": -5787.62841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From L-sit, etc., turn over bwd. to stand..md",
+      "x": -2576.3994140625,
+      "y": -6678.18896484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From Manna (2 s.), turn over (dislocation) to handstand (2 s.)..md",
+      "x": -2340.05419921875,
+      "y": -7450.51904296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From Swallow 2 s. press to Japanese hdst. (2 s.)..md",
+      "x": -1299.0877685546875,
+      "y": -6987.5078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From hdst. lower to L-sit or strad. L-sit (2 s.)..md",
+      "x": -1000.1044921875,
+      "y": -6725.537109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From split press to Japanese handstand (2 s.)..md",
+      "x": -2477.69384765625,
+      "y": -5321.490234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From straddle stand, press to hdst. (2 s.)..md",
+      "x": -868.3375244140625,
+      "y": -6394.51416015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From straddled support scale (2 s.) press hdst.(2 s.)..md",
+      "x": -2146.656005859375,
+      "y": -7953.14794921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/From support scale 2 s. press handstand (2 s.)..md",
+      "x": -1616.95068359375,
+      "y": -7634.43701171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Handstand (2 s.)..md",
+      "x": -1156.666748046875,
+      "y": -6181.9736328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Jump bwd. to front support..md",
+      "x": -2396.751708984375,
+      "y": -7033.2568359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Jump bwd. with pike-stretch or with 1 turn tofront support..md",
+      "x": -1554.644287109375,
+      "y": -6255.802734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Lower from hdst. to flair or circle..md",
+      "x": -1981.2113037109375,
+      "y": -7601.89208984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Manna (2 s.) and press to hdst. (2 s.). Also final phase with straddle..md",
+      "x": -841.7608642578125,
+      "y": -7609.60888671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Piked body, str. arm or str. body, bent arm press to hdst. with legs together (2 s.)..md",
+      "x": -1763.13232421875,
+      "y": -8011.5263671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Press from split, L-sit strad. or front sup. (2 s.)..md",
+      "x": -1700.5216064453125,
+      "y": -6866.09521484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Press or lower or swing to Japanese hdst. (2 s.)..md",
+      "x": -2626.59716796875,
+      "y": -5696.49755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Rock to hdst. from prone position (2 s.)..md",
+      "x": -1276.1690673828125,
+      "y": -7498.06298828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Roll bwd. through hdst. with ½ t..md",
+      "x": -3186.950439453125,
+      "y": -5967.21435546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Roll bwd. with hop 1 t. through hdst..md",
+      "x": -2534.474853515625,
+      "y": -7821.35791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Russian wendeswing with 1080° or more..md",
+      "x": -2003.06005859375,
+      "y": -6021.1123046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Russian wendeswing with 360° or 540°..md",
+      "x": -1636.674560546875,
+      "y": -5877.5234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Russian wendeswing with 720° or 900°..md",
+      "x": -3729.264892578125,
+      "y": -6769.537109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Support scale (2 s.)..md",
+      "x": -2043.986572265625,
+      "y": -5257.5576171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Support scale, legs straddle (2 s.)..md",
+      "x": -1604.02978515625,
+      "y": -5488.228515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/Swallow (2 s.)..md",
+      "x": -3621.482421875,
+      "y": -6438.17236328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/V-sit (2 s) and press to hdst. (2 s.). Also final phase with straddle..md",
+      "x": -2036.3681640625,
+      "y": -7128.263671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/V-sit (2 s.)..md",
+      "x": -3083.248779296875,
+      "y": -6980.97021484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/V-sit with legs horiz. (2 s.)..md",
+      "x": -1660.6280517578125,
+      "y": -7244.2470703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG I/FILES/½ or 1 turn in handstand or to handstand..md",
+      "x": -2942.367431640625,
+      "y": -5747.2119140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/EG II - Acrobatic elements forward.md",
+      "x": 1488.8831787109375,
+      "y": -7969.54150390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Dive roll..md",
+      "x": 906.6885986328125,
+      "y": -6343.154296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Double salto fwd. piked, also with 1⁄2 t..md",
+      "x": 124.53565979003906,
+      "y": -7198.40771484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Double salto fwd. str. with 1+1⁄2 turn..md",
+      "x": 281.6175537109375,
+      "y": -6433.41943359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Double salto fwd. tucked with 1 turn..md",
+      "x": 551.3447265625,
+      "y": -8031.9384765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Double salto fwd. tucked with 1+1⁄2 turn..md",
+      "x": 1305.4046630859375,
+      "y": -7003.19482421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Double salto fwd. tucked, also with 1⁄2 t..md",
+      "x": 913.5935668945312,
+      "y": -7093.92626953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Forward handspring or flyspring..md",
+      "x": -6.2135443687438965,
+      "y": -7583.3349609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Handspring salto fwd. tuck..md",
+      "x": 873.1045532226562,
+      "y": -7854.34326171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Jump fwd. with 1⁄2 t. to dbl. salto bwd. t..md",
+      "x": 565.6076049804688,
+      "y": -6159.84814453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. str. with 1 t., also with 1+1⁄2 t..md",
+      "x": 132.4829864501953,
+      "y": -6800.701171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. str. with 2 t..md",
+      "x": 1112.8851318359375,
+      "y": -7525.9091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. str. with 2+1⁄2 t..md",
+      "x": 695.6729736328125,
+      "y": -7444.65869140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. str. with 3 t..md",
+      "x": 147.16258239746094,
+      "y": -7980.1015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. str. with 3+1⁄2 t..md",
+      "x": 632.49072265625,
+      "y": -6679.837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. straight, also with 1⁄2 t..md",
+      "x": 336.1651916503906,
+      "y": -7564.353515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. t. or p. to front support..md",
+      "x": 1066.93115234375,
+      "y": -6684.388671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto fwd. tucked or piked, also with 1⁄2 t..md",
+      "x": 1479.734619140625,
+      "y": -7355.75439453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG II/FILES/Salto tucked with 1 t., also with 1+1⁄2 t..md",
+      "x": 497.5743713378906,
+      "y": -7068.99755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/EG III - Acrobatic elements backward.md",
+      "x": -94.58839416503906,
+      "y": -2423.558349609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Arabian double salto straight or double salto bwd. straight with 1⁄2 t..md",
+      "x": 17.33292579650879,
+      "y": -5023.779296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Arabian double tucked or piked or double salto bwd. t. or p. with 1⁄2 t..md",
+      "x": -1408.784423828125,
+      "y": -4272.7080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Back handspring..md",
+      "x": 602.5703125,
+      "y": -3372.975341796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. piked..md",
+      "x": -442.6529541015625,
+      "y": -3335.800048828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. str. 1+1⁄2 t. or arabian Jump bwd. to dbl. salto fwd. str. with 1 t..md",
+      "x": -465.6958312988281,
+      "y": -2912.8154296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. str. with 2 t..md",
+      "x": 578.8214111328125,
+      "y": -4207.57861328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. str. with 2+1⁄2 t..md",
+      "x": -126.57621765136719,
+      "y": -4651.646484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. str. with 3 t..md",
+      "x": -408.478759765625,
+      "y": -4956.900390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. straight with 1 t. or arabian Jump bwd. to dbl. salto fwd. str. with 1⁄2 t..md",
+      "x": -1110.10986328125,
+      "y": -4487.4873046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. straight..md",
+      "x": -1537.0958251953125,
+      "y": -3904.97998046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. t. or piked with 1 t. Also Arabian double t. or p. with 1⁄2 t..md",
+      "x": 20.28252410888672,
+      "y": -2891.288818359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. t. with 1+1⁄2 t. or Salto bwd. str. 1+1⁄2 to fwd. salto tucked..md",
+      "x": -721.8386840820312,
+      "y": -4447.11328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. tucked with 2 t..md",
+      "x": -775.0849609375,
+      "y": -4791.06201171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. tucked with 2+1⁄2 t..md",
+      "x": -77.40995788574219,
+      "y": -3650.296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. tucked with 3 t..md",
+      "x": -1076.037841796875,
+      "y": -3978.457275390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto bwd. tucked..md",
+      "x": 365.82916259765625,
+      "y": -4970.4375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Double salto straddled with 1 t..md",
+      "x": 377.1756896972656,
+      "y": -2930.12890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Jump bwd. with 1⁄2 t. to roll fwd..md",
+      "x": 639.9146118164062,
+      "y": -3790.1728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto backwards str. or Tempo salto bwd..md",
+      "x": -726.43115234375,
+      "y": -4007.205810546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto backwards str. w. 1⁄2 t. or 1 t..md",
+      "x": 266.0107727050781,
+      "y": -3960.607666015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto backwards tucked or piked w. 1⁄2 t. or Arabian tucked or piked..md",
+      "x": -805.835205078125,
+      "y": -3112.488525390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto backwards tucked or piked..md",
+      "x": 176.2700653076172,
+      "y": -4407.7216796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto backwards tucked w. 1+1⁄2 t..md",
+      "x": -758.5154418945312,
+      "y": -3586.61083984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 1+1⁄2 t. or 2 t..md",
+      "x": -1318.52001953125,
+      "y": -3621.98193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 2 t and salto bwd piked..md",
+      "x": -116.33189392089844,
+      "y": -4110.5751953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 2+1⁄2 t..md",
+      "x": 248.57875061035156,
+      "y": -3514.352294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 3 t..md",
+      "x": -79.9026107788086,
+      "y": -3240.652587890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 3+1⁄2 t..md",
+      "x": -1090.2340087890625,
+      "y": -3344.89306640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Salto bwd. str. with 4 t..md",
+      "x": -408.9516906738281,
+      "y": -3807.521728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Triple salto bwd. piked..md",
+      "x": 503.61541748046875,
+      "y": -4613.337890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/EG III/FILES/Triple salto bwd. tucked..md",
+      "x": -395.03729248046875,
+      "y": -4329.60205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/1 FX/Floor Exercise.md",
+      "x": -487.1922302246094,
+      "y": -5778.20751953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/EG I -  Single leg swings and scissors.md",
+      "x": 786.9944458007812,
+      "y": -1071.5670166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Double Scissor Fwd. with Travel Sideways through Handstand..md",
+      "x": 1744.994140625,
+      "y": -919.2294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Double scissor bwd. (1⁄4 t. fwd. a. 1⁄4 t. bwd)..md",
+      "x": 2157.262939453125,
+      "y": -1720.923095703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Double scissor forward with hop sideways from one end to the other (3⁄3)..md",
+      "x": 1439.3824462890625,
+      "y": -1773.8331298828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Double scissor fwd. (1⁄4 t. fwd. a. 1⁄4 t. bwd.) with travel sdw..md",
+      "x": 2234.122802734375,
+      "y": -1328.4730224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Double scissor fwd.(1⁄4 t. fwd. a. 1⁄4 t. bwd.)..md",
+      "x": 1494.493896484375,
+      "y": -1185.8477783203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Leg cut or undercut bwd. through hdst. and lower to support w. strad. legs..md",
+      "x": 1790.631591796875,
+      "y": -2637.31005859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor backward with 1⁄2 turn..md",
+      "x": 1831.66455078125,
+      "y": -1357.68505859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor backward..md",
+      "x": 1421.335205078125,
+      "y": -2511.451416015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor bwd. with hop swd. from one end to the other (1-2 to 4-5)..md",
+      "x": 2240.131103515625,
+      "y": -2110.669921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor bwd.with hop swd.(also with 1⁄2 t.)..md",
+      "x": 2145.7578125,
+      "y": -959.8768310546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor forward with 1⁄2 t..md",
+      "x": 1864.3585205078125,
+      "y": -2215.389404296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor forward with hop swd. (also with 1⁄2 t.)..md",
+      "x": 1223.65185546875,
+      "y": -1509.8779296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor forward..md",
+      "x": 1470.1380615234375,
+      "y": -2163.230224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor fwd. w. 1⁄4 t. thr. hstd. on 1 p. (also with 1⁄4 t. after), lower to sup. w. strad. legs..md",
+      "x": 2181.58642578125,
+      "y": -2502.163818359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Scissor fwd. with hop swd. from one end to the other (3⁄3)..md",
+      "x": 1094.0074462890625,
+      "y": -2010.3438720703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG I/FILES/Swing bwd. w. 1⁄4 t. thr. hstd. on 1 p. (also with 1⁄4 t. after), lower to sup. w. strad. legs..md",
+      "x": 1792.7900390625,
+      "y": -1774.3184814453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/EG II - Circle and flairs, with and-or without spindles and handstands, Kehrswings, Russian wendeswings, flops andcombined elements.md",
+      "x": 3261.742431640625,
+      "y": -7142.138671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/1 spindle w. legs straddle or together on the pommels inside max. 2 circles..md",
+      "x": 4897.154296875,
+      "y": -4304.62158203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/1080° Russian wendeswing or more on 1 pommel or between the pommels..md",
+      "x": 5265.96533203125,
+      "y": -4248.16357421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/180° Russian from one end of the horse to the other end through hdst. (with travel 3⁄3 AND 450° or more turn) and lower to circles or flairs..md",
+      "x": 4876.00732421875,
+      "y": -5313.54833984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/180° Russian from one end of the horse to the other end through hdst. and lower to circles or flairs..md",
+      "x": 3718.730224609375,
+      "y": -6733.04345703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/180° Russian from one end of the horse to the other end through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 4544.47412109375,
+      "y": -6212.603515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/180° Russian from one end of the horse to the other end through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 2870.25390625,
+      "y": -6390.02099609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/720° or 900° Russian wendeswing on 1 pommel or between the pommels..md",
+      "x": 2585.42333984375,
+      "y": -5084.52294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any 1 spindle with both pommels between the hands (flair or circle)..md",
+      "x": 3715.84521484375,
+      "y": -5884.06591796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any 1 spindle within max. 2 circles on the end..md",
+      "x": 4332.654296875,
+      "y": -3803.50732421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any 1⁄2 spindle on the end..md",
+      "x": 3306.52783203125,
+      "y": -5802.72998046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any 1⁄4 spindle on the end..md",
+      "x": 3229.6181640625,
+      "y": -6219.41064453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any circle or flair in side support..md",
+      "x": 4121.56640625,
+      "y": -5301.498046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any side support 1 spindle with hand support to the other side and return (max. 2 flairs or circles)..md",
+      "x": 3583.380859375,
+      "y": -6302.5
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Any side support pommel between hands 1 spindle w. legs straddle inside max. 2 circles..md",
+      "x": 1873.0103759765625,
+      "y": -5467.14794921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Bertoncelj through hdst. (with travel 3⁄3 AND 450° or more turn) and lower to circles or flairs..md",
+      "x": 1662.732421875,
+      "y": -4791.84814453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Bertoncelj through hdst. and lower to circles or flairs..md",
+      "x": 2953.07080078125,
+      "y": -3904.8115234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Bertoncelj through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 2597.658203125,
+      "y": -6872.32275390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Bertoncelj through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 2259.20068359375,
+      "y": -3536.548583984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle in side support on 1 pommel..md",
+      "x": 4340.27978515625,
+      "y": -5726.2412109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair through hdst. (with travel 3⁄3 AND 450° or more turn) and lower to circles or flairs..md",
+      "x": 4934.228515625,
+      "y": -6056.01416015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 4009.392333984375,
+      "y": -6928.1259765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 2584.53515625,
+      "y": -6093.158203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair with hop travel bwd. through hdst. (with travel 3⁄3 AND 450° or more turn) and lower to circles or flairs..md",
+      "x": 4209.9501953125,
+      "y": -6017.13525390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair with hop travel bwd. through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 4732.037109375,
+      "y": -6548.95458984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle or flair with hop travel bwd. through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 4490.419921875,
+      "y": -5396.8857421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circle with support outside pommels or between the pommels in side support..md",
+      "x": 3589.465576171875,
+      "y": -4095.4169921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circles in cross support between the pommels..md",
+      "x": 3832.132080078125,
+      "y": -5088.52734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circles in cross support frontways on end..md",
+      "x": 3266.8212890625,
+      "y": -3858.67333984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circles in cross support on 1 pommel (from or to 1⁄4 t. fwd.)..md",
+      "x": 3973.3701171875,
+      "y": -4707.43212890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Circles in cross support rearways on end..md",
+      "x": 3694.92431640625,
+      "y": -4471.82080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 1080° or more Russian wendeswing and 1 flop type element..md",
+      "x": 1887.3731689453125,
+      "y": -4440.6201171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 1080° or more Russian wendeswing and 2 flop type elements..md",
+      "x": 2903.524658203125,
+      "y": -6774.38427734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 180° or 270° Russian wendeswing and 2 flop type elements..md",
+      "x": 1995.6527099609375,
+      "y": -4011.779052734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 3 flop type elements performed in flair..md",
+      "x": 3626.005859375,
+      "y": -3645.553466796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 3 flop type elements..md",
+      "x": 3930.431640625,
+      "y": -6237.01318359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 360° or 540° Russian wendeswing and 1 flop type element..md",
+      "x": 4788.833984375,
+      "y": -3938.6572265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 360° or 540° Russian wendeswing and 2 flop type elements..md",
+      "x": 2065.286376953125,
+      "y": -4822.8505859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 4 flop type elements performed in flair..md",
+      "x": 4768.41796875,
+      "y": -5749.12744140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 4 flop type elements..md",
+      "x": 4168.8271484375,
+      "y": -6505.75439453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 720° or 900° Russian wendeswing and 1 flop type element..md",
+      "x": 2725.74169921875,
+      "y": -3577.204345703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of 720° or 900° Russian wendeswing and 2 flop type elements..md",
+      "x": 4415.69580078125,
+      "y": -6762.66162109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 1080° or more Russian wendeswing and 1 flop type element..md",
+      "x": 4287.818359375,
+      "y": -4874.94287109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 180° or 270° Russian wendeswing and 1 flop type element..md",
+      "x": 5377.6689453125,
+      "y": -6069.58837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 2 flop type elements..md",
+      "x": 5720.59765625,
+      "y": -5384.87255859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 3 flop type elements..md",
+      "x": 5624.63232421875,
+      "y": -5725.68017578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 360° or 540° Russian wendeswing and 1 flop type element..md",
+      "x": 3404.111572265625,
+      "y": -5461.623046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Combined sequence on a single pommel of Bertoncelj or 3⁄4 Bezugo (EG II.81) followed by 720° or 900° Russian wendeswing and 1 flop type element..md",
+      "x": 1773.9764404296875,
+      "y": -5071.0107421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Cross support, 1 spindle with hands between the pommels max. 2 circles..md",
+      "x": 5416.12353515625,
+      "y": -5079.4111328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Czechkehre on the pommels or pommel between hands..md",
+      "x": 5817.36279296875,
+      "y": -5024.7626953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Czechkehre outside p..md",
+      "x": 3464.415771484375,
+      "y": -5145.193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA or rev. Stöckli with hop bwd. to other end through hdst. (with travel 3⁄3 AND 450° or more turn) and lower to circles or flairs..md",
+      "x": 3843.75927734375,
+      "y": -5555.60546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA or rev. Stöckli with hop bwd. to other end through hdst. and lower to circles or flairs..md",
+      "x": 3051.32861328125,
+      "y": -4226.728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA or rev. Stöckli with hop bwd. to other end through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 1974.6102294921875,
+      "y": -5800.26220703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA or rev. Stöckli with hop bwd. to other end through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 5618.48828125,
+      "y": -4682.10205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA, rev. Stöckli or circle on one pommel through hdst. and lower to circles or flairs..md",
+      "x": 2319.3359375,
+      "y": -3799.694091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA, rev. Stöckli or circle on one pommel through hdst. with 450° or more turn and lower to circles or flairs..md",
+      "x": 4741.9609375,
+      "y": -4641.34912109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/DSA, rev. Stöckli or circle on one pommel through hdst. with travel 3⁄3 and lower to circles or flairs..md",
+      "x": 4607.052734375,
+      "y": -5007.8349609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Direct Stöckli A (DSA) outside pommels..md",
+      "x": 4018.96533203125,
+      "y": -4213.01220703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Direct Stöckli A (DSA). on the pommels or pommel between hands..md",
+      "x": 5251.3857421875,
+      "y": -4608.0966796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Direct Stöckli B (DSB)..md",
+      "x": 3079.880126953125,
+      "y": -4885.79638671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Direct Tramlot..md",
+      "x": 2940.225341796875,
+      "y": -5948.60009765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Double rear (kehr)..md",
+      "x": 5045.83056640625,
+      "y": -4921.2001953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Flair or circle through hdst. (with or without 1⁄2 t.) and lower to flair or circle..md",
+      "x": 2192.065185546875,
+      "y": -6178.63134765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Flair with hop travel bwd. through hdst. and lower to circles or flairs..md",
+      "x": 3181.71484375,
+      "y": -3495.634521484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Kehr with 1 turn on 1 pommel..md",
+      "x": 2226.21337890625,
+      "y": -4274.181640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Kehr with 270° t. on 1 p. (Sohn technique) from cross to side support..md",
+      "x": 3479.26171875,
+      "y": -4781.685546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Kehr with 270° t. on 1 p. (Sohn technique) from side to cross support..md",
+      "x": 4469.5361328125,
+      "y": -4154.80322265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/On the leather, Russian wendeswing with 1080° or more..md",
+      "x": 3324.33837890625,
+      "y": -6630.93994140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/On the leather, Russian wendeswing with 180°, or 270° also with travel..md",
+      "x": 3003.59423828125,
+      "y": -5250.0205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/On the leather, Russian wendeswing with 360° or 540°..md",
+      "x": 3950.083251953125,
+      "y": -3808.482421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/On the leather, Russian wendeswing with 720° or 900°..md",
+      "x": 2645.762451171875,
+      "y": -4370.77783203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Reverse Stöckli with 270° t. (Bezugo technique) from 2 pommels to cross support on 1 pommel..md",
+      "x": 2371.0546875,
+      "y": -4687.63525390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Reverse Stöckli with 360° t. on 1 pommel..md",
+      "x": 2355.732421875,
+      "y": -5790.86328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Reverse Stöckli, 180° (or 270° from one pommel) turn in one circle..md",
+      "x": 2610.63427734375,
+      "y": -3997.6171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Reverse Stöckli, DSA or pommel circle strad. through hdst., 3⁄3 travel (fwd.- bwd), 360° turn to flairs..md",
+      "x": 5071.59375,
+      "y": -6395.79150390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 1080° or more..md",
+      "x": 2897.447509765625,
+      "y": -5591.02783203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 180° or 270° on 1 p. or between the pommels..md",
+      "x": 2181.281005859375,
+      "y": -5239.2119140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 180° or 270°..md",
+      "x": 2765.154296875,
+      "y": -4716.28369140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 360° or 540° on 1 pommel or between the pommels..md",
+      "x": 3268.493408203125,
+      "y": -4467.64990234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 360° or 540°..md",
+      "x": 5258.0869140625,
+      "y": -5389.9541015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Russian wendeswing with 720° or 900°..md",
+      "x": 5194.83740234375,
+      "y": -5712.93701171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Schwabenflank..md",
+      "x": 2506.750732421875,
+      "y": -5458.8212890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Side support, 1⁄2 spindle with both pommels between the hands (flair or circle)..md",
+      "x": 2440.333984375,
+      "y": -6502.8046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG II/FILES/Wendeswing fwd. w. 1⁄2 t. to sup. fw. on the end, from side support using 1 or 2 pommels..md",
+      "x": 4349.931640625,
+      "y": -4478.6494140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/EG III - Travel type elements, including Krolls, Tong Fei, WuGuonian, Roth and Traveling Spindles.md",
+      "x": 7760.919921875,
+      "y": -1814.2991943359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/3⁄3 cross support travel fwd. with hop..md",
+      "x": 7433.2822265625,
+      "y": -2959.715087890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/All travels with 1⁄2 spindle in cross support (1⁄2 or 2⁄3 travel)..md",
+      "x": 5526.53955078125,
+      "y": -2221.33837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/All travels with 1⁄2 spindle in cross support (1⁄3 travel)..md",
+      "x": 5447.37158203125,
+      "y": -1359.1749267578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/All travels with 1⁄2 spindle in side support..md",
+      "x": 5889.23974609375,
+      "y": -2097.0849609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any 3⁄3 travel in Russian type wendeswing with 720° or more turning..md",
+      "x": 7010.099609375,
+      "y": -3618.3212890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any 3⁄3 travel in flairs with 1 Spindle inside 2 circles..md",
+      "x": 6600.55615234375,
+      "y": -2532.98779296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any Russian wend. with 360° t. and 3⁄3 travel..md",
+      "x": 6154.4404296875,
+      "y": -1799.2030029296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any other travel bwd. in cross support to other end (3⁄3)..md",
+      "x": 5435.75634765625,
+      "y": -2668.31103515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any other travel fwd. in cross support to other end (3⁄3)..md",
+      "x": 6717.857421875,
+      "y": -3832.642822265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any travel fwd. 3⁄3 with 1⁄2 Spindle from one pommel over the other pommel..md",
+      "x": 7511.654296875,
+      "y": -2580.221435546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any travel in side support (3⁄3), hands between pommels..md",
+      "x": 6676.73095703125,
+      "y": -2140.554443359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Any travel in side support (3⁄3). over both pommels..md",
+      "x": 6249.048828125,
+      "y": -2257.79833984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Circles with any hop tr. 2x in side support (3⁄3)..md",
+      "x": 5217.205078125,
+      "y": -1870.249755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Circles with any hop travel. in side support (1⁄3)..md",
+      "x": 6951.03564453125,
+      "y": -3173.705322265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Circles with any travel in side support (1⁄3) (also with 1⁄4 t.)..md",
+      "x": 5921.3515625,
+      "y": -2919.59375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Circles with any travel in side support (3⁄3)..md",
+      "x": 6162.337890625,
+      "y": -3461.699462890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Fr. cr. sup. on end, tr. fwd. in 2 circles to 1st p., to 2nd p., with 1⁄4 turn to side sup. on other end (3⁄3)..md",
+      "x": 6528.1064453125,
+      "y": -1335.5087890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From an end side travel with 2x 1⁄2 spindle to other end..md",
+      "x": 7249.05078125,
+      "y": -1533.49365234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From side sup. beside the p., travel hop o. 2 p. to sup. fwd on other end (1-1 to 5-5)..md",
+      "x": 5862.6123046875,
+      "y": -3315.294677734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From side sup. on one end, travel hop over both p. to side sup. on other end (1-2 to 4-5)..md",
+      "x": 5824.86962890625,
+      "y": -2514.179443359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From side support pommel between hand, russian wendeswing 360° with travel to the other end in side support..md",
+      "x": 6621.52587890625,
+      "y": -3369.962158203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From sup. 1-2., 3⁄3 travel in Russian type wendeswing with 630° or more turning..md",
+      "x": 5543.42578125,
+      "y": -1785.090087890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From sup. on 1 p., Russian wendeswing fwd. to other end without sup. on or btw. the p. (side to side support, side to cross support)..md",
+      "x": 6490.47216796875,
+      "y": -1786.5355224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From sup. on end, Russian wendeswing fwd. to other end without sup. on or btw. the p. (side to side support, side to cross, cross to side, cross to cross)..md",
+      "x": 6905.84912109375,
+      "y": -1326.20849609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/From support on end, kehr fwd. around 1st p., rev. Stöckli around 2nd p. to side sup., p. betw. hands..md",
+      "x": 6180.02099609375,
+      "y": -1322.5838623046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Kehre bwd., kehre fwd., kehre bwd..md",
+      "x": 7129.876953125,
+      "y": -1973.417236328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Kehre fwd., rev. Stöckli, kehre fwd..md",
+      "x": 7085.47021484375,
+      "y": -2780.708740234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/On the leather, from cross support, Russian wendeswing with 360° or 540° over both pommels..md",
+      "x": 6369.5224609375,
+      "y": -3740.476318359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Reverse Stöckli from cross support on end to the far pommel..md",
+      "x": 5845.2568359375,
+      "y": -1597.1729736328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Reverse Stöckli from cross support on one end to the other..md",
+      "x": 7009.2744140625,
+      "y": -2404.18017578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel 3⁄3 over both pommels with 1⁄2 Spindle..md",
+      "x": 5574.47265625,
+      "y": -3011.3525390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel backward in cross support over both pommels..md",
+      "x": 7283.400390625,
+      "y": -3336.539306640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel bwd. in cross sup with support on leather, pommel, pommel, leather(3⁄3) (5-4-2-1)..md",
+      "x": 5170.3154296875,
+      "y": -2375.9326171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel bwd. in cross sup. from one horse part or pommel to another (1⁄3)..md",
+      "x": 6662.69775390625,
+      "y": -2905.139404296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel bwd. in cross support (1⁄2 or 2⁄3)..md",
+      "x": 7389.392578125,
+      "y": -2236.39111328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel forward in cross support over both pommels..md",
+      "x": 5813.93408203125,
+      "y": -1192.30029296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel fwd. in cross support (1⁄2 or 2⁄3)..md",
+      "x": 6856.921875,
+      "y": -1713.759521484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel fwd. in cross support with support on leather, pommel, pommel, leather(3⁄3) (1-2-4-5)..md",
+      "x": 6226.44189453125,
+      "y": -2676.034423828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG III/FILES/Travel fwd. or bwd. with 1⁄4 spindle to side support..md",
+      "x": 6317.47021484375,
+      "y": -3095.22021484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/EG IV - Dismounts.md",
+      "x": 3164.53173828125,
+      "y": -603.959228515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/180° Russian from one end of the horse to the other end through Handstand to dismount..md",
+      "x": 2949.792236328125,
+      "y": -1452.7322998046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/180° Russian from one end of the horse to the other end through hdst. with travel 3⁄3 AND 450° or more turn..md",
+      "x": 3080.239013671875,
+      "y": -1086.6446533203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/180° Russian from one end of the horse to the other end through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 4036.843505859375,
+      "y": -730.9977416992188
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Bertoncelj through hdst. with travel 3⁄3 AND 450° or more turn..md",
+      "x": 2723.78564453125,
+      "y": -814.5234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Bertoncelj through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 4387.779296875,
+      "y": -639.944091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Bertoncelj through hdst..md",
+      "x": 2704.37841796875,
+      "y": -1243.2291259765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Chaguinian to wende..md",
+      "x": 3390.468017578125,
+      "y": -1457.5281982421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Circle or flair through hdst. (also with 3⁄4 t. with or without travel)..md",
+      "x": 3913.48291015625,
+      "y": -1915.5003662109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Circle or flair through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 4098.283203125,
+      "y": -2260.912841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Circle or flair with hop travel bwd. thr. hdst..md",
+      "x": 3589.01220703125,
+      "y": -1161.9510498046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Circle or flair with hop travel bwd. through hdst. with travel 3⁄3 AND 450° or more turn..md",
+      "x": 4434.23291015625,
+      "y": -966.2316284179688
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Circle or flair with hop travel bwd. through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 4379.77490234375,
+      "y": -1971.13720703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA or rev. Stöckli with hop bwd. through hdst. on other end..md",
+      "x": 2822.428466796875,
+      "y": -2248.25048828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA or rev. Stöckli with hop bwd. to the other end through hdst. with travel 3⁄3 AND 450° or more turn..md",
+      "x": 4080.66455078125,
+      "y": -1211.941650390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA or rev. Stöckli with hop bwd. to the other end through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 4540.25439453125,
+      "y": -1304.9530029296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA to hdst. 3⁄3 with 450° or more turn..md",
+      "x": 3689.5244140625,
+      "y": -2342.81005859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA, rev. Stöckli or circle on one pommel through hdst. with travel 3⁄3 OR 450° or more turn..md",
+      "x": 3717.39990234375,
+      "y": -849.2091064453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/DSA, rev. Stöckli or circle on one pommel through hdst..md",
+      "x": 3527.056884765625,
+      "y": -1816.091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Fr. s. sup. fw., wendeswing fwd. w. 1⁄2 t. to sup. fw. followed by Schwabenflank a. wende off..md",
+      "x": 3156.288818359375,
+      "y": -2472.93212890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/From side sup. on end, circle or flair to hdst. and travel 3⁄3 with 450° or more turn..md",
+      "x": 3107.14501953125,
+      "y": -1877.7764892578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/On the end, Russian wend. with 720° or 900°..md",
+      "x": 2765.187255859375,
+      "y": -1781.7296142578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/On the end, Russian wendeswing with 1080° or more..md",
+      "x": 3340.45556640625,
+      "y": -2167.09375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/On the end, Russian wendeswing with 360° or 540°..md",
+      "x": 4328.15380859375,
+      "y": -1633.3458251953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/EG IV/FILES/Wende (from circle or flair)..md",
+      "x": 3883.33203125,
+      "y": -1528.1126708984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/2 PH/Pommel Horse.md",
+      "x": 4277.3583984375,
+      "y": -3038.017333984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/EG I - Kip and swing elements & swings through or to handstand(2 sec.).md",
+      "x": 1171.2242431640625,
+      "y": 305.0738830566406
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Back kip or roll bwd str. with bent arms to hand- stand (2 s.)..md",
+      "x": 1838.6434326171875,
+      "y": 329.24798583984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Back kip to support..md",
+      "x": 3481.42529296875,
+      "y": 802.132080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Back kip with bent arms to support..md",
+      "x": 1844.7757568359375,
+      "y": 1689.71630859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Backward swing to salto fwd. piked to support..md",
+      "x": 2112.87939453125,
+      "y": 611.8154907226562
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Bwd. swing, salto piked to support..md",
+      "x": 2579.0048828125,
+      "y": 769.285400390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Dislocate bwd. piked or straight..md",
+      "x": 1484.5631103515625,
+      "y": 1968.48193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Double salto fwd. piked or straight to hang..md",
+      "x": 1294.4384765625,
+      "y": 1627.18603515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Double salto fwd. tucked to hang..md",
+      "x": 2459.927490234375,
+      "y": 1293.105224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Felge upward to support with straddled legs supported above the rings (2 s.)..md",
+      "x": 1541.195068359375,
+      "y": 1367.0009765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/From any support scale, swallow or swing bwd in support, roll forward to bwd swing in hang..md",
+      "x": 2190.424072265625,
+      "y": 991.8409423828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/From hang, felge upward to support..md",
+      "x": 1828.6920166015625,
+      "y": 2087.734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/From support or cross, felge bwd. piked or straight with bent arms to support..md",
+      "x": 2226.41796875,
+      "y": 1980.97900390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/From support swing bwd. to handstand (2 s.)..md",
+      "x": 1960.7205810546875,
+      "y": 1325.569091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Fwd. swing to swing bwd. in hang..md",
+      "x": 3218.47998046875,
+      "y": 1120.1392822265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Honma and swing bwd. to handstand (2 s.)..md",
+      "x": 3213.607421875,
+      "y": 375.2426452636719
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Honma str. and swing bwd. to handstand (2 s.)..md",
+      "x": 2964.941162109375,
+      "y": 1752.3736572265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Honma straight..md",
+      "x": 2255.499267578125,
+      "y": 185.630859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Inlocate piked or straight..md",
+      "x": 3033.61328125,
+      "y": 714.4171752929688
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Kip to support..md",
+      "x": 2788.895263671875,
+      "y": 1062.1787109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Piked double felge bwd. to hang..md",
+      "x": 2288.32666015625,
+      "y": 1605.32421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Slow inlocate from hang..md",
+      "x": 1539.997314453125,
+      "y": 700.4484252929688
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Straight double felge bwd. to hang..md",
+      "x": 1765.90185546875,
+      "y": 965.121826171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Swing bwd. or giant swing fwd to hdst. (2 s.)..md",
+      "x": 2896.712890625,
+      "y": 1406.787353515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Swing fwd. through hdst..md",
+      "x": 2620.93896484375,
+      "y": 1857.6695556640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Tucked double felge bwd. to hang..md",
+      "x": 2846.005126953125,
+      "y": 248.0333251953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise bwd. or giant swing to handstand (2 s.)..md",
+      "x": 1266.4427490234375,
+      "y": 1093.2850341796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise bwd. str. through handstand..md",
+      "x": 2538.40283203125,
+      "y": 416.8323669433594
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise bwd. to straddled L-sit (2 s.)..md",
+      "x": 3613.07763671875,
+      "y": 493.9595947265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise bwd. to support..md",
+      "x": 3551.061767578125,
+      "y": 1394.429443359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise fwd. to support and counter salto fwd. to bwd swing in hang..md",
+      "x": 3319.008056640625,
+      "y": 1640.0916748046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG I/FILES/Uprise fwd. to support..md",
+      "x": 3712.1064453125,
+      "y": 1068.3057861328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/EG II - Strength elements and hold elements (2 sec.).md",
+      "x": 8045.46630859375,
+      "y": 759.4703979492188
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Any cross (2 s.)..md",
+      "x": 6839.0341796875,
+      "y": 3426.5810546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Azarian to V Cross (2 s.)..md",
+      "x": 6431.31396484375,
+      "y": 3273.77392578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Azarian to inverted Swallow (2 s.)..md",
+      "x": 6050.89794921875,
+      "y": 1118.8458251953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Fr. cross or L-cr., move fwd. to back lever (2 s.)..md",
+      "x": 7642.689453125,
+      "y": 201.5214385986328
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From L-cross, press to inverted cross (2 s.)..md",
+      "x": 6839.92578125,
+      "y": 3046.525634765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From cross or L-cross, press to L-sit (2 s.)..md",
+      "x": 7007.87255859375,
+      "y": 1664.162109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From cross, press to planche without first going to support (2 s.)..md",
+      "x": 6125.08056640625,
+      "y": 2358.6650390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From cross, press to swallow (2 s.)..md",
+      "x": 7340.22216796875,
+      "y": 2503.058837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From cross, press with straight body to inverted cross (2 s.)..md",
+      "x": 6561.81396484375,
+      "y": 2332.363037109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From handstand, lower slowly through inverted cross to inverted hang..md",
+      "x": 6794.6748046875,
+      "y": 304.45880126953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hang vertical pull up support and press to hdst. with straight body and straight arms..md",
+      "x": 7173.01953125,
+      "y": 2861.3232421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hang vertical pull up thr. swallow to sup. scale (2 s.)..md",
+      "x": 7902.08203125,
+      "y": 1738.5560302734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hang vertical pull up to inv. cross (2 s.)..md",
+      "x": 7231.83056640625,
+      "y": 3260.38232421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hang vertical pull up to swallow (2 s.)..md",
+      "x": 6252.4775390625,
+      "y": 2679.162841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hang vertical pull up, slowly with straight arms through cross to inverted swallow (2 s.)..md",
+      "x": 5384.97412109375,
+      "y": 204.29782104492188
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hanging scale rw. press to swallow (also to Support Scale) (2 s.)..md",
+      "x": 7161.21044921875,
+      "y": 1071.9002685546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From hdst., lower horiz. to back lever (2 s.)..md",
+      "x": 6388.85498046875,
+      "y": 417.2483215332031
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From inverted cross lower slowly to inverted hang and felge bwd. slowly to cross (2 s.)..md",
+      "x": 7325.88232421875,
+      "y": -53.078582763671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From inverted cross lower slowly to inverted hang and felge bwd. slowly to swallow (2 s.)..md",
+      "x": 6394.70556640625,
+      "y": 1234.363037109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From or through hanging scale rearways, pull to cross or L-cross (2 s.)..md",
+      "x": 7493.11279296875,
+      "y": 1766.961669921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From planche, lower horiz. and slowly to hanging scale rw. and press to swallow (2 s.) or from swallow same to planche or planche to planche..md",
+      "x": 6142.61328125,
+      "y": 38.77482604980469
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From sup. or cross, lower slowly to hang, and pull with str. arms to cross (2 s.)..md",
+      "x": 6525.6142578125,
+      "y": 2878.4345703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From support lever, press to inverted cross (2 s.)..md",
+      "x": 7773.4326171875,
+      "y": 2097.982666015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From swallow, lower slowly to hanging scale, press to swallow (2 s.)..md",
+      "x": 6484.900390625,
+      "y": 862.43994140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From swallow, press to inverted cross (2 s.)..md",
+      "x": 5937.9580078125,
+      "y": 1539.203369140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/From swallow, press to support scale (2 s.)..md",
+      "x": 7314.087890625,
+      "y": 2064.106689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Hanging scale frontways (front lever) (2 s.)..md",
+      "x": 5756.85302734375,
+      "y": 2343.369384765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Hanging scale rearways (back lever) (2 s.)..md",
+      "x": 6814.927734375,
+      "y": 1193.3759765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Inverted cross (2 s.)..md",
+      "x": 5699.42041015625,
+      "y": 832.1005859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Inverted swallow (2 s.)..md",
+      "x": 7832.54541015625,
+      "y": 1360.6688232421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/L-sit (2 s.) or straddled L-sit (2 s.)..md",
+      "x": 6992.04736328125,
+      "y": 2220.3173828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Nakayama to V cross (2 s.)..md",
+      "x": 5846.5634765625,
+      "y": 1963.3458251953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Press from inverted cross to handstand (2 s.)..md",
+      "x": 6110.6416015625,
+      "y": 740.4718627929688
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Press to hdst. with bent body and bent arms (2 s)..md",
+      "x": 6719.587890625,
+      "y": 1946.2694091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Press to hdst. with str. body a. bent arms or b. body. a. str. arms, or fr. strad. sup. lever (2 s.)..md",
+      "x": 5938.025390625,
+      "y": 418.7678527832031
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Press to hdst. with str. body and str. arms from swallow (2 s.)..md",
+      "x": 5502.91552734375,
+      "y": 534.6927490234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Press to hdst. with str. body and str. arms or from sup. lever (2 s.)..md",
+      "x": 7574.38623046875,
+      "y": 643.72998046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Roll backward slowly with straight arms and body to handstand through swallow..md",
+      "x": 5227.10205078125,
+      "y": 1913.246826171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Roll bwd. slowly with str. arms and body to free sup. scale (2 s.)..md",
+      "x": 6502.63720703125,
+      "y": -9.140029907226562
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll bwd. slowly and straight. body to L sit (2 s.)..md",
+      "x": 6853.98095703125,
+      "y": 2589.0771484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll bwd. with str. body to swallow (2 s.)..md",
+      "x": 4966.58203125,
+      "y": 1651.479248046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll bwd. with straight body to cross or L-cross (2 s.)..md",
+      "x": 5815.03955078125,
+      "y": 2790.1181640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll forward with straight body through cross to swallow (2 sec)..md",
+      "x": 4899.6376953125,
+      "y": 1264.0699462890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. piked with bent arms, to support..md",
+      "x": 6909.70068359375,
+      "y": -81.93694305419922
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. straight to cross or L-cross (2 s.)..md",
+      "x": 6273.296875,
+      "y": 2011.5780029296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. straight to handstand (2 s.)..md",
+      "x": 7177.22265625,
+      "y": 686.1181030273438
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. straight to inverted cross (2 s.)..md",
+      "x": 5288.90771484375,
+      "y": 1377.6639404296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. straight with bent arms, to support..md",
+      "x": 6289.734375,
+      "y": 1642.7410888671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. with str. body o Cross or L-Cross (2 s.), also from inverted hang..md",
+      "x": 7227.5703125,
+      "y": 310.72357177734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. with straight body through cross and press to support scale without first going to support (2 s.)..md",
+      "x": 7556.16552734375,
+      "y": 2869.48974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Slow roll fwd. with straight body through cross to inverted cross (2 s.)..md",
+      "x": 6659.3662109375,
+      "y": 1537.11572265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Support scale (planche)(2 s.)..md",
+      "x": 5565.61474609375,
+      "y": 1693.3311767578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Support scale at ring height (swallow or maltese cross) (2 s.)..md",
+      "x": 4945.19677734375,
+      "y": 878.2152709960938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Support scale straddled (2 s.)..md",
+      "x": 7543.90625,
+      "y": 1090.387451171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Through hang rearways press and straight body to inverted cross (2 s.)..md",
+      "x": 5349.755859375,
+      "y": 2229.39599609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Through hanging scale rearways (no hold required) pull with str. body through cross to inv. swallow (2 s.)..md",
+      "x": 7330.08251953125,
+      "y": 1445.646484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/V cross (2 s.)..md",
+      "x": 7721.5263671875,
+      "y": 2447.086669921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/V cross, press to V-sit (2 sec.)..md",
+      "x": 5452.67724609375,
+      "y": 2599.70849609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/V-sit (2 s.)..md",
+      "x": 6079.69921875,
+      "y": 3063.9638671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Vertical pull up to L-sit (2 s.)..md",
+      "x": 6787.74560546875,
+      "y": 693.5785522460938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Vertical pull up to cross or L-cross (2 s.)..md",
+      "x": 5678.3857421875,
+      "y": 1233.8350830078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Vertical pull up with bent arms to hanging scale rearways (2 s.)..md",
+      "x": 5108.69921875,
+      "y": 535.35791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Vertical pull up with str. arms to V-cross (2 s.)..md",
+      "x": 5336.94775390625,
+      "y": 975.70751953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG II/FILES/Vertical pull up with straight arms to hanging scale rearways (2 s.)..md",
+      "x": 5762.515625,
+      "y": 78.0397720336914
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/EG III - Swing to Strength hold elements (2 sec.).md",
+      "x": 5208.42724609375,
+      "y": 5981.36767578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Back kip to cross or L-cross (2 s.)..md",
+      "x": 6170.3310546875,
+      "y": 4937.234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Back kip to inverted cross (2 s.)..md",
+      "x": 4582.12255859375,
+      "y": 5060.0615234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Back kip to support scale (2 s.)..md",
+      "x": 4265.60888671875,
+      "y": 4215.77001953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Back kip to swallow (2 s.)..md",
+      "x": 4038.01611328125,
+      "y": 4543.72216796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Backward swing to salto fwd. p. to L-sit (2 s.)..md",
+      "x": 5745.2470703125,
+      "y": 4937.52734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Bwd. swing, salto fwd p. to cross or L- cross (2 s.)..md",
+      "x": 4869.71630859375,
+      "y": 4766.689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge bwd. straight to free sup. scale. (2 s.).md",
+      "x": 4902.5478515625,
+      "y": 3578.1689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge upward to Swallow (2 s.)..md",
+      "x": 5893.66259765625,
+      "y": 5279.5849609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge upward to cross or L-cross (2 s.)..md",
+      "x": 4538.7890625,
+      "y": 3847.4375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge upward to invert. cross (2 s.)..md",
+      "x": 4206.17333984375,
+      "y": 5322.18603515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge upward to support scale (2 s.)..md",
+      "x": 5356.27734375,
+      "y": 5184.48486328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Felge upward to support scale straddled (2 s.)..md",
+      "x": 5413.92138671875,
+      "y": 3762.56005859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Honma to V cross (2 s.)..md",
+      "x": 6286.81005859375,
+      "y": 4570.5517578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Honma to cross or L-cross (2 s.)..md",
+      "x": 5011.056640625,
+      "y": 4413.60888671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Kip to L-sit (2 s.)..md",
+      "x": 5318.31787109375,
+      "y": 4780.53369140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Kip to V cross (2 s.)..md",
+      "x": 4900.43603515625,
+      "y": 5523.99853515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Kip to V-sit (2 s.)..md",
+      "x": 5532.046875,
+      "y": 5477.458984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Kip to cross or L-cross (2 s.)..md",
+      "x": 5452.1884765625,
+      "y": 4439.16943359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Kip to inverted swallow (2 s.)..md",
+      "x": 5852.31494140625,
+      "y": 4568.94775390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to V cross (2 s.)..md",
+      "x": 4538.05419921875,
+      "y": 5493.89111328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to cross or L-cross (2 s.)..md",
+      "x": 4941.88818359375,
+      "y": 3926.68896484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to inverted cross (2 s.)..md",
+      "x": 4475.6845703125,
+      "y": 4620.2158203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to sup. scale at ring height (2 s.)..md",
+      "x": 5282.3173828125,
+      "y": 4095.176513671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to support scale (2 s.)..md",
+      "x": 5728.8798828125,
+      "y": 4106.35791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise bwd. to support scale straddled (2 s.)..md",
+      "x": 3831.540283203125,
+      "y": 4913.03076171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise forwad. to inverted swallow (2 s.)..md",
+      "x": 4665.849609375,
+      "y": 4245.37939453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise fwd. to L-sit, (2 s.)..md",
+      "x": 4195.53271484375,
+      "y": 4941.017578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise fwd. to V-sit (2 s.)..md",
+      "x": 6084.74072265625,
+      "y": 4232.73974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG III/FILES/Uprise fwd. to cross or L-cross (2 s.)..md",
+      "x": 4993.60400390625,
+      "y": 5156.1865234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/EG IV - Dismounts.md",
+      "x": 2121.685791015625,
+      "y": 3647.783935546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. straight with 1+1⁄2 or 2 t..md",
+      "x": 3419.781005859375,
+      "y": 2429.3017578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. straight with 1⁄2 or 1 t..md",
+      "x": 2792.64697265625,
+      "y": 2921.482177734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. straight..md",
+      "x": 3282.938720703125,
+      "y": 3566.048828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. t. with 1+1⁄2 t..md",
+      "x": 3325.536376953125,
+      "y": 4259.642578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. t. with 1⁄2 or 1 t..md",
+      "x": 1899.2496337890625,
+      "y": 3008.945556640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. t. with 2 t..md",
+      "x": 3597.147705078125,
+      "y": 2936.4482421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. t. with 2+1⁄2 t..md",
+      "x": 2818.099853515625,
+      "y": 3608.947265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto bwd. tucked or piked..md",
+      "x": 2526.463623046875,
+      "y": 2626.089599609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto fwd. piked or piked with 1⁄2 t..md",
+      "x": 3617.75830078125,
+      "y": 3873.36083984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto fwd. piked with 1+1⁄2 t. (also 1 t.)..md",
+      "x": 4052.892333984375,
+      "y": 3220.615234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto fwd. tucked or tucked with 1⁄2 t..md",
+      "x": 2936.202880859375,
+      "y": 4277.77197265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Double salto fwd. tucked with 1+1⁄2 t (also 1 t.)..md",
+      "x": 2978.961181640625,
+      "y": 2502.92919921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto bwd. piked or straight also with 1⁄2..md",
+      "x": 3950.526123046875,
+      "y": 2847.814208984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto bwd. str. with 1 t. and salto t..md",
+      "x": 3501.93359375,
+      "y": 3287.614013671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto bwd. straight with 1 t..md",
+      "x": 3230.9833984375,
+      "y": 2850.11962890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto bwd. straight with 2 t. or 1+1⁄2 t..md",
+      "x": 2573.7197265625,
+      "y": 3309.9912109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto bwd. straight with 3 t..md",
+      "x": 3833.126708984375,
+      "y": 3517.26806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto fwd. piked or straight with 1 t..md",
+      "x": 2310.426513671875,
+      "y": 3048.862548828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto fwd. piked or straight with 1+1⁄2 t..md",
+      "x": 3748.198974609375,
+      "y": 2458.4873046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto fwd. piked or straight with 2 t..md",
+      "x": 2085.93017578125,
+      "y": 2685.23779296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Salto fwd. piked or straight, also with 1⁄2 t..md",
+      "x": 3170.215087890625,
+      "y": 3910.274169921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Triple salto bwd. piked..md",
+      "x": 2689.24755859375,
+      "y": 3947.69482421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/EG IV/FILES/Triple salto bwd. tucked..md",
+      "x": 3041.280517578125,
+      "y": 3227.49609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/3 SR/Rings.md",
+      "x": 4515.60888671875,
+      "y": 2382.247314453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/EG I - Single salto vaults with complex twists.md",
+      "x": 1092.961669921875,
+      "y": 3694.1025390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Handspring fwd. and salto fwd. str. w. 2+1⁄2 t..md",
+      "x": 670.8455200195312,
+      "y": 4099.89794921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Handspring fwd. and salto fwd. str. w. 3 t..md",
+      "x": 1591.1002197265625,
+      "y": 4827.62841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. p. w. 1 t. (Cuervo p. w. 1⁄2 t.)..md",
+      "x": 1896.697998046875,
+      "y": 4637.27001953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. p. w. 1+1⁄2 t. (Cuervo p. w. 1 t.)..md",
+      "x": 1355.918212890625,
+      "y": 5173.09423828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. str. w. 1 t. (Cuervo str. 1⁄2 t.)..md",
+      "x": 227.81802368164062,
+      "y": 4823.984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. str. w. 1+1⁄2 t. (Cuervo str. w. 1 t.)..md",
+      "x": 818.3478393554688,
+      "y": 4496.05517578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. str. w. 2 t. (Cuervo str. 1+1⁄2 t.)..md",
+      "x": 2021.517333984375,
+      "y": 5060.4326171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. t. w. 1 t. (Cuervo t. w. 1⁄2 t.)..md",
+      "x": 1218.5533447265625,
+      "y": 4672.3935546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. t. w. 1+1⁄2 t. (Cuervo t. w. 1 t.)..md",
+      "x": 1180.9188232421875,
+      "y": 4244.09423828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Hdspr. fwd. and salto fwd. t. w. 2 t. (or Cuervo t. w. 1+1⁄2 t.)..md",
+      "x": 989.1860961914062,
+      "y": 5045.56787109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Kasamatsu str. w. 1 t. or Tsukahara str. w. 2 t..md",
+      "x": 635.014892578125,
+      "y": 4856.91796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Kasamatsu str. with 1+1⁄2 t..md",
+      "x": 1682.7371826171875,
+      "y": 5220.59619140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Kasamatsu str. with 1⁄2 t. or Tsukahara str. w. 1+1⁄2 t..md",
+      "x": 1368.9892578125,
+      "y": 5564.97802734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Kasamatsu str. with 2 t..md",
+      "x": 541.30908203125,
+      "y": 5241.2802734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Kasamatsu str. with 2+1⁄2 t. or Tsukahara st. with 3+1⁄2 t..md",
+      "x": 380.6909484863281,
+      "y": 4431.55419921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Tsukahara t. w. 1+1⁄2 t. or Kasamatsu t. 1⁄2 t..md",
+      "x": 955.7835693359375,
+      "y": 5458.5634765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG I/FILES/Tsukahara t. with 2 t..md",
+      "x": 1560.34619140625,
+      "y": 4344.29443359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/EG II -   Handspring vaults with or without simple twists,and all double salto fwd.md",
+      "x": 4149.587890625,
+      "y": 6709.33154296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Dragulescu piked..md",
+      "x": 2580.904296875,
+      "y": 6684.44091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring with 1 t..md",
+      "x": 2240.02734375,
+      "y": 5937.1142578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring with 1+1⁄2 t..md",
+      "x": 3396.584716796875,
+      "y": 5980.18994140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring with 1⁄2 t..md",
+      "x": 2590.324462890625,
+      "y": 5610.5986328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring with 2 t..md",
+      "x": 2805.04931640625,
+      "y": 7203.75146484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring with 2+1⁄2 t..md",
+      "x": 3080.381591796875,
+      "y": 6153.755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Forward handspring..md",
+      "x": 3597.006591796875,
+      "y": 6816.68994140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and dbl. salto fwd. piked..md",
+      "x": 2385.41064453125,
+      "y": 6299.7666015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and dbl. salto fwd. t..md",
+      "x": 2921.41650390625,
+      "y": 6855.48388671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and salto fwd. piked..md",
+      "x": 3265.162841796875,
+      "y": 7004.236328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and salto fwd. str..md",
+      "x": 3470.713623046875,
+      "y": 7298.330078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and salto fwd. t. w. 1⁄2 t. and salto bwd. t..md",
+      "x": 2667.865966796875,
+      "y": 5974.25
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Handspring fwd. and salto fwd. t..md",
+      "x": 2816.914306640625,
+      "y": 6397.33837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Hdspr. fwd. and salto fwd. p. w. 1⁄2 t. (Cuervo p.)..md",
+      "x": 3017.64501953125,
+      "y": 5727.42822265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Hdspr. fwd. and salto fwd. str. w. 1⁄2 t. (Cuervo str.)..md",
+      "x": 3603.578125,
+      "y": 6353.84619140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Hdspr. fwd. and salto fwd. t. w. 1⁄2 t. (or Cuervo t.)..md",
+      "x": 3062.014892578125,
+      "y": 7474.474609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG II/FILES/Roche with 1⁄2 turn..md",
+      "x": 3253.603515625,
+      "y": 6537.76025390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/EG III - Handspring sideways and Tsukahara vaults with orwithout simple twists, and all double salto bwd.md",
+      "x": 2548.9580078125,
+      "y": 7947.89208984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Double Tsukahara with 1 twist..md",
+      "x": 1585.700439453125,
+      "y": 6483.326171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Handspring sw. w. 1⁄4 t. a. salto bwd. t..md",
+      "x": 1638.630126953125,
+      "y": 7670.853515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Handspring sw. with 1+1⁄4 t..md",
+      "x": 1395.4122314453125,
+      "y": 8076.88232421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Handspring sw. with 1⁄4 t..md",
+      "x": 1936.421875,
+      "y": 6556.921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Handspring sw. with 3⁄4 t..md",
+      "x": 1227.9483642578125,
+      "y": 7718.91015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Hdspr. sw. w. 1⁄4 t. a. salto fwd. t. w. 1⁄2 t. or Tsuk. t. w. 1 t..md",
+      "x": 1828.744873046875,
+      "y": 8051.6279296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara piked..md",
+      "x": 1357.251708984375,
+      "y": 7331.4140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara str. w. 1 t. or Kasamatsu str..md",
+      "x": 2074.625244140625,
+      "y": 7714.66259765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara str. with 1⁄2 t..md",
+      "x": 1858.582763671875,
+      "y": 7326.6689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara straight..md",
+      "x": 2151.779052734375,
+      "y": 7010.37109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara t. with 1⁄2 t..md",
+      "x": 2327.502197265625,
+      "y": 7402.6845703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara with salto bwd. piked..md",
+      "x": 1750.2236328125,
+      "y": 6937.083984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG III/FILES/Tsukahara with salto bwd. t..md",
+      "x": 1384.537353515625,
+      "y": 6950.1494140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/EG IV - Round off entry vaults.md",
+      "x": -2556.163818359375,
+      "y": 7446.50341796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Melissanidis piked..md",
+      "x": -74.6966323852539,
+      "y": 6953.53955078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. a. hdspr. fwd. and double salto fwd. tucked..md",
+      "x": -2091.62890625,
+      "y": 7782.87548828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. a. hdspr. fwd. and salto fwd. p..md",
+      "x": -834.8165283203125,
+      "y": 6952.306640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and handspring fwd..md",
+      "x": -1809.588134765625,
+      "y": 6772.384765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. p. with 1⁄2 t..md",
+      "x": -1201.74169921875,
+      "y": 7126.3642578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. str. with 1 t..md",
+      "x": -1859.5791015625,
+      "y": 6009.513671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. str. with 1⁄2 t..md",
+      "x": -516.5272827148438,
+      "y": 7151.9072265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. str. with 2+1⁄2 t..md",
+      "x": 343.8182373046875,
+      "y": 7668.3408203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. str..md",
+      "x": -1067.73583984375,
+      "y": 8169.50439453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. straight with 1+1⁄2 t..md",
+      "x": -427.66082763671875,
+      "y": 6754.6533203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. straight with 2 t..md",
+      "x": -1438.9608154296875,
+      "y": 8109.97607421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. tucked with 1⁄2 t..md",
+      "x": -667.357666015625,
+      "y": 5885.4775390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. and salto fwd. tucked..md",
+      "x": -1000.825927734375,
+      "y": 6603.09716796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. with 1 t..md",
+      "x": -644.47802734375,
+      "y": 6456.0205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, 1⁄2 t. and hdspr. fwd. with 1⁄2 t..md",
+      "x": -137.43544006347656,
+      "y": 6489.4716796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, handspring bwd. with 1 turn..md",
+      "x": -1088.8131103515625,
+      "y": 5842.08984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, handspring bwd. with 1⁄2 turn..md",
+      "x": -1368.96875,
+      "y": 6733.98193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, handspring bwd..md",
+      "x": -1258.935791015625,
+      "y": 7716.88330078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Round off, hdspr. bwd. and salto bwd. t..md",
+      "x": -481.09735107421875,
+      "y": 7899.234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to back handspring with 1 turn..md",
+      "x": 357.1136474609375,
+      "y": 6987.99609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to back handspring with 1⁄2 turn..md",
+      "x": -1736.802490234375,
+      "y": 6394.26953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to back handspring..md",
+      "x": 140.31771850585938,
+      "y": 8019.24609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. piked..md",
+      "x": 69.7575454711914,
+      "y": 6152.033203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. straight..md",
+      "x": -565.7595825195312,
+      "y": 7536.64013671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. tucked with 1 turn..md",
+      "x": -2122.01416015625,
+      "y": 6418.56689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. tucked with 1+1⁄2 turn..md",
+      "x": -179.47076416015625,
+      "y": 7343.0478515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. tucked with 1⁄2 turn..md",
+      "x": -1525.288330078125,
+      "y": 7492.06591796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo entry to salto bwd. tucked..md",
+      "x": -957.6895751953125,
+      "y": 7400.88671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo with 1 t..md",
+      "x": -104.1135482788086,
+      "y": 7709.978515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo with 1+1⁄2 t..md",
+      "x": -1359.7550048828125,
+      "y": 6307.75732421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo with 1⁄2 t..md",
+      "x": -1603.4598388671875,
+      "y": 7108.92578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo with 2 t..md",
+      "x": -904.0355224609375,
+      "y": 5485.73046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Scherbo with 2+1⁄2 t..md",
+      "x": -952.6550903320312,
+      "y": 6193.4541015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko Straight 3 t..md",
+      "x": -898.0594482421875,
+      "y": 7817.70166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko Straight 3+1⁄2 t..md",
+      "x": -1911.3421630859375,
+      "y": 7443.4091796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko and salto bwd. t..md",
+      "x": -1744.222900390625,
+      "y": 7920.16259765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko piked..md",
+      "x": 230.72645568847656,
+      "y": 7330.98876953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight with 1 t..md",
+      "x": -2282.958251953125,
+      "y": 6797.73291015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight with 1+1⁄2 t..md",
+      "x": -2101.3701171875,
+      "y": 7115.87353515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight with 1⁄2 t..md",
+      "x": -230.8213653564453,
+      "y": 8187.46435546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight with 2 t..md",
+      "x": -675.238037109375,
+      "y": 8238.70703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight with 2+1⁄2 t..md",
+      "x": -1501.5355224609375,
+      "y": 5935.89453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko straight..md",
+      "x": -187.54568481445312,
+      "y": 5816.4462890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko t. with 1 t..md",
+      "x": 213.4132537841797,
+      "y": 6605.02294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko t. with 1+1⁄2 t..md",
+      "x": -390.0985412597656,
+      "y": 6164.85546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko t. with 1⁄2 t..md",
+      "x": -1383.603271484375,
+      "y": 5593.3876953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/EG IV/FILES/Yurchenko t. with 2 t..md",
+      "x": -494.3346862792969,
+      "y": 5533.3408203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/4 VT/Vault.md",
+      "x": 909.769287109375,
+      "y": 6305.4775390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/EG I - Elements in support or through support on 2 bars.md",
+      "x": -217.64695739746094,
+      "y": 2028.081787109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄2 salto bwd. with 1⁄2 t. to up. arm hang..md",
+      "x": -2417.227294921875,
+      "y": 3331.702392578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄4 salto forward str. to upper arm hang..md",
+      "x": -1060.0789794921875,
+      "y": 1201.0660400390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄4 salto fwd. strad. directly to hang..md",
+      "x": -1200.4779052734375,
+      "y": 2865.97216796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄4 salto fwd. strad. to bent arm sup..md",
+      "x": -2382.5849609375,
+      "y": 3732.894775390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄4 salto fwd. straddled to up. arm hang..md",
+      "x": -1483.5582275390625,
+      "y": 1147.078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/1+1⁄4 salto fwd. t. or p. to upper arm hang..md",
+      "x": -2031.3446044921875,
+      "y": 3575.477294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/3⁄4 Diamidov and 3⁄4 Healy on the other hand to supp..md",
+      "x": -762.9127807617188,
+      "y": 3812.402587890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/3⁄4 Diamidov and rear vault to side hang on 1 bar..md",
+      "x": -1629.342529296875,
+      "y": 2813.257568359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Any 1 pirouette in hdst. on 2 rails..md",
+      "x": -2232.644287109375,
+      "y": 1522.4112548828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Any L-sit on 1 or 2 rails (2 s.)..md",
+      "x": -245.99960327148438,
+      "y": 3190.535888671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Any hdst. with 1⁄2 turn. (also with 2 s.)..md",
+      "x": -851.7909545898438,
+      "y": 3367.496337890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Any press w. bent arm str. body, or str. arm bent body to hdst., on 1 or 2 rails (2 s.) also straddled..md",
+      "x": -2343.5732421875,
+      "y": 4088.7548828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Any swing to handstand on 1 or 2 rails (2 s.)..md",
+      "x": -2096.600830078125,
+      "y": 2866.799072265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Bent arm swing fwd. to hop 1⁄2 t. to sup..md",
+      "x": -1661.7314453125,
+      "y": 3584.32861328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Diamidov and 1⁄2 turn to upper arms..md",
+      "x": -1951.913818359375,
+      "y": 3208.497314453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Diamidov with 1⁄4 or 1⁄2 t. to hdst..md",
+      "x": -1422.99072265625,
+      "y": 1536.3709716796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Double salto backwards with half turn to upper arm..md",
+      "x": -1771.0858154296875,
+      "y": 2500.5615234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Double salto fwd. p. to up. arm hang..md",
+      "x": -2739.943603515625,
+      "y": 3675.242431640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Double salto fwd. t. to up. arm hang..md",
+      "x": -1289.9910888671875,
+      "y": 2414.72412109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Double salto p. to up. arm hang..md",
+      "x": -1804.115234375,
+      "y": 865.08349609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Double salto t. to up. arm hang..md",
+      "x": -679.336669921875,
+      "y": 1539.9150390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Following a swing element (min. B) to hdst on 1 rail, Healy (360° or more) to support..md",
+      "x": -2376.07275390625,
+      "y": 2169.779052734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Following a swing element (min. B) to hdst., hdst. on 1 rail, Healy to upper arm hang..md",
+      "x": -1782.09228515625,
+      "y": 1755.7239990234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/From hdst. on 1 rail, 1⁄2 or 3⁄4 pir. fwd. or bwd. in hdst..md",
+      "x": -949.7184448242188,
+      "y": 2033.9842529296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/From hdst., salto fwd to support or from hdsd. with rotated grip, inlocate to support..md",
+      "x": -2855.808837890625,
+      "y": 3277.970703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Gatson 1 with 1⁄4 t to hdst. on 1 rail and 1⁄4 t. hdst. on 2 rails..md",
+      "x": -1401.76123046875,
+      "y": 789.2070922851562
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Hdst. with 1⁄4 t. and fall back to sup. with 1⁄4 t..md",
+      "x": -2493.207275390625,
+      "y": 1802.812744140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Hdst. with 3⁄4 t. and fall back to sup. with 1⁄4 t..md",
+      "x": -1135.573486328125,
+      "y": 3682.493408203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Healy to support (also from hdst. on 1 rail)..md",
+      "x": -408.22247314453125,
+      "y": 1263.0067138671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Healy to upper arm hang (also from hdst. on 1 rail)..md",
+      "x": -485.317138671875,
+      "y": 2910.69384765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Makuts to upper arm hang or 3⁄4 Diamidov 1⁄4 Healy to support..md",
+      "x": -496.0500183105469,
+      "y": 3500.299560546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto backward with straddle cut to support..md",
+      "x": -2160.5048828125,
+      "y": 2469.532958984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto bwd to handstand 1 rail (connected to Healy type element)..md",
+      "x": -411.8413391113281,
+      "y": 1724.0699462890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto bwd to handstand. Also to one rail..md",
+      "x": -2905.183837890625,
+      "y": 2882.095703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto bwd. with 1⁄2 t. to up. arm hang..md",
+      "x": -1915.016845703125,
+      "y": 4292.33203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto fwd to support..md",
+      "x": -1095.7705078125,
+      "y": 4083.850341796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto fwd. piked. to hang..md",
+      "x": -609.944091796875,
+      "y": 2510.00732421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto fwd. t. or p. with 1⁄4 t. to hang on 1 rail..md",
+      "x": -957.1121826171875,
+      "y": 2542.891357421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Salto fwd. with 1 t. to up. arm hang..md",
+      "x": -1252.66015625,
+      "y": 3338.1533203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Strad. cut bwd. and salto fwd. to up. arm hang..md",
+      "x": -678.3892211914062,
+      "y": 996.0349731445312
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Straddle cut bwd. directly to hang.md",
+      "x": -101.62120056152344,
+      "y": 2304.8466796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Straddle cut bwd. to hdst..md",
+      "x": -2473.0234375,
+      "y": 2979.421142578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Straddle cut bwd. to support..md",
+      "x": -1526.0057373046875,
+      "y": 3144.529052734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Straddle cut fwd. to support or L-sit (2 s.)..md",
+      "x": -1470.0205078125,
+      "y": 4246.20166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Stützkehr bwd. through hdst. to support..md",
+      "x": -151.59593200683594,
+      "y": 2720.258544921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Stützkehr bwd. to support..md",
+      "x": -2743.41796875,
+      "y": 2308.92724609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Stützkehr bwd. with straddle cut bwd. to sup..md",
+      "x": -1936.376953125,
+      "y": 3944.6904296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Stützkehr fwd. or salto bwd. to hdst. sideways on 1 rail (also with additional 1⁄4 or 3⁄4 turn to hdst.)..md",
+      "x": -841.6102294921875,
+      "y": 2995.70751953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Stützkehr fwd. to hdst.(to 1 or 2 bars)..md",
+      "x": -2070.94140625,
+      "y": 1973.752685546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing bwd. with 1 t. hop to hdst..md",
+      "x": -1512.662109375,
+      "y": 3896.30517578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing bwd. with 1⁄2 t. hop to hdst..md",
+      "x": -2582.43505859375,
+      "y": 2619.186767578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing bwd. with 3⁄4 t. hop to hdst..md",
+      "x": -1337.80859375,
+      "y": 1933.193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing forward with 1+1⁄4 t. on one arm through hdst. and healy to support..md",
+      "x": -2107.603759765625,
+      "y": 1138.2279052734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing forward with 1+1⁄4 t. on one arm through hdst. and healy to up. arm..md",
+      "x": -1007.3323364257812,
+      "y": 810.646240234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing fwd. to hdst., hop to support..md",
+      "x": -1023.9160766601562,
+      "y": 1589.33837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing fwd. w. 1 t. on 1 arm to hdst..md",
+      "x": -1822.10693359375,
+      "y": 1379.9749755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG I/FILES/Swing fwd. w. 1 t. to up. arm hang..md",
+      "x": -1639.8680419921875,
+      "y": 2174.791748046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/EG II -  Elements starting in upper arm position.md",
+      "x": -4278.2734375,
+      "y": 6860.71630859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Back toss from upper arm with 1⁄4 turn to one rail..md",
+      "x": -3755.252197265625,
+      "y": 6557.12255859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and 1+1⁄4 salto fwd. straddled to hang..md",
+      "x": -3115.40771484375,
+      "y": 5748.5048828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and 1+1⁄4 salto fwd. straddled to up. arm hang..md",
+      "x": -4202.9013671875,
+      "y": 4739.3984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and 1+1⁄4 salto fwd. t. to up. arm hang..md",
+      "x": -4786.46533203125,
+      "y": 6011.974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and double salto fwd. t. to up. arm hang..md",
+      "x": -4212.32470703125,
+      "y": 5752.82080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and salto fwd. p. or straight to sup..md",
+      "x": -4387.4052734375,
+      "y": 5080.86181640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and strad. cut or flank over to sup. bent arm..md",
+      "x": -3809.250732421875,
+      "y": 5938.95849609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise and strad. cut or flank over to sup. str. arm..md",
+      "x": -3979.029296875,
+      "y": 4486.88134765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise to handstand (or w. 1⁄2 t)..md",
+      "x": -4357.37646484375,
+      "y": 5437.1396484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise with 1⁄2 t. a. strad. cut bwd. to sup..md",
+      "x": -3496.840576171875,
+      "y": 5669.83056640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise with 1⁄2 t. and straddle cut bwd to upper arm hang..md",
+      "x": -3591.494140625,
+      "y": 4544.83251953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise with 1⁄2 t. hop to handstand..md",
+      "x": -4428.3388671875,
+      "y": 6014.02197265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise with 1⁄2 t. to support..md",
+      "x": -4599.5263671875,
+      "y": 4740.12646484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Bwd. uprise with 3⁄4 t. hop to hdst. on 1 rail..md",
+      "x": -5038.39111328125,
+      "y": 6252.67626953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Forward uprise to support..md",
+      "x": -4801.384765625,
+      "y": 5097.81787109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise and straddle cut bwd to handstand..md",
+      "x": -5058.1953125,
+      "y": 5715.7451171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise and straddle cut bwd to hang..md",
+      "x": -2854.755126953125,
+      "y": 5020.58447265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise to Makuts to support..md",
+      "x": -4069.72314453125,
+      "y": 6265.0458984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise to Makuts to upper arm..md",
+      "x": -5367.14208984375,
+      "y": 5895.36376953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise with 1 t. to handstand..md",
+      "x": -3678.85302734375,
+      "y": 4919.35205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise with 1+1⁄2 t. to handstand..md",
+      "x": -5447.01123046875,
+      "y": 5485.23681640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise with 1⁄2 t. to handstand..md",
+      "x": -3547.19970703125,
+      "y": 6286.74072265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise with 1⁄4 t. to hang on 1 rail..md",
+      "x": -4578.88037109375,
+      "y": 6362.07177734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Fwd. uprise with Stüz. 3⁄4 t. or 1⁄4 t. to hdst..md",
+      "x": -3255.29541015625,
+      "y": 4763.5859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd to handstand with straight arms..md",
+      "x": -5145.41796875,
+      "y": 5264.43408203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd with salto bwd piked to upper arm hang..md",
+      "x": -3873.7294921875,
+      "y": 5509.76611328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd with salto bwd tuck to upper arm hang..md",
+      "x": -2895.287841796875,
+      "y": 5476.55224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd. with 1⁄2 t. from up. arm. hang or Fwd. uprise to Kato hop to sup..md",
+      "x": -3962.6884765625,
+      "y": 5144.81201171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd. with 1⁄2 t. tuck to hang..md",
+      "x": -3469.057861328125,
+      "y": 5275.09619140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd. with 1⁄2 t. tuck to upper arm hang..md",
+      "x": -3282.713134765625,
+      "y": 6071.54638671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Roll bwd. with strad. cut to support..md",
+      "x": -4735.11474609375,
+      "y": 5527.5517578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG II/FILES/Salto bwd. with strad. cut to up. arm hang..md",
+      "x": -3165.8154296875,
+      "y": 5173.65771484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/EG III - Long swings in hang on 1 or 2 bars and underswings.md",
+      "x": -7825.2060546875,
+      "y": 1962.53759765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket forward to support..md",
+      "x": -5727.33544921875,
+      "y": 4066.328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket forward with 1⁄2 t. to support..md",
+      "x": -5416.29296875,
+      "y": 4220.42431640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket roll backward with str. salto 1⁄2 to upper arm hang..md",
+      "x": -5271.62841796875,
+      "y": 2243.31591796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket roll backward with tuck salto 1⁄2 to upper arm hang..md",
+      "x": -6809.021484375,
+      "y": 2528.00244140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket through handstand to Makuts..md",
+      "x": -5180.85791015625,
+      "y": 1854.2977294921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket to handstand. Also to one rail or 1⁄4 t..md",
+      "x": -7126.55419921875,
+      "y": 2288.000732421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket to one rail hdst. (connected to Healy type element)..md",
+      "x": -6662.3876953125,
+      "y": 1768.4981689453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket to support..md",
+      "x": -6010.830078125,
+      "y": 2328.8515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with 1 t. to handstand..md",
+      "x": -5079.7412109375,
+      "y": 3466.4169921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with 1⁄2 or 3⁄4 t. to handstand..md",
+      "x": -7406.52978515625,
+      "y": 1554.887939453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with 5⁄4 t. to handstand..md",
+      "x": -6165.92529296875,
+      "y": 3092.980712890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with immed. straddle cut to support..md",
+      "x": -5779.67236328125,
+      "y": 4456.1259765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with salto bwd p. to up. arm hang..md",
+      "x": -6031.5185546875,
+      "y": 936.4053955078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with salto bwd t. to up. arm hang..md",
+      "x": -7254.2197265625,
+      "y": 1925.143798828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Basket with travel to hang..md",
+      "x": -5981.03173828125,
+      "y": 3458.185546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Belle piked..md",
+      "x": -5918.98388671875,
+      "y": 1893.566650390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Belle with 1 turn..md",
+      "x": -5903.125,
+      "y": 3797.771484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Cast to straddle cut backward to handstand..md",
+      "x": -6797.962890625,
+      "y": 2121.024658203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Cast to support..md",
+      "x": -6702.923828125,
+      "y": 3618.485107421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Cast to upper arm hang..md",
+      "x": -5573.1826171875,
+      "y": 1762.1885986328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Cast with 1⁄2 t. to support..md",
+      "x": -6914.97021484375,
+      "y": 4126.51611328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Cast with 1⁄2 t. to up. arm hang..md",
+      "x": -6564.10888671875,
+      "y": 4061.560302734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Felge with 1⁄2 t. to rear support..md",
+      "x": -7378.0439453125,
+      "y": 3145.038818359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Felge with 1⁄2 t. to upper arm hang..md",
+      "x": -5641.05908203125,
+      "y": 2598.3681640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Fr. giant. sw. bwd., dbl. salto t. to up. arm hang..md",
+      "x": -7299.0693359375,
+      "y": 3510.657470703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swg. Diamidov with 1⁄4 or 1⁄2 t. to hdst..md",
+      "x": -5825.76318359375,
+      "y": 1464.3162841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swg. bwd. with Diamidov to hdst. one rail (connected to Healy type element)..md",
+      "x": -6407.3203125,
+      "y": 2167.380615234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swg. bwd. with Diamidov to hdst., also to one rail..md",
+      "x": -7060.8671875,
+      "y": 3786.796630859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing backward with 1⁄2 t. and 3⁄2 salto forward piked to upper arm hang..md",
+      "x": -4722.15869140625,
+      "y": 3422.60546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. and salto with 1⁄2 str. to up. arm hang..md",
+      "x": -6174.62451171875,
+      "y": 4570.89111328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. and salto with 1⁄2 t to hang on the end..md",
+      "x": -6319.42529296875,
+      "y": 3767.461669921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. and salto with 1⁄2 t. to hang..md",
+      "x": -6357.58447265625,
+      "y": 2540.230224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. and salto with 1⁄2 t. to support..md",
+      "x": -6166.38134765625,
+      "y": 4189.65185546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. and salto with 1⁄2 t. to up. arm hang..md",
+      "x": -7288.77978515625,
+      "y": 1216.0589599609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. to hdst. on one rail (connected to Healy type element)..md",
+      "x": -6999.3623046875,
+      "y": 1595.0032958984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. to hdst. or with inlocation fwd. (also with 1⁄4 or 1⁄2 turn and to one rail)..md",
+      "x": -7137.78662109375,
+      "y": 2784.771728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. w. strad. cut to up. arm hang..md",
+      "x": -5480.6708984375,
+      "y": 3027.314697265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with 1⁄2 t. and 3⁄2 salto fwd to up arm hang..md",
+      "x": -5663.982421875,
+      "y": 1012.2445678710938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with 1⁄2 t. and str. cut bwd. to up. arms..md",
+      "x": -6747.48095703125,
+      "y": 1282.18310546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with 1⁄2 t. to support..md",
+      "x": -4775.27685546875,
+      "y": 2428.06591796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with 1⁄2 t. to up. arm hang..md",
+      "x": -6494.2939453125,
+      "y": 2849.23193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with Makuts to upper hang..md",
+      "x": -6139.87451171875,
+      "y": 1266.08154296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with Makuts..md",
+      "x": -6953.47509765625,
+      "y": 1002.0137939453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Giant swing bwd. with straddle cut to support or bent arms support..md",
+      "x": -6412.28662109375,
+      "y": 1454.1402587890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip bwd. to hdst..md",
+      "x": -4926.6875,
+      "y": 2754.371337890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip one rail through L-sit strad. to hdst..md",
+      "x": -5428.84619140625,
+      "y": 1238.743896484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip through L-sit p. to hdst. and hop with 3⁄4 t. or more..md",
+      "x": -4587.83935546875,
+      "y": 2720.76806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip through L-sit p. to hdst..md",
+      "x": -5231.51025390625,
+      "y": 1504.079345703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip through V-sit and hop 1⁄2 turn to hang on other rail..md",
+      "x": -5107.61376953125,
+      "y": 3106.177001953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip to strad. cut bwd. hdst. on 1 or 2 r..md",
+      "x": -5484.0107421875,
+      "y": 3542.925048828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip to strad. cut bwd. to hand..md",
+      "x": -7553.6845703125,
+      "y": 2803.548583984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip with 1⁄2 t. to support..md",
+      "x": -6803.28662109375,
+      "y": 2998.458740234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Glide kip..md",
+      "x": -5285.1416015625,
+      "y": 2636.48876953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy and salto fwd. t., p. or strad. to upper arm hang..md",
+      "x": -5313.89208984375,
+      "y": 3873.136474609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy piked with 1 t. to up. arm hang..md",
+      "x": -6557.060546875,
+      "y": 4443.24365234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy piked with stradd. cut bwd. and 1⁄2 t. to up. arm hang (also legs together)..md",
+      "x": -6234.2236328125,
+      "y": 1804.031982421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy piked with straddle bwd to hdst..md",
+      "x": -4638.953125,
+      "y": 3048.382080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy to support bent legs (also without grip release)..md",
+      "x": -4881.4228515625,
+      "y": 2065.194580078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Moy to support str. legs (also without grip release)..md",
+      "x": -6472.13671875,
+      "y": 960.6267700195312
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Shoot up to handstand and fall back to support with 1⁄4 turn..md",
+      "x": -5882.7353515625,
+      "y": 2733.682861328125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Shoot up with 1⁄2 or 3⁄4 t. to hdst..md",
+      "x": -5633.4970703125,
+      "y": 2190.3974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Shoot up with 1⁄4 t. to hdst..md",
+      "x": -7452.45361328125,
+      "y": 2425.330322265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Swing down with salto bwd. str. to hang..md",
+      "x": -5747.4892578125,
+      "y": 3213.03955078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Swing forward, straddle cut backward, and regrasp with straight body at horizontal to bent and upper arm..md",
+      "x": -6456.3974609375,
+      "y": 3344.1748046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG III/FILES/Swing forward, straddle cut backward, and regrasp with straight body at horizontal..md",
+      "x": -6968.5546875,
+      "y": 3302.494873046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/EG IV - Dismounts.md",
+      "x": -3712.161376953125,
+      "y": -164.9135284423828
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto bwd. piked..md",
+      "x": -3013.19921875,
+      "y": 376.3768615722656
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto bwd. t. from end..md",
+      "x": -4621.5927734375,
+      "y": 676.5435791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto bwd. t. with 1 t..md",
+      "x": -4162.76708984375,
+      "y": 690.65576171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto bwd. t. with 1⁄2 t. or salto bwd. 1⁄2 t. to salto fwd. tucked..md",
+      "x": -4462.72900390625,
+      "y": 1029.8116455078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto bwd. t..md",
+      "x": -3540.825927734375,
+      "y": 1053.30224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. piked with 1⁄2 t..md",
+      "x": -2651.87158203125,
+      "y": 528.637451171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. piked..md",
+      "x": -3416.632568359375,
+      "y": 372.8880920410156
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. t. from end..md",
+      "x": -4371.31689453125,
+      "y": 357.57818603515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. t. w. 1⁄2 t. or 1⁄2 t. dobl. salt. bwd..md",
+      "x": -4119.7900390625,
+      "y": 1751.326904296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. t..md",
+      "x": -3609.175048828125,
+      "y": 2330.815185546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Double salto fwd. tucked with 1 t..md",
+      "x": -3142.05078125,
+      "y": 1535.629638671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/From hang on end, dbl. salto bwd. piked..md",
+      "x": -3946.335693359375,
+      "y": 2190.652587890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/From hang on end, dbl. salto bwd. t. with 1 or 1⁄2 t..md",
+      "x": -2808.482666015625,
+      "y": 871.3357543945312
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/From hang on end, dbl. salto bwd. t. with 2 t..md",
+      "x": -3226.65478515625,
+      "y": 743.9826049804688
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/From hang on end, double salto bwd. t..md",
+      "x": -3090.170166015625,
+      "y": 1132.422119140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/From hang on end, salto bwd. straight..md",
+      "x": -3909.60498046875,
+      "y": 363.6152038574219
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/High wende and salto bwd tuck or p..md",
+      "x": -4003.6826171875,
+      "y": 1051.5145263671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto bwd. piked or str. with 1 or 1+1⁄2 t..md",
+      "x": -4278.53076171875,
+      "y": 1370.8726806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto bwd. piked or str., also with 1⁄2 t..md",
+      "x": -3687.782470703125,
+      "y": 710.8432006835938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto bwd. str. with 2 t..md",
+      "x": -3853.0439453125,
+      "y": 1427.5615234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto fwd. piked or str. with 1 or 1+1⁄2 t..md",
+      "x": -3750.333984375,
+      "y": 1848.4212646484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto fwd. piked or str. with 2 or 2+1⁄2 t..md",
+      "x": -3405.25048828125,
+      "y": 1933.1170654296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/EG IV/FILES/Salto fwd. piked or straight also with 1⁄2 t..md",
+      "x": -3487.542236328125,
+      "y": 1441.8914794921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/5 PB/Parallel Bars.md",
+      "x": -3784.50927734375,
+      "y": 3364.998046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/EG I - Long hang swings with and without turns.md",
+      "x": -7838.3095703125,
+      "y": -537.45166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Back uprise to handstand with 1⁄2 turn..md",
+      "x": -7552.82080078125,
+      "y": -1155.71484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Back uprise to handstand..md",
+      "x": -6903.89404296875,
+      "y": -278.9578552246094
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Back uprise to hdst. with 1 turn also to mixt..md",
+      "x": -5334.9375,
+      "y": -858.1098022460938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/El-grip giant swing..md",
+      "x": -6158.1220703125,
+      "y": -246.72166442871094
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Elgrip giant swg. with 1 t. thr. hdst. in mx. gr..md",
+      "x": -5427.380859375,
+      "y": -447.785888671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Flying giant swing bwd. with 1 t..md",
+      "x": -5473.83837890625,
+      "y": -1520.2454833984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Flying giant swing bwd..md",
+      "x": -5765.38623046875,
+      "y": -713.6519165039062
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Flying giant swing fwd. or with1⁄2 turn..md",
+      "x": -6179.57568359375,
+      "y": -636.3548583984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Flying giant swing fwd. with 1 t..md",
+      "x": -5871.13330078125,
+      "y": -1515.503662109375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with 1⁄2 t. to el-grip..md",
+      "x": -6557.3564453125,
+      "y": -296.97802734375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with 1⁄2 turn..md",
+      "x": -6677.27880859375,
+      "y": -1804.1151123046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with hop 1⁄2 t. to el-grip..md",
+      "x": -5772.2138671875,
+      "y": -324.1124267578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with hop 3⁄2 t. to double el-grip..md",
+      "x": -6866.34326171875,
+      "y": -687.8474731445312
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with hop 3⁄2 t. to undergrip, mixed el-grip..md",
+      "x": -7284.14111328125,
+      "y": -1557.6656494140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with hop to undergrip..md",
+      "x": -7306.5322265625,
+      "y": -767.0921020507812
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd. with inlocation during swing and dislocate to hdst..md",
+      "x": -4854.62841796875,
+      "y": -1008.2164916992188
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing bwd..md",
+      "x": -7139.8642578125,
+      "y": -1096.570556640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing fwd. with 1 turn in double el-grip..md",
+      "x": -6241.814453125,
+      "y": -1197.448974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing fwd. with 1 turn in mixt grip..md",
+      "x": -7481.76806640625,
+      "y": -1953.2603759765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing fwd. with 1⁄2 t. thr. hdst..md",
+      "x": -5109.9716796875,
+      "y": -1279.6005859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing fwd. with one arm in ungr. (360°)..md",
+      "x": -7660.5185546875,
+      "y": -1528.660400390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing fwd..md",
+      "x": -6927.56982421875,
+      "y": -1446.2100830078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing rearways fwd. (Russian giant)..md",
+      "x": -6465.95166015625,
+      "y": -810.5332641601562
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing rw. bwd. (Czech giant swing) with 1⁄2 turn to fwd giant swing..md",
+      "x": -6506.75244140625,
+      "y": -1447.5166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Giant swing rw. bwd. (Czech giant swing)..md",
+      "x": -6716.43603515625,
+      "y": -1085.30224609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Long swing fwd. with hop to el-grip..md",
+      "x": -5060.09716796875,
+      "y": -639.2030639648438
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/On one arm, giant swing fwd. w. 1 t. to el-grip and 1 t ..md",
+      "x": -5926.89697265625,
+      "y": -1062.4107666015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/One arm giant swing bwd. (360°)..md",
+      "x": -7073.93994140625,
+      "y": -1909.928466796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Steineman uprise w. 1⁄2 t. to support..md",
+      "x": -5547.9365234375,
+      "y": -1161.0841064453125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Swing bwd. and pirouette to hang..md",
+      "x": -6202.28466796875,
+      "y": -1697.2696533203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG I/FILES/Swing bwd. and pirouette to support..md",
+      "x": -7250.28564453125,
+      "y": -339.8205871582031
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/EG II - Flight elements.md",
+      "x": -7007.98974609375,
+      "y": -4327.693359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Back uprise and hecht straight with 1+1⁄2 t. to hang..md",
+      "x": -5696.59716796875,
+      "y": -4752.1845703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Back uprise and piked vault with 1⁄2 t. to hang..md",
+      "x": -7234.81298828125,
+      "y": -3217.476806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Back uprise and rear vault with 1⁄4 t. to hang..md",
+      "x": -6396.0400390625,
+      "y": -4597.25244140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Back uprise and strad. hecht with 1⁄2 t. to hang. also w. 1⁄2 t..md",
+      "x": -5535.732421875,
+      "y": -3924.058837890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Back uprise and straddle over to hang rw..md",
+      "x": -6124.39990234375,
+      "y": -4923.01513671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Czech giant and vault bwd. strad. to hang..md",
+      "x": -4971.68603515625,
+      "y": -2653.00830078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Double salto bwd. t. over the bar..md",
+      "x": -6343.59814453125,
+      "y": -3696.68994140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Gaylord piked..md",
+      "x": -6124.64453125,
+      "y": -4094.076171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Gaylord with 1 t..md",
+      "x": -5118.7177734375,
+      "y": -3718.16845703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Gaylord with 1⁄2 t..md",
+      "x": -6518.56640625,
+      "y": -2532.47705078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs piked or straight..md",
+      "x": -4575.19140625,
+      "y": -2639.94970703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs straight or piked with 1 turn..md",
+      "x": -5599.1455078125,
+      "y": -2868.093505859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs straight with 2 turn..md",
+      "x": -5207.25537109375,
+      "y": -3033.833740234375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs with 1 t..md",
+      "x": -7109.14599609375,
+      "y": -3599.74560546875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs with 1+1⁄2 t. to mix grip..md",
+      "x": -5480.3193359375,
+      "y": -3555.447265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Kovacs with 2 t..md",
+      "x": -5999.4970703125,
+      "y": -3418.86962890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Markelov str. with legs together .also with 1⁄2 t..md",
+      "x": -5904.7099609375,
+      "y": -3774.810791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Pegan Piked..md",
+      "x": -6793.1220703125,
+      "y": -3394.52392578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Piatti piked.also w. 1⁄2 t..md",
+      "x": -7286.55322265625,
+      "y": -2845.45166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Piatti straight with 1 turn..md",
+      "x": -4814.60107421875,
+      "y": -2261.896728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Piatti straight. also with 1⁄2 t. to mix el-grip into back uprise to hdst..md",
+      "x": -5999.529296875,
+      "y": -4541.458984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto bwd. 1⁄2 t. piked over the bar..md",
+      "x": -5942.18310546875,
+      "y": -2653.7841796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto bwd. 1⁄2 t. tucked over the bar..md",
+      "x": -6398.8974609375,
+      "y": -2917.586181640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto fwd, tuck or strad. over the bar, also from el-grip..md",
+      "x": -6425.4580078125,
+      "y": -3305.90380859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto fwd. straight with 1 t. also from el-grip..md",
+      "x": -5745.26904296875,
+      "y": -4292.59228515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto fwd. straight with 2 t. also from el-grip..md",
+      "x": -5667.29931640625,
+      "y": -2355.227783203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Salto fwd. straight, also from el-grip..md",
+      "x": -6477.78076171875,
+      "y": -4164.46826171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Stalder or free hip circle bwd to Tkatchev straddle, also with 1⁄2 t..md",
+      "x": -5595.92333984375,
+      "y": -3235.6845703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing bwd. and salto fwd. t., p. or strad. to hg. also from el-grip..md",
+      "x": -6969.41796875,
+      "y": -2635.73046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. 1⁄2 t. to salto fwd. strad. to hang..md",
+      "x": -6010.2314453125,
+      "y": -3047.24755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. and counter salto fwd. strad. to hg..md",
+      "x": -4759.29443359375,
+      "y": -3028.157958984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. and salto bwd. piked w. 1⁄2 t. to hang..md",
+      "x": -6825.26416015625,
+      "y": -3000.711181640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. and salto bwd. w. 1+1⁄2 t. to hang..md",
+      "x": -5204.25439453125,
+      "y": -2211.559326171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. and vault bwd. piked to hang, also with 1⁄2 t..md",
+      "x": -6734.38623046875,
+      "y": -3809.15478515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Swing fwd. and vault bwd. strad. to hang, also with 1⁄2 t..md",
+      "x": -6221.2265625,
+      "y": -2458.525634765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Tkatchev straddled 1⁄2 t. to double el-grip..md",
+      "x": -5356.27392578125,
+      "y": -2586.165283203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Tkatchev straight with 1 t..md",
+      "x": -5008.5205078125,
+      "y": -3335.42138671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG II/FILES/Tkatchev straight, also with 1⁄2 t. to mix el-grip into back uprise to hdst..md",
+      "x": -5372.87890625,
+      "y": -4243.62451171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/EG III - In bar and Adler elements.md",
+      "x": -4610.84130859375,
+      "y": -5798.27001953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Adler and 1 t. thr. hdst. in mixed grip, also with hop..md",
+      "x": -3766.248291015625,
+      "y": -3431.7353515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Adler and 1 t. through hdst. in ungr..md",
+      "x": -3068.22314453125,
+      "y": -3603.73974609375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Adler hop to hdst. in ungr. or ovgr. or mixed grip..md",
+      "x": -4156.58837890625,
+      "y": -3284.458984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Adler with 1⁄2 t. through hdst. in ovgr..md",
+      "x": -4562.0009765625,
+      "y": -4901.353515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Back toss to dorsal hang..md",
+      "x": -4928.68798828125,
+      "y": -4670.72509765625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Carballo with 1⁄2 turn to mixed el-grip..md",
+      "x": -3310.736572265625,
+      "y": -3329.3798828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Endo in el-grip thr. hdst..md",
+      "x": -5118.72314453125,
+      "y": -4969.623046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Endo legs together in el-grip thr. hdst..md",
+      "x": -4020.68310546875,
+      "y": -3715.927978515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Free circle bwd. straddle thr. hdst..md",
+      "x": -3920.80419921875,
+      "y": -2968.029296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Free circle fwd. legs together thr. hdst..md",
+      "x": -5083.330078125,
+      "y": -5387.77392578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Free circle fwd. straddled thr. hdst..md",
+      "x": -3289.366943359375,
+      "y": -4474.78515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/From dorsal hang, uprise fwd. to support rw..md",
+      "x": -3997.90478515625,
+      "y": -4077.6904296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/From hang or from support, free hip circle hop to handstand..md",
+      "x": -4590.61767578125,
+      "y": -4001.4296875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/From hang or from support, free hip circle through handstand..md",
+      "x": -3798.54443359375,
+      "y": -4441.36669921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/From hdst., free hip circle fwd. thr. hdst..md",
+      "x": -4247.0712890625,
+      "y": -5199.4501953125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Kip to hdst. or from mixed grip to hdst..md",
+      "x": -3570.031982421875,
+      "y": -4750.763671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Quintero to el-grip..md",
+      "x": -3496.83251953125,
+      "y": -3711.898193359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stalder legs together thr. hdst..md",
+      "x": -3877.665283203125,
+      "y": -5035.37646484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stalder legs together with hop through hdst..md",
+      "x": -3625.489990234375,
+      "y": -4072.744873046875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stalder with hop 1+1⁄2 turn through hdst. in el-grip..md",
+      "x": -4400.96142578125,
+      "y": -3664.6142578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stalder with hop 1+1⁄2 turn through hdst. in mix el-grip..md",
+      "x": -3264.36181640625,
+      "y": -4115.1767578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stalder with hop through hdst..md",
+      "x": -4732.53125,
+      "y": -4358.4072265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Steineman uprise w. flank bwd. to sup. or hang..md",
+      "x": -4375.5966796875,
+      "y": -4600.7470703125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Steineman uprise w. stoop or to hdst..md",
+      "x": -4705.98486328125,
+      "y": -5239.951171875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stoop circle fwd. to straddle cut through hdst..md",
+      "x": -3555.499755859375,
+      "y": -3043.82080078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stoop circle fwd. to straddle cut to hang or sup..md",
+      "x": -4289.4580078125,
+      "y": -4269.16650390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stoop circle fwd. to straddle cut with 1⁄2 t..md",
+      "x": -2963.345947265625,
+      "y": -3966.318359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stoop circle rearward fwd. through hdst..md",
+      "x": -4058.251708984375,
+      "y": -4734.13232421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG III/FILES/Stoop in and free back toss to dorsal hang..md",
+      "x": -5447.9404296875,
+      "y": -5311.60791015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/EG IV - Dismounts.md",
+      "x": -584.645751953125,
+      "y": -1078.6624755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Dbl. salto fwd. t. or p. w. 1 or 1+1⁄2 t. over the bar..md",
+      "x": -1835.3043212890625,
+      "y": -566.8795166015625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Doble salto bwd. t. with 1 t. over the bar..md",
+      "x": -2499.516845703125,
+      "y": -2575.8515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str over the bar..md",
+      "x": -2819.098876953125,
+      "y": -2281.69921875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str. w. 1 t. over the bar..md",
+      "x": -3177.796142578125,
+      "y": -1611.2330322265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str. with 1 t..md",
+      "x": -2414.0546875,
+      "y": -1510.65966796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str. with 2 t..md",
+      "x": -1266.6231689453125,
+      "y": -1899.73388671875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str. with 3 t..md",
+      "x": -2442.95556640625,
+      "y": -587.2769775390625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. str..md",
+      "x": -1815.332763671875,
+      "y": -1379.27587890625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. t. over the bar..md",
+      "x": -1415.232177734375,
+      "y": -1016.8394165039062
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. t. with 1 t..md",
+      "x": -2501.651611328125,
+      "y": -1029.5328369140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. t. with 2 t. over the bar.md",
+      "x": -2790.03076171875,
+      "y": -777.2366333007812
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. t. with 2 t..md",
+      "x": -2138.534423828125,
+      "y": -1769.4351806640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto bwd. tuck or piked..md",
+      "x": -1390.0980224609375,
+      "y": -1434.8271484375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. str. or with 1⁄2 t..md",
+      "x": -1063.544921875,
+      "y": -1270.362548828125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. str. with 1 or 1+1⁄2 t..md",
+      "x": -2177.41357421875,
+      "y": -1254.2767333984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. t. or p. or with 1⁄2 turn over the bar..md",
+      "x": -2848.919921875,
+      "y": -1248.194580078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. t. or p. with 1 or 1+1⁄2 t..md",
+      "x": -1086.9998779296875,
+      "y": -743.413818359375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. t. or p. with 2 or 2+1⁄2 t..md",
+      "x": -1893.752197265625,
+      "y": -2045.9259033203125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Double salto fwd. t. or p.or with 1⁄2 turn..md",
+      "x": -1448.0301513671875,
+      "y": -610.4271850585938
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Hecht strad., hecht or hecht w. 1⁄2 t..md",
+      "x": -3310.1787109375,
+      "y": -1281.781494140625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Hecht w. 1 or 1+1⁄2 t..md",
+      "x": -964.140625,
+      "y": -1682.577392578125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Hecht w. 2 t..md",
+      "x": -1788.7108154296875,
+      "y": -2400.431640625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto bwd. piked or str. also with 1⁄2 or 1 t..md",
+      "x": -2279.716796875,
+      "y": -2252.52978515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto bwd. str. with 1+1⁄2 or 2 t..md",
+      "x": -2099.06689453125,
+      "y": -2621.999755859375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto bwd. str. with 2+1⁄2 or 3 t..md",
+      "x": -1838.2288818359375,
+      "y": -995.5405883789062
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto fwd. piked or straight, also with 1⁄2 t..md",
+      "x": -1442.76611328125,
+      "y": -2214.46728515625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto fwd. str. with 1 or 1+1⁄2 t..md",
+      "x": -3016.685791015625,
+      "y": -1956.8709716796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Salto fwd. str. with 2 or 2+1⁄2 t..md",
+      "x": -2149.476318359375,
+      "y": -744.2142333984375
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Triple salto bwd. p..md",
+      "x": -3135.619384765625,
+      "y": -951.72607421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Triple salto bwd. t. or over the bar..md",
+      "x": -2745.274169921875,
+      "y": -1634.585205078125
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Triple salto bwd. t. with 1 t..md",
+      "x": -2542.36962890625,
+      "y": -1985.002197265625
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/EG IV/FILES/Triple salto fwd. t. or with 1⁄2 t..md",
+      "x": -1662.66259765625,
+      "y": -1736.225341796875
+    },
+    {
+      "id": "MAG CODE OF POINTS/APPARATUS/6 HB/Horizontal Bar.md",
+      "x": -4171.47998046875,
+      "y": -1962.5828857421875
+    },
+    {
+      "id": "MAG CODE OF POINTS/MAG CODE OF POINTS.md",
+      "x": 208.48431396484375,
+      "y": -0.5326769351959229
+    }
+  ],
+  "automaticallyRestoreNodePositions": false
+}
