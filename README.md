@@ -488,6 +488,8 @@ Accanto al data entry manuale, LEVERAGE espone uno strumento admin-only per cari
 
 Il contratto comune che un import parallelo futuro dovra rispettare e documentato in [docs/import_contract.md](docs/import_contract.md). In sintesi: parser diversi sono ammessi, ma tutti gli importer devono convergere sulla stessa preview admin, sugli stessi controlli di atleta/evento/result, sulla stessa logica anti-duplicato, sulle stesse verifiche di country storica e sulle notifiche cumulative.
 
+Il popolamento storico 2018-2025 viene documentato passo passo in [docs/LEVERAGE_popolamento_massivo_diario.md](docs/LEVERAGE_popolamento_massivo_diario.md), con preview, statistiche, scelte admin, commit e controlli post-import per ogni anno.
+
 Flusso consigliato per la UI admin:
 
 1. `POST /imports/gymternet/preview`

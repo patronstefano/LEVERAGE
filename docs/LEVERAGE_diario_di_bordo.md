@@ -720,6 +720,8 @@ Stato attuale:
 - il prossimo passo consigliato e inizializzare Git, creare repo GitHub e fare primo commit;
 - solo dopo conviene procedere con popolamento massivo controllato.
 
+Il popolamento massivo storico viene tracciato in un documento operativo dedicato: `docs/LEVERAGE_popolamento_massivo_diario.md`. Questo file registra preview, statistiche, decisioni admin, commit e verifiche post-import per ogni anno 2018-2025.
+
 ### Fase 25 - Lingua, i18n e rifinitura pre-Git finale
 
 Prima del passaggio a Git e stato fatto un controllo specifico sulla lingua supportata dal sistema.
