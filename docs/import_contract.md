@@ -25,6 +25,8 @@ Ogni importer deve rispettare:
 
 - riconoscimento o creazione `Athlete`;
 - suggerimento admin per atleta simile;
+- merge automatico `merge name order` per nomi atleta in ordine invertito o formato equivalente nello stesso file;
+- review admin solo se, dopo il merge automatico del nome, emergono country diverse o altri conflitti non risolvibili automaticamente;
 - gestione cambio country e `AthleteCountryChange`;
 - creazione o aggiornamento semantico `Event`;
 - coerenza `Result.discipline` con `Athlete.discipline`;

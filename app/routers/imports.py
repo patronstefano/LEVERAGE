@@ -7,8 +7,10 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.database import get_db
 from app.gymternet_import import (
+    apply_automatic_athlete_name_order_merges,
     apply_athlete_match_decisions,
     apply_orphan_dscore_decisions,
+    build_automatic_athlete_name_order_merges,
     build_athlete_match_review_items,
     build_orphan_review_items,
     commit_records,
@@ -80,6 +82,7 @@ def parse_and_summarize_upload(
         summary["athlete_country_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
         summary["represented_country_overrides"] = {}
+        summary["athlete_canonical_names"] = {}
         return filename, summary
 
     try:
@@ -106,6 +109,7 @@ def parse_and_summarize_upload(
         summary["athlete_country_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
         summary["represented_country_overrides"] = {}
+        summary["athlete_canonical_names"] = {}
         return filename, summary
 
     review_items = build_orphan_review_items(
@@ -122,12 +126,24 @@ def parse_and_summarize_upload(
             parsed.issues,
         )
 
+    (
+        automatic_athlete_merge_keys,
+        automatic_athlete_canonical_names,
+        automatic_athlete_stats,
+    ) = build_automatic_athlete_name_order_merges(db, records)
+    records = apply_automatic_athlete_name_order_merges(
+        records,
+        automatic_athlete_merge_keys,
+        automatic_athlete_canonical_names,
+    )
+
     athlete_review_items = build_athlete_match_review_items(db, records)
     (
         athlete_resolution_ids,
         athlete_country_update_ids,
         athlete_merge_keys,
         represented_country_overrides,
+        athlete_canonical_names,
         athlete_decision_stats,
     ) = apply_athlete_match_decisions(
         db,
@@ -135,6 +151,15 @@ def parse_and_summarize_upload(
         athlete_match_decisions,
         parsed.issues,
     )
+    athlete_merge_keys = {**automatic_athlete_merge_keys, **athlete_merge_keys}
+    athlete_canonical_names = {
+        **automatic_athlete_canonical_names,
+        **athlete_canonical_names,
+    }
+    athlete_decision_stats = {
+        **athlete_decision_stats,
+        **automatic_athlete_stats,
+    }
 
     summary = summarize_records(
         db,
@@ -154,6 +179,7 @@ def parse_and_summarize_upload(
     summary["athlete_country_update_ids"] = athlete_country_update_ids
     summary["athlete_merge_keys"] = athlete_merge_keys
     summary["represented_country_overrides"] = represented_country_overrides
+    summary["athlete_canonical_names"] = athlete_canonical_names
     return filename, summary
 
 
@@ -305,6 +331,7 @@ def commit_gymternet_import(
         athlete_country_update_ids=summary["athlete_country_update_ids"],
         athlete_merge_keys=summary["athlete_merge_keys"],
         represented_country_overrides=summary["represented_country_overrides"],
+        athlete_canonical_names=summary["athlete_canonical_names"],
         pre_skipped_duplicates=len(summary["duplicates"]),
         orphan_dscore_review_uncommitted=summary.get("orphan_dscore_decision_stats", {}).get(
             "unresolved",

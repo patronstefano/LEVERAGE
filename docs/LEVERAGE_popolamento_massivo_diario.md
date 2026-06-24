@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: popolamento storico non ancora committato; fase preview 2018 avviata  
+Stato: import storico 2018 committato e verificato; prossimo passo preview 2019
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -368,6 +368,7 @@ La tabella di revisione riporta per ogni caso:
 - country canonica suggerita solo come aiuto operativo;
 - livello di rischio;
 - evidenze sintetiche dagli eventi sorgente;
+- evidenza post-2018 ricavata dai file 2019-2025, usando stesso nome e stessa disciplina;
 - `review_id` tecnico;
 - colonne `Decision` e `Notes` da compilare durante la revisione admin.
 
@@ -380,20 +381,62 @@ Aggiornamento tecnico del 24 giugno 2026: il flusso `merge_as_same_athlete` e st
 
 Questa distinzione evita sia la perdita della storia sportiva, sia la propagazione di errori di data entry nelle classifiche e negli analytics.
 
+Aggiornamento metodo revisione del 24 giugno 2026: per ogni collisione 2018 viene usata anche la presenza dell'atleta nei file `Results 2019.xlsx` - `Results 2025.xlsx` come evidenza di supporto. Se dopo il 2018 l'atleta compare con una sola country, questo dato puo aiutare a distinguere country finale/canonica, cambio reale o probabile errore nel 2018. Questa evidenza non decide automaticamente il caso: la decisione resta admin e va annotata nella checklist.
+
 ---
 
 ## 6. Decisioni aperte prima del commit 2018
 
 ### Decisione 1 - Collisioni identita atleta
 
-Stato: decisa la revisione manuale di tutti i 48 casi.
+Stato: revisione manuale completata; aggiornata dopo introduzione del merge automatico nome/cognome.
+
+Esito revisione admin prima della rettifica name-order:
+
+- 48 decisioni compilate;
+- 47 `merge_as_same_athlete`;
+- 1 `keep_separate`;
+- 46 `country_correction`;
+- 1 `country_history`;
+- 0 decisioni mancanti;
+- 0 decisioni invalide;
+- 0 collisioni irrisolte nella simulazione tecnica;
+- 0 conflitti generati dalla simulazione tecnica.
+
+Rettifica tecnica del 24 giugno 2026:
+
+- il tool applica ora automaticamente `merge name order` per nomi/cognomi invertiti o formati equivalenti;
+- sulla preview 2018 vengono rilevati 15 merge automatici name-order;
+- 17 chiavi atleta/country vengono ricondotte a una chiave canonica;
+- 116 righe risultato vengono normalizzate sul nome canonico;
+- la preview 2018 resta a 48 collisioni country, ma due vecchie review (`Takumi Onoshima` e `Onoshima Takumi`) vengono fuse in una sola review `Takumi Onoshima` con country `BEL`, `ITA`, `JPN`;
+- emerge una nuova review country su `Henji Mboyo` (`FRA`, `SUI`), derivata dalla fusione automatica `Henji M'Boyo` / `Henji Mboyo`, poi risolta dall'admin come `country_correction -cc:SUI`.
+
+Stato operativo aggiornato:
+
+- 48 collisioni country risolte;
+- 47 `merge_as_same_athlete`;
+- 1 `keep_separate`;
+- 46 `country_correction`;
+- 1 `country_history`;
+- `Onoshima Takumi` / `Takumi Onoshima` non richiede piu una verifica name-order: il nome canonico e `Takumi Onoshima`, mentre resta applicata la correzione country verso `BEL`.
+- `Henji Mboyo` viene confermato come atleta `SUI`; la variante `FRA` viene trattata come errore di data entry e corretta verso `SUI`.
+
+### Decisione 1b - Inversioni nome/cognome e formati equivalenti
+
+Stato: risolta come regola automatica di sistema dopo osservazione admin sul caso `Takumi Onoshima` / `Onoshima Takumi`.
+
+Esito controllo tecnico:
+
+- la preview 2018 rileva 15 casi di nome invertito o formato equivalente;
+- questi casi non bloccano piu il commit come review autonome;
+- il backend normalizza automaticamente i record sul nome canonico;
+- il nome canonico viene scelto dando priorita all'atleta gia presente nel database; in assenza di un atleta esistente, viene usata la variante piu ricorrente nel file importato;
+- se dopo la normalizzazione rimangono country diverse, la review admin resta obbligatoria solo sulla country.
 
 Da completare:
 
-- compilare la tabella `docs/LEVERAGE_import_2018_collisioni_atleti.md`;
-- annotare ogni scelta presa nella colonna `Decision`;
-- aggiungere note operative quando la scelta richiede motivazione;
-- generare le decisioni tecniche da passare al commit solo dopo che tutte le righe sono risolte.
+- rigenerare il payload `athlete_match_decisions` aggiornato per il commit controllato 2018.
 
 ### Decisione 2 - D-score orfani
 
@@ -420,16 +463,294 @@ Proposta attuale:
 
 ---
 
-## 7. Prossimo passo
+## 7. Import 2018 - Commit controllato e controlli post-import
 
-Prima del commit 2018 occorre compilare la checklist delle 48 collisioni identita atleta.
+Data esecuzione: 24 giugno 2026
+File sorgente: `import_files/Results 2018.xlsx`
+Backup pre-import: `backups/leverage_pre_import_2018_2026-06-24.db`
+Backup post-import verificato: `backups/leverage_post_import_2018_2026-06-24.db`
 
-Solo dopo questa decisione si procedera con:
+### 7.1 Stato database prima del commit 2018
 
-1. costruzione decisioni admin a partire dalla checklist compilata;
-2. commit controllato 2018;
-3. verifica conteggi DB;
-4. verifica duplicati post-import;
-5. verifica campioni evento/classifica;
-6. backup post-import 2018;
-7. aggiornamento del presente diario con esito definitivo.
+Prima del commit il database locale era vuoto per i dati sportivi:
+
+| Entita | Conteggio |
+|---|---:|
+| User | 0 |
+| Athlete | 0 |
+| Event | 0 |
+| Result | 0 |
+| Notification | 0 |
+
+Nota metodologica: l'import e stato eseguito senza `notification_user_id`, perche il database locale non conteneva ancora utenti/admin. Di conseguenza non sono state create notifiche admin nel database locale durante questo commit.
+
+### 7.2 Decisioni admin applicate
+
+Dal documento `docs/LEVERAGE_import_2018_collisioni_atleti.md` sono state lette e applicate 48 decisioni:
+
+| Decisione | Conteggio |
+|---|---:|
+| `merge_as_same_athlete` | 47 |
+| `keep_separate` | 1 |
+| `country_correction` | 46 |
+| `country_history` | 1 |
+| Decisioni mancanti | 0 |
+| Decisioni invalide | 0 |
+
+Il tool ha inoltre applicato la regola automatica `merge name order`:
+
+| Controllo automatico | Conteggio |
+|---|---:|
+| Merge automatici name-order | 15 |
+| Chiavi atleta/country ricondotte a nome canonico | 17 |
+| Righe risultato normalizzate sul nome canonico | 116 |
+| Review manuali name-order generate | 0 |
+
+Decisioni sensibili confermate:
+
+- `Takumi Onoshima` e `Onoshima Takumi` sono trattati come lo stesso atleta; nome canonico finale: `Takumi Onoshima`.
+- `Henji Mboyo` e sempre `SUI`; la variante `FRA` e stata trattata come errore di data entry e corretta a `SUI`.
+- `Deborah Salmina` conserva lo storico country/representation: atleta con country corrente `VEN`, result 2018 con `represented_country=ITA` quando coerente con la decisione di cambio/storico country.
+
+### 7.3 Esito simulazione immediatamente prima del commit
+
+| Voce preview | Conteggio |
+|---|---:|
+| Righe parse | 89.994 |
+| Result importabili | 89.988 |
+| Athlete da creare | 7.134 |
+| Event da creare | 211 |
+| Duplicati saltabili | 6 |
+| Conflitti bloccanti | 0 |
+| D-score orfani da review, non importati | 1.202 |
+| Warning | 2 |
+
+Statistiche decisioni atleta in simulazione:
+
+| Voce | Conteggio |
+|---|---:|
+| Identity merge | 47 |
+| Identity keep separate | 1 |
+| Correzioni represented country | 47 |
+| Decisioni invalide | 0 |
+| Review irrisolte | 0 |
+
+### 7.4 Commit effettivo 2018
+
+Il commit controllato e stato eseguito con successo.
+
+| Voce commit | Conteggio |
+|---|---:|
+| Athlete creati | 7.134 |
+| Event creati | 211 |
+| Result creati | 89.988 |
+| Result completi creati | 62.105 |
+| Result parziali creati | 27.883 |
+| Athlete con nuovi result | 7.134 |
+| Event con nuovi result | 211 |
+| Duplicati saltati | 6 |
+| D-score orfani non committati | 1.202 |
+| Result con represented country corretta | 293 |
+| Aggiornamenti country corrente Athlete | 0 |
+| Notifiche admin create | 0 |
+
+### 7.4.1 Report D-score orfani non importati
+
+I 1.202 D-score orfani non sono stati importati nel database come result autonomi, coerentemente con la decisione metodologica presa prima del commit.
+
+Per evitare perdita informativa, e stato generato un report CSV dedicato:
+
+```text
+docs/import_reports/gymternet_2018_orphan_dscores.csv
+```
+
+Il report contiene 1.202 righe dati piu intestazione e conserva per ogni D-score orfano:
+
+- `review_id`;
+- tipo di problema rilevato;
+- sheet e riga sorgente nel file Gymternet;
+- evento, anno, atleta, country, disciplina, categoria, apparatus, format, round, day e `D_score`;
+- eventuale incertezza su vault attempt;
+- numero di suggerimenti automatici disponibili;
+- miglior suggerimento automatico di aggancio, quando presente;
+- payload completo dei suggerimenti in formato JSON.
+
+Statistiche del report:
+
+| Voce | Conteggio |
+|---|---:|
+| D-score orfani salvati nel CSV | 1.202 |
+| D-score orfani con almeno un suggerimento automatico | 269 |
+| D-score orfani senza suggerimento automatico | 933 |
+
+Interpretazione: questi record restano fuori dal database operativo, ma vengono conservati come materiale di audit e recupero. In futuro potranno essere revisionati manualmente, agganciati a result esistenti oppure scartati definitivamente.
+
+### 7.5 Stato database dopo il commit 2018
+
+| Entita | Conteggio |
+|---|---:|
+| User | 0 |
+| Athlete | 7.134 |
+| Event | 211 |
+| Result | 89.988 |
+| Notification | 0 |
+
+Distribuzione Result per disciplina:
+
+| Discipline | Result |
+|---|---:|
+| MAG | 43.182 |
+| WAG | 46.806 |
+
+Distribuzione Result per categoria:
+
+| Category | Result |
+|---|---:|
+| junior | 40.767 |
+| senior | 49.221 |
+
+Distribuzione Event per disciplina:
+
+| Discipline Event | Event |
+|---|---:|
+| MAG | 24 |
+| WAG | 74 |
+| MAG and WAG | 113 |
+
+Distribuzione Event per categoria:
+
+| Category Event | Event |
+|---|---:|
+| junior | 25 |
+| senior | 56 |
+| junior and senior | 130 |
+
+Distribuzione Result per apparatus:
+
+| Apparatus | Result |
+|---|---:|
+| AA | 10.000 |
+| BB | 9.357 |
+| FX | 15.443 |
+| HB | 6.093 |
+| PB | 6.173 |
+| PH | 6.364 |
+| SR | 6.075 |
+| UB | 9.146 |
+| VT | 17.891 |
+| VT AVG | 3.446 |
+
+Distribuzione Result per round:
+
+| Round | Result |
+|---|---:|
+| final | 72.459 |
+| qualification | 17.529 |
+
+Distribuzione Result per format:
+
+| Format | Result |
+|---|---:|
+| apparatus | 10.881 |
+| individual | 77.905 |
+| team | 1.202 |
+
+### 7.6 Controlli semantici post-import
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici Result post-import | 0 |
+| Result con `score` nullo | 0 |
+| Result con `d_score` nullo | 27.883 |
+| Result con `score` e `d_score` presenti | 62.105 |
+| Result con `score` presente e `d_score` assente | 27.883 |
+| Result con `d_score` presente e `score` assente | 0 |
+| Result con execution estimate disponibile | 62.105 |
+| Result con `day` valorizzato | 756 |
+| Massimo valore `day` rilevato | 2 |
+| Result VT con alert incertezza attempt | 17.891 |
+| Result con `represented_country` diverso da country corrente Athlete | 15 |
+| Country rappresentate distinte nei Result | 106 |
+| Country correnti distinte negli Athlete | 106 |
+
+Interpretazione:
+
+- i result con final score ma senza `d_score` sono importati come result parziali, perche mantengono informazione sportiva utile;
+- i result con solo `d_score` e senza final score non sono stati importati come result autonomi;
+- l'execution estimate e disponibile solo quando `score` e `d_score` sono entrambi presenti;
+- i result VT importati dal legacy Gymternet mantengono l'alert di incertezza attempt, perche `VT` puo indicare in alcuni casi Vault 1 o Vault 2;
+- la differenza residua tra country corrente Athlete e `represented_country` e attesa nel caso di storico country validato.
+
+### 7.7 Controllo eventi multi-day
+
+Controlli a campione richiesti prima del commit e verificati dopo il commit:
+
+| Event | Totale Result | Day nullo | Day 1 | Day 2 |
+|---|---:|---:|---:|---:|
+| Russian Championships | 2.294 | 1.692 | 301 | 301 |
+| Mexican Championships | 1.040 | 974 | 33 | 33 |
+| All-Japan Team Championships | 503 | 501 | 1 | 1 |
+
+Esito: il sistema rimuove correttamente `day 1` / `day 2` dal nome evento e valorizza il campo `day` del Result.
+
+### 7.8 Controllo casi sensibili
+
+| Caso | Esito |
+|---|---|
+| `Takumi Onoshima` | 1 Athlete creato, country `BEL`, disciplina `MAG`, 40 result; nessun Athlete `Onoshima Takumi` separato. |
+| `Henji Mboyo` | 1 Athlete creato, country `SUI`, disciplina `MAG`, 37 result; tutti i result importati con `represented_country=SUI`. |
+| `Deborah Salmina` | 1 Athlete con country corrente `VEN`; 15 result 2018 conservano `represented_country=ITA` come storico country validato. |
+
+### 7.9 Top country rappresentate 2018
+
+| Country | Result |
+|---|---:|
+| GBR | 8.229 |
+| USA | 6.879 |
+| RUS | 5.677 |
+| GER | 5.185 |
+| ITA | 4.771 |
+| CHN | 3.355 |
+| JPN | 3.350 |
+| FRA | 3.113 |
+| ESP | 2.907 |
+| CAN | 2.528 |
+
+### 7.10 Eventi con piu result nel 2018
+
+| Event | Result |
+|---|---:|
+| European Championships | 3.033 |
+| World Championships | 2.970 |
+| British Championships | 2.910 |
+| English Championships | 2.336 |
+| Russian Championships | 2.294 |
+| U.S. Championships | 1.399 |
+| Chinese Championships | 1.360 |
+| Russian Junior Championships | 1.336 |
+| All-Japan Championships | 1.148 |
+| Pan American Championships | 1.052 |
+
+### 7.11 Esito finale import 2018
+
+L'import 2018 e considerato committato e verificato.
+
+Punti ancora da ricordare:
+
+- i 1.202 D-score orfani restano fuori dal database e sono conservati nel report `docs/import_reports/gymternet_2018_orphan_dscores.csv` per eventuale review di recupero mirata;
+- i 27.883 result senza `d_score` sono presenti come result parziali e devono essere trattati lato UI come dati incompleti/not available;
+- i result VT legacy mantengono alert di incertezza attempt;
+- il database locale non contiene ancora utenti, quindi le notifiche admin di import summary non sono state create in questa esecuzione locale.
+
+## 8. Prossimo passo
+
+Il prossimo passo e ripetere il flusso sul file 2019:
+
+1. backup dello stato post-2018;
+2. preview import 2019 senza commit;
+3. analisi collisioni atleta/country e possibili name-order automatici;
+4. verifica duplicati e D-score orfani;
+5. decisioni admin documentate;
+6. commit controllato 2019;
+7. controlli post-import 2019;
+8. aggiornamento del presente diario.

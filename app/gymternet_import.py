@@ -1784,6 +1784,161 @@ def athlete_identity_collision_review_id(
     return stable_id("athlete_identity_collision", (*identity_key, *countries))
 
 
+def athlete_name_order_key(record: ParsedGymternetResult) -> Optional[tuple]:
+    first = name_token(record.first_name)
+    last = name_token(record.last_name)
+    if not first or not last or first == last:
+        return None
+    return (tuple(sorted((first, last))), record.discipline.value)
+
+
+def choose_canonical_name_order_variant(
+    variants: dict[tuple, list[ParsedGymternetResult]],
+    existing_athletes: dict,
+) -> tuple[tuple, dict]:
+    existing_counts = {}
+    existing_payloads = {}
+    for identity_records in variants.values():
+        athlete = next(
+            (
+                existing_athletes.get(athlete_lookup_key(record))
+                for record in identity_records
+                if existing_athletes.get(athlete_lookup_key(record))
+            ),
+            None,
+        )
+        if athlete:
+            key = (
+                athlete.first_name.lower(),
+                athlete.last_name.lower(),
+                athlete.discipline.value,
+                athlete.country or "",
+            )
+            existing_counts[key] = existing_counts.get(key, 0) + len(identity_records)
+            existing_payloads[key] = {
+                "first_name": athlete.first_name,
+                "last_name": athlete.last_name,
+            }
+    if existing_counts:
+        canonical_key = max(existing_counts, key=existing_counts.get)
+        return canonical_key, existing_payloads[canonical_key]
+
+    name_counts: dict[tuple, int] = {}
+    country_counts: dict[str, int] = {}
+    name_payloads: dict[tuple, dict] = {}
+    for identity_records in variants.values():
+        first_record = identity_records[0]
+        name_key = (
+            first_record.first_name,
+            first_record.last_name,
+            first_record.discipline.value,
+        )
+        name_counts[name_key] = name_counts.get(name_key, 0) + len(identity_records)
+        name_payloads[name_key] = {
+            "first_name": first_record.first_name,
+            "last_name": first_record.last_name,
+        }
+        for record in identity_records:
+            country = record.country or ""
+            country_counts[country] = country_counts.get(country, 0) + 1
+
+    canonical_name_key = max(
+        name_counts,
+        key=lambda key: (name_counts[key], key[0].lower(), key[1].lower()),
+    )
+    canonical_country = max(
+        country_counts,
+        key=lambda country: (country_counts[country], country),
+    ) if country_counts else ""
+    return (
+        canonical_name_key[0].lower(),
+        canonical_name_key[1].lower(),
+        canonical_name_key[2],
+        canonical_country,
+    ), name_payloads[canonical_name_key]
+
+
+def build_automatic_athlete_name_order_merges(
+    db: Session,
+    records: list[ParsedGymternetResult],
+) -> tuple[dict[tuple, tuple], dict[tuple, dict], dict]:
+    existing_athletes, _, _ = build_existing_indexes(db)
+    records_by_identity: dict[tuple, list[ParsedGymternetResult]] = {}
+    for record in records:
+        records_by_identity.setdefault(athlete_identity_key(record), []).append(record)
+
+    name_order_groups: dict[tuple, dict[tuple, list[ParsedGymternetResult]]] = {}
+    for identity_key, identity_records in records_by_identity.items():
+        key = athlete_name_order_key(identity_records[0])
+        if key is None:
+            continue
+        name_order_groups.setdefault(key, {})[identity_key] = identity_records
+
+    merge_keys: dict[tuple, tuple] = {}
+    canonical_names: dict[tuple, dict] = {}
+    stats = {
+        "automatic_name_order_merges": 0,
+        "automatic_name_order_variant_keys": 0,
+        "automatic_name_order_records_normalized": 0,
+    }
+    for variants in name_order_groups.values():
+        if len(variants) < 2:
+            continue
+        canonical_key, canonical_name = choose_canonical_name_order_variant(
+            variants,
+            existing_athletes,
+        )
+        canonical_names[canonical_key] = canonical_name
+        stats["automatic_name_order_merges"] += 1
+        normalized_source_keys = set()
+        for identity_records in variants.values():
+            for record in identity_records:
+                source_key = athlete_lookup_key(record)
+                if source_key != canonical_key:
+                    merge_keys[source_key] = canonical_key
+                    stats["automatic_name_order_records_normalized"] += 1
+                    if source_key not in normalized_source_keys:
+                        normalized_source_keys.add(source_key)
+                        stats["automatic_name_order_variant_keys"] += 1
+
+    return merge_keys, canonical_names, stats
+
+
+def apply_automatic_athlete_name_order_merges(
+    records: list[ParsedGymternetResult],
+    athlete_merge_keys: dict[tuple, tuple],
+    athlete_canonical_names: dict[tuple, dict],
+) -> list[ParsedGymternetResult]:
+    if not athlete_merge_keys or not athlete_canonical_names:
+        return records
+
+    updated: list[ParsedGymternetResult] = []
+    for record in records:
+        source_key = athlete_lookup_key(record)
+        canonical_key = resolve_athlete_merge_key(athlete_merge_keys, source_key)
+        canonical_name = athlete_canonical_names.get(canonical_key)
+        if not canonical_name:
+            updated.append(record)
+            continue
+
+        first_name = canonical_name["first_name"]
+        last_name = canonical_name["last_name"]
+        if record.first_name == first_name and record.last_name == last_name:
+            updated.append(record)
+            continue
+
+        updated.append(
+            replace(
+                record,
+                athlete_name=f"{first_name} {last_name}",
+                first_name=first_name,
+                last_name=last_name,
+            )
+        )
+
+    return updated
+
+
 def athlete_variant_payload(
     records: list[ParsedGymternetResult],
 ) -> dict:
@@ -1841,6 +1996,7 @@ def build_athlete_match_review_items(
     }
 
     review_items = []
+
     for identity_key in collision_identity_keys:
         identity_records = records_by_identity[identity_key]
         records_by_country: dict[str, list[ParsedGymternetResult]] = {}
@@ -2048,7 +2204,7 @@ def apply_athlete_match_decisions(
     review_items: list[dict],
     decisions: Optional[list[dict]],
     issues: list[dict],
-) -> tuple[dict[tuple, int], dict[int, dict], dict[tuple, tuple], dict[tuple, str], dict]:
+) -> tuple[dict[tuple, int], dict[int, dict], dict[tuple, tuple], dict[tuple, str], dict[tuple, dict], dict]:
     stats = {
         "accepted_suggestions": 0,
         "manual_corrections": 0,
@@ -2062,13 +2218,14 @@ def apply_athlete_match_decisions(
         "unresolved": len(review_items),
     }
     if not decisions:
-        return {}, {}, {}, {}, stats
+        return {}, {}, {}, {}, {}, stats
 
     review_by_id = {item["review_id"]: item for item in review_items}
     resolutions: dict[tuple, int] = {}
     country_updates: dict[int, dict] = {}
     merge_keys: dict[tuple, tuple] = {}
     represented_country_overrides: dict[tuple, str] = {}
+    athlete_canonical_names: dict[tuple, dict] = {}
     resolved_review_ids = set()
 
     for decision in decisions:
@@ -2289,7 +2446,7 @@ def apply_athlete_match_decisions(
             stats["manual_corrections"] += 1
 
     stats["unresolved"] = max(len(review_items) - len(resolved_review_ids), 0)
-    return resolutions, country_updates, merge_keys, represented_country_overrides, stats
+    return resolutions, country_updates, merge_keys, represented_country_overrides, athlete_canonical_names, stats
 
 
 def assign_automatic_days(
@@ -2561,6 +2718,21 @@ def resolved_athlete_for_key(
     return athlete_cache[athlete_id]
 
 
+def resolve_athlete_merge_key(
+    athlete_merge_keys: dict[tuple, tuple],
+    athlete_key: tuple,
+) -> tuple:
+    resolved_key = athlete_key
+    visited = set()
+    while resolved_key in athlete_merge_keys and resolved_key not in visited:
+        visited.add(resolved_key)
+        next_key = athlete_merge_keys[resolved_key]
+        if next_key == resolved_key:
+            break
+        resolved_key = next_key
+    return resolved_key
+
+
 def summarize_records(
     db: Session,
     records: list[ParsedGymternetResult],
@@ -2608,7 +2780,7 @@ def summarize_records(
         seen[record.import_key] = record
 
         source_athlete_key = athlete_lookup_key(record)
-        athlete_key = athlete_merge_keys.get(source_athlete_key, source_athlete_key)
+        athlete_key = resolve_athlete_merge_key(athlete_merge_keys, source_athlete_key)
         athlete = (
             resolved_athlete_for_key(db, athlete_resolution_ids, source_athlete_key, resolved_athlete_cache)
             or resolved_athlete_for_key(db, athlete_resolution_ids, athlete_key, resolved_athlete_cache)
@@ -2698,6 +2870,7 @@ def commit_records(
     athlete_country_update_ids: Optional[dict[int, dict]] = None,
     athlete_merge_keys: Optional[dict[tuple, tuple]] = None,
     represented_country_overrides: Optional[dict[tuple, str]] = None,
+    athlete_canonical_names: Optional[dict[tuple, dict]] = None,
     pre_skipped_duplicates: int = 0,
     orphan_dscore_review_uncommitted: int = 0,
 ) -> dict:
@@ -2721,6 +2894,7 @@ def commit_records(
     athlete_country_update_ids = athlete_country_update_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
     represented_country_overrides = represented_country_overrides or {}
+    athlete_canonical_names = athlete_canonical_names or {}
     resolved_athlete_cache: dict[int, models.Athlete] = {}
     created_athletes_for_notification: list[models.Athlete] = []
     created_events_for_notification: list[models.Event] = []
@@ -2740,16 +2914,17 @@ def commit_records(
 
     for record in records:
         source_athlete_key = athlete_lookup_key(record)
-        athlete_key = athlete_merge_keys.get(source_athlete_key, source_athlete_key)
+        athlete_key = resolve_athlete_merge_key(athlete_merge_keys, source_athlete_key)
         athlete = (
             resolved_athlete_for_key(db, athlete_resolution_ids, source_athlete_key, resolved_athlete_cache)
             or resolved_athlete_for_key(db, athlete_resolution_ids, athlete_key, resolved_athlete_cache)
             or existing_athletes.get(athlete_key)
         )
         if not athlete:
+            canonical_name = athlete_canonical_names.get(athlete_key, {})
             athlete = models.Athlete(
-                first_name=record.first_name,
-                last_name=record.last_name,
+                first_name=canonical_name.get("first_name") or record.first_name,
+                last_name=canonical_name.get("last_name") or record.last_name,
                 country=athlete_key[3] or None,
                 discipline=record.discipline,
             )

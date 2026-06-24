@@ -515,6 +515,8 @@ Parametri opzionali:
   Per `merge_as_same_athlete`, il default e `country_strategy="preserve_represented_country"`: una sola scheda Athlete, ma ogni Result conserva la country sorgente come storico di rappresentanza. Se invece una country e un errore di data entry, l'admin puo aggiungere `country_corrections`, per esempio `{"RUS": "ISR"}`, e il commit salvera i Result interessati con `represented_country` corretto.
   Quando l'admin sceglie `update_country`, il sistema aggiorna `Athlete.country` e registra una riga in `country_changes` con l'anno del file importato.
   In assenza di correzioni esplicite, ogni Result importato salva la country sorgente in `represented_country`, preservando la nazionalita storica usata da classifiche, filtri e analytics.
+- se lo stesso file contiene lo stesso atleta con nome/cognome invertiti o formato equivalente, il tool applica automaticamente `merge name order`: crea una sola chiave atleta e usa come ordine canonico il nome gia presente nel database, quando disponibile, oppure la variante piu ricorrente nel file importato.
+  Se dopo questo merge emergono country diverse, la preview crea comunque una verifica bloccante `possible_athlete_identity_collision`: l'admin decide solo la parte country (`country_history`, `country_correction`, `keep_separate` o target manuale), non l'inversione nome/cognome.
 - `represented_country` non fa parte della chiave anti-duplicato del `Result`: se il sistema trova lo stesso contesto sportivo con paese rappresentato diverso, il record viene trattato come conflitto da review admin e non come duplicato innocuo.
 
 Esempio decisione admin:

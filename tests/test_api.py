@@ -5944,6 +5944,25 @@ def gymternet_same_name_multiple_countries_csv_bytes() -> BytesIO:
     return BytesIO(csv_text.encode("utf-8"))
 
 
+def gymternet_reversed_name_order_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Takumi Onoshima,Belgium,Name Order Cup 2024 QF,FX,14.0,5.6\n"
+        "MAG,Takumi Onoshima,Belgium,Name Order Cup 2024 QF,PH,13.8,5.4\n"
+        "MAG,Onoshima Takumi,Belgium,Name Order Cup 2024 QF,HB,13.5,5.2\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
+def gymternet_reversed_name_order_country_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Takumi Onoshima,Belgium,Name Order Country Cup 2024 QF,FX,14.0,5.6\n"
+        "MAG,Onoshima Takumi,Italy,Name Order Country Cup 2024 QF,HB,13.5,5.2\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
 def gymternet_multiday_csv_bytes() -> BytesIO:
     csv_text = (
         "discipline,athlete,country,event,apparatus,score,d_score\n"
@@ -7204,6 +7223,127 @@ def test_gymternet_identity_merge_can_correct_erroneous_result_country():
     ita_ranking = client.get("/results/analytics/rankings?country=ITA").json()["ranking"]
     assert usa_ranking == []
     assert len(ita_ranking) == 2
+
+
+def test_gymternet_import_automatically_merges_reversed_name_order():
+    client.post("/auth/register", json={"email": "gymternet_name_order@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("gymternet_name_order@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    preview_response = client.post(
+        "/imports/gymternet/preview",
+        files={
+            "file": (
+                "gymternet_name_order.csv",
+                gymternet_reversed_name_order_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["athlete_match_review_count"] == 0
+    assert preview["would_create_athletes"] == 1
+    assert preview["athlete_match_decision_stats"]["automatic_name_order_merges"] == 1
+    assert preview["athlete_match_decision_stats"]["automatic_name_order_variant_keys"] == 1
+
+    committed = client.post(
+        "/imports/gymternet/commit",
+        files={
+            "file": (
+                "gymternet_name_order.csv",
+                gymternet_reversed_name_order_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert committed.status_code == 200
+    payload = committed.json()
+    assert payload["created_athletes"] == 1
+    assert payload["created_results"] == 3
+    assert payload["athlete_match_decision_stats"]["automatic_name_order_merges"] == 1
+    assert payload["athlete_match_decision_stats"]["unresolved"] == 0
+
+    athletes = client.get("/athletes/").json()
+    assert len(athletes) == 1
+    assert athletes[0]["first_name"] == "Takumi"
+    assert athletes[0]["last_name"] == "Onoshima"
+    assert athletes[0]["country"] == "BEL"
+    assert {result["athlete_id"] for result in client.get("/results/").json()} == {athletes[0]["id"]}
+
+
+def test_gymternet_reversed_name_order_still_reviews_country_collision():
+    client.post("/auth/register", json={"email": "gymternet_name_order_country@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("gymternet_name_order_country@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    preview_response = client.post(
+        "/imports/gymternet/preview",
+        files={
+            "file": (
+                "gymternet_name_order_country.csv",
+                gymternet_reversed_name_order_country_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["athlete_match_review_count"] == 1
+    assert preview["athlete_match_decision_stats"]["automatic_name_order_merges"] == 1
+    review = preview["athlete_match_review"][0]
+    assert review["problem_type"] == "possible_athlete_identity_collision"
+    assert review["imported_athlete"]["athlete_name"] == "Takumi Onoshima"
+    assert {variant["country"] for variant in review["country_variants"]} == {"BEL", "ITA"}
+
+    blocked = client.post(
+        "/imports/gymternet/commit",
+        files={
+            "file": (
+                "gymternet_name_order_country.csv",
+                gymternet_reversed_name_order_country_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["athlete_match_decision_stats"]["unresolved"] == 1
+
+    decisions = [{
+        "review_id": review["review_id"],
+        "action": "merge_as_same_athlete",
+        "canonical_country": "BEL",
+        "country_strategy": "country_correction",
+        "country_corrections": {"ITA": "BEL"},
+    }]
+    committed = client.post(
+        "/imports/gymternet/commit",
+        files={
+            "file": (
+                "gymternet_name_order_country.csv",
+                gymternet_reversed_name_order_country_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(decisions)},
+        headers=headers,
+    )
+    assert committed.status_code == 200
+    payload = committed.json()
+    assert payload["created_athletes"] == 1
+    assert payload["created_results"] == 2
+    assert payload["corrected_represented_countries"] == 1
+
+    athletes = client.get("/athletes/").json()
+    assert len(athletes) == 1
+    assert athletes[0]["first_name"] == "Takumi"
+    assert athletes[0]["last_name"] == "Onoshima"
+    assert athletes[0]["country"] == "BEL"
+    assert {result["represented_country"] for result in client.get("/results/").json()} == {"BEL"}
 
 
 def test_gymternet_import_reports_conflicts_before_commit():
