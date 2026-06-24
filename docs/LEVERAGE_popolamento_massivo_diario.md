@@ -352,16 +352,33 @@ Esempi:
 
 Motivo del blocco: LEVERAGE deve evitare sia di fondere per errore atleti diversi, sia di creare doppioni quando si tratta dello stesso atleta con diversa representation/country.
 
-Decisione da prendere: stabilire se trattare questi casi con una regola generale controllata o revisarli manualmente uno a uno.
+Decisione presa il 24 giugno 2026: revisionare manualmente tutti i 48 casi, uno a uno, prima del commit definitivo del file 2018.
 
-Proposta operativa iniziale:
+Documento operativo creato:
 
-- default: `merge_as_same_athlete`;
-- `canonical_country`: country con piu result;
-- ogni singolo `Result` conserva comunque il proprio `represented_country`;
-- eccezioni da valutare manualmente solo quando il nome e potenzialmente comune o la distribuzione country e sospetta.
+```text
+docs/LEVERAGE_import_2018_collisioni_atleti.md
+```
 
-Questa proposta non e ancora stata approvata.
+La tabella di revisione riporta per ogni caso:
+
+- nome atleta;
+- disciplina;
+- country rilevate e conteggi;
+- country canonica suggerita solo come aiuto operativo;
+- livello di rischio;
+- evidenze sintetiche dagli eventi sorgente;
+- `review_id` tecnico;
+- colonne `Decision` e `Notes` da compilare durante la revisione admin.
+
+Regola metodologica: nessuna fusione automatica generale viene applicata senza validazione admin. Le decisioni possibili sono `merge_as_same_athlete`, `keep_separate`, `manual_target` o `postpone`.
+
+Aggiornamento tecnico del 24 giugno 2026: il flusso `merge_as_same_athlete` e stato raffinato per distinguere due casi:
+
+- `country_history`: stesso atleta con reale cambio country/rappresentanza; LEVERAGE crea o usa una sola scheda Athlete, ma preserva la country sorgente su ogni `Result.represented_country`;
+- `country_correction`: stesso atleta e country errata nel file sorgente; LEVERAGE crea o usa una sola scheda Athlete e importa i Result interessati con `represented_country` corretto, senza modificare il file Excel sorgente.
+
+Questa distinzione evita sia la perdita della storia sportiva, sia la propagazione di errori di data entry nelle classifiche e negli analytics.
 
 ---
 
@@ -369,11 +386,14 @@ Questa proposta non e ancora stata approvata.
 
 ### Decisione 1 - Collisioni identita atleta
 
-Da decidere:
+Stato: decisa la revisione manuale di tutti i 48 casi.
 
-- usare una regola generale controllata per le 48 collisioni;
-- oppure revisionare manualmente tutti i 48 casi;
-- oppure applicare regola generale e isolare solo alcuni casi sospetti.
+Da completare:
+
+- compilare la tabella `docs/LEVERAGE_import_2018_collisioni_atleti.md`;
+- annotare ogni scelta presa nella colonna `Decision`;
+- aggiungere note operative quando la scelta richiede motivazione;
+- generare le decisioni tecniche da passare al commit solo dopo che tutte le righe sono risolte.
 
 ### Decisione 2 - D-score orfani
 
@@ -402,11 +422,11 @@ Proposta attuale:
 
 ## 7. Prossimo passo
 
-Prima del commit 2018 occorre decidere come gestire le 48 collisioni identita atleta.
+Prima del commit 2018 occorre compilare la checklist delle 48 collisioni identita atleta.
 
 Solo dopo questa decisione si procedera con:
 
-1. eventuale costruzione decisioni admin;
+1. costruzione decisioni admin a partire dalla checklist compilata;
 2. commit controllato 2018;
 3. verifica conteggi DB;
 4. verifica duplicati post-import;

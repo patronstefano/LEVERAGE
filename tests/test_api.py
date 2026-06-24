@@ -7150,6 +7150,62 @@ def test_gymternet_identity_merge_preserves_historical_result_country():
     assert ita_ranking[0]["country"] == "ITA"
 
 
+def test_gymternet_identity_merge_can_correct_erroneous_result_country():
+    client.post("/auth/register", json={"email": "gymternet_identity_country_correction@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("gymternet_identity_country_correction@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    preview = client.post(
+        "/imports/gymternet/preview",
+        files={
+            "file": (
+                "gymternet_identity_country_correction.csv",
+                gymternet_same_name_multiple_countries_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    ).json()
+    review = preview["athlete_match_review"][0]
+    decisions = [{
+        "review_id": review["review_id"],
+        "action": "merge_as_same_athlete",
+        "canonical_country": "ITA",
+        "country_strategy": "country_correction",
+        "country_corrections": {"USA": "ITA"},
+    }]
+    committed = client.post(
+        "/imports/gymternet/commit",
+        files={
+            "file": (
+                "gymternet_identity_country_correction.csv",
+                gymternet_same_name_multiple_countries_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(decisions)},
+        headers=headers,
+    )
+    assert committed.status_code == 200
+    payload = committed.json()
+    assert payload["created_athletes"] == 1
+    assert payload["created_results"] == 2
+    assert payload["corrected_represented_countries"] == 1
+    assert payload["athlete_match_decision_stats"]["identity_merges"] == 1
+    assert payload["athlete_match_decision_stats"]["represented_country_corrections"] == 1
+
+    athletes = client.get("/athletes/").json()
+    assert len(athletes) == 1
+    assert athletes[0]["country"] == "ITA"
+    results = client.get("/results/").json()
+    assert {result["represented_country"] for result in results} == {"ITA"}
+
+    usa_ranking = client.get("/results/analytics/rankings?country=USA").json()["ranking"]
+    ita_ranking = client.get("/results/analytics/rankings?country=ITA").json()["ranking"]
+    assert usa_ranking == []
+    assert len(ita_ranking) == 2
+
+
 def test_gymternet_import_reports_conflicts_before_commit():
     client.post("/auth/register", json={"email": "gymternet_conflict@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_conflict@example.com")

@@ -79,6 +79,7 @@ def parse_and_summarize_upload(
         summary["athlete_resolution_ids"] = {}
         summary["athlete_country_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
+        summary["represented_country_overrides"] = {}
         return filename, summary
 
     try:
@@ -104,6 +105,7 @@ def parse_and_summarize_upload(
         summary["athlete_resolution_ids"] = {}
         summary["athlete_country_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
+        summary["represented_country_overrides"] = {}
         return filename, summary
 
     review_items = build_orphan_review_items(
@@ -125,6 +127,7 @@ def parse_and_summarize_upload(
         athlete_resolution_ids,
         athlete_country_update_ids,
         athlete_merge_keys,
+        represented_country_overrides,
         athlete_decision_stats,
     ) = apply_athlete_match_decisions(
         db,
@@ -139,6 +142,7 @@ def parse_and_summarize_upload(
         parsed.issues,
         athlete_resolution_ids=athlete_resolution_ids,
         athlete_merge_keys=athlete_merge_keys,
+        represented_country_overrides=represented_country_overrides,
     )
     summary["orphan_dscore_review_count"] = len(review_items)
     summary["orphan_dscore_review"] = review_items[:orphan_review_limit]
@@ -149,6 +153,7 @@ def parse_and_summarize_upload(
     summary["athlete_resolution_ids"] = athlete_resolution_ids
     summary["athlete_country_update_ids"] = athlete_country_update_ids
     summary["athlete_merge_keys"] = athlete_merge_keys
+    summary["represented_country_overrides"] = represented_country_overrides
     return filename, summary
 
 
@@ -299,6 +304,7 @@ def commit_gymternet_import(
         athlete_resolution_ids=summary["athlete_resolution_ids"],
         athlete_country_update_ids=summary["athlete_country_update_ids"],
         athlete_merge_keys=summary["athlete_merge_keys"],
+        represented_country_overrides=summary["represented_country_overrides"],
         pre_skipped_duplicates=len(summary["duplicates"]),
         orphan_dscore_review_uncommitted=summary.get("orphan_dscore_decision_stats", {}).get(
             "unresolved",

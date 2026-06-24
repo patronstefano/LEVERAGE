@@ -512,8 +512,9 @@ Parametri opzionali:
 - `athlete_review_limit`: limita quanti possibili match atleta restituire nella preview.
 - `athlete_match_decisions`: solo sul commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview. Per i match ordinari sono disponibili `accept_suggestion`, `create_new` e `manual_target`; per un possibile cambio country sono disponibili anche `update_country` e `keep_existing_country`.
 - se lo stesso nome e la stessa disciplina compaiono con country diverse nello stesso file, la preview crea una verifica bloccante `possible_athlete_identity_collision`. L'admin puo scegliere `keep_separate`, `merge_as_same_athlete` indicando `canonical_country`, `accept_suggestion` verso un atleta esistente oppure `manual_target`.
+  Per `merge_as_same_athlete`, il default e `country_strategy="preserve_represented_country"`: una sola scheda Athlete, ma ogni Result conserva la country sorgente come storico di rappresentanza. Se invece una country e un errore di data entry, l'admin puo aggiungere `country_corrections`, per esempio `{"RUS": "ISR"}`, e il commit salvera i Result interessati con `represented_country` corretto.
   Quando l'admin sceglie `update_country`, il sistema aggiorna `Athlete.country` e registra una riga in `country_changes` con l'anno del file importato.
-  Indipendentemente dalla scelta sull'identita, ogni Result importato salva la country sorgente in `represented_country`, preservando la nazionalita storica usata da classifiche, filtri e analytics.
+  In assenza di correzioni esplicite, ogni Result importato salva la country sorgente in `represented_country`, preservando la nazionalita storica usata da classifiche, filtri e analytics.
 - `represented_country` non fa parte della chiave anti-duplicato del `Result`: se il sistema trova lo stesso contesto sportivo con paese rappresentato diverso, il record viene trattato come conflitto da review admin e non come duplicato innocuo.
 
 Esempio decisione admin:
@@ -577,6 +578,21 @@ Esempio decisione admin per possibile atleta gia esistente:
     "action": "accept_suggestion",
     "suggestion_id": "suggestion_...",
     "country_action": "keep_existing_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_...",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ITA",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_...",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ISR",
+    "country_strategy": "country_correction",
+    "country_corrections": {
+      "RUS": "ISR"
+    }
   }
 ]
 ```

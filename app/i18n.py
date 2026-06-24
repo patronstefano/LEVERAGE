@@ -160,7 +160,8 @@ TRANSLATIONS = {
             "{created_results} new score(s); {created_complete_results} complete score(s); "
             "{created_partial_results} score(s) with not available data; {athletes_with_new_results} athlete(s) with new results; "
             "{events_with_new_results} event(s) with new results; {updated_events} updated event(s); "
-            "{updated_athlete_countries} athlete country change(s); {orphan_dscore_review_uncommitted} orphan D-score(s) left in review; "
+            "{updated_athlete_countries} athlete country change(s); {corrected_represented_countries} represented country correction(s); "
+            "{orphan_dscore_review_uncommitted} orphan D-score(s) left in review; "
             "{skipped_duplicates} duplicate(s) skipped."
         ),
         models.LanguageEnum.IT: (
@@ -168,7 +169,8 @@ TRANSLATIONS = {
             "{created_results} nuovo/i punteggio/i; {created_complete_results} punteggio/i completo/i; "
             "{created_partial_results} punteggio/i con dati not available; {athletes_with_new_results} atleta/i con nuovi risultati; "
             "{events_with_new_results} evento/i con nuovi risultati; {updated_events} evento/i aggiornato/i; "
-            "{updated_athlete_countries} cambio/i country atleta; {orphan_dscore_review_uncommitted} D-score orfano/i rimasto/i in review; "
+            "{updated_athlete_countries} cambio/i country atleta; {corrected_represented_countries} correzione/i represented country; "
+            "{orphan_dscore_review_uncommitted} D-score orfano/i rimasto/i in review; "
             "{skipped_duplicates} duplicato/i saltato/i."
         ),
         models.LanguageEnum.ES: (
@@ -176,7 +178,8 @@ TRANSLATIONS = {
             "{created_results} nueva(s) puntuacion(es); {created_complete_results} puntuacion(es) completa(s); "
             "{created_partial_results} puntuacion(es) con datos not available; {athletes_with_new_results} atleta(s) con nuevos resultados; "
             "{events_with_new_results} evento(s) con nuevos resultados; {updated_events} evento(s) actualizado(s); "
-            "{updated_athlete_countries} cambio(s) de country de atleta; {orphan_dscore_review_uncommitted} D-score huerfano(s) pendiente(s) de revision; "
+            "{updated_athlete_countries} cambio(s) de country de atleta; {corrected_represented_countries} correccion(es) de represented country; "
+            "{orphan_dscore_review_uncommitted} D-score huerfano(s) pendiente(s) de revision; "
             "{skipped_duplicates} duplicado(s) omitido(s)."
         ),
         models.LanguageEnum.FR: (
@@ -184,7 +187,8 @@ TRANSLATIONS = {
             "{created_results} nouvelle(s) note(s) ; {created_complete_results} note(s) complete(s) ; "
             "{created_partial_results} note(s) avec donnees not available ; {athletes_with_new_results} athlete(s) avec nouveaux resultats ; "
             "{events_with_new_results} evenement(s) avec nouveaux resultats ; {updated_events} evenement(s) mis a jour ; "
-            "{updated_athlete_countries} changement(s) de country athlete ; {orphan_dscore_review_uncommitted} D-score orphelin(s) restant en review ; "
+            "{updated_athlete_countries} changement(s) de country athlete ; {corrected_represented_countries} correction(s) represented country ; "
+            "{orphan_dscore_review_uncommitted} D-score orphelin(s) restant en review ; "
             "{skipped_duplicates} doublon(s) ignore(s)."
         ),
     },

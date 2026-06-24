@@ -2048,7 +2048,7 @@ def apply_athlete_match_decisions(
     review_items: list[dict],
     decisions: Optional[list[dict]],
     issues: list[dict],
-) -> tuple[dict[tuple, int], dict[int, dict], dict[tuple, tuple], dict]:
+) -> tuple[dict[tuple, int], dict[int, dict], dict[tuple, tuple], dict[tuple, str], dict]:
     stats = {
         "accepted_suggestions": 0,
         "manual_corrections": 0,
@@ -2057,16 +2057,18 @@ def apply_athlete_match_decisions(
         "identity_kept_separate": 0,
         "country_updates": 0,
         "country_kept": 0,
+        "represented_country_corrections": 0,
         "invalid_decisions": 0,
         "unresolved": len(review_items),
     }
     if not decisions:
-        return {}, {}, {}, stats
+        return {}, {}, {}, {}, stats
 
     review_by_id = {item["review_id"]: item for item in review_items}
     resolutions: dict[tuple, int] = {}
     country_updates: dict[int, dict] = {}
     merge_keys: dict[tuple, tuple] = {}
+    represented_country_overrides: dict[tuple, str] = {}
     resolved_review_ids = set()
 
     for decision in decisions:
@@ -2112,8 +2114,24 @@ def apply_athlete_match_decisions(
                         ),
                     })
                     continue
+                country_overrides = identity_country_overrides_from_decision(
+                    decision,
+                    variant_keys,
+                    canonical_country,
+                    issues,
+                    review["review_id"],
+                )
+                if country_overrides is None:
+                    stats["invalid_decisions"] += 1
+                    continue
                 for variant_key in variant_keys:
                     merge_keys[variant_key] = canonical_key
+                represented_country_overrides.update(country_overrides)
+                stats["represented_country_corrections"] += sum(
+                    1
+                    for variant_key, target_country in country_overrides.items()
+                    if str(variant_key[3]) != target_country
+                )
                 stats["identity_merges"] += 1
                 resolved_review_ids.add(review["review_id"])
                 continue
@@ -2271,7 +2289,7 @@ def apply_athlete_match_decisions(
             stats["manual_corrections"] += 1
 
     stats["unresolved"] = max(len(review_items) - len(resolved_review_ids), 0)
-    return resolutions, country_updates, merge_keys, stats
+    return resolutions, country_updates, merge_keys, represented_country_overrides, stats
 
 
 def assign_automatic_days(
@@ -2375,6 +2393,107 @@ def athlete_lookup_key(record: ParsedGymternetResult) -> tuple:
     )
 
 
+def result_represented_country_for_record(
+    record: ParsedGymternetResult,
+    represented_country_overrides: Optional[dict[tuple, str]] = None,
+) -> Optional[str]:
+    represented_country_overrides = represented_country_overrides or {}
+    return represented_country_overrides.get(athlete_lookup_key(record), record.country)
+
+
+def normalize_decision_country(
+    value,
+    issues: list[dict],
+    review_id: str,
+) -> Optional[str]:
+    country = normalize_country(value, issues, "athlete_match_decision", 0)
+    if country is None:
+        issues.append({
+            "severity": "warning",
+            "message": (
+                f"Ignored athlete identity decision for review_id '{review_id}' "
+                "because a country correction was empty"
+            ),
+        })
+    return country
+
+
+def identity_country_overrides_from_decision(
+    decision: dict,
+    variant_keys: list[tuple],
+    canonical_country: str,
+    issues: list[dict],
+    review_id: str,
+) -> Optional[dict[tuple, str]]:
+    strategy = (
+        decision.get("country_strategy")
+        or decision.get("represented_country_strategy")
+        or decision.get("country_resolution")
+        or "preserve_represented_country"
+    )
+    strategy = str(strategy).strip().lower()
+    variant_by_country = {str(key[3]): key for key in variant_keys}
+
+    if strategy in {
+        "preserve",
+        "preserve_represented_country",
+        "preserve_source_country",
+        "historical_country",
+        "country_history",
+        "country_correction",
+    }:
+        overrides: dict[tuple, str] = {}
+    elif strategy in {
+        "correct_to_canonical",
+        "correct_all_to_canonical",
+        "country_correction_to_canonical",
+    }:
+        overrides = {variant_key: canonical_country for variant_key in variant_keys}
+    else:
+        issues.append({
+            "severity": "warning",
+            "message": (
+                f"Ignored athlete identity decision for review_id '{review_id}' "
+                f"because country_strategy '{strategy}' is not supported"
+            ),
+        })
+        return None
+
+    raw_corrections = (
+        decision.get("country_corrections")
+        or decision.get("represented_country_overrides")
+        or {}
+    )
+    if raw_corrections:
+        if not isinstance(raw_corrections, dict):
+            issues.append({
+                "severity": "warning",
+                "message": (
+                    f"Ignored athlete identity decision for review_id '{review_id}' "
+                    "because country_corrections must be an object"
+                ),
+            })
+            return None
+        for source_country, target_country in raw_corrections.items():
+            normalized_source = normalize_decision_country(source_country, issues, review_id)
+            normalized_target = normalize_decision_country(target_country, issues, review_id)
+            if normalized_source is None or normalized_target is None:
+                return None
+            variant_key = variant_by_country.get(normalized_source)
+            if variant_key is None:
+                issues.append({
+                    "severity": "warning",
+                    "message": (
+                        f"Ignored athlete identity decision for review_id '{review_id}' "
+                        f"because source country '{normalized_source}' is not a variant"
+                    ),
+                })
+                return None
+            overrides[variant_key] = normalized_target
+
+    return overrides
+
+
 def event_lookup_key(record: ParsedGymternetResult) -> tuple:
     return (record.event_name.lower(), record.year)
 
@@ -2448,6 +2567,7 @@ def summarize_records(
     issues: list[dict],
     athlete_resolution_ids: Optional[dict[tuple, int]] = None,
     athlete_merge_keys: Optional[dict[tuple, tuple]] = None,
+    represented_country_overrides: Optional[dict[tuple, str]] = None,
 ) -> dict:
     seen = {}
     duplicates = []
@@ -2458,6 +2578,7 @@ def summarize_records(
     existing_athletes, existing_events, existing_results = build_existing_indexes(db)
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
+    represented_country_overrides = represented_country_overrides or {}
     resolved_athlete_cache: dict[int, models.Athlete] = {}
 
     for record in records:
@@ -2470,9 +2591,14 @@ def summarize_records(
             })
             continue
         existing_in_file = seen.get(record.import_key)
+        record_country = result_represented_country_for_record(record, represented_country_overrides)
         if existing_in_file:
+            existing_country = result_represented_country_for_record(
+                existing_in_file,
+                represented_country_overrides,
+            )
             if score_equal(existing_in_file.score, record.score) and score_equal(existing_in_file.D_score, record.D_score):
-                if not country_equal(existing_in_file.country, record.country):
+                if not country_equal(existing_country, record_country):
                     conflicts.append(conflict_payload(record, None, "country_conflict_in_file", existing_in_file))
                     continue
                 duplicates.append(import_record_payload(record, reason="duplicate_in_file"))
@@ -2493,7 +2619,7 @@ def summarize_records(
             result = existing_results.get(result_lookup_key(athlete.id, event.id, record))
             if result:
                 if score_equal(result.score, record.score) and score_equal(result.D_score, record.D_score):
-                    if not country_equal(result_represented_country(result), record.country):
+                    if not country_equal(result_represented_country(result), record_country):
                         conflicts.append(conflict_payload(record, result, "country_conflict_existing"))
                         continue
                     duplicates.append(import_record_payload(record, result.id, reason="duplicate_existing"))
@@ -2571,6 +2697,7 @@ def commit_records(
     athlete_resolution_ids: Optional[dict[tuple, int]] = None,
     athlete_country_update_ids: Optional[dict[int, dict]] = None,
     athlete_merge_keys: Optional[dict[tuple, tuple]] = None,
+    represented_country_overrides: Optional[dict[tuple, str]] = None,
     pre_skipped_duplicates: int = 0,
     orphan_dscore_review_uncommitted: int = 0,
 ) -> dict:
@@ -2583,6 +2710,7 @@ def commit_records(
         "orphan_dscore_review_uncommitted": orphan_dscore_review_uncommitted,
         "updated_events": 0,
         "updated_athlete_countries": 0,
+        "corrected_represented_countries": 0,
         "athletes_with_new_results": 0,
         "events_with_new_results": 0,
         "created_admin_notifications": 0,
@@ -2592,6 +2720,7 @@ def commit_records(
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_country_update_ids = athlete_country_update_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
+    represented_country_overrides = represented_country_overrides or {}
     resolved_athlete_cache: dict[int, models.Athlete] = {}
     created_athletes_for_notification: list[models.Athlete] = []
     created_events_for_notification: list[models.Event] = []
@@ -2666,7 +2795,7 @@ def commit_records(
         result = models.Result(
             athlete_id=athlete.id,
             event_id=event.id,
-            represented_country=record.country,
+            represented_country=result_represented_country_for_record(record, represented_country_overrides),
             discipline=record.discipline,
             category=record.category,
             apparatus=record.apparatus,
@@ -2683,6 +2812,8 @@ def commit_records(
             vault_attempt_order_uncertain=record.vault_attempt_order_uncertain,
         )
         db.add(result)
+        if result.represented_country != record.country:
+            stats["corrected_represented_countries"] += 1
         existing_results[result_key] = result
         stats["created_results"] += 1
         if record.score is not None and record.D_score is not None:
@@ -2705,6 +2836,7 @@ def commit_records(
             "orphan_dscore_review_uncommitted",
             "updated_events",
             "updated_athlete_countries",
+            "corrected_represented_countries",
             "skipped_duplicates",
         )
     ):
@@ -2724,6 +2856,7 @@ def commit_records(
                 events_with_new_results=stats["events_with_new_results"],
                 updated_events=stats["updated_events"],
                 updated_athlete_countries=stats["updated_athlete_countries"],
+                corrected_represented_countries=stats["corrected_represented_countries"],
                 orphan_dscore_review_uncommitted=stats["orphan_dscore_review_uncommitted"],
                 skipped_duplicates=stats["skipped_duplicates"],
             ),

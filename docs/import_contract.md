@@ -37,6 +37,7 @@ Ogni importer deve rispettare:
 - blocco duplicati sulla chiave `Result`: `athlete_id`, `event_id`, `discipline`, `category`, `apparatus`, `vt_attempt`, `day`, `format`, `round`;
 - conflitto admin quando la stessa chiave `Result` ha `represented_country` diversa;
 - preservazione di `represented_country` sul singolo `Result`.
+- correzione esplicita di `represented_country` solo quando l'admin stabilisce che una country sorgente e un errore di data entry. Nei casi di reale cambio nazionalita/rappresentanza, i Result devono preservare la country storica.
 
 ## Regola Gymternet legacy dopo il 2025
 
