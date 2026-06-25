@@ -44,6 +44,13 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2020_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2020. Rigenerato vuoto dopo l'applicazione della regola `same_context_different_score_keep_separate`. |
 | `gymternet_2020_post_decision_duplicates.csv` | Audit dei 5 duplicati identici residui dopo le decisioni 2020. |
 | `gymternet_2020_commit_summary.json` | Report tecnico del commit reale 2020, con backup, statistiche di import e controlli post-import. |
+| `gymternet_2021_preview_summary.json` | Sintesi tecnica della preview 2021 eseguita sul DB post-2020, senza commit. |
+| `gymternet_2021_duplicates.csv` | Audit dei duplicati identici interni al file 2021; attualmente vuoto. |
+| `gymternet_2021_conflicts.csv` | Audit dei conflitti bloccanti 2021; attualmente vuoto. |
+| `gymternet_2021_orphan_dscores.csv` | D-score del file Gymternet 2021 non agganciati automaticamente a un result con final score. |
+| `gymternet_2021_athlete_review.csv` | Review atleta/country 2021 completa e tecnica. |
+| `gymternet_2021_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2021 corrisponde a un atleta gia presente nel DB post-2020. |
+| `gymternet_2021_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2021 che presentano conflitti country nel file 2021. |
 
 ## Convenzione review atleta/country
 

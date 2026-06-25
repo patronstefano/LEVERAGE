@@ -1,0 +1,4 @@
+review_id,review_priority,problem_type,athlete_name,discipline,collision_countries,decision,action,country,notes,results_2021_by_country,future_country_evidence
+athlete_identity_collision_63cc94dd25ca54a7,high,possible_athlete_identity_collision,Logan Curtis,MAG,"BAN, NZL",,,,,BAN: 2021 - New Zealand Championships (1 results) | NZL: 2021 - New Zealand Championships (1 results),Logan Curtis: 2024: NZL:20 / 2025: NZL:11
+athlete_identity_collision_681dd13ced8046a3,high,possible_athlete_identity_collision,Rory Quinn,MAG,"BAN, NZL",,,,,BAN: 2021 - New Zealand Championships (5 results) | NZL: 2021 - New Zealand Championships (5 results),Rory Quinn: 2023: NZL:5 / 2024: NZL:12 / 2025: NZL:2
+athlete_identity_collision_c6598420851f0c2e,high,possible_athlete_identity_collision,Joshua Jack Williams,MAG,"ESP, GER",,,,,ESP: 2021 - 1st Bundesliga (4 results) | GER: 2021 - 2nd Bundesliga (4 results); 2021 - 4th Bundesliga (1 results),Joshua Jack Williams: not found 2022-2025

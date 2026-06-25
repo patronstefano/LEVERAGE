@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019 e 2020 committati e verificati; prossimo passo preview controllata 2021
+Stato: import storico 2018, 2019 e 2020 committati e verificati; preview 2021 eseguita, in attesa di review admin
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -1411,3 +1411,126 @@ Il 2020 e stato importato nel database locale.
 Il commit reale ha creato 33.777 result nuovi e non ha introdotto duplicati semantici.
 
 I 696 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2020_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+## 10. Import 2021 - Preview senza commit
+
+Data preview: 25 giugno 2026
+
+File sorgente: `import_files/Results 2021.xlsx`
+
+Stato: preview eseguita, nessun commit 2021 eseguito
+
+La preview 2021 e stata eseguita dopo il commit reale 2020. Il database di partenza contiene:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 12.230 |
+| Event | 521 |
+| Result | 230.398 |
+| Notification | 0 |
+
+### 10.1 Sintesi preview 2021
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 77.423 |
+| Result importabili | 77.423 |
+| Athlete che verrebbero creati senza decisioni admin | 3.013 |
+| Event che verrebbero creati | 196 |
+| Duplicati identici interni al file | 0 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning prodotti:
+
+- 1.341 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 7 chiavi multi-day, con 14 righe valorizzate fino a `day=2`.
+
+### 10.2 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2021_preview_summary.json` | Sintesi tecnica completa della preview 2021. |
+| `docs/import_reports/gymternet_2021_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2021_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2021_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2021_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2021_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2021_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+
+### 10.3 Duplicati e conflitti 2021
+
+La preview non ha rilevato duplicati identici interni al file.
+
+La preview non ha rilevato conflitti bloccanti con il database gia popolato.
+
+### 10.4 D-score orfani 2021
+
+Totale D-score orfani: 1.341.
+
+| Tipo problema | Conteggio |
+|---|---:|
+| `athlete_missing_in_score_sheet` | 706 |
+| `possible_athlete_name_typo` | 397 |
+| `missing_final_score_for_context` | 116 |
+| `possible_context_mismatch` | 103 |
+| `possible_event_name_mismatch` | 15 |
+| `missing_score_sheet_context` | 4 |
+
+Decisione provvisoria: come per 2018, 2019 e 2020, questi D-score restano fuori dal database operativo salvo review mirata futura.
+
+### 10.5 Review atleta/country 2021
+
+Totale review atleta/country: 329.
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 280 |
+| `possible_athlete_identity_collision` | 31 |
+| `possible_athlete_country_change` | 18 |
+
+CSV operativi:
+
+| File | Righe da controllare |
+|---|---:|
+| `gymternet_2021_existing_athlete_match_review.csv` | 326 |
+| `gymternet_2021_new_athlete_country_conflicts.csv` | 3 |
+
+Priorita del CSV `existing_athlete_match_review`:
+
+| Priorita | Righe |
+|---|---:|
+| high | 60 |
+| medium | 266 |
+
+### 10.6 Conflitti country tra nuovi atleti
+
+| Atleta | Discipline | Country coinvolte | Evidenza futura |
+|---|---|---|---|
+| Logan Curtis | MAG | BAN, NZL | 2024: NZL; 2025: NZL |
+| Rory Quinn | MAG | BAN, NZL | 2023: NZL; 2024: NZL; 2025: NZL |
+| Joshua Jack Williams | MAG | ESP, GER | not found 2022-2025 |
+
+Questi casi dovranno essere verificati dall'admin nel CSV dedicato.
+
+### 10.7 Name-order automatico
+
+Durante la preview 2021 il tool ha applicato automaticamente la regola name-order:
+
+| Voce | Conteggio |
+|---|---:|
+| Merge automatici name-order | 4 |
+| Chiavi variante normalizzate | 4 |
+| Record normalizzati | 20 |
+
+### 10.8 Stato operativo
+
+Il 2021 non e stato importato nel database.
+
+Prima del commit 2021 occorre:
+
+1. completare i CSV admin 2021;
+2. generare il payload decisionale;
+3. rieseguire preview con decisioni applicate;
+4. controllare eventuali conflitti post-decisione;
+5. solo dopo preview pulita, eseguire commit controllato 2021.
