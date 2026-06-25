@@ -122,6 +122,7 @@ def main() -> None:
         (
             athlete_resolution_ids,
             athlete_country_update_ids,
+            athlete_name_update_ids,
             decision_merge_keys,
             represented_country_overrides,
             decision_canonical_names,
@@ -163,6 +164,7 @@ def main() -> None:
         "athlete_match_decision_stats": athlete_decision_stats,
         "represented_country_override_keys": len(represented_country_overrides),
         "athlete_resolution_keys": len(athlete_resolution_ids),
+        "athlete_name_update_ids": len(athlete_name_update_ids),
         "athlete_merge_keys": len(athlete_merge_keys),
         "athlete_country_update_ids": len(athlete_country_update_ids),
         "automatic_name_order_stats": auto_stats,

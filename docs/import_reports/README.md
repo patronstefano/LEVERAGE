@@ -51,6 +51,12 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2021_athlete_review.csv` | Review atleta/country 2021 completa e tecnica. |
 | `gymternet_2021_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2021 corrisponde a un atleta gia presente nel DB post-2020. |
 | `gymternet_2021_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2021 che presentano conflitti country nel file 2021. |
+| `gymternet_2021_athlete_name_corrections.csv` | Correzioni nome atleta esistente verificate dall'admin durante la review 2021. |
+| `gymternet_2021_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2021, incluse 5 correzioni nome atleta. |
+| `gymternet_2021_preview_with_decisions_summary.json` | Preview 2021 eseguita con decisioni admin applicate, senza commit. |
+| `gymternet_2021_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2021. Inizialmente conteneva 4 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
+| `gymternet_2021_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2021; vuoto. |
+| `gymternet_2021_commit_summary.json` | Report tecnico del commit reale 2021, con backup, statistiche di import e controlli post-import. |
 
 ## Convenzione review atleta/country
 
@@ -75,6 +81,8 @@ Nel CSV `gymternet_2019_existing_athlete_match_review.csv`, i valori inseriti co
 Nel CSV `gymternet_2020_existing_athlete_match_review.csv`, i valori inseriti come `Merge`, `Separate`, `Correct` e `History` nel file Numbers sono stati normalizzati rispettivamente in `merge as same athlete`, `keep separate`, `canonical country` e `country history`.
 
 Nel CSV `gymternet_2020_new_athlete_country_conflicts.csv`, il refuso `Corrrect` inserito nel file Numbers e stato normalizzato in `canonical country`.
+
+Nel flusso 2021 e stato introdotto il supporto a `target_name_update`: quando l'ADMIN conferma che un atleta importato corrisponde a un atleta gia presente ma il nome salvato nel DB e errato, il commit puo correggere la scheda atleta esistente senza creare una nuova entita. I casi verificati sono documentati in `gymternet_2021_athlete_name_corrections.csv`.
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 

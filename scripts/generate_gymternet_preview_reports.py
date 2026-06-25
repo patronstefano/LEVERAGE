@@ -381,6 +381,7 @@ def main() -> None:
         (
             athlete_resolution_ids,
             _athlete_country_update_ids,
+            _athlete_name_update_ids,
             decision_merge_keys,
             represented_country_overrides,
             _decision_canonical_names,

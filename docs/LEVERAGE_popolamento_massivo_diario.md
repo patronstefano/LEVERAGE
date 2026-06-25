@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019 e 2020 committati e verificati; preview 2021 eseguita, in attesa di review admin
+Stato: import storico 2018, 2019, 2020 e 2021 committati e verificati; prossimo passo preview controllata 2022
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -1412,15 +1412,16 @@ Il commit reale ha creato 33.777 result nuovi e non ha introdotto duplicati sema
 
 I 696 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2020_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
 
-## 10. Import 2021 - Preview senza commit
+## 10. Import 2021 - Preview, review e commit
 
-Data preview: 25 giugno 2026
+Data preview: 25 giugno 2026  
+Data commit database locale: 25 giugno 2026
 
 File sorgente: `import_files/Results 2021.xlsx`
 
-Stato: preview eseguita, nessun commit 2021 eseguito
+Stato: import 2021 committato e verificato
 
-La preview 2021 e stata eseguita dopo il commit reale 2020. Il database di partenza contiene:
+La preview 2021 e stata eseguita dopo il commit reale 2020. Il database di partenza conteneva:
 
 | Entita | Conteggio |
 |---|---:|
@@ -1429,7 +1430,7 @@ La preview 2021 e stata eseguita dopo il commit reale 2020. Il database di parte
 | Result | 230.398 |
 | Notification | 0 |
 
-### 10.1 Sintesi preview 2021
+### 10.1 Sintesi preview iniziale 2021
 
 | Voce | Conteggio |
 |---|---:|
@@ -1438,7 +1439,7 @@ La preview 2021 e stata eseguita dopo il commit reale 2020. Il database di parte
 | Athlete che verrebbero creati senza decisioni admin | 3.013 |
 | Event che verrebbero creati | 196 |
 | Duplicati identici interni al file | 0 |
-| Conflitti bloccanti | 0 |
+| Conflitti bloccanti iniziali | 0 |
 | Warning | 2 |
 
 Warning prodotti:
@@ -1451,20 +1452,20 @@ Warning prodotti:
 | File | Scopo |
 |---|---|
 | `docs/import_reports/gymternet_2021_preview_summary.json` | Sintesi tecnica completa della preview 2021. |
-| `docs/import_reports/gymternet_2021_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto in questa preview. |
-| `docs/import_reports/gymternet_2021_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2021_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto. |
+| `docs/import_reports/gymternet_2021_conflicts.csv` | Audit dei conflitti bloccanti; vuoto. |
 | `docs/import_reports/gymternet_2021_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
 | `docs/import_reports/gymternet_2021_athlete_review.csv` | Review atleta/country completa e tecnica. |
 | `docs/import_reports/gymternet_2021_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
 | `docs/import_reports/gymternet_2021_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+| `docs/import_reports/gymternet_2021_athlete_name_corrections.csv` | Correzioni nome atleta esistente verificate dall'admin. |
+| `docs/import_reports/gymternet_2021_athlete_match_decisions.json` | Payload tecnico delle decisioni admin. |
+| `docs/import_reports/gymternet_2021_preview_with_decisions_summary.json` | Preview con decisioni admin applicate, senza commit. |
+| `docs/import_reports/gymternet_2021_post_decision_conflicts.csv` | Audit dei conflitti post-decisione; rigenerato vuoto dopo la correzione finale. |
+| `docs/import_reports/gymternet_2021_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni; vuoto. |
+| `docs/import_reports/gymternet_2021_commit_summary.json` | Report tecnico del commit reale 2021. |
 
-### 10.3 Duplicati e conflitti 2021
-
-La preview non ha rilevato duplicati identici interni al file.
-
-La preview non ha rilevato conflitti bloccanti con il database gia popolato.
-
-### 10.4 D-score orfani 2021
+### 10.3 D-score orfani 2021
 
 Totale D-score orfani: 1.341.
 
@@ -1477,9 +1478,9 @@ Totale D-score orfani: 1.341.
 | `possible_event_name_mismatch` | 15 |
 | `missing_score_sheet_context` | 4 |
 
-Decisione provvisoria: come per 2018, 2019 e 2020, questi D-score restano fuori dal database operativo salvo review mirata futura.
+Decisione: come per 2018, 2019 e 2020, questi D-score restano fuori dal database operativo salvo review mirata futura.
 
-### 10.5 Review atleta/country 2021
+### 10.4 Review atleta/country 2021
 
 Totale review atleta/country: 329.
 
@@ -1489,31 +1490,66 @@ Totale review atleta/country: 329.
 | `possible_athlete_identity_collision` | 31 |
 | `possible_athlete_country_change` | 18 |
 
-CSV operativi:
+CSV operativi compilati dall'admin:
 
-| File | Righe da controllare |
+| File | Righe controllate |
 |---|---:|
 | `gymternet_2021_existing_athlete_match_review.csv` | 326 |
 | `gymternet_2021_new_athlete_country_conflicts.csv` | 3 |
 
-Priorita del CSV `existing_athlete_match_review`:
+### 10.5 Correzioni nome atleta
 
-| Priorita | Righe |
+Durante la review 2021 l'admin ha identificato 5 nomi errati gia presenti nel database. E stato aggiunto il supporto backend a `target_name_update`, cosi il commit Gymternet puo correggere il nome della scheda atleta esistente senza creare una nuova entita.
+
+| ID atleta | Nome precedente | Nome corretto | Country | Discipline |
+|---:|---|---|---|---|
+| 1147 | Hirohito Obama | Hirohito Kohama | JPN | MAG |
+| 676 | Dawiel Carrion | Daniel Carrion | ESP | MAG |
+| 8849 | Yuta Sasaki | Yutaro Sasaki | JPN | MAG |
+| 8915 | Ai Takada | Airi Takada | JPN | WAG |
+| 1180 | Hung Yuang-His | Hung Yuan-Hsi | TPE | MAG |
+
+### 10.6 Decisioni applicate 2021
+
+Dopo il trasferimento delle decisioni admin e l'aggiunta delle correzioni nome, il payload tecnico 2021 ha prodotto:
+
+| Decisione/azione | Conteggio |
 |---|---:|
-| high | 60 |
-| medium | 266 |
+| Suggerimenti accettati | 242 |
+| Nuovi atleti confermati | 38 |
+| Merge di identita atleta | 31 |
+| Aggiornamenti country atleta | 11 |
+| Country atleta mantenute | 10 |
+| Correzioni nome atleta | 5 |
+| Correzioni `represented_country` | 35 chiavi decisionali / 174 result corretti nel commit |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
 
-### 10.6 Conflitti country tra nuovi atleti
+### 10.7 Conflitti post-decisione risolti
 
-| Atleta | Discipline | Country coinvolte | Evidenza futura |
-|---|---|---|---|
-| Logan Curtis | MAG | BAN, NZL | 2024: NZL; 2025: NZL |
-| Rory Quinn | MAG | BAN, NZL | 2023: NZL; 2024: NZL; 2025: NZL |
-| Joshua Jack Williams | MAG | ESP, GER | not found 2022-2025 |
+La prima preview con decisioni applicate ha generato 4 conflitti, collegati a 2 proposte di merge:
 
-Questi casi dovranno essere verificati dall'admin nel CSV dedicato.
+- `Ona Garcia` con `Ana Garcia`;
+- `Ariadna Sanchez` con `Aitana Sanchez`.
 
-### 10.7 Name-order automatico
+In entrambi i casi il merge avrebbe creato result nello stesso evento, round, format e apparatus con score o D-score diversi.
+
+Decisione metodologica: applicare la regola gia consolidata:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Dopo questa correzione, la preview post-decisione e risultata pulita:
+
+| Voce | Conteggio |
+|---|---:|
+| Conflitti post-decisione | 0 |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
+| Duplicati identici residui | 0 |
+
+### 10.8 Name-order automatico
 
 Durante la preview 2021 il tool ha applicato automaticamente la regola name-order:
 
@@ -1523,14 +1559,70 @@ Durante la preview 2021 il tool ha applicato automaticamente la regola name-orde
 | Chiavi variante normalizzate | 4 |
 | Record normalizzati | 20 |
 
-### 10.8 Stato operativo
+### 10.9 Commit database 2021
 
-Il 2021 non e stato importato nel database.
+Prima del commit e stato creato il backup:
 
-Prima del commit 2021 occorre:
+```text
+backups/leverage_pre_import_2021_20260625_204252.db
+```
 
-1. completare i CSV admin 2021;
-2. generare il payload decisionale;
-3. rieseguire preview con decisioni applicate;
-4. controllare eventuali conflitti post-decisione;
-5. solo dopo preview pulita, eseguire commit controllato 2021.
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 2.727 |
+| Event creati | 196 |
+| Result creati | 77.423 |
+| Result completi creati | 50.565 |
+| Result parziali creati | 26.858 |
+| Event aggiornati | 189 |
+| Country atleta aggiornate | 11 |
+| Nomi atleta aggiornati | 5 |
+| `represented_country` corretti sui result | 174 |
+| Atleti con nuovi result | 6.782 |
+| Event con nuovi result | 196 |
+| Duplicati saltati | 0 |
+| D-score orfani lasciati fuori dal DB | 1.341 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 14.957 |
+| Event | 717 |
+| Result | 307.821 |
+| Notification | 0 |
+
+### 10.10 Controlli post-import 2021
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+
+Qualita dati 2021:
+
+| Indicatore | Conteggio |
+|---|---:|
+| Result completi 2021 | 50.565 |
+| Result 2021 con final score ma senza D-score | 26.858 |
+| Result 2021 senza final score | 0 |
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+### 10.11 Stato operativo finale 2021
+
+Il 2021 e stato importato nel database locale.
+
+Il commit reale ha creato 77.423 result nuovi e non ha introdotto duplicati semantici.
+
+I 1.341 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2021_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.

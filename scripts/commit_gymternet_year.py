@@ -149,6 +149,7 @@ def main() -> None:
         (
             athlete_resolution_ids,
             athlete_country_update_ids,
+            athlete_name_update_ids,
             decision_merge_keys,
             represented_country_overrides,
             decision_canonical_names,
@@ -193,6 +194,7 @@ def main() -> None:
             notification_user_id=None,
             athlete_resolution_ids=athlete_resolution_ids,
             athlete_country_update_ids=athlete_country_update_ids,
+            athlete_name_update_ids=athlete_name_update_ids,
             athlete_merge_keys=athlete_merge_keys,
             represented_country_overrides=represented_country_overrides,
             athlete_canonical_names=athlete_canonical_names,

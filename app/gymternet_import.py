@@ -2325,12 +2325,72 @@ def resolve_manual_athlete_target(db: Session, target: dict) -> Optional[models.
     ).first()
 
 
+def athlete_name_update_from_decision(
+    db: Session,
+    athlete: models.Athlete,
+    decision: dict,
+    issues: list[dict],
+    review_id: str,
+) -> tuple[Optional[dict], bool]:
+    update = decision.get("target_name_update") or decision.get("athlete_name_update")
+    if not update:
+        return None, True
+
+    first_name = str(update.get("first_name") or "").strip()
+    last_name = str(update.get("last_name") or "").strip()
+    if not first_name or not last_name:
+        issues.append({
+            "severity": "warning",
+            "message": (
+                f"Ignored athlete name update for review_id '{review_id}' "
+                "because first_name or last_name is missing"
+            ),
+        })
+        return None, False
+
+    if athlete.first_name == first_name and athlete.last_name == last_name:
+        return None, True
+
+    duplicate = db.query(models.Athlete).filter(
+        models.Athlete.id != athlete.id,
+        func.lower(models.Athlete.first_name) == first_name.lower(),
+        func.lower(models.Athlete.last_name) == last_name.lower(),
+        models.Athlete.discipline == athlete.discipline,
+        models.Athlete.country == athlete.country,
+        models.Athlete.is_deleted.is_(False),
+    ).first()
+    if duplicate:
+        issues.append({
+            "severity": "warning",
+            "message": (
+                f"Ignored athlete name update for review_id '{review_id}' because "
+                "another active athlete already has the requested name, discipline and country"
+            ),
+        })
+        return None, False
+
+    return {
+        "from_first_name": athlete.first_name,
+        "from_last_name": athlete.last_name,
+        "to_first_name": first_name,
+        "to_last_name": last_name,
+    }, True
+
+
 def apply_athlete_match_decisions(
     db: Session,
     review_items: list[dict],
     decisions: Optional[list[dict]],
     issues: list[dict],
-) -> tuple[dict[tuple, int], dict[int, dict], dict[tuple, tuple], dict[tuple, str], dict[tuple, dict], dict]:
+) -> tuple[
+    dict[tuple, int],
+    dict[int, dict],
+    dict[int, dict],
+    dict[tuple, tuple],
+    dict[tuple, str],
+    dict[tuple, dict],
+    dict,
+]:
     stats = {
         "accepted_suggestions": 0,
         "manual_corrections": 0,
@@ -2339,16 +2399,18 @@ def apply_athlete_match_decisions(
         "identity_kept_separate": 0,
         "country_updates": 0,
         "country_kept": 0,
+        "athlete_name_updates": 0,
         "represented_country_corrections": 0,
         "invalid_decisions": 0,
         "unresolved": len(review_items),
     }
     if not decisions:
-        return {}, {}, {}, {}, {}, stats
+        return {}, {}, {}, {}, {}, {}, stats
 
     review_by_id = {item["review_id"]: item for item in review_items}
     resolutions: dict[tuple, int] = {}
     country_updates: dict[int, dict] = {}
+    name_updates: dict[int, dict] = {}
     merge_keys: dict[tuple, tuple] = {}
     represented_country_overrides: dict[tuple, str] = {}
     athlete_canonical_names: dict[tuple, dict] = {}
@@ -2440,6 +2502,19 @@ def apply_athlete_match_decisions(
                     ),
                 })
                 continue
+            name_update, name_update_valid = athlete_name_update_from_decision(
+                db,
+                athlete,
+                decision,
+                issues,
+                review["review_id"],
+            )
+            if not name_update_valid:
+                stats["invalid_decisions"] += 1
+                continue
+            if name_update:
+                name_updates[athlete.id] = name_update
+                stats["athlete_name_updates"] += 1
             for variant_key in variant_keys:
                 resolutions[variant_key] = athlete.id
             if action == "accept_suggestion":
@@ -2558,6 +2633,20 @@ def apply_athlete_match_decisions(
             })
             continue
 
+        name_update, name_update_valid = athlete_name_update_from_decision(
+            db,
+            athlete,
+            decision,
+            issues,
+            review["review_id"],
+        )
+        if not name_update_valid:
+            stats["invalid_decisions"] += 1
+            continue
+        if name_update:
+            name_updates[athlete.id] = name_update
+            stats["athlete_name_updates"] += 1
+
         imported_country = review["imported_athlete"].get("country")
         if imported_country and athlete.country and imported_country != athlete.country:
             country_action = decision.get("country_action")
@@ -2593,7 +2682,15 @@ def apply_athlete_match_decisions(
             stats["manual_corrections"] += 1
 
     stats["unresolved"] = max(len(review_items) - len(resolved_review_ids), 0)
-    return resolutions, country_updates, merge_keys, represented_country_overrides, athlete_canonical_names, stats
+    return (
+        resolutions,
+        country_updates,
+        name_updates,
+        merge_keys,
+        represented_country_overrides,
+        athlete_canonical_names,
+        stats,
+    )
 
 
 def assign_automatic_days(
@@ -3082,6 +3179,7 @@ def commit_records(
     notification_user_id: Optional[int] = None,
     athlete_resolution_ids: Optional[dict[tuple, int]] = None,
     athlete_country_update_ids: Optional[dict[int, dict]] = None,
+    athlete_name_update_ids: Optional[dict[int, dict]] = None,
     athlete_merge_keys: Optional[dict[tuple, tuple]] = None,
     represented_country_overrides: Optional[dict[tuple, str]] = None,
     athlete_canonical_names: Optional[dict[tuple, dict]] = None,
@@ -3097,6 +3195,7 @@ def commit_records(
         "orphan_dscore_review_uncommitted": orphan_dscore_review_uncommitted,
         "updated_events": 0,
         "updated_athlete_countries": 0,
+        "updated_athlete_names": 0,
         "corrected_represented_countries": 0,
         "athletes_with_new_results": 0,
         "events_with_new_results": 0,
@@ -3106,6 +3205,7 @@ def commit_records(
     existing_athletes, existing_events, existing_results = build_existing_indexes(db)
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_country_update_ids = athlete_country_update_ids or {}
+    athlete_name_update_ids = athlete_name_update_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
     represented_country_overrides = represented_country_overrides or {}
     athlete_canonical_names = athlete_canonical_names or {}
@@ -3114,6 +3214,23 @@ def commit_records(
     created_events_for_notification: list[models.Event] = []
     athletes_with_new_results: set[int] = set()
     events_with_new_results: set[int] = set()
+
+    for athlete_id, name_update in athlete_name_update_ids.items():
+        athlete = db.query(models.Athlete).filter(
+            models.Athlete.id == athlete_id,
+            models.Athlete.is_deleted.is_(False),
+        ).first()
+        if not athlete:
+            continue
+        first_name = str(name_update.get("to_first_name") or "").strip()
+        last_name = str(name_update.get("to_last_name") or "").strip()
+        if not first_name or not last_name:
+            continue
+        if athlete.first_name == first_name and athlete.last_name == last_name:
+            continue
+        athlete.first_name = first_name
+        athlete.last_name = last_name
+        stats["updated_athlete_names"] += 1
 
     for athlete_id, country_update in athlete_country_update_ids.items():
         athlete = db.query(models.Athlete).filter(models.Athlete.id == athlete_id).first()
@@ -3225,6 +3342,7 @@ def commit_records(
             "orphan_dscore_review_uncommitted",
             "updated_events",
             "updated_athlete_countries",
+            "updated_athlete_names",
             "corrected_represented_countries",
             "skipped_duplicates",
         )

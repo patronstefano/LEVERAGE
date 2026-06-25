@@ -80,6 +80,7 @@ def parse_and_summarize_upload(
         summary["athlete_match_decision_stats"] = {}
         summary["athlete_resolution_ids"] = {}
         summary["athlete_country_update_ids"] = {}
+        summary["athlete_name_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
         summary["represented_country_overrides"] = {}
         summary["athlete_canonical_names"] = {}
@@ -107,6 +108,7 @@ def parse_and_summarize_upload(
         summary["athlete_match_decision_stats"] = {}
         summary["athlete_resolution_ids"] = {}
         summary["athlete_country_update_ids"] = {}
+        summary["athlete_name_update_ids"] = {}
         summary["athlete_merge_keys"] = {}
         summary["represented_country_overrides"] = {}
         summary["athlete_canonical_names"] = {}
@@ -141,6 +143,7 @@ def parse_and_summarize_upload(
     (
         athlete_resolution_ids,
         athlete_country_update_ids,
+        athlete_name_update_ids,
         athlete_merge_keys,
         represented_country_overrides,
         athlete_canonical_names,
@@ -177,6 +180,7 @@ def parse_and_summarize_upload(
     summary["athlete_match_decision_stats"] = athlete_decision_stats
     summary["athlete_resolution_ids"] = athlete_resolution_ids
     summary["athlete_country_update_ids"] = athlete_country_update_ids
+    summary["athlete_name_update_ids"] = athlete_name_update_ids
     summary["athlete_merge_keys"] = athlete_merge_keys
     summary["represented_country_overrides"] = represented_country_overrides
     summary["athlete_canonical_names"] = athlete_canonical_names
@@ -329,6 +333,7 @@ def commit_gymternet_import(
         notification_user_id=current_user.id,
         athlete_resolution_ids=summary["athlete_resolution_ids"],
         athlete_country_update_ids=summary["athlete_country_update_ids"],
+        athlete_name_update_ids=summary["athlete_name_update_ids"],
         athlete_merge_keys=summary["athlete_merge_keys"],
         represented_country_overrides=summary["represented_country_overrides"],
         athlete_canonical_names=summary["athlete_canonical_names"],

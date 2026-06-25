@@ -94,6 +94,53 @@ La regola e stata riapplicata durante la review Gymternet 2020 sul caso:
 
 In questo caso il merge avrebbe creato 5 conflitti post-decisione, perche i due atleti risultavano presenti nello stesso evento, nello stesso round/format e sugli stessi apparatus con punteggi diversi. La decisione finale e stata trattarli come due atleti distinti.
 
+### Esempi 2021
+
+La regola e stata riapplicata durante la review Gymternet 2021 sui casi:
+
+| Variante importata | Atleta suggerito | Contesto | Decisione |
+|---|---|---|---|
+| Ona Garcia | Ana Garcia | 1st Spanish League 2021, stessi apparatus e score diversi | keep separate |
+| Ariadna Sanchez | Aitana Sanchez | 1st Spanish League 2021, stessi apparatus e score diversi | keep separate |
+
+## Regola: Correzione Nome Target Esistente
+
+ID tecnico:
+
+```text
+target_name_update
+```
+
+### Problema
+
+Durante la review `possible_existing_athlete_match`, puo emergere che l'atleta importato e lo stesso atleta gia presente nel DB, ma il nome salvato nella scheda atleta esistente contiene un errore di data entry.
+
+### Decisione
+
+Quando l'ADMIN verifica ufficialmente il caso, il payload decisionale puo includere:
+
+```json
+{
+  "target_name_update": {
+    "first_name": "Daniel",
+    "last_name": "Carrion",
+    "reason": "admin_verified_existing_db_name_typo"
+  }
+}
+```
+
+Il commit deve aggiornare la scheda atleta esistente e collegare i nuovi result allo stesso `athlete_id`, senza creare un duplicato atleta.
+
+### Esempi 2021
+
+| Nome errato nel DB | Nome corretto |
+|---|---|
+| Hirohito Obama | Hirohito Kohama |
+| Dawiel Carrion | Daniel Carrion |
+| Yuta Sasaki | Yutaro Sasaki |
+| Ai Takada | Airi Takada |
+| Hung Yuang-His | Hung Yuan-Hsi |
+
 ## Uso futuro
 
 Quando verranno importati nuovi file Gymternet:

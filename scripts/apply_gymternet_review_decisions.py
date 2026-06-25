@@ -5,7 +5,7 @@ import csv
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from numbers_parser import Document
 
@@ -133,6 +133,29 @@ def load_review_rows(paths: list[Path]) -> list[dict[str, str]]:
     return rows
 
 
+def load_name_corrections(path: Path) -> dict[str, dict[str, str]]:
+    if not path.exists():
+        return {}
+    with path.open(newline="", encoding="utf-8") as file:
+        rows = list(csv.DictReader(file))
+    corrections: dict[str, dict[str, str]] = {}
+    for row in rows:
+        review_id = clean_cell(row.get("review_id"))
+        first_name = clean_cell(row.get("corrected_first_name"))
+        last_name = clean_cell(row.get("corrected_last_name"))
+        if not review_id or not first_name or not last_name:
+            continue
+        corrections[review_id] = {
+            "target_athlete_id": clean_cell(row.get("target_athlete_id")),
+            "current_first_name": clean_cell(row.get("current_first_name")),
+            "current_last_name": clean_cell(row.get("current_last_name")),
+            "corrected_first_name": first_name,
+            "corrected_last_name": last_name,
+            "reason": clean_cell(row.get("reason")),
+        }
+    return corrections
+
+
 def first_suggestion(review: dict[str, Any], row: dict[str, str]) -> dict[str, Any]:
     suggestions = review.get("suggestions") or []
     target_id = row.get("suggested_existing_athlete_id")
@@ -145,6 +168,29 @@ def first_suggestion(review: dict[str, Any], row: dict[str, str]) -> dict[str, A
     if not suggestions:
         raise ValueError(f"Review {review['review_id']} has no suggestions")
     return suggestions[0]
+
+
+def attach_name_correction(
+    payload: dict[str, Any],
+    correction: Optional[dict[str, str]],
+    suggestion: dict[str, Any],
+    review_id: str,
+) -> None:
+    if not correction:
+        return
+    target = suggestion.get("target_athlete") or {}
+    target_athlete_id = str(target.get("athlete_id") or "")
+    expected_athlete_id = correction.get("target_athlete_id") or ""
+    if expected_athlete_id and expected_athlete_id != target_athlete_id:
+        raise ValueError(
+            f"Review {review_id} name correction target {expected_athlete_id} "
+            f"does not match suggestion target {target_athlete_id}"
+        )
+    payload["target_name_update"] = {
+        "first_name": correction["corrected_first_name"],
+        "last_name": correction["corrected_last_name"],
+        "reason": correction.get("reason") or "admin_verified_name_correction",
+    }
 
 
 def translate_country_action_for_match(
@@ -228,7 +274,11 @@ def translate_country_change(row: dict[str, str], review: dict[str, Any]) -> dic
     raise ValueError(f"Review {review['review_id']} country change requires action")
 
 
-def translate_decision(row: dict[str, str], review: dict[str, Any]) -> dict[str, Any]:
+def translate_decision(
+    row: dict[str, str],
+    review: dict[str, Any],
+    name_correction: Optional[dict[str, str]] = None,
+) -> dict[str, Any]:
     decision = row["decision"]
     problem_type = review["problem_type"]
 
@@ -263,6 +313,7 @@ def translate_decision(row: dict[str, str], review: dict[str, Any]) -> dict[str,
             "suggestion_id": suggestion["suggestion_id"],
         }
         payload.update(translate_country_action_for_match(row, review, suggestion))
+        attach_name_correction(payload, name_correction, suggestion, review["review_id"])
         return payload
 
     raise ValueError(f"Unsupported problem_type {problem_type!r} for {review['review_id']}")
@@ -304,6 +355,8 @@ def main() -> None:
     new_csv = args.report_dir / f"gymternet_{args.year}_new_athlete_country_conflicts.csv"
     existing_numbers = existing_csv.with_suffix(".numbers")
     new_numbers = new_csv.with_suffix(".numbers")
+    name_corrections_path = args.report_dir / f"gymternet_{args.year}_athlete_name_corrections.csv"
+    name_corrections = load_name_corrections(name_corrections_path)
 
     update_stats = []
     if not args.skip_numbers:
@@ -322,7 +375,7 @@ def main() -> None:
         if review is None:
             missing_review_ids.append(row["review_id"])
             continue
-        decisions.append(translate_decision(row, review))
+        decisions.append(translate_decision(row, review, name_corrections.get(row["review_id"])))
 
     if missing_review_ids:
         raise ValueError(f"Unknown review ids: {missing_review_ids[:10]}")
@@ -336,6 +389,7 @@ def main() -> None:
         "updated_csvs": update_stats,
         "review_items": len(review_items),
         "decisions": len(decisions),
+        "name_corrections": len(name_corrections),
         "decision_actions": dict(Counter(decision["action"] for decision in decisions)),
         "output": str(output_path),
     }, indent=2, ensure_ascii=False))

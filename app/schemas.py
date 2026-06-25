@@ -1591,6 +1591,7 @@ class GymternetImportCommit(GymternetImportPreview):
     created_results: int
     updated_events: int
     updated_athlete_countries: int
+    updated_athlete_names: int = 0
     corrected_represented_countries: int = 0
     created_complete_results: int = 0
     created_partial_results: int = 0
