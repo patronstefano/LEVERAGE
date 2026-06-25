@@ -5927,6 +5927,31 @@ def gymternet_athlete_typo_csv_bytes() -> BytesIO:
     return BytesIO(csv_text.encode("utf-8"))
 
 
+def gymternet_similar_athlete_existing_context_conflict_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Jake Stanley,Great Britain,Memory Cup 2024 QF,FX,13.2,5.1\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
+def gymternet_post_decision_same_context_conflict_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Jack Stanley,Great Britain,Post Decision Cup 2024 QF,FX,14.0,5.8\n"
+        "MAG,Jake Stanley,Great Britain,Post Decision Cup 2024 QF,FX,13.2,5.1\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
+def gymternet_athlete_typo_wrong_country_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Daiki Hasimoto,Great Britain,Typo Country Cup 2024 EF,HB,14.1,5.8\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
 def gymternet_athlete_country_change_csv_bytes() -> BytesIO:
     csv_text = (
         "discipline,athlete,country,event,apparatus,score,d_score\n"
@@ -6971,6 +6996,291 @@ def test_gymternet_import_reviews_possible_existing_athlete_match_before_commit(
 
     result = client.get("/results/").json()[0]
     assert result["athlete_id"] == existing_athlete_id
+
+
+def test_gymternet_import_memory_recommends_keep_separate_for_same_context_score_conflict():
+    client.post(
+        "/auth/register",
+        json={"email": "gymternet_import_memory@example.com", "password": TEST_PASSWORD},
+    )
+    token = login_as_admin("gymternet_import_memory@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete_response = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Jack",
+            "last_name": "Stanley",
+            "discipline": "MAG",
+            "country": "GBR",
+        },
+        headers=headers,
+    )
+    assert athlete_response.status_code == 200
+    existing_athlete_id = athlete_response.json()["id"]
+
+    event_response = client.post(
+        "/events/",
+        json={
+            "name": "Memory Cup 2024",
+            "year": 2024,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    )
+    assert event_response.status_code == 200
+    existing_event_id = event_response.json()["id"]
+
+    result_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": existing_athlete_id,
+            "event_id": existing_event_id,
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "qualification",
+            "score": 14.0,
+            "D_score": 5.8,
+        },
+        headers=headers,
+    )
+    assert result_response.status_code == 200
+
+    preview_response = client.post(
+        "/imports/gymternet/preview?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_import_memory.csv",
+                gymternet_similar_athlete_existing_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    review = preview_response.json()["athlete_match_review"][0]
+    suggestion = review["suggestions"][0]
+    assert review["problem_type"] == "possible_existing_athlete_match"
+    assert review["recommended_action"] == "create_new"
+    assert review["recommended_decision"]["reason"] == "same_context_different_score_keep_separate"
+    assert suggestion["recommended_action"] == "create_new"
+    assert suggestion["learned_rule_matches"][0]["rule_id"] == "same_context_different_score_keep_separate"
+
+    merge_decisions = [
+        {
+            "review_id": review["review_id"],
+            "action": "accept_suggestion",
+            "suggestion_id": suggestion["suggestion_id"],
+        }
+    ]
+    blocked_merge_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_import_memory.csv",
+                gymternet_similar_athlete_existing_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(merge_decisions)},
+        headers=headers,
+    )
+    assert blocked_merge_response.status_code == 409
+    conflict = blocked_merge_response.json()["detail"]["conflicts"][0]
+    assert conflict["reason"] == "conflict_existing"
+    assert conflict["existing_score"] == 14.0
+    assert conflict["score"] == 13.2
+
+    separate_decisions = [
+        {
+            "review_id": review["review_id"],
+            "action": "create_new",
+            "reason": "same_context_different_score_keep_separate",
+        }
+    ]
+    commit_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_import_memory.csv",
+                gymternet_similar_athlete_existing_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(separate_decisions)},
+        headers=headers,
+    )
+    assert commit_response.status_code == 200
+    payload = commit_response.json()
+    assert payload["created_athletes"] == 1
+    assert payload["created_results"] == 1
+    assert payload["athlete_match_decision_stats"]["confirmed_new"] == 1
+
+
+def test_gymternet_post_decision_score_conflict_uses_keep_separate_rule_memory():
+    client.post(
+        "/auth/register",
+        json={"email": "gymternet_post_decision_memory@example.com", "password": TEST_PASSWORD},
+    )
+    token = login_as_admin("gymternet_post_decision_memory@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete_response = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Jack",
+            "last_name": "Stanley",
+            "discipline": "MAG",
+            "country": "GBR",
+        },
+        headers=headers,
+    )
+    assert athlete_response.status_code == 200
+
+    preview_response = client.post(
+        "/imports/gymternet/preview?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_post_decision_memory.csv",
+                gymternet_post_decision_same_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    review = preview_response.json()["athlete_match_review"][0]
+    suggestion = review["suggestions"][0]
+
+    merge_decisions = [
+        {
+            "review_id": review["review_id"],
+            "action": "accept_suggestion",
+            "suggestion_id": suggestion["suggestion_id"],
+        }
+    ]
+    blocked_merge_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_post_decision_memory.csv",
+                gymternet_post_decision_same_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(merge_decisions)},
+        headers=headers,
+    )
+    assert blocked_merge_response.status_code == 409
+    conflict = blocked_merge_response.json()["detail"]["conflicts"][0]
+    assert conflict["reason"] == "same_context_different_score_after_athlete_merge"
+    assert conflict["learned_rule_match"]["rule_id"] == "same_context_different_score_keep_separate"
+    assert conflict["learned_rule_match"]["recommended_action"] == "keep_separate"
+    assert conflict["recommended_decision"] == {
+        "action": "keep_separate",
+        "reason": "same_context_different_score_keep_separate",
+    }
+
+    separate_decisions = [
+        {
+            "review_id": review["review_id"],
+            "action": "create_new",
+            "reason": "same_context_different_score_keep_separate",
+        }
+    ]
+    commit_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_post_decision_memory.csv",
+                gymternet_post_decision_same_context_conflict_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(separate_decisions)},
+        headers=headers,
+    )
+    assert commit_response.status_code == 200
+    payload = commit_response.json()
+    assert payload["created_athletes"] == 1
+    assert payload["created_results"] == 2
+    assert payload["athlete_match_decision_stats"]["confirmed_new"] == 1
+
+
+def test_gymternet_existing_athlete_match_can_correct_represented_country():
+    client.post(
+        "/auth/register",
+        json={"email": "gymternet_match_country_correction@example.com", "password": TEST_PASSWORD},
+    )
+    token = login_as_admin("gymternet_match_country_correction@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete_response = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Daiki",
+            "last_name": "Hashimoto",
+            "discipline": "MAG",
+            "country": "JPN",
+        },
+        headers=headers,
+    )
+    assert athlete_response.status_code == 200
+    existing_athlete_id = athlete_response.json()["id"]
+
+    preview_response = client.post(
+        "/imports/gymternet/preview?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_typo_wrong_country.csv",
+                gymternet_athlete_typo_wrong_country_csv_bytes(),
+                "text/csv",
+            )
+        },
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    review_item = preview_response.json()["athlete_match_review"][0]
+    suggestion = review_item["suggestions"][0]
+    assert suggestion["target_athlete"]["athlete_id"] == existing_athlete_id
+    assert suggestion["requires_country_decision"] is True
+
+    decisions = [
+        {
+            "review_id": review_item["review_id"],
+            "action": "accept_suggestion",
+            "suggestion_id": suggestion["suggestion_id"],
+            "country_action": "keep_existing_country",
+            "represented_country_override": "JPN",
+        }
+    ]
+    commit_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={
+            "file": (
+                "gymternet_typo_wrong_country.csv",
+                gymternet_athlete_typo_wrong_country_csv_bytes(),
+                "text/csv",
+            )
+        },
+        data={"athlete_match_decisions": json.dumps(decisions)},
+        headers=headers,
+    )
+    assert commit_response.status_code == 200
+    payload = commit_response.json()
+    assert payload["created_athletes"] == 0
+    assert payload["corrected_represented_countries"] == 1
+    assert payload["athlete_match_decision_stats"]["represented_country_corrections"] == 1
+
+    athlete = client.get(f"/athletes/{existing_athlete_id}").json()
+    assert athlete["country"] == "JPN"
+    result = client.get("/results/").json()[0]
+    assert result["athlete_id"] == existing_athlete_id
+    assert result["represented_country"] == "JPN"
 
 
 def test_gymternet_import_reviews_existing_athlete_country_change_before_commit():

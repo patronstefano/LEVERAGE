@@ -1,0 +1,104 @@
+{
+  "file": "import_files/Results 2019.xlsx",
+  "backup_pre_import": "backups/leverage_pre_import_2019_2026-06-25.db",
+  "parsed_records": 106633,
+  "orphan_dscore_records": 958,
+  "orphan_review_count": 958,
+  "orphan_review_problem_types": {
+    "possible_context_mismatch": 201,
+    "missing_final_score_for_context": 228,
+    "possible_event_name_mismatch": 147,
+    "athlete_missing_in_score_sheet": 322,
+    "possible_athlete_name_typo": 53,
+    "missing_score_sheet_context": 7
+  },
+  "orphan_with_suggestions": 401,
+  "automatic_name_order": {
+    "automatic_name_order_merges": 15,
+    "automatic_name_order_variant_keys": 16,
+    "automatic_name_order_records_normalized": 118
+  },
+  "athlete_review_count": 393,
+  "athlete_review_problem_types": {
+    "possible_athlete_identity_collision": 64,
+    "possible_athlete_country_change": 20,
+    "possible_existing_athlete_match": 309
+  },
+  "athlete_review_top_suggestion_confidence": {
+    "1.0": 57,
+    "0.98": 2,
+    "0.979": 1,
+    "0.977": 2,
+    "0.976": 2,
+    "0.974": 4,
+    "0.973": 2,
+    "0.971": 4,
+    "0.97": 5,
+    "0.968": 13,
+    "0.966": 11,
+    "0.963": 15,
+    "0.96": 10,
+    "0.958": 1,
+    "0.957": 5,
+    "0.955": 3,
+    "0.952": 5,
+    "0.95": 3,
+    "0.947": 7,
+    "0.944": 5,
+    "0.941": 12,
+    "0.938": 18,
+    "0.933": 31,
+    "0.93": 2,
+    "0.929": 20,
+    "0.923": 27,
+    "0.919": 2,
+    "0.917": 16,
+    "0.914": 1,
+    "0.909": 15,
+    "0.905": 1,
+    "0.903": 7,
+    "0.9": 12,
+    "0.897": 11,
+    "0.889": 14,
+    "0.882": 5,
+    "0.88": 6
+  },
+  "athlete_review_top_suggestion_country_flags": {
+    "country_matches=None requires_country_decision=None": 48,
+    "country_matches=True requires_country_decision=False": 293,
+    "country_matches=False requires_country_decision=True": 16
+  },
+  "athlete_decision_stats_without_decisions": {
+    "accepted_suggestions": 0,
+    "manual_corrections": 0,
+    "confirmed_new": 0,
+    "identity_merges": 0,
+    "identity_kept_separate": 0,
+    "country_updates": 0,
+    "country_kept": 0,
+    "represented_country_corrections": 0,
+    "invalid_decisions": 0,
+    "unresolved": 393
+  },
+  "summary": {
+    "parsed_rows": 106633,
+    "importable_results": 106633,
+    "would_create_athletes": 4576,
+    "would_create_events": 234,
+    "duplicates": 0,
+    "conflicts": 0,
+    "issues_by_severity": {
+      "warning": 2
+    },
+    "issues": [
+      {
+        "severity": "warning",
+        "message": "958 D-score rows did not match a final-score row and need admin review"
+      },
+      {
+        "severity": "warning",
+        "message": "Automatic day assignment applied to 77 multi-day result keys without an explicit Day column; 154 rows received day values up to 2."
+      }
+    ]
+  }
+}

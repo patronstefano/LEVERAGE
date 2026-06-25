@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018 committato e verificato; prossimo passo preview 2019
+Stato: import storico 2018 committato e verificato; preview 2019 eseguita; review admin 2019 completata; payload decisionale 2019 generato; preview con decisioni applicate pulita; prossimo passo commit controllato 2019
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -742,15 +742,370 @@ Punti ancora da ricordare:
 - i result VT legacy mantengono alert di incertezza attempt;
 - il database locale non contiene ancora utenti, quindi le notifiche admin di import summary non sono state create in questa esecuzione locale.
 
-## 8. Prossimo passo
+## 8. Import 2019 - Preview senza commit
 
-Il prossimo passo e ripetere il flusso sul file 2019:
+Data esecuzione preview: 25 giugno 2026
+File sorgente: `import_files/Results 2019.xlsx`
+Stato: preview eseguita, nessun commit 2019 eseguito
 
-1. backup dello stato post-2018;
-2. preview import 2019 senza commit;
-3. analisi collisioni atleta/country e possibili name-order automatici;
-4. verifica duplicati e D-score orfani;
-5. decisioni admin documentate;
-6. commit controllato 2019;
-7. controlli post-import 2019;
-8. aggiornamento del presente diario.
+Backup pre-import:
+
+```text
+backups/leverage_pre_import_2019_2026-06-25.db
+```
+
+Documento operativo dedicato:
+
+```text
+docs/LEVERAGE_import_2019_review.md
+```
+
+Report generati:
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2019_preview_summary.json` | Sintesi tecnica della preview 2019. |
+| `docs/import_reports/gymternet_2019_orphan_dscores.csv` | D-score orfani 2019 conservati fuori dal database. |
+| `docs/import_reports/gymternet_2019_athlete_review.csv` | Review atleta/country 2019 completa e tecnica, conservata come report aggregato. |
+| `docs/import_reports/gymternet_2019_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2019 corrisponde a un atleta gia presente nel DB 2018. |
+| `docs/import_reports/gymternet_2019_new_athlete_country_conflicts.csv` | CSV operativo per i soli nuovi atleti 2019 con conflitti di country. |
+
+Nota di standardizzazione: a partire dalla preview 2019, le review operative da compilare vengono gestite in CSV. Per coerenza, anche la review collisioni atleta/country 2018 e stata convertita in `docs/import_reports/gymternet_2018_athlete_collision_review.csv`; l'audit automatico name-order 2018 e stato convertito in `docs/import_reports/gymternet_2018_name_order_audit.csv`. I Word operativi di review import sono stati rimossi; resta il Word del diario generale per uso documentale/tesi.
+
+Formato operativo semplificato:
+
+| Colonna | Uso |
+|---|---|
+| `athlete_name` / `imported_athlete_2019` | Nome e cognome atleta da verificare. |
+| `suggested_existing_athlete` | Atleta gia presente nel DB 2018 suggerito dal sistema, quando esiste. |
+| `collision_countries` / `collision_or_change_countries` | Country coinvolte nella review. |
+| `results_2019_by_country` / `imported_2019_results_by_country` | Gare 2019 associate alle diverse country. |
+| `existing_athlete_2018_results_by_country` | Gare 2018 dell'atleta gia esistente nel DB. Serve per capire se il nuovo record 2019 e davvero la stessa persona. |
+| `future_country_evidence` | Country rappresentata negli anni successivi. Per il 2019 copre 2020-2025; per il 2018 copre 2019-2025. |
+| `decision` | Inserire `merge as same athlete` oppure `keep separate`. |
+| `action` | Usare `canonical country` oppure `country history` quando serve una decisione country. |
+| `country` | Country corretta, oppure country finale/corrente in caso di storico country. |
+
+### 8.1 Sintesi preview 2019
+
+| Voce | Conteggio |
+|---|---:|
+| Result parse dal file | 106.633 |
+| Result potenzialmente importabili | 106.633 |
+| Athlete che verrebbero creati senza decisioni admin | 4.576 |
+| Event che verrebbero creati | 234 |
+| Duplicati rilevati | 0 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning:
+
+| Warning | Esito |
+|---|---:|
+| D-score non agganciati a final-score | 958 |
+| Multi-day automatici | 77 chiavi, 154 righe con `day` valorizzato |
+
+Interpretazione: la preview 2019 e tecnicamente positiva perche non presenta duplicati o conflitti bloccanti. Il blocco prima del commit riguarda la review atleta/country.
+
+### 8.2 D-score orfani 2019
+
+| Problem type | Conteggio |
+|---|---:|
+| `athlete_missing_in_score_sheet` | 322 |
+| `missing_final_score_for_context` | 228 |
+| `possible_context_mismatch` | 201 |
+| `possible_event_name_mismatch` | 147 |
+| `possible_athlete_name_typo` | 53 |
+| `missing_score_sheet_context` | 7 |
+
+Totale D-score orfani: 958.
+
+D-score orfani con almeno un suggerimento automatico: 401.
+
+Decisione provvisoria: come per il 2018, non importarli come result autonomi. Conservarli nel CSV dedicato per eventuale review futura.
+
+### 8.3 Merge automatico name-order 2019
+
+Il tool ha applicato la regola automatica `merge name order` anche alla preview 2019.
+
+| Controllo automatico | Conteggio |
+|---|---:|
+| Merge automatici name-order | 15 |
+| Chiavi atleta/country ricondotte a nome canonico | 16 |
+| Righe result normalizzate sul nome canonico | 118 |
+
+Questi casi non generano review manuale autonoma, salvo quando dopo la normalizzazione rimane una questione country/identity.
+
+### 8.4 Review atleta/country 2019
+
+Totale review atleta/country: 393.
+
+| Problem type | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 309 |
+| `possible_athlete_identity_collision` | 64 |
+| `possible_athlete_country_change` | 20 |
+
+Triage operativa:
+
+| Review priority | Conteggio | Interpretazione |
+|---|---:|---|
+| `high` | 100 | Richiede verifica admin puntuale. |
+| `bulk_candidate` | 92 | Possibile accettazione piu rapida dopo controllo a campione. |
+| `medium` | 201 | Match potenziali da controllare prima del commit. |
+
+Distribuzione confidence del miglior suggerimento:
+
+| Confidence | Conteggio |
+|---|---:|
+| `>=0.95` | 145 |
+| `0.90-0.949` | 176 |
+| `<0.90/no suggestion` | 72 |
+
+Flag country del miglior suggerimento:
+
+| Flag | Conteggio |
+|---|---:|
+| Stessa country, senza decisione country richiesta | 293 |
+| Country diversa, decisione country richiesta | 16 |
+| Non applicabile a identity collision con suggerimento | 48 |
+
+### 8.5 Separazione operativa della review 2019
+
+Durante la preparazione della review admin e emersa una necessita pratica: per gli atleti gia esistenti nel database non basta vedere il dato 2019, perche l'admin deve poter confrontare anche le gare 2018 dell'atleta gia salvato in LEVERAGE.
+
+Decisione metodologica del 25 giugno 2026:
+
+- separare la review 2019 in due CSV operativi;
+- mostrare nel CSV dei match con atleta esistente anche le gare 2018 dell'atleta gia presente nel DB;
+- lasciare in un secondo CSV solo i nuovi atleti 2019 con conflitti di country;
+- mantenere `gymternet_2019_athlete_review.csv` come report tecnico aggregato.
+
+File operativi prodotti:
+
+| File | Righe dati | Scopo |
+|---|---:|---|
+| `docs/import_reports/gymternet_2019_existing_athlete_match_review.csv` | 377 | Verificare se atleta 2019 e atleta gia presente nel DB 2018 sono la stessa persona. |
+| `docs/import_reports/gymternet_2019_new_athlete_country_conflicts.csv` | 16 | Risolvere conflitti country interni ai nuovi atleti 2019. |
+
+Nel file `gymternet_2019_existing_athlete_match_review.csv` la colonna `existing_athlete_2018_results_by_country` riporta le gare 2018 dell'atleta gia presente, raggruppate per country. Questo rende piu rapida la decisione admin tra:
+
+- `merge as same athlete`;
+- `keep separate`;
+- `canonical country`;
+- `country history`.
+
+Aggiornamento operativo del 25 giugno 2026:
+
+- l'admin ha completato la review dei nuovi atleti 2019 con conflitti country nel file Numbers `gymternet_2019_new_athlete_country_conflicts.numbers`;
+- il file Numbers e stato convertito nel CSV operativo `docs/import_reports/gymternet_2019_new_athlete_country_conflicts.csv`;
+- l'ordine colonne e stato reso coerente nei due CSV operativi 2019, posizionando le colonne decisionali `decision`, `action`, `country`, `notes` prima delle colonne di evidenza;
+- i valori inseriti in Numbers sono stati normalizzati per il backend: `Merge` diventa `merge as same athlete`, `Correct` diventa `canonical country`;
+- esito: 16/16 nuovi conflitti country 2019 risultano compilati come `merge as same athlete` con `canonical country`.
+
+Aggiornamento operativo successivo del 25 giugno 2026:
+
+- l'admin ha completato anche il file Numbers `gymternet_2019_existing_athlete_match_review.numbers`;
+- il file e stato analizzato e trasferito nel CSV operativo `docs/import_reports/gymternet_2019_existing_athlete_match_review.csv`;
+- per evitare alterazioni dei dati tecnici causate dalla lettura del formato Numbers, sono state importate dal Numbers solo le colonne decisionali `decision`, `action`, `country` e `notes`;
+- i valori sono stati normalizzati per il backend: `Merge` diventa `merge as same athlete`, `Separate` diventa `keep separate`, `Correct` diventa `canonical country`, `History` e il refuso `Histroy` diventano `country history`;
+- esito: 377/377 righe compilate, 365 `merge as same athlete`, 12 `keep separate`, 67 `canonical country`, 9 `country history`, 0 decisioni invalide;
+- sono stati rilevati 9 casi in cui lo stesso atleta gia esistente era suggerito su piu righe per varianti di nome o country. Non sono emersi duplicati tecnici di `review_id`; l'audit e stato salvato in `docs/import_reports/gymternet_2019_existing_athlete_repeat_audit.csv`.
+
+Indicazione metodologica aggiunta per gli import futuri: se due record hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una delle due varianti non compare piu (`not found`), il tool puo trattare il caso come merge automatico/candidato diretto, evitando di sottoporlo ogni volta alla review manuale admin.
+
+### 8.6 Esito preview 2019
+
+Il 2019 non e stato committato nel database.
+
+Prima del commit occorre:
+
+1. eseguire il commit controllato 2019;
+2. fare controlli post-import e backup post-2019;
+3. aggiornare il diario con l'esito finale del commit.
+
+### 8.7 Payload decisionale e preview applicata 2019
+
+Data esecuzione: 25 giugno 2026
+
+File generati:
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2019_athlete_match_decisions.json` | Payload tecnico prodotto dalle decisioni admin atleta/country 2019. |
+| `docs/import_reports/gymternet_2019_preview_with_decisions_summary.json` | Esito preview 2019 con decisioni applicate, eseguita su copia temporanea del database. |
+| `docs/import_reports/gymternet_2019_post_decision_conflicts.csv` | Audit dei conflitti emersi dopo le fusioni atleta/country. |
+
+Prima della preview applicata e stata effettuata una rifinitura backend: `canonical country` ora puo correggere `Result.represented_country` anche nei match con atleta gia esistente e nei country-change, non solo nelle identity collision. Questo rende coerente il comportamento con la semantica decisa durante la review admin.
+
+La prima versione del payload decisionale conteneva 393 decisioni:
+
+| Decisione tecnica | Conteggio |
+|---|---:|
+| `merge_as_same_athlete` | 64 |
+| `accept_suggestion` | 297 |
+| `update_country` | 10 |
+| `keep_existing_country` | 10 |
+| `create_new` | 12 |
+
+Esito decisioni:
+
+| Controllo | Conteggio |
+|---|---:|
+| Decisioni invalide | 0 |
+| Review irrisolte | 0 |
+| Correzioni represented country da decisioni | 76 |
+| Override represented country generati | 143 |
+
+Prima preview applicata:
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 106.633 |
+| Result importabili dopo decisioni | 106.609 |
+| Athlete che verrebbero creati | 4.204 |
+| Event che verrebbero creati | 234 |
+| Conflitti residui | 24 |
+| Duplicati residui | 0 |
+| D-score orfani lasciati fuori | 958 |
+
+Prima simulazione commit su database temporaneo:
+
+| Voce simulata | Conteggio |
+|---|---:|
+| Athlete creati | 4.204 |
+| Event creati | 234 |
+| Result creati | 106.609 |
+| Result completi creati | 73.782 |
+| Result parziali creati | 32.827 |
+| Event aggiornati | 268 |
+| Country corrente Athlete aggiornate | 11 |
+| `represented_country` corretti | 521 |
+| Athlete con nuovi result | 8.571 |
+| Event con nuovi result | 234 |
+
+La simulazione e stata eseguita su:
+
+```text
+/private/tmp/leverage_preview_2019.db
+```
+
+Il database operativo `leverage.db` non e stato modificato.
+
+Controllo rollback della copia temporanea:
+
+| Stato DB temporaneo | Athlete | Event | Result | Notification |
+|---|---:|---:|---:|---:|
+| Prima della simulazione | 7.134 | 211 | 89.988 | 0 |
+| Durante la simulazione | 11.338 | 445 | 196.597 | 0 |
+| Dopo rollback | 7.134 | 211 | 89.988 | 0 |
+
+### 8.8 Conflitti post-decisione 2019
+
+La preview con decisioni applicate ha fatto emergere 24 conflitti post-decisione. Questi casi non erano visibili nella preview precedente perche diventano conflitti solo dopo avere fuso varianti nome/country sullo stesso atleta.
+
+Distribuzione:
+
+| Atleta risolto | Conflitti |
+|---|---:|
+| Jack Stanley | 7 |
+| Lee Jun-ho | 5 |
+| Siddhi Hattekar | 5 |
+| Chen Yu | 3 |
+| Sofia Bertoli | 2 |
+| Carla Martin | 1 |
+| Kaja Skalska | 1 |
+
+Interpretazione: due righe sorgente diventano lo stesso `Result` sportivo dopo le decisioni admin, ma hanno score o D-score diversi. Non possono essere trattate come duplicati innocui.
+
+Decisione metodologica iniziale: il commit standard 2019 restava bloccato finche questi conflitti non fossero stati risolti. Il file operativo da controllare era:
+
+```text
+docs/import_reports/gymternet_2019_post_decision_conflicts.csv
+```
+
+Aggiornamento successivo del 25 giugno 2026: l'admin ha confermato che i 7 gruppi coinvolti nei 24 conflitti sono atleti diversi. Le relative decisioni sono state modificate da `merge as same athlete` a `keep separate`.
+
+Decisioni aggiornate:
+
+| Imported athlete | Suggested existing athlete |
+|---|---|
+| Carolina Martin | Carla Martin |
+| Cen Yu | Chen Yu |
+| Jake Stanley | Jack Stanley |
+| Lee Jung-hyo | Lee Jun-ho |
+| Maja Skalska | Kaja Skalska |
+| Riddhi Hattekar | Siddhi Hattekar |
+| Sonia Bertoli | Sofia Bertoli |
+
+Payload rigenerato:
+
+| Decisione tecnica | Conteggio aggiornato |
+|---|---:|
+| `merge_as_same_athlete` | 64 |
+| `accept_suggestion` | 290 |
+| `update_country` | 10 |
+| `keep_existing_country` | 10 |
+| `create_new` | 19 |
+
+Nuova preview applicata:
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 106.633 |
+| Result importabili dopo decisioni | 106.633 |
+| Athlete che verrebbero creati | 4.211 |
+| Event che verrebbero creati | 234 |
+| Conflitti residui | 0 |
+| Duplicati residui | 0 |
+| D-score orfani lasciati fuori | 958 |
+
+Nuova simulazione commit su database temporaneo:
+
+| Voce simulata | Conteggio |
+|---|---:|
+| Athlete creati | 4.211 |
+| Event creati | 234 |
+| Result creati | 106.633 |
+| Result completi creati | 73.802 |
+| Result parziali creati | 32.831 |
+| Event aggiornati | 268 |
+| Country corrente Athlete aggiornate | 11 |
+| `represented_country` corretti | 521 |
+| Athlete con nuovi result | 8.578 |
+| Event con nuovi result | 234 |
+
+Controllo rollback della copia temporanea:
+
+| Stato DB temporaneo | Athlete | Event | Result | Notification |
+|---|---:|---:|---:|---:|
+| Prima della simulazione | 7.134 | 211 | 89.988 | 0 |
+| Durante la simulazione | 11.345 | 445 | 196.621 | 0 |
+| Dopo rollback | 7.134 | 211 | 89.988 | 0 |
+
+Esito: la preview 2019 con decisioni applicate e ora pulita. Il commit controllato 2019 puo essere eseguito nel prossimo passo, mantenendo i 958 D-score orfani fuori dal database operativo.
+
+### 8.9 Memoria decisionale del tool Gymternet
+
+Decisione metodologica del 25 giugno 2026: i problemi e le collisioni risolti durante il popolamento massivo non devono restare solo nel diario o nella chat di lavoro. Quando una decisione e riutilizzabile, deve diventare una regola persistente del tool Gymternet.
+
+Questo principio serve a:
+
+- ridurre review admin ripetitive negli import futuri;
+- mantenere coerenza semantica tra anni diversi;
+- rendere il processo di import piu controllabile e documentabile;
+- permettere alla futura UI admin di mostrare suggerimenti gia motivati.
+
+La prima regola formalizzata e:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Significato: se una proposta di fusione tra atleti con nome simile produce lo stesso result sportivo ma con score o D-score diversi, il tool deve raccomandare di tenere separati gli atleti. Per le review `possible_existing_athlete_match`, l'azione tecnica equivalente e `create_new`; per i conflitti post-decisione, il payload segnala `recommended_action=keep_separate`.
+
+Il documento operativo della memoria decisionale e:
+
+```text
+docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
+```

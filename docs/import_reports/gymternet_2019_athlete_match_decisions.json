@@ -1,0 +1,2025 @@
+[
+  {
+    "review_id": "athlete_identity_collision_dd4c82526cfef65d",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_528754e621bfc7f3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_93fbc6c17e462c0c",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "IRL"
+  },
+  {
+    "review_id": "athlete_country_365a30ed31bf8ada",
+    "action": "update_country",
+    "represented_country_override": "MAR"
+  },
+  {
+    "review_id": "athlete_identity_collision_91ef3f3a84675aeb",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ITA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_47411aaae44ee011",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_country_fdf1bbbaba57caa1",
+    "action": "keep_existing_country",
+    "represented_country_override": "GBR"
+  },
+  {
+    "review_id": "athlete_match_1b70af69b9c3caf1",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_identity_collision_2d2b9d7bdc3f7ee9",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ROU",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_f86bf65e7e8f82ad",
+    "action": "update_country",
+    "represented_country_override": "LTU"
+  },
+  {
+    "review_id": "athlete_identity_collision_5038e1e1df909e22",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NGR",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_8a3e882eb02faea7",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NED",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_645f6b1c7289c914",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GRE",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_ffea8c4be223377f",
+    "action": "keep_existing_country",
+    "represented_country_override": "DEN"
+  },
+  {
+    "review_id": "athlete_identity_collision_0651e160379f4f73",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "FIN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_a036ee8ea5f07b9e",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_5006e81473c174e7",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "AUS",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_a86c16c53ae1cd99",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "USA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_877f484d6fe012e6",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "THA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_6f1a5dbe55c8df29",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ITA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_60ee5007d3f80c83",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7830e79421a4848b",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "MKD"
+  },
+  {
+    "review_id": "athlete_country_500321b5bf580ec1",
+    "action": "keep_existing_country",
+    "represented_country_override": "GEO"
+  },
+  {
+    "review_id": "athlete_match_12dc68f972464e05",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_798b8d34dcbf09d4",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "UKR"
+  },
+  {
+    "review_id": "athlete_identity_collision_d0f602b49baa880f",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NZL",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_eff394d3e96d55fb",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "LAT",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_b04244ba77a9791e",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NED",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_4ff0776d373674d4",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_identity_collision_be42ad7d42d064f3",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GBR",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_071e37e269440ca1",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "DEN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_f41c5e0927d7cc19",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_6147e846debeb771",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_44bef0db62d2528f",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "IRL"
+  },
+  {
+    "review_id": "athlete_identity_collision_32935879a44a22e1",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GER",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_16238ece7328618d",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ESA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_36c64c9ef3140c45",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "BEL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_7dc3e8ce46e4263e",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "CZE",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_35e31acc7e5763c9",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NED",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_2d9c4be8f28f8bd9",
+    "action": "update_country"
+  },
+  {
+    "review_id": "athlete_country_0750feb2a644855e",
+    "action": "update_country",
+    "represented_country_override": "SWE"
+  },
+  {
+    "review_id": "athlete_country_6281aadd17277364",
+    "action": "update_country",
+    "represented_country_override": "HUN"
+  },
+  {
+    "review_id": "athlete_identity_collision_19018183c869d002",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "UKR",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_b8cb3fe3a713f944",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "POL",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_country_e2314df506b63417",
+    "action": "keep_existing_country",
+    "represented_country_override": "GBR"
+  },
+  {
+    "review_id": "athlete_match_3cd860d87621c1de",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_0529889fb7aff313",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7a8a63f5e540815b",
+    "country_action": "update_country",
+    "represented_country_override": "IRL"
+  },
+  {
+    "review_id": "athlete_country_46f8a007fff186a1",
+    "action": "update_country",
+    "represented_country_override": "AND"
+  },
+  {
+    "review_id": "athlete_match_85cd9be6f6e1e5c8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e162068478ed573d",
+    "country_action": "update_country",
+    "represented_country_override": "AND"
+  },
+  {
+    "review_id": "athlete_identity_collision_e2c31f92c3488228",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "FIN",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_24fd86598af09aeb",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_46c88a566d724bc7",
+    "action": "keep_existing_country",
+    "represented_country_override": "GBR"
+  },
+  {
+    "review_id": "athlete_country_393e62d848404102",
+    "action": "update_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_6f48f5bf9858d851",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "DEN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_f5ec5b3b3d4c3af0",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "SGP",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_eb52cea7eb4787b8",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "SUI",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_ee317ad1ecad87b2",
+    "action": "keep_existing_country",
+    "represented_country_override": "GBR"
+  },
+  {
+    "review_id": "athlete_identity_collision_efd7ab0478981e89",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "RUS",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_8c4b39921160aa25",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NED",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_f3fb59b51486809b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4d62f3919da814e0",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "ESP"
+  },
+  {
+    "review_id": "athlete_identity_collision_22bfb9adb2be9f75",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ALB",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_20eebd67714346ea",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ef6c8f332449de71",
+    "country_action": "keep_existing_country",
+    "represented_country_override": "IRL"
+  },
+  {
+    "review_id": "athlete_identity_collision_83326483e75bd109",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_616c8022b57b81f7",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "JAM",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_38a4780687d7eb2d",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GBR",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_9224bf0fb3eb6ad2",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "MAR",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_d12a33da4ea7f380",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "NED",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_98c862313331ec23",
+    "action": "update_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_2d02a86c9391052a",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_866ad8b7aa28794c",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "RUS",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_d8a6829ad8856582",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "SUI",
+    "country_strategy": "preserve_represented_country"
+  },
+  {
+    "review_id": "athlete_identity_collision_a8c6254bfa83fd5b",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "BEL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_c79bb47588bb50f6",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_country_b9fadcf57c49c64c",
+    "action": "keep_existing_country",
+    "represented_country_override": "AUT"
+  },
+  {
+    "review_id": "athlete_country_589aea272f909018",
+    "action": "update_country",
+    "represented_country_override": "IRL"
+  },
+  {
+    "review_id": "athlete_identity_collision_de85e516f0cfda23",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_6023f079333e1790",
+    "action": "keep_existing_country",
+    "represented_country_override": "POR"
+  },
+  {
+    "review_id": "athlete_identity_collision_eda4238a17482c7c",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "DEN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_830bb053662e586d",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_ec5535179eb8f3ac",
+    "action": "keep_existing_country",
+    "represented_country_override": "DEN"
+  },
+  {
+    "review_id": "athlete_identity_collision_ee1a0133ad1138a2",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GBR",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_match_5b07045ee8991544",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_c2c2be6c92fb321d",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_51315ea496af48b5",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_country_f249a6756c836473",
+    "action": "keep_existing_country",
+    "represented_country_override": "GBR"
+  },
+  {
+    "review_id": "athlete_identity_collision_f438739fe8175147",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "AUS",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_2c24f8a74f10a587",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ARM",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_country_71ddbcb36c9a69b4",
+    "action": "update_country",
+    "represented_country_override": "UKR"
+  },
+  {
+    "review_id": "athlete_match_3feadaa5d27fa3b9",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ba44829240dc5bc6"
+  },
+  {
+    "review_id": "athlete_match_0be579a862fc8979",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_091876d16bb25ec8"
+  },
+  {
+    "review_id": "athlete_match_97236e9df2b3b8f7",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a4f718f68880eb6e"
+  },
+  {
+    "review_id": "athlete_match_1f79bf91c6743ae3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d0590b554ed0462d"
+  },
+  {
+    "review_id": "athlete_match_ea4fb7ae5bc05df5",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_198fc81b49b4d5bf"
+  },
+  {
+    "review_id": "athlete_match_3f020370a83fd858",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_864f376336ee4d16"
+  },
+  {
+    "review_id": "athlete_match_ad9eb9af81022761",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_624ccb2e685313f0"
+  },
+  {
+    "review_id": "athlete_match_250b32a1bdfeaa6a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_10fb4a0839829671"
+  },
+  {
+    "review_id": "athlete_match_b0031f1d5b2040d8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a47b91ab497e2480"
+  },
+  {
+    "review_id": "athlete_match_0d5015dd391c19e0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c8dfbeabd306a212"
+  },
+  {
+    "review_id": "athlete_match_cf8ef5512ec19d12",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2d038b5877f78e54"
+  },
+  {
+    "review_id": "athlete_match_6c0ab7d601e15720",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8901c23259f28943"
+  },
+  {
+    "review_id": "athlete_match_29e7a13ef30b8d08",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a0cff2bb98cce54c"
+  },
+  {
+    "review_id": "athlete_match_9857a98aa5ba1cbe",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5dbb5583d52b59fa"
+  },
+  {
+    "review_id": "athlete_match_dec984e2edf42bd3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3b96a92ec2f341dc"
+  },
+  {
+    "review_id": "athlete_match_cbcc72d31b060dbb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_655cccb0e9a1681b"
+  },
+  {
+    "review_id": "athlete_match_6e978fcd54e8a1c3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_35ebee02593a17d6"
+  },
+  {
+    "review_id": "athlete_match_820385d139dc64eb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_acd5fd48d2da278a"
+  },
+  {
+    "review_id": "athlete_match_6a109c95706af768",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_daf2487b645771bc"
+  },
+  {
+    "review_id": "athlete_match_a0cd5297a06dbdc1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_40e0150f64395df6"
+  },
+  {
+    "review_id": "athlete_match_fcd6d47ad2edaa27",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b7eeafe13f822aa8"
+  },
+  {
+    "review_id": "athlete_match_482c41e2190292bd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_093bc0a623e0da2f"
+  },
+  {
+    "review_id": "athlete_match_156cb5592f313fed",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7d8ebbbbb6688d80"
+  },
+  {
+    "review_id": "athlete_match_75366eaab2be0e92",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c1d04ed6c0209a8c"
+  },
+  {
+    "review_id": "athlete_match_e446b9b70b391360",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3d2238d1e5c85ae1"
+  },
+  {
+    "review_id": "athlete_match_a39c02d4acf41e7a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_07c9398ce131a251"
+  },
+  {
+    "review_id": "athlete_match_1123bb25daa6495a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_092a4025b5d932d0"
+  },
+  {
+    "review_id": "athlete_match_435c39b5e6972dab",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2e388439e37ef276"
+  },
+  {
+    "review_id": "athlete_match_c344b3b0bc0c1b92",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f5740850578377a8"
+  },
+  {
+    "review_id": "athlete_match_f9835e083057d54f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b9650fd1aae6fca4"
+  },
+  {
+    "review_id": "athlete_match_ecdbf5b82e6e0c32",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_53c72bad089735ef"
+  },
+  {
+    "review_id": "athlete_match_ef74bd17febc5be6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_039ba911ec53d7a6"
+  },
+  {
+    "review_id": "athlete_match_7ea75f4db04d28e6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_cb0f68e74a8b8fb2"
+  },
+  {
+    "review_id": "athlete_match_24b8a8dffa015baa",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c742d63ed117e0c8"
+  },
+  {
+    "review_id": "athlete_match_4657e1a7d92e46e2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4c6319b321bf795e"
+  },
+  {
+    "review_id": "athlete_match_16b04530535bc6bd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4987d0cc4f8f58ac"
+  },
+  {
+    "review_id": "athlete_match_2266be0fb4f3d81c",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_441d6c6fc16a2dd4"
+  },
+  {
+    "review_id": "athlete_match_d6a6b4206f853a2d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_efc3af6e8a327949"
+  },
+  {
+    "review_id": "athlete_match_e236f13768cb5018",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b737259475f404bb"
+  },
+  {
+    "review_id": "athlete_match_46d4776b77865f5a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_300db862c55f6073"
+  },
+  {
+    "review_id": "athlete_match_237f316c3b5ef9d2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_44a37b277ed6601e"
+  },
+  {
+    "review_id": "athlete_match_3dc3715be24f1227",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_247fcea6eac9acde"
+  },
+  {
+    "review_id": "athlete_match_36290c70b7c74bb4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_0be12426c2899eb5"
+  },
+  {
+    "review_id": "athlete_match_3163a13efee4af26",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f07145188c88efbd"
+  },
+  {
+    "review_id": "athlete_match_e80044ddfff424db",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7062001ef973f079"
+  },
+  {
+    "review_id": "athlete_match_1f2714059953030f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a5c21f06fbf3e27b"
+  },
+  {
+    "review_id": "athlete_match_5566796fc04a8d1b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8127f9d0efdd90bf"
+  },
+  {
+    "review_id": "athlete_match_67b07e3b04009111",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1768dce90c3a47c9"
+  },
+  {
+    "review_id": "athlete_match_89efd0f3b7edbf9a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_bb46041a50d909d3"
+  },
+  {
+    "review_id": "athlete_match_251a11ad41030530",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f85bb78d506f4eae"
+  },
+  {
+    "review_id": "athlete_match_e36a072b76f3e20b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_51422519dd03127b"
+  },
+  {
+    "review_id": "athlete_match_ba2eb03cb17917a0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8e6b351a049d7ea7"
+  },
+  {
+    "review_id": "athlete_match_ac62bebd4bd55ba2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5a27aa43011c6792"
+  },
+  {
+    "review_id": "athlete_match_6680e0aeb51d9a46",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_524db8a04c83fec5"
+  },
+  {
+    "review_id": "athlete_match_774cf8dfda8b7e2f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_251879210db9670f"
+  },
+  {
+    "review_id": "athlete_match_28489a09de3d90ab",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c51bdca4f8b77891"
+  },
+  {
+    "review_id": "athlete_match_1134a635e682263f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_003007d679799d8e"
+  },
+  {
+    "review_id": "athlete_match_57975258dac665f9",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5e463b2aaac8e390"
+  },
+  {
+    "review_id": "athlete_match_8658439b88872f1f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a8e7b16991c6c433"
+  },
+  {
+    "review_id": "athlete_match_9eda02d073a36a3c",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_da175b3e8fe65b5c"
+  },
+  {
+    "review_id": "athlete_match_310a7f3e15c42a63",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f99bf2f548630774"
+  },
+  {
+    "review_id": "athlete_match_24bb43b7a8c110ca",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3c2adfecd9a864b9"
+  },
+  {
+    "review_id": "athlete_match_bc946d802d43c48f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_aeb8eb9bb886df88"
+  },
+  {
+    "review_id": "athlete_match_c4c5002db532bb1e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_12e7515fb0ce4501"
+  },
+  {
+    "review_id": "athlete_match_2b6cd9b32492c561",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a4737f15856b0361"
+  },
+  {
+    "review_id": "athlete_match_5c9e48a69d52df03",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_50939ead40e825fe"
+  },
+  {
+    "review_id": "athlete_match_bf4834abaf89d71a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_46f9ef33cc2610ee"
+  },
+  {
+    "review_id": "athlete_match_aac7271154ef3e82",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ee9e5dde33fc909d"
+  },
+  {
+    "review_id": "athlete_match_997b7b1db902dc3d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_759e4f7ffef4bcaa"
+  },
+  {
+    "review_id": "athlete_match_877c29127ec84f6c",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4ebc6765bd557e1f"
+  },
+  {
+    "review_id": "athlete_match_175fb73de4987184",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5f3280d050b94414"
+  },
+  {
+    "review_id": "athlete_match_732c66b8b0d435c1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2888e8a8ce459672"
+  },
+  {
+    "review_id": "athlete_match_fc95b05d17cec331",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1b9635e489f11d61"
+  },
+  {
+    "review_id": "athlete_match_d66063bd371c74fd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f1df44e22c1d61e9"
+  },
+  {
+    "review_id": "athlete_match_2552eedf435712b9",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_316f338ecb8b176f"
+  },
+  {
+    "review_id": "athlete_match_4c3e21a20eb448a5",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6d3f4fa6ad17b3ef"
+  },
+  {
+    "review_id": "athlete_match_2429ab3c4aea34e8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5d4974c403c4dec4"
+  },
+  {
+    "review_id": "athlete_match_191c4f494faff688",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f6aee7e909180fce"
+  },
+  {
+    "review_id": "athlete_match_683a9eb5f8f9c179",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a63652f583c09eb9"
+  },
+  {
+    "review_id": "athlete_match_7945832c2ab41fd1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2043b12dc3e183fd"
+  },
+  {
+    "review_id": "athlete_match_8292242cef4547fb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_27e3cc42f9411225"
+  },
+  {
+    "review_id": "athlete_match_59492e59d01d0094",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e12f42ff3a954b2c"
+  },
+  {
+    "review_id": "athlete_match_aafccfd407abec8d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_34286e2d708992b3"
+  },
+  {
+    "review_id": "athlete_match_0c5bfc7878a1df44",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e9514553e135b65a"
+  },
+  {
+    "review_id": "athlete_match_b42aaa278b09adcb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_0839c7c35cbbe783"
+  },
+  {
+    "review_id": "athlete_match_0765deb53f14bc59",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_797e26687905543a"
+  },
+  {
+    "review_id": "athlete_match_91390b86f5c943f7",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_970708e4a6e345bd"
+  },
+  {
+    "review_id": "athlete_match_e90305e5a0aadc30",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_083d57fd480beb7d"
+  },
+  {
+    "review_id": "athlete_match_8ecf26854ee7e962",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8db4d6ff1907500d"
+  },
+  {
+    "review_id": "athlete_match_1c2b1dcc4bb092c0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_266f70793ebab319"
+  },
+  {
+    "review_id": "athlete_match_61bd5f82eed3ff5e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a303a603ac0c69d3"
+  },
+  {
+    "review_id": "athlete_match_879cc0d4504c7b24",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ab2fbdf61b4724df"
+  },
+  {
+    "review_id": "athlete_match_404f13548246fab9",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_292f18293bb7c9d8"
+  },
+  {
+    "review_id": "athlete_match_f19a742695200717",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b0e13afcba692d0c"
+  },
+  {
+    "review_id": "athlete_match_7a482e03df1fa322",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ff6554178f3f7dc0"
+  },
+  {
+    "review_id": "athlete_match_b6cf6f191d1306ed",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f40a594d14df8618"
+  },
+  {
+    "review_id": "athlete_match_c00a833563308ae2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2054d92c12ce644d"
+  },
+  {
+    "review_id": "athlete_match_b3e100f2c9825437",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4f956a2717b0a71f"
+  },
+  {
+    "review_id": "athlete_match_6968a0711ae6737b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_00dbbfd1e5d1c41d"
+  },
+  {
+    "review_id": "athlete_match_f3306b9f32ca2f44",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_907ecf62ac6f7e4e"
+  },
+  {
+    "review_id": "athlete_match_934cde2aba55bb45",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6a647a49ad4f5da5"
+  },
+  {
+    "review_id": "athlete_match_51497201efd5c824",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_468132a46ec9d8db"
+  },
+  {
+    "review_id": "athlete_match_b323d9870cd4af06",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8954df26f5322172"
+  },
+  {
+    "review_id": "athlete_match_e3c4d7f0b5d56f95",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b9406e471fc934f6"
+  },
+  {
+    "review_id": "athlete_match_f8e031c0e2cb1bdf",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6e6e9072f27b812a"
+  },
+  {
+    "review_id": "athlete_match_dcdd73a78eed3e83",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6f977956139b24e9"
+  },
+  {
+    "review_id": "athlete_match_a3db27aba6bf2882",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_87ed879efeab7b31",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_af76a7e1dc3553df"
+  },
+  {
+    "review_id": "athlete_match_097179e956a0cfac",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_40cdc5b4ef037993"
+  },
+  {
+    "review_id": "athlete_match_9087706a8f2f2aea",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_bc77f112eaa8c83b"
+  },
+  {
+    "review_id": "athlete_match_3e787c91dd363c2c",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c4eeb09ffa56206e"
+  },
+  {
+    "review_id": "athlete_match_42ac10f2a9777662",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c90f3e1da28f6472"
+  },
+  {
+    "review_id": "athlete_match_a2d020b5f37c39a4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_213745a089456dc1"
+  },
+  {
+    "review_id": "athlete_match_5fa28f3f869bc73e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3cefae8a41671abd"
+  },
+  {
+    "review_id": "athlete_match_9df0722418494949",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3f3aa0090d0692b7"
+  },
+  {
+    "review_id": "athlete_match_ffa2a64ac1debb5b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d399d3b8ca8b8843"
+  },
+  {
+    "review_id": "athlete_match_d7d19cef6d10332a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e4a9a6d92f789b77"
+  },
+  {
+    "review_id": "athlete_match_7d19df797b1e140a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_02ed1665f9543fc5"
+  },
+  {
+    "review_id": "athlete_match_e3597def48807759",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7c9306e23edc6097"
+  },
+  {
+    "review_id": "athlete_match_fe5afaa221d5d8bd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b0e173302b45067d"
+  },
+  {
+    "review_id": "athlete_match_24825a9ed654f123",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f12ec0665d163c19"
+  },
+  {
+    "review_id": "athlete_match_2aeea8494a04d506",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6c576920134dac15"
+  },
+  {
+    "review_id": "athlete_match_7c053ce6f0b0b3f2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_803eb64743408af7"
+  },
+  {
+    "review_id": "athlete_match_64deafd43ab79e19",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f31d05c8ccca06e8"
+  },
+  {
+    "review_id": "athlete_match_713840d2a4b58256",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5d8146874bfe71b8"
+  },
+  {
+    "review_id": "athlete_match_fbdf7259aa626d03",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_9f20d8413f4a6ad8"
+  },
+  {
+    "review_id": "athlete_match_005f9b04a7f2c302",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_73e7d146389ff894"
+  },
+  {
+    "review_id": "athlete_match_d9bb38bc353b53f6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4ca51e0a7e001d9d"
+  },
+  {
+    "review_id": "athlete_match_29d760e0fcf70891",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_abf55fa59c74985d"
+  },
+  {
+    "review_id": "athlete_match_aaf360ab9510c52a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b042b02a71a1b12f"
+  },
+  {
+    "review_id": "athlete_match_452beb376eec13f1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_608fbb56afb9f084"
+  },
+  {
+    "review_id": "athlete_match_03ee5908f9cd2859",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_bfe72e00f668cbaa"
+  },
+  {
+    "review_id": "athlete_match_9513802636b32a77",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_eef8224728adc701"
+  },
+  {
+    "review_id": "athlete_match_91f6cc27a5f63faa",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_ccd2aa0336bbec88",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7d8260d5acc76408"
+  },
+  {
+    "review_id": "athlete_match_077e6c60867220e6",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_d975265c962bf2e0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_358e641346b52b1a"
+  },
+  {
+    "review_id": "athlete_match_ccee2c7479f0b3c8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2e063453610af9c0"
+  },
+  {
+    "review_id": "athlete_match_81ffafd8b273091a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_89baabe22641b778"
+  },
+  {
+    "review_id": "athlete_match_77a584561295dc9b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_9062be9cd2943cb9"
+  },
+  {
+    "review_id": "athlete_match_04828e3c10d001ba",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_74403bd11fc84b87"
+  },
+  {
+    "review_id": "athlete_match_bd1212cf6b910797",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_cdc348785be906e3"
+  },
+  {
+    "review_id": "athlete_match_f17d0b92b4f0aeec",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e5b1cf9048f59d02"
+  },
+  {
+    "review_id": "athlete_match_d8051fb87b17d0f0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c0447497c05ec325"
+  },
+  {
+    "review_id": "athlete_match_63712ad38785ba82",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_9c674a1a925b7ce4"
+  },
+  {
+    "review_id": "athlete_match_cab94322ad10ad33",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5adcd3daaee4c5e6"
+  },
+  {
+    "review_id": "athlete_match_247e4481aaaaf750",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2b75d85d9429e5a2"
+  },
+  {
+    "review_id": "athlete_match_e9e8807e469ff3f5",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_22cc71b068ce57f6"
+  },
+  {
+    "review_id": "athlete_match_c8acab81b9e6fcc4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e044f55f5d522d39"
+  },
+  {
+    "review_id": "athlete_match_05b7e6162211d204",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_be553021b0ff83b9"
+  },
+  {
+    "review_id": "athlete_match_0be065a94744b02b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d5231404d94f3328"
+  },
+  {
+    "review_id": "athlete_match_b76fb7e8e3e0e3cd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_38ff82fa8e6c738a"
+  },
+  {
+    "review_id": "athlete_match_a4d17441f942fc61",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e94e4f7b797fe6d0"
+  },
+  {
+    "review_id": "athlete_match_4fb61553901d47b2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f27e8d2c9eb3e915"
+  },
+  {
+    "review_id": "athlete_match_e6610259a50fff87",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e4a6883c50f5bc6e"
+  },
+  {
+    "review_id": "athlete_match_75306aeae25e72eb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_90a0c7a39d5f35bf"
+  },
+  {
+    "review_id": "athlete_match_c8ef11b1413e0b67",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5e607219dbc8d17a"
+  },
+  {
+    "review_id": "athlete_match_ef7b46d50a5c5d35",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d41d8a130ed9064c"
+  },
+  {
+    "review_id": "athlete_match_4670f2dffc5cef9d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2ac478f4d9e730d5"
+  },
+  {
+    "review_id": "athlete_match_bc2516fa794cfe83",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_572d2c6455f21372"
+  },
+  {
+    "review_id": "athlete_match_d60f40f5163434b6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e6e1da203d9f435e"
+  },
+  {
+    "review_id": "athlete_match_2108a12f1e94f304",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_df68455307718f56"
+  },
+  {
+    "review_id": "athlete_match_b3efe1e50f981b00",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_bdc536b32c63e18f"
+  },
+  {
+    "review_id": "athlete_match_ba3430a6b2660021",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_489c7b500a7d65e8"
+  },
+  {
+    "review_id": "athlete_match_b7bee515cef47c92",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_39a764f690cfe8a8"
+  },
+  {
+    "review_id": "athlete_match_276aa7a173731fb4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7212d49a3d043abd"
+  },
+  {
+    "review_id": "athlete_match_0e42bdb2179d5258",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_13ee18e207dd5cad"
+  },
+  {
+    "review_id": "athlete_match_ede89ee5e396257f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4ac4dc5d36b553e4"
+  },
+  {
+    "review_id": "athlete_match_aa78fcd98d5ad704",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_88b1e74229e943e2"
+  },
+  {
+    "review_id": "athlete_match_b41c9efcd4f497f1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1cf6444c02068313"
+  },
+  {
+    "review_id": "athlete_match_8ace63000b0321b2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e6943b562ad752b4"
+  },
+  {
+    "review_id": "athlete_match_5ab8d7c37740e97b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7aa4a40cba00836f"
+  },
+  {
+    "review_id": "athlete_match_6c3aa4a7f2741da4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d484f4c392cf7883"
+  },
+  {
+    "review_id": "athlete_match_44202baee86134b4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_89234ab08449573e"
+  },
+  {
+    "review_id": "athlete_match_5621a376cdb527cf",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4b9c12ea2fa956b8"
+  },
+  {
+    "review_id": "athlete_match_a96f5d9d7f7ee1dc",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_6bdca0e586174dfd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e36becf536a17fdd"
+  },
+  {
+    "review_id": "athlete_match_f0e9f836a9e6dba4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ef98fe1261f85a00"
+  },
+  {
+    "review_id": "athlete_match_28635cc499299394",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_193b66c2faaf1c2f"
+  },
+  {
+    "review_id": "athlete_match_8a06f4d9ea5d2020",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5b6a05faaef839a8"
+  },
+  {
+    "review_id": "athlete_match_6beb0407d7bd749e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c6795efca1b16983"
+  },
+  {
+    "review_id": "athlete_match_5664c933421306a3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8efc9811418cefc0"
+  },
+  {
+    "review_id": "athlete_match_4e1ede7c08928e49",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8c4b72b754b4b534"
+  },
+  {
+    "review_id": "athlete_match_48d32c6239277c2b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_571196d3bd0d5b3a"
+  },
+  {
+    "review_id": "athlete_match_f0fc5abe28ce42e4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1bbc25e5a0f07c65"
+  },
+  {
+    "review_id": "athlete_match_49cd511d74b199c1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_285577c587bb94fe"
+  },
+  {
+    "review_id": "athlete_match_7d05ad3b2380a33e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_11d0e9a9c48547e1"
+  },
+  {
+    "review_id": "athlete_match_2644d395f9c7d4d2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ae2b0f0ab969b142"
+  },
+  {
+    "review_id": "athlete_match_194fdfb76aced593",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e6d35dafbc1e6186"
+  },
+  {
+    "review_id": "athlete_match_70303462f81eb3fd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_9d5194f9353babb7"
+  },
+  {
+    "review_id": "athlete_match_1416ac9a54afb111",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_84a805c6b0b3d102"
+  },
+  {
+    "review_id": "athlete_match_989021eadab6b664",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_40d9dc3d8430a863"
+  },
+  {
+    "review_id": "athlete_match_9191bd362ce02198",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_7bfad62d334601c6"
+  },
+  {
+    "review_id": "athlete_match_d5ef875899327eff",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_89905901855b2c8c"
+  },
+  {
+    "review_id": "athlete_match_935f2b1f5fd8f16d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a9893acac1d76e2e"
+  },
+  {
+    "review_id": "athlete_match_ff06136449e98423",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5cd7d8a429ce7776"
+  },
+  {
+    "review_id": "athlete_match_c93964c60d924328",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_241c5bd9bec3ed1c"
+  },
+  {
+    "review_id": "athlete_match_c5cfe8c6ac05e7a2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c48460f80e52b9cb"
+  },
+  {
+    "review_id": "athlete_match_16b4f8da8795ff22",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b6f1eb09e0996e2f"
+  },
+  {
+    "review_id": "athlete_match_5adc3d40d390daa3",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_fb96427687b89785",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_137e9caae836979d"
+  },
+  {
+    "review_id": "athlete_match_6ad9719979709acc",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_069e856b9da9fb25"
+  },
+  {
+    "review_id": "athlete_match_465563af36bc866f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a2d9af12bed01198"
+  },
+  {
+    "review_id": "athlete_match_273f32add076406e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_638ce9999813e47f"
+  },
+  {
+    "review_id": "athlete_match_23d4d6061eb5111e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_775880cfa0a791d8"
+  },
+  {
+    "review_id": "athlete_match_0593421bb58a5e7f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_30cea058c246bc3c"
+  },
+  {
+    "review_id": "athlete_match_c8820ee90b3a3e61",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_92c7c2630f1cde69"
+  },
+  {
+    "review_id": "athlete_match_8a8e6b4de29fe642",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1ddacce67ae3cc57"
+  },
+  {
+    "review_id": "athlete_match_50a5aded31fd0c3e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_60ccbbb5195c6ba7"
+  },
+  {
+    "review_id": "athlete_match_46721d003be408a1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a689c2a095b8535d"
+  },
+  {
+    "review_id": "athlete_match_1fee7fc49442b786",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_dc4df1c5bccdaf0a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_55d32ef5e57a04c1"
+  },
+  {
+    "review_id": "athlete_match_eaef4845faf18a03",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8dcf0e9a0fcd79e9"
+  },
+  {
+    "review_id": "athlete_match_59bfe556a0d72526",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6e144b41547f80c5"
+  },
+  {
+    "review_id": "athlete_match_b0eced2a05cc631b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1448160e9d3026c4"
+  },
+  {
+    "review_id": "athlete_match_0fc700542428794a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_6655900e474705dc"
+  },
+  {
+    "review_id": "athlete_match_48afd72993a90f0d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8e12cdde4c19d0d5"
+  },
+  {
+    "review_id": "athlete_match_d424ef0fb66761ed",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_75c4cd6606bd577b"
+  },
+  {
+    "review_id": "athlete_match_d214a9764dcff4a6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f6b2202c12ea5457"
+  },
+  {
+    "review_id": "athlete_match_4921ffeb77d23d54",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b4fd8ff7c74c5046"
+  },
+  {
+    "review_id": "athlete_match_afdebd2dedfb8757",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3e8a577e83090004"
+  },
+  {
+    "review_id": "athlete_match_f9f33b803aed19df",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_739477ba4f88ab77"
+  },
+  {
+    "review_id": "athlete_match_1552cd88b324eb55",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1ae24ac84d3c3acf"
+  },
+  {
+    "review_id": "athlete_match_f8c22f6ed4626871",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_163468837ab4bf08"
+  },
+  {
+    "review_id": "athlete_match_e7f0b764368d7bd1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_efd0b0500ec68250"
+  },
+  {
+    "review_id": "athlete_match_9df71c1756d5ae62",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_cb5879a942fc32da"
+  },
+  {
+    "review_id": "athlete_match_707d32b9c60613ce",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_427ee3fd74002bdc"
+  },
+  {
+    "review_id": "athlete_match_9a7129d4dfd1dcd8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_da283b05c1f3a49f"
+  },
+  {
+    "review_id": "athlete_match_9458066a86df75e2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_46d4860e2295fb08"
+  },
+  {
+    "review_id": "athlete_match_181e474adefce485",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_61261648911ea6a3"
+  },
+  {
+    "review_id": "athlete_match_29d8ec2dd0e0ecf0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a36b2ec5f44de14f"
+  },
+  {
+    "review_id": "athlete_match_90d711bb2a7df6c0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_1e9ff25110589b42"
+  },
+  {
+    "review_id": "athlete_match_92b8b1c9b99531f8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_280bd7aa80d5c5e9"
+  },
+  {
+    "review_id": "athlete_match_fb4c78014b27eb29",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_50e38a57dea63ea2"
+  },
+  {
+    "review_id": "athlete_match_7ce89396e538498f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8ba4e2b467d59403"
+  },
+  {
+    "review_id": "athlete_match_7b20ca5836388a3e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c19e148902ca35b5"
+  },
+  {
+    "review_id": "athlete_match_b7b85b2433282ddb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e446bb9b041d1a1d"
+  },
+  {
+    "review_id": "athlete_match_88148382f2602965",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_466e07f5a01c8838"
+  },
+  {
+    "review_id": "athlete_match_9a8069e5f77ef4aa",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_afc31d8ef9ffc5e2"
+  },
+  {
+    "review_id": "athlete_match_26d0c003e2859f15",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ddfab9e592418410"
+  },
+  {
+    "review_id": "athlete_match_c11bfad9dbf9cf7f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c34dd3ae1e509358"
+  },
+  {
+    "review_id": "athlete_match_5c25533d8374f2ca",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_09908aa9a257d254"
+  },
+  {
+    "review_id": "athlete_match_2e493a79823a3cd0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_05fd8822d6ebfa30"
+  },
+  {
+    "review_id": "athlete_match_da38323162998f4e",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_ac3cc41c4b9bd5fb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b03b6ea0ca38c617"
+  },
+  {
+    "review_id": "athlete_match_bcd31f6566a8f024",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_aa31c13d15d104de"
+  },
+  {
+    "review_id": "athlete_match_2f479b49efa320f0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_959ecda0b930a60b"
+  },
+  {
+    "review_id": "athlete_match_aa2bf259ac9f1f27",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f0a70d5ac058ad8b"
+  },
+  {
+    "review_id": "athlete_match_96564318e40e6083",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3f79676861f1e490"
+  },
+  {
+    "review_id": "athlete_match_13ec14de86b9551e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c6ded043ee3a7c4f"
+  },
+  {
+    "review_id": "athlete_match_07c1e527945f32e2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c5e2175728757584"
+  },
+  {
+    "review_id": "athlete_match_f0cc4d9ea3ee0681",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5e5d8c0a5cc6c2a3"
+  },
+  {
+    "review_id": "athlete_match_f31aaaf372ee1cae",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_4d196655213ed2a1"
+  },
+  {
+    "review_id": "athlete_match_69a43ee1f9285562",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c22a346f74d80cf6"
+  },
+  {
+    "review_id": "athlete_match_d1c2f32d96ff6689",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_8e578b543da526d0",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2a41eec4dfc479f4"
+  },
+  {
+    "review_id": "athlete_match_6a6454df6cd47069",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_59a0351e31611f08"
+  },
+  {
+    "review_id": "athlete_match_acaf9b8c25495fe5",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c9706646345bb577"
+  },
+  {
+    "review_id": "athlete_match_56174ed38213e359",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_c1aae24d8a854270"
+  },
+  {
+    "review_id": "athlete_match_03750091701b07f4",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_14aeda80c6b2e70c"
+  },
+  {
+    "review_id": "athlete_match_f165c12dbf21b4ca",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_0097e96e4ac88a3d"
+  },
+  {
+    "review_id": "athlete_match_8c70f1696b24971e",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_37fba728eb06b7d9"
+  },
+  {
+    "review_id": "athlete_match_94379ad33c0f97bc",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ca21b000a26e42ed"
+  },
+  {
+    "review_id": "athlete_match_d2192d09117c4ab3",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_b7c102d3680b756d"
+  },
+  {
+    "review_id": "athlete_match_41971c8ca45413d5",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_e45fc4f24a795911"
+  },
+  {
+    "review_id": "athlete_match_18c293a9f6e3e578",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_32ecb215145115fa"
+  },
+  {
+    "review_id": "athlete_match_745638241031c076",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_2e664d36549dd2b7"
+  },
+  {
+    "review_id": "athlete_match_f763120ef97b5519",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f498d9b6f6a161f7"
+  },
+  {
+    "review_id": "athlete_match_1a23c603e201e8ab",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_efdd5c9f535b2f1c"
+  },
+  {
+    "review_id": "athlete_match_dab1fedbd9ac1168",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_71d2dcb7034c403a"
+  },
+  {
+    "review_id": "athlete_match_4fb577b0c4d8ea61",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_a5786a8a299c7861"
+  },
+  {
+    "review_id": "athlete_match_c28c651cf0e1552b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8d9e0e6168ad9f7e"
+  },
+  {
+    "review_id": "athlete_match_d9ee16f0500083cc",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_8e1368e3abd8fe93",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8d4ea7461bfad5ba"
+  },
+  {
+    "review_id": "athlete_match_0f5eb4f901c3dfed",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_f8402ce509920f18",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_fd0df03fd1bad1ff"
+  },
+  {
+    "review_id": "athlete_match_8e23a543b8ed50a8",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_0e753f45a7b3600b"
+  },
+  {
+    "review_id": "athlete_match_db0901e4a38140fd",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_f2e4a2144f7a277c"
+  },
+  {
+    "review_id": "athlete_match_519a188331db6a19",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_840b896f0f4ead86"
+  },
+  {
+    "review_id": "athlete_match_71405f8b4cce8e3d",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_87ed287dd8835c36"
+  },
+  {
+    "review_id": "athlete_match_9ec00b52552c86bb",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_42b81f7a2f352ff8"
+  },
+  {
+    "review_id": "athlete_match_83646db8fa3d4fad",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_ad346ece3b1cb40a"
+  },
+  {
+    "review_id": "athlete_match_e59a000e4fc2f77b",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_5d6cfb13b0c8a01d"
+  },
+  {
+    "review_id": "athlete_match_b102bfc08395575a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_37c54ba3e0f07481"
+  },
+  {
+    "review_id": "athlete_match_7b2341ceb32ec2c1",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d8e2a7727ed0ebfb"
+  },
+  {
+    "review_id": "athlete_match_a7e51919e003e262",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_8d5f467fea659e09"
+  },
+  {
+    "review_id": "athlete_match_90ec32baec20f86f",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_3db6ba9325a5a8e2"
+  },
+  {
+    "review_id": "athlete_match_195f0733d67302c2",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_953d5668d66f9e27"
+  },
+  {
+    "review_id": "athlete_match_0b889fef83d86ccb",
+    "action": "create_new"
+  },
+  {
+    "review_id": "athlete_match_737e44c0492dfc6a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_9a1ba489bd988e98"
+  },
+  {
+    "review_id": "athlete_match_8bd61d60535a1de6",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_0361c3d0bf451017"
+  },
+  {
+    "review_id": "athlete_match_b98dbf2b5bca650a",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_d8f9a2999e50795c"
+  },
+  {
+    "review_id": "athlete_match_1ca4a86c4c34f559",
+    "action": "accept_suggestion",
+    "suggestion_id": "suggestion_afa7446d79ef6da7"
+  },
+  {
+    "review_id": "athlete_identity_collision_13148b587c6915be",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "LTU",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_b20ac7e48655dc1a",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "DEN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_94f9dac08a041f92",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_c3dd677f111b85c8",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ESP",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_d885af18c71dfdf2",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "CZE",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_5dfa6927506f2a26",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "DEN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_300421515344c64c",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "IRL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_0431e056b629de78",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "FIN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_2c98f4de5ac6b0cf",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "FRA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_175fcc4d8c04e02e",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "BEL",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_9e605eb606be0c9b",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "HUN",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_c7ccf1d0aa26c053",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "USA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_58830689bd6edee2",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "SWE",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_a628952594f63773",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "UKR",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_688b2c1aea96ba8b",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "ITA",
+    "country_strategy": "correct_all_to_canonical"
+  },
+  {
+    "review_id": "athlete_identity_collision_bc177d0b3332e0d7",
+    "action": "merge_as_same_athlete",
+    "canonical_country": "GBR",
+    "country_strategy": "correct_all_to_canonical"
+  }
+]

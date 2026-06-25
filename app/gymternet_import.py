@@ -30,6 +30,12 @@ GYMTERNET_POST_2025_COMPONENT_WARNING = (
     "rules are applied. Missing E_score, Penalty and Bonus remain not available. "
     "Prefer a dedicated standard import when explicit score components are available."
 )
+SAME_CONTEXT_DIFFERENT_SCORE_RULE_ID = "same_context_different_score_keep_separate"
+SAME_CONTEXT_DIFFERENT_SCORE_RULE_MESSAGE = (
+    "A previous Gymternet import review established that similar athlete names must be kept "
+    "separate when merging them would create the same event/result context with different "
+    "score or D_score values."
+)
 
 MEET_SUFFIX_MAP = {
     "QF": (models.RoundEnum.QUALIFICATION, models.FormatEnum.INDIVIDUAL),
@@ -1099,6 +1105,33 @@ def score_equal(left: Optional[float], right: Optional[float]) -> bool:
     return abs(left - right) < 0.001
 
 
+def score_or_d_score_differs(
+    left_score: Optional[float],
+    left_d_score: Optional[float],
+    right_score: Optional[float],
+    right_d_score: Optional[float],
+) -> bool:
+    return not (
+        score_equal(left_score, right_score)
+        and score_equal(left_d_score, right_d_score)
+    )
+
+
+def same_context_different_score_rule_payload(
+    recommended_action: str = "keep_separate",
+    extra_message: Optional[str] = None,
+) -> dict:
+    message = SAME_CONTEXT_DIFFERENT_SCORE_RULE_MESSAGE
+    if extra_message:
+        message = f"{message} {extra_message}"
+    return {
+        "rule_id": SAME_CONTEXT_DIFFERENT_SCORE_RULE_ID,
+        "severity": "review",
+        "recommended_action": recommended_action,
+        "message": message,
+    }
+
+
 def country_equal(left: Optional[str], right: Optional[str]) -> bool:
     return (left or "").strip().upper() == (right or "").strip().upper()
 
@@ -1954,11 +1987,66 @@ def athlete_variant_payload(
     }
 
 
+def same_context_existing_result_conflicts(
+    record: ParsedGymternetResult,
+    athlete: models.Athlete,
+    existing_events: dict,
+    existing_results: dict,
+) -> list[dict]:
+    event = existing_events.get(event_lookup_key(record))
+    if event is None:
+        return []
+
+    result = existing_results.get(result_lookup_key(athlete.id, event.id, record))
+    if result is None or not score_or_d_score_differs(record.score, record.D_score, result.score, result.D_score):
+        return []
+
+    return [{
+        **same_context_different_score_rule_payload(
+            recommended_action="create_new",
+            extra_message=(
+                "For this existing-athlete suggestion, the safer operational decision is "
+                "to create/keep a separate athlete unless official evidence proves one source row is wrong."
+            ),
+        ),
+        "existing_result": {
+            "result_id": result.id,
+            "athlete_id": athlete.id,
+            "athlete_name": athlete_full_name(athlete),
+            "event_id": event.id,
+            "event_name": event.name,
+            "year": event.year,
+            "score": result.score,
+            "D_score": result.D_score,
+            "represented_country": result_represented_country(result),
+        },
+        "imported_result": import_record_payload(record),
+    }]
+
+
 def build_athlete_match_review_items(
     db: Session,
     records: list[ParsedGymternetResult],
 ) -> list[dict]:
     all_athletes = db.query(models.Athlete).filter(models.Athlete.is_deleted.is_(False)).all()
+    existing_events = {
+        (event.name.lower(), event.year): event
+        for event in db.query(models.Event).filter(models.Event.is_deleted.is_(False)).all()
+    }
+    existing_results = {
+        result_identity_key(
+            result.athlete_id,
+            result.event_id,
+            result.discipline,
+            result.category,
+            result.apparatus,
+            result.vt_attempt,
+            result.day,
+            result.format,
+            result.round,
+        ): result
+        for result in db.query(models.Result).filter(models.Result.is_deleted.is_(False)).all()
+    }
     existing_athletes = {
         (
             athlete.first_name.lower(),
@@ -2112,7 +2200,7 @@ def build_athlete_match_review_items(
             country_matches = bool(record.country and athlete.country and record.country == athlete.country)
             requires_country_decision = athlete_country_differs(record, athlete)
             review_id = athlete_match_review_id(record)
-            suggestions.append({
+            suggestion = {
                 "suggestion_id": athlete_match_suggestion_id(review_id, athlete),
                 "suggestion_type": "existing_athlete_match",
                 "confidence": round(confidence, 3),
@@ -2139,13 +2227,37 @@ def build_athlete_match_review_items(
                     else []
                 ),
                 "target_athlete": athlete_payload(athlete),
-            })
+            }
+            learned_rule_matches = same_context_existing_result_conflicts(
+                record,
+                athlete,
+                existing_events,
+                existing_results,
+            )
+            if learned_rule_matches:
+                suggestion["learned_rule_matches"] = learned_rule_matches
+                suggestion["recommended_action"] = "create_new"
+                suggestion["recommended_decision"] = {
+                    "review_id": review_id,
+                    "action": "create_new",
+                    "reason": SAME_CONTEXT_DIFFERENT_SCORE_RULE_ID,
+                }
+                suggestion["message"] = (
+                    f"{suggestion['message']} Import memory found a same-context "
+                    "different-score conflict; keeping the athletes separate is recommended."
+                )
+            suggestions.append(suggestion)
 
         if not suggestions:
             continue
 
         suggestions = sorted(suggestions, key=lambda item: item["confidence"], reverse=True)[:5]
-        review_items.append({
+        learned_rule_matches = [
+            match
+            for suggestion in suggestions
+            for match in suggestion.get("learned_rule_matches", [])
+        ]
+        review_item = {
             "review_id": athlete_match_review_id(record),
             "problem_type": "possible_existing_athlete_match",
             "severity": "review",
@@ -2157,7 +2269,21 @@ def build_athlete_match_review_items(
             "sample_results": [import_record_payload(sample) for sample in grouped_records[:5]],
             "suggestions": suggestions,
             "allowed_actions": ["accept_suggestion", "create_new", "manual_target"],
-        })
+        }
+        if learned_rule_matches:
+            review_item["learned_rule_matches"] = learned_rule_matches[:5]
+            review_item["recommended_action"] = "create_new"
+            review_item["recommended_decision"] = {
+                "review_id": review_item["review_id"],
+                "action": "create_new",
+                "reason": SAME_CONTEXT_DIFFERENT_SCORE_RULE_ID,
+            }
+            review_item["message"] = (
+                f"{review_item['message']} A learned Gymternet import rule recommends "
+                "keeping them separate because the merge would collide with an existing "
+                "result context that has a different score."
+            )
+        review_items.append(review_item)
 
     return sorted(
         review_items,
@@ -2325,10 +2451,19 @@ def apply_athlete_match_decisions(
             continue
 
         imported_key = athlete_key_from_imported_payload(review["imported_athlete"])
+        represented_country_override, override_valid = represented_country_override_from_decision(
+            decision,
+            issues,
+            review["review_id"],
+        )
+        if not override_valid:
+            stats["invalid_decisions"] += 1
+            continue
 
         if review["problem_type"] == "possible_athlete_country_change":
             athlete_id = review["existing_athlete"]["athlete_id"]
             new_country = review["country_change"]["to"]
+            resolved_country_review = False
             if action == "update_country":
                 country_updates[athlete_id] = {
                     "from_country": review["country_change"]["from"],
@@ -2338,13 +2473,16 @@ def apply_athlete_match_decisions(
                 stats["country_updates"] += 1
                 resolutions[imported_key] = athlete_id
                 resolved_review_ids.add(review["review_id"])
+                resolved_country_review = True
             elif action == "keep_existing_country":
                 stats["country_kept"] += 1
                 resolutions[imported_key] = athlete_id
                 resolved_review_ids.add(review["review_id"])
+                resolved_country_review = True
             elif action == "create_new":
                 stats["confirmed_new"] += 1
                 resolved_review_ids.add(review["review_id"])
+                resolved_country_review = True
             elif action == "manual_target":
                 athlete = resolve_manual_athlete_target(db, decision.get("target") or decision)
                 if athlete is None or athlete.discipline.value != review["imported_athlete"]["discipline"]:
@@ -2360,12 +2498,17 @@ def apply_athlete_match_decisions(
                 resolutions[imported_key] = athlete.id
                 stats["manual_corrections"] += 1
                 resolved_review_ids.add(review["review_id"])
+                resolved_country_review = True
             else:
                 stats["invalid_decisions"] += 1
                 issues.append({
                     "severity": "warning",
                     "message": f"Ignored athlete country decision with invalid action '{action}'",
                 })
+            if resolved_country_review and represented_country_override:
+                represented_country_overrides[imported_key] = represented_country_override
+                if str(imported_key[3]) != represented_country_override:
+                    stats["represented_country_corrections"] += 1
             continue
 
         if action == "create_new":
@@ -2438,6 +2581,10 @@ def apply_athlete_match_decisions(
                 })
                 continue
 
+        if represented_country_override:
+            represented_country_overrides[imported_key] = represented_country_override
+            if str(imported_key[3]) != represented_country_override:
+                stats["represented_country_corrections"] += 1
         resolutions[imported_key] = athlete.id
         resolved_review_ids.add(review["review_id"])
         if action == "accept_suggestion":
@@ -2575,6 +2722,21 @@ def normalize_decision_country(
     return country
 
 
+def represented_country_override_from_decision(
+    decision: dict,
+    issues: list[dict],
+    review_id: str,
+) -> tuple[Optional[str], bool]:
+    if "represented_country_override" not in decision:
+        return None, True
+    country = normalize_decision_country(
+        decision.get("represented_country_override"),
+        issues,
+        review_id,
+    )
+    return country, country is not None
+
+
 def identity_country_overrides_from_decision(
     decision: dict,
     variant_keys: list[tuple],
@@ -2673,6 +2835,29 @@ def result_lookup_key(
     )
 
 
+def import_duplicate_key(
+    record: ParsedGymternetResult,
+    athlete_key: tuple,
+    athlete: Optional[models.Athlete],
+) -> tuple:
+    athlete_identity = (
+        ("athlete_id", athlete.id)
+        if athlete
+        else ("athlete_key", athlete_key)
+    )
+    return (
+        athlete_identity,
+        event_lookup_key(record),
+        record.discipline.value,
+        record.category.value,
+        record.apparatus,
+        record.format.value,
+        record.round.value,
+        record.vt_attempt,
+        record.day,
+    )
+
+
 def build_existing_indexes(db: Session) -> tuple[dict, dict, dict]:
     athletes = {
         (
@@ -2762,9 +2947,20 @@ def summarize_records(
                 "message": "Missing event year. Provide year_hint or include a year in the file/event name.",
             })
             continue
-        existing_in_file = seen.get(record.import_key)
         record_country = result_represented_country_for_record(record, represented_country_overrides)
+
+        source_athlete_key = athlete_lookup_key(record)
+        athlete_key = resolve_athlete_merge_key(athlete_merge_keys, source_athlete_key)
+        athlete = (
+            resolved_athlete_for_key(db, athlete_resolution_ids, source_athlete_key, resolved_athlete_cache)
+            or resolved_athlete_for_key(db, athlete_resolution_ids, athlete_key, resolved_athlete_cache)
+            or existing_athletes.get(athlete_key)
+        )
+        event = existing_events.get(event_lookup_key(record))
+        duplicate_key = import_duplicate_key(record, athlete_key, athlete)
+        existing_in_file = seen.get(duplicate_key)
         if existing_in_file:
+            existing_source_athlete_key = athlete_lookup_key(existing_in_file)
             existing_country = result_represented_country_for_record(
                 existing_in_file,
                 represented_country_overrides,
@@ -2775,18 +2971,15 @@ def summarize_records(
                     continue
                 duplicates.append(import_record_payload(record, reason="duplicate_in_file"))
                 continue
-            conflicts.append(conflict_payload(record, None, "conflict_in_file", existing_in_file))
+            conflict_reason = (
+                "same_context_different_score_after_athlete_merge"
+                if existing_source_athlete_key != source_athlete_key
+                else "conflict_in_file"
+            )
+            conflicts.append(conflict_payload(record, None, conflict_reason, existing_in_file))
             continue
-        seen[record.import_key] = record
+        seen[duplicate_key] = record
 
-        source_athlete_key = athlete_lookup_key(record)
-        athlete_key = resolve_athlete_merge_key(athlete_merge_keys, source_athlete_key)
-        athlete = (
-            resolved_athlete_for_key(db, athlete_resolution_ids, source_athlete_key, resolved_athlete_cache)
-            or resolved_athlete_for_key(db, athlete_resolution_ids, athlete_key, resolved_athlete_cache)
-            or existing_athletes.get(athlete_key)
-        )
-        event = existing_events.get(event_lookup_key(record))
         if athlete and event:
             result = existing_results.get(result_lookup_key(athlete.id, event.id, record))
             if result:
@@ -2851,14 +3044,35 @@ def conflict_payload(
     existing_record: Optional[ParsedGymternetResult] = None,
 ) -> dict:
     payload = import_record_payload(record, existing_result.id if existing_result else None, reason)
+    existing_score = None
+    existing_d_score = None
     if existing_result:
-        payload["existing_score"] = existing_result.score
-        payload["existing_D_score"] = existing_result.D_score
+        existing_score = existing_result.score
+        existing_d_score = existing_result.D_score
+        payload["existing_score"] = existing_score
+        payload["existing_D_score"] = existing_d_score
         payload["existing_country"] = result_represented_country(existing_result)
     if existing_record:
-        payload["existing_score"] = existing_record.score
-        payload["existing_D_score"] = existing_record.D_score
+        existing_score = existing_record.score
+        existing_d_score = existing_record.D_score
+        payload["existing_score"] = existing_score
+        payload["existing_D_score"] = existing_d_score
         payload["existing_country"] = existing_record.country
+    if (
+        reason == "same_context_different_score_after_athlete_merge"
+        and score_or_d_score_differs(record.score, record.D_score, existing_score, existing_d_score)
+    ):
+        payload["learned_rule_match"] = same_context_different_score_rule_payload(
+            recommended_action="keep_separate",
+            extra_message=(
+                "This conflict was produced after an athlete merge decision. The recommended "
+                "resolution is to keep the athlete identities separate."
+            ),
+        )
+        payload["recommended_decision"] = {
+            "action": "keep_separate",
+            "reason": SAME_CONTEXT_DIFFERENT_SCORE_RULE_ID,
+        }
     return payload
 
 

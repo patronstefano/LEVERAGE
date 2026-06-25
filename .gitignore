@@ -30,6 +30,7 @@ htmlcov/
 
 # Local import source files
 import_files/
+*.numbers
 
 # Generated local uploads
 uploads/
