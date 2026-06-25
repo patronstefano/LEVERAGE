@@ -32,6 +32,13 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2019_existing_athlete_match_review.csv` | CSV operativo principale per verificare se un atleta importato nel 2019 corrisponde a un atleta gia presente nel DB 2018. Include le gare 2018 dell'atleta gia esistente. |
 | `gymternet_2019_existing_athlete_repeat_audit.csv` | Audit delle righe 2019 in cui lo stesso atleta gia esistente viene suggerito piu volte per varianti di nome/country. |
 | `gymternet_2019_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2019 che presentano solo conflitti di country nel file 2019. Completato dall'admin e convertito da Numbers il 25 giugno 2026. |
+| `gymternet_2020_preview_summary.json` | Sintesi tecnica della preview 2020 eseguita sul DB post-2019, senza commit. |
+| `gymternet_2020_duplicates.csv` | Audit dei 5 duplicati identici interni al file 2020. |
+| `gymternet_2020_conflicts.csv` | Audit dei conflitti bloccanti 2020; attualmente vuoto. |
+| `gymternet_2020_orphan_dscores.csv` | D-score del file Gymternet 2020 non agganciati automaticamente a un result con final score. |
+| `gymternet_2020_athlete_review.csv` | Review atleta/country 2020 completa e tecnica. |
+| `gymternet_2020_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2020 corrisponde a un atleta gia presente nel DB post-2019. |
+| `gymternet_2020_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2020 che presentano conflitti country nel file 2020. |
 
 ## Convenzione review atleta/country
 
@@ -56,3 +63,9 @@ Nel CSV `gymternet_2019_existing_athlete_match_review.csv`, i valori inseriti co
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 
 Regola metodologica persistente: se una proposta di merge atleta produce lo stesso contesto sportivo di result ma con score o D-score diversi, il tool deve raccomandare `keep separate`. Nel backend questa regola e tracciata con `same_context_different_score_keep_separate`.
+
+La generazione dei report annuali e supportata dallo script:
+
+```text
+scripts/generate_gymternet_preview_reports.py
+```

@@ -1173,3 +1173,117 @@ Controlli post-import:
 Nota importante: il file `Results 2019.xlsx` contiene anche 549 result riferiti all'evento `1st Spanish League (2020 season)`, correttamente registrato con `Event.year=2020`. Il DB segue l'anno reale dell'evento, non l'anno nominale del file sorgente.
 
 I 73 result 2019 con `represented_country` diverso dalla country corrente dell'atleta sono coerenti con la logica di storico country/rappresentanza: il singolo result conserva la country rappresentata in gara, mentre la scheda Athlete conserva la country corrente dopo le decisioni admin.
+
+## 9. Import 2020 - Preview senza commit
+
+Data preview: 25 giugno 2026
+
+File sorgente: `import_files/Results 2020.xlsx`
+
+Stato: preview eseguita, nessun commit 2020 eseguito
+
+La preview 2020 e stata eseguita dopo il commit reale 2019. Il database di partenza contiene:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 11.345 |
+| Event | 445 |
+| Result | 196.621 |
+| Notification | 0 |
+
+### 9.1 Sintesi preview 2020
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 33.782 |
+| Result importabili | 33.777 |
+| Athlete che verrebbero creati senza decisioni admin | 1.042 |
+| Event che verrebbero creati | 76 |
+| Duplicati identici interni al file | 5 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning prodotti:
+
+- 696 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 207 chiavi multi-day, con 431 righe valorizzate fino a `day=4`.
+
+### 9.2 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2020_preview_summary.json` | Sintesi tecnica completa della preview 2020. |
+| `docs/import_reports/gymternet_2020_duplicates.csv` | Audit dei duplicati identici interni al file. |
+| `docs/import_reports/gymternet_2020_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2020_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2020_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2020_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2020_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+
+### 9.3 Duplicati interni 2020
+
+La preview segnala 5 duplicati identici interni al file. Sono duplicati innocui e verranno saltati automaticamente in fase di commit.
+
+| Atleta | Evento | Apparatus | Score | D-score |
+|---|---|---|---:|---:|
+| Adam Dobrovitz | Hungarian Championships | PH | 12.000 | 4.000 |
+| Kazuma Kaya | Friendship & Solidarity Meet | HB | 14.300 |  |
+| Soma Laszlo Csorvasi | Hungarian Championships | HB | 11.900 | 4.300 |
+| Liu Sijia | Chinese Individual Championships | VT attempt 1 day 2 | 11.950 | 3.700 |
+| Meng Shangrong | Chinese Individual Championships | UB | 12.850 | 4.600 |
+
+### 9.4 D-score orfani 2020
+
+Totale D-score orfani: 696.
+
+| Tipo problema | Conteggio |
+|---|---:|
+| `athlete_missing_in_score_sheet` | 482 |
+| `possible_context_mismatch` | 107 |
+| `missing_final_score_for_context` | 62 |
+| `possible_athlete_name_typo` | 40 |
+| `possible_event_name_mismatch` | 4 |
+| `missing_score_sheet_context` | 1 |
+
+Decisione provvisoria: come per 2018 e 2019, questi D-score restano fuori dal database operativo salvo review mirata futura.
+
+### 9.5 Review atleta/country 2020
+
+Totale review atleta/country: 165.
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 141 |
+| `possible_athlete_country_change` | 15 |
+| `possible_athlete_identity_collision` | 9 |
+
+CSV operativi:
+
+| File | Righe da controllare |
+|---|---:|
+| `gymternet_2020_existing_athlete_match_review.csv` | 164 |
+| `gymternet_2020_new_athlete_country_conflicts.csv` | 1 |
+
+L'unico conflitto country tra nuovi atleti riguarda `Cathalina Matamala` (WAG), con country `GER` e `NED`. L'evidenza futura nei file successivi mostra `2021: NED`.
+
+### 9.6 Strumento riutilizzabile
+
+Per evitare comandi manuali fragili e rendere coerenti gli anni successivi, e stato aggiunto lo script:
+
+```text
+scripts/generate_gymternet_preview_reports.py
+```
+
+Lo script genera automaticamente preview summary, CSV duplicati/conflitti, CSV D-score orfani e CSV review atleta/country per l'anno indicato.
+
+### 9.7 Stato operativo
+
+Il 2020 non e stato importato nel database.
+
+Prima del commit 2020 occorre:
+
+1. completare i CSV admin 2020;
+2. generare il payload decisionale;
+3. rieseguire preview con decisioni applicate;
+4. controllare eventuali conflitti post-decisione;
+5. solo dopo preview pulita, eseguire commit controllato 2020.

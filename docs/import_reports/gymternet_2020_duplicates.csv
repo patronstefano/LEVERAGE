@@ -1,0 +1,6 @@
+reason,event_name,year,athlete_name,country,discipline,category,apparatus,vt_attempt,day,format,round,score,D_score,source_sheet,source_row,existing_result_id,existing_score,existing_D_score,existing_country,learned_rule_id,recommended_action
+duplicate_in_file,Hungarian Championships,2020,Adam Dobrovitz,HUN,MAG,junior,PH,,,individual,final,12.0,4.0,MAG,25,,,,,,
+duplicate_in_file,Friendship & Solidarity Meet,2020,Kazuma Kaya,JPN,MAG,senior,HB,,,individual,final,14.3,,MAG,1519,,,,,,
+duplicate_in_file,Hungarian Championships,2020,Soma Laszlo Csorvasi,HUN,MAG,senior,HB,,,individual,final,11.9,4.3,MAG,2844,,,,,,
+duplicate_in_file,Chinese Individual Championships,2020,Liu Sijia,CHN,WAG,junior,VT,1,2,individual,final,11.95,3.7,WAG,2558,,,,,,
+duplicate_in_file,Chinese Individual Championships,2020,Meng Shangrong,CHN,WAG,junior,UB,,,individual,final,12.85,4.6,WAG,3075,,,,,,
