@@ -57,6 +57,13 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2021_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2021. Inizialmente conteneva 4 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
 | `gymternet_2021_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2021; vuoto. |
 | `gymternet_2021_commit_summary.json` | Report tecnico del commit reale 2021, con backup, statistiche di import e controlli post-import. |
+| `gymternet_2022_preview_summary.json` | Sintesi tecnica della preview 2022 eseguita sul DB post-2021, senza commit. |
+| `gymternet_2022_duplicates.csv` | Audit dei 3 duplicati identici interni al file 2022. |
+| `gymternet_2022_conflicts.csv` | Audit dei conflitti bloccanti 2022; attualmente vuoto. |
+| `gymternet_2022_orphan_dscores.csv` | D-score del file Gymternet 2022 non agganciati automaticamente a un result con final score. |
+| `gymternet_2022_athlete_review.csv` | Review atleta/country 2022 completa e tecnica. |
+| `gymternet_2022_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2022 corrisponde a un atleta gia presente nel DB post-2021. |
+| `gymternet_2022_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2022 che presentano conflitti country nel file 2022. |
 
 ## Convenzione review atleta/country
 

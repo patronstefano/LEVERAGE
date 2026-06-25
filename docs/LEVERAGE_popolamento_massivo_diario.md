@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019, 2020 e 2021 committati e verificati; prossimo passo preview controllata 2022
+Stato: import storico 2018, 2019, 2020 e 2021 committati e verificati; preview 2022 eseguita, in attesa di review admin
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -1626,3 +1626,130 @@ Il 2021 e stato importato nel database locale.
 Il commit reale ha creato 77.423 result nuovi e non ha introdotto duplicati semantici.
 
 I 1.341 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2021_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+## 11. Import 2022 - Preview senza commit
+
+Data preview: 25 giugno 2026
+
+File sorgente: `import_files/Results 2022.xlsx`
+
+Stato: preview eseguita, nessun commit 2022 eseguito
+
+La preview 2022 e stata eseguita dopo il commit reale 2021. Il database di partenza contiene:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 14.957 |
+| Event | 717 |
+| Result | 307.821 |
+| Notification | 0 |
+
+### 11.1 Sintesi preview 2022
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 97.937 |
+| Result importabili | 97.934 |
+| Athlete che verrebbero creati senza decisioni admin | 2.840 |
+| Event che verrebbero creati | 219 |
+| Duplicati identici interni al file | 3 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning prodotti:
+
+- 1.426 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 16 chiavi multi-day, con 32 righe valorizzate fino a `day=2`.
+
+### 11.2 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2022_preview_summary.json` | Sintesi tecnica completa della preview 2022. |
+| `docs/import_reports/gymternet_2022_duplicates.csv` | Audit dei duplicati identici interni al file. |
+| `docs/import_reports/gymternet_2022_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2022_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2022_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2022_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2022_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+
+### 11.3 Duplicati interni 2022
+
+La preview segnala 3 duplicati identici interni al file. Sono duplicati innocui e verranno saltati automaticamente in fase di commit.
+
+| Atleta | Evento | Apparatus | Score | D-score |
+|---|---|---|---:|---:|
+| Lee Junho | World Championships | HB | 12.233 | 5.600 |
+| Lee Junho | World Championships | PB | 13.266 | 5.600 |
+| Lee Junho | World Championships | SR | 13.433 | 5.000 |
+
+### 11.4 D-score orfani 2022
+
+Totale D-score orfani: 1.426.
+
+| Tipo problema | Conteggio |
+|---|---:|
+| `athlete_missing_in_score_sheet` | 966 |
+| `possible_athlete_name_typo` | 195 |
+| `possible_context_mismatch` | 130 |
+| `missing_final_score_for_context` | 118 |
+| `possible_event_name_mismatch` | 14 |
+| `missing_score_sheet_context` | 3 |
+
+Decisione provvisoria: come per 2018, 2019, 2020 e 2021, questi D-score restano fuori dal database operativo salvo review mirata futura.
+
+### 11.5 Review atleta/country 2022
+
+Totale review atleta/country: 389.
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 320 |
+| `possible_athlete_identity_collision` | 44 |
+| `possible_athlete_country_change` | 25 |
+
+CSV operativi:
+
+| File | Righe da controllare |
+|---|---:|
+| `gymternet_2022_existing_athlete_match_review.csv` | 386 |
+| `gymternet_2022_new_athlete_country_conflicts.csv` | 3 |
+
+Priorita del CSV `existing_athlete_match_review`:
+
+| Priorita | Righe |
+|---|---:|
+| high | 81 |
+| medium | 305 |
+
+### 11.6 Conflitti country tra nuovi atleti
+
+| Atleta | Discipline | Country coinvolte | Evidenza futura |
+|---|---|---|---|
+| Viggo Altarac | MAG | SGP, SWE | 2023: SWE; 2024: SWE; 2025: SGP/SWE |
+| Andres Yustiz | MAG | USA, VEN | not found 2023-2025 |
+| Kyle Millar | MAG | GBR, ISL | 2023: GBR; 2024: GBR; 2025: GBR |
+
+Questi casi dovranno essere verificati dall'admin nel CSV dedicato.
+
+### 11.7 Name-order automatico
+
+Durante la preview 2022 il tool ha applicato automaticamente la regola name-order:
+
+| Voce | Conteggio |
+|---|---:|
+| Merge automatici name-order | 6 |
+| Chiavi variante normalizzate | 6 |
+| Record normalizzati | 66 |
+
+### 11.8 Stato operativo
+
+Il 2022 non e stato importato nel database.
+
+Prima del commit 2022 occorre:
+
+1. completare i CSV admin 2022;
+2. generare il payload decisionale;
+3. rieseguire preview con decisioni applicate;
+4. controllare eventuali conflitti post-decisione;
+5. solo dopo preview pulita, eseguire commit controllato 2022.

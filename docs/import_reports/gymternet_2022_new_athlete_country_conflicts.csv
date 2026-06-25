@@ -1,0 +1,4 @@
+review_id,review_priority,problem_type,athlete_name,discipline,collision_countries,decision,action,country,notes,results_2022_by_country,future_country_evidence
+athlete_identity_collision_c5b53aa0c8bca9f4,high,possible_athlete_identity_collision,Viggo Altarac,MAG,"SGP, SWE",,,,,SGP: 2022 - Singapore Championships (4 results) | SWE: 2022 - Nordic Championships (5 results),"Viggo Altarac: 2023: SWE:65 / 2024: SWE:24 / 2025: SGP:2, SWE:65"
+athlete_identity_collision_c01aadc798c623f7,high,possible_athlete_identity_collision,Andres Yustiz,MAG,"USA, VEN",,,,,USA: 2022 - Houston National Invitational (5 results) | VEN: 2022 - Bolivarian Games (5 results),Andres Yustiz: not found 2023-2025
+athlete_identity_collision_2c536eb7c35084c5,high,possible_athlete_identity_collision,Kyle Millar,MAG,"GBR, ISL",,,,,GBR: 2022 - Scottish Championships (5 results) | ISL: 2022 - Northern European Championships (5 results),Kyle Millar: 2023: GBR:24 / 2024: GBR:21 / 2025: GBR:48
