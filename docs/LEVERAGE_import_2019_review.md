@@ -2,13 +2,13 @@
 
 Data creazione: 25 giugno 2026
 File sorgente: `import_files/Results 2019.xlsx`
-Stato: preview eseguita, nessun commit 2019 eseguito
+Stato: preview eseguita, review admin completata, commit reale eseguito e verificato il 25 giugno 2026
 
 ---
 
 ## 1. Scopo
 
-Questo documento registra la preview del file Gymternet 2019 eseguita sul database locale gia popolato con il 2018.
+Questo documento registra la preview, la review admin e il commit reale del file Gymternet 2019 eseguito sul database locale gia popolato con il 2018.
 
 Obiettivo:
 
@@ -18,7 +18,7 @@ Obiettivo:
 - individuare possibili collegamenti con athlete gia presenti dal 2018;
 - preparare la review admin prima del commit controllato 2019.
 
-Nessun dato 2019 e stato scritto nel database.
+Il commit reale e stato eseguito solo dopo preview pulita, backup pre-import e verifica dei payload decisionali.
 
 ---
 
@@ -365,3 +365,58 @@ Dopo l'aggiornamento delle decisioni, il payload e stato rigenerato e la preview
 | Review irrisolte | 0 |
 
 Il file `docs/import_reports/gymternet_2019_post_decision_conflicts.csv` e stato rigenerato come audit corrente vuoto, con sola intestazione.
+
+## 10. Commit reale 2019
+
+Data commit reale: 25 giugno 2026
+
+Backup pre-import:
+
+```text
+backups/leverage_pre_import_2019_20260625_182243.db
+```
+
+Report tecnico:
+
+```text
+docs/import_reports/gymternet_2019_commit_summary.json
+```
+
+Esito commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Result creati | 106.633 |
+| Result completi creati | 73.802 |
+| Result parziali creati | 32.831 |
+| Athlete creati | 4.211 |
+| Event creati | 234 |
+| Event aggiornati | 268 |
+| Country corrente Athlete aggiornate | 11 |
+| `represented_country` corretti | 521 |
+| D-score orfani lasciati fuori dal DB | 958 |
+| Duplicati saltati | 0 |
+
+Stato DB dopo commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 11.345 |
+| Event | 445 |
+| Result | 196.621 |
+| Notification | 0 |
+
+Controlli post-import:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici Result | 0 |
+| Result 2019 | 106.084 |
+| Result 2020 contenuti nel file 2019 | 549 |
+| Result 2019 completi | 73.802 |
+| Result 2019 con final score ma senza D-score | 32.282 |
+| Result 2019 senza final score | 0 |
+| Result 2020 con final score ma senza D-score | 549 |
+| Result 2019 con `represented_country` diverso dalla country corrente Athlete | 73 |
+
+Nota: il file 2019 contiene anche l'evento `1st Spanish League (2020 season)`, registrato con `Event.year=2020`. Questa scelta e corretta perche il database segue l'anno reale dell'evento.

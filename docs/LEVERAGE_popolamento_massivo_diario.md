@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018 committato e verificato; preview 2019 eseguita; review admin 2019 completata; payload decisionale 2019 generato; preview con decisioni applicate pulita; prossimo passo commit controllato 2019
+Stato: import storico 2018 committato e verificato; import storico 2019 committato e verificato; prossimo passo preview controllata 2020
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -1109,3 +1109,67 @@ Il documento operativo della memoria decisionale e:
 ```text
 docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 ```
+
+### 8.10 Commit controllato 2019
+
+Data commit reale: 25 giugno 2026
+
+Prima del commit reale e stato creato un backup fisico del database:
+
+```text
+backups/leverage_pre_import_2019_20260625_182243.db
+```
+
+Il commit reale e stato eseguito usando:
+
+```text
+import_files/Results 2019.xlsx
+docs/import_reports/gymternet_2019_athlete_match_decisions.json
+```
+
+Il report tecnico del commit e stato salvato in:
+
+```text
+docs/import_reports/gymternet_2019_commit_summary.json
+```
+
+Esito commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Result creati | 106.633 |
+| Result completi creati | 73.802 |
+| Result parziali creati | 32.831 |
+| Athlete creati | 4.211 |
+| Event creati | 234 |
+| Event aggiornati | 268 |
+| Country corrente Athlete aggiornate | 11 |
+| `represented_country` corretti | 521 |
+| D-score orfani lasciati fuori dal DB | 958 |
+| Duplicati saltati | 0 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 11.345 |
+| Event | 445 |
+| Result | 196.621 |
+| Notification | 0 |
+
+Controlli post-import:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici Result | 0 |
+| Result 2019 | 106.084 |
+| Result 2020 contenuti nel file 2019 | 549 |
+| Result 2019 completi | 73.802 |
+| Result 2019 con final score ma senza D-score | 32.282 |
+| Result 2019 senza final score | 0 |
+| Result 2020 con final score ma senza D-score | 549 |
+| Result 2019 con `represented_country` diverso dalla country corrente Athlete | 73 |
+
+Nota importante: il file `Results 2019.xlsx` contiene anche 549 result riferiti all'evento `1st Spanish League (2020 season)`, correttamente registrato con `Event.year=2020`. Il DB segue l'anno reale dell'evento, non l'anno nominale del file sorgente.
+
+I 73 result 2019 con `represented_country` diverso dalla country corrente dell'atleta sono coerenti con la logica di storico country/rappresentanza: il singolo result conserva la country rappresentata in gara, mentre la scheda Athlete conserva la country corrente dopo le decisioni admin.

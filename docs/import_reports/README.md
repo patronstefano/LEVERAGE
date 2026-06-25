@@ -25,6 +25,7 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2019_preview_summary.json` | Sintesi tecnica della preview 2019 eseguita sul DB post-2018, senza commit. |
 | `gymternet_2019_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2019. Aggiornato dopo la risoluzione dei conflitti post-decisione. |
 | `gymternet_2019_preview_with_decisions_summary.json` | Preview 2019 eseguita con decisioni admin applicate su copia temporanea del DB, senza modificare `leverage.db`. |
+| `gymternet_2019_commit_summary.json` | Report tecnico del commit reale 2019, con backup, statistiche di import e controlli post-import. |
 | `gymternet_2019_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2019. Inizialmente conteneva 24 conflitti; dopo le decisioni admin `keep separate`, e stato rigenerato vuoto e non blocca piu il commit. |
 | `gymternet_2019_orphan_dscores.csv` | D-score del file Gymternet 2019 non agganciati automaticamente a un result con final score. |
 | `gymternet_2019_athlete_review.csv` | Review atleta/country 2019 completa e tecnica. Conservata come report aggregato di riferimento. |
