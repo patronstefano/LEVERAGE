@@ -84,6 +84,16 @@ La regola e stata formalizzata dopo la review Gymternet 2019. I gruppi che l'han
 | Riddhi Hattekar | Siddhi Hattekar | keep separate |
 | Sonia Bertoli | Sofia Bertoli | keep separate |
 
+### Esempio 2020
+
+La regola e stata riapplicata durante la review Gymternet 2020 sul caso:
+
+| Variante importata | Atleta suggerito | Contesto | Decisione |
+|---|---|---|---|
+| Nao Kobayashi | Kaho Kobayashi | All-Japan Student Championships 2020, stessi apparatus e score diversi | keep separate |
+
+In questo caso il merge avrebbe creato 5 conflitti post-decisione, perche i due atleti risultavano presenti nello stesso evento, nello stesso round/format e sugli stessi apparatus con punteggi diversi. La decisione finale e stata trattarli come due atleti distinti.
+
 ## Uso futuro
 
 Quando verranno importati nuovi file Gymternet:

@@ -39,6 +39,11 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2020_athlete_review.csv` | Review atleta/country 2020 completa e tecnica. |
 | `gymternet_2020_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2020 corrisponde a un atleta gia presente nel DB post-2019. |
 | `gymternet_2020_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2020 che presentano conflitti country nel file 2020. |
+| `gymternet_2020_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2020. Aggiornato dopo la risoluzione del caso Nao/Kaho Kobayashi con `keep separate`. |
+| `gymternet_2020_preview_with_decisions_summary.json` | Preview 2020 eseguita con decisioni admin applicate, senza commit. |
+| `gymternet_2020_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2020. Rigenerato vuoto dopo l'applicazione della regola `same_context_different_score_keep_separate`. |
+| `gymternet_2020_post_decision_duplicates.csv` | Audit dei 5 duplicati identici residui dopo le decisioni 2020. |
+| `gymternet_2020_commit_summary.json` | Report tecnico del commit reale 2020, con backup, statistiche di import e controlli post-import. |
 
 ## Convenzione review atleta/country
 
@@ -60,6 +65,10 @@ Nel CSV `gymternet_2019_new_athlete_country_conflicts.csv`, i valori inseriti co
 
 Nel CSV `gymternet_2019_existing_athlete_match_review.csv`, i valori inseriti come `Merge`, `Separate`, `Correct`, `History` e `Histroy` nel file Numbers sono stati normalizzati rispettivamente in `merge as same athlete`, `keep separate`, `canonical country` e `country history`.
 
+Nel CSV `gymternet_2020_existing_athlete_match_review.csv`, i valori inseriti come `Merge`, `Separate`, `Correct` e `History` nel file Numbers sono stati normalizzati rispettivamente in `merge as same athlete`, `keep separate`, `canonical country` e `country history`.
+
+Nel CSV `gymternet_2020_new_athlete_country_conflicts.csv`, il refuso `Corrrect` inserito nel file Numbers e stato normalizzato in `canonical country`.
+
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 
 Regola metodologica persistente: se una proposta di merge atleta produce lo stesso contesto sportivo di result ma con score o D-score diversi, il tool deve raccomandare `keep separate`. Nel backend questa regola e tracciata con `same_context_different_score_keep_separate`.
@@ -68,4 +77,12 @@ La generazione dei report annuali e supportata dallo script:
 
 ```text
 scripts/generate_gymternet_preview_reports.py
+```
+
+Il flusso controllato post-review e supportato dagli script:
+
+```text
+scripts/apply_gymternet_review_decisions.py
+scripts/preview_gymternet_with_decisions.py
+scripts/commit_gymternet_year.py
 ```

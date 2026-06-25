@@ -1,2 +1,2 @@
 review_id,review_priority,problem_type,athlete_name,discipline,collision_countries,decision,action,country,notes,results_2020_by_country,future_country_evidence
-athlete_identity_collision_6e24f4e6e097be6b,high,possible_athlete_identity_collision,Cathalina Matamala,WAG,"GER, NED",,,,,GER: 2020 - Pre-Olympic Youth Cup (3 results) | NED: 2020 - Create Team Cup (5 results),Cathalina Matamala: 2021: NED:10
+athlete_identity_collision_6e24f4e6e097be6b,high,possible_athlete_identity_collision,Cathalina Matamala,WAG,"GER, NED",merge as same athlete,canonical country,NED,,GER: 2020 - Pre-Olympic Youth Cup (3 results) | NED: 2020 - Create Team Cup (5 results),Cathalina Matamala: 2021: NED:10

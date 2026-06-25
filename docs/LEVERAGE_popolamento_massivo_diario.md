@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018 committato e verificato; import storico 2019 committato e verificato; prossimo passo preview controllata 2020
+Stato: import storico 2018, 2019 e 2020 committati e verificati; prossimo passo preview controllata 2021
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -1174,15 +1174,16 @@ Nota importante: il file `Results 2019.xlsx` contiene anche 549 result riferiti 
 
 I 73 result 2019 con `represented_country` diverso dalla country corrente dell'atleta sono coerenti con la logica di storico country/rappresentanza: il singolo result conserva la country rappresentata in gara, mentre la scheda Athlete conserva la country corrente dopo le decisioni admin.
 
-## 9. Import 2020 - Preview senza commit
+## 9. Import 2020 - Preview, review e commit
 
 Data preview: 25 giugno 2026
+Data commit database locale: 25 giugno 2026
 
 File sorgente: `import_files/Results 2020.xlsx`
 
-Stato: preview eseguita, nessun commit 2020 eseguito
+Stato: import 2020 committato e verificato
 
-La preview 2020 e stata eseguita dopo il commit reale 2019. Il database di partenza contiene:
+La preview 2020 e stata eseguita dopo il commit reale 2019. Il database di partenza conteneva:
 
 | Entita | Conteggio |
 |---|---:|
@@ -1191,7 +1192,7 @@ La preview 2020 e stata eseguita dopo il commit reale 2019. Il database di parte
 | Result | 196.621 |
 | Notification | 0 |
 
-### 9.1 Sintesi preview 2020
+### 9.1 Sintesi preview iniziale 2020
 
 | Voce | Conteggio |
 |---|---:|
@@ -1219,10 +1220,15 @@ Warning prodotti:
 | `docs/import_reports/gymternet_2020_athlete_review.csv` | Review atleta/country completa e tecnica. |
 | `docs/import_reports/gymternet_2020_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
 | `docs/import_reports/gymternet_2020_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+| `docs/import_reports/gymternet_2020_athlete_match_decisions.json` | Payload tecnico delle decisioni admin 2020. |
+| `docs/import_reports/gymternet_2020_preview_with_decisions_summary.json` | Preview 2020 con decisioni applicate, senza commit. |
+| `docs/import_reports/gymternet_2020_post_decision_conflicts.csv` | Audit dei conflitti post-decisione; rigenerato vuoto dopo la correzione finale. |
+| `docs/import_reports/gymternet_2020_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni. |
+| `docs/import_reports/gymternet_2020_commit_summary.json` | Report tecnico del commit reale 2020. |
 
 ### 9.3 Duplicati interni 2020
 
-La preview segnala 5 duplicati identici interni al file. Sono duplicati innocui e verranno saltati automaticamente in fase di commit.
+La preview ha segnalato 5 duplicati identici interni al file. Sono duplicati innocui e sono stati saltati automaticamente in fase di commit.
 
 | Atleta | Evento | Apparatus | Score | D-score |
 |---|---|---|---:|---:|
@@ -1266,7 +1272,123 @@ CSV operativi:
 
 L'unico conflitto country tra nuovi atleti riguarda `Cathalina Matamala` (WAG), con country `GER` e `NED`. L'evidenza futura nei file successivi mostra `2021: NED`.
 
-### 9.6 Strumento riutilizzabile
+I due CSV sono stati compilati dall'admin tramite file Numbers. Il trasferimento nel CSV operativo ha preservato i campi tecnici e ha aggiornato soltanto:
+
+- `decision`;
+- `action`;
+- `country`;
+- `notes`.
+
+Sono stati normalizzati anche shorthand e refusi:
+
+- `Merge` -> `merge as same athlete`;
+- `Separate` -> `keep separate`;
+- `Correct` / `Corrrect` -> `canonical country`;
+- `History` -> `country history`.
+
+### 9.6 Decisioni applicate 2020
+
+Dopo il trasferimento delle decisioni admin, il payload tecnico 2020 ha prodotto:
+
+| Decisione/azione | Conteggio |
+|---|---:|
+| Suggerimenti accettati | 135 |
+| Nuovi atleti confermati | 6 |
+| Merge di identita atleta | 9 |
+| Aggiornamenti country atleta | 8 |
+| Country atleta mantenute | 11 |
+| Correzioni `represented_country` sui result | 19 chiavi decisionali / 96 result corretti nel commit |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
+
+### 9.7 Conflitto post-decisione risolto
+
+La prima preview con decisioni applicate ha generato 5 conflitti, tutti collegati allo stesso caso:
+
+- `Nao Kobayashi` suggerita come merge con `Kaho Kobayashi`;
+- stesso evento: `All-Japan Student Championships`;
+- stessa disciplina/category/format/round;
+- stessi apparatus `BB`, `FX`, `UB`, `VT`, `AA`;
+- score diversi nello stesso contesto sportivo.
+
+Decisione metodologica: quando un possibile merge atleta produce lo stesso contesto sportivo di result ma con score o D-score diversi, il tool deve trattare i due record come atleti diversi e applicare `keep separate`.
+
+La regola e coerente con quanto gia deciso durante il 2019 ed e tracciata come:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Dopo questa correzione, la preview post-decisione e risultata pulita:
+
+| Voce | Conteggio |
+|---|---:|
+| Conflitti post-decisione | 0 |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
+| Duplicati identici residui | 5 |
+
+### 9.8 Commit database 2020
+
+Prima del commit e stato creato il backup:
+
+```text
+backups/leverage_pre_import_2020_20260625_191629.db
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 885 |
+| Event creati | 76 |
+| Result creati | 33.777 |
+| Result completi creati | 20.887 |
+| Result parziali creati | 12.890 |
+| Event aggiornati | 94 |
+| Country atleta aggiornate | 8 |
+| `represented_country` corretti sui result | 96 |
+| Atleti con nuovi result | 3.906 |
+| Event con nuovi result | 76 |
+| Duplicati saltati | 5 |
+| D-score orfani lasciati fuori dal DB | 696 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 12.230 |
+| Event | 521 |
+| Result | 230.398 |
+| Notification | 0 |
+
+### 9.9 Controlli post-import 2020
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+
+Qualita dati 2020:
+
+| Indicatore | Conteggio |
+|---|---:|
+| Result completi 2020 | 20.887 |
+| Result 2020 con final score ma senza D-score | 13.439 |
+| Result 2020 senza final score | 0 |
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+Nota: i result 2020 sono 34.326 perche il file 2019 conteneva gia 549 result riferiti all'evento `1st Spanish League (2020 season)`, registrati correttamente con `Event.year=2020`.
+
+### 9.10 Strumenti riutilizzabili
 
 Per evitare comandi manuali fragili e rendere coerenti gli anni successivi, e stato aggiunto lo script:
 
@@ -1276,14 +1398,16 @@ scripts/generate_gymternet_preview_reports.py
 
 Lo script genera automaticamente preview summary, CSV duplicati/conflitti, CSV D-score orfani e CSV review atleta/country per l'anno indicato.
 
-### 9.7 Stato operativo
+Durante il flusso 2020 sono stati aggiunti anche:
 
-Il 2020 non e stato importato nel database.
+- `scripts/apply_gymternet_review_decisions.py`: trasferisce le decisioni dai CSV/Numbers al payload tecnico;
+- `scripts/preview_gymternet_with_decisions.py`: riesegue una preview con decisioni applicate;
+- `scripts/commit_gymternet_year.py`: esegue il commit controllato di un anno dopo preflight e backup.
 
-Prima del commit 2020 occorre:
+### 9.11 Stato operativo finale 2020
 
-1. completare i CSV admin 2020;
-2. generare il payload decisionale;
-3. rieseguire preview con decisioni applicate;
-4. controllare eventuali conflitti post-decisione;
-5. solo dopo preview pulita, eseguire commit controllato 2020.
+Il 2020 e stato importato nel database locale.
+
+Il commit reale ha creato 33.777 result nuovi e non ha introdotto duplicati semantici.
+
+I 696 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2020_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
