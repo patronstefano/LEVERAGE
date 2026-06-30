@@ -1496,6 +1496,32 @@ Sono stati consolidati tre livelli di protezione:
 - blocco di duplicati nel bulk manuale `POST /events/{event_id}/results/bulk`;
 - endpoint admin `GET /admin/result-duplicate-groups` per individuare gruppi duplicati gia presenti nel database.
 
+### Merge amministrativo Athlete duplicati
+
+Dopo l'import storico puo emergere che lo stesso atleta sia stato salvato come due entita diverse a causa di errori di battitura, accenti, romanizzazioni o varianti del nome.
+
+Per questo e stato aggiunto un flusso admin-only di merge tra schede `Athlete`:
+
+- `POST /athletes/{source_athlete_id}/merge-preview`;
+- `POST /athletes/{source_athlete_id}/merge`.
+
+L'admin indica l'ID dell'atleta corretto/canonico tramite `target_athlete_id`. La preview mostra:
+
+- atleta sorgente/duplicato;
+- atleta target/canonico;
+- result che verrebbero spostati;
+- preferenze utente da riallacciare;
+- country history da spostare o deduplicare;
+- suggerimenti dati e notifiche collegate;
+- metadati che possono essere copiati nel target se mancanti;
+- eventuali conflitti bloccanti.
+
+Il commit richiede `confirm=true`. Se non ci sono conflitti, LEVERAGE sposta tutti i `Result` verso l'atleta canonico, preserva `represented_country`, riallaccia i follower, sposta country history non duplicate, sposta suggerimenti e notifiche, copia nel target solo metadati mancanti e soft-delete della scheda duplicata.
+
+Se il merge produrrebbe due `Result` nello stesso contesto sportivo sullo stesso atleta target, l'operazione viene bloccata con errore `409`. Questo mantiene coerente la regola anti-duplicato dei Result e impedisce fusioni pericolose.
+
+Ogni merge produce audit log e security alert, perche modifica in modo rilevante la struttura del database storico.
+
 ### Lingua principale e i18n
 
 La lingua tecnica principale del backend e l'inglese. I codici sportivi, gli enum, i nomi campo e il contratto API non vengono tradotti, perche devono restare stabili per import, filtri, grafici e integrazioni.

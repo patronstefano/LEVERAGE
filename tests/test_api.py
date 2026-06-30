@@ -454,6 +454,242 @@ def test_update_and_delete_athlete():
     assert get_after_delete.status_code == 404
 
 
+def test_admin_can_preview_and_merge_duplicate_athlete_into_canonical_entity():
+    client.post("/auth/register", json={"email": "merge_admin@example.com", "password": TEST_PASSWORD})
+    admin_token = login_as_admin("merge_admin@example.com")
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    target = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Luca",
+            "last_name": "Rossi",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=admin_headers,
+    ).json()
+    duplicate = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Luca",
+            "last_name": "Rosssi",
+            "discipline": "MAG",
+            "country": "ITA",
+            "birth_year": 2001,
+        },
+        headers=admin_headers,
+    ).json()
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Athlete Merge Event",
+            "year": 2024,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "National Event",
+        },
+        headers=admin_headers,
+    ).json()
+    duplicate_result = client.post(
+        "/results/",
+        json={
+            "athlete_id": duplicate["id"],
+            "event_id": event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.2,
+            "score": 13.4,
+        },
+        headers=admin_headers,
+    ).json()
+
+    client.post("/auth/register", json={"email": "merge_follower@example.com", "password": TEST_PASSWORD})
+    follower_token = login_as_user("merge_follower@example.com")
+    follower_headers = {"Authorization": f"Bearer {follower_token}"}
+    assert client.post(
+        "/preferences/athletes/follow",
+        json={"athlete_id": duplicate["id"]},
+        headers=follower_headers,
+    ).status_code == 200
+
+    client.post("/auth/register", json={"email": "merge_double_follower@example.com", "password": TEST_PASSWORD})
+    double_follower_token = login_as_user("merge_double_follower@example.com")
+    double_follower_headers = {"Authorization": f"Bearer {double_follower_token}"}
+    assert client.post(
+        "/preferences/athletes/follow",
+        json={"athlete_id": target["id"]},
+        headers=double_follower_headers,
+    ).status_code == 200
+    assert client.post(
+        "/preferences/athletes/follow",
+        json={"athlete_id": duplicate["id"]},
+        headers=double_follower_headers,
+    ).status_code == 200
+
+    db = SessionLocal()
+    try:
+        db.add(models.DataSuggestion(
+            entity_type=models.DataSuggestionEntityTypeEnum.ATHLETE,
+            entity_id=duplicate["id"],
+            field_name="world_gymnastics_profile_url",
+            suggested_value="https://www.gymnastics.sport/athletes/luca-rossi",
+        ))
+        user = db.query(models.User).filter(models.User.email == "merge_follower@example.com").first()
+        db.add(models.Notification(
+            user_id=user.id,
+            type=models.NotificationTypeEnum.NEW_RESULT,
+            message="New result for duplicate athlete",
+            related_athlete_id=duplicate["id"],
+            related_result_id=duplicate_result["id"],
+        ))
+        db.commit()
+    finally:
+        db.close()
+
+    preview_response = client.post(
+        f"/athletes/{duplicate['id']}/merge-preview",
+        json={"target_athlete_id": target["id"]},
+        headers=admin_headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["can_merge"] is True
+    assert preview["source_result_count"] == 1
+    assert preview["followed_athletes_to_move"] == 1
+    assert preview["followed_athletes_duplicates_to_remove"] == 1
+    assert preview["data_suggestions_to_move"] == 1
+    assert preview["notifications_to_relink"] == 1
+    assert preview["metadata_to_copy"]["birth_year"] == "2001"
+
+    unconfirmed_response = client.post(
+        f"/athletes/{duplicate['id']}/merge",
+        json={"target_athlete_id": target["id"]},
+        headers=admin_headers,
+    )
+    assert unconfirmed_response.status_code == 400
+    assert unconfirmed_response.json()["detail"] == "confirm must be true to merge athletes"
+
+    merge_response = client.post(
+        f"/athletes/{duplicate['id']}/merge",
+        json={
+            "target_athlete_id": target["id"],
+            "confirm": True,
+            "reason": "Name typo: Rosssi should be Rossi",
+        },
+        headers=admin_headers,
+    )
+    assert merge_response.status_code == 200
+    merge_payload = merge_response.json()
+    assert merge_payload["merged"] is True
+    assert merge_payload["moved_results"] == 1
+    assert merge_payload["deleted_source_athlete_id"] == duplicate["id"]
+    assert merge_payload["target_athlete"]["birth_year"] == 2001
+
+    assert client.get(f"/athletes/{duplicate['id']}").status_code == 404
+    moved_results = client.get(f"/athletes/{target['id']}/results").json()
+    assert len(moved_results) == 1
+    assert moved_results[0]["id"] == duplicate_result["id"]
+    assert moved_results[0]["athlete_id"] == target["id"]
+    assert moved_results[0]["represented_country"] == "ITA"
+
+    db = SessionLocal()
+    try:
+        assert db.query(models.FollowedAthlete).filter(
+            models.FollowedAthlete.athlete_id == duplicate["id"],
+        ).count() == 0
+        assert db.query(models.FollowedAthlete).filter(
+            models.FollowedAthlete.athlete_id == target["id"],
+        ).count() == 2
+        assert db.query(models.DataSuggestion).filter(
+            models.DataSuggestion.entity_type == models.DataSuggestionEntityTypeEnum.ATHLETE,
+            models.DataSuggestion.entity_id == target["id"],
+        ).count() == 1
+        assert db.query(models.Notification).filter(
+            models.Notification.related_athlete_id == target["id"],
+        ).count() == 1
+        audit = db.query(models.AuditLog).filter(
+            models.AuditLog.action == "merge",
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == target["id"],
+        ).first()
+        assert audit is not None
+    finally:
+        db.close()
+
+
+def test_athlete_merge_blocks_result_context_conflicts():
+    client.post("/auth/register", json={"email": "merge_conflict_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("merge_conflict_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    target = client.post(
+        "/athletes/",
+        json={"first_name": "Anna", "last_name": "Bianchi", "discipline": "WAG", "country": "ITA"},
+        headers=headers,
+    ).json()
+    duplicate = client.post(
+        "/athletes/",
+        json={"first_name": "Ana", "last_name": "Bianchi", "discipline": "WAG", "country": "ITA"},
+        headers=headers,
+    ).json()
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Athlete Merge Conflict Event",
+            "year": 2024,
+            "discipline": "WAG",
+            "category": "senior",
+            "level": "National Event",
+        },
+        headers=headers,
+    ).json()
+    result_payload = {
+        "event_id": event["id"],
+        "discipline": "WAG",
+        "category": "senior",
+        "apparatus": "BB",
+        "format": "individual",
+        "round": "final",
+        "D_score": 5.0,
+    }
+    assert client.post(
+        "/results/",
+        json={**result_payload, "athlete_id": target["id"], "score": 13.1},
+        headers=headers,
+    ).status_code == 200
+    assert client.post(
+        "/results/",
+        json={**result_payload, "athlete_id": duplicate["id"], "score": 13.4},
+        headers=headers,
+    ).status_code == 200
+
+    preview_response = client.post(
+        f"/athletes/{duplicate['id']}/merge-preview",
+        json={"target_athlete_id": target["id"]},
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["can_merge"] is False
+    assert "result_context_conflicts" in preview["blocking_reasons"]
+    assert preview["result_conflicts"][0]["source_score"] == 13.4
+    assert preview["result_conflicts"][0]["target_score"] == 13.1
+    assert preview["result_conflicts"][0]["same_score"] is False
+
+    merge_response = client.post(
+        f"/athletes/{duplicate['id']}/merge",
+        json={"target_athlete_id": target["id"], "confirm": True},
+        headers=headers,
+    )
+    assert merge_response.status_code == 409
+    assert merge_response.json()["detail"]["can_merge"] is False
+
+
 def test_core_scalability_indexes_are_present():
     inspector = inspect(engine)
     athlete_indexes = {index["name"] for index in inspector.get_indexes("athletes")}

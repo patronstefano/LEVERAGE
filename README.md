@@ -76,6 +76,10 @@ uvicorn app.main:app --reload
   Endpoint admin-only per registrare un cambio country con `to_country` e `change_year`
 - `GET /athletes/{athlete_id}/admin-view`
   Endpoint admin-only: restituisce la scheda Athlete ufficiale e i suggerimenti pendenti visibili solo agli admin
+- `POST /athletes/{source_athlete_id}/merge-preview`
+  Endpoint admin-only per verificare se una scheda atleta duplicata puo essere unita a un atleta canonico indicato tramite `target_athlete_id`
+- `POST /athletes/{source_athlete_id}/merge`
+  Endpoint admin-only per fondere una scheda atleta duplicata nell'atleta canonico, con `confirm=true`, audit log e blocco se esistono conflitti Result
 - `GET /athletes/suggestions`
 - `GET /athletes/{athlete_id}/results`
 - `GET /athletes/{athlete_id}/events/{event_id}/results`
@@ -346,6 +350,18 @@ Il bulk manuale e il `POST /results` bloccano anche duplicati sullo stesso conte
 Quando `POST /events/{event_id}/athletes/resolve` o il bulk results creano nuovi atleti, LEVERAGE genera una notifica admin `data_entry_summary` con il riepilogo degli atleti creati e il link logico all'evento.
 La futura UI admin puo usare `GET /admin/entities-to-complete` per mostrare gli atleti e gli eventi con campi ancora vuoti, cosi l'admin puo completare le schede dopo aver finito la classifica in corso.
 La futura UI admin puo usare anche `GET /admin/result-duplicate-groups` per controllare eventuali duplicati gia presenti nel database prima o dopo import storici: l'endpoint raggruppa i `Result` con stessa identita sportiva e mostra gli ID da verificare.
+
+## Merge amministrativo Athlete
+Se dopo un import o un controllo manuale emerge che lo stesso atleta e stato salvato come due entita diverse per un errore di battitura, LEVERAGE espone un flusso admin-only per unirle.
+
+Flusso consigliato per la UI admin:
+
+1. L'admin apre la scheda duplicata e inserisce l'ID dell'atleta corretto/canonico.
+2. `POST /athletes/{source_athlete_id}/merge-preview` con `{"target_athlete_id": ...}`.
+3. La UI mostra dati dei due atleti, result da spostare, preferenze utente coinvolte, country history, suggerimenti/notification da riallacciare e conflitti bloccanti.
+4. Se `can_merge=true`, l'admin conferma con `POST /athletes/{source_athlete_id}/merge` e payload `{"target_athlete_id": ..., "confirm": true, "reason": "..."}`.
+
+Il merge sposta i `Result` verso l'atleta canonico, mantiene `represented_country` sui result, riallaccia i follower, sposta country history non duplicate, sposta suggerimenti e notifiche collegate, copia nel target solo metadati mancanti, soft-delete della scheda duplicata e registra audit log. Se il merge creerebbe due result nello stesso contesto sportivo sullo stesso atleta target, l'operazione viene bloccata con `409` e la preview restituisce i conflitti da risolvere.
 
 ## Scalabilita pre-popolamento
 Prima della popolazione storica 2018-2025, LEVERAGE include una migrazione dedicata agli indici (`0027_add_scalability_indexes`) per rendere piu efficienti classifiche evento, schede atleta, filtri calendario, ranking, ricerca duplicati e query sui country rappresentati.

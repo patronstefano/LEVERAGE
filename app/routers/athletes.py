@@ -11,6 +11,7 @@ from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.database import get_db
 from app.gymternet_import import record_athlete_country_change
+from app.result_identity import result_identity_key
 from app.result_ranking import apply_data_quality_filter, result_represented_country
 from app.security import get_current_admin_user, get_current_super_admin_user
 
@@ -57,6 +58,258 @@ def validate_athlete_update_against_existing_results(
             status_code=400,
             detail="Cannot update athlete discipline because one or more events do not allow it",
         )
+
+
+def float_equal(left: Optional[float], right: Optional[float]) -> bool:
+    if left is None and right is None:
+        return True
+    if left is None or right is None:
+        return False
+    return abs(left - right) < 0.001
+
+
+def get_active_athlete_or_404(db: Session, athlete_id: int) -> models.Athlete:
+    athlete = db.query(models.Athlete).filter(
+        models.Athlete.id == athlete_id,
+        models.Athlete.is_deleted.is_(False),
+    ).first()
+    if not athlete:
+        raise HTTPException(status_code=404, detail="Athlete not found")
+    return athlete
+
+
+def active_result_identity_for_athlete(result: models.Result, athlete_id: int) -> tuple:
+    return result_identity_key(
+        athlete_id,
+        result.event_id,
+        result.discipline,
+        result.category,
+        result.apparatus,
+        result.vt_attempt,
+        result.day,
+        result.format,
+        result.round,
+    )
+
+
+def build_athlete_merge_result_conflicts(
+    db: Session,
+    source_athlete: models.Athlete,
+    target_athlete: models.Athlete,
+) -> list[schemas.AthleteMergeResultConflict]:
+    target_results = db.query(models.Result).filter(
+        models.Result.athlete_id == target_athlete.id,
+        models.Result.is_deleted.is_(False),
+    ).all()
+    target_results_by_key = {
+        active_result_identity_for_athlete(result, target_athlete.id): result
+        for result in target_results
+    }
+    source_results = db.query(models.Result).filter(
+        models.Result.athlete_id == source_athlete.id,
+        models.Result.is_deleted.is_(False),
+    ).all()
+    conflicts = []
+    for source_result in source_results:
+        target_key = active_result_identity_for_athlete(source_result, target_athlete.id)
+        target_result = target_results_by_key.get(target_key)
+        if target_result is None:
+            continue
+        event = source_result.event or target_result.event
+        conflicts.append(schemas.AthleteMergeResultConflict(
+            source_result_id=source_result.id,
+            target_result_id=target_result.id,
+            event_id=source_result.event_id,
+            event_name=event.name if event else "",
+            event_year=event.year if event else 0,
+            discipline=source_result.discipline,
+            category=source_result.category,
+            apparatus=source_result.apparatus,
+            vt_attempt=source_result.vt_attempt,
+            day=source_result.day,
+            format=source_result.format,
+            round=source_result.round,
+            source_score=source_result.score,
+            target_score=target_result.score,
+            source_D_score=source_result.D_score,
+            target_D_score=target_result.D_score,
+            same_score=(
+                float_equal(source_result.score, target_result.score)
+                and float_equal(source_result.D_score, target_result.D_score)
+            ),
+        ))
+    return conflicts
+
+
+ATHLETE_MERGE_METADATA_FIELDS = [
+    "birth_year",
+    "country",
+    "image_url",
+    "world_gymnastics_athlete_id",
+    "world_gymnastics_profile_url",
+    "world_gymnastics_status",
+]
+
+
+def empty_metadata_value(value) -> bool:
+    return value is None or value == ""
+
+
+def metadata_display_value(value) -> Optional[str]:
+    if value is None:
+        return None
+    return str(value)
+
+
+def build_athlete_merge_metadata_summary(
+    source_athlete: models.Athlete,
+    target_athlete: models.Athlete,
+) -> tuple[dict[str, str], dict[str, dict[str, Optional[str]]]]:
+    metadata_to_copy = {}
+    metadata_differences = {}
+    for field in ATHLETE_MERGE_METADATA_FIELDS:
+        source_value = getattr(source_athlete, field)
+        target_value = getattr(target_athlete, field)
+        if empty_metadata_value(target_value) and not empty_metadata_value(source_value):
+            metadata_to_copy[field] = metadata_display_value(source_value) or ""
+        elif (
+            not empty_metadata_value(source_value)
+            and not empty_metadata_value(target_value)
+            and source_value != target_value
+        ):
+            metadata_differences[field] = {
+                "source": metadata_display_value(source_value),
+                "target": metadata_display_value(target_value),
+            }
+    return metadata_to_copy, metadata_differences
+
+
+def build_athlete_merge_preview(
+    db: Session,
+    source_athlete: models.Athlete,
+    target_athlete: models.Athlete,
+) -> schemas.AthleteMergePreview:
+    blocking_reasons = []
+    if source_athlete.id == target_athlete.id:
+        blocking_reasons.append("source_and_target_are_the_same_athlete")
+    if source_athlete.discipline != target_athlete.discipline:
+        blocking_reasons.append("athlete_discipline_mismatch")
+
+    result_conflicts = build_athlete_merge_result_conflicts(db, source_athlete, target_athlete)
+    if result_conflicts:
+        blocking_reasons.append("result_context_conflicts")
+
+    source_result_count = db.query(models.Result).filter(
+        models.Result.athlete_id == source_athlete.id,
+        models.Result.is_deleted.is_(False),
+    ).count()
+    target_result_count = db.query(models.Result).filter(
+        models.Result.athlete_id == target_athlete.id,
+        models.Result.is_deleted.is_(False),
+    ).count()
+
+    source_follow_user_ids = {
+        user_id for (user_id,) in db.query(models.FollowedAthlete.user_id).filter(
+            models.FollowedAthlete.athlete_id == source_athlete.id,
+        ).all()
+    }
+    target_follow_user_ids = {
+        user_id for (user_id,) in db.query(models.FollowedAthlete.user_id).filter(
+            models.FollowedAthlete.athlete_id == target_athlete.id,
+        ).all()
+    }
+
+    target_country_change_keys = {
+        (change.from_country, change.to_country, change.change_year)
+        for change in target_athlete.country_changes
+    }
+    source_country_change_keys = [
+        (change.from_country, change.to_country, change.change_year)
+        for change in source_athlete.country_changes
+    ]
+    country_changes_duplicates_to_remove = sum(
+        1 for key in source_country_change_keys if key in target_country_change_keys
+    )
+    country_changes_to_move = len(source_country_change_keys) - country_changes_duplicates_to_remove
+
+    data_suggestions_to_move = db.query(models.DataSuggestion).filter(
+        models.DataSuggestion.entity_type == models.DataSuggestionEntityTypeEnum.ATHLETE,
+        models.DataSuggestion.entity_id == source_athlete.id,
+    ).count()
+    notifications_to_relink = db.query(models.Notification).filter(
+        models.Notification.related_athlete_id == source_athlete.id,
+    ).count()
+    metadata_to_copy, metadata_differences = build_athlete_merge_metadata_summary(
+        source_athlete,
+        target_athlete,
+    )
+
+    return schemas.AthleteMergePreview(
+        source_athlete=source_athlete,
+        target_athlete=target_athlete,
+        can_merge=not blocking_reasons,
+        blocking_reasons=blocking_reasons,
+        result_conflicts=result_conflicts,
+        source_result_count=source_result_count,
+        target_result_count=target_result_count,
+        followed_athletes_to_move=len(source_follow_user_ids - target_follow_user_ids),
+        followed_athletes_duplicates_to_remove=len(source_follow_user_ids & target_follow_user_ids),
+        country_changes_to_move=country_changes_to_move,
+        country_changes_duplicates_to_remove=country_changes_duplicates_to_remove,
+        data_suggestions_to_move=data_suggestions_to_move,
+        notifications_to_relink=notifications_to_relink,
+        metadata_to_copy=metadata_to_copy,
+        metadata_differences=metadata_differences,
+    )
+
+
+def merge_athlete_preferences(
+    db: Session,
+    source_athlete_id: int,
+    target_athlete_id: int,
+) -> tuple[int, int]:
+    target_follow_user_ids = {
+        user_id for (user_id,) in db.query(models.FollowedAthlete.user_id).filter(
+            models.FollowedAthlete.athlete_id == target_athlete_id,
+        ).all()
+    }
+    moved = 0
+    removed_duplicates = 0
+    source_follows = db.query(models.FollowedAthlete).filter(
+        models.FollowedAthlete.athlete_id == source_athlete_id,
+    ).all()
+    for follow in source_follows:
+        if follow.user_id in target_follow_user_ids:
+            db.delete(follow)
+            removed_duplicates += 1
+            continue
+        follow.athlete_id = target_athlete_id
+        target_follow_user_ids.add(follow.user_id)
+        moved += 1
+    return moved, removed_duplicates
+
+
+def merge_athlete_country_changes(
+    db: Session,
+    source_athlete: models.Athlete,
+    target_athlete: models.Athlete,
+) -> tuple[int, int]:
+    target_keys = {
+        (change.from_country, change.to_country, change.change_year)
+        for change in target_athlete.country_changes
+    }
+    moved = 0
+    removed_duplicates = 0
+    for change in list(source_athlete.country_changes):
+        key = (change.from_country, change.to_country, change.change_year)
+        if key in target_keys:
+            db.delete(change)
+            removed_duplicates += 1
+            continue
+        change.athlete_id = target_athlete.id
+        target_keys.add(key)
+        moved += 1
+    return moved, removed_duplicates
 
 
 @router.post("/", response_model=schemas.AthleteRead)
@@ -149,6 +402,157 @@ def compare_athletes(
         ).order_by(models.Result.created_at.desc(), models.Result.id.desc()).limit(results_limit).all()
         result.append(schemas.AthleteWithResults(athlete=athlete, results=results))
     return result
+
+
+@router.post("/{source_athlete_id}/merge-preview", response_model=schemas.AthleteMergePreview)
+def preview_athlete_merge(
+    source_athlete_id: int,
+    payload: schemas.AthleteMergeRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    source_athlete = get_active_athlete_or_404(db, source_athlete_id)
+    target_athlete = get_active_athlete_or_404(db, payload.target_athlete_id)
+    return build_athlete_merge_preview(db, source_athlete, target_athlete)
+
+
+@router.post("/{source_athlete_id}/merge", response_model=schemas.AthleteMergeCommitResponse)
+def merge_athlete_into_target(
+    source_athlete_id: int,
+    payload: schemas.AthleteMergeCommitRequest,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    if not payload.confirm:
+        raise HTTPException(status_code=400, detail="confirm must be true to merge athletes")
+
+    source_athlete = get_active_athlete_or_404(db, source_athlete_id)
+    target_athlete = get_active_athlete_or_404(db, payload.target_athlete_id)
+    preview = build_athlete_merge_preview(db, source_athlete, target_athlete)
+    if not preview.can_merge:
+        raise HTTPException(
+            status_code=409,
+            detail=preview.model_dump(mode="json"),
+        )
+
+    source_before = model_snapshot(source_athlete)
+    target_before = model_snapshot(target_athlete)
+    target_result_ids_before = [
+        result_id for (result_id,) in db.query(models.Result.id).filter(
+            models.Result.athlete_id == target_athlete.id,
+        ).all()
+    ]
+    source_result_ids = [
+        result_id for (result_id,) in db.query(models.Result.id).filter(
+            models.Result.athlete_id == source_athlete.id,
+        ).all()
+    ]
+
+    moved_results = db.query(models.Result).filter(
+        models.Result.athlete_id == source_athlete.id,
+    ).update(
+        {models.Result.athlete_id: target_athlete.id},
+        synchronize_session=False,
+    )
+
+    moved_followed, removed_duplicate_followed = merge_athlete_preferences(
+        db,
+        source_athlete.id,
+        target_athlete.id,
+    )
+    moved_country_changes, removed_duplicate_country_changes = merge_athlete_country_changes(
+        db,
+        source_athlete,
+        target_athlete,
+    )
+
+    moved_data_suggestions = db.query(models.DataSuggestion).filter(
+        models.DataSuggestion.entity_type == models.DataSuggestionEntityTypeEnum.ATHLETE,
+        models.DataSuggestion.entity_id == source_athlete.id,
+    ).update(
+        {models.DataSuggestion.entity_id: target_athlete.id},
+        synchronize_session=False,
+    )
+    relinked_notifications = db.query(models.Notification).filter(
+        models.Notification.related_athlete_id == source_athlete.id,
+    ).update(
+        {models.Notification.related_athlete_id: target_athlete.id},
+        synchronize_session=False,
+    )
+
+    copied_metadata_fields = []
+    for field in ATHLETE_MERGE_METADATA_FIELDS:
+        source_value = getattr(source_athlete, field)
+        target_value = getattr(target_athlete, field)
+        if empty_metadata_value(target_value) and not empty_metadata_value(source_value):
+            setattr(target_athlete, field, source_value)
+            copied_metadata_fields.append(field)
+
+    source_athlete.is_deleted = True
+    source_athlete.deleted_at = datetime.utcnow()
+    source_athlete.deleted_by_admin_id = current_user.id
+
+    db.flush()
+    db.refresh(target_athlete)
+    db.refresh(source_athlete)
+
+    add_audit_log(
+        db,
+        current_user,
+        "merge",
+        "Athlete",
+        target_athlete.id,
+        before={
+            "target_athlete": target_before,
+            "source_athlete": source_before,
+            "source_result_ids": source_result_ids,
+            "target_result_ids_before": target_result_ids_before,
+            "reason": payload.reason,
+        },
+        after={
+            "target_athlete": model_snapshot(target_athlete),
+            "source_athlete": model_snapshot(source_athlete),
+            "moved_results": moved_results,
+            "moved_followed_athletes": moved_followed,
+            "removed_duplicate_followed_athletes": removed_duplicate_followed,
+            "moved_country_changes": moved_country_changes,
+            "removed_duplicate_country_changes": removed_duplicate_country_changes,
+            "moved_data_suggestions": moved_data_suggestions,
+            "relinked_notifications": relinked_notifications,
+            "copied_metadata_fields": copied_metadata_fields,
+        },
+    )
+    add_security_alert(
+        db,
+        current_user,
+        (
+            f"Security: {current_user.email} merged athlete "
+            f"{source_before['first_name']} {source_before['last_name']} "
+            f"into {target_athlete.first_name} {target_athlete.last_name}."
+        ),
+        related_athlete_id=target_athlete.id,
+    )
+    db.commit()
+    db.refresh(target_athlete)
+
+    response_payload = preview.model_dump()
+    response_payload.update({
+        "target_athlete": target_athlete,
+        "source_athlete": source_athlete,
+        "merged": True,
+        "moved_results": moved_results,
+        "moved_followed_athletes": moved_followed,
+        "removed_duplicate_followed_athletes": removed_duplicate_followed,
+        "moved_country_changes": moved_country_changes,
+        "removed_duplicate_country_changes": removed_duplicate_country_changes,
+        "moved_data_suggestions": moved_data_suggestions,
+        "relinked_notifications": relinked_notifications,
+        "copied_metadata_fields": copied_metadata_fields,
+        "deleted_source_athlete_id": source_athlete.id,
+    })
+    return schemas.AthleteMergeCommitResponse(
+        **response_payload,
+    )
 
 
 @router.get("/{athlete_id}", response_model=schemas.AthleteRead)

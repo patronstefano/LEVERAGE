@@ -537,6 +537,66 @@ class AthleteUpdate(BaseModel):
         return self
 
 
+class AthleteMergeRequest(BaseModel):
+    target_athlete_id: int
+    reason: Optional[str] = None
+
+
+class AthleteMergeCommitRequest(AthleteMergeRequest):
+    confirm: bool = False
+
+
+class AthleteMergeResultConflict(BaseModel):
+    source_result_id: int
+    target_result_id: int
+    event_id: int
+    event_name: str
+    event_year: int
+    discipline: DisciplineEnum
+    category: ResultCategoryEnum
+    apparatus: Optional[str] = None
+    vt_attempt: Optional[int] = None
+    day: Optional[int] = None
+    format: FormatEnum
+    round: RoundEnum
+    source_score: Optional[float] = None
+    target_score: Optional[float] = None
+    source_D_score: Optional[float] = None
+    target_D_score: Optional[float] = None
+    same_score: bool
+
+
+class AthleteMergePreview(BaseModel):
+    source_athlete: AthleteRead
+    target_athlete: AthleteRead
+    can_merge: bool
+    blocking_reasons: list[str] = []
+    result_conflicts: list[AthleteMergeResultConflict] = []
+    source_result_count: int
+    target_result_count: int
+    followed_athletes_to_move: int = 0
+    followed_athletes_duplicates_to_remove: int = 0
+    country_changes_to_move: int = 0
+    country_changes_duplicates_to_remove: int = 0
+    data_suggestions_to_move: int = 0
+    notifications_to_relink: int = 0
+    metadata_to_copy: dict[str, str] = {}
+    metadata_differences: dict[str, dict[str, Optional[str]]] = {}
+
+
+class AthleteMergeCommitResponse(AthleteMergePreview):
+    merged: bool
+    moved_results: int = 0
+    moved_followed_athletes: int = 0
+    removed_duplicate_followed_athletes: int = 0
+    moved_country_changes: int = 0
+    removed_duplicate_country_changes: int = 0
+    moved_data_suggestions: int = 0
+    relinked_notifications: int = 0
+    copied_metadata_fields: list[str] = []
+    deleted_source_athlete_id: int
+
+
 class EventBase(BaseModel):
     name: str
     location: Optional[str] = None
