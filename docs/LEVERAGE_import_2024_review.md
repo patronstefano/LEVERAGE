@@ -2,9 +2,11 @@
 
 Data preview iniziale: 30 giugno 2026
 
+Data preview post-review admin: 30 giugno 2026
+
 File sorgente: `import_files/Results 2024.xlsx`
 
-Stato: preview 2024 generata sul database locale popolato fino al commit reale 2023; database operativo non modificato.
+Stato: review admin completata e preview post-decisione pulita sul database locale popolato fino al commit reale 2023; database operativo non modificato.
 
 ## 1. Obiettivo
 
@@ -29,6 +31,10 @@ L'obiettivo e:
 | `docs/import_reports/gymternet_2024_athlete_review.csv` | Review atleta/country completa e tecnica. |
 | `docs/import_reports/gymternet_2024_existing_athlete_match_review.csv` | CSV operativo per verificare match con atleti gia presenti nel DB. |
 | `docs/import_reports/gymternet_2024_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country nel file 2024. |
+| `docs/import_reports/gymternet_2024_athlete_match_decisions.json` | Payload tecnico delle decisioni admin 2024. |
+| `docs/import_reports/gymternet_2024_preview_with_decisions_summary.json` | Sintesi tecnica della preview 2024 con decisioni admin applicate. |
+| `docs/import_reports/gymternet_2024_post_decision_conflicts.csv` | Audit conflitti dopo decisioni admin; vuoto dopo correzione finale. |
+| `docs/import_reports/gymternet_2024_post_decision_duplicates.csv` | Audit duplicati dopo decisioni admin; vuoto. |
 
 ## 3. Sintesi preview
 
@@ -140,13 +146,109 @@ Il CSV `gymternet_2024_new_athlete_country_conflicts.csv` contiene 10 casi:
 
 Questi casi richiedono decisione admin esplicita. Poiche cambia il country, la regola `same_country_review_reuse` non viene applicata.
 
-## 9. Stato operativo
+## 9. Review admin completata
+
+Il 30 giugno 2026 l'admin ha completato i file Numbers relativi alle collisioni atleta/country 2024.
+
+Le decisioni sono state trasferite nei CSV operativi preservando i campi tecnici originali.
+
+| File Numbers | Righe trasferite nel CSV operativo |
+|---|---:|
+| `gymternet_2024_existing_athlete_match_review.numbers` | 552 |
+| `gymternet_2024_new_athlete_country_conflicts.numbers` | 10 |
+
+Il trasferimento ha aggiornato soltanto:
+
+- `decision`;
+- `action`;
+- `country`;
+- `notes`.
+
+Il payload tecnico generato e:
+
+```text
+docs/import_reports/gymternet_2024_athlete_match_decisions.json
+```
+
+### 9.1 Prima preview post-decisione
+
+La prima preview con decisioni admin applicate ha prodotto:
+
+| Voce | Conteggio |
+|---|---:|
+| Result importabili | 106.436 |
+| Duplicati | 0 |
+| Conflitti | 13 |
+
+I 13 conflitti erano tutti del tipo:
+
+```text
+same_context_different_score_after_athlete_merge
+```
+
+Il backend ha riconosciuto la regola persistente:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Significato: il merge tra due atleti avrebbe creato lo stesso identico contesto sportivo di result, ma con final score o D-score diversi. In questi casi la decisione corretta e mantenere separati gli atleti.
+
+### 9.2 Correzioni post-preview
+
+Sono state corrette tre decisioni nel CSV operativo `gymternet_2024_existing_athlete_match_review.csv`, portandole da `merge as same athlete` a `keep separate`:
+
+| Atleta importato | Atleta gia presente suggerito | Motivo |
+|---|---|---|
+| Max Griffiths | Mac Griffiths | Merge produceva 7 result nello stesso contesto della `English Championships 2024` con score/D-score diversi. |
+| Ania Fernandez | Jana Fernandez | Merge produceva 1 result nello stesso contesto della `Spanish League Final 2024` con score/D-score diverso. |
+| Lee Seyeon | Lee Seoyeon | Merge produceva 5 result nello stesso contesto della `South Korean Championships 2024` con score/D-score diversi. |
+
+Queste correzioni sono coerenti con la regola gia stabilita negli anni precedenti: quando due atleti simili, anche con stessa country, generano stesso contesto sportivo ma punteggi diversi, devono restare entita separate.
+
+## 10. Preview post-decisione pulita
+
+Dopo le tre correzioni, il payload decisionale e stato rigenerato senza rileggere i Numbers, usando i CSV operativi come fonte autorevole.
+
+Esito finale preview post-decisione:
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 106.449 |
+| Result importabili | 106.449 |
+| Athlete che verrebbero creati | 2.535 |
+| Event che verrebbero creati | 206 |
+| Duplicati | 0 |
+| Conflitti | 0 |
+| Warning | 2 |
+| D-score orfani mantenuti fuori dal DB | 1.113 |
+
+Statistiche decisioni atleta/country applicate:
+
+| Azione | Conteggio |
+|---|---:|
+| Suggerimenti atleta accettati | 459 |
+| Nuovi atleti confermati / creati come separati | 39 |
+| Merge identita atleta | 41 |
+| Country updates | 20 |
+| Country kept | 9 |
+| Correzioni represented country | 39 |
+| Correzioni nome atleta | 0 |
+| Decisioni non valide | 0 |
+| Decisioni irrisolte | 0 |
+
+La preview finale ha generato:
+
+```text
+docs/import_reports/gymternet_2024_preview_with_decisions_summary.json
+docs/import_reports/gymternet_2024_post_decision_conflicts.csv
+docs/import_reports/gymternet_2024_post_decision_duplicates.csv
+```
+
+I file `post_decision_conflicts` e `post_decision_duplicates` risultano vuoti.
+
+## 11. Stato operativo
 
 Il database locale non e stato modificato.
 
-Prossimo passo: l'admin deve completare i due CSV operativi 2024:
-
-- `docs/import_reports/gymternet_2024_existing_athlete_match_review.csv`;
-- `docs/import_reports/gymternet_2024_new_athlete_country_conflicts.csv`.
-
-Dopo la review admin, verranno generati il payload decisionale 2024, la preview post-decisione su copia temporanea del database e, solo se pulita, il commit reale del 2024.
+Prossimo passo: eseguire il commit reale controllato del file 2024 sul database operativo, mantenendo backup e report tecnico di commit come gia fatto per gli anni precedenti.
