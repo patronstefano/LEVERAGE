@@ -1866,3 +1866,144 @@ Il 2022 e stato importato nel database locale.
 Il commit reale ha creato 97.934 result nuovi e non ha introdotto duplicati semantici.
 
 I 1.426 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2022_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+## 12. Import 2023 - Preview senza commit
+
+Data preview: 30 giugno 2026
+
+File sorgente: `import_files/Results 2023.xlsx`
+
+Stato: preview eseguita, nessun commit 2023 eseguito
+
+La preview 2023 e stata eseguita dopo il commit reale 2022. Il database di partenza contiene:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 17.429 |
+| Event | 936 |
+| Result | 405.755 |
+| Notification | 0 |
+
+### 12.1 Sintesi preview 2023
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 117.489 |
+| Result importabili | 117.489 |
+| Athlete che verrebbero creati senza decisioni admin | 3.908 |
+| Event che verrebbero creati | 241 |
+| Duplicati identici interni al file | 0 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning prodotti:
+
+- 1.454 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 104 chiavi multi-day, con 208 righe valorizzate fino a `day=2`.
+
+### 12.2 Distribuzione anni nel file 2023
+
+Il file `Results 2023.xlsx` contiene anche alcuni eventi marcati come anno evento 2024.
+
+| Anno evento nel file | Result parse | Event distinti |
+|---|---:|---:|
+| 2023 | 116.397 | 237 |
+| 2024 | 1.092 | 4 |
+
+Eventi 2024 presenti nel file 2023:
+
+| Event | Result parse |
+|---|---:|
+| `1st Spanish League (2024 season)` | 586 |
+| `Top 12 Series 2 (2024 Season)` | 200 |
+| `Top 12 Series 1 (2024 Season)` | 199 |
+| `Top 12 Series 3 (2024 Season)` | 107 |
+
+Decisione metodologica: come per lo spillover 2023 rilevato nel file 2022, questi record non sono considerati errore tecnico. Il sistema usa l'anno evento presente nel file sorgente.
+
+### 12.3 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2023_preview_summary.json` | Sintesi tecnica completa della preview 2023. |
+| `docs/import_reports/gymternet_2023_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2023_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2023_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2023_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2023_existing_athlete_match_review.csv` | CSV operativo per match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2023_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country. |
+
+### 12.4 D-score orfani 2023
+
+Totale D-score orfani: 1.454.
+
+| Tipo problema | Conteggio |
+|---|---:|
+| `athlete_missing_in_score_sheet` | 1.045 |
+| `possible_context_mismatch` | 126 |
+| `missing_final_score_for_context` | 122 |
+| `possible_athlete_name_typo` | 77 |
+| `possible_event_name_mismatch` | 62 |
+| `missing_score_sheet_context` | 22 |
+
+Decisione provvisoria: come per gli anni precedenti, questi D-score restano fuori dal database operativo salvo review mirata futura.
+
+### 12.5 Review atleta/country 2023
+
+Totale review atleta/country: 577.
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 490 |
+| `possible_athlete_identity_collision` | 52 |
+| `possible_athlete_country_change` | 35 |
+
+CSV operativi:
+
+| File | Righe da controllare |
+|---|---:|
+| `gymternet_2023_existing_athlete_match_review.csv` | 568 |
+| `gymternet_2023_new_athlete_country_conflicts.csv` | 9 |
+
+Priorita del CSV `existing_athlete_match_review`:
+
+| Priorita | Righe |
+|---|---:|
+| high | 111 |
+| medium | 457 |
+
+### 12.6 Conflitti country tra nuovi atleti
+
+| Atleta | Discipline | Country coinvolte | Evidenza futura |
+|---|---|---|---|
+| Lucia Gonzalez | WAG | ARG, ESP | 2024: ARG; 2025: ARG |
+| Phong Tage Gullbrandsson | MAG | NOR, SWE | 2024: NOR; 2025: NOR |
+| Paloma Mintcheva | WAG | BUL, USA | not found 2024-2025 |
+| Yaroslav Krutov | MAG | BLR, RUS | 2024: BLR |
+| Nicolo Mozzato | MAG | FRA, ITA | 2024: ITA; 2025: ITA |
+| Timm Sauter | MAG | GER, SUI | 2024: GER; 2025: GER |
+| Bogdan Ilyinkov | MAG | BLR, RUS | 2024: BLR |
+| Yoan Ivanov | MAG | BUL, GBR | 2024: BUL/GBR; 2025: BUL |
+| Amber Ward Wen Si | WAG | AUS, HKG | 2024: HKG; 2025: HKG |
+
+### 12.7 Name-order automatico
+
+Durante la preview 2023 il tool ha applicato automaticamente la regola name-order:
+
+| Voce | Conteggio |
+|---|---:|
+| Merge automatici name-order | 8 |
+| Chiavi variante normalizzate | 8 |
+| Record normalizzati | 52 |
+
+### 12.8 Stato operativo
+
+Il 2023 non e stato importato nel database.
+
+Prima del commit 2023 occorre:
+
+1. completare i CSV admin 2023;
+2. generare il payload decisionale;
+3. rieseguire preview con decisioni applicate;
+4. controllare eventuali conflitti post-decisione;
+5. solo dopo preview pulita, eseguire commit controllato 2023.
