@@ -1,10 +1,11 @@
 # LEVERAGE - Preview e review import 2023
 
-Data preview: 30 giugno 2026
+Data preview iniziale: 30 giugno 2026
+Data review/commit: 30 giugno 2026
 
 File sorgente: `import_files/Results 2023.xlsx`
 
-Stato: preview eseguita, nessun commit 2023 eseguito
+Stato: review admin completata, preview post-decisione pulita, commit reale 2023 eseguito sul DB locale
 
 ## 1. Obiettivo
 
@@ -28,6 +29,12 @@ L'obiettivo e:
 | `docs/import_reports/gymternet_2023_athlete_review.csv` | Review atleta/country completa e tecnica. |
 | `docs/import_reports/gymternet_2023_existing_athlete_match_review.csv` | CSV operativo per verificare match con atleti gia presenti nel DB. |
 | `docs/import_reports/gymternet_2023_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country nel file 2023. |
+| `docs/import_reports/gymternet_2023_athlete_name_corrections.csv` | Correzioni nome atleta esistente verificate durante la review 2023. |
+| `docs/import_reports/gymternet_2023_athlete_match_decisions.json` | Payload tecnico prodotto dalle decisioni admin atleta/country 2023. |
+| `docs/import_reports/gymternet_2023_preview_with_decisions_summary.json` | Preview post-decisione eseguita su copia temporanea del DB. |
+| `docs/import_reports/gymternet_2023_post_decision_conflicts.csv` | Audit dei conflitti post-decisione; rigenerato vuoto dopo le correzioni Abdelrahman Mahmoud/Ahmed Abdelrahman e Martina Baldi/Martina Balliu. |
+| `docs/import_reports/gymternet_2023_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni; vuoto. |
+| `docs/import_reports/gymternet_2023_commit_summary.json` | Report tecnico del commit reale 2023, con backup, statistiche di import e controlli post-import. |
 
 ## 3. Sintesi preview
 
@@ -146,15 +153,156 @@ Durante la preview 2023 il tool ha applicato automaticamente la regola name-orde
 
 Questa logica segue la decisione gia presa: quando nome e cognome sono invertiti, il tool non deve chiedere review admin ma normalizzare automaticamente verso l'ordine piu coerente con i result.
 
-## 10. Stato operativo
+## 10. Review admin e payload decisionale
 
-Il 2023 non e stato importato nel database.
+Il 30 giugno 2026 sono stati letti i file Numbers compilati dall'admin:
 
-Prima del commit 2023 occorre:
+| File Numbers | Righe trasferite nel CSV operativo |
+|---|---:|
+| `gymternet_2023_existing_athlete_match_review.numbers` | 568 |
+| `gymternet_2023_new_athlete_country_conflicts.numbers` | 9 |
 
-1. completare `gymternet_2023_existing_athlete_match_review.csv`;
-2. completare `gymternet_2023_new_athlete_country_conflicts.csv`;
-3. generare il payload decisionale 2023;
-4. rieseguire preview con decisioni applicate;
-5. controllare eventuali conflitti post-decisione;
-6. solo dopo preview pulita, eseguire commit controllato 2023.
+Le decisioni sono state normalizzate nei valori tecnici usati dal backend.
+
+| Azione payload finale | Conteggio |
+|---|---:|
+| `merge_as_same_athlete` | 52 |
+| `accept_suggestion` | 444 |
+| `create_new` | 46 |
+| `update_country` | 19 |
+| `keep_existing_country` | 16 |
+
+Il payload finale contiene 577 decisioni e si trova in:
+
+```text
+docs/import_reports/gymternet_2023_athlete_match_decisions.json
+```
+
+## 11. Correzioni nome atleta
+
+Durante la review 2023 sono state create 39 correzioni nome per atleti gia presenti nel DB.
+
+Distribuzione:
+
+| Tipo correzione | Conteggio |
+|---|---:|
+| Correzioni esplicite admin | 9 |
+| KOR: rimozione trattino/spazio | 21 |
+| KOR: evidenza futura a favore della forma importata | 9 |
+
+Esempi verificati:
+
+| Prima | Dopo |
+|---|---|
+| `Niccolo Vannucchi` | `Niccolò Vannucchi` |
+| `Niccolo Belli` | `Niccolò Belli` |
+| `Nico Oliveiri` | `Nico Olivieri` |
+| `Kim Han-sol` | `Kim Hansol` |
+| `Lee Yun-seo` | `Lee Yunseo` |
+| `Bae Ga-ram` | `Bae Garam` |
+| `Hur Wo-ong` | `Hur Woong` |
+| `Lee Jun-ho` | `Lee Junho` |
+| `Kim Jae Ho` | `Kim Jaeho` |
+
+Nota metodologica: il caso `Shin Jea-hwan/Shin Jaehwan` puntava allo stesso atleta. E stata mantenuta la forma `Shin Jeahwan`, perche piu supportata dall'evidenza futura. Le romanizzazioni KOR non univoche sono state escluse dalle correzioni nome quando l'evidenza futura non permetteva una scelta sicura.
+
+File tecnico:
+
+```text
+docs/import_reports/gymternet_2023_athlete_name_corrections.csv
+```
+
+## 12. Conflitti post-decisione risolti
+
+La prima preview post-decisione ha prodotto 9 conflitti, riconducibili a due merge suggeriti:
+
+| Atleta importato | Atleta suggerito | Evento | Conflitti |
+|---|---|---|---:|
+| Abdelrahman Mahmoud | Ahmed Abdelrahman | Pharaoh's Cup 2023 | 4 |
+| Martina Baldi | Martina Balliu | Italian Gold Championships Qualifier 2023 | 5 |
+
+In entrambi i casi il merge produceva lo stesso contesto sportivo con score/D-score diversi.
+
+Decisione metodologica applicata: usare la regola gia consolidata `same_context_different_score_keep_separate`.
+
+Le righe `athlete_match_d0dd2a88b5f1c98c` e `athlete_match_6ba68c839941eb66` sono state quindi corrette nel CSV operativo come `keep separate`, con nota esplicita. Dopo questa correzione la preview post-decisione e risultata pulita.
+
+| Controllo preview post-decisione finale | Esito |
+|---|---:|
+| Conflitti | 0 |
+| Duplicati identici residui | 0 |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
+| Correzioni nome atleta | 39 |
+
+## 13. Commit reale 2023
+
+Prima del commit reale e stato creato il backup:
+
+```text
+backups/leverage_pre_import_2023_20260630_113627.db
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 3.384 |
+| Event creati | 241 |
+| Result creati | 117.489 |
+| Result completi creati | 86.900 |
+| Result parziali creati | 30.589 |
+| Event aggiornati | 276 |
+| Country atleta aggiornate | 21 |
+| Nomi atleta aggiornati | 39 |
+| `represented_country` corretti sui result | 414 |
+| Atleti con nuovi result | 8.979 |
+| Event con nuovi result | 241 |
+| Duplicati saltati | 0 |
+| D-score orfani lasciati fuori dal DB | 1.454 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 20.813 |
+| Event | 1.177 |
+| Result | 523.244 |
+| Notification | 0 |
+
+## 14. Controlli post-import 2023
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 117.256 |
+| 2024 | 1.092 |
+
+Nota metodologica: il file `Results 2023.xlsx` contiene anche alcuni eventi marcati come anno evento 2024. Per questo il commit del file 2023 ha creato 117.256 result su eventi 2023 e 1.092 result su eventi 2024.
+
+Qualita dati importati dal commit 2023:
+
+| Anno evento | Result completi | Final score senza D-score | Senza final score |
+|---|---:|---:|---:|
+| 2023 | 86.702 | 30.554 | 0 |
+| 2024 | 993 | 99 | 0 |
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+## 15. Stato operativo finale
+
+Il 2023 e stato importato nel database locale.
+
+Il commit reale ha creato 117.489 result nuovi e non ha introdotto duplicati semantici.
+
+I 1.454 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2023_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.

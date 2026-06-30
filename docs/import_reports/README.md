@@ -76,6 +76,12 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2023_athlete_review.csv` | Review atleta/country 2023 completa e tecnica. |
 | `gymternet_2023_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2023 corrisponde a un atleta gia presente nel DB post-2022. |
 | `gymternet_2023_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2023 che presentano conflitti country nel file 2023. |
+| `gymternet_2023_athlete_name_corrections.csv` | Correzioni nome atleta esistente verificate durante la review 2023, incluse correzioni `Niccolò`, `Nico Olivieri` e normalizzazioni KOR. |
+| `gymternet_2023_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2023, incluse 39 correzioni nome atleta. |
+| `gymternet_2023_preview_with_decisions_summary.json` | Preview 2023 eseguita con decisioni admin applicate su copia temporanea del DB, senza modificare `leverage.db`. |
+| `gymternet_2023_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2023. Inizialmente conteneva 9 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
+| `gymternet_2023_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2023; vuoto. |
+| `gymternet_2023_commit_summary.json` | Report tecnico del commit reale 2023, con backup, statistiche di import e controlli post-import. |
 
 ## Convenzione review atleta/country
 
@@ -106,6 +112,8 @@ Nel flusso 2021 e stato introdotto il supporto a `target_name_update`: quando l'
 Nel flusso 2022 i valori inseriti nei file Numbers sono stati trasferiti nei CSV operativi e normalizzati negli stessi valori tecnici degli anni precedenti. Dopo la preview post-decisione, il caso Liu Xuanxi/Liu Xuan e stato corretto manualmente in `keep separate` perche il merge produceva lo stesso contesto sportivo con score/D-score diversi.
 
 La preview 2023 segnala uno spillover analogo a quello gia visto nel file 2022: `Results 2023.xlsx` contiene 1.092 record associati a eventi con anno 2024. La scelta metodologica resta usare l'anno evento dichiarato nel file sorgente.
+
+Nel flusso 2023 sono state applicate 39 correzioni nome su atleti gia presenti nel DB. Per i nomi KOR, la normalizzazione e stata applicata quando riguardava trattino/spazio oppure quando l'evidenza futura sosteneva chiaramente la forma importata. I casi non univoci sono stati lasciati senza correzione automatica del nome.
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 
