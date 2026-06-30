@@ -2151,3 +2151,18 @@ Il 2023 e stato importato nel database locale.
 Il commit reale ha creato 117.489 result nuovi e non ha introdotto duplicati semantici.
 
 I 1.454 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2023_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+### 12.14 Regola futura su review same-country gia controllate
+
+Dopo la review 2023 e stata formalizzata una nuova regola metodologica per ridurre controlli ripetitivi negli anni successivi.
+
+Quando un caso `possible_existing_athlete_match` riguarda due varianti nome gia controllate dall'ADMIN e il country non cambia, il tool puo riusare la decisione precedente come raccomandazione forte:
+
+- `merge as same athlete`, se il caso era stato gia validato come errore di battitura, accento, trattino/spazio, ordine nome/cognome o romanizzazione;
+- `keep separate`, se il caso era stato gia validato come due atleti distinti.
+
+Nel CSV operativo futuro la decisione puo essere precompilata e tracciata con `same_country_review_reuse`.
+
+La precompilazione avviene solo se le review degli anni precedenti danno una decisione univoca per quella coppia atleta/variante nome. Se la memoria storica e discordante, il caso resta manuale.
+
+La regola vale solo per casi same-country. Se il country cambia, la review manuale admin resta obbligatoria, perche il caso puo riguardare un cambio reale di rappresentanza, un errore country del file sorgente o una fusione rischiosa tra atleti diversi.

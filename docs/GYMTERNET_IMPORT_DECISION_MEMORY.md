@@ -141,6 +141,53 @@ Il commit deve aggiornare la scheda atleta esistente e collegare i nuovi result 
 | Ai Takada | Airi Takada |
 | Hung Yuang-His | Hung Yuan-Hsi |
 
+## Regola: Riuso Decisioni Same-Country
+
+ID tecnico:
+
+```text
+same_country_review_reuse
+```
+
+### Problema
+
+Durante gli import annuali Gymternet ricompaiono spesso gli stessi casi di nomi molto simili gia controllati dall'ADMIN negli anni precedenti.
+
+Quando il country non cambia, questi casi sono spesso:
+
+- errori di battitura;
+- differenze di accento;
+- differenze di trattino/spazio;
+- varianti di romanizzazione gia validate.
+
+Ricontrollare ogni anno gli stessi atleti rallenta la review senza aggiungere reale qualita al dato.
+
+### Decisione
+
+Il tool puo riusare come raccomandazione forte le decisioni `merge as same athlete` o `keep separate` gia verificate dall'ADMIN solo quando:
+
+- la country importata e la country dell'atleta suggerito coincidono;
+- la disciplina coincide;
+- il caso riguarda lo stesso atleta o la stessa coppia di varianti nome gia controllata;
+- non emerge un conflitto `same_context_different_score_keep_separate`.
+
+In questi casi il tool puo ridurre la review manuale ripetitiva precompilando o raccomandando la stessa decisione gia presa.
+
+Il riuso operativo legge le review CSV degli anni precedenti e viene applicato solo se la memoria storica e univoca per quella coppia atleta/variante nome. Se negli anni precedenti emergono decisioni discordanti sullo stesso caso, il tool non precompila nulla e lascia la review manuale.
+
+### Limite obbligatorio
+
+Se la country cambia, la decisione non deve essere riusata automaticamente.
+
+Ogni caso con country diversa deve tornare in review admin manuale, perche potrebbe indicare:
+
+- cambio reale di rappresentanza;
+- errore di country nel file sorgente;
+- fusione errata di due atleti diversi;
+- caso storico da preservare su `Result.represented_country`.
+
+Quindi la regola `same_country_review_reuse` vale solo per casi same-country. Le collisioni o i match con country diversa restano sempre da controllare uno per uno.
+
 ## Uso futuro
 
 Quando verranno importati nuovi file Gymternet:
@@ -148,4 +195,6 @@ Quando verranno importati nuovi file Gymternet:
 1. Il tool continua a proporre possibili match atleta quando il nome e simile.
 2. Se il match produrrebbe un conflitto same-context/different-score, il tool aggiunge la rule memory al payload.
 3. La UI admin potra mostrare una raccomandazione gia motivata.
-4. L'ADMIN potra comunque approvare, modificare o rifiutare la proposta, ma la scelta predefinita consigliata sara conservativa.
+4. Le decisioni gia verificate possono essere riusate come raccomandazione forte solo nei casi same-country.
+5. I casi con country diversa restano sempre in review manuale admin.
+6. L'ADMIN potra comunque approvare, modificare o rifiutare la proposta, ma la scelta predefinita consigliata sara conservativa.

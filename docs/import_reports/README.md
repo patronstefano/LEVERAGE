@@ -117,6 +117,8 @@ Nel flusso 2023 sono state applicate 39 correzioni nome su atleti gia presenti n
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 
+Regola metodologica aggiunta il 30 giugno 2026: le decisioni admin gia verificate sui casi `merge as same athlete` / `keep separate` possono essere riusate come raccomandazione forte solo quando il country non cambia. Nei CSV futuri il tool puo precompilare la decisione nei casi same-country gia controllati, indicando `same_country_review_reuse` come regola applicata. Se imported country e suggested/current country differiscono, la review manuale admin resta sempre obbligatoria.
+
 Regola metodologica persistente: se una proposta di merge atleta produce lo stesso contesto sportivo di result ma con score o D-score diversi, il tool deve raccomandare `keep separate`. Nel backend questa regola e tracciata con `same_context_different_score_keep_separate`.
 
 La generazione dei report annuali e supportata dallo script:

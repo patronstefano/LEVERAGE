@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sqlite3
 import sys
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
@@ -25,11 +27,181 @@ from app.gymternet_import import (
 )
 
 
+SAME_COUNTRY_REVIEW_REUSE_RULE_ID = "same_country_review_reuse"
+SAME_COUNTRY_REVIEW_REUSE_NOTE = (
+    "Pre-filled from same-country admin decision memory. "
+    "Country is unchanged; change-country cases still require manual review."
+)
+
+
 def athlete_name(payload: dict[str, Any]) -> str:
     return (
         payload.get("athlete_name")
         or f"{payload.get('first_name', '')} {payload.get('last_name', '')}".strip()
     )
+
+
+def normalize_review_name(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value or "")
+    ascii_text = normalized.encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z0-9]+", " ", ascii_text.lower()).strip()
+
+
+def normalize_review_country(value: Any) -> str:
+    return str(value or "").strip().upper()
+
+
+def parse_country_set(value: str) -> list[str]:
+    return sorted({
+        normalize_review_country(part)
+        for part in (value or "").split(",")
+        if normalize_review_country(part)
+    })
+
+
+def imported_athlete_column(row: dict[str, str]) -> str:
+    for key, value in row.items():
+        if key.startswith("imported_athlete_"):
+            return value or ""
+    return row.get("athlete_name", "")
+
+
+def same_country_decision_key(
+    imported_name: str,
+    target_name: str,
+    discipline: str,
+    country: str,
+) -> tuple[str, str, str, str]:
+    names = sorted([
+        normalize_review_name(imported_name),
+        normalize_review_name(target_name),
+    ])
+    return (discipline or "", normalize_review_country(country), names[0], names[1])
+
+
+def same_country_target_key(
+    imported_name: str,
+    target_athlete_id: Any,
+    discipline: str,
+    country: str,
+) -> tuple[str, str, str, str]:
+    return (
+        discipline or "",
+        normalize_review_country(country),
+        normalize_review_name(imported_name),
+        str(target_athlete_id or "").strip(),
+    )
+
+
+def prior_review_year(path: Path) -> int | None:
+    match = re.search(r"gymternet_(\d{4})_existing_athlete_match_review\.csv$", path.name)
+    return int(match.group(1)) if match else None
+
+
+def same_country_from_review_row(row: dict[str, str]) -> str:
+    countries = parse_country_set(
+        row.get("collision_or_change_countries")
+        or row.get("collision_countries")
+        or ""
+    )
+    return countries[0] if len(countries) == 1 else ""
+
+
+def normalize_prior_decision(value: str) -> str:
+    raw = (value or "").strip().lower()
+    if raw in {"merge", "same", "merge as same athlete"}:
+        return "merge as same athlete"
+    if raw in {"separate", "keep separate"}:
+        return "keep separate"
+    return ""
+
+
+def build_same_country_decision_memory(
+    report_dir: Path,
+    current_year: int,
+) -> dict[tuple[str, str, str, str], dict[str, Any]]:
+    grouped: dict[tuple[str, str, str, str], list[dict[str, Any]]] = defaultdict(list)
+
+    for path in sorted(report_dir.glob("gymternet_*_existing_athlete_match_review.csv")):
+        year = prior_review_year(path)
+        if year is None or year >= current_year:
+            continue
+        with path.open(newline="", encoding="utf-8") as file:
+            for row in csv.DictReader(file):
+                if row.get("problem_type") != "possible_existing_athlete_match":
+                    continue
+                decision = normalize_prior_decision(row.get("decision", ""))
+                if not decision:
+                    continue
+                country = same_country_from_review_row(row)
+                if not country:
+                    continue
+                imported_name = imported_athlete_column(row)
+                target_name = row.get("suggested_existing_athlete", "")
+                discipline = row.get("discipline", "")
+                if not imported_name or not target_name or not discipline:
+                    continue
+                entry = {
+                    "decision": decision,
+                    "source_year": year,
+                    "source_file": path.name,
+                    "imported_name": imported_name,
+                    "target_name": target_name,
+                    "country": country,
+                }
+                grouped[same_country_decision_key(
+                    imported_name,
+                    target_name,
+                    discipline,
+                    country,
+                )].append(entry)
+                target_id = row.get("suggested_existing_athlete_id")
+                if target_id:
+                    grouped[same_country_target_key(
+                        imported_name,
+                        target_id,
+                        discipline,
+                        country,
+                    )].append(entry)
+
+    memory = {}
+    for key, entries in grouped.items():
+        decisions = {entry["decision"] for entry in entries}
+        if len(decisions) != 1:
+            continue
+        memory[key] = sorted(
+            entries,
+            key=lambda entry: (entry["source_year"], entry["source_file"]),
+            reverse=True,
+        )[0]
+    return memory
+
+
+def lookup_same_country_decision_memory(
+    memory: dict[tuple[str, str, str, str], dict[str, Any]],
+    imported_name: str,
+    target_name: str,
+    target_athlete_id: Any,
+    discipline: str,
+    country: str,
+) -> dict[str, Any] | None:
+    if not country:
+        return None
+    if target_athlete_id:
+        match = memory.get(same_country_target_key(
+            imported_name,
+            target_athlete_id,
+            discipline,
+            country,
+        ))
+        if match:
+            return match
+    return memory.get(same_country_decision_key(
+        imported_name,
+        target_name,
+        discipline,
+        country,
+    ))
 
 
 def event_summary_from_payloads(payloads: list[dict[str, Any]]) -> str:
@@ -255,6 +427,7 @@ def build_athlete_review_rows(
     future_index: dict[tuple[str, str], dict[int, Counter[str]]],
     existing_results_index: dict[int, str],
     future_end_year: int,
+    same_country_decision_memory: dict[tuple[str, str, str, str], dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     full_rows = []
     existing_rows = []
@@ -300,6 +473,40 @@ def build_athlete_review_rows(
 
         learned_rule_matches = item.get("learned_rule_matches") or suggestion.get("learned_rule_matches") or []
         target_id = target.get("athlete_id")
+        same_country_memory_match = None
+        if (
+            item.get("problem_type") == "possible_existing_athlete_match"
+            and not learned_rule_matches
+            and suggestion.get("country_matches")
+            and not suggestion.get("requires_country_decision")
+        ):
+            same_country_memory_match = lookup_same_country_decision_memory(
+                same_country_decision_memory,
+                imported_name,
+                target_name,
+                target_id,
+                discipline,
+                target.get("country") or imported.get("country") or "",
+            )
+
+        recommended_action = item.get("recommended_action") or suggestion.get("recommended_action")
+        learned_rule_id = (learned_rule_matches[0] if learned_rule_matches else {}).get("rule_id")
+        decision = ""
+        notes = ""
+        if same_country_memory_match:
+            decision = same_country_memory_match["decision"]
+            recommended_action = (
+                "accept_suggestion"
+                if decision == "merge as same athlete"
+                else "create_new"
+            )
+            learned_rule_id = SAME_COUNTRY_REVIEW_REUSE_RULE_ID
+            notes = (
+                f"{SAME_COUNTRY_REVIEW_REUSE_NOTE} Source: "
+                f"{same_country_memory_match['source_year']} "
+                f"{same_country_memory_match['source_file']}."
+            )
+
         row = {
             "review_id": item.get("review_id"),
             "review_priority": review_priority(item),
@@ -313,12 +520,12 @@ def build_athlete_review_rows(
             "suggestion_confidence": suggestion.get("confidence"),
             "collision_countries": collision_countries,
             "collision_or_change_countries": collision_countries,
-            "recommended_action": item.get("recommended_action") or suggestion.get("recommended_action"),
-            "learned_rule_id": (learned_rule_matches[0] if learned_rule_matches else {}).get("rule_id"),
-            "decision": "",
+            "recommended_action": recommended_action,
+            "learned_rule_id": learned_rule_id,
+            "decision": decision,
             "action": "",
             "country": "",
-            "notes": "",
+            "notes": notes,
             f"results_{year}_by_country": event_summary_from_payloads(imported_results_payload),
             f"imported_{year}_results_by_country": event_summary_from_payloads(imported_results_payload),
             "existing_athlete_previous_results_by_country": (
@@ -357,6 +564,10 @@ def main() -> None:
     args.report_dir.mkdir(parents=True, exist_ok=True)
     future_index = build_future_index(args.source_dir, args.year + 1, args.future_end_year)
     existing_results_index = build_existing_results_index(args.db_path)
+    same_country_decision_memory = build_same_country_decision_memory(
+        args.report_dir,
+        args.year,
+    )
 
     db = SessionLocal()
     try:
@@ -522,6 +733,7 @@ def main() -> None:
         future_index,
         existing_results_index,
         args.future_end_year,
+        same_country_decision_memory,
     )
     write_csv(
         args.report_dir / f"gymternet_{args.year}_athlete_review.csv",
