@@ -506,6 +506,8 @@ Il contratto comune che un import parallelo futuro dovra rispettare e documentat
 
 Il popolamento storico 2018-2025 viene documentato passo passo in [docs/LEVERAGE_popolamento_massivo_diario.md](docs/LEVERAGE_popolamento_massivo_diario.md), con preview, statistiche, scelte admin, commit e controlli post-import per ogni anno.
 
+Una sintesi metodologica in forma di capitolo da tesi e disponibile in [docs/LEVERAGE_capitolo_metodologia_popolamento_db.md](docs/LEVERAGE_capitolo_metodologia_popolamento_db.md), con copia Word in `docs/LEVERAGE_capitolo_metodologia_popolamento_db.docx`.
+
 Flusso consigliato per la UI admin:
 
 1. `POST /imports/gymternet/preview`
