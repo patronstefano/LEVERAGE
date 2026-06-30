@@ -93,6 +93,7 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2024_preview_with_decisions_summary.json` | Sintesi tecnica della preview 2024 con decisioni admin applicate; esito finale pulito con 0 duplicati e 0 conflitti. |
 | `gymternet_2024_post_decision_conflicts.csv` | Audit conflitti dopo decisioni admin; vuoto dopo la correzione finale. |
 | `gymternet_2024_post_decision_duplicates.csv` | Audit duplicati dopo decisioni admin; vuoto. |
+| `gymternet_2024_commit_summary.json` | Report tecnico del commit reale 2024, con backup, statistiche di import e controlli post-import. |
 
 ## Convenzione review atleta/country
 
@@ -126,7 +127,7 @@ La preview 2023 segnala uno spillover analogo a quello gia visto nel file 2022: 
 
 Nel flusso 2023 sono state applicate 39 correzioni nome su atleti gia presenti nel DB. Per i nomi KOR, la normalizzazione e stata applicata quando riguardava trattino/spazio oppure quando l'evidenza futura sosteneva chiaramente la forma importata. I casi non univoci sono stati lasciati senza correzione automatica del nome.
 
-Nel flusso 2024 i file Numbers compilati dall'admin sono stati trasferiti nei CSV operativi. La prima preview post-decisione ha rilevato 13 conflitti `same_context_different_score_after_athlete_merge`; applicando la regola persistente `same_context_different_score_keep_separate`, tre decisioni sono state corrette da `merge as same athlete` a `keep separate`: Max Griffiths/Mac Griffiths, Ania Fernandez/Jana Fernandez e Lee Seyeon/Lee Seoyeon. La preview finale 2024 e pulita.
+Nel flusso 2024 i file Numbers compilati dall'admin sono stati trasferiti nei CSV operativi. La prima preview post-decisione ha rilevato 13 conflitti `same_context_different_score_after_athlete_merge`; applicando la regola persistente `same_context_different_score_keep_separate`, tre decisioni sono state corrette da `merge as same athlete` a `keep separate`: Max Griffiths/Mac Griffiths, Ania Fernandez/Jana Fernandez e Lee Seyeon/Lee Seoyeon. La preview finale 2024 e risultata pulita e il commit reale 2024 ha creato 106.449 result senza introdurre duplicati semantici.
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 

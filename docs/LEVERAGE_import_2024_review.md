@@ -6,7 +6,7 @@ Data preview post-review admin: 30 giugno 2026
 
 File sorgente: `import_files/Results 2024.xlsx`
 
-Stato: review admin completata e preview post-decisione pulita sul database locale popolato fino al commit reale 2023; database operativo non modificato.
+Stato: review admin completata, preview post-decisione pulita, commit reale 2024 eseguito sul DB locale.
 
 ## 1. Obiettivo
 
@@ -35,6 +35,7 @@ L'obiettivo e:
 | `docs/import_reports/gymternet_2024_preview_with_decisions_summary.json` | Sintesi tecnica della preview 2024 con decisioni admin applicate. |
 | `docs/import_reports/gymternet_2024_post_decision_conflicts.csv` | Audit conflitti dopo decisioni admin; vuoto dopo correzione finale. |
 | `docs/import_reports/gymternet_2024_post_decision_duplicates.csv` | Audit duplicati dopo decisioni admin; vuoto. |
+| `docs/import_reports/gymternet_2024_commit_summary.json` | Report tecnico del commit reale 2024, con backup, statistiche di import e controlli post-import. |
 
 ## 3. Sintesi preview
 
@@ -247,8 +248,87 @@ docs/import_reports/gymternet_2024_post_decision_duplicates.csv
 
 I file `post_decision_conflicts` e `post_decision_duplicates` risultano vuoti.
 
-## 11. Stato operativo
+## 11. Commit reale 2024
 
-Il database locale non e stato modificato.
+Prima del commit reale e stato creato il backup:
 
-Prossimo passo: eseguire il commit reale controllato del file 2024 sul database operativo, mantenendo backup e report tecnico di commit come gia fatto per gli anni precedenti.
+```text
+backups/leverage_pre_import_2024_20260630_185841.db
+```
+
+Il commit reale e stato eseguito usando:
+
+```text
+scripts/commit_gymternet_year.py
+```
+
+Report tecnico generato:
+
+```text
+docs/import_reports/gymternet_2024_commit_summary.json
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 2.535 |
+| Event creati | 206 |
+| Result creati | 106.449 |
+| Result completi creati | 78.334 |
+| Result parziali creati | 28.115 |
+| Event aggiornati | 262 |
+| Country atleta aggiornate | 20 |
+| Nomi atleta aggiornati | 0 |
+| `represented_country` corretti sui result | 224 |
+| Atleti con nuovi result | 8.672 |
+| Event con nuovi result | 206 |
+| Duplicati saltati | 0 |
+| D-score orfani lasciati fuori dal DB | 1.113 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 23.348 |
+| Event | 1.383 |
+| Result | 629.693 |
+| Notification | 0 |
+
+## 12. Controlli post-import 2024
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 117.256 |
+| 2024 | 107.046 |
+| 2025 | 495 |
+
+Nota metodologica: il file `Results 2024.xlsx` contiene anche 495 record associati a eventi con anno evento 2025. Per questo il commit del file 2024 ha portato il totale dell'anno 2024 a 107.046 result e ha creato 495 result su eventi 2025.
+
+Qualita dati importati dal commit 2024:
+
+| Anno evento | Result completi | Final score senza D-score | Senza final score |
+|---|---:|---:|---:|
+| 2024 | 78.857 | 28.189 | 0 |
+| 2025 | 470 | 25 | 0 |
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+## 13. Stato operativo finale
+
+Il 2024 e stato importato nel database locale.
+
+Il commit reale ha creato 106.449 result nuovi e non ha introdotto duplicati semantici.
+
+I 1.113 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2024_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
