@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019, 2020, 2021, 2022, 2023 e 2024 committati e verificati
+Stato: import storico 2018, 2019, 2020, 2021, 2022, 2023 e 2024 committati e verificati; preview 2025 generata, in attesa di review admin
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -2478,3 +2478,130 @@ Il 2024 e stato importato nel database locale.
 Il commit reale ha creato 106.449 result nuovi e non ha introdotto duplicati semantici.
 
 I 1.113 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2024_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+## 14. Import 2025 - Preview iniziale
+
+File sorgente: `import_files/Results 2025.xlsx`
+
+Documento operativo dedicato:
+
+```text
+docs/LEVERAGE_import_2025_review.md
+```
+
+### 14.1 Stato del database prima della preview 2025
+
+La preview 2025 e stata eseguita sul database locale gia popolato e verificato fino al commit reale 2024.
+
+Conteggi DB prima della preview:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 23.348 |
+| Event | 1.383 |
+| Result | 629.693 |
+| Notification | 0 |
+
+### 14.2 Esito tecnico preview 2025
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 124.030 |
+| Result importabili | 124.030 |
+| Athlete che verrebbero creati senza decisioni admin | 3.448 |
+| Event che verrebbero creati | 222 |
+| Duplicati identici interni al file | 0 |
+| Conflitti bloccanti | 0 |
+| Warning | 3 |
+
+Warning principali:
+
+- 630 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 29 chiavi multi-day, con 58 righe valorizzate fino a `day=2`;
+- il legacy Gymternet import ha rilevato result successivi al 2025 e applica le regole 2025 su vault e componenti mancanti. E_score, Penalty e Bonus mancanti restano `not available`. Per dati futuri con componenti esplicite sara preferibile usare il nuovo standard import dedicato.
+
+### 14.3 Distribuzione anni nel file 2025
+
+Il file `Results 2025.xlsx` contiene anche 108 record associati a eventi con anno evento 2026.
+
+| Anno evento nel file | Result parse | Event distinti |
+|---|---:|---:|
+| 2025 | 123.922 | 221 |
+| 2026 | 108 | 1 |
+
+Eventi 2026 presenti nel file 2025:
+
+| Event | Result parse |
+|---|---:|
+| `Top 12 Series 3 (2026)` | 108 |
+
+Decisione metodologica: come per gli spillover gia rilevati nei file precedenti, questi record non sono considerati errore tecnico. Il sistema usa l'anno evento presente nel file sorgente.
+
+### 14.4 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2025_preview_summary.json` | Sintesi tecnica completa della preview 2025. |
+| `docs/import_reports/gymternet_2025_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2025_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2025_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2025_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2025_existing_athlete_match_review.csv` | CSV operativo per verificare match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2025_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country nel file 2025. |
+
+### 14.5 Review atleta/country 2025
+
+Totale review atleta/country: 636.
+
+Distribuzione:
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 535 |
+| `possible_athlete_identity_collision` | 69 |
+| `possible_athlete_country_change` | 32 |
+
+CSV operativi:
+
+| File | Righe | Stato |
+|---|---:|---|
+| `gymternet_2025_existing_athlete_match_review.csv` | 628 | 227 decisioni precompilate da `same_country_review_reuse`; 401 righe ancora da controllare. |
+| `gymternet_2025_new_athlete_country_conflicts.csv` | 8 | 8 righe ancora da controllare. |
+
+Distribuzione delle 401 decisioni mancanti nel CSV existing athlete:
+
+| Tipo review | Righe da controllare |
+|---|---:|
+| `possible_existing_athlete_match` | 308 |
+| `possible_athlete_identity_collision` | 61 |
+| `possible_athlete_country_change` | 32 |
+
+Le 227 decisioni precompilate sono tutte `merge as same athlete` su casi same-country gia verificati in anni precedenti. Restano comunque modificabili dall'admin se durante la review emergono nuove evidenze.
+
+### 14.6 Conflitti country tra nuovi atleti
+
+Il CSV `gymternet_2025_new_athlete_country_conflicts.csv` contiene 8 casi:
+
+| Atleta | Disciplina | Country in conflitto | Evidenza futura |
+|---|---|---|---|
+| Kiichi Kaneta | MAG | JAM, JPN | non disponibile: set storico fermo al 2025 |
+| Victor Verwimp | MAG | BEL, NED | non disponibile: set storico fermo al 2025 |
+| Adina Kubickova | WAG | AUT, CZE | non disponibile: set storico fermo al 2025 |
+| Lilou Gustin | WAG | BEL, SLO | non disponibile: set storico fermo al 2025 |
+| Andreea Mihai | WAG | GER, ROU | non disponibile: set storico fermo al 2025 |
+| Terri Grandry | WAG | BEL, FRA | non disponibile: set storico fermo al 2025 |
+| Lucie Selvais | WAG | BEL, SLO | non disponibile: set storico fermo al 2025 |
+| Céleste Mordenti | WAG | LUX, NED | non disponibile: set storico fermo al 2025 |
+
+Questi casi richiedono decisione admin esplicita. Poiche cambia il country, la regola `same_country_review_reuse` non viene applicata.
+
+### 14.7 Stato operativo dopo preview 2025
+
+Il database locale non e stato modificato.
+
+La review admin deve ora completare:
+
+- `docs/import_reports/gymternet_2025_existing_athlete_match_review.csv`;
+- `docs/import_reports/gymternet_2025_new_athlete_country_conflicts.csv`.
+
+Dopo la review admin, verranno generati il payload decisionale 2025, la preview post-decisione e, se pulita, il commit reale del 2025.

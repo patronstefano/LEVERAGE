@@ -94,6 +94,13 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2024_post_decision_conflicts.csv` | Audit conflitti dopo decisioni admin; vuoto dopo la correzione finale. |
 | `gymternet_2024_post_decision_duplicates.csv` | Audit duplicati dopo decisioni admin; vuoto. |
 | `gymternet_2024_commit_summary.json` | Report tecnico del commit reale 2024, con backup, statistiche di import e controlli post-import. |
+| `gymternet_2025_preview_summary.json` | Sintesi tecnica della preview 2025 eseguita sul DB post-2024, senza commit. |
+| `gymternet_2025_duplicates.csv` | Audit dei duplicati identici interni al file 2025; attualmente vuoto. |
+| `gymternet_2025_conflicts.csv` | Audit dei conflitti bloccanti 2025; attualmente vuoto. |
+| `gymternet_2025_orphan_dscores.csv` | D-score del file Gymternet 2025 non agganciati automaticamente a un result con final score. |
+| `gymternet_2025_athlete_review.csv` | Review atleta/country 2025 completa e tecnica. |
+| `gymternet_2025_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2025 corrisponde a un atleta gia presente nel DB post-2024. Include decisioni same-country precompilate quando la memoria storica e univoca. |
+| `gymternet_2025_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2025 che presentano conflitti country nel file 2025. |
 
 ## Convenzione review atleta/country
 
@@ -128,6 +135,8 @@ La preview 2023 segnala uno spillover analogo a quello gia visto nel file 2022: 
 Nel flusso 2023 sono state applicate 39 correzioni nome su atleti gia presenti nel DB. Per i nomi KOR, la normalizzazione e stata applicata quando riguardava trattino/spazio oppure quando l'evidenza futura sosteneva chiaramente la forma importata. I casi non univoci sono stati lasciati senza correzione automatica del nome.
 
 Nel flusso 2024 i file Numbers compilati dall'admin sono stati trasferiti nei CSV operativi. La prima preview post-decisione ha rilevato 13 conflitti `same_context_different_score_after_athlete_merge`; applicando la regola persistente `same_context_different_score_keep_separate`, tre decisioni sono state corrette da `merge as same athlete` a `keep separate`: Max Griffiths/Mac Griffiths, Ania Fernandez/Jana Fernandez e Lee Seyeon/Lee Seoyeon. La preview finale 2024 e risultata pulita e il commit reale 2024 ha creato 106.449 result senza introdurre duplicati semantici.
+
+La preview 2025 segnala uno spillover di 108 record associati a evento 2026 (`Top 12 Series 3 (2026)`). Come per gli anni precedenti, il sistema mantiene l'anno evento dichiarato nel file sorgente. Poiche il set storico disponibile termina al 2025, la colonna `future_country_evidence` non puo fornire evidenza successiva per la review 2025.
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 
