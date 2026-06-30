@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019, 2020 e 2021 committati e verificati; preview 2022 eseguita, in attesa di review admin
+Stato: import storico 2018, 2019, 2020, 2021, 2022 e 2023 committati e verificati; preview 2024 generata, in attesa di review admin
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -2166,3 +2166,133 @@ Nel CSV operativo futuro la decisione puo essere precompilata e tracciata con `s
 La precompilazione avviene solo se le review degli anni precedenti danno una decisione univoca per quella coppia atleta/variante nome. Se la memoria storica e discordante, il caso resta manuale.
 
 La regola vale solo per casi same-country. Se il country cambia, la review manuale admin resta obbligatoria, perche il caso puo riguardare un cambio reale di rappresentanza, un errore country del file sorgente o una fusione rischiosa tra atleti diversi.
+
+## 13. Import 2024 - Preview iniziale
+
+File sorgente: `import_files/Results 2024.xlsx`
+
+Documento operativo dedicato:
+
+```text
+docs/LEVERAGE_import_2024_review.md
+```
+
+### 13.1 Stato del database prima della preview 2024
+
+La preview 2024 e stata eseguita sul database locale gia popolato e verificato fino al commit reale 2023.
+
+Conteggi DB prima della preview:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 20.813 |
+| Event | 1.177 |
+| Result | 523.244 |
+| Notification | 0 |
+
+### 13.2 Esito tecnico preview 2024
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 106.449 |
+| Result importabili | 106.449 |
+| Athlete che verrebbero creati senza decisioni admin | 3.051 |
+| Event che verrebbero creati | 206 |
+| Duplicati identici interni al file | 0 |
+| Conflitti bloccanti | 0 |
+| Warning | 2 |
+
+Warning principali:
+
+- 1.113 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 5 chiavi multi-day, con 10 righe valorizzate fino a `day=2`.
+
+### 13.3 Distribuzione anni nel file 2024
+
+Il file `Results 2024.xlsx` contiene anche 495 record associati a eventi con anno evento 2025.
+
+| Anno evento nel file | Result parse | Event distinti |
+|---|---:|---:|
+| 2024 | 105.954 | 203 |
+| 2025 | 495 | 3 |
+
+Eventi 2025 presenti nel file 2024:
+
+| Event | Result parse |
+|---|---:|
+| `Top 12 Series 1 (2025)` | 203 |
+| `Top 12 Series 2 (2025)` | 196 |
+| `Top 12 Series 3 (2025)` | 96 |
+
+Decisione metodologica: come per gli spillover gia rilevati nei file precedenti, questi record non sono considerati errore tecnico. Il sistema usa l'anno evento presente nel file sorgente.
+
+### 13.4 File generati
+
+| File | Scopo |
+|---|---|
+| `docs/import_reports/gymternet_2024_preview_summary.json` | Sintesi tecnica completa della preview 2024. |
+| `docs/import_reports/gymternet_2024_duplicates.csv` | Audit dei duplicati identici interni al file; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2024_conflicts.csv` | Audit dei conflitti bloccanti; vuoto in questa preview. |
+| `docs/import_reports/gymternet_2024_orphan_dscores.csv` | D-score orfani non agganciati a final score. |
+| `docs/import_reports/gymternet_2024_athlete_review.csv` | Review atleta/country completa e tecnica. |
+| `docs/import_reports/gymternet_2024_existing_athlete_match_review.csv` | CSV operativo per verificare match con atleti gia presenti nel DB. |
+| `docs/import_reports/gymternet_2024_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country nel file 2024. |
+
+### 13.5 Review atleta/country 2024
+
+Totale review atleta/country: 562.
+
+Distribuzione:
+
+| Tipo review | Conteggio |
+|---|---:|
+| `possible_existing_athlete_match` | 498 |
+| `possible_athlete_identity_collision` | 41 |
+| `possible_athlete_country_change` | 23 |
+
+CSV operativi:
+
+| File | Righe | Stato |
+|---|---:|---|
+| `gymternet_2024_existing_athlete_match_review.csv` | 552 | 211 decisioni precompilate da `same_country_review_reuse`; 341 righe ancora da controllare. |
+| `gymternet_2024_new_athlete_country_conflicts.csv` | 10 | 10 righe ancora da controllare. |
+
+Distribuzione delle 341 decisioni mancanti nel CSV existing athlete:
+
+| Tipo review | Righe da controllare |
+|---|---:|
+| `possible_existing_athlete_match` | 287 |
+| `possible_athlete_identity_collision` | 31 |
+| `possible_athlete_country_change` | 23 |
+
+Le 211 decisioni precompilate sono tutte `merge as same athlete` su casi same-country gia verificati in anni precedenti. Restano comunque modificabili dall'admin se durante la review emergono nuove evidenze.
+
+### 13.6 Conflitti country tra nuovi atleti
+
+Il CSV `gymternet_2024_new_athlete_country_conflicts.csv` contiene 10 casi:
+
+| Atleta | Disciplina | Country in conflitto | Evidenza futura |
+|---|---|---|---|
+| William Emard | MAG | CAN, FRA | 2025: CAN |
+| Clovis Dias | MAG | FRA, POR | 2025: POR |
+| Eliza Barbosa de Melo | WAG | GBR, HUN | not found 2025 |
+| Anujin Gomboluudev | WAG | MGL, USA | 2025: MGL |
+| Magdalena Andradottir | WAG | ISL, NOR | 2025: ISL |
+| Rebecca Mitchell | WAG | CAN, DEN | 2025: DEN |
+| Hanna Bjartalid | WAG | DEN, ISL | not found 2025 |
+| Louay Sahli | MAG | ALG, TUN | 2025: FRA/TUN |
+| Hjordis Petursdottir | WAG | DEN, ISL | not found 2025 |
+| Jan Kies | MAG | BEL, NED | not found 2025 |
+
+Questi casi richiedono decisione admin esplicita. Poiche cambia il country, la regola `same_country_review_reuse` non viene applicata.
+
+### 13.7 Stato operativo dopo preview 2024
+
+Il database locale non e stato modificato.
+
+La review admin deve ora completare:
+
+- `docs/import_reports/gymternet_2024_existing_athlete_match_review.csv`;
+- `docs/import_reports/gymternet_2024_new_athlete_country_conflicts.csv`.
+
+Dopo la review admin, verranno generati il payload decisionale 2024, la preview post-decisione su copia temporanea del database e, se pulita, il commit reale del 2024.

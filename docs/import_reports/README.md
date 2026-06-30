@@ -82,6 +82,13 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2023_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2023. Inizialmente conteneva 9 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
 | `gymternet_2023_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2023; vuoto. |
 | `gymternet_2023_commit_summary.json` | Report tecnico del commit reale 2023, con backup, statistiche di import e controlli post-import. |
+| `gymternet_2024_preview_summary.json` | Sintesi tecnica della preview 2024 eseguita sul DB post-2023, senza commit. |
+| `gymternet_2024_duplicates.csv` | Audit dei duplicati identici interni al file 2024; attualmente vuoto. |
+| `gymternet_2024_conflicts.csv` | Audit dei conflitti bloccanti 2024; attualmente vuoto. |
+| `gymternet_2024_orphan_dscores.csv` | D-score del file Gymternet 2024 non agganciati automaticamente a un result con final score. |
+| `gymternet_2024_athlete_review.csv` | Review atleta/country 2024 completa e tecnica. |
+| `gymternet_2024_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2024 corrisponde a un atleta gia presente nel DB post-2023. Include decisioni same-country precompilate quando la memoria storica e univoca. |
+| `gymternet_2024_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2024 che presentano conflitti country nel file 2024. |
 
 ## Convenzione review atleta/country
 
