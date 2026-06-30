@@ -1742,14 +1742,127 @@ Durante la preview 2022 il tool ha applicato automaticamente la regola name-orde
 | Chiavi variante normalizzate | 6 |
 | Record normalizzati | 66 |
 
-### 11.8 Stato operativo
+### 11.8 Review admin e payload decisionale 2022
 
-Il 2022 non e stato importato nel database.
+Data review/commit: 30 giugno 2026
 
-Prima del commit 2022 occorre:
+L'admin ha completato i file Numbers relativi alle collisioni atleta/country 2022. Le decisioni sono state trasferite nei CSV operativi preservando i campi tecnici originali.
 
-1. completare i CSV admin 2022;
-2. generare il payload decisionale;
-3. rieseguire preview con decisioni applicate;
-4. controllare eventuali conflitti post-decisione;
-5. solo dopo preview pulita, eseguire commit controllato 2022.
+| File Numbers | Righe trasferite |
+|---|---:|
+| `gymternet_2022_existing_athlete_match_review.numbers` | 386 |
+| `gymternet_2022_new_athlete_country_conflicts.numbers` | 3 |
+
+Il payload tecnico finale e stato generato in:
+
+```text
+docs/import_reports/gymternet_2022_athlete_match_decisions.json
+```
+
+Distribuzione finale delle azioni nel payload:
+
+| Azione payload | Conteggio |
+|---|---:|
+| `merge_as_same_athlete` | 44 |
+| `accept_suggestion` | 305 |
+| `create_new` | 15 |
+| `update_country` | 17 |
+| `keep_existing_country` | 8 |
+
+### 11.9 Conflitto post-decisione e correzione Liu Xuanxi/Liu Xuan
+
+La prima preview post-decisione ha prodotto 7 conflitti, tutti relativi allo stesso merge suggerito:
+
+| Atleta importato | Atleta suggerito | Evento | Motivo |
+|---|---|---|---|
+| Liu Xuanxi | Liu Xuan | Chinese Youth Championships 2022 | stesso contesto sportivo ma score/D-score diversi su FX, HB, PB, PH, SR, VT e AA |
+
+Il sistema ha riconosciuto la regola decisionale persistente:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Decisione applicata: la riga `athlete_match_beec068c68fc0008` e stata corretta in `keep separate`, con nota nel CSV operativo.
+
+Dopo questa correzione la preview post-decisione e risultata pulita:
+
+| Voce | Conteggio |
+|---|---:|
+| Conflitti post-decisione | 0 |
+| Decisioni invalide | 0 |
+| Decisioni mancanti | 0 |
+| Duplicati identici residui | 3 |
+
+I 3 duplicati identici residui sono duplicati interni gia noti di Lee Junho al World Championships 2022 e vengono saltati automaticamente dal commit.
+
+### 11.10 Commit database 2022
+
+Prima del commit e stato creato il backup:
+
+```text
+backups/leverage_pre_import_2022_20260630_094008.db
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 2.472 |
+| Event creati | 219 |
+| Result creati | 97.934 |
+| Result completi creati | 74.032 |
+| Result parziali creati | 23.902 |
+| Event aggiornati | 249 |
+| Country atleta aggiornate | 19 |
+| Nomi atleta aggiornati | 0 |
+| `represented_country` corretti sui result | 261 |
+| Atleti con nuovi result | 7.265 |
+| Event con nuovi result | 219 |
+| Duplicati saltati | 3 |
+| D-score orfani lasciati fuori dal DB | 1.426 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 17.429 |
+| Event | 936 |
+| Result | 405.755 |
+| Notification | 0 |
+
+### 11.11 Controlli post-import 2022
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 859 |
+
+Nota metodologica: il file `Results 2022.xlsx` contiene anche alcuni eventi marcati come anno evento 2023. Per questo il commit del file 2022 ha creato 97.075 result su eventi 2022 e 859 result su eventi 2023.
+
+Qualita dati importati dal commit 2022:
+
+| Anno evento | Result completi | Final score senza D-score | Senza final score |
+|---|---:|---:|---:|
+| 2022 | 73.237 | 23.838 | 0 |
+| 2023 | 795 | 64 | 0 |
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+### 11.12 Stato operativo finale 2022
+
+Il 2022 e stato importato nel database locale.
+
+Il commit reale ha creato 97.934 result nuovi e non ha introdotto duplicati semantici.
+
+I 1.426 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2022_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.

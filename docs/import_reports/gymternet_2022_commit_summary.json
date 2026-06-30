@@ -1,0 +1,108 @@
+{
+  "file": "import_files/Results 2022.xlsx",
+  "committed": true,
+  "decisions_used": "docs/import_reports/gymternet_2022_athlete_match_decisions.json",
+  "backup_path": "backups/leverage_pre_import_2022_20260630_094008.db",
+  "db_counts_before_commit": {
+    "athletes": 14957,
+    "events": 717,
+    "results": 307821,
+    "notifications": 0
+  },
+  "preflight": {
+    "parsed_rows": 97937,
+    "importable_results": 97934,
+    "duplicates": 3,
+    "duplicates_by_reason": {
+      "duplicate_in_file": 3
+    },
+    "conflicts": 0,
+    "conflicts_by_reason": {},
+    "error_issues": 0,
+    "orphan_dscore_review_count": 1426,
+    "athlete_match_review_count": 389,
+    "athlete_match_decision_stats": {
+      "accepted_suggestions": 305,
+      "manual_corrections": 0,
+      "confirmed_new": 15,
+      "identity_merges": 44,
+      "identity_kept_separate": 0,
+      "country_updates": 19,
+      "country_kept": 9,
+      "athlete_name_updates": 0,
+      "represented_country_corrections": 49,
+      "invalid_decisions": 0,
+      "unresolved": 0,
+      "automatic_name_order_merges": 6,
+      "automatic_name_order_variant_keys": 6,
+      "automatic_name_order_records_normalized": 66
+    },
+    "would_create_athletes": 2472,
+    "would_create_events": 219
+  },
+  "commit_stats": {
+    "created_athletes": 2472,
+    "created_events": 219,
+    "created_results": 97934,
+    "created_complete_results": 74032,
+    "created_partial_results": 23902,
+    "orphan_dscore_review_uncommitted": 1426,
+    "updated_events": 249,
+    "updated_athlete_countries": 19,
+    "updated_athlete_names": 0,
+    "corrected_represented_countries": 261,
+    "athletes_with_new_results": 7265,
+    "events_with_new_results": 219,
+    "created_admin_notifications": 0,
+    "skipped_duplicates": 3
+  },
+  "db_counts_after_commit": {
+    "athletes": 17429,
+    "events": 936,
+    "results": 405755,
+    "notifications": 0
+  },
+  "post_import_checks": {
+    "results_by_year": [
+      {
+        "year": 2018,
+        "results": 89988
+      },
+      {
+        "year": 2019,
+        "results": 106084
+      },
+      {
+        "year": 2020,
+        "results": 34326
+      },
+      {
+        "year": 2021,
+        "results": 77423
+      },
+      {
+        "year": 2022,
+        "results": 97075
+      },
+      {
+        "year": 2023,
+        "results": 859
+      }
+    ],
+    "semantic_duplicate_groups": 0,
+    "quality_by_year": [
+      {
+        "year": 2022,
+        "complete": 73237,
+        "missing_d_score": 23838,
+        "missing_score": 0
+      },
+      {
+        "year": 2023,
+        "complete": 795,
+        "missing_d_score": 64,
+        "missing_score": 0
+      }
+    ]
+  }
+}
