@@ -101,6 +101,12 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2025_athlete_review.csv` | Review atleta/country 2025 completa e tecnica. |
 | `gymternet_2025_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2025 corrisponde a un atleta gia presente nel DB post-2024. Include decisioni same-country precompilate quando la memoria storica e univoca. |
 | `gymternet_2025_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2025 che presentano conflitti country nel file 2025. |
+| `gymternet_2025_athlete_name_corrections.csv` | Correzione nome atleta esistente verificata durante la review 2025: `Niccolo Martin` -> `Niccolò Martin`. |
+| `gymternet_2025_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2025, inclusa 1 correzione nome atleta. |
+| `gymternet_2025_preview_with_decisions_summary.json` | Preview 2025 eseguita con decisioni admin applicate; esito finale pulito con 0 duplicati e 0 conflitti. |
+| `gymternet_2025_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2025. Inizialmente conteneva 33 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
+| `gymternet_2025_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2025; vuoto. |
+| `gymternet_2025_commit_summary.json` | Report tecnico del commit reale 2025, con backup, statistiche di import e controlli post-import. |
 
 ## Convenzione review atleta/country
 
@@ -137,6 +143,8 @@ Nel flusso 2023 sono state applicate 39 correzioni nome su atleti gia presenti n
 Nel flusso 2024 i file Numbers compilati dall'admin sono stati trasferiti nei CSV operativi. La prima preview post-decisione ha rilevato 13 conflitti `same_context_different_score_after_athlete_merge`; applicando la regola persistente `same_context_different_score_keep_separate`, tre decisioni sono state corrette da `merge as same athlete` a `keep separate`: Max Griffiths/Mac Griffiths, Ania Fernandez/Jana Fernandez e Lee Seyeon/Lee Seoyeon. La preview finale 2024 e risultata pulita e il commit reale 2024 ha creato 106.449 result senza introdurre duplicati semantici.
 
 La preview 2025 segnala uno spillover di 108 record associati a evento 2026 (`Top 12 Series 3 (2026)`). Come per gli anni precedenti, il sistema mantiene l'anno evento dichiarato nel file sorgente. Poiche il set storico disponibile termina al 2025, la colonna `future_country_evidence` non puo fornire evidenza successiva per la review 2025.
+
+Nel flusso 2025 e stata applicata la correzione nome `Niccolo Martin` -> `Niccolò Martin`. La prima preview post-decisione ha rilevato 33 conflitti `same_context_different_score_after_athlete_merge`; applicando la regola persistente `same_context_different_score_keep_separate`, sette decisioni sono state corrette da `merge as same athlete` a `keep separate`: Saya Okubo/Aya Okubo, Anna Klykova/Anna Kalmykova, Mia Fujiwara/Mirea Fujiwara, Marta Garcia/Maria Garcia, Lee Sooyeon/Lee Seoyeon, Lee Jiyeon/Lee Jiseon e Zeng Yifan/Zeng Yiran. La preview finale 2025 e risultata pulita e il commit reale 2025 ha creato 124.030 result senza introdurre duplicati semantici.
 
 Regola metodologica aggiunta durante la review 2019: se due atleti hanno stessa country, nome molto simile e l'evidenza degli anni successivi mostra che una variante non viene piu trovata, il sistema potra trattare il caso come merge automatico/candidato diretto, riducendo le review manuali future.
 

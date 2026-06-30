@@ -1,7 +1,7 @@
 # LEVERAGE - Diario di bordo del popolamento massivo database
 
 Data apertura documento: 24 giugno 2026  
-Stato: import storico 2018, 2019, 2020, 2021, 2022, 2023 e 2024 committati e verificati; preview 2025 generata, in attesa di review admin
+Stato: import storico 2018, 2019, 2020, 2021, 2022, 2023, 2024 e 2025 committati e verificati
 Scopo: documentare in modo ordinato, verificabile e adatto alla tesi magistrale il processo di popolamento massivo del database LEVERAGE con i file storici Gymternet 2018-2025.
 
 ---
@@ -2548,6 +2548,12 @@ Decisione metodologica: come per gli spillover gia rilevati nei file precedenti,
 | `docs/import_reports/gymternet_2025_athlete_review.csv` | Review atleta/country completa e tecnica. |
 | `docs/import_reports/gymternet_2025_existing_athlete_match_review.csv` | CSV operativo per verificare match con atleti gia presenti nel DB. |
 | `docs/import_reports/gymternet_2025_new_athlete_country_conflicts.csv` | CSV operativo per nuovi atleti con conflitti country nel file 2025. |
+| `docs/import_reports/gymternet_2025_athlete_name_corrections.csv` | Correzione nome atleta esistente verificata dall'admin. |
+| `docs/import_reports/gymternet_2025_athlete_match_decisions.json` | Payload tecnico delle decisioni admin 2025. |
+| `docs/import_reports/gymternet_2025_preview_with_decisions_summary.json` | Sintesi tecnica della preview 2025 con decisioni admin applicate. |
+| `docs/import_reports/gymternet_2025_post_decision_conflicts.csv` | Audit conflitti dopo decisioni admin; vuoto dopo correzione finale. |
+| `docs/import_reports/gymternet_2025_post_decision_duplicates.csv` | Audit duplicati dopo decisioni admin; vuoto. |
+| `docs/import_reports/gymternet_2025_commit_summary.json` | Report tecnico del commit reale 2025, con backup, statistiche di import e controlli post-import. |
 
 ### 14.5 Review atleta/country 2025
 
@@ -2595,13 +2601,193 @@ Il CSV `gymternet_2025_new_athlete_country_conflicts.csv` contiene 8 casi:
 
 Questi casi richiedono decisione admin esplicita. Poiche cambia il country, la regola `same_country_review_reuse` non viene applicata.
 
-### 14.7 Stato operativo dopo preview 2025
+### 14.7 Review admin completata
 
-Il database locale non e stato modificato.
+Il 30 giugno 2026 l'admin ha completato i due file Numbers relativi alle collisioni atleta/country 2025. Le decisioni sono state trasferite nei CSV operativi preservando i campi tecnici originali e aggiornando soltanto:
 
-La review admin deve ora completare:
+- `decision`;
+- `action`;
+- `country`;
+- `notes`.
 
-- `docs/import_reports/gymternet_2025_existing_athlete_match_review.csv`;
-- `docs/import_reports/gymternet_2025_new_athlete_country_conflicts.csv`.
+| File Numbers | Righe trasferite nel CSV operativo |
+|---|---:|
+| `gymternet_2025_existing_athlete_match_review.numbers` | 628 |
+| `gymternet_2025_new_athlete_country_conflicts.numbers` | 8 |
 
-Dopo la review admin, verranno generati il payload decisionale 2025, la preview post-decisione e, se pulita, il commit reale del 2025.
+E stata aggiunta anche una correzione nome atleta esistente:
+
+| Review | Athlete ID | Nome precedente | Nome corretto |
+|---|---:|---|---|
+| `athlete_match_5181b096d32f4b0a` | 18410 | Niccolo Martin | Niccolò Martin |
+
+Payload tecnico generato:
+
+```text
+docs/import_reports/gymternet_2025_athlete_match_decisions.json
+```
+
+### 14.8 Preview post-decisione e correzione conflitti residui
+
+La prima preview con decisioni admin applicate ha prodotto:
+
+| Voce | Conteggio |
+|---|---:|
+| Result importabili | 123.997 |
+| Duplicati | 0 |
+| Conflitti | 33 |
+
+I 33 conflitti erano tutti del tipo:
+
+```text
+same_context_different_score_after_athlete_merge
+```
+
+Il backend ha riconosciuto la regola persistente:
+
+```text
+same_context_different_score_keep_separate
+```
+
+Sono state quindi corrette sette decisioni nel CSV operativo `gymternet_2025_existing_athlete_match_review.csv`, portandole da `merge as same athlete` a `keep separate`:
+
+| Atleta importato | Atleta gia presente suggerito | Motivo |
+|---|---|---|
+| Saya Okubo | Aya Okubo | Merge produceva 5 result nello stesso contesto della `All-Japan Junior Championships 2025` con score diversi. |
+| Anna Klykova | Anna Kalmykova | Merge produceva 4 result nello stesso contesto della `Russian Championships 2025` con score/D-score diversi. |
+| Mia Fujiwara | Mirea Fujiwara | Merge produceva 5 result nello stesso contesto della `All-Japan Student Championships 2025` con score/D-score diversi. |
+| Marta Garcia | Maria Garcia | Merge produceva 1 result nello stesso contesto della `2nd Spanish League 2025` con score/D-score diverso. |
+| Lee Sooyeon | Lee Seoyeon | Merge produceva 5 result nello stesso contesto della `South Korean Championships 2025` con score/D-score diversi. |
+| Lee Jiyeon | Lee Jiseon | Merge produceva 10 result negli stessi contesti della `Korean National Sports Festival 2025` e `South Korean Championships 2025` con score/D-score diversi. |
+| Zeng Yifan | Zeng Yiran | Merge produceva 3 result nello stesso contesto della `Chinese Junior Championships 2025` con score/D-score diversi. |
+
+Il payload decisionale e stato rigenerato senza rileggere i Numbers, usando i CSV operativi come fonte autorevole.
+
+Statistiche decisioni finali:
+
+| Azione | Conteggio |
+|---|---:|
+| Suggerimenti atleta accettati | 451 |
+| Nuovi atleti confermati / create new | 85 |
+| Merge identita atleta | 69 |
+| Country updates | 15 |
+| Country kept | 21 |
+| Correzioni represented country | 75 |
+| Correzioni nome atleta | 1 |
+| Decisioni non valide | 0 |
+| Decisioni irrisolte | 0 |
+
+### 14.9 Preview post-decisione pulita
+
+Esito finale preview post-decisione 2025:
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 124.030 |
+| Result importabili | 124.030 |
+| Athlete che verrebbero creati | 2.911 |
+| Event che verrebbero creati | 222 |
+| Duplicati | 0 |
+| Conflitti | 0 |
+| Warning | 3 |
+| D-score orfani mantenuti fuori dal DB | 630 |
+
+File generati:
+
+```text
+docs/import_reports/gymternet_2025_preview_with_decisions_summary.json
+docs/import_reports/gymternet_2025_post_decision_conflicts.csv
+docs/import_reports/gymternet_2025_post_decision_duplicates.csv
+```
+
+I file `post_decision_conflicts` e `post_decision_duplicates` risultano vuoti.
+
+### 14.10 Commit database 2025
+
+Prima del commit e stato creato il backup:
+
+```text
+backups/leverage_pre_import_2025_20260630_220340.db
+```
+
+Il commit reale e stato eseguito usando:
+
+```text
+scripts/commit_gymternet_year.py
+```
+
+Report tecnico generato:
+
+```text
+docs/import_reports/gymternet_2025_commit_summary.json
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 2.911 |
+| Event creati | 222 |
+| Result creati | 124.030 |
+| Result completi creati | 95.229 |
+| Result parziali creati | 28.801 |
+| Event aggiornati | 284 |
+| Country atleta aggiornate | 15 |
+| Nomi atleta aggiornati | 1 |
+| `represented_country` corretti sui result | 637 |
+| Atleti con nuovi result | 9.442 |
+| Event con nuovi result | 222 |
+| Duplicati saltati | 0 |
+| D-score orfani lasciati fuori dal DB | 630 |
+
+Stato DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 26.259 |
+| Event | 1.605 |
+| Result | 753.723 |
+| Notification | 0 |
+
+### 14.11 Controlli post-import 2025
+
+Distribuzione result per anno dopo il commit:
+
+| Anno evento | Result |
+|---|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 117.256 |
+| 2024 | 107.046 |
+| 2025 | 124.417 |
+| 2026 | 108 |
+
+Nota metodologica: il file `Results 2025.xlsx` contiene anche 108 record associati a evento con anno evento 2026 (`Top 12 Series 3 (2026)`). Per questo il commit del file 2025 ha portato il totale dell'anno 2025 a 124.417 result e ha creato 108 result su eventi 2026.
+
+Qualita dati importati dal commit 2025:
+
+| Anno evento | Result completi | Final score senza D-score | Senza final score |
+|---|---:|---:|---:|
+| 2025 | 95.604 | 25.625 | 3.188 |
+| 2026 | 95 | 13 | 0 |
+
+Nota sui result senza final score: nel legacy Gymternet 2025 alcuni result possono essere conservati senza final score quando il dato non e ricostruibile in modo affidabile, in particolare per le regole 2025+ su componenti mancanti e vault. Questi record restano marcati come incompleti/not available e vanno trattati con cautela in UI e analisi.
+
+Controllo duplicati semantici:
+
+| Controllo | Esito |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+
+### 14.12 Stato operativo finale 2025
+
+Il 2025 e stato importato nel database locale.
+
+Il commit reale ha creato 124.030 result nuovi e non ha introdotto duplicati semantici.
+
+I 630 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2025_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
+
+Il database contiene gia 108 result associati a evento 2026. Quando verra importato il file Gymternet 2026, questi result dovranno essere considerati nel controllo duplicati/preflight.
