@@ -3347,3 +3347,56 @@ File preparati per la review admin 2022:
 - `calendar_2022_source_conflicts_slim.csv`
 
 Nota operativa: il 2022 contiene pochi casi aperti. Nel file Calendar-unmatched restano soprattutto gare MAG con denominazione maschile esplicita; nel file DB-unmatched sono presenti possibili refusi/varianti come `Bundlesiga` e gare che potrebbero richiedere associazione manuale o `db_only`; nel file source-conflicts restano casi MAG/WAG o serie Bundesliga con piu righe Calendar corrette per lo stesso Event.
+
+Review admin corrente 2022:
+
+Le decisioni admin sono state lette dai file Numbers e riportate nei CSV operativi. Il caso `EYOF Mixed Pairs` e stato indicato testualmente come `European Youth Olympic Festival`; la scelta e stata normalizzata manualmente sulla riga Calendar 142 (`European Youth Olympic Festival`, Jul 24-30).
+
+Esito dell'applicazione dei mismatch correnti:
+
+| Controllo | Conteggio |
+|---|---:|
+| Coppie Calendar/Event applicate dalla review corrente | 13 |
+| Event aggiornati con date dalla review corrente | 9 |
+| Calendar entries create dalla review corrente | 13 |
+| Righe Calendar chiuse come `calendar_only` | 0 |
+| Event DB marcati come `db_only` | 0 |
+| Date canoniche Event preservate e non sovrascritte | 4 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_current_review_2022_20260701_223227.db
+```
+
+Esito dei conflitti stesso Event/date diverse:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date risolti | 7 |
+| Calendar entries create dai conflitti multi-data | 14 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2022_20260702_003257.db
+```
+
+Esito finale 2022:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2022 | 228 |
+| Event DB 2022 | 215 |
+| Event DB 2022 coperti o verificati | 215 |
+| Event DB 2022 senza copertura/review Calendar | 0 |
+| Righe Calendar 2022 ancora da risolvere | 0 |
+| Righe Calendar 2022 `calendar_only` senza scheda Event | 0 |
+| Event DB 2022 `db_only` assenti dal Calendar sorgente | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+Nota metodologica: il 2022 non ha richiesto eccezioni `calendar_only` o `db_only`. Tutti gli Event DB 2022 risultano collegati a righe Calendar sorgente, con i conflitti MAG/WAG e Bundesliga preservati tramite `EventCalendarEntry` quando erano presenti piu date corrette.

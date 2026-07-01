@@ -2,9 +2,9 @@ metric,value
 year,2022
 calendar_rows,228
 db_events,215
-calendar_unmatched_rows,12
-db_unmatched_events,6
-db_matched_events,209
+calendar_unmatched_rows,0
+db_unmatched_events,0
+db_matched_events,215
 db_only_events,0
 calendar_only_rows,0
 season_year_spillover_entries,0

@@ -379,6 +379,23 @@ File operativi da compilare:
 
 La review 2022 deve usare gli stessi valori operativi del 2021: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
 
+Esito finale calendario 2022:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2022 | 228 |
+| Event DB 2022 | 215 |
+| Event DB 2022 coperti o verificati | 215 |
+| Event DB 2022 senza copertura/review Calendar | 0 |
+| Righe Calendar 2022 ancora da risolvere | 0 |
+| Righe Calendar 2022 `calendar_only` senza scheda Event | 0 |
+| Event DB 2022 `db_only` assenti dal Calendar sorgente | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 7 |
+
+Nota di review: `EYOF Mixed Pairs` e stato collegato alla riga Calendar 142, `European Youth Olympic Festival`. Il 2022 si chiude senza eccezioni `calendar_only` o `db_only`.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

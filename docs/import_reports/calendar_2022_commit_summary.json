@@ -4,21 +4,21 @@
   "database": "leverage.db",
   "dry_run": false,
   "committed": true,
-  "backup_path": "backups/leverage_calendar_2022_20260702_001613.db",
+  "backup_path": "backups/leverage_calendar_2022_20260702_003257.db",
   "parsed_rows_all_years": 1870,
   "calendar_rows": 228,
   "direct_safe_rows": 202,
   "direct_skipped_conflict_rows": 14,
   "direct_skipped_multiple_match_rows": 0,
   "review_match_rows": 0,
-  "resolved_source_conflicts": 0,
+  "resolved_source_conflicts": 7,
   "calendar_only_rows": 0,
-  "calendar_entries_created": 0,
+  "calendar_entries_created": 14,
   "calendar_entries_updated": 0,
   "calendar_entries_no_change": 0,
-  "updated_events": 202,
-  "no_change_events": 0,
-  "unresolved_review_items": 19,
+  "updated_events": 0,
+  "no_change_events": 202,
+  "unresolved_review_items": 12,
   "invalid_decisions": 0,
   "skipped": 0,
   "updates": [
@@ -26,2024 +26,1775 @@
       "event_id": 824,
       "event_name": "Houston National Invitational",
       "source": "calendar_row:2022:2",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-01-20",
-      "to_end_date": "2022-01-23"
+      "status": "no_change",
+      "start_date": "2022-01-20",
+      "end_date": "2022-01-23"
     },
     {
       "event_id": 875,
       "event_name": "Vegas Cup National Qualifier",
       "source": "calendar_row:2022:3",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-01-21",
-      "to_end_date": "2022-01-22"
+      "status": "no_change",
+      "start_date": "2022-01-21",
+      "end_date": "2022-01-22"
     },
     {
       "event_id": 893,
       "event_name": "All American National Qualifier",
       "source": "calendar_row:2022:4",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-01-28",
-      "to_end_date": "2022-01-29"
+      "status": "no_change",
+      "start_date": "2022-01-28",
+      "end_date": "2022-01-29"
     },
     {
       "event_id": 881,
       "event_name": "Buckeye National Qualifier",
       "source": "calendar_row:2022:5",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-04",
-      "to_end_date": "2022-02-06"
+      "status": "no_change",
+      "start_date": "2022-02-04",
+      "end_date": "2022-02-06"
     },
     {
       "event_id": 756,
       "event_name": "1st Italian Serie A",
       "source": "calendar_row:2022:6",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-11",
-      "to_end_date": "2022-02-12"
+      "status": "no_change",
+      "start_date": "2022-02-11",
+      "end_date": "2022-02-12"
     },
     {
       "event_id": 882,
       "event_name": "GAGE National Qualifier",
       "source": "calendar_row:2022:7",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-11",
-      "to_end_date": "2022-02-13"
+      "status": "no_change",
+      "start_date": "2022-02-11",
+      "end_date": "2022-02-13"
     },
     {
       "event_id": 923,
       "event_name": "WOGA Classic",
       "source": "calendar_row:2022:8",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-12",
-      "to_end_date": "2022-02-12"
+      "status": "no_change",
+      "start_date": "2022-02-12",
+      "end_date": "2022-02-12"
     },
     {
       "event_id": 856,
       "event_name": "Liukin Invitational",
       "source": "calendar_row:2022:9",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-12",
-      "to_end_date": "2022-02-12"
+      "status": "no_change",
+      "start_date": "2022-02-12",
+      "end_date": "2022-02-12"
     },
     {
       "event_id": 876,
       "event_name": "Metroplex National Qualifier",
       "source": "calendar_row:2022:11",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-18",
-      "to_end_date": "2022-02-20"
+      "status": "no_change",
+      "start_date": "2022-02-18",
+      "end_date": "2022-02-20"
     },
     {
       "event_id": 784,
       "event_name": "Cottbus World Cup",
       "source": "calendar_row:2022:12",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-24",
-      "to_end_date": "2022-02-27"
+      "status": "no_change",
+      "start_date": "2022-02-24",
+      "end_date": "2022-02-27"
     },
     {
       "event_id": 823,
       "event_name": "Winter Cup",
       "source": "calendar_row:2022:13",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-24",
-      "to_end_date": "2022-02-27"
+      "status": "no_change",
+      "start_date": "2022-02-24",
+      "end_date": "2022-02-27"
     },
     {
       "event_id": 932,
       "event_name": "Finnish National Team Test 1",
       "source": "calendar_row:2022:14",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-25",
-      "to_end_date": "2022-02-25"
+      "status": "no_change",
+      "start_date": "2022-02-25",
+      "end_date": "2022-02-25"
     },
     {
       "event_id": 730,
       "event_name": "Scottish Championships",
       "source": "calendar_row:2022:16",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-26",
-      "to_end_date": "2022-02-27"
+      "status": "no_change",
+      "start_date": "2022-02-26",
+      "end_date": "2022-02-27"
     },
     {
       "event_id": 832,
       "event_name": "Welsh Championships",
       "source": "calendar_row:2022:17",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-02-26",
-      "to_end_date": "2022-02-27"
+      "status": "no_change",
+      "start_date": "2022-02-26",
+      "end_date": "2022-02-27"
     },
     {
       "event_id": 746,
       "event_name": "Doha World Cup",
       "source": "calendar_row:2022:18",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-02",
-      "to_end_date": "2022-03-05"
+      "status": "no_change",
+      "start_date": "2022-03-02",
+      "end_date": "2022-03-05"
     },
     {
       "event_id": 888,
       "event_name": "1st Spanish League",
       "source": "calendar_row:2022:19",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-05",
-      "to_end_date": "2022-03-07"
+      "status": "no_change",
+      "start_date": "2022-03-05",
+      "end_date": "2022-03-07"
     },
     {
       "event_id": 880,
       "event_name": "KPAC National Qualifier",
       "source": "calendar_row:2022:20",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-10",
-      "to_end_date": "2022-03-11"
+      "status": "no_change",
+      "start_date": "2022-03-10",
+      "end_date": "2022-03-11"
     },
     {
       "event_id": 858,
       "event_name": "Singapore Championships",
       "source": "calendar_row:2022:21",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-11",
-      "to_end_date": "2022-03-12"
+      "status": "no_change",
+      "start_date": "2022-03-11",
+      "end_date": "2022-03-12"
     },
     {
       "event_id": 755,
       "event_name": "2nd Italian Serie A",
       "source": "calendar_row:2022:22",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-11",
-      "to_end_date": "2022-03-12"
+      "status": "no_change",
+      "start_date": "2022-03-11",
+      "end_date": "2022-03-12"
     },
     {
       "event_id": 768,
       "event_name": "English Championships",
       "source": "calendar_row:2022:23",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-11",
-      "to_end_date": "2022-03-13"
+      "status": "no_change",
+      "start_date": "2022-03-11",
+      "end_date": "2022-03-13"
     },
     {
       "event_id": 930,
       "event_name": "Finnish National Team Test 2",
       "source": "calendar_row:2022:25",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-13",
-      "to_end_date": "2022-03-13"
+      "status": "no_change",
+      "start_date": "2022-03-13",
+      "end_date": "2022-03-13"
     },
     {
       "event_id": 743,
       "event_name": "Cairo World Cup",
       "source": "calendar_row:2022:26",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-17",
-      "to_end_date": "2022-03-20"
+      "status": "no_change",
+      "start_date": "2022-03-17",
+      "end_date": "2022-03-20"
     },
     {
       "event_id": 918,
       "event_name": "Elite Canada",
       "source": "calendar_row:2022:27",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-18",
-      "to_end_date": "2022-03-20"
+      "status": "no_change",
+      "start_date": "2022-03-18",
+      "end_date": "2022-03-20"
     },
     {
       "event_id": 725,
       "event_name": "DTB Pokal Team Challenge",
       "source": "calendar_row:2022:28",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-18",
-      "to_end_date": "2022-03-20"
+      "status": "no_change",
+      "start_date": "2022-03-18",
+      "end_date": "2022-03-20"
     },
     {
       "event_id": 921,
       "event_name": "French Test Meet",
       "source": "calendar_row:2022:29",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-19",
-      "to_end_date": "2022-03-26"
+      "status": "no_change",
+      "start_date": "2022-03-19",
+      "end_date": "2022-03-26"
     },
     {
       "event_id": 866,
       "event_name": "DTB Pokal Mixed Cup",
       "source": "calendar_row:2022:30",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-20",
-      "to_end_date": "2022-03-20"
+      "status": "no_change",
+      "start_date": "2022-03-20",
+      "end_date": "2022-03-20"
     },
     {
       "event_id": 914,
       "event_name": "Latvian Cup",
       "source": "calendar_row:2022:31",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-24",
-      "to_end_date": "2022-03-26"
+      "status": "no_change",
+      "start_date": "2022-03-24",
+      "end_date": "2022-03-26"
     },
     {
       "event_id": 731,
       "event_name": "British Championships",
       "source": "calendar_row:2022:32",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-24",
-      "to_end_date": "2022-03-27"
+      "status": "no_change",
+      "start_date": "2022-03-24",
+      "end_date": "2022-03-27"
     },
     {
       "event_id": 759,
       "event_name": "Top 12 Series 4",
       "source": "calendar_row:2022:34",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-26",
-      "to_end_date": "2022-03-26"
+      "status": "no_change",
+      "start_date": "2022-03-26",
+      "end_date": "2022-03-26"
     },
     {
       "event_id": 931,
       "event_name": "Finnish National Team Test 3",
       "source": "calendar_row:2022:35",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-26",
-      "to_end_date": "2022-03-26"
+      "status": "no_change",
+      "start_date": "2022-03-26",
+      "end_date": "2022-03-26"
     },
     {
       "event_id": 751,
       "event_name": "Baku World Cup",
       "source": "calendar_row:2022:36",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-31",
-      "to_end_date": "2022-04-03"
+      "status": "no_change",
+      "start_date": "2022-03-31",
+      "end_date": "2022-04-03"
     },
     {
       "event_id": 896,
       "event_name": "March U.S. National Team Camp",
       "source": "calendar_row:2022:37",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-03-31",
-      "to_end_date": "2022-04-03"
+      "status": "no_change",
+      "start_date": "2022-03-31",
+      "end_date": "2022-04-03"
     },
     {
       "event_id": 806,
       "event_name": "Finnish Men's Euros Trials 1",
       "source": "calendar_row:2022:38",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-01",
-      "to_end_date": "2022-04-01"
+      "status": "no_change",
+      "start_date": "2022-04-01",
+      "end_date": "2022-04-01"
     },
     {
       "event_id": 908,
       "event_name": "Icelandic Classic",
       "source": "calendar_row:2022:39",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-01",
-      "to_end_date": "2022-04-03"
+      "status": "no_change",
+      "start_date": "2022-04-01",
+      "end_date": "2022-04-03"
     },
     {
       "event_id": 769,
       "event_name": "Hanspeter Demetz Memorial",
       "source": "calendar_row:2022:40",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-02",
-      "to_end_date": "2022-04-03"
+      "status": "no_change",
+      "start_date": "2022-04-02",
+      "end_date": "2022-04-03"
     },
     {
       "event_id": 816,
       "event_name": "Unisport Norges Cup",
       "source": "calendar_row:2022:41",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-02",
-      "to_end_date": "2022-04-03"
+      "status": "no_change",
+      "start_date": "2022-04-02",
+      "end_date": "2022-04-03"
     },
     {
       "event_id": 818,
       "event_name": "Russian Championships",
       "source": "calendar_row:2022:42",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-06",
-      "to_end_date": "2022-04-10"
+      "status": "no_change",
+      "start_date": "2022-04-06",
+      "end_date": "2022-04-10"
     },
     {
       "event_id": 915,
       "event_name": "Lithuanian Cup",
       "source": "calendar_row:2022:43",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-08",
-      "to_end_date": "2022-04-08"
+      "status": "no_change",
+      "start_date": "2022-04-08",
+      "end_date": "2022-04-08"
     },
     {
       "event_id": 808,
       "event_name": "Finnish Men's Euros Trials 2",
       "source": "calendar_row:2022:44",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-08",
-      "to_end_date": "2022-04-08"
+      "status": "no_change",
+      "start_date": "2022-04-08",
+      "end_date": "2022-04-08"
     },
     {
       "event_id": 780,
       "event_name": "Top 12 Series 5",
       "source": "calendar_row:2022:46",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-09",
-      "to_end_date": "2022-04-09"
+      "status": "no_change",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-09"
     },
     {
       "event_id": 883,
       "event_name": "City of Jesolo Trophy",
       "source": "calendar_row:2022:47",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-09",
-      "to_end_date": "2022-04-10"
+      "status": "no_change",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-10"
     },
     {
       "event_id": 897,
       "event_name": "NTTC National Qualifier",
       "source": "calendar_row:2022:48",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-09",
-      "to_end_date": "2022-04-10"
+      "status": "no_change",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-10"
     },
     {
       "event_id": 928,
       "event_name": "Malta Championships",
       "source": "calendar_row:2022:49",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-09",
-      "to_end_date": "2022-04-10"
+      "status": "no_change",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-10"
     },
     {
       "event_id": 912,
       "event_name": "Zelena Jama Open",
       "source": "calendar_row:2022:50",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-09",
-      "to_end_date": "2022-04-10"
+      "status": "no_change",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-10"
     },
     {
       "event_id": 801,
       "event_name": "All-Japan Championships",
       "source": "calendar_row:2022:52",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-21",
-      "to_end_date": "2022-04-24"
+      "status": "no_change",
+      "start_date": "2022-04-21",
+      "end_date": "2022-04-24"
     },
     {
       "event_id": 807,
       "event_name": "Finnish Men's Euros Trials 3",
       "source": "calendar_row:2022:53",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-22",
-      "to_end_date": "2022-04-22"
+      "status": "no_change",
+      "start_date": "2022-04-22",
+      "end_date": "2022-04-22"
     },
     {
       "event_id": 810,
       "event_name": "3rd Italian Serie A",
       "source": "calendar_row:2022:54",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-22",
-      "to_end_date": "2022-04-23"
+      "status": "no_change",
+      "start_date": "2022-04-22",
+      "end_date": "2022-04-23"
     },
     {
       "event_id": 898,
       "event_name": "Elek Matolay Memorial",
       "source": "calendar_row:2022:55",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-23",
-      "to_end_date": "2022-04-24"
+      "status": "no_change",
+      "start_date": "2022-04-23",
+      "end_date": "2022-04-24"
     },
     {
       "event_id": 851,
       "event_name": "South American Junior Games",
       "source": "calendar_row:2022:56",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-28",
-      "to_end_date": "2022-05-01"
+      "status": "no_change",
+      "start_date": "2022-04-28",
+      "end_date": "2022-05-01"
     },
     {
       "event_id": 805,
       "event_name": "Finnish Men's Euros Trials 4",
       "source": "calendar_row:2022:57",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-29",
-      "to_end_date": "2022-04-29"
+      "status": "no_change",
+      "start_date": "2022-04-29",
+      "end_date": "2022-04-29"
     },
     {
       "event_id": 729,
       "event_name": "International Junior Team Cup",
       "source": "calendar_row:2022:58",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-29",
-      "to_end_date": "2022-04-30"
+      "status": "no_change",
+      "start_date": "2022-04-29",
+      "end_date": "2022-04-30"
     },
     {
       "event_id": 761,
       "event_name": "Top 12 Series 6",
       "source": "calendar_row:2022:60",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-30",
-      "to_end_date": "2022-04-30"
+      "status": "no_change",
+      "start_date": "2022-04-30",
+      "end_date": "2022-04-30"
     },
     {
       "event_id": 793,
       "event_name": "GK Championships",
       "source": "calendar_row:2022:61",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-30",
-      "to_end_date": "2022-04-30"
+      "status": "no_change",
+      "start_date": "2022-04-30",
+      "end_date": "2022-04-30"
     },
     {
       "event_id": 726,
       "event_name": "International GymSport",
       "source": "calendar_row:2022:62",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-04-30",
-      "to_end_date": "2022-05-01"
+      "status": "no_change",
+      "start_date": "2022-04-30",
+      "end_date": "2022-05-01"
     },
     {
       "event_id": 890,
       "event_name": "2nd Spanish League",
       "source": "calendar_row:2022:64",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-07",
-      "to_end_date": "2022-05-07"
+      "status": "no_change",
+      "start_date": "2022-05-07",
+      "end_date": "2022-05-07"
     },
     {
       "event_id": 836,
       "event_name": "Greek Championships",
       "source": "calendar_row:2022:65",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-07",
-      "to_end_date": "2022-05-08"
+      "status": "no_change",
+      "start_date": "2022-05-07",
+      "end_date": "2022-05-08"
     },
     {
       "event_id": 867,
       "event_name": "Southeast Asian Games",
       "source": "calendar_row:2022:67",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-13",
-      "to_end_date": "2022-05-16"
+      "status": "no_change",
+      "start_date": "2022-05-13",
+      "end_date": "2022-05-16"
     },
     {
       "event_id": 870,
       "event_name": "NHK Trophy",
       "source": "calendar_row:2022:68",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-14",
-      "to_end_date": "2022-05-15"
+      "status": "no_change",
+      "start_date": "2022-05-14",
+      "end_date": "2022-05-15"
     },
     {
       "event_id": 724,
       "event_name": "Gymnasiade",
       "source": "calendar_row:2022:70",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-17",
-      "to_end_date": "2022-05-20"
+      "status": "no_change",
+      "start_date": "2022-05-17",
+      "end_date": "2022-05-20"
     },
     {
       "event_id": 854,
       "event_name": "Brazil Trophy",
       "source": "calendar_row:2022:71",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-19",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-19",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 800,
       "event_name": "Australian Championships",
       "source": "calendar_row:2022:72",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-20",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-20",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 872,
       "event_name": "Portuguese Championships",
       "source": "calendar_row:2022:73",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-21"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-21"
     },
     {
       "event_id": 901,
       "event_name": "Tata Junior Friendly",
       "source": "calendar_row:2022:74",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-21"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-21"
     },
     {
       "event_id": 811,
       "event_name": "Italian Serie A Final Six",
       "source": "calendar_row:2022:77",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 752,
       "event_name": "Irish Championships",
       "source": "calendar_row:2022:78",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 909,
       "event_name": "Z\u00fcri Oberland Cup",
       "source": "calendar_row:2022:79",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 924,
       "event_name": "Norwegian FIG Meet 1",
       "source": "calendar_row:2022:80",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-21",
-      "to_end_date": "2022-05-22"
+      "status": "no_change",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-22"
     },
     {
       "event_id": 869,
       "event_name": "Oceania Championships",
       "source": "calendar_row:2022:81",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-22",
-      "to_end_date": "2022-05-25"
+      "status": "no_change",
+      "start_date": "2022-05-22",
+      "end_date": "2022-05-25"
     },
     {
       "event_id": 747,
       "event_name": "Mexican Championships",
       "source": "calendar_row:2022:82",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-23",
-      "to_end_date": "2022-05-27"
+      "status": "no_change",
+      "start_date": "2022-05-23",
+      "end_date": "2022-05-27"
     },
     {
       "event_id": 760,
       "event_name": "Top 12 Series 7",
       "source": "calendar_row:2022:83",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-26",
-      "to_end_date": "2022-05-26"
+      "status": "no_change",
+      "start_date": "2022-05-26",
+      "end_date": "2022-05-26"
     },
     {
       "event_id": 750,
       "event_name": "Varna Challenge Cup",
       "source": "calendar_row:2022:84",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-26",
-      "to_end_date": "2022-05-29"
+      "status": "no_change",
+      "start_date": "2022-05-26",
+      "end_date": "2022-05-29"
     },
     {
       "event_id": 821,
       "event_name": "Belgian Championships",
       "source": "calendar_row:2022:85",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-26",
-      "to_end_date": "2022-05-29"
+      "status": "no_change",
+      "start_date": "2022-05-26",
+      "end_date": "2022-05-29"
     },
     {
       "event_id": 740,
       "event_name": "Singapore Open",
       "source": "calendar_row:2022:86",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-26",
-      "to_end_date": "2022-05-29"
+      "status": "no_change",
+      "start_date": "2022-05-26",
+      "end_date": "2022-05-29"
     },
     {
       "event_id": 771,
       "event_name": "Canadian Championships",
       "source": "calendar_row:2022:87",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-26",
-      "to_end_date": "2022-05-30"
+      "status": "no_change",
+      "start_date": "2022-05-26",
+      "end_date": "2022-05-30"
     },
     {
       "event_id": 929,
       "event_name": "Hungarian Junior Championships",
       "source": "calendar_row:2022:88",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-05-28",
-      "to_end_date": "2022-05-29"
+      "status": "no_change",
+      "start_date": "2022-05-28",
+      "end_date": "2022-05-29"
     },
     {
       "event_id": 935,
       "event_name": "Chinese Selection Meet",
       "source": "calendar_row:2022:89",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-01",
-      "to_end_date": "2022-06-01"
+      "status": "no_change",
+      "start_date": "2022-06-01",
+      "end_date": "2022-06-01"
     },
     {
       "event_id": 745,
       "event_name": "COMEGYM Championships",
       "source": "calendar_row:2022:90",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-02",
-      "to_end_date": "2022-06-04"
+      "status": "no_change",
+      "start_date": "2022-06-02",
+      "end_date": "2022-06-04"
     },
     {
       "event_id": 813,
       "event_name": "Salamunov Memorial",
       "source": "calendar_row:2022:91",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-02",
-      "to_end_date": "2022-06-05"
+      "status": "no_change",
+      "start_date": "2022-06-02",
+      "end_date": "2022-06-05"
     },
     {
       "event_id": 770,
       "event_name": "Czech Championships",
       "source": "calendar_row:2022:92",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-03",
-      "to_end_date": "2022-06-05"
+      "status": "no_change",
+      "start_date": "2022-06-03",
+      "end_date": "2022-06-05"
     },
     {
       "event_id": 860,
       "event_name": "Croatian Championships",
       "source": "calendar_row:2022:93",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-03",
-      "to_end_date": "2022-06-05"
+      "status": "no_change",
+      "start_date": "2022-06-03",
+      "end_date": "2022-06-05"
     },
     {
       "event_id": 722,
       "event_name": "Finnish Championships",
       "source": "calendar_row:2022:96",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-08",
-      "to_end_date": "2022-06-09"
+      "status": "no_change",
+      "start_date": "2022-06-08",
+      "end_date": "2022-06-09"
     },
     {
       "event_id": 753,
       "event_name": "Osijek Challenge Cup",
       "source": "calendar_row:2022:97",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-09",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-09",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 859,
       "event_name": "Polish Championships",
       "source": "calendar_row:2022:98",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-10",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-10",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 926,
       "event_name": "Parkettes National Qualifier",
       "source": "calendar_row:2022:99",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-10",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-10",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 834,
       "event_name": "Top 12 Finals",
       "source": "calendar_row:2022:100",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-11",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-11",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 817,
       "event_name": "Norwegian Junior Championships",
       "source": "calendar_row:2022:101",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-11",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-11",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 792,
       "event_name": "Icelandic Championships",
       "source": "calendar_row:2022:102",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-11",
-      "to_end_date": "2022-06-12"
+      "status": "no_change",
+      "start_date": "2022-06-11",
+      "end_date": "2022-06-12"
     },
     {
       "event_id": 748,
       "event_name": "Asian Championships",
       "source": "calendar_row:2022:103",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-15",
-      "to_end_date": "2022-06-18"
+      "status": "no_change",
+      "start_date": "2022-06-15",
+      "end_date": "2022-06-18"
     },
     {
       "event_id": 790,
       "event_name": "Koper Challenge Cup",
       "source": "calendar_row:2022:104",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-16",
-      "to_end_date": "2022-06-19"
+      "status": "no_change",
+      "start_date": "2022-06-16",
+      "end_date": "2022-06-19"
     },
     {
       "event_id": 826,
       "event_name": "Austrian Championships",
       "source": "calendar_row:2022:106",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-17",
-      "to_end_date": "2022-06-18"
+      "status": "no_change",
+      "start_date": "2022-06-17",
+      "end_date": "2022-06-18"
     },
     {
       "event_id": 814,
       "event_name": "Norwegian Championships",
       "source": "calendar_row:2022:107",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-17",
-      "to_end_date": "2022-06-19"
+      "status": "no_change",
+      "start_date": "2022-06-17",
+      "end_date": "2022-06-19"
     },
     {
       "event_id": 889,
       "event_name": "3rd Spanish League",
       "source": "calendar_row:2022:108",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-18",
-      "to_end_date": "2022-06-18"
+      "status": "no_change",
+      "start_date": "2022-06-18",
+      "end_date": "2022-06-18"
     },
     {
       "event_id": 861,
       "event_name": "All-Japan Event Championships",
       "source": "calendar_row:2022:109",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-18",
-      "to_end_date": "2022-06-19"
+      "status": "no_change",
+      "start_date": "2022-06-18",
+      "end_date": "2022-06-19"
     },
     {
       "event_id": 916,
       "event_name": "German Junior Championships",
       "source": "calendar_row:2022:110",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-18",
-      "to_end_date": "2022-06-19"
+      "status": "no_change",
+      "start_date": "2022-06-18",
+      "end_date": "2022-06-19"
     },
     {
       "event_id": 830,
       "event_name": "German Championships",
       "source": "calendar_row:2022:111",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-23",
-      "to_end_date": "2022-06-26"
+      "status": "no_change",
+      "start_date": "2022-06-23",
+      "end_date": "2022-06-26"
     },
     {
       "event_id": 732,
       "event_name": "Dutch Championships",
       "source": "calendar_row:2022:112",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-24",
-      "to_end_date": "2022-06-25"
+      "status": "no_change",
+      "start_date": "2022-06-24",
+      "end_date": "2022-06-25"
     },
     {
       "event_id": 886,
       "event_name": "Haguenau Junior Friendly",
       "source": "calendar_row:2022:113",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-25",
-      "to_end_date": "2022-06-25"
+      "status": "no_change",
+      "start_date": "2022-06-25",
+      "end_date": "2022-06-25"
     },
     {
       "event_id": 809,
       "event_name": "Swiss Championships",
       "source": "calendar_row:2022:114",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-25",
-      "to_end_date": "2022-06-26"
+      "status": "no_change",
+      "start_date": "2022-06-25",
+      "end_date": "2022-06-26"
     },
     {
       "event_id": 845,
       "event_name": "Danish Championships",
       "source": "calendar_row:2022:115",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-25",
-      "to_end_date": "2022-06-26"
+      "status": "no_change",
+      "start_date": "2022-06-25",
+      "end_date": "2022-06-26"
     },
     {
       "event_id": 795,
       "event_name": "Bolivarian Games",
       "source": "calendar_row:2022:116",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-25",
-      "to_end_date": "2022-06-28"
+      "status": "no_change",
+      "start_date": "2022-06-25",
+      "end_date": "2022-06-28"
     },
     {
       "event_id": 775,
       "event_name": "Mediterranean Games",
       "source": "calendar_row:2022:117",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-26",
-      "to_end_date": "2022-06-29"
+      "status": "no_change",
+      "start_date": "2022-06-26",
+      "end_date": "2022-06-29"
     },
     {
       "event_id": 757,
       "event_name": "Swedish Championships",
       "source": "calendar_row:2022:118",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-06-27",
-      "to_end_date": "2022-06-28"
+      "status": "no_change",
+      "start_date": "2022-06-27",
+      "end_date": "2022-06-28"
     },
     {
       "event_id": 900,
       "event_name": "Austrian Team Challenge",
       "source": "calendar_row:2022:119",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-02",
-      "to_end_date": "2022-07-02"
+      "status": "no_change",
+      "start_date": "2022-07-02",
+      "end_date": "2022-07-02"
     },
     {
       "event_id": 719,
       "event_name": "Nordic Championships",
       "source": "calendar_row:2022:121",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-02",
-      "to_end_date": "2022-07-03"
+      "status": "no_change",
+      "start_date": "2022-07-02",
+      "end_date": "2022-07-03"
     },
     {
       "event_id": 903,
       "event_name": "Romanian Junior Championships",
       "source": "calendar_row:2022:122",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-02",
-      "to_end_date": "2022-07-03"
+      "status": "no_change",
+      "start_date": "2022-07-02",
+      "end_date": "2022-07-03"
     },
     {
       "event_id": 894,
       "event_name": "U.S. Pan Ams Trials",
       "source": "calendar_row:2022:123",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-04",
-      "to_end_date": "2022-07-05"
+      "status": "no_change",
+      "start_date": "2022-07-04",
+      "end_date": "2022-07-05"
     },
     {
       "event_id": 833,
       "event_name": "Russian Cup",
       "source": "calendar_row:2022:124",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-06",
-      "to_end_date": "2022-07-10"
+      "status": "no_change",
+      "start_date": "2022-07-06",
+      "end_date": "2022-07-10"
     },
     {
       "event_id": 758,
       "event_name": "French Championships",
       "source": "calendar_row:2022:125",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-07",
-      "to_end_date": "2022-07-10"
+      "status": "no_change",
+      "start_date": "2022-07-07",
+      "end_date": "2022-07-10"
     },
     {
       "event_id": 905,
       "event_name": "American Classic",
       "source": "calendar_row:2022:126",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-08",
-      "to_end_date": "2022-07-08"
+      "status": "no_change",
+      "start_date": "2022-07-08",
+      "end_date": "2022-07-08"
     },
     {
       "event_id": 764,
       "event_name": "Hungarian Championships",
       "source": "calendar_row:2022:127",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-08",
-      "to_end_date": "2022-07-10"
+      "status": "no_change",
+      "start_date": "2022-07-08",
+      "end_date": "2022-07-10"
     },
     {
       "event_id": 741,
       "event_name": "African Championships",
       "source": "calendar_row:2022:128",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-08",
-      "to_end_date": "2022-07-11"
+      "status": "no_change",
+      "start_date": "2022-07-08",
+      "end_date": "2022-07-11"
     },
     {
       "event_id": 874,
       "event_name": "Hopes Classic",
       "source": "calendar_row:2022:129",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-09",
-      "to_end_date": "2022-07-09"
+      "status": "no_change",
+      "start_date": "2022-07-09",
+      "end_date": "2022-07-09"
     },
     {
       "event_id": 825,
       "event_name": "Klagenfurt Friendly",
       "source": "calendar_row:2022:130",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-09",
-      "to_end_date": "2022-07-09"
+      "status": "no_change",
+      "start_date": "2022-07-09",
+      "end_date": "2022-07-09"
     },
     {
       "event_id": 936,
       "event_name": "GymStars International",
       "source": "calendar_row:2022:131",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-09",
-      "to_end_date": "2022-07-10"
+      "status": "no_change",
+      "start_date": "2022-07-09",
+      "end_date": "2022-07-10"
     },
     {
       "event_id": 934,
       "event_name": "New Zealand Championships",
       "source": "calendar_row:2022:132",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-13",
-      "to_end_date": "2022-07-16"
+      "status": "no_change",
+      "start_date": "2022-07-13",
+      "end_date": "2022-07-16"
     },
     {
       "event_id": 796,
       "event_name": "Pan American Championships",
       "source": "calendar_row:2022:133",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-14",
-      "to_end_date": "2022-07-17"
+      "status": "no_change",
+      "start_date": "2022-07-14",
+      "end_date": "2022-07-17"
     },
     {
       "event_id": 850,
       "event_name": "Swiss Men's Euros Trials 2",
       "source": "calendar_row:2022:134",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-15",
-      "to_end_date": "2022-07-15"
+      "status": "no_change",
+      "start_date": "2022-07-15",
+      "end_date": "2022-07-15"
     },
     {
       "event_id": 884,
       "event_name": "Ghent Friendly",
       "source": "calendar_row:2022:135",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-16",
-      "to_end_date": "2022-07-16"
+      "status": "no_change",
+      "start_date": "2022-07-16",
+      "end_date": "2022-07-16"
     },
     {
       "event_id": 904,
       "event_name": "Petrom Cup",
       "source": "calendar_row:2022:136",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-16",
-      "to_end_date": "2022-07-16"
+      "status": "no_change",
+      "start_date": "2022-07-16",
+      "end_date": "2022-07-16"
     },
     {
       "event_id": 831,
       "event_name": "Israeli Championships",
       "source": "calendar_row:2022:137",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-18",
-      "to_end_date": "2022-07-19"
+      "status": "no_change",
+      "start_date": "2022-07-18",
+      "end_date": "2022-07-19"
     },
     {
       "event_id": 787,
       "event_name": "Spanish Championships",
       "source": "calendar_row:2022:138",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-20",
-      "to_end_date": "2022-07-23"
+      "status": "no_change",
+      "start_date": "2022-07-20",
+      "end_date": "2022-07-23"
     },
     {
       "event_id": 839,
       "event_name": "Chinese Youth Championships",
       "source": "calendar_row:2022:139",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-20",
-      "to_end_date": "2022-07-25"
+      "status": "no_change",
+      "start_date": "2022-07-20",
+      "end_date": "2022-07-25"
     },
     {
       "event_id": 922,
       "event_name": "Sedan Friendly",
       "source": "calendar_row:2022:140",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-23",
-      "to_end_date": "2022-07-23"
+      "status": "no_change",
+      "start_date": "2022-07-23",
+      "end_date": "2022-07-23"
     },
     {
       "event_id": 773,
       "event_name": "Magglingen Friendly",
       "source": "calendar_row:2022:141",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-23",
-      "to_end_date": "2022-07-23"
+      "status": "no_change",
+      "start_date": "2022-07-23",
+      "end_date": "2022-07-23"
     },
     {
       "event_id": 723,
       "event_name": "European Youth Olympic Festival",
       "source": "calendar_row:2022:142",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-24",
-      "to_end_date": "2022-07-30"
+      "status": "no_change",
+      "start_date": "2022-07-24",
+      "end_date": "2022-07-30"
     },
     {
       "event_id": 873,
       "event_name": "Hopes Championships",
       "source": "calendar_row:2022:143",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-28",
-      "to_end_date": "2022-07-28"
+      "status": "no_change",
+      "start_date": "2022-07-28",
+      "end_date": "2022-07-28"
     },
     {
       "event_id": 799,
       "event_name": "U.S. Classic",
       "source": "calendar_row:2022:144",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-29",
-      "to_end_date": "2022-07-31"
+      "status": "no_change",
+      "start_date": "2022-07-29",
+      "end_date": "2022-07-31"
     },
     {
       "event_id": 754,
       "event_name": "Commonwealth Games",
       "source": "calendar_row:2022:145",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-07-29",
-      "to_end_date": "2022-08-02"
+      "status": "no_change",
+      "start_date": "2022-07-29",
+      "end_date": "2022-08-02"
     },
     {
       "event_id": 853,
       "event_name": "Brazilian Championships",
       "source": "calendar_row:2022:146",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-08-09",
-      "to_end_date": "2022-08-14"
+      "status": "no_change",
+      "start_date": "2022-08-09",
+      "end_date": "2022-08-14"
     },
     {
       "event_id": 749,
       "event_name": "Islamic Solidarity Games",
       "source": "calendar_row:2022:147",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-08-09",
-      "to_end_date": "2022-08-18"
+      "status": "no_change",
+      "start_date": "2022-08-09",
+      "end_date": "2022-08-18"
     },
     {
       "event_id": 720,
       "event_name": "European Championships",
       "source": "calendar_row:2022:148",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-08-11",
-      "to_end_date": "2022-08-20"
+      "status": "no_change",
+      "start_date": "2022-08-11",
+      "end_date": "2022-08-20"
     },
     {
       "event_id": 767,
       "event_name": "U.S. Championships",
       "source": "calendar_row:2022:149",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-08-18",
-      "to_end_date": "2022-08-21"
+      "status": "no_change",
+      "start_date": "2022-08-18",
+      "end_date": "2022-08-21"
     },
     {
       "event_id": 794,
       "event_name": "South American Championships",
       "source": "calendar_row:2022:150",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-08-18",
-      "to_end_date": "2022-08-22"
+      "status": "no_change",
+      "start_date": "2022-08-18",
+      "end_date": "2022-08-22"
     },
     {
       "event_id": 868,
       "event_name": "Chinese Championships",
       "source": "calendar_row:2022:151",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-04",
-      "to_end_date": "2022-09-09"
+      "status": "no_change",
+      "start_date": "2022-09-04",
+      "end_date": "2022-09-09"
     },
     {
       "event_id": 812,
       "event_name": "Balkan Championships",
       "source": "calendar_row:2022:152",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-16",
-      "to_end_date": "2022-09-18"
+      "status": "no_change",
+      "start_date": "2022-09-16",
+      "end_date": "2022-09-18"
     },
     {
       "event_id": 913,
       "event_name": "Norwegian FIG Meet 2",
       "source": "calendar_row:2022:153",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-16",
-      "to_end_date": "2022-09-18"
+      "status": "no_change",
+      "start_date": "2022-09-16",
+      "end_date": "2022-09-18"
     },
     {
       "event_id": 892,
       "event_name": "Gym Festival Trnava",
       "source": "calendar_row:2022:154",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-17",
-      "to_end_date": "2022-09-18"
+      "status": "no_change",
+      "start_date": "2022-09-17",
+      "end_date": "2022-09-18"
     },
     {
       "event_id": 803,
       "event_name": "All-Japan Senior Championships",
       "source": "calendar_row:2022:155",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-17",
-      "to_end_date": "2022-09-19"
+      "status": "no_change",
+      "start_date": "2022-09-17",
+      "end_date": "2022-09-19"
     },
     {
       "event_id": 911,
       "event_name": "Leverkusen Cup",
       "source": "calendar_row:2022:156",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-24",
-      "to_end_date": "2022-09-24"
+      "status": "no_change",
+      "start_date": "2022-09-24",
+      "end_date": "2022-09-24"
     },
     {
       "event_id": 744,
       "event_name": "Paris Challenge Cup",
       "source": "calendar_row:2022:158",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-24",
-      "to_end_date": "2022-09-25"
+      "status": "no_change",
+      "start_date": "2022-09-24",
+      "end_date": "2022-09-25"
     },
     {
       "event_id": 844,
       "event_name": "Istanbul Friendly",
       "source": "calendar_row:2022:159",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-24",
-      "to_end_date": "2022-09-25"
+      "status": "no_change",
+      "start_date": "2022-09-24",
+      "end_date": "2022-09-25"
     },
     {
       "event_id": 789,
       "event_name": "Wohnen Juniors Trophy",
       "source": "calendar_row:2022:160",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-24",
-      "to_end_date": "2022-09-25"
+      "status": "no_change",
+      "start_date": "2022-09-24",
+      "end_date": "2022-09-25"
     },
     {
       "event_id": 819,
       "event_name": "Spartakiade",
       "source": "calendar_row:2022:161",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-26",
-      "to_end_date": "2022-10-01"
+      "status": "no_change",
+      "start_date": "2022-09-26",
+      "end_date": "2022-10-01"
     },
     {
       "event_id": 772,
       "event_name": "Szombathely Challenge Cup",
       "source": "calendar_row:2022:163",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-30",
-      "to_end_date": "2022-10-02"
+      "status": "no_change",
+      "start_date": "2022-09-30",
+      "end_date": "2022-10-02"
     },
     {
       "event_id": 797,
       "event_name": "Romanian Championships",
       "source": "calendar_row:2022:164",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-30",
-      "to_end_date": "2022-10-02"
+      "status": "no_change",
+      "start_date": "2022-09-30",
+      "end_date": "2022-10-02"
     },
     {
       "event_id": 779,
       "event_name": "Turkish Championships",
       "source": "calendar_row:2022:165",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-30",
-      "to_end_date": "2022-10-02"
+      "status": "no_change",
+      "start_date": "2022-09-30",
+      "end_date": "2022-10-02"
     },
     {
       "event_id": 899,
       "event_name": "Australian Classic",
       "source": "calendar_row:2022:166",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-09-30",
-      "to_end_date": "2022-10-04"
+      "status": "no_change",
+      "start_date": "2022-09-30",
+      "end_date": "2022-10-04"
     },
     {
       "event_id": 871,
       "event_name": "Joaquim Blume Memorial",
       "source": "calendar_row:2022:167",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-01",
-      "to_end_date": "2022-10-01"
+      "status": "no_change",
+      "start_date": "2022-10-01",
+      "end_date": "2022-10-01"
     },
     {
       "event_id": 878,
       "event_name": "British Team Championships",
       "source": "calendar_row:2022:168",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-01",
-      "to_end_date": "2022-10-01"
+      "status": "no_change",
+      "start_date": "2022-10-01",
+      "end_date": "2022-10-01"
     },
     {
       "event_id": 849,
       "event_name": "Swiss Men's Worlds Trials 1",
       "source": "calendar_row:2022:169",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-01",
-      "to_end_date": "2022-10-01"
+      "status": "no_change",
+      "start_date": "2022-10-01",
+      "end_date": "2022-10-01"
     },
     {
       "event_id": 857,
       "event_name": "U.S. Men's Worlds Trials",
       "source": "calendar_row:2022:172",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-03",
-      "to_end_date": "2022-10-05"
+      "status": "no_change",
+      "start_date": "2022-10-03",
+      "end_date": "2022-10-05"
     },
     {
       "event_id": 786,
       "event_name": "South American Games",
       "source": "calendar_row:2022:173",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-04",
-      "to_end_date": "2022-10-08"
+      "status": "no_change",
+      "start_date": "2022-10-04",
+      "end_date": "2022-10-08"
     },
     {
       "event_id": 774,
       "event_name": "Mersin Challenge Cup",
       "source": "calendar_row:2022:174",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-07",
-      "to_end_date": "2022-10-09"
+      "status": "no_change",
+      "start_date": "2022-10-07",
+      "end_date": "2022-10-09"
     },
     {
       "event_id": 847,
       "event_name": "Swiss Men's Worlds Trials 2",
       "source": "calendar_row:2022:175",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-08",
-      "to_end_date": "2022-10-08"
+      "status": "no_change",
+      "start_date": "2022-10-08",
+      "end_date": "2022-10-08"
     },
     {
       "event_id": 891,
       "event_name": "Finnish Team Championships",
       "source": "calendar_row:2022:176",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-08",
-      "to_end_date": "2022-10-08"
+      "status": "no_change",
+      "start_date": "2022-10-08",
+      "end_date": "2022-10-08"
     },
     {
       "event_id": 736,
       "event_name": "3rd Bundesliga League 2",
       "source": "calendar_row:2022:177",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-08",
-      "to_end_date": "2022-10-08"
+      "status": "no_change",
+      "start_date": "2022-10-08",
+      "end_date": "2022-10-08"
     },
     {
       "event_id": 863,
       "event_name": "Hungarian Event Championships",
       "source": "calendar_row:2022:178",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-08",
-      "to_end_date": "2022-10-09"
+      "status": "no_change",
+      "start_date": "2022-10-08",
+      "end_date": "2022-10-09"
     },
     {
       "event_id": 841,
       "event_name": "Italian Championships",
       "source": "calendar_row:2022:179",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-12",
-      "to_end_date": "2022-10-16"
+      "status": "no_change",
+      "start_date": "2022-10-12",
+      "end_date": "2022-10-16"
     },
     {
       "event_id": 815,
       "event_name": "Unni & Haralds Trophy",
       "source": "calendar_row:2022:180",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-14",
-      "to_end_date": "2022-10-16"
+      "status": "no_change",
+      "start_date": "2022-10-14",
+      "end_date": "2022-10-16"
     },
     {
       "event_id": 846,
       "event_name": "German Worlds Trials",
       "source": "calendar_row:2022:181",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-15",
-      "to_end_date": "2022-10-15"
+      "status": "no_change",
+      "start_date": "2022-10-15",
+      "end_date": "2022-10-15"
     },
     {
       "event_id": 837,
       "event_name": "Dutch Worlds Trials",
       "source": "calendar_row:2022:182",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-15",
-      "to_end_date": "2022-10-15"
+      "status": "no_change",
+      "start_date": "2022-10-15",
+      "end_date": "2022-10-15"
     },
     {
       "event_id": 827,
       "event_name": "Tata Friendly",
       "source": "calendar_row:2022:183",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-15",
-      "to_end_date": "2022-10-15"
+      "status": "no_change",
+      "start_date": "2022-10-15",
+      "end_date": "2022-10-15"
     },
     {
       "event_id": 738,
       "event_name": "4th Bundesliga League 2",
       "source": "calendar_row:2022:184",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-15",
-      "to_end_date": "2022-10-15"
+      "status": "no_change",
+      "start_date": "2022-10-15",
+      "end_date": "2022-10-15"
     },
     {
       "event_id": 855,
       "event_name": "Brazilian Junior Championships",
       "source": "calendar_row:2022:185",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-19",
-      "to_end_date": "2022-10-23"
+      "status": "no_change",
+      "start_date": "2022-10-19",
+      "end_date": "2022-10-23"
     },
     {
       "event_id": 895,
       "event_name": "U.S. Worlds Trials",
       "source": "calendar_row:2022:186",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-21",
-      "to_end_date": "2022-10-22"
+      "status": "no_change",
+      "start_date": "2022-10-21",
+      "end_date": "2022-10-22"
     },
     {
       "event_id": 737,
       "event_name": "5th Bundesliga League 2",
       "source": "calendar_row:2022:187",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-22",
-      "to_end_date": "2022-10-22"
+      "status": "no_change",
+      "start_date": "2022-10-22",
+      "end_date": "2022-10-22"
     },
     {
       "event_id": 879,
       "event_name": "Rushmoor Rose Bowl",
       "source": "calendar_row:2022:188",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-22",
-      "to_end_date": "2022-10-23"
+      "status": "no_change",
+      "start_date": "2022-10-22",
+      "end_date": "2022-10-23"
     },
     {
       "event_id": 734,
       "event_name": "6th Bundesliga League 2",
       "source": "calendar_row:2022:189",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-29",
-      "to_end_date": "2022-10-29"
+      "status": "no_change",
+      "start_date": "2022-10-29",
+      "end_date": "2022-10-29"
     },
     {
       "event_id": 742,
       "event_name": "World Championships",
       "source": "calendar_row:2022:190",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-29",
-      "to_end_date": "2022-11-06"
+      "status": "no_change",
+      "start_date": "2022-10-29",
+      "end_date": "2022-11-06"
     },
     {
       "event_id": 822,
       "event_name": "Wase Gymcup",
       "source": "calendar_row:2022:191",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-10-29",
-      "to_end_date": "2022-10-30"
+      "status": "no_change",
+      "start_date": "2022-10-29",
+      "end_date": "2022-10-30"
     },
     {
       "event_id": 718,
       "event_name": "M\u00e4lar Cup",
       "source": "calendar_row:2022:193",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-04",
-      "to_end_date": "2022-11-06"
+      "status": "no_change",
+      "start_date": "2022-11-04",
+      "end_date": "2022-11-06"
     },
     {
       "event_id": 933,
       "event_name": "Essen Junior Friendly",
       "source": "calendar_row:2022:194",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-05",
-      "to_end_date": "2022-11-05"
+      "status": "no_change",
+      "start_date": "2022-11-05",
+      "end_date": "2022-11-05"
     },
     {
       "event_id": 865,
       "event_name": "South American Junior Championships",
       "source": "calendar_row:2022:195",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-10",
-      "to_end_date": "2022-11-13"
+      "status": "no_change",
+      "start_date": "2022-11-10",
+      "end_date": "2022-11-13"
     },
     {
       "event_id": 877,
       "event_name": "Gymnova Cup",
       "source": "calendar_row:2022:196",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-11",
-      "to_end_date": "2022-11-12"
+      "status": "no_change",
+      "start_date": "2022-11-11",
+      "end_date": "2022-11-12"
     },
     {
       "event_id": 840,
       "event_name": "Horizon Cup",
       "source": "calendar_row:2022:197",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-11",
-      "to_end_date": "2022-11-13"
+      "status": "no_change",
+      "start_date": "2022-11-11",
+      "end_date": "2022-11-13"
     },
     {
       "event_id": 925,
       "event_name": "Austrian Junior Championships",
       "source": "calendar_row:2022:198",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-12",
-      "to_end_date": "2022-11-12"
+      "status": "no_change",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-12"
     },
     {
       "event_id": 776,
       "event_name": "5th Bundesliga",
       "source": "calendar_row:2022:200",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-12",
-      "to_end_date": "2022-11-12"
+      "status": "no_change",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-12"
     },
     {
       "event_id": 735,
       "event_name": "7th Bundesliga League 2",
       "source": "calendar_row:2022:201",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-12",
-      "to_end_date": "2022-11-12"
+      "status": "no_change",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-12"
     },
     {
       "event_id": 917,
       "event_name": "Tournoi International",
       "source": "calendar_row:2022:202",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-12",
-      "to_end_date": "2022-11-13"
+      "status": "no_change",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-13"
     },
     {
       "event_id": 838,
       "event_name": "Vera Caslavska Grand Prix",
       "source": "calendar_row:2022:203",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-12",
-      "to_end_date": "2022-11-13"
+      "status": "no_change",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-13"
     },
     {
       "event_id": 885,
       "event_name": "Argentinian Championships",
       "source": "calendar_row:2022:204",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-17",
-      "to_end_date": "2022-11-29"
+      "status": "no_change",
+      "start_date": "2022-11-17",
+      "end_date": "2022-11-29"
     },
     {
       "event_id": 777,
       "event_name": "6th Bundesliga",
       "source": "calendar_row:2022:206",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-19",
-      "to_end_date": "2022-11-19"
+      "status": "no_change",
+      "start_date": "2022-11-19",
+      "end_date": "2022-11-19"
     },
     {
       "event_id": 791,
       "event_name": "Northern European Championships",
       "source": "calendar_row:2022:208",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-19",
-      "to_end_date": "2022-11-20"
+      "status": "no_change",
+      "start_date": "2022-11-19",
+      "end_date": "2022-11-20"
     },
     {
       "event_id": 783,
       "event_name": "Arthur Gander Memorial",
       "source": "calendar_row:2022:209",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-23",
-      "to_end_date": "2022-11-23"
+      "status": "no_change",
+      "start_date": "2022-11-23",
+      "end_date": "2022-11-23"
     },
     {
       "event_id": 907,
       "event_name": "Lithuanian Championships",
       "source": "calendar_row:2022:210",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-24",
-      "to_end_date": "2022-11-24"
+      "status": "no_change",
+      "start_date": "2022-11-24",
+      "end_date": "2022-11-24"
     },
     {
       "event_id": 733,
       "event_name": "Swiss Cup Juniors",
       "source": "calendar_row:2022:211",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-25",
-      "to_end_date": "2022-11-25"
+      "status": "no_change",
+      "start_date": "2022-11-25",
+      "end_date": "2022-11-25"
     },
     {
       "event_id": 721,
       "event_name": "Austrian Future Cup",
       "source": "calendar_row:2022:212",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-25",
-      "to_end_date": "2022-11-26"
+      "status": "no_change",
+      "start_date": "2022-11-25",
+      "end_date": "2022-11-26"
     },
     {
       "event_id": 798,
       "event_name": "7th Bundesliga",
       "source": "calendar_row:2022:213",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-26"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-26"
     },
     {
       "event_id": 927,
       "event_name": "Top Gym Tournament",
       "source": "calendar_row:2022:215",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 862,
       "event_name": "Hungarian Masters Championships",
       "source": "calendar_row:2022:216",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 902,
       "event_name": "Romanian Junior Individual Championships",
       "source": "calendar_row:2022:217",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 919,
       "event_name": "Swedish Cup",
       "source": "calendar_row:2022:218",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 910,
       "event_name": "Michel Wanten Cup",
       "source": "calendar_row:2022:219",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-26",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 782,
       "event_name": "Swiss Cup",
       "source": "calendar_row:2022:220",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-27",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-27",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 829,
       "event_name": "Bundesliga Promotion Final",
       "source": "calendar_row:2022:221",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-11-27",
-      "to_end_date": "2022-11-27"
+      "status": "no_change",
+      "start_date": "2022-11-27",
+      "end_date": "2022-11-27"
     },
     {
       "event_id": 906,
       "event_name": "Italian Gold Championships",
       "source": "calendar_row:2022:222",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-02",
-      "to_end_date": "2022-12-03"
+      "status": "no_change",
+      "start_date": "2022-12-02",
+      "end_date": "2022-12-03"
     },
     {
       "event_id": 842,
       "event_name": "Bundesliga Finals",
       "source": "calendar_row:2022:223",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-03",
-      "to_end_date": "2022-12-03"
+      "status": "no_change",
+      "start_date": "2022-12-03",
+      "end_date": "2022-12-03"
     },
     {
       "event_id": 843,
       "event_name": "Newport Friendly",
       "source": "calendar_row:2022:224",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-03",
-      "to_end_date": "2022-12-03"
+      "status": "no_change",
+      "start_date": "2022-12-03",
+      "end_date": "2022-12-03"
     },
     {
       "event_id": 820,
       "event_name": "Voronin Cup",
       "source": "calendar_row:2022:225",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-07",
-      "to_end_date": "2022-12-07"
+      "status": "no_change",
+      "start_date": "2022-12-07",
+      "end_date": "2022-12-07"
     },
     {
       "event_id": 804,
       "event_name": "Japanese Junior Worlds Trials",
       "source": "calendar_row:2022:226",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-08",
-      "to_end_date": "2022-12-09"
+      "status": "no_change",
+      "start_date": "2022-12-08",
+      "end_date": "2022-12-09"
     },
     {
       "event_id": 920,
       "event_name": "Latvian Championships",
       "source": "calendar_row:2022:227",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-09",
-      "to_end_date": "2022-12-10"
+      "status": "no_change",
+      "start_date": "2022-12-09",
+      "end_date": "2022-12-10"
     },
     {
       "event_id": 802,
       "event_name": "All-Japan Team Championships",
       "source": "calendar_row:2022:228",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2022-12-10",
-      "to_end_date": "2022-12-11"
+      "status": "no_change",
+      "start_date": "2022-12-10",
+      "end_date": "2022-12-11"
     }
   ],
-  "calendar_entries": [],
+  "calendar_entries": [
+    {
+      "status": "created",
+      "event_id": 763,
+      "name": "Top 12 Series 1 (MAG)",
+      "start_date": "2022-02-12",
+      "end_date": "2022-02-12",
+      "year": 2022,
+      "source_row": 10,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 763,
+      "name": "Top 12 Series 1",
+      "start_date": "2022-03-26",
+      "end_date": "2022-03-26",
+      "year": 2022,
+      "source_row": 33,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 766,
+      "name": "Top 12 Series 2 (MAG)",
+      "start_date": "2022-02-26",
+      "end_date": "2022-02-26",
+      "year": 2022,
+      "source_row": 15,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 766,
+      "name": "Top 12 Series 2",
+      "start_date": "2022-04-09",
+      "end_date": "2022-04-09",
+      "year": 2022,
+      "source_row": 45,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 762,
+      "name": "Top 12 Series 3 (MAG)",
+      "start_date": "2022-03-12",
+      "end_date": "2022-03-12",
+      "year": 2022,
+      "source_row": 24,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 762,
+      "name": "Top 12 Series 3",
+      "start_date": "2022-04-30",
+      "end_date": "2022-04-30",
+      "year": 2022,
+      "source_row": 59,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 828,
+      "name": "1st Bundesliga (MAG)",
+      "start_date": "2022-05-07",
+      "end_date": "2022-05-07",
+      "year": 2022,
+      "source_row": 63,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 828,
+      "name": "1st Bundesliga",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-21",
+      "year": 2022,
+      "source_row": 75,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 778,
+      "name": "2nd Bundesliga (MAG)",
+      "start_date": "2022-05-14",
+      "end_date": "2022-05-14",
+      "year": 2022,
+      "source_row": 66,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 778,
+      "name": "2nd Bundesliga",
+      "start_date": "2022-07-02",
+      "end_date": "2022-07-02",
+      "year": 2022,
+      "source_row": 120,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 781,
+      "name": "3rd Bundesliga (MAG)",
+      "start_date": "2022-05-21",
+      "end_date": "2022-05-21",
+      "year": 2022,
+      "source_row": 76,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 781,
+      "name": "3rd Bundesliga",
+      "start_date": "2022-10-01",
+      "end_date": "2022-10-01",
+      "year": 2022,
+      "source_row": 170,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 785,
+      "name": "4th Bundesliga (MAG)",
+      "start_date": "2022-06-04",
+      "end_date": "2022-06-04",
+      "year": 2022,
+      "source_row": 94,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 785,
+      "name": "4th Bundesliga",
+      "start_date": "2022-11-12",
+      "end_date": "2022-11-12",
+      "year": 2022,
+      "source_row": 199,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    }
+  ],
   "unresolved": [
     {
       "source": "docs/import_reports/calendar_2022_event_match_review_slim.csv",
@@ -2116,41 +1867,6 @@
       "calendar_row": "229",
       "calendar_event": "Top 12 Series 3 (MAG) \u2013\u00a02023 season",
       "reason": "missing_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "1",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "2",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "3",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "4",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "5",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "6",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2022_source_conflicts_slim.csv",
-      "conflict_group": "7",
-      "reason": "source_conflict_requires_one_choice"
     }
   ],
   "invalid_decision_details": [],

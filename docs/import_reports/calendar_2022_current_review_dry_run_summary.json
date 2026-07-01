@@ -1,0 +1,265 @@
+{
+  "year": 2022,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 13,
+  "applied_pairs": 13,
+  "updated_events": 9,
+  "calendar_entries_created": 13,
+  "calendar_entries_updated": 0,
+  "calendar_entries_relinked": 0,
+  "calendar_only_rows": 0,
+  "calendar_only_entries_created": 0,
+  "calendar_only_entries_updated": 0,
+  "db_only_events": 0,
+  "cleared_cross_year_event_dates": 0,
+  "preserved_existing_event_dates": 4,
+  "unresolved_review_items": 0,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 818,
+      "event_name": "Russian Championships",
+      "calendar_row": 51,
+      "calendar_event": "Russian Men's Championships",
+      "start_date": "2022-04-13",
+      "end_date": "2022-04-17",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 747,
+      "event_name": "Mexican Championships",
+      "calendar_row": 69,
+      "calendar_event": "Mexican Men's Championships",
+      "start_date": "2022-05-16",
+      "end_date": "2022-05-20",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 864,
+      "event_name": "U.S. Pan Ams Selection Camp",
+      "calendar_row": 95,
+      "calendar_event": "U.S. Pan Ams Men's Selection Camp",
+      "start_date": "2022-06-04",
+      "end_date": "2022-06-08",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 848,
+      "event_name": "Swiss Euros Trials",
+      "calendar_row": 105,
+      "calendar_event": "Swiss Men's Euros Trials",
+      "start_date": "2022-06-17",
+      "end_date": "2022-06-17",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 852,
+      "event_name": "EYOF Mixed Pairs",
+      "calendar_row": 142,
+      "calendar_event": "European Youth Olympic Festival",
+      "start_date": "2022-07-24",
+      "end_date": "2022-07-30",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 739,
+      "event_name": "1st Bundlesiga League 2",
+      "calendar_row": 157,
+      "calendar_event": "1st Bundesliga League 2 (MAG)",
+      "start_date": "2022-09-24",
+      "end_date": "2022-09-24",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 722,
+      "event_name": "Finnish Championships",
+      "calendar_row": 162,
+      "calendar_event": "Finnish Men's Championships",
+      "start_date": "2022-09-30",
+      "end_date": "2022-10-01",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 788,
+      "event_name": "2nd Bundlesiga League 2",
+      "calendar_row": 171,
+      "calendar_event": "2nd Bundesliga League 2 (MAG)",
+      "start_date": "2022-10-01",
+      "end_date": "2022-10-01",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 835,
+      "event_name": "Mogilev Friendly",
+      "calendar_row": 192,
+      "calendar_event": "Mogilev Men's Friendly",
+      "start_date": "2022-10-31",
+      "end_date": "2022-11-03",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 888,
+      "event_name": "1st Spanish League",
+      "calendar_row": 205,
+      "calendar_event": "1st Spanish League \u2013 2023 season",
+      "start_date": "2022-11-18",
+      "end_date": "2022-11-20",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 763,
+      "event_name": "Top 12 Series 1",
+      "calendar_row": 207,
+      "calendar_event": "Top 12 Series 1 (MAG) \u2013\u00a02023 season",
+      "start_date": "2022-11-19",
+      "end_date": "2022-11-19",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 766,
+      "event_name": "Top 12 Series 2",
+      "calendar_row": 214,
+      "calendar_event": "Top 12 Series 2 (MAG) \u2013 2023 season",
+      "start_date": "2022-11-26",
+      "end_date": "2022-11-26",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 762,
+      "event_name": "Top 12 Series 3",
+      "calendar_row": 229,
+      "calendar_event": "Top 12 Series 3 (MAG) \u2013\u00a02023 season",
+      "start_date": "2022-12-17",
+      "end_date": "2022-12-17",
+      "source": "calendar_unmatched_current"
+    }
+  ],
+  "calendar_only_details": [],
+  "db_only_details": [],
+  "updated_event_details": [
+    {
+      "event_id": 864,
+      "event_name": "U.S. Pan Ams Selection Camp",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-06-04",
+      "new_end_date": "2022-06-08"
+    },
+    {
+      "event_id": 848,
+      "event_name": "Swiss Euros Trials",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-06-17",
+      "new_end_date": "2022-06-17"
+    },
+    {
+      "event_id": 852,
+      "event_name": "EYOF Mixed Pairs",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-07-24",
+      "new_end_date": "2022-07-30"
+    },
+    {
+      "event_id": 739,
+      "event_name": "1st Bundlesiga League 2",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-09-24",
+      "new_end_date": "2022-09-24"
+    },
+    {
+      "event_id": 788,
+      "event_name": "2nd Bundlesiga League 2",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-10-01",
+      "new_end_date": "2022-10-01"
+    },
+    {
+      "event_id": 835,
+      "event_name": "Mogilev Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-10-31",
+      "new_end_date": "2022-11-03"
+    },
+    {
+      "event_id": 763,
+      "event_name": "Top 12 Series 1",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-11-19",
+      "new_end_date": "2022-11-19"
+    },
+    {
+      "event_id": 766,
+      "event_name": "Top 12 Series 2",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-11-26",
+      "new_end_date": "2022-11-26"
+    },
+    {
+      "event_id": 762,
+      "event_name": "Top 12 Series 3",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2022-12-17",
+      "new_end_date": "2022-12-17"
+    }
+  ],
+  "cleared_cross_year_event_date_details": [],
+  "preserved_existing_event_date_details": [
+    {
+      "event_id": 818,
+      "event_name": "Russian Championships",
+      "existing_start_date": "2022-04-06",
+      "existing_end_date": "2022-04-10",
+      "calendar_row": 51,
+      "calendar_event": "Russian Men's Championships",
+      "calendar_start_date": "2022-04-13",
+      "calendar_end_date": "2022-04-17",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 747,
+      "event_name": "Mexican Championships",
+      "existing_start_date": "2022-05-23",
+      "existing_end_date": "2022-05-27",
+      "calendar_row": 69,
+      "calendar_event": "Mexican Men's Championships",
+      "calendar_start_date": "2022-05-16",
+      "calendar_end_date": "2022-05-20",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 722,
+      "event_name": "Finnish Championships",
+      "existing_start_date": "2022-06-08",
+      "existing_end_date": "2022-06-09",
+      "calendar_row": 162,
+      "calendar_event": "Finnish Men's Championships",
+      "calendar_start_date": "2022-09-30",
+      "calendar_end_date": "2022-10-01",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 888,
+      "event_name": "1st Spanish League",
+      "existing_start_date": "2022-03-05",
+      "existing_end_date": "2022-03-07",
+      "calendar_row": 205,
+      "calendar_event": "1st Spanish League \u2013 2023 season",
+      "calendar_start_date": "2022-11-18",
+      "calendar_end_date": "2022-11-20",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    }
+  ],
+  "unresolved_decision_details": [],
+  "invalid_decision_details": []
+}
