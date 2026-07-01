@@ -347,6 +347,38 @@ La riga `calendar_only` 2021 e `Oceania Championships`. L'Event `db_only` 2021 e
 
 Regola metodologica aggiunta durante la chiusura 2021: un Event DB ricavato dai Result puo non comparire nel Calendar sorgente. In questo caso non si forza un'associazione artificiale; dopo verifica admin viene registrato come `db_only`, resta consultabile come scheda Event/Result, ma non viene usato come voce del calendario interattivo finche non esiste una data sorgente affidabile.
 
+## Calendar 2022 - checkpoint review
+
+Il flusso 2022 e stato avviato dopo l'introduzione della regola `db_only`. I match diretti sicuri sono stati applicati, mentre i casi non certi sono stati lasciati nei CSV di review admin.
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2022 | 228 |
+| Event DB 2022 | 215 |
+| Match diretti sicuri applicati | 202 |
+| Event DB 2022 gia coperti | 209 |
+| Calendar 2022 senza match corrente | 12 |
+| Event DB 2022 senza match corrente | 6 |
+| Event DB 2022 `db_only` gia verificati | 0 |
+| Righe Calendar 2022 `calendar_only` | 0 |
+| Conflitti stesso Event/date da rivedere | 7 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+Backup del primo commit sicuro 2022:
+
+```text
+backups/leverage_calendar_2022_20260702_001613.db
+```
+
+File operativi da compilare:
+
+- `calendar_2022_calendar_unmatched_current.csv`
+- `calendar_2022_db_unmatched_current.csv`
+- `calendar_2022_source_conflicts_slim.csv`
+
+La review 2022 deve usare gli stessi valori operativi del 2021: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

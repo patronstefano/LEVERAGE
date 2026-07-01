@@ -3293,3 +3293,57 @@ L'Event DB 2021 chiuso come `db_only` e:
 | 691 | `RomGym Trophy` | WAG | 16 | Event ricavato dai Result ma assente dal Calendar sorgente; non viene forzato un match Calendar artificiale |
 
 Nota metodologica: da questo punto in avanti la qualita della riconciliazione Calendar non richiede che ogni Event DB abbia per forza una riga Calendar. Richiede invece che ogni Event DB sia o collegato a una riga Calendar, oppure marcato esplicitamente come `db_only` dopo verifica admin. Questa regola evita di creare date o collegamenti non supportati dal file Calendar sorgente.
+
+### Calendar 2022
+
+Il flusso Calendar 2022 e stato avviato applicando la metodologia aggiornata dopo la chiusura 2021: ogni Event DB ricavato dai Result deve essere collegato al Calendar quando esiste una riga sorgente affidabile; se invece il Calendar non contiene la gara, l'Event puo essere chiuso solo dopo review admin come `db_only`. Le righe Calendar prive di Result possono restare come `calendar_only`.
+
+Fotografia iniziale 2022:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2022 | 228 |
+| Event DB 2022 | 215 |
+| Righe Calendar 2022 con match automatico | 216 |
+| Righe Calendar 2022 senza match automatico | 12 |
+| Event DB 2022 matched automaticamente | 209 |
+| Event DB 2022 senza match automatico con result | 6 |
+| Event DB 2022 matched da piu righe Calendar | 7 |
+| Conflitti stesso Event/date diverse | 7 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2022:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 202 |
+| Event aggiornati con `start_date` / `end_date` | 202 |
+| Righe saltate per conflitto stesso Event/date diverse | 14 |
+| Elementi review ancora aperti | 19 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2022_20260702_001613.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2022 senza match corrente | 12 |
+| Event DB 2022 senza match corrente | 6 |
+| Event DB 2022 gia coperti | 209 |
+| Event DB 2022 `db_only` gia verificati | 0 |
+| Righe Calendar 2022 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year rilevati | 0 |
+
+File preparati per la review admin 2022:
+
+- `calendar_2022_calendar_unmatched_current.csv`
+- `calendar_2022_db_unmatched_current.csv`
+- `calendar_2022_source_conflicts_slim.csv`
+
+Nota operativa: il 2022 contiene pochi casi aperti. Nel file Calendar-unmatched restano soprattutto gare MAG con denominazione maschile esplicita; nel file DB-unmatched sono presenti possibili refusi/varianti come `Bundlesiga` e gare che potrebbero richiedere associazione manuale o `db_only`; nel file source-conflicts restano casi MAG/WAG o serie Bundesliga con piu righe Calendar corrette per lo stesso Event.
