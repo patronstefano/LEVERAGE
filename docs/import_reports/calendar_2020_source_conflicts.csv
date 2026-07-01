@@ -1,0 +1,7 @@
+conflict_group,event_id,event_name,event_year,event_discipline,event_category,event_result_count,calendar_sheet,calendar_row,calendar_year,calendar_date,calendar_start_date,calendar_end_date,calendar_event,decision,action,notes
+1,492,Unisport Norges Cup,2020,MAG,junior and senior,141,2020,26,2020,Feb 29-Mar 1,2020-02-29,2020-03-01,Unisport Norges Cup,,,
+1,492,Unisport Norges Cup,2020,MAG,junior and senior,141,2020,46,2020,Oct 10,2020-10-10,2020-10-10,Unisport Norges Cup (MAG),,,
+2,478,1st Bundesliga,2020,MAG and WAG,junior and senior,487,2020,29,2020,Mar 7,2020-03-07,2020-03-07,1st Bundesliga,,,
+2,478,1st Bundesliga,2020,MAG and WAG,junior and senior,487,2020,44,2020,Oct 3,2020-10-03,2020-10-03,1st Bundesliga (MAG),,,
+3,480,2nd Bundesliga,2020,MAG and WAG,junior and senior,418,2020,45,2020,Oct 10,2020-10-10,2020-10-10,2nd Bundesliga (MAG),,,
+3,480,2nd Bundesliga,2020,MAG and WAG,junior and senior,418,2020,47,2020,Oct 10-11,2020-10-10,2020-10-11,2nd Bundesliga,,,

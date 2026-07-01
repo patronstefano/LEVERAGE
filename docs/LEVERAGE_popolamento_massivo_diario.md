@@ -3073,3 +3073,56 @@ Le due righe Calendar chiuse come `calendar_only`, quindi visualizzabili nel cal
 | 211 | `Brazilian Junior Championships` | Nov 5-10 | Nessun match DB 2019 confermato; non trovato in `Results 2019.xlsx`; possibile evento non svolto o senza risultati sorgente |
 
 Nota metodologica: da questo passaggio in poi, la chiusura di un anno calendario non richiede che ogni riga Calendar abbia un Event DB collegato. Alcune gare presenti nel calendario possono non comparire negli Event ricavati dai Result perche potrebbero non essere state svolte, oppure perche non esiste un risultato Gymternet sorgente associato. La metrica critica e quindi che tutti gli Event DB creati dai Result abbiano una copertura Calendar; le righe Calendar senza Result possono restare come `calendar_only`. Il file `Results 2019.xlsx` e stato controllato direttamente: contiene risultati per `Hungarian Masters`, che e stato associato all'Event DB `Hungarian Masters`, ma non contiene risultati riconducibili a `Zelena Jama Open` o `Brazilian Junior Championships`.
+
+### Calendar 2020
+
+Il flusso Calendar 2020 e stato avviato dopo la chiusura metodologica del 2019. La regola di successo applicata e: tutti gli Event DB creati dai Result devono avere copertura Calendar; le righe Calendar senza Result possono restare come `calendar_only`.
+
+Situazione iniziale:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2020 | 90 |
+| Event DB 2020 ricavati dai Result | 77 |
+| Righe Calendar 2020 con match automatico | 74 |
+| Righe Calendar 2020 senza match automatico | 16 |
+| Event DB 2020 con match automatico | 71 |
+| Event DB 2020 senza match automatico | 6 |
+| Event DB 2020 senza match automatico con result | 6 |
+| Event DB 2020 matched da piu righe Calendar | 3 |
+| Conflitti stesso Event/date diverse | 3 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2020:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 68 |
+| Event aggiornati con `start_date` / `end_date` | 68 |
+| Righe saltate per conflitto stesso Event/date diverse | 6 |
+| Elementi review ancora aperti | 19 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2020_20260701_224922.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2020 senza match corrente | 16 |
+| Event DB 2020 senza match corrente | 6 |
+| Event DB 2020 gia coperti | 71 |
+| Righe Calendar 2020 `calendar_only` | 0 |
+| Collegamenti cross-year rilevati | 0 |
+
+File preparati per la review admin 2020:
+
+- `calendar_2020_calendar_unmatched_current.csv`
+- `calendar_2020_db_unmatched_current.csv`
+- `calendar_2020_source_conflicts_slim.csv`
+
+Nota metodologica: le righe Calendar senza Event DB non sono automaticamente errori. Durante la review verranno collegate a un Event DB solo se rappresentano effettivamente risultati presenti in LEVERAGE; in caso contrario verranno chiuse come `calendar_only`.

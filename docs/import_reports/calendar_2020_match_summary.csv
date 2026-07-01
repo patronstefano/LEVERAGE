@@ -1,0 +1,15 @@
+metric,value
+year,2020
+calendar_rows,90
+calendar_matched_rows,74
+calendar_unmatched_rows,16
+calendar_rows_matching_multiple_db_events,0
+db_events,77
+db_matched_events,71
+db_unmatched_events,6
+db_unmatched_events_with_results,6
+db_events_matched_by_multiple_calendar_rows,3
+matched_event_source_conflicts,3
+duplicate_source_rows,0
+calendar_minus_db_unmatched_delta,10
+source_issues,0

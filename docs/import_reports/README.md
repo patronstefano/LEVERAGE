@@ -257,6 +257,28 @@ Regola metodologica aggiunta durante la chiusura 2019: la riuscita del matching 
 
 Regola tecnica rafforzata durante la chiusura 2019: se una decisione manuale collega una riga Calendar aggiuntiva a un Event che ha gia date canoniche valide, il sistema non sovrascrive `Event.start_date` / `Event.end_date`; conserva la data principale dell'Event e rappresenta la riga aggiuntiva con `EventCalendarEntry`.
 
+Primo checkpoint calendario 2020:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2020 | 90 |
+| Event DB 2020 | 77 |
+| Match diretti sicuri applicati | 68 |
+| Event 2020 aggiornati con date | 68 |
+| Elementi review aperti dopo commit sicuro | 19 |
+| Calendar 2020 senza match corrente | 16 |
+| Event DB 2020 senza match corrente | 6 |
+| Conflitti stesso Event/date diverse | 3 |
+| Collegamenti cross-year rilevati | 0 |
+
+Per la review 2020 si usano:
+
+- `calendar_2020_calendar_unmatched_current.csv`
+- `calendar_2020_db_unmatched_current.csv`
+- `calendar_2020_source_conflicts_slim.csv`
+
+Il criterio resta quello definito a fine 2019: l'obiettivo essenziale e coprire tutti gli Event DB ricavati dai Result. Le righe Calendar senza Result possono essere chiuse come `calendar_only`.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

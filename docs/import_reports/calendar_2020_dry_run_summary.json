@@ -1,0 +1,823 @@
+{
+  "year": 2020,
+  "calendar_file": "docs/import_reports/Calendar_date_normalized.xlsx",
+  "database": "leverage.db",
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "parsed_rows_all_years": 1870,
+  "calendar_rows": 90,
+  "direct_safe_rows": 68,
+  "direct_skipped_conflict_rows": 6,
+  "direct_skipped_multiple_match_rows": 0,
+  "review_match_rows": 0,
+  "resolved_source_conflicts": 0,
+  "calendar_only_rows": 0,
+  "calendar_entries_created": 0,
+  "calendar_entries_updated": 0,
+  "calendar_entries_no_change": 0,
+  "updated_events": 68,
+  "no_change_events": 0,
+  "unresolved_review_items": 19,
+  "invalid_decisions": 0,
+  "skipped": 0,
+  "updates": [
+    {
+      "event_id": 498,
+      "event_name": "Metroplex National Qualifier",
+      "source": "calendar_row:2020:3",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-01-24",
+      "to_end_date": "2020-01-26"
+    },
+    {
+      "event_id": 481,
+      "event_name": "Top 12 Series 5",
+      "source": "calendar_row:2020:4",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-01-25",
+      "to_end_date": "2020-01-25"
+    },
+    {
+      "event_id": 467,
+      "event_name": "1st Italian Serie A",
+      "source": "calendar_row:2020:5",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-01-31",
+      "to_end_date": "2020-02-01"
+    },
+    {
+      "event_id": 509,
+      "event_name": "WOGA Classic",
+      "source": "calendar_row:2020:6",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-01-31",
+      "to_end_date": "2020-02-02"
+    },
+    {
+      "event_id": 473,
+      "event_name": "Liukin Invitational",
+      "source": "calendar_row:2020:7",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-01-31",
+      "to_end_date": "2020-02-02"
+    },
+    {
+      "event_id": 514,
+      "event_name": "Create Team Cup",
+      "source": "calendar_row:2020:8",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-01",
+      "to_end_date": "2020-02-02"
+    },
+    {
+      "event_id": 511,
+      "event_name": "Elite Canada",
+      "source": "calendar_row:2020:9",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-05",
+      "to_end_date": "2020-02-09"
+    },
+    {
+      "event_id": 496,
+      "event_name": "Brestyan's National Qualifier",
+      "source": "calendar_row:2020:10",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-07",
+      "to_end_date": "2020-02-09"
+    },
+    {
+      "event_id": 474,
+      "event_name": "Houston National Invitational",
+      "source": "calendar_row:2020:11",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-07",
+      "to_end_date": "2020-02-09"
+    },
+    {
+      "event_id": 453,
+      "event_name": "Top 12 Series 6",
+      "source": "calendar_row:2020:12",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-08",
+      "to_end_date": "2020-02-08"
+    },
+    {
+      "event_id": 502,
+      "event_name": "2nd Spanish League",
+      "source": "calendar_row:2020:13",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-08",
+      "to_end_date": "2020-02-09"
+    },
+    {
+      "event_id": 458,
+      "event_name": "Mallorca Cup",
+      "source": "calendar_row:2020:14",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-14",
+      "to_end_date": "2020-02-16"
+    },
+    {
+      "event_id": 501,
+      "event_name": "Excalibur National Qualifier",
+      "source": "calendar_row:2020:15",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-14",
+      "to_end_date": "2020-02-16"
+    },
+    {
+      "event_id": 460,
+      "event_name": "Winter Cup Challenge",
+      "source": "calendar_row:2020:16",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-20",
+      "to_end_date": "2020-02-22"
+    },
+    {
+      "event_id": 454,
+      "event_name": "Melbourne World Cup",
+      "source": "calendar_row:2020:17",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-20",
+      "to_end_date": "2020-02-23"
+    },
+    {
+      "event_id": 488,
+      "event_name": "Olympic Hopes Meet",
+      "source": "calendar_row:2020:18",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-21",
+      "to_end_date": "2020-02-22"
+    },
+    {
+      "event_id": 499,
+      "event_name": "Everest National Qualifier",
+      "source": "calendar_row:2020:19",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-21",
+      "to_end_date": "2020-02-23"
+    },
+    {
+      "event_id": 466,
+      "event_name": "2nd Italian Serie A",
+      "source": "calendar_row:2020:20",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-22",
+      "to_end_date": "2020-02-22"
+    },
+    {
+      "event_id": 506,
+      "event_name": "Top 12 Series 3",
+      "source": "calendar_row:2020:21",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-29",
+      "to_end_date": "2020-02-29"
+    },
+    {
+      "event_id": 483,
+      "event_name": "Top 12 Semi-Final I",
+      "source": "calendar_row:2020:22",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-29",
+      "to_end_date": "2020-02-29"
+    },
+    {
+      "event_id": 463,
+      "event_name": "Icelandic Team Championships",
+      "source": "calendar_row:2020:23",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-29",
+      "to_end_date": "2020-02-29"
+    },
+    {
+      "event_id": 508,
+      "event_name": "Pre-Olympic Youth Cup",
+      "source": "calendar_row:2020:24",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-29",
+      "to_end_date": "2020-02-29"
+    },
+    {
+      "event_id": 451,
+      "event_name": "Turkish Championships",
+      "source": "calendar_row:2020:25",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-02-28",
+      "to_end_date": "2020-03-01"
+    },
+    {
+      "event_id": 512,
+      "event_name": "International Gymnix",
+      "source": "calendar_row:2020:27",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-06",
+      "to_end_date": "2020-03-08"
+    },
+    {
+      "event_id": 485,
+      "event_name": "American Cup",
+      "source": "calendar_row:2020:28",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-07",
+      "to_end_date": "2020-03-07"
+    },
+    {
+      "event_id": 504,
+      "event_name": "Czech Euros Trials",
+      "source": "calendar_row:2020:30",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-07",
+      "to_end_date": "2020-03-07"
+    },
+    {
+      "event_id": 494,
+      "event_name": "All-Japan Men's Qualifier",
+      "source": "calendar_row:2020:31",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-07",
+      "to_end_date": "2020-03-08"
+    },
+    {
+      "event_id": 470,
+      "event_name": "Tiger Cup",
+      "source": "calendar_row:2020:32",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-07",
+      "to_end_date": "2020-03-08"
+    },
+    {
+      "event_id": 462,
+      "event_name": "AGF Junior Trophy",
+      "source": "calendar_row:2020:33",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-07",
+      "to_end_date": "2020-03-08"
+    },
+    {
+      "event_id": 452,
+      "event_name": "Baku World Cup",
+      "source": "calendar_row:2020:34",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-12",
+      "to_end_date": "2020-03-13"
+    },
+    {
+      "event_id": 500,
+      "event_name": "KPAC National Qualifier",
+      "source": "calendar_row:2020:35",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-03-12",
+      "to_end_date": "2020-03-13"
+    },
+    {
+      "event_id": 521,
+      "event_name": "Taiwan Test Event",
+      "source": "calendar_row:2020:36",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-08-01",
+      "to_end_date": "2020-08-08"
+    },
+    {
+      "event_id": 487,
+      "event_name": "Ukrainian Championships",
+      "source": "calendar_row:2020:37",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-09-06",
+      "to_end_date": "2020-09-11"
+    },
+    {
+      "event_id": 465,
+      "event_name": "All-Japan Senior Championships",
+      "source": "calendar_row:2020:38",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-09-20",
+      "to_end_date": "2020-09-22"
+    },
+    {
+      "event_id": 490,
+      "event_name": "Chinese Championships",
+      "source": "calendar_row:2020:39",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-09-21",
+      "to_end_date": "2020-09-28"
+    },
+    {
+      "event_id": 520,
+      "event_name": "Ljubljana Cup",
+      "source": "calendar_row:2020:40",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-09-25",
+      "to_end_date": "2020-09-26"
+    },
+    {
+      "event_id": 495,
+      "event_name": "Norwegian Championships",
+      "source": "calendar_row:2020:41",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-09-26",
+      "to_end_date": "2020-09-27"
+    },
+    {
+      "event_id": 477,
+      "event_name": "Szombathely Challenge Cup",
+      "source": "calendar_row:2020:43",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-02",
+      "to_end_date": "2020-10-04"
+    },
+    {
+      "event_id": 456,
+      "event_name": "Swedish Championships",
+      "source": "calendar_row:2020:48",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-10",
+      "to_end_date": "2020-10-11"
+    },
+    {
+      "event_id": 518,
+      "event_name": "Ukrainian Youth Championships",
+      "source": "calendar_row:2020:50",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-11",
+      "to_end_date": "2020-10-15"
+    },
+    {
+      "event_id": 448,
+      "event_name": "Finnish Euros Trials",
+      "source": "calendar_row:2020:52",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-16",
+      "to_end_date": "2020-10-16"
+    },
+    {
+      "event_id": 468,
+      "event_name": "3rd Italian Serie A",
+      "source": "calendar_row:2020:53",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-17",
+      "to_end_date": "2020-10-17"
+    },
+    {
+      "event_id": 479,
+      "event_name": "3rd Bundesliga",
+      "source": "calendar_row:2020:54",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-17",
+      "to_end_date": "2020-10-17"
+    },
+    {
+      "event_id": 464,
+      "event_name": "All-Japan Student Championships",
+      "source": "calendar_row:2020:56",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-19",
+      "to_end_date": "2020-10-23"
+    },
+    {
+      "event_id": 497,
+      "event_name": "Finnish Team Championships",
+      "source": "calendar_row:2020:58",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-23",
+      "to_end_date": "2020-10-25"
+    },
+    {
+      "event_id": 510,
+      "event_name": "Italian Gold Championships",
+      "source": "calendar_row:2020:59",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-24",
+      "to_end_date": "2020-10-24"
+    },
+    {
+      "event_id": 493,
+      "event_name": "Norwegian Junior Championships",
+      "source": "calendar_row:2020:60",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-24",
+      "to_end_date": "2020-10-25"
+    },
+    {
+      "event_id": 449,
+      "event_name": "2nd Finnish Euros Trials",
+      "source": "calendar_row:2020:63",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-30",
+      "to_end_date": "2020-10-30"
+    },
+    {
+      "event_id": 515,
+      "event_name": "French Test Meet",
+      "source": "calendar_row:2020:64",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-30",
+      "to_end_date": "2020-10-31"
+    },
+    {
+      "event_id": 457,
+      "event_name": "Hungarian Championships",
+      "source": "calendar_row:2020:65",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-10-30",
+      "to_end_date": "2020-10-31"
+    },
+    {
+      "event_id": 469,
+      "event_name": "Russian Championships",
+      "source": "calendar_row:2020:68",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-04",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 484,
+      "event_name": "Italian Championships",
+      "source": "calendar_row:2020:69",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-06",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 446,
+      "event_name": "Finnish Championships",
+      "source": "calendar_row:2020:70",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-06",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 476,
+      "event_name": "Austrian Championships",
+      "source": "calendar_row:2020:72",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-07",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 475,
+      "event_name": "Danish Championships",
+      "source": "calendar_row:2020:73",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-07",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 461,
+      "event_name": "Polish Championships",
+      "source": "calendar_row:2020:74",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-07",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 482,
+      "event_name": "Friendship & Solidarity Meet",
+      "source": "calendar_row:2020:77",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-08",
+      "to_end_date": "2020-11-08"
+    },
+    {
+      "event_id": 486,
+      "event_name": "Romanian Championships",
+      "source": "calendar_row:2020:80",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-18",
+      "to_end_date": "2020-11-21"
+    },
+    {
+      "event_id": 489,
+      "event_name": "Croatian Championships",
+      "source": "calendar_row:2020:81",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-20",
+      "to_end_date": "2020-11-21"
+    },
+    {
+      "event_id": 471,
+      "event_name": "Italian Serie A Final Six",
+      "source": "calendar_row:2020:82",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-21",
+      "to_end_date": "2020-11-22"
+    },
+    {
+      "event_id": 517,
+      "event_name": "Portuguese Open",
+      "source": "calendar_row:2020:83",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-22",
+      "to_end_date": "2020-11-22"
+    },
+    {
+      "event_id": 513,
+      "event_name": "German Junior Championships",
+      "source": "calendar_row:2020:84",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-11-28",
+      "to_end_date": "2020-11-29"
+    },
+    {
+      "event_id": 459,
+      "event_name": "Spanish Championships",
+      "source": "calendar_row:2020:85",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-04",
+      "to_end_date": "2020-12-08"
+    },
+    {
+      "event_id": 505,
+      "event_name": "Lithuanian Championships",
+      "source": "calendar_row:2020:87",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-10",
+      "to_end_date": "2020-12-10"
+    },
+    {
+      "event_id": 491,
+      "event_name": "All-Japan Championships",
+      "source": "calendar_row:2020:88",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-10",
+      "to_end_date": "2020-12-13"
+    },
+    {
+      "event_id": 516,
+      "event_name": "Coupe d'Hiver",
+      "source": "calendar_row:2020:89",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-12",
+      "to_end_date": "2020-12-12"
+    },
+    {
+      "event_id": 450,
+      "event_name": "European Championships",
+      "source": "calendar_row:2020:90",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-17",
+      "to_end_date": "2020-12-20"
+    },
+    {
+      "event_id": 455,
+      "event_name": "Voronin Cup",
+      "source": "calendar_row:2020:91",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2020-12-17",
+      "to_end_date": "2020-12-21"
+    }
+  ],
+  "calendar_entries": [],
+  "unresolved": [
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "2",
+      "calendar_event": "RD761 Junior International Team Cup",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "42",
+      "calendar_event": "Stella Zakharova Cup",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "49",
+      "calendar_event": "Swedish Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "51",
+      "calendar_event": "Finnish Men's Euros Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "55",
+      "calendar_event": "Chinese Junior Individual Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "57",
+      "calendar_event": "Chinese Senior Individual Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "61",
+      "calendar_event": "2nd Finnish Men's Euros Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "62",
+      "calendar_event": "Russian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "66",
+      "calendar_event": "3rd Finnish Men's Euros Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "67",
+      "calendar_event": "Italian Gold Junior 2-3 Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "71",
+      "calendar_event": "Finnish Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "75",
+      "calendar_event": "Polish Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "76",
+      "calendar_event": "Italian Gold Junior 1 Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "78",
+      "calendar_event": "Romanian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "79",
+      "calendar_event": "Hungarian Master Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_event_match_review_slim.csv",
+      "calendar_row": "86",
+      "calendar_event": "European Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_source_conflicts_slim.csv",
+      "conflict_group": "1",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_source_conflicts_slim.csv",
+      "conflict_group": "2",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2020_source_conflicts_slim.csv",
+      "conflict_group": "3",
+      "reason": "source_conflict_requires_one_choice"
+    }
+  ],
+  "invalid_decision_details": [],
+  "skipped_details": [],
+  "source_issues": []
+}
