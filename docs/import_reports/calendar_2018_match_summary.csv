@@ -1,0 +1,15 @@
+metric,value
+year,2018
+calendar_rows,214
+calendar_matched_rows,205
+calendar_unmatched_rows,9
+calendar_rows_matching_multiple_db_events,0
+db_events,211
+db_matched_events,197
+db_unmatched_events,14
+db_unmatched_events_with_results,14
+db_events_matched_by_multiple_calendar_rows,8
+matched_event_source_conflicts,8
+duplicate_source_rows,0
+calendar_minus_db_unmatched_delta,-5
+source_issues,0

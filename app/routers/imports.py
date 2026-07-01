@@ -53,6 +53,7 @@ def build_calendar_import_preview_payload(
         "would_create_events": summary["would_create_events"],
         "unmatched_historical_rows": summary["unmatched_historical_rows"],
         "duplicate_source_rows": summary["duplicate_source_rows"],
+        "matched_event_source_conflicts": summary["matched_event_source_conflicts"],
         "issues": summary["issues"],
         "sample_rows": summary["sample_rows"],
         "rows": summary["rows"],
@@ -320,6 +321,8 @@ def commit_calendar_import(
     if has_error_issues(summary):
         raise HTTPException(status_code=400, detail=jsonable_encoder(payload))
     if summary["duplicate_source_rows"]:
+        raise HTTPException(status_code=409, detail=jsonable_encoder(payload))
+    if summary["matched_event_source_conflicts"]:
         raise HTTPException(status_code=409, detail=jsonable_encoder(payload))
 
     updated_event_ids: set[int] = set()

@@ -2791,3 +2791,61 @@ Il commit reale ha creato 124.030 result nuovi e non ha introdotto duplicati sem
 I 630 D-score orfani sono stati conservati in `docs/import_reports/gymternet_2025_orphan_dscores.csv` per eventuale recupero futuro, ma non sono stati importati nel database operativo.
 
 Il database contiene gia 108 result associati a evento 2026. Quando verra importato il file Gymternet 2026, questi result dovranno essere considerati nel controllo duplicati/preflight.
+
+## 15. Integrazione calendario eventi Gymternet
+
+### 15.1 Obiettivo
+
+Dopo il popolamento storico dei Result 2018-2025, Gymternet ha fornito un file `Calendar.xlsx` con i calendari annuali 2018-2026. Il file contiene, per ogni anno, le colonne `DATE` ed `EVENT`.
+
+L'obiettivo operativo e aggiornare le date degli Event gia presenti nel database LEVERAGE e predisporre, in seguito, una vista calendario admin che mostri:
+
+- eventi passati con risultati gia importati;
+- eventi passati senza risultati;
+- eventi futuri ancora da disputare;
+- promemoria admin per eventi conclusi senza Result.
+
+### 15.2 Regole tecniche adottate
+
+Il backend calendario e stato sviluppato con un flusso prudente:
+
+- preview prima di qualsiasi scrittura;
+- commit admin-only;
+- creazione automatica solo degli eventi futuri o comunque a partire da `create_missing_from_year`;
+- righe storiche non matchate lasciate in review;
+- blocco del commit in presenza di duplicati sorgente;
+- blocco del commit se piu righe calendario puntano allo stesso Event DB con date diverse.
+
+Regola semantica aggiunta il 1 luglio 2026: nei nomi evento, `MAG` indica una gara maschile e puo corrispondere a varianti DB con `Men's`/`Mens`; `WAG` indica una gara femminile e puo corrispondere a varianti DB con `Women's`/`Womens`.
+
+Questa regola ha ridotto i falsi mismatch nel calendario 2018, ma ha anche reso visibili casi in cui una gara creata nel DB come `MAG and WAG` e richiamata da piu righe calendario distinte.
+
+### 15.3 Primo audit calendario 2018
+
+Report generati:
+
+```text
+docs/import_reports/calendar_2018_event_match_review.csv
+docs/import_reports/calendar_2018_db_unmatched_events.csv
+docs/import_reports/calendar_2018_source_conflicts.csv
+docs/import_reports/calendar_2018_match_summary.csv
+```
+
+Riepilogo numerico 2018 dopo normalizzazione MAG/Men's e WAG/Women's:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe calendar 2018 | 214 |
+| Righe calendar matchate | 205 |
+| Righe calendar senza match diretto | 9 |
+| Event DB 2018 | 211 |
+| Event DB matchati | 197 |
+| Event DB senza match calendar | 14 |
+| Event DB senza match calendar con result | 14 |
+| Event DB matchati da piu righe calendar | 8 |
+| Conflitti stesso Event DB / date diverse | 8 |
+| Delta righe calendar unmatched - Event DB unmatched | -5 |
+
+Interpretazione: la differenza tra mismatch lato calendario e mismatch lato DB non e automaticamente un errore. In particolare, alcuni Event DB rappresentano gare `MAG and WAG`, mentre il calendario puo distinguere righe MAG e WAG con date diverse. Questi casi richiedono review admin prima di aggiornare le date definitive.
+
+Il 2026 resta momentaneamente in standby perche il file Results 2026 del primo semestre non e ancora stato ricevuto.

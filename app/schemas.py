@@ -1669,6 +1669,7 @@ class CalendarImportPreview(BaseModel):
     would_create_events: int
     unmatched_historical_rows: int
     duplicate_source_rows: list[dict]
+    matched_event_source_conflicts: list[dict]
     issues: list[dict]
     sample_rows: list[CalendarImportRowPreview]
     rows: list[CalendarImportRowPreview]

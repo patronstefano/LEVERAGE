@@ -550,6 +550,8 @@ Endpoint:
 2. `POST /imports/calendar/commit`
    Ripete il parsing, aggiorna `start_date` / `end_date` degli eventi gia presenti e crea automaticamente solo gli eventi mancanti da `create_missing_from_year` in poi. Le righe storiche non matchate restano in review e non vengono create automaticamente.
    Se la preview rileva duplicati sorgente, cioe stesso nome evento nello stesso foglio/anno con righe diverse, il commit viene bloccato finche il file non viene corretto o disambiguato.
+   Il matching considera anche sinonimi semantici essenziali: `MAG` puo corrispondere a nomi evento DB con `Men's`/`Mens`, mentre `WAG` puo corrispondere a `Women's`/`Womens`.
+   Se due righe calendario diverse vengono agganciate allo stesso evento DB con date diverse, il commit viene bloccato e la preview restituisce `matched_event_source_conflicts` per review admin.
 
 Default per nuovi eventi calendario:
 

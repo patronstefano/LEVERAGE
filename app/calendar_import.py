@@ -56,6 +56,7 @@ class CalendarImportRow:
 def normalize_calendar_event_name(value: str) -> str:
     normalized = value.strip().lower()
     normalized = normalized.replace("&", "and")
+    normalized = normalized.replace("’", "'")
     normalized = re.sub(r"\s+", " ", normalized)
     normalized = re.sub(r"\s+([()])", r"\1", normalized)
     normalized = re.sub(r"([()])\s+", r"\1", normalized)
@@ -64,17 +65,49 @@ def normalize_calendar_event_name(value: str) -> str:
 
 def calendar_event_name_candidates(value: str, year: int) -> set[str]:
     normalized = normalize_calendar_event_name(value)
-    candidates = {normalized}
+    candidates = _event_name_semantic_variants(normalized)
     year_patterns = [
         rf"\s*\({year}\)\s*$",
         rf"\s*\({year}\s+season\)\s*$",
         rf"\s*{year}\s*$",
     ]
     for pattern in year_patterns:
+        for candidate in list(candidates):
+            stripped = re.sub(pattern, "", candidate).strip()
+            if stripped:
+                candidates.update(_event_name_semantic_variants(stripped))
+    return candidates
+
+
+def _event_name_semantic_variants(normalized: str) -> set[str]:
+    variants = {normalized}
+    discipline_suffix_patterns = [
+        r"\s*\((?:mag|wag|mag and wag)\)\s*$",
+        r"\s+(?:mag|wag)\s*$",
+    ]
+    for pattern in discipline_suffix_patterns:
         stripped = re.sub(pattern, "", normalized).strip()
         if stripped:
-            candidates.add(stripped)
-    return candidates
+            variants.add(stripped)
+
+    for candidate in list(variants):
+        semantic = _replace_discipline_words(candidate)
+        if semantic:
+            variants.add(semantic)
+        compact_parenthetical = re.sub(r"\((mag|wag)\)", r"\1", candidate).strip()
+        if compact_parenthetical:
+            variants.add(compact_parenthetical)
+            semantic_compact = _replace_discipline_words(compact_parenthetical)
+            if semantic_compact:
+                variants.add(semantic_compact)
+
+    return {candidate for candidate in variants if candidate}
+
+
+def _replace_discipline_words(value: str) -> str:
+    normalized = re.sub(r"\bmen's\b|\bmens\b|\bmen\b", "mag", value)
+    normalized = re.sub(r"\bwomen's\b|\bwomens\b|\bwomen\b", "wag", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
 
 
 def parse_calendar_date_label(label: str, year: int) -> tuple[date, date]:
@@ -296,6 +329,7 @@ def summarize_calendar_import(
     already_up_to_date_event_ids: set[int] = set()
     would_create_source_keys: set[tuple[int, str]] = set()
     unmatched_historical_rows = []
+    matched_sources_by_event_id: dict[int, list[CalendarImportRow]] = {}
 
     for row in rows:
         source_key = (row.year, normalize_calendar_event_name(row.event_name))
@@ -308,6 +342,8 @@ def summarize_calendar_import(
         matches = _find_existing_events(event_lookup, row)
         matched_ids = [event.id for event in matches]
         matched_event_ids.update(matched_ids)
+        for event in matches:
+            matched_sources_by_event_id.setdefault(event.id, []).append(row)
         events_to_update = [
             event for event in matches
             if event.start_date != row.start_date or event.end_date != row.end_date
@@ -342,6 +378,7 @@ def summarize_calendar_import(
         "would_create_events": len(would_create_source_keys),
         "unmatched_historical_rows": len(unmatched_historical_rows),
         "duplicate_source_rows": duplicate_source_rows,
+        "matched_event_source_conflicts": _build_matched_event_source_conflicts(matched_sources_by_event_id),
         "issues": issues,
         "sample_rows": preview_rows[:25],
         "rows": preview_rows,
@@ -408,3 +445,34 @@ def _build_duplicate_source_row(
         "duplicate_of_row": duplicate_of.row_number,
         "duplicate_of_date_label": duplicate_of.date_label,
     }
+
+
+def _build_matched_event_source_conflicts(
+    matched_sources_by_event_id: dict[int, list[CalendarImportRow]],
+) -> list[dict]:
+    conflicts = []
+    for event_id, source_rows in matched_sources_by_event_id.items():
+        if len(source_rows) < 2:
+            continue
+        date_ranges = {
+            (row.start_date, row.end_date)
+            for row in source_rows
+        }
+        if len(date_ranges) <= 1:
+            continue
+        conflicts.append({
+            "event_id": event_id,
+            "source_rows": [
+                {
+                    "sheet": row.sheet,
+                    "row": row.row_number,
+                    "year": row.year,
+                    "event_name": row.event_name,
+                    "date_label": row.date_label,
+                    "start_date": row.start_date,
+                    "end_date": row.end_date,
+                }
+                for row in source_rows
+            ],
+        })
+    return conflicts

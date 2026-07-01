@@ -108,6 +108,35 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2025_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2025; vuoto. |
 | `gymternet_2025_commit_summary.json` | Report tecnico del commit reale 2025, con backup, statistiche di import e controlli post-import. |
 
+## Report calendario eventi
+
+I report calendario vengono generati anno per anno a partire dal file `Calendar.xlsx` fornito da Gymternet. Lo scopo e allineare le date degli `Event` gia creati durante il popolamento storico dei `Result`, senza creare automaticamente righe storiche dubbie.
+
+Per ogni anno possono essere prodotti:
+
+- `calendar_<anno>_event_match_review.csv`: righe calendario storiche che non trovano una corrispondenza diretta nel DB, con suggerimenti di possibili `Event` da associare;
+- `calendar_<anno>_db_unmatched_events.csv`: eventi gia presenti nel DB per quell'anno che non risultano coperti da alcuna riga calendario;
+- `calendar_<anno>_source_conflicts.csv`: casi in cui piu righe calendario puntano allo stesso `Event` DB con date diverse;
+- `calendar_<anno>_match_summary.csv`: riepilogo numerico bidirezionale dei match/mismatch.
+
+Regola semantica calendario aggiunta il 1 luglio 2026: nei nomi evento, `MAG` viene trattato come indizio di gara maschile e puo corrispondere a varianti DB con `Men's`/`Mens`; analogamente `WAG` puo corrispondere a varianti con `Women's`/`Womens`.
+
+Per il 2018, dopo questa normalizzazione, il riepilogo e:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe calendar 2018 | 214 |
+| Righe calendar matchate | 205 |
+| Righe calendar senza match diretto | 9 |
+| Event DB 2018 | 211 |
+| Event DB matchati | 197 |
+| Event DB senza match calendar | 14 |
+| Event DB senza match calendar con result | 14 |
+| Event DB matchati da piu righe calendar | 8 |
+| Conflitti stesso Event DB / date diverse | 8 |
+
+Interpretazione: i due lati del mismatch non devono necessariamente essere identici, perche una riga calendario puo rappresentare una gara combinata MAG/WAG oppure piu righe calendario possono puntare allo stesso evento DB, specialmente quando nel DB storico l'evento era stato creato come `MAG and WAG`.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

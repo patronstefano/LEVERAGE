@@ -4160,6 +4160,7 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     assert preview["would_update_events"] == 1
     assert preview["would_create_events"] == 1
     assert preview["unmatched_historical_rows"] == 1
+    assert preview["matched_event_source_conflicts"] == []
     assert preview["issues"] == []
 
     actions = {row["event_name"]: row for row in preview["rows"]}
@@ -4249,6 +4250,84 @@ def test_calendar_import_commit_blocks_duplicate_source_rows():
     )
     assert commit_response.status_code == 409
     assert len(commit_response.json()["detail"]["duplicate_source_rows"]) == 1
+
+
+def test_calendar_import_matches_mag_to_mens_event_name():
+    client.post("/auth/register", json={"email": "calendar_mag_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("calendar_mag_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    existing_event = client.post(
+        "/events/",
+        json={
+            "name": "Friendly Men's Cup",
+            "year": 2025,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    ).json()
+    workbook = make_calendar_workbook({
+        2025: [
+            ("May 3", "Friendly MAG Cup"),
+        ],
+    })
+
+    preview_response = client.post(
+        "/imports/calendar/preview?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["matched_rows"] == 1
+    assert preview["rows"][0]["matched_event_ids"] == [existing_event["id"]]
+    assert preview["rows"][0]["action"] == "update_dates"
+
+
+def test_calendar_import_commit_blocks_conflicting_sources_matching_same_event():
+    client.post("/auth/register", json={"email": "calendar_source_conflict_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("calendar_source_conflict_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    client.post(
+        "/events/",
+        json={
+            "name": "Top 12 Series 3",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "junior and senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    )
+    workbook = make_calendar_workbook({
+        2025: [
+            ("Feb 22", "Top 12 Series 3 (WAG)"),
+            ("Dec 13", "Top 12 Series 3 (MAG)"),
+        ],
+    })
+
+    preview_response = client.post(
+        "/imports/calendar/preview?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["duplicate_source_rows"] == []
+    assert len(preview["matched_event_source_conflicts"]) == 1
+    assert preview["matched_event_source_conflicts"][0]["event_id"] == preview["rows"][0]["matched_event_ids"][0]
+
+    workbook.seek(0)
+    commit_response = client.post(
+        "/imports/calendar/commit?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=headers,
+    )
+    assert commit_response.status_code == 409
+    assert len(commit_response.json()["detail"]["matched_event_source_conflicts"]) == 1
 
 
 def test_event_result_groups():
