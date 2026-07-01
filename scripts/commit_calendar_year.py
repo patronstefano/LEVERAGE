@@ -19,6 +19,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 MATCH_DECISIONS = {"match", "use", "accept", "accept_suggestion", "manual_match", "update_dates"}
 IGNORE_DECISIONS = {"ignore", "skip", "keep separate", "keep_separate"}
+CALENDAR_ONLY_DECISIONS = {"calendar_only", "calendar only", "calendar-only", "no_match", "no match", "no-match"}
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:
@@ -40,12 +41,23 @@ def normalized_decision(row: dict[str, str]) -> str:
     return action
 
 
+def normalized_choice(row: dict[str, str]) -> str:
+    choice = clean(row.get("choice")).lower()
+    if choice:
+        return choice
+    return normalized_decision(row)
+
+
 def is_match_decision(row: dict[str, str]) -> bool:
     return normalized_decision(row) in MATCH_DECISIONS
 
 
 def is_ignore_decision(row: dict[str, str]) -> bool:
     return normalized_decision(row) in IGNORE_DECISIONS
+
+
+def is_calendar_only_decision(row: dict[str, str]) -> bool:
+    return normalized_choice(row) in CALENDAR_ONLY_DECISIONS
 
 
 def row_key(row: dict) -> tuple[int, int]:
@@ -58,6 +70,17 @@ def source_row_key(row: dict) -> tuple[int, int]:
 
 def csv_source_row_key(row: dict[str, str]) -> tuple[int, int]:
     return int(clean(row.get("calendar_year"))), int(clean(row.get("calendar_row")))
+
+
+def selected_event_id_from_slim_choice(row: dict[str, str], detailed_row: dict[str, str]) -> str:
+    manual_event_id = clean(row.get("manual_event_id"))
+    if manual_event_id:
+        return manual_event_id
+
+    choice = normalized_choice(row)
+    if choice.isdigit():
+        return clean(detailed_row.get(f"suggestion_{int(choice)}_event_id"))
+    return ""
 
 
 def parse_date(value: str):
@@ -150,6 +173,7 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
         direct_safe_rows = 0
         direct_skipped_conflict_rows = 0
         direct_skipped_multiple_match_rows = 0
+        calendar_only_rows = 0
 
         for row in year_rows:
             key = source_row_key(row)
@@ -185,121 +209,254 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                 no_change_events += 1
 
         match_review_path = report_dir / f"calendar_{year}_event_match_review.csv"
+        slim_match_review_path = report_dir / f"calendar_{year}_event_match_review_slim.csv"
         match_review_rows = read_csv_rows(match_review_path)
         source_by_key = {row_key(row): row for row in year_rows}
         review_match_rows = 0
-        for csv_row in match_review_rows:
-            decision = normalized_decision(csv_row)
-            if is_ignore_decision(csv_row):
-                continue
-            if not is_match_decision(csv_row):
-                unresolved.append({
-                    "source": str(match_review_path),
-                    "calendar_row": clean(csv_row.get("calendar_row")),
-                    "calendar_event": clean(csv_row.get("calendar_event")),
-                    "reason": "missing_or_unrecognized_decision",
-                    "decision": decision,
-                })
-                continue
-            selected_event_id = clean(csv_row.get("selected_event_id"))
-            if not selected_event_id:
-                invalid_decisions.append({
-                    "source": str(match_review_path),
-                    "calendar_row": clean(csv_row.get("calendar_row")),
-                    "calendar_event": clean(csv_row.get("calendar_event")),
-                    "reason": "selected_event_id_required_for_match",
-                })
-                continue
-            source_row = source_by_key.get(csv_source_row_key(csv_row))
-            if not source_row:
-                invalid_decisions.append({
-                    "source": str(match_review_path),
-                    "calendar_row": clean(csv_row.get("calendar_row")),
-                    "calendar_event": clean(csv_row.get("calendar_event")),
-                    "reason": "calendar_source_row_not_found",
-                })
-                continue
-            event = db.query(models.Event).filter(
-                models.Event.id == int(selected_event_id),
-                models.Event.is_deleted.is_(False),
-            ).first()
-            if not event:
-                invalid_decisions.append({
-                    "source": str(match_review_path),
-                    "calendar_row": clean(csv_row.get("calendar_row")),
-                    "calendar_event": clean(csv_row.get("calendar_event")),
-                    "selected_event_id": selected_event_id,
-                    "reason": "selected_event_not_found",
-                })
-                continue
-            review_match_rows += 1
-            changed = update_event_dates(
-                db,
-                event,
-                source_row["start_date"],
-                source_row["end_date"],
-                source=f"calendar_review:{year}:{source_row['row']}",
-                updates=updates,
-                dry_run=dry_run,
-            )
-            if changed:
-                updated_event_ids.add(event.id)
-            else:
-                no_change_events += 1
+        if slim_match_review_path.exists():
+            detailed_by_calendar_row = {
+                clean(row.get("calendar_row")): row
+                for row in match_review_rows
+            }
+            for slim_row in read_csv_rows(slim_match_review_path):
+                choice = normalized_choice(slim_row)
+                calendar_row = clean(slim_row.get("calendar_row"))
+                if not choice:
+                    unresolved.append({
+                        "source": str(slim_match_review_path),
+                        "calendar_row": calendar_row,
+                        "calendar_event": clean(slim_row.get("calendar_event")),
+                        "reason": "missing_choice",
+                    })
+                    continue
+                if choice in IGNORE_DECISIONS:
+                    continue
+                if choice in CALENDAR_ONLY_DECISIONS:
+                    calendar_only_rows += 1
+                    continue
+                detailed_row = detailed_by_calendar_row.get(calendar_row)
+                if not detailed_row:
+                    invalid_decisions.append({
+                        "source": str(slim_match_review_path),
+                        "calendar_row": calendar_row,
+                        "calendar_event": clean(slim_row.get("calendar_event")),
+                        "reason": "detailed_calendar_row_not_found",
+                    })
+                    continue
+                selected_event_id = selected_event_id_from_slim_choice(slim_row, detailed_row)
+                if not selected_event_id:
+                    invalid_decisions.append({
+                        "source": str(slim_match_review_path),
+                        "calendar_row": calendar_row,
+                        "calendar_event": clean(slim_row.get("calendar_event")),
+                        "choice": choice,
+                        "reason": "choice_does_not_resolve_to_event_id",
+                    })
+                    continue
+                source_row = source_by_key.get((year, int(calendar_row)))
+                if not source_row:
+                    invalid_decisions.append({
+                        "source": str(slim_match_review_path),
+                        "calendar_row": calendar_row,
+                        "calendar_event": clean(slim_row.get("calendar_event")),
+                        "reason": "calendar_source_row_not_found",
+                    })
+                    continue
+                event = db.query(models.Event).filter(
+                    models.Event.id == int(selected_event_id),
+                    models.Event.is_deleted.is_(False),
+                ).first()
+                if not event:
+                    invalid_decisions.append({
+                        "source": str(slim_match_review_path),
+                        "calendar_row": calendar_row,
+                        "calendar_event": clean(slim_row.get("calendar_event")),
+                        "selected_event_id": selected_event_id,
+                        "reason": "selected_event_not_found",
+                    })
+                    continue
+                review_match_rows += 1
+                changed = update_event_dates(
+                    db,
+                    event,
+                    source_row["start_date"],
+                    source_row["end_date"],
+                    source=f"calendar_review_slim:{year}:{source_row['row']}",
+                    updates=updates,
+                    dry_run=dry_run,
+                )
+                if changed:
+                    updated_event_ids.add(event.id)
+                else:
+                    no_change_events += 1
+        else:
+            for csv_row in match_review_rows:
+                decision = normalized_decision(csv_row)
+                if is_ignore_decision(csv_row):
+                    continue
+                if is_calendar_only_decision(csv_row):
+                    calendar_only_rows += 1
+                    continue
+                if not is_match_decision(csv_row):
+                    unresolved.append({
+                        "source": str(match_review_path),
+                        "calendar_row": clean(csv_row.get("calendar_row")),
+                        "calendar_event": clean(csv_row.get("calendar_event")),
+                        "reason": "missing_or_unrecognized_decision",
+                        "decision": decision,
+                    })
+                    continue
+                selected_event_id = clean(csv_row.get("selected_event_id"))
+                if not selected_event_id:
+                    invalid_decisions.append({
+                        "source": str(match_review_path),
+                        "calendar_row": clean(csv_row.get("calendar_row")),
+                        "calendar_event": clean(csv_row.get("calendar_event")),
+                        "reason": "selected_event_id_required_for_match",
+                    })
+                    continue
+                source_row = source_by_key.get(csv_source_row_key(csv_row))
+                if not source_row:
+                    invalid_decisions.append({
+                        "source": str(match_review_path),
+                        "calendar_row": clean(csv_row.get("calendar_row")),
+                        "calendar_event": clean(csv_row.get("calendar_event")),
+                        "reason": "calendar_source_row_not_found",
+                    })
+                    continue
+                event = db.query(models.Event).filter(
+                    models.Event.id == int(selected_event_id),
+                    models.Event.is_deleted.is_(False),
+                ).first()
+                if not event:
+                    invalid_decisions.append({
+                        "source": str(match_review_path),
+                        "calendar_row": clean(csv_row.get("calendar_row")),
+                        "calendar_event": clean(csv_row.get("calendar_event")),
+                        "selected_event_id": selected_event_id,
+                        "reason": "selected_event_not_found",
+                    })
+                    continue
+                review_match_rows += 1
+                changed = update_event_dates(
+                    db,
+                    event,
+                    source_row["start_date"],
+                    source_row["end_date"],
+                    source=f"calendar_review:{year}:{source_row['row']}",
+                    updates=updates,
+                    dry_run=dry_run,
+                )
+                if changed:
+                    updated_event_ids.add(event.id)
+                else:
+                    no_change_events += 1
 
         source_conflict_path = report_dir / f"calendar_{year}_source_conflicts.csv"
+        slim_source_conflict_path = report_dir / f"calendar_{year}_source_conflicts_slim.csv"
         source_conflict_rows = read_csv_rows(source_conflict_path)
         source_conflict_groups: dict[str, list[dict[str, str]]] = defaultdict(list)
         for csv_row in source_conflict_rows:
             source_conflict_groups[clean(csv_row.get("conflict_group"))].append(csv_row)
 
         resolved_source_conflicts = 0
-        for group_id, group_rows in source_conflict_groups.items():
-            selected_rows = [row for row in group_rows if is_match_decision(row)]
-            ignored_rows = [row for row in group_rows if is_ignore_decision(row)]
-            if not selected_rows:
-                if len(ignored_rows) != len(group_rows):
+        if slim_source_conflict_path.exists():
+            for slim_row in read_csv_rows(slim_source_conflict_path):
+                group_id = clean(slim_row.get("conflict_group"))
+                choice = normalized_choice(slim_row)
+                group_rows = source_conflict_groups.get(group_id, [])
+                if not choice:
                     unresolved.append({
+                        "source": str(slim_source_conflict_path),
+                        "conflict_group": group_id,
+                        "reason": "source_conflict_requires_one_choice",
+                    })
+                    continue
+                if choice in IGNORE_DECISIONS or choice in CALENDAR_ONLY_DECISIONS:
+                    continue
+                if not choice.isdigit() or int(choice) < 1 or int(choice) > len(group_rows):
+                    invalid_decisions.append({
+                        "source": str(slim_source_conflict_path),
+                        "conflict_group": group_id,
+                        "choice": choice,
+                        "reason": "choice_must_reference_an_available_option",
+                    })
+                    continue
+                csv_row = group_rows[int(choice) - 1]
+                event_id = int(clean(csv_row.get("event_id")))
+                event = db.query(models.Event).filter(
+                    models.Event.id == event_id,
+                    models.Event.is_deleted.is_(False),
+                ).first()
+                if not event:
+                    invalid_decisions.append({
+                        "source": str(slim_source_conflict_path),
+                        "conflict_group": group_id,
+                        "event_id": event_id,
+                        "reason": "event_not_found",
+                    })
+                    continue
+                changed = update_event_dates(
+                    db,
+                    event,
+                    parse_date(clean(csv_row.get("calendar_start_date"))),
+                    parse_date(clean(csv_row.get("calendar_end_date"))),
+                    source=f"calendar_source_conflict_slim:{year}:{group_id}",
+                    updates=updates,
+                    dry_run=dry_run,
+                )
+                resolved_source_conflicts += 1
+                if changed:
+                    updated_event_ids.add(event.id)
+                else:
+                    no_change_events += 1
+        else:
+            for group_id, group_rows in source_conflict_groups.items():
+                selected_rows = [row for row in group_rows if is_match_decision(row)]
+                ignored_rows = [row for row in group_rows if is_ignore_decision(row)]
+                if not selected_rows:
+                    if len(ignored_rows) != len(group_rows):
+                        unresolved.append({
+                            "source": str(source_conflict_path),
+                            "conflict_group": group_id,
+                            "reason": "source_conflict_requires_one_selected_row",
+                        })
+                    continue
+                if len(selected_rows) > 1:
+                    invalid_decisions.append({
                         "source": str(source_conflict_path),
                         "conflict_group": group_id,
-                        "reason": "source_conflict_requires_one_selected_row",
+                        "reason": "source_conflict_has_multiple_selected_rows",
                     })
-                continue
-            if len(selected_rows) > 1:
-                invalid_decisions.append({
-                    "source": str(source_conflict_path),
-                    "conflict_group": group_id,
-                    "reason": "source_conflict_has_multiple_selected_rows",
-                })
-                continue
-            csv_row = selected_rows[0]
-            event_id = int(clean(csv_row.get("event_id")))
-            event = db.query(models.Event).filter(
-                models.Event.id == event_id,
-                models.Event.is_deleted.is_(False),
-            ).first()
-            if not event:
-                invalid_decisions.append({
-                    "source": str(source_conflict_path),
-                    "conflict_group": group_id,
-                    "event_id": event_id,
-                    "reason": "event_not_found",
-                })
-                continue
-            changed = update_event_dates(
-                db,
-                event,
-                parse_date(clean(csv_row.get("calendar_start_date"))),
-                parse_date(clean(csv_row.get("calendar_end_date"))),
-                source=f"calendar_source_conflict:{year}:{group_id}",
-                updates=updates,
-                dry_run=dry_run,
-            )
-            resolved_source_conflicts += 1
-            if changed:
-                updated_event_ids.add(event.id)
-            else:
-                no_change_events += 1
+                    continue
+                csv_row = selected_rows[0]
+                event_id = int(clean(csv_row.get("event_id")))
+                event = db.query(models.Event).filter(
+                    models.Event.id == event_id,
+                    models.Event.is_deleted.is_(False),
+                ).first()
+                if not event:
+                    invalid_decisions.append({
+                        "source": str(source_conflict_path),
+                        "conflict_group": group_id,
+                        "event_id": event_id,
+                        "reason": "event_not_found",
+                    })
+                    continue
+                changed = update_event_dates(
+                    db,
+                    event,
+                    parse_date(clean(csv_row.get("calendar_start_date"))),
+                    parse_date(clean(csv_row.get("calendar_end_date"))),
+                    source=f"calendar_source_conflict:{year}:{group_id}",
+                    updates=updates,
+                    dry_run=dry_run,
+                )
+                resolved_source_conflicts += 1
+                if changed:
+                    updated_event_ids.add(event.id)
+                else:
+                    no_change_events += 1
 
         if invalid_decisions:
             db.rollback()
@@ -322,6 +479,7 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
             "direct_skipped_multiple_match_rows": direct_skipped_multiple_match_rows,
             "review_match_rows": review_match_rows,
             "resolved_source_conflicts": resolved_source_conflicts,
+            "calendar_only_rows": calendar_only_rows,
             "updated_events": len(updated_event_ids),
             "no_change_events": no_change_events,
             "unresolved_review_items": len(unresolved),

@@ -115,8 +115,10 @@ I report calendario vengono generati anno per anno a partire dal file `Calendar.
 Per ogni anno possono essere prodotti:
 
 - `calendar_<anno>_event_match_review.csv`: righe calendario storiche che non trovano una corrispondenza diretta nel DB, con suggerimenti di possibili `Event` da associare;
+- `calendar_<anno>_event_match_review_slim.csv`: versione operativa semplificata del file precedente, pensata per la review admin;
 - `calendar_<anno>_db_unmatched_events.csv`: eventi gia presenti nel DB per quell'anno che non risultano coperti da alcuna riga calendario;
 - `calendar_<anno>_source_conflicts.csv`: casi in cui piu righe calendario puntano allo stesso `Event` DB con date diverse;
+- `calendar_<anno>_source_conflicts_slim.csv`: versione operativa semplificata dei conflitti stesso Event/date diverse;
 - `calendar_<anno>_match_summary.csv`: riepilogo numerico bidirezionale dei match/mismatch.
 - `calendar_<anno>_dry_run_summary.json`: simulazione del commit calendario per l'anno;
 - `calendar_<anno>_commit_summary.json`: report del commit reale delle date applicate agli `Event`.
@@ -146,6 +148,21 @@ scripts/commit_calendar_year.py
 ```
 
 Lo script applica automaticamente solo i match sicuri e aggiorna i campi `start_date` / `end_date` degli `Event` associati. I mismatch e i conflitti MAG/WAG restano in review finche l'admin non compila i CSV.
+
+Per la review manuale si usano preferibilmente i file `_slim.csv`.
+
+Nel file `calendar_<anno>_event_match_review_slim.csv`:
+
+- `choice = 1`, `2` o `3`: associa la riga calendario alla relativa opzione suggerita e aggiorna `start_date` / `end_date` dell'Event;
+- `manual_event_id`: permette di indicare manualmente un Event non presente tra le opzioni;
+- `choice = calendar_only`: mantiene la riga come voce calendario non collegata a una scheda Event;
+- `notes`: motivazione o dettaglio della decisione.
+
+Nel file `calendar_<anno>_source_conflicts_slim.csv`:
+
+- `choice = 1`, `2`, ecc.: sceglie quale data calendario usare per l'Event DB indicato;
+- `choice = calendar_only` o `ignore`: non aggiorna l'Event DB e lascia il caso fuori dal collegamento alla scheda evento;
+- `notes`: motivazione, soprattutto quando MAG/WAG sono righe distinte ma l'Event DB e `MAG and WAG`.
 
 Primo commit calendario 2018:
 

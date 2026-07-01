@@ -2826,8 +2826,10 @@ Report generati:
 
 ```text
 docs/import_reports/calendar_2018_event_match_review.csv
+docs/import_reports/calendar_2018_event_match_review_slim.csv
 docs/import_reports/calendar_2018_db_unmatched_events.csv
 docs/import_reports/calendar_2018_source_conflicts.csv
+docs/import_reports/calendar_2018_source_conflicts_slim.csv
 docs/import_reports/calendar_2018_match_summary.csv
 ```
 
@@ -2863,6 +2865,22 @@ Lo script lavora anno per anno e separa tre categorie:
 - match diretti sicuri, applicabili automaticamente;
 - righe calendario senza match diretto, da compilare nel CSV `calendar_<anno>_event_match_review.csv`;
 - conflitti in cui piu righe calendario puntano allo stesso Event DB con date diverse, da compilare nel CSV `calendar_<anno>_source_conflicts.csv`.
+
+Aggiornamento operativo: per rendere la review admin piu rapida sono state aggiunte versioni semplificate dei CSV:
+
+```text
+docs/import_reports/calendar_2018_event_match_review_slim.csv
+docs/import_reports/calendar_2018_source_conflicts_slim.csv
+```
+
+Questi file mostrano soltanto:
+
+- evento calendario;
+- data calendario;
+- possibili Event DB associabili come opzioni numerate;
+- colonna `choice` da compilare.
+
+Se l'admin inserisce `choice = 1`, `2` o `3`, lo script associa la riga calendario alla relativa opzione. Se invece inserisce `choice = calendar_only`, la riga resta una voce calendario non collegata a una scheda Event: sara quindi visualizzabile nel calendario futuro ma non rimandera alla scheda evento.
 
 Il primo dry-run 2018 ha individuato:
 

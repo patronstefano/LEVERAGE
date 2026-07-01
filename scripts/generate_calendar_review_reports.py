@@ -4,6 +4,7 @@ import argparse
 import csv
 import re
 import sys
+from collections import defaultdict
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -169,6 +170,34 @@ def build_db_unmatched_row(event: models.Event, result_count: int) -> dict:
     }
 
 
+def event_option_from_review_row(row: dict, index: int) -> str:
+    event_id = row.get(f"suggestion_{index}_event_id")
+    if not event_id:
+        return ""
+    return (
+        f"{index}: ID {event_id} | {row[f'suggestion_{index}_event_name']} | "
+        f"{row[f'suggestion_{index}_discipline']} | "
+        f"{row[f'suggestion_{index}_result_count']} result | "
+        f"confidence {row[f'suggestion_{index}_confidence']}"
+    )
+
+
+def build_slim_review_row(row: dict) -> dict:
+    return {
+        "calendar_row": row["calendar_row"],
+        "calendar_event": row["calendar_event"],
+        "calendar_date": row["calendar_date"],
+        "start_date": row["calendar_start_date"],
+        "end_date": row["calendar_end_date"],
+        "choice": "",
+        "manual_event_id": "",
+        "notes": "",
+        "option_1": event_option_from_review_row(row, 1),
+        "option_2": event_option_from_review_row(row, 2),
+        "option_3": event_option_from_review_row(row, 3),
+    }
+
+
 def build_source_conflict_rows(
     conflicts: list[dict],
     events_by_id: dict[int, models.Event],
@@ -200,6 +229,36 @@ def build_source_conflict_rows(
     return rows
 
 
+def build_slim_source_conflict_rows(source_conflict_rows: list[dict]) -> list[dict]:
+    grouped_rows: dict[int, list[dict]] = defaultdict(list)
+    for row in source_conflict_rows:
+        grouped_rows[int(row["conflict_group"])].append(row)
+
+    slim_rows = []
+    for group_id, rows in sorted(grouped_rows.items()):
+        first = rows[0]
+        output = {
+            "conflict_group": group_id,
+            "db_event": (
+                f"ID {first['event_id']} | {first['event_name']} | "
+                f"{first['event_discipline']} | {first['event_result_count']} result"
+            ),
+            "choice": "",
+            "notes": "",
+            "option_1": "",
+            "option_2": "",
+            "option_3": "",
+            "option_4": "",
+        }
+        for index, row in enumerate(rows[:4], start=1):
+            output[f"option_{index}"] = (
+                f"{index}: calendar row {row['calendar_row']} | {row['calendar_date']} | "
+                f"{row['calendar_event']} | {row['calendar_start_date']} to {row['calendar_end_date']}"
+            )
+        slim_rows.append(output)
+    return slim_rows
+
+
 def write_csv(path: Path, rows: list[dict], fallback_fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0].keys()) if rows else fallback_fieldnames
@@ -228,6 +287,8 @@ def generate_calendar_review_report(
     summary_output: Path | None,
     db_unmatched_output: Path | None,
     source_conflicts_output: Path | None,
+    slim_output: Path | None,
+    source_conflicts_slim_output: Path | None,
 ) -> dict:
     rows, issues = parse_calendar_file(calendar_file.name, calendar_file.read_bytes())
     db = SessionLocal()
@@ -287,6 +348,8 @@ def generate_calendar_review_report(
             events_by_id,
             result_counts,
         )
+        slim_review_rows = [build_slim_review_row(row) for row in review_rows]
+        slim_source_conflict_rows = build_slim_source_conflict_rows(source_conflict_rows)
         yearly_summary = {
             "year": year,
             "calendar_rows": len([row for row in rows if row.year == year]),
@@ -363,6 +426,31 @@ def generate_calendar_review_report(
             "action",
             "notes",
         ])
+    if slim_output:
+        write_csv(slim_output, slim_review_rows, [
+            "calendar_row",
+            "calendar_event",
+            "calendar_date",
+            "start_date",
+            "end_date",
+            "choice",
+            "manual_event_id",
+            "notes",
+            "option_1",
+            "option_2",
+            "option_3",
+        ])
+    if source_conflicts_slim_output:
+        write_csv(source_conflicts_slim_output, slim_source_conflict_rows, [
+            "conflict_group",
+            "db_event",
+            "choice",
+            "notes",
+            "option_1",
+            "option_2",
+            "option_3",
+            "option_4",
+        ])
 
     return {
         "year": year,
@@ -371,6 +459,8 @@ def generate_calendar_review_report(
         "summary_output": str(summary_output) if summary_output else "",
         "db_unmatched_output": str(db_unmatched_output) if db_unmatched_output else "",
         "source_conflicts_output": str(source_conflicts_output) if source_conflicts_output else "",
+        "slim_output": str(slim_output) if slim_output else "",
+        "source_conflicts_slim_output": str(source_conflicts_slim_output) if source_conflicts_slim_output else "",
         **yearly_summary,
         "source_issues": len(issues),
     }
@@ -387,6 +477,8 @@ def main() -> None:
     parser.add_argument("--summary-output", type=Path)
     parser.add_argument("--db-unmatched-output", type=Path)
     parser.add_argument("--source-conflicts-output", type=Path)
+    parser.add_argument("--slim-output", type=Path)
+    parser.add_argument("--source-conflicts-slim-output", type=Path)
     args = parser.parse_args()
 
     summary = generate_calendar_review_report(
@@ -399,6 +491,8 @@ def main() -> None:
         summary_output=args.summary_output,
         db_unmatched_output=args.db_unmatched_output,
         source_conflicts_output=args.source_conflicts_output,
+        slim_output=args.slim_output,
+        source_conflicts_slim_output=args.source_conflicts_slim_output,
     )
     print(summary)
 
