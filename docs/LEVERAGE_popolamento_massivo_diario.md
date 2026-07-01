@@ -2849,3 +2849,50 @@ Riepilogo numerico 2018 dopo normalizzazione MAG/Men's e WAG/Women's:
 Interpretazione: la differenza tra mismatch lato calendario e mismatch lato DB non e automaticamente un errore. In particolare, alcuni Event DB rappresentano gare `MAG and WAG`, mentre il calendario puo distinguere righe MAG e WAG con date diverse. Questi casi richiedono review admin prima di aggiornare le date definitive.
 
 Il 2026 resta momentaneamente in standby perche il file Results 2026 del primo semestre non e ancora stato ricevuto.
+
+### 15.4 Commit sicuro date calendario 2018
+
+Per applicare le date agli Event associati e stato creato lo script:
+
+```text
+scripts/commit_calendar_year.py
+```
+
+Lo script lavora anno per anno e separa tre categorie:
+
+- match diretti sicuri, applicabili automaticamente;
+- righe calendario senza match diretto, da compilare nel CSV `calendar_<anno>_event_match_review.csv`;
+- conflitti in cui piu righe calendario puntano allo stesso Event DB con date diverse, da compilare nel CSV `calendar_<anno>_source_conflicts.csv`.
+
+Il primo dry-run 2018 ha individuato:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe calendar 2018 | 214 |
+| Match sicuri applicabili | 189 |
+| Righe saltate per conflitto stesso Event/date diverse | 16 |
+| Elementi review aperti | 17 |
+| Decisioni invalide | 0 |
+
+Il commit reale 2018 e stato eseguito solo sui match sicuri.
+
+Report generati:
+
+```text
+docs/import_reports/calendar_2018_dry_run_summary.json
+docs/import_reports/calendar_2018_commit_summary.json
+```
+
+Esito del commit reale:
+
+| Controllo | Conteggio |
+|---|---:|
+| Event aggiornati con `start_date` / `end_date` | 189 |
+| Event 2018 totali nel DB | 211 |
+| Event 2018 con date dopo commit | 189 |
+| Event 2018 ancora senza date | 22 |
+| Elementi review ancora aperti | 17 |
+
+Un backup locale del database e stato creato automaticamente prima del commit. Il backup non viene tracciato da Git perche il database locale e escluso dal repository.
+
+Nota metodologica: l'aggiornamento delle date serve ad alimentare la futura UI calendario cliccabile. Ogni Event datato potra comparire nella vista calendario pubblica/admin con stato calcolato (`upcoming`, `ongoing`, `completed_with_results`, `completed_no_results`) e collegamento alla scheda evento.

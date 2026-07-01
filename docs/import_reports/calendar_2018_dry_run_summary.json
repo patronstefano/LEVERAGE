@@ -1,0 +1,2020 @@
+{
+  "year": 2018,
+  "calendar_file": "/Users/patronstefano/Downloads/Calendar.xlsx",
+  "database": "leverage.db",
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "parsed_rows_all_years": 1870,
+  "calendar_rows": 214,
+  "direct_safe_rows": 189,
+  "direct_skipped_conflict_rows": 16,
+  "direct_skipped_multiple_match_rows": 0,
+  "review_match_rows": 0,
+  "resolved_source_conflicts": 0,
+  "updated_events": 189,
+  "no_change_events": 0,
+  "unresolved_review_items": 17,
+  "invalid_decisions": 0,
+  "skipped": 0,
+  "updates": [
+    {
+      "event_id": 105,
+      "event_name": "Top 12 Series 5",
+      "source": "calendar_row:2018:3",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-01-20",
+      "to_end_date": "2018-01-20"
+    },
+    {
+      "event_id": 40,
+      "event_name": "Elite Canada",
+      "source": "calendar_row:2018:7",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-01",
+      "to_end_date": "2018-02-04"
+    },
+    {
+      "event_id": 208,
+      "event_name": "Houston National Invitational",
+      "source": "calendar_row:2018:8",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-02",
+      "to_end_date": "2018-02-04"
+    },
+    {
+      "event_id": 120,
+      "event_name": "Reykjavik International Games",
+      "source": "calendar_row:2018:9",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-03",
+      "to_end_date": "2018-02-03"
+    },
+    {
+      "event_id": 190,
+      "event_name": "Israeli Winter Cup",
+      "source": "calendar_row:2018:10",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-03",
+      "to_end_date": "2018-02-03"
+    },
+    {
+      "event_id": 103,
+      "event_name": "Top 12 Series 6",
+      "source": "calendar_row:2018:11",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-03",
+      "to_end_date": "2018-02-03"
+    },
+    {
+      "event_id": 41,
+      "event_name": "English Championships",
+      "source": "calendar_row:2018:12",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-09",
+      "to_end_date": "2018-02-11"
+    },
+    {
+      "event_id": 157,
+      "event_name": "1st Spanish League",
+      "source": "calendar_row:2018:14",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-09",
+      "to_end_date": "2018-02-11"
+    },
+    {
+      "event_id": 12,
+      "event_name": "President's Cup",
+      "source": "calendar_row:2018:15",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-12",
+      "to_end_date": "2018-02-16"
+    },
+    {
+      "event_id": 53,
+      "event_name": "Winter Cup Challenge",
+      "source": "calendar_row:2018:16",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-15",
+      "to_end_date": "2018-02-17"
+    },
+    {
+      "event_id": 204,
+      "event_name": "WOGA Classic",
+      "source": "calendar_row:2018:17",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-16",
+      "to_end_date": "2018-02-18"
+    },
+    {
+      "event_id": 166,
+      "event_name": "Mallorca Cup",
+      "source": "calendar_row:2018:19",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-17",
+      "to_end_date": "2018-02-18"
+    },
+    {
+      "event_id": 86,
+      "event_name": "Welsh Championships",
+      "source": "calendar_row:2018:20",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-17",
+      "to_end_date": "2018-02-18"
+    },
+    {
+      "event_id": 72,
+      "event_name": "Melbourne World Cup",
+      "source": "calendar_row:2018:21",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-22",
+      "to_end_date": "2018-02-25"
+    },
+    {
+      "event_id": 39,
+      "event_name": "Scottish Championships",
+      "source": "calendar_row:2018:23",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-24",
+      "to_end_date": "2018-02-25"
+    },
+    {
+      "event_id": 7,
+      "event_name": "Turkish Championships",
+      "source": "calendar_row:2018:24",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-02",
+      "to_end_date": "2018-03-04"
+    },
+    {
+      "event_id": 108,
+      "event_name": "American Cup",
+      "source": "calendar_row:2018:25",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-03",
+      "to_end_date": "2018-03-03"
+    },
+    {
+      "event_id": 81,
+      "event_name": "1st Italian Serie A",
+      "source": "calendar_row:2018:26",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-03",
+      "to_end_date": "2018-03-03"
+    },
+    {
+      "event_id": 106,
+      "event_name": "Top 12 Semi-Final 2",
+      "source": "calendar_row:2018:27",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-03",
+      "to_end_date": "2018-03-03"
+    },
+    {
+      "event_id": 38,
+      "event_name": "British Championships",
+      "source": "calendar_row:2018:30",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-08",
+      "to_end_date": "2018-03-11"
+    },
+    {
+      "event_id": 160,
+      "event_name": "KPAC National Qualifier",
+      "source": "calendar_row:2018:31",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-08",
+      "to_end_date": "2018-03-11"
+    },
+    {
+      "event_id": 182,
+      "event_name": "International Gymnix",
+      "source": "calendar_row:2018:32",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-09",
+      "to_end_date": "2018-03-11"
+    },
+    {
+      "event_id": 209,
+      "event_name": "Singapore Championships",
+      "source": "calendar_row:2018:34",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-10",
+      "to_end_date": "2018-03-11"
+    },
+    {
+      "event_id": 9,
+      "event_name": "Baku World Cup",
+      "source": "calendar_row:2018:35",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-15",
+      "to_end_date": "2018-03-18"
+    },
+    {
+      "event_id": 193,
+      "event_name": "DTB Pokal Team Challenge",
+      "source": "calendar_row:2018:36",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-16",
+      "to_end_date": "2018-03-18"
+    },
+    {
+      "event_id": 73,
+      "event_name": "Stuttgart World Cup",
+      "source": "calendar_row:2018:38",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-17",
+      "to_end_date": "2018-03-18"
+    },
+    {
+      "event_id": 137,
+      "event_name": "Birmingham World Cup",
+      "source": "calendar_row:2018:39",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-21",
+      "to_end_date": "2018-03-22"
+    },
+    {
+      "event_id": 42,
+      "event_name": "Doha World Cup",
+      "source": "calendar_row:2018:40",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-21",
+      "to_end_date": "2018-03-24"
+    },
+    {
+      "event_id": 163,
+      "event_name": "Icelandic Team Championships",
+      "source": "calendar_row:2018:42",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-24",
+      "to_end_date": "2018-03-25"
+    },
+    {
+      "event_id": 23,
+      "event_name": "Indian Championships",
+      "source": "calendar_row:2018:43",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-25",
+      "to_end_date": "2018-03-27"
+    },
+    {
+      "event_id": 68,
+      "event_name": "Stella Zakharova Cup",
+      "source": "calendar_row:2018:45",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-31",
+      "to_end_date": "2018-04-01"
+    },
+    {
+      "event_id": 95,
+      "event_name": "Colombian Championships",
+      "source": "calendar_row:2018:46",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-05",
+      "to_end_date": "2018-04-08"
+    },
+    {
+      "event_id": 71,
+      "event_name": "Commonwealth Games",
+      "source": "calendar_row:2018:47",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-05",
+      "to_end_date": "2018-04-09"
+    },
+    {
+      "event_id": 61,
+      "event_name": "Icelandic Championships",
+      "source": "calendar_row:2018:50",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-07",
+      "to_end_date": "2018-04-08"
+    },
+    {
+      "event_id": 90,
+      "event_name": "Latvian Championships",
+      "source": "calendar_row:2018:51",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-13",
+      "to_end_date": "2018-04-14"
+    },
+    {
+      "event_id": 83,
+      "event_name": "Tokyo World Cup",
+      "source": "calendar_row:2018:52",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-14",
+      "to_end_date": "2018-04-14"
+    },
+    {
+      "event_id": 154,
+      "event_name": "City of Jesolo Trophy",
+      "source": "calendar_row:2018:53",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-14",
+      "to_end_date": "2018-04-15"
+    },
+    {
+      "event_id": 88,
+      "event_name": "Russian Championships",
+      "source": "calendar_row:2018:55",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-18",
+      "to_end_date": "2018-04-22"
+    },
+    {
+      "event_id": 24,
+      "event_name": "Austrian Team Open",
+      "source": "calendar_row:2018:56",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-21",
+      "to_end_date": "2018-04-21"
+    },
+    {
+      "event_id": 59,
+      "event_name": "International Junior Team Cup",
+      "source": "calendar_row:2018:57",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-21",
+      "to_end_date": "2018-04-22"
+    },
+    {
+      "event_id": 158,
+      "event_name": "2nd Spanish League",
+      "source": "calendar_row:2018:58",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-21",
+      "to_end_date": "2018-04-22"
+    },
+    {
+      "event_id": 11,
+      "event_name": "Asian Junior Championships",
+      "source": "calendar_row:2018:59",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-25",
+      "to_end_date": "2018-04-28"
+    },
+    {
+      "event_id": 65,
+      "event_name": "Pacific Rim Championships",
+      "source": "calendar_row:2018:60",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-27",
+      "to_end_date": "2018-04-29"
+    },
+    {
+      "event_id": 132,
+      "event_name": "All-Japan Championships",
+      "source": "calendar_row:2018:61",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-27",
+      "to_end_date": "2018-04-29"
+    },
+    {
+      "event_id": 172,
+      "event_name": "German Junior Championships",
+      "source": "calendar_row:2018:62",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-28",
+      "to_end_date": "2018-04-29"
+    },
+    {
+      "event_id": 14,
+      "event_name": "Gymnasiade",
+      "source": "calendar_row:2018:63",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-02",
+      "to_end_date": "2018-05-09"
+    },
+    {
+      "event_id": 125,
+      "event_name": "Chinese Championships",
+      "source": "calendar_row:2018:64",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-03",
+      "to_end_date": "2018-05-13"
+    },
+    {
+      "event_id": 80,
+      "event_name": "2nd Italian Serie A",
+      "source": "calendar_row:2018:65",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-05",
+      "to_end_date": "2018-05-05"
+    },
+    {
+      "event_id": 196,
+      "event_name": "Deva Friendly",
+      "source": "calendar_row:2018:66",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-05",
+      "to_end_date": "2018-05-05"
+    },
+    {
+      "event_id": 60,
+      "event_name": "GK Championships",
+      "source": "calendar_row:2018:67",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-05",
+      "to_end_date": "2018-05-05"
+    },
+    {
+      "event_id": 56,
+      "event_name": "International GymSport",
+      "source": "calendar_row:2018:68",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-05",
+      "to_end_date": "2018-05-06"
+    },
+    {
+      "event_id": 6,
+      "event_name": "African Championships",
+      "source": "calendar_row:2018:69",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-06",
+      "to_end_date": "2018-05-13"
+    },
+    {
+      "event_id": 77,
+      "event_name": "Unni & Haralds Trophy",
+      "source": "calendar_row:2018:70",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-11",
+      "to_end_date": "2018-05-13"
+    },
+    {
+      "event_id": 3,
+      "event_name": "Irish Championships",
+      "source": "calendar_row:2018:71",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-12",
+      "to_end_date": "2018-05-13"
+    },
+    {
+      "event_id": 89,
+      "event_name": "Dityatin Cup",
+      "source": "calendar_row:2018:72",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-16",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 192,
+      "event_name": "Polish Cup",
+      "source": "calendar_row:2018:73",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-18",
+      "to_end_date": "2018-05-19"
+    },
+    {
+      "event_id": 159,
+      "event_name": "Italian Gold Championships",
+      "source": "calendar_row:2018:74",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-18",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 150,
+      "event_name": "Zelena Jama Open",
+      "source": "calendar_row:2018:75",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-19"
+    },
+    {
+      "event_id": 185,
+      "event_name": "Marie Siroke Memorial",
+      "source": "calendar_row:2018:76",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-19"
+    },
+    {
+      "event_id": 134,
+      "event_name": "NHK Trophy",
+      "source": "calendar_row:2018:77",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 34,
+      "event_name": "French Championships",
+      "source": "calendar_row:2018:78",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 47,
+      "event_name": "Greek Championships",
+      "source": "calendar_row:2018:79",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 165,
+      "event_name": "Elek Matolay Memorial",
+      "source": "calendar_row:2018:80",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-19",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 136,
+      "event_name": "Portuguese Championships",
+      "source": "calendar_row:2018:81",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-20",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 48,
+      "event_name": "Padova Men's Friendly",
+      "source": "calendar_row:2018:82",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-20",
+      "to_end_date": "2018-05-20"
+    },
+    {
+      "event_id": 5,
+      "event_name": "Canadian Championships",
+      "source": "calendar_row:2018:83",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-22",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 174,
+      "event_name": "Auburn National Qualifier",
+      "source": "calendar_row:2018:84",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-24",
+      "to_end_date": "2018-05-26"
+    },
+    {
+      "event_id": 67,
+      "event_name": "Osijek Challenge Cup",
+      "source": "calendar_row:2018:85",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-24",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 176,
+      "event_name": "Liepaja Championships",
+      "source": "calendar_row:2018:86",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-25",
+      "to_end_date": "2018-05-26"
+    },
+    {
+      "event_id": 36,
+      "event_name": "Australian Championships",
+      "source": "calendar_row:2018:87",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-25",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 1,
+      "event_name": "Finnish Championships",
+      "source": "calendar_row:2018:88",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-25",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 52,
+      "event_name": "South American Games",
+      "source": "calendar_row:2018:89",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-25",
+      "to_end_date": "2018-05-30"
+    },
+    {
+      "event_id": 18,
+      "event_name": "Belgian Championships",
+      "source": "calendar_row:2018:90",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-26",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 92,
+      "event_name": "Danish Championships",
+      "source": "calendar_row:2018:91",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-26",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 171,
+      "event_name": "1st Norwegian FIG",
+      "source": "calendar_row:2018:92",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-26",
+      "to_end_date": "2018-05-27"
+    },
+    {
+      "event_id": 87,
+      "event_name": "Mexican Championships",
+      "source": "calendar_row:2018:93",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-27",
+      "to_end_date": "2018-06-03"
+    },
+    {
+      "event_id": 50,
+      "event_name": "Koper Challenge Cup",
+      "source": "calendar_row:2018:94",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-05-31",
+      "to_end_date": "2018-06-03"
+    },
+    {
+      "event_id": 94,
+      "event_name": "Austrian Men's Euros Trial",
+      "source": "calendar_row:2018:95",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-02",
+      "to_end_date": "2018-06-02"
+    },
+    {
+      "event_id": 186,
+      "event_name": "Czech Championships",
+      "source": "calendar_row:2018:96",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-02",
+      "to_end_date": "2018-06-03"
+    },
+    {
+      "event_id": 58,
+      "event_name": "Singapore Open",
+      "source": "calendar_row:2018:97",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-02",
+      "to_end_date": "2018-06-04"
+    },
+    {
+      "event_id": 210,
+      "event_name": "Chinese Junior Championships",
+      "source": "calendar_row:2018:98",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-03",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 79,
+      "event_name": "3rd Italian Serie A",
+      "source": "calendar_row:2018:99",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-09"
+    },
+    {
+      "event_id": 211,
+      "event_name": "South Korean Championships",
+      "source": "calendar_row:2018:100",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 161,
+      "event_name": "Swiss Junior Championships",
+      "source": "calendar_row:2018:101",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 151,
+      "event_name": "Gym Festival Trnava",
+      "source": "calendar_row:2018:102",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 203,
+      "event_name": "Klaverblad Championships",
+      "source": "calendar_row:2018:103",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 138,
+      "event_name": "Junior Pan American Championships",
+      "source": "calendar_row:2018:104",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-09",
+      "to_end_date": "2018-06-16"
+    },
+    {
+      "event_id": 197,
+      "event_name": "Croatian Championships",
+      "source": "calendar_row:2018:105",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-10",
+      "to_end_date": "2018-06-10"
+    },
+    {
+      "event_id": 175,
+      "event_name": "Ukraine Cup",
+      "source": "calendar_row:2018:106",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-11",
+      "to_end_date": "2018-06-14"
+    },
+    {
+      "event_id": 21,
+      "event_name": "Guimaraes Challenge Cup",
+      "source": "calendar_row:2018:107",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-14",
+      "to_end_date": "2018-06-17"
+    },
+    {
+      "event_id": 170,
+      "event_name": "Norwegian Junior Championships",
+      "source": "calendar_row:2018:108",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-16",
+      "to_end_date": "2018-06-17"
+    },
+    {
+      "event_id": 156,
+      "event_name": "3rd Spanish League",
+      "source": "calendar_row:2018:109",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-16",
+      "to_end_date": "2018-06-17"
+    },
+    {
+      "event_id": 75,
+      "event_name": "Kazakhstan Championships",
+      "source": "calendar_row:2018:110",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-18",
+      "to_end_date": "2018-06-24"
+    },
+    {
+      "event_id": 121,
+      "event_name": "Brazilian Championships",
+      "source": "calendar_row:2018:111",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-22",
+      "to_end_date": "2018-06-24"
+    },
+    {
+      "event_id": 66,
+      "event_name": "Mediterranean Games",
+      "source": "calendar_row:2018:112",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-22",
+      "to_end_date": "2018-07-01"
+    },
+    {
+      "event_id": 44,
+      "event_name": "Youth Olympic Games Qualifier",
+      "source": "calendar_row:2018:113",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-23",
+      "to_end_date": "2018-06-23"
+    },
+    {
+      "event_id": 173,
+      "event_name": "German Euros Trial",
+      "source": "calendar_row:2018:114",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-23",
+      "to_end_date": "2018-06-23"
+    },
+    {
+      "event_id": 19,
+      "event_name": "Dutch Championships",
+      "source": "calendar_row:2018:115",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-23",
+      "to_end_date": "2018-06-24"
+    },
+    {
+      "event_id": 143,
+      "event_name": "Brestyan's National Qualifier",
+      "source": "calendar_row:2018:116",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-23",
+      "to_end_date": "2018-06-24"
+    },
+    {
+      "event_id": 93,
+      "event_name": "Austrian Championships",
+      "source": "calendar_row:2018:117",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-23",
+      "to_end_date": "2018-06-24"
+    },
+    {
+      "event_id": 179,
+      "event_name": "Russian Cup",
+      "source": "calendar_row:2018:118",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-27",
+      "to_end_date": "2018-06-30"
+    },
+    {
+      "event_id": 115,
+      "event_name": "Russian Junior Championships",
+      "source": "calendar_row:2018:119",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-27",
+      "to_end_date": "2018-06-30"
+    },
+    {
+      "event_id": 141,
+      "event_name": "Argentinian Club Championships",
+      "source": "calendar_row:2018:120",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-27",
+      "to_end_date": "2018-06-30"
+    },
+    {
+      "event_id": 55,
+      "event_name": "Polish Championships",
+      "source": "calendar_row:2018:121",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-28",
+      "to_end_date": "2018-07-01"
+    },
+    {
+      "event_id": 62,
+      "event_name": "Nordic Championships",
+      "source": "calendar_row:2018:122",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-29",
+      "to_end_date": "2018-07-01"
+    },
+    {
+      "event_id": 133,
+      "event_name": "All-Japan Event Championships",
+      "source": "calendar_row:2018:123",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-30",
+      "to_end_date": "2018-07-01"
+    },
+    {
+      "event_id": 4,
+      "event_name": "Irish Super Championships",
+      "source": "calendar_row:2018:124",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-06-30",
+      "to_end_date": "2018-07-01"
+    },
+    {
+      "event_id": 33,
+      "event_name": "Swedish Championships",
+      "source": "calendar_row:2018:125",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-03",
+      "to_end_date": "2018-07-06"
+    },
+    {
+      "event_id": 37,
+      "event_name": "Israeli Championships",
+      "source": "calendar_row:2018:126",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-04",
+      "to_end_date": "2018-07-04"
+    },
+    {
+      "event_id": 147,
+      "event_name": "Hopes Classic",
+      "source": "calendar_row:2018:127",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-06",
+      "to_end_date": "2018-07-06"
+    },
+    {
+      "event_id": 16,
+      "event_name": "Mersin Challenge Cup",
+      "source": "calendar_row:2018:128",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-06",
+      "to_end_date": "2018-07-08"
+    },
+    {
+      "event_id": 144,
+      "event_name": "American Classic",
+      "source": "calendar_row:2018:129",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-07",
+      "to_end_date": "2018-07-07"
+    },
+    {
+      "event_id": 188,
+      "event_name": "Budapest Friendly",
+      "source": "calendar_row:2018:130",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-07",
+      "to_end_date": "2018-07-07"
+    },
+    {
+      "event_id": 201,
+      "event_name": "Saint\u00e9 Gym Cup",
+      "source": "calendar_row:2018:131",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-07",
+      "to_end_date": "2018-07-07"
+    },
+    {
+      "event_id": 91,
+      "event_name": "Italian Championships",
+      "source": "calendar_row:2018:132",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-07",
+      "to_end_date": "2018-07-08"
+    },
+    {
+      "event_id": 183,
+      "event_name": "Heerenveen Friendly",
+      "source": "calendar_row:2018:133",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-07",
+      "to_end_date": "2018-07-08"
+    },
+    {
+      "event_id": 57,
+      "event_name": "Spanish Championships",
+      "source": "calendar_row:2018:134",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-08",
+      "to_end_date": "2018-07-15"
+    },
+    {
+      "event_id": 162,
+      "event_name": "Pieve di Soligo Friendly",
+      "source": "calendar_row:2018:135",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-14",
+      "to_end_date": "2018-07-14"
+    },
+    {
+      "event_id": 195,
+      "event_name": "Izvorani Friendly",
+      "source": "calendar_row:2018:136",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-14",
+      "to_end_date": "2018-07-14"
+    },
+    {
+      "event_id": 46,
+      "event_name": "U.S. Men's National Qualifier",
+      "source": "calendar_row:2018:137",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-14",
+      "to_end_date": "2018-07-14"
+    },
+    {
+      "event_id": 30,
+      "event_name": "Hungarian Event Championships",
+      "source": "calendar_row:2018:138",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-14",
+      "to_end_date": "2018-07-15"
+    },
+    {
+      "event_id": 114,
+      "event_name": "Africa Safari International",
+      "source": "calendar_row:2018:139",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-20",
+      "to_end_date": "2018-07-21"
+    },
+    {
+      "event_id": 20,
+      "event_name": "Central American & Caribbean Games",
+      "source": "calendar_row:2018:140",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-20",
+      "to_end_date": "2018-07-24"
+    },
+    {
+      "event_id": 29,
+      "event_name": "Budapest Men's Friendly",
+      "source": "calendar_row:2018:141",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-21",
+      "to_end_date": "2018-07-21"
+    },
+    {
+      "event_id": 110,
+      "event_name": "Baiersbronn Men's Friendly",
+      "source": "calendar_row:2018:142",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-21",
+      "to_end_date": "2018-07-21"
+    },
+    {
+      "event_id": 184,
+      "event_name": "Hopes Championships",
+      "source": "calendar_row:2018:143",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-27",
+      "to_end_date": "2018-07-27"
+    },
+    {
+      "event_id": 145,
+      "event_name": "U.S. Classic",
+      "source": "calendar_row:2018:144",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-07-28",
+      "to_end_date": "2018-07-28"
+    },
+    {
+      "event_id": 31,
+      "event_name": "European Championships",
+      "source": "calendar_row:2018:145",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-02",
+      "to_end_date": "2018-08-12"
+    },
+    {
+      "event_id": 189,
+      "event_name": "Chilean Trial Meet",
+      "source": "calendar_row:2018:146",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-05",
+      "to_end_date": "2018-08-05"
+    },
+    {
+      "event_id": 45,
+      "event_name": "U.S. Championships",
+      "source": "calendar_row:2018:147",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-16",
+      "to_end_date": "2018-08-19"
+    },
+    {
+      "event_id": 85,
+      "event_name": "Brazilian Event Championships",
+      "source": "calendar_row:2018:148",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-16",
+      "to_end_date": "2018-08-19"
+    },
+    {
+      "event_id": 178,
+      "event_name": "Mexican Trial Meet",
+      "source": "calendar_row:2018:149",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-18",
+      "to_end_date": "2018-08-19"
+    },
+    {
+      "event_id": 13,
+      "event_name": "Asian Games",
+      "source": "calendar_row:2018:150",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-08-18",
+      "to_end_date": "2018-09-02"
+    },
+    {
+      "event_id": 126,
+      "event_name": "Chinese Individual Championships",
+      "source": "calendar_row:2018:151",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-04",
+      "to_end_date": "2018-09-07"
+    },
+    {
+      "event_id": 98,
+      "event_name": "5th Bundesliga",
+      "source": "calendar_row:2018:152",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-08",
+      "to_end_date": "2018-09-08"
+    },
+    {
+      "event_id": 131,
+      "event_name": "Chinese Individual Junior Championships",
+      "source": "calendar_row:2018:153",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-08",
+      "to_end_date": "2018-09-10"
+    },
+    {
+      "event_id": 199,
+      "event_name": "South African Championships",
+      "source": "calendar_row:2018:154",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-14",
+      "to_end_date": "2018-09-15"
+    },
+    {
+      "event_id": 22,
+      "event_name": "Pan American Championships",
+      "source": "calendar_row:2018:155",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-14",
+      "to_end_date": "2018-09-16"
+    },
+    {
+      "event_id": 27,
+      "event_name": "Hungarian Championships",
+      "source": "calendar_row:2018:156",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-14",
+      "to_end_date": "2018-09-16"
+    },
+    {
+      "event_id": 167,
+      "event_name": "Australian Classic",
+      "source": "calendar_row:2018:157",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-14",
+      "to_end_date": "2018-09-17"
+    },
+    {
+      "event_id": 139,
+      "event_name": "British Team Championships",
+      "source": "calendar_row:2018:159",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-15",
+      "to_end_date": "2018-09-15"
+    },
+    {
+      "event_id": 181,
+      "event_name": "Belarusian Championships",
+      "source": "calendar_row:2018:160",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-19",
+      "to_end_date": "2018-09-21"
+    },
+    {
+      "event_id": 205,
+      "event_name": "Junior Mediterranean Championships",
+      "source": "calendar_row:2018:161",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-19",
+      "to_end_date": "2018-09-23"
+    },
+    {
+      "event_id": 32,
+      "event_name": "Szombathely Challenge Cup",
+      "source": "calendar_row:2018:163",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-21",
+      "to_end_date": "2018-09-23"
+    },
+    {
+      "event_id": 135,
+      "event_name": "Norwegian Championships",
+      "source": "calendar_row:2018:164",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-22",
+      "to_end_date": "2018-09-23"
+    },
+    {
+      "event_id": 128,
+      "event_name": "Swiss Championships",
+      "source": "calendar_row:2018:165",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-22",
+      "to_end_date": "2018-09-23"
+    },
+    {
+      "event_id": 78,
+      "event_name": "Wohnen Juniors Trophy",
+      "source": "calendar_row:2018:166",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-22",
+      "to_end_date": "2018-09-23"
+    },
+    {
+      "event_id": 28,
+      "event_name": "Paris Challenge Cup",
+      "source": "calendar_row:2018:167",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-27",
+      "to_end_date": "2018-09-30"
+    },
+    {
+      "event_id": 100,
+      "event_name": "German Championships",
+      "source": "calendar_row:2018:168",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-29",
+      "to_end_date": "2018-09-30"
+    },
+    {
+      "event_id": 127,
+      "event_name": "New Zealand Championships",
+      "source": "calendar_row:2018:169",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-03",
+      "to_end_date": "2018-10-06"
+    },
+    {
+      "event_id": 207,
+      "event_name": "Varsenare Friendly",
+      "source": "calendar_row:2018:170",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-06",
+      "to_end_date": "2018-10-06"
+    },
+    {
+      "event_id": 118,
+      "event_name": "Ghent Men's Friendly",
+      "source": "calendar_row:2018:171",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-06",
+      "to_end_date": "2018-10-06"
+    },
+    {
+      "event_id": 153,
+      "event_name": "Leverkusen Cup",
+      "source": "calendar_row:2018:172",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-06",
+      "to_end_date": "2018-10-06"
+    },
+    {
+      "event_id": 10,
+      "event_name": "Youth Olympic Games",
+      "source": "calendar_row:2018:173",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-06",
+      "to_end_date": "2018-10-18"
+    },
+    {
+      "event_id": 191,
+      "event_name": "U.S. Worlds Trials",
+      "source": "calendar_row:2018:174",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-11",
+      "to_end_date": "2018-10-11"
+    },
+    {
+      "event_id": 202,
+      "event_name": "VTB Cup",
+      "source": "calendar_row:2018:175",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-11",
+      "to_end_date": "2018-10-16"
+    },
+    {
+      "event_id": 49,
+      "event_name": "Romanian Championships",
+      "source": "calendar_row:2018:176",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-12",
+      "to_end_date": "2018-10-14"
+    },
+    {
+      "event_id": 200,
+      "event_name": "R\u00fcsselsheim Friendly",
+      "source": "calendar_row:2018:177",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-13",
+      "to_end_date": "2018-10-13"
+    },
+    {
+      "event_id": 198,
+      "event_name": "Kiev Open Cup",
+      "source": "calendar_row:2018:178",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-13",
+      "to_end_date": "2018-10-13"
+    },
+    {
+      "event_id": 63,
+      "event_name": "South American Junior Championships",
+      "source": "calendar_row:2018:179",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-17",
+      "to_end_date": "2018-10-21"
+    },
+    {
+      "event_id": 25,
+      "event_name": "Salamunov Memorial",
+      "source": "calendar_row:2018:180",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-19",
+      "to_end_date": "2018-10-21"
+    },
+    {
+      "event_id": 15,
+      "event_name": "World Championships",
+      "source": "calendar_row:2018:181",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-10-25",
+      "to_end_date": "2018-11-03"
+    },
+    {
+      "event_id": 164,
+      "event_name": "Icelandic Fall Championships",
+      "source": "calendar_row:2018:182",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-03",
+      "to_end_date": "2018-11-04"
+    },
+    {
+      "event_id": 84,
+      "event_name": "Kazakhstan Junior Championships",
+      "source": "calendar_row:2018:183",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-05",
+      "to_end_date": "2018-11-10"
+    },
+    {
+      "event_id": 169,
+      "event_name": "Gymnova Cup",
+      "source": "calendar_row:2018:184",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-09",
+      "to_end_date": "2018-11-10"
+    },
+    {
+      "event_id": 113,
+      "event_name": "6th Bundesliga",
+      "source": "calendar_row:2018:185",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-10",
+      "to_end_date": "2018-11-10"
+    },
+    {
+      "event_id": 168,
+      "event_name": "Tournoi International",
+      "source": "calendar_row:2018:187",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-10",
+      "to_end_date": "2018-11-11"
+    },
+    {
+      "event_id": 142,
+      "event_name": "Gy\u00f6r Friendly",
+      "source": "calendar_row:2018:188",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-11",
+      "to_end_date": "2018-11-11"
+    },
+    {
+      "event_id": 123,
+      "event_name": "Arthur Gander Memorial",
+      "source": "calendar_row:2018:189",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-14",
+      "to_end_date": "2018-11-14"
+    },
+    {
+      "event_id": 109,
+      "event_name": "Brazilian Junior Championships",
+      "source": "calendar_row:2018:190",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-14",
+      "to_end_date": "2018-11-18"
+    },
+    {
+      "event_id": 26,
+      "event_name": "Hungarian Masters Championships",
+      "source": "calendar_row:2018:191",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-16",
+      "to_end_date": "2018-11-17"
+    },
+    {
+      "event_id": 180,
+      "event_name": "Elite Gym Massilia",
+      "source": "calendar_row:2018:192",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-16",
+      "to_end_date": "2018-11-18"
+    },
+    {
+      "event_id": 140,
+      "event_name": "Argentinian Championships",
+      "source": "calendar_row:2018:193",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-17",
+      "to_end_date": "2018-11-17"
+    },
+    {
+      "event_id": 187,
+      "event_name": "Dutch Team Championships",
+      "source": "calendar_row:2018:194",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-17",
+      "to_end_date": "2018-11-17"
+    },
+    {
+      "event_id": 70,
+      "event_name": "7th Bundesliga",
+      "source": "calendar_row:2018:195",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-17",
+      "to_end_date": "2018-11-17"
+    },
+    {
+      "event_id": 122,
+      "event_name": "Swiss Cup",
+      "source": "calendar_row:2018:198",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-18",
+      "to_end_date": "2018-11-18"
+    },
+    {
+      "event_id": 17,
+      "event_name": "Cottbus World Cup",
+      "source": "calendar_row:2018:199",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-22",
+      "to_end_date": "2018-11-25"
+    },
+    {
+      "event_id": 152,
+      "event_name": "Zifcakovcov Memorial",
+      "source": "calendar_row:2018:200",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-23",
+      "to_end_date": "2018-11-24"
+    },
+    {
+      "event_id": 101,
+      "event_name": "Sokol Grand Prix",
+      "source": "calendar_row:2018:201",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-23",
+      "to_end_date": "2018-11-25"
+    },
+    {
+      "event_id": 177,
+      "event_name": "Top Gym Tournament",
+      "source": "calendar_row:2018:203",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-24",
+      "to_end_date": "2018-11-25"
+    },
+    {
+      "event_id": 76,
+      "event_name": "All-Japan Team Championships",
+      "source": "calendar_row:2018:204",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-24",
+      "to_end_date": "2018-11-25"
+    },
+    {
+      "event_id": 35,
+      "event_name": "Olympic Hopes Cup",
+      "source": "calendar_row:2018:205",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-11-29",
+      "to_end_date": "2018-12-01"
+    },
+    {
+      "event_id": 124,
+      "event_name": "Joaquin Blume Memorial",
+      "source": "calendar_row:2018:206",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-01",
+      "to_end_date": "2018-12-01"
+    },
+    {
+      "event_id": 116,
+      "event_name": "Bundesliga Finals",
+      "source": "calendar_row:2018:207",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-01",
+      "to_end_date": "2018-12-01"
+    },
+    {
+      "event_id": 206,
+      "event_name": "Japanese World Cup Trials",
+      "source": "calendar_row:2018:209",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-02",
+      "to_end_date": "2018-12-02"
+    },
+    {
+      "event_id": 2,
+      "event_name": "Barborka Cup",
+      "source": "calendar_row:2018:210",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-07",
+      "to_end_date": "2018-12-09"
+    },
+    {
+      "event_id": 194,
+      "event_name": "Bundesliga Regional Finals",
+      "source": "calendar_row:2018:211",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-08",
+      "to_end_date": "2018-12-08"
+    },
+    {
+      "event_id": 130,
+      "event_name": "Toyota International",
+      "source": "calendar_row:2018:213",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-08",
+      "to_end_date": "2018-12-09"
+    },
+    {
+      "event_id": 51,
+      "event_name": "Voronin Cup",
+      "source": "calendar_row:2018:214",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-12-12",
+      "to_end_date": "2018-12-13"
+    }
+  ],
+  "unresolved": [
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "2",
+      "calendar_event": "RDI 761 Invitational",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "5",
+      "calendar_event": "Desert Lights National Qualifier",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "6",
+      "calendar_event": "Buckeye National Qualifier",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "13",
+      "calendar_event": "Orlando National Qualifier",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "18",
+      "calendar_event": "Top 12 Semi-Final (MAG)",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "37",
+      "calendar_event": "Top 12 Finals (MAG & WAG)",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "49",
+      "calendar_event": "U.S. April Verification Camp",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "158",
+      "calendar_event": "German Worlds Trials",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_event_match_review.csv",
+      "calendar_row": "162",
+      "calendar_event": "U.S. Men's Worlds Trials",
+      "reason": "missing_or_unrecognized_decision",
+      "decision": ""
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "1",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "2",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "3",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "4",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "5",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "6",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "7",
+      "reason": "source_conflict_requires_one_selected_row"
+    },
+    {
+      "source": "docs/import_reports/calendar_2018_source_conflicts.csv",
+      "conflict_group": "8",
+      "reason": "source_conflict_requires_one_selected_row"
+    }
+  ],
+  "invalid_decision_details": [],
+  "skipped_details": [],
+  "source_issues": []
+}

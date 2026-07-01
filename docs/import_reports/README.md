@@ -118,6 +118,8 @@ Per ogni anno possono essere prodotti:
 - `calendar_<anno>_db_unmatched_events.csv`: eventi gia presenti nel DB per quell'anno che non risultano coperti da alcuna riga calendario;
 - `calendar_<anno>_source_conflicts.csv`: casi in cui piu righe calendario puntano allo stesso `Event` DB con date diverse;
 - `calendar_<anno>_match_summary.csv`: riepilogo numerico bidirezionale dei match/mismatch.
+- `calendar_<anno>_dry_run_summary.json`: simulazione del commit calendario per l'anno;
+- `calendar_<anno>_commit_summary.json`: report del commit reale delle date applicate agli `Event`.
 
 Regola semantica calendario aggiunta il 1 luglio 2026: nei nomi evento, `MAG` viene trattato come indizio di gara maschile e puo corrispondere a varianti DB con `Men's`/`Mens`; analogamente `WAG` puo corrispondere a varianti con `Women's`/`Womens`.
 
@@ -136,6 +138,28 @@ Per il 2018, dopo questa normalizzazione, il riepilogo e:
 | Conflitti stesso Event DB / date diverse | 8 |
 
 Interpretazione: i due lati del mismatch non devono necessariamente essere identici, perche una riga calendario puo rappresentare una gara combinata MAG/WAG oppure piu righe calendario possono puntare allo stesso evento DB, specialmente quando nel DB storico l'evento era stato creato come `MAG and WAG`.
+
+Il commit calendario anno-per-anno e supportato dallo script:
+
+```text
+scripts/commit_calendar_year.py
+```
+
+Lo script applica automaticamente solo i match sicuri e aggiorna i campi `start_date` / `end_date` degli `Event` associati. I mismatch e i conflitti MAG/WAG restano in review finche l'admin non compila i CSV.
+
+Primo commit calendario 2018:
+
+| Controllo | Conteggio |
+|---|---:|
+| Match sicuri applicati | 189 |
+| Event 2018 con date dopo commit | 189 |
+| Event 2018 ancora senza date | 22 |
+| Elementi review aperti | 17 |
+
+Report:
+
+- `calendar_2018_dry_run_summary.json`
+- `calendar_2018_commit_summary.json`
 
 ## Convenzione review atleta/country
 
