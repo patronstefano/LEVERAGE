@@ -3168,3 +3168,56 @@ Le due righe Calendar 2020 chiuse come `calendar_only` sono:
 | 79 | `Hungarian Master Championships` | Nov 13-15 | Nessun Result DB 2020 collegato; possibile evento non svolto o senza risultati sorgente |
 
 Nota metodologica: `season_year_spillover` e una eccezione controllata, non un errore cross-year. Si usa quando l'Event DB appartiene a una stagione/anno dati diverso dal foglio Calendar in cui cade la data reale dell'evento.
+
+### Calendar 2021
+
+Il flusso Calendar 2021 e stato avviato con la stessa metodologia consolidata per 2018-2020: prima applicazione automatica solo dei match sicuri, poi preparazione di file CSV snelli per la review admin dei casi non risolti. La regola guida resta che tutti gli Event DB creati dai Result devono ottenere copertura Calendar, mentre le righe Calendar prive di Result possono essere chiuse come `calendar_only` se rappresentano eventi non svolti o privi di risultati sorgente.
+
+Fotografia iniziale 2021:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2021 | 210 |
+| Event DB 2021 | 196 |
+| Righe Calendar 2021 con match automatico | 181 |
+| Righe Calendar 2021 senza match automatico | 29 |
+| Event DB 2021 matched automaticamente | 172 |
+| Event DB 2021 senza match automatico con result | 24 |
+| Event DB 2021 matched da piu righe Calendar | 9 |
+| Conflitti stesso Event/date diverse | 9 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2021:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 163 |
+| Event aggiornati con `start_date` / `end_date` | 163 |
+| Righe saltate per conflitto stesso Event/date diverse | 18 |
+| Elementi review ancora aperti | 38 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2021_20260701_232721.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2021 senza match corrente | 29 |
+| Event DB 2021 senza match corrente | 24 |
+| Event DB 2021 gia coperti | 172 |
+| Righe Calendar 2021 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year rilevati | 0 |
+
+File preparati per la review admin 2021:
+
+- `calendar_2021_calendar_unmatched_current.csv`
+- `calendar_2021_db_unmatched_current.csv`
+- `calendar_2021_source_conflicts_slim.csv`
+
+Nota operativa: i tre file restano volutamente snelli. Nel primo si decide se una riga Calendar va collegata a un Event DB suggerito oppure chiusa come `calendar_only`; nel secondo si collega un Event DB ancora senza data alla riga Calendar corretta; nel terzo si risolve il caso in cui lo stesso Event DB puo essere rappresentato da piu righe Calendar, spesso per differenze MAG/WAG o giornate multiple.

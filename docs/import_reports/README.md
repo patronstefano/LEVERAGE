@@ -297,6 +297,37 @@ Esito finale calendario 2020:
 
 Le due righe Calendar 2020 chiuse come `calendar_only` sono `Stella Zakharova Cup` e `Hungarian Master Championships`.
 
+## Calendar 2021 - checkpoint review
+
+Il flusso 2021 e stato avviato con la stessa procedura usata per gli anni precedenti: match automatici solo quando sicuri, backup locale del DB prima della scrittura, poi review admin dei casi rimasti aperti.
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2021 | 210 |
+| Event DB 2021 | 196 |
+| Match diretti sicuri applicati | 163 |
+| Event DB 2021 gia coperti | 172 |
+| Calendar 2021 senza match corrente | 29 |
+| Event DB 2021 senza match corrente | 24 |
+| Conflitti stesso Event/date da rivedere | 9 |
+| Righe Calendar 2021 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+Backup del primo commit sicuro 2021:
+
+```text
+backups/leverage_calendar_2021_20260701_232721.db
+```
+
+File operativi da compilare:
+
+- `calendar_2021_calendar_unmatched_current.csv`
+- `calendar_2021_db_unmatched_current.csv`
+- `calendar_2021_source_conflicts_slim.csv`
+
+La review 2021 deve continuare a seguire la regola metodologica gia fissata: ogni Event DB derivato dai Result deve avere copertura Calendar; una riga Calendar senza Event DB puo invece restare solo calendario tramite `calendar_only` se non esiste un Result sorgente collegabile.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:
