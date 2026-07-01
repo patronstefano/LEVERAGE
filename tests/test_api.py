@@ -6410,6 +6410,15 @@ def gymternet_multiple_new_entities_csv_bytes() -> BytesIO:
     return BytesIO(csv_text.encode("utf-8"))
 
 
+def gymternet_mixed_discipline_same_event_csv_bytes() -> BytesIO:
+    csv_text = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Leonardo Rossi,Italy,Shared Cup 2024,FX,14.1,5.8\n"
+        "WAG,Giulia Bianchi,Italy,Shared Cup 2024,FX,13.9,5.5\n"
+    )
+    return BytesIO(csv_text.encode("utf-8"))
+
+
 def gymternet_athlete_typo_csv_bytes() -> BytesIO:
     csv_text = (
         "discipline,athlete,country,event,apparatus,score,d_score\n"
@@ -6866,6 +6875,49 @@ def test_gymternet_import_commit_creates_rows_and_skips_identical_duplicates():
     assert len(duplicate_notifications) == 2
     assert duplicate_notifications[0]["type"] == "import_summary"
     assert "1 duplicate(s) skipped" in duplicate_notifications[0]["message"]
+
+
+def test_gymternet_import_combines_mag_and_wag_results_under_one_event():
+    client.post("/auth/register", json={"email": "gymternet_combined_event@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("gymternet_combined_event@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    preview_response = client.post(
+        "/imports/gymternet/preview?year_hint=2024",
+        files={"file": ("gymternet_mixed.csv", gymternet_mixed_discipline_same_event_csv_bytes(), "text/csv")},
+        headers=headers,
+    )
+    assert preview_response.status_code == 200
+    preview_payload = preview_response.json()
+    assert preview_payload["importable_results"] == 2
+    assert preview_payload["would_create_events"] == 1
+
+    commit_response = client.post(
+        "/imports/gymternet/commit?year_hint=2024",
+        files={"file": ("gymternet_mixed.csv", gymternet_mixed_discipline_same_event_csv_bytes(), "text/csv")},
+        headers=headers,
+    )
+    assert commit_response.status_code == 200
+    payload = commit_response.json()
+    assert payload["committed"] is True
+    assert payload["created_events"] == 1
+    assert payload["updated_events"] == 1
+    assert payload["created_results"] == 2
+    assert payload["events_with_new_results"] == 1
+
+    events_response = client.get("/events/?search=Shared%20Cup")
+    assert events_response.status_code == 200
+    events = events_response.json()
+    assert len(events) == 1
+    event = events[0]
+    assert event["discipline"] == "MAG and WAG"
+
+    results_response = client.get(f"/events/{event['id']}/results")
+    assert results_response.status_code == 200
+    results = results_response.json()
+    assert len(results) == 2
+    assert {result["discipline"] for result in results} == {"MAG", "WAG"}
+    assert {result["event_id"] for result in results} == {event["id"]}
 
 
 def test_gymternet_import_flags_existing_duplicate_with_different_represented_country():
