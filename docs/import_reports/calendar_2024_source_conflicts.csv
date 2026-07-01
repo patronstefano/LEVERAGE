@@ -1,0 +1,13 @@
+conflict_group,event_id,event_name,event_year,event_discipline,event_category,event_result_count,calendar_sheet,calendar_row,calendar_year,calendar_date,calendar_start_date,calendar_end_date,calendar_event,decision,action,notes
+1,1224,Top 12 Series 4,2024,MAG and WAG,junior and senior,255,2024,6,2024,Jan 27,2024-01-27,2024-01-27,Top 12 Series 4 (MAG),,,
+1,1224,Top 12 Series 4,2024,MAG and WAG,junior and senior,255,2024,58,2024,Mar 30,2024-03-30,2024-03-30,Top 12 Series 4,,,
+2,1296,1st Bundesliga,2024,MAG and WAG,junior and senior,486,2024,79,2024,Apr 13,2024-04-13,2024-04-13,1st Bundesliga,,,
+2,1296,1st Bundesliga,2024,MAG and WAG,junior and senior,486,2024,162,2024,Sep 28,2024-09-28,2024-09-28,1st Bundesliga (MAG),,,
+3,1238,2nd Bundesliga,2024,MAG and WAG,junior and senior,488,2024,152,2024,Sep 14,2024-09-14,2024-09-14,2nd Bundesliga,,,
+3,1238,2nd Bundesliga,2024,MAG and WAG,junior and senior,488,2024,166,2024,Oct 5,2024-10-05,2024-10-05,2nd Bundesliga (MAG),,,
+4,1239,4th Bundesliga,2024,MAG and WAG,junior and senior,476,2024,176,2024,Oct 19,2024-10-19,2024-10-19,4th Bundesliga (MAG),,,
+4,1239,4th Bundesliga,2024,MAG and WAG,junior and senior,476,2024,191,2024,Nov 9,2024-11-09,2024-11-09,4th Bundesliga,,,
+5,1010,Top 12 Series 1 (2024 Season),2024,MAG and WAG,junior and senior,199,2024,200,2024,Nov 16,2024-11-16,2024-11-16,Top 12 Series 1 (MAG),,,
+5,1010,Top 12 Series 1 (2024 Season),2024,MAG and WAG,junior and senior,199,2024,213,2024,Nov 30,2024-11-30,2024-11-30,Top 12 Series 1,,,
+6,983,Top 12 Series 2 (2024 Season),2024,MAG and WAG,junior and senior,200,2024,214,2024,Nov 30,2024-11-30,2024-11-30,Top 12 Series 2 (MAG),,,
+6,983,Top 12 Series 2 (2024 Season),2024,MAG and WAG,junior and senior,200,2024,222,2024,Dec 14,2024-12-14,2024-12-14,Top 12 Series 2,,,

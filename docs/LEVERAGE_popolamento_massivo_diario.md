@@ -3543,3 +3543,58 @@ Esito finale 2023:
 | Collegamenti cross-year non controllati | 0 |
 
 L'Event DB 2023 chiuso come `db_only` e `German Worlds Trials 2`. Le righe `calendar_only` 2023 sono principalmente test nazionali finlandesi senza Event DB collegato, oltre a `Austrian Junior Championships`, `Hungarian Junior Men's Championships` e `Top 12 Series 3 (MAG) (2024 season)`.
+
+### Calendar 2024
+
+Il flusso Calendar 2024 e stato avviato tenendo conto dei collegamenti `season_year_spillover` gia creati durante la review 2023. Sei Event DB 2024 risultano infatti gia coperti da righe Calendar del foglio 2023, perche riferiti a competizioni di stagione 2024 disputate in date 2023.
+
+Fotografia iniziale 2024:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2024 | 222 |
+| Event DB 2024 | 207 |
+| Righe Calendar 2024 con match automatico | 204 |
+| Righe Calendar 2024 senza match automatico | 18 |
+| Event DB 2024 matched automaticamente | 197 |
+| Event DB 2024 senza match automatico con result | 10 |
+| Event DB 2024 matched da piu righe Calendar | 7 |
+| Conflitti stesso Event/date diverse | 6 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2024:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 192 |
+| Event aggiornati con `start_date` / `end_date` | 191 |
+| Event gia coerenti con la data sorgente | 1 |
+| Righe saltate per conflitto stesso Event/date diverse | 12 |
+| Elementi review ancora aperti | 24 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2024_20260702_012421.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2024 senza match corrente | 18 |
+| Event DB 2024 senza match corrente | 9 |
+| Event DB 2024 gia coperti | 198 |
+| Event DB 2024 `db_only` gia verificati | 0 |
+| Righe Calendar 2024 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 6 |
+| Collegamenti cross-year rilevati | 0 |
+
+File preparati per la review admin 2024:
+
+- `calendar_2024_calendar_unmatched_current.csv`
+- `calendar_2024_db_unmatched_current.csv`
+- `calendar_2024_source_conflicts_slim.csv`
+
+Nota operativa: nel 2024 restano da verificare alcune righe Calendar senza Event DB evidente, come `European Gymnastics Online Series`, gare MAG nazionali e amichevoli junior, oltre a 9 Event DB non ancora collegati. I conflitti source riguardano soprattutto Top 12 e Bundesliga, quindi vanno gestiti con la stessa logica multi-data gia usata negli anni precedenti.

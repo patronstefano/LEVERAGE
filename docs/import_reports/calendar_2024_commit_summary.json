@@ -1,0 +1,2088 @@
+{
+  "year": 2024,
+  "calendar_file": "docs/import_reports/Calendar_date_normalized.xlsx",
+  "database": "leverage.db",
+  "dry_run": false,
+  "committed": true,
+  "backup_path": "backups/leverage_calendar_2024_20260702_012421.db",
+  "parsed_rows_all_years": 1870,
+  "calendar_rows": 222,
+  "direct_safe_rows": 192,
+  "direct_skipped_conflict_rows": 12,
+  "direct_skipped_multiple_match_rows": 0,
+  "review_match_rows": 0,
+  "resolved_source_conflicts": 0,
+  "calendar_only_rows": 0,
+  "calendar_entries_created": 0,
+  "calendar_entries_updated": 0,
+  "calendar_entries_no_change": 0,
+  "updated_events": 191,
+  "no_change_events": 1,
+  "unresolved_review_items": 24,
+  "invalid_decisions": 0,
+  "skipped": 0,
+  "updates": [
+    {
+      "event_id": 1178,
+      "event_name": "Indian Championships",
+      "source": "calendar_row:2024:2",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-01-02",
+      "to_end_date": "2024-01-04"
+    },
+    {
+      "event_id": 1265,
+      "event_name": "Beach Blast Invitational",
+      "source": "calendar_row:2024:3",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-01-12",
+      "to_end_date": "2024-01-14"
+    },
+    {
+      "event_id": 1286,
+      "event_name": "Houston National Invitational",
+      "source": "calendar_row:2024:4",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-01-18",
+      "to_end_date": "2024-01-21"
+    },
+    {
+      "event_id": 1338,
+      "event_name": "Vegas Cup National Qualifier",
+      "source": "calendar_row:2024:5",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-01-26",
+      "to_end_date": "2024-01-28"
+    },
+    {
+      "event_id": 1209,
+      "event_name": "1st Italian Serie A",
+      "source": "calendar_row:2024:7",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-02",
+      "to_end_date": "2024-02-03"
+    },
+    {
+      "event_id": 1351,
+      "event_name": "Biles Invitational National Qualifier",
+      "source": "calendar_row:2024:8",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-02",
+      "to_end_date": "2024-02-04"
+    },
+    {
+      "event_id": 1225,
+      "event_name": "Top 12 Series 5",
+      "source": "calendar_row:2024:9",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-03",
+      "to_end_date": "2024-02-03"
+    },
+    {
+      "event_id": 1341,
+      "event_name": "City of Lights National Qualifier",
+      "source": "calendar_row:2024:10",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-09",
+      "to_end_date": "2024-02-11"
+    },
+    {
+      "event_id": 1381,
+      "event_name": "WOGA Classic",
+      "source": "calendar_row:2024:11",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-09",
+      "to_end_date": "2024-02-11"
+    },
+    {
+      "event_id": 1303,
+      "event_name": "Top 12 Series 6",
+      "source": "calendar_row:2024:12",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-10",
+      "to_end_date": "2024-02-10"
+    },
+    {
+      "event_id": 1345,
+      "event_name": "2nd Spanish League",
+      "source": "calendar_row:2024:13",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-10",
+      "to_end_date": "2024-02-11"
+    },
+    {
+      "event_id": 1194,
+      "event_name": "Cairo World Cup",
+      "source": "calendar_row:2024:14",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-15",
+      "to_end_date": "2024-02-18"
+    },
+    {
+      "event_id": 1292,
+      "event_name": "Welsh Championships",
+      "source": "calendar_row:2024:15",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-16",
+      "to_end_date": "2024-02-18"
+    },
+    {
+      "event_id": 1350,
+      "event_name": "Excalibur Cup National Qualifier",
+      "source": "calendar_row:2024:16",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-16",
+      "to_end_date": "2024-02-18"
+    },
+    {
+      "event_id": 1185,
+      "event_name": "Scottish Championships",
+      "source": "calendar_row:2024:17",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-17",
+      "to_end_date": "2024-02-18"
+    },
+    {
+      "event_id": 1234,
+      "event_name": "Elite Canada",
+      "source": "calendar_row:2024:18",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-18",
+      "to_end_date": "2024-02-20"
+    },
+    {
+      "event_id": 1193,
+      "event_name": "Cottbus World Cup",
+      "source": "calendar_row:2024:19",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-22",
+      "to_end_date": "2024-02-25"
+    },
+    {
+      "event_id": 1207,
+      "event_name": "2nd Italian Serie A",
+      "source": "calendar_row:2024:20",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-23",
+      "to_end_date": "2024-02-23"
+    },
+    {
+      "event_id": 1206,
+      "event_name": "Winter Cup",
+      "source": "calendar_row:2024:21",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-23",
+      "to_end_date": "2024-02-25"
+    },
+    {
+      "event_id": 1361,
+      "event_name": "Polish Cup",
+      "source": "calendar_row:2024:22",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-29",
+      "to_end_date": "2024-02-29"
+    },
+    {
+      "event_id": 1278,
+      "event_name": "Tiger Cup",
+      "source": "calendar_row:2024:23",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-02-29",
+      "to_end_date": "2024-03-02"
+    },
+    {
+      "event_id": 1230,
+      "event_name": "English Championships",
+      "source": "calendar_row:2024:25",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-01",
+      "to_end_date": "2024-03-03"
+    },
+    {
+      "event_id": 1252,
+      "event_name": "Iceland Classic",
+      "source": "calendar_row:2024:26",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-01",
+      "to_end_date": "2024-03-03"
+    },
+    {
+      "event_id": 1331,
+      "event_name": "Swiss Junior Euros Trials",
+      "source": "calendar_row:2024:27",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-03",
+      "to_end_date": "2024-03-03"
+    },
+    {
+      "event_id": 1340,
+      "event_name": "International Gymnix",
+      "source": "calendar_row:2024:29",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-06",
+      "to_end_date": "2024-03-10"
+    },
+    {
+      "event_id": 1195,
+      "event_name": "Baku World Cup",
+      "source": "calendar_row:2024:30",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-07",
+      "to_end_date": "2024-03-10"
+    },
+    {
+      "event_id": 1304,
+      "event_name": "Singapore Championships",
+      "source": "calendar_row:2024:31",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-08",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1210,
+      "event_name": "Russian Championships",
+      "source": "calendar_row:2024:32",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-11",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1383,
+      "event_name": "Swiss Junior Euros Trials 2",
+      "source": "calendar_row:2024:33",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-13",
+      "to_end_date": "2024-03-13"
+    },
+    {
+      "event_id": 1186,
+      "event_name": "British Championships",
+      "source": "calendar_row:2024:35",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-14",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1188,
+      "event_name": "DTB Pokal Team Challenge",
+      "source": "calendar_row:2024:36",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-15",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1365,
+      "event_name": "Magical March National Qualifier",
+      "source": "calendar_row:2024:37",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-15",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1254,
+      "event_name": "Icelandic Championships",
+      "source": "calendar_row:2024:38",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-16",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1202,
+      "event_name": "Unni & Haralds Trophy",
+      "source": "calendar_row:2024:40",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-16",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1336,
+      "event_name": "DTB Pokal Mixed Cup",
+      "source": "calendar_row:2024:41",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-17",
+      "to_end_date": "2024-03-17"
+    },
+    {
+      "event_id": 1263,
+      "event_name": "Lithuanian Championships",
+      "source": "calendar_row:2024:42",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-21"
+    },
+    {
+      "event_id": 1378,
+      "event_name": "Malta Championships",
+      "source": "calendar_row:2024:43",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-21"
+    },
+    {
+      "event_id": 1314,
+      "event_name": "Swiss Euros Trials",
+      "source": "calendar_row:2024:44",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-21"
+    },
+    {
+      "event_id": 1366,
+      "event_name": "South African Championships",
+      "source": "calendar_row:2024:45",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-22"
+    },
+    {
+      "event_id": 1221,
+      "event_name": "International Junior Team Cup",
+      "source": "calendar_row:2024:46",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1264,
+      "event_name": "Grizzly Classic",
+      "source": "calendar_row:2024:47",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-21",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1235,
+      "event_name": "Antalya Friendly",
+      "source": "calendar_row:2024:48",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-22",
+      "to_end_date": "2024-03-22"
+    },
+    {
+      "event_id": 1312,
+      "event_name": "Swiss Euros Trials 2",
+      "source": "calendar_row:2024:50",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-23"
+    },
+    {
+      "event_id": 1218,
+      "event_name": "Danish Team Championships",
+      "source": "calendar_row:2024:51",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-23"
+    },
+    {
+      "event_id": 1181,
+      "event_name": "Finnish Championships",
+      "source": "calendar_row:2024:52",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1320,
+      "event_name": "Hungarian Championships",
+      "source": "calendar_row:2024:53",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1323,
+      "event_name": "Polish Championships",
+      "source": "calendar_row:2024:54",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1183,
+      "event_name": "International GymSport",
+      "source": "calendar_row:2024:55",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-23",
+      "to_end_date": "2024-03-24"
+    },
+    {
+      "event_id": 1319,
+      "event_name": "Hungarian Junior Championships",
+      "source": "calendar_row:2024:56",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-29",
+      "to_end_date": "2024-03-30"
+    },
+    {
+      "event_id": 1242,
+      "event_name": "Antalya Challenge Cup",
+      "source": "calendar_row:2024:57",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-29",
+      "to_end_date": "2024-03-31"
+    },
+    {
+      "event_id": 1226,
+      "event_name": "Top 12 Series 7",
+      "source": "calendar_row:2024:59",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-03-30",
+      "to_end_date": "2024-03-30"
+    },
+    {
+      "event_id": 1355,
+      "event_name": "U.S. Selection Meet",
+      "source": "calendar_row:2024:60",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-02",
+      "to_end_date": "2024-04-02"
+    },
+    {
+      "event_id": 1203,
+      "event_name": "Russian Junior Championships",
+      "source": "calendar_row:2024:61",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-03",
+      "to_end_date": "2024-04-08"
+    },
+    {
+      "event_id": 1229,
+      "event_name": "Osijek Challenge Cup",
+      "source": "calendar_row:2024:62",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-04",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1259,
+      "event_name": "Bolivarian Youth Games",
+      "source": "calendar_row:2024:63",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-04",
+      "to_end_date": "2024-04-14"
+    },
+    {
+      "event_id": 1182,
+      "event_name": "Nordic Championships",
+      "source": "calendar_row:2024:65",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-05",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1347,
+      "event_name": "Turkish Team Championships",
+      "source": "calendar_row:2024:66",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-05",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1342,
+      "event_name": "Parkettes National Qualifier",
+      "source": "calendar_row:2024:67",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-05",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1375,
+      "event_name": "Magglingen Junior Friendly",
+      "source": "calendar_row:2024:68",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-06"
+    },
+    {
+      "event_id": 1374,
+      "event_name": "Dutch Euros Trials",
+      "source": "calendar_row:2024:69",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-06"
+    },
+    {
+      "event_id": 1377,
+      "event_name": "Romanian Euros Trials",
+      "source": "calendar_row:2024:70",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-06"
+    },
+    {
+      "event_id": 1293,
+      "event_name": "Austrian Championships",
+      "source": "calendar_row:2024:71",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1208,
+      "event_name": "3rd Italian Serie A",
+      "source": "calendar_row:2024:72",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1346,
+      "event_name": "3rd Spanish League",
+      "source": "calendar_row:2024:73",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1359,
+      "event_name": "Rising Stars Trophy",
+      "source": "calendar_row:2024:74",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-06",
+      "to_end_date": "2024-04-07"
+    },
+    {
+      "event_id": 1268,
+      "event_name": "All-Japan Championships",
+      "source": "calendar_row:2024:75",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-11",
+      "to_end_date": "2024-04-14"
+    },
+    {
+      "event_id": 1328,
+      "event_name": "Ifact Norges Cup",
+      "source": "calendar_row:2024:76",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-12",
+      "to_end_date": "2024-04-12"
+    },
+    {
+      "event_id": 1217,
+      "event_name": "Luxembourg Open",
+      "source": "calendar_row:2024:77",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-12",
+      "to_end_date": "2024-04-13"
+    },
+    {
+      "event_id": 1363,
+      "event_name": "Zelena Jama Open",
+      "source": "calendar_row:2024:80",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-13",
+      "to_end_date": "2024-04-13"
+    },
+    {
+      "event_id": 1368,
+      "event_name": "Norwegian FIG Meet",
+      "source": "calendar_row:2024:81",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-13",
+      "to_end_date": "2024-04-13"
+    },
+    {
+      "event_id": 1356,
+      "event_name": "Elek Matolay Memorial",
+      "source": "calendar_row:2024:82",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-13",
+      "to_end_date": "2024-04-14"
+    },
+    {
+      "event_id": 1211,
+      "event_name": "Rheintal Cup",
+      "source": "calendar_row:2024:83",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-13",
+      "to_end_date": "2024-04-14"
+    },
+    {
+      "event_id": 1197,
+      "event_name": "Doha World Cup",
+      "source": "calendar_row:2024:84",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-17",
+      "to_end_date": "2024-04-20"
+    },
+    {
+      "event_id": 1262,
+      "event_name": "South Korean Championships",
+      "source": "calendar_row:2024:85",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-19",
+      "to_end_date": "2024-04-21"
+    },
+    {
+      "event_id": 1354,
+      "event_name": "City of Jesolo Trophy",
+      "source": "calendar_row:2024:86",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-20",
+      "to_end_date": "2024-04-21"
+    },
+    {
+      "event_id": 1190,
+      "event_name": "Pacific Rim Championships",
+      "source": "calendar_row:2024:87",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-21",
+      "to_end_date": "2024-04-28"
+    },
+    {
+      "event_id": 1332,
+      "event_name": "Chinese Championships",
+      "source": "calendar_row:2024:89",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-24",
+      "to_end_date": "2024-04-29"
+    },
+    {
+      "event_id": 1353,
+      "event_name": "American Classic",
+      "source": "calendar_row:2024:90",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-25",
+      "to_end_date": "2024-04-28"
+    },
+    {
+      "event_id": 1349,
+      "event_name": "Hopes Classic",
+      "source": "calendar_row:2024:91",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-04-25",
+      "to_end_date": "2024-04-28"
+    },
+    {
+      "event_id": 1310,
+      "event_name": "Colombian Championships",
+      "source": "calendar_row:2024:92",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-01",
+      "to_end_date": "2024-05-05"
+    },
+    {
+      "event_id": 1187,
+      "event_name": "European Championships",
+      "source": "calendar_row:2024:93",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-02",
+      "to_end_date": "2024-05-05"
+    },
+    {
+      "event_id": 1192,
+      "event_name": "African Championships",
+      "source": "calendar_row:2024:94",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-03",
+      "to_end_date": "2024-05-06"
+    },
+    {
+      "event_id": 1326,
+      "event_name": "Australian Championships",
+      "source": "calendar_row:2024:95",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-10",
+      "to_end_date": "2024-05-12"
+    },
+    {
+      "event_id": 1250,
+      "event_name": "Greek Championships",
+      "source": "calendar_row:2024:96",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-10",
+      "to_end_date": "2024-05-12"
+    },
+    {
+      "event_id": 1251,
+      "event_name": "GK Championships",
+      "source": "calendar_row:2024:97",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-11",
+      "to_end_date": "2024-05-11"
+    },
+    {
+      "event_id": 1270,
+      "event_name": "NHK Trophy",
+      "source": "calendar_row:2024:99",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-16",
+      "to_end_date": "2024-05-19"
+    },
+    {
+      "event_id": 1348,
+      "event_name": "Hopes Championships",
+      "source": "calendar_row:2024:100",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-17",
+      "to_end_date": "2024-05-17"
+    },
+    {
+      "event_id": 1352,
+      "event_name": "U.S. Classic",
+      "source": "calendar_row:2024:101",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-17",
+      "to_end_date": "2024-05-18"
+    },
+    {
+      "event_id": 1201,
+      "event_name": "Irish Championships",
+      "source": "calendar_row:2024:102",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-18",
+      "to_end_date": "2024-05-19"
+    },
+    {
+      "event_id": 1222,
+      "event_name": "Top 12 Finals",
+      "source": "calendar_row:2024:103",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-18",
+      "to_end_date": "2024-05-19"
+    },
+    {
+      "event_id": 1285,
+      "event_name": "Belgian Championships",
+      "source": "calendar_row:2024:104",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-18",
+      "to_end_date": "2024-05-20"
+    },
+    {
+      "event_id": 1189,
+      "event_name": "Pan American Championships",
+      "source": "calendar_row:2024:105",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-22",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1271,
+      "event_name": "Varna Challenge Cup",
+      "source": "calendar_row:2024:106",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-23",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1196,
+      "event_name": "Asian Championships",
+      "source": "calendar_row:2024:107",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-24",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1334,
+      "event_name": "Oceania Championships",
+      "source": "calendar_row:2024:108",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-25",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1324,
+      "event_name": "Portuguese Championships",
+      "source": "calendar_row:2024:109",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-25",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1246,
+      "event_name": "Italian Serie A Final Six",
+      "source": "calendar_row:2024:110",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-25",
+      "to_end_date": "2024-05-26"
+    },
+    {
+      "event_id": 1247,
+      "event_name": "Mexican Championships",
+      "source": "calendar_row:2024:111",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-27",
+      "to_end_date": "2024-05-31"
+    },
+    {
+      "event_id": 1260,
+      "event_name": "Koper Challenge Cup",
+      "source": "calendar_row:2024:112",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-30",
+      "to_end_date": "2024-06-02"
+    },
+    {
+      "event_id": 1287,
+      "event_name": "U.S. Championships",
+      "source": "calendar_row:2024:113",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-30",
+      "to_end_date": "2024-06-02"
+    },
+    {
+      "event_id": 1325,
+      "event_name": "Ifact Norges Cup 2",
+      "source": "calendar_row:2024:114",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-31",
+      "to_end_date": "2024-05-31"
+    },
+    {
+      "event_id": 1227,
+      "event_name": "Czech Championships",
+      "source": "calendar_row:2024:115",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-31",
+      "to_end_date": "2024-06-02"
+    },
+    {
+      "event_id": 1232,
+      "event_name": "Singapore Open",
+      "source": "calendar_row:2024:116",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-05-31",
+      "to_end_date": "2024-06-02"
+    },
+    {
+      "event_id": 1298,
+      "event_name": "German Junior Championships",
+      "source": "calendar_row:2024:117",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-01",
+      "to_end_date": "2024-06-02"
+    },
+    {
+      "event_id": 1339,
+      "event_name": "Canadian Championships",
+      "source": "calendar_row:2024:118",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-05",
+      "to_end_date": "2024-06-09"
+    },
+    {
+      "event_id": 1199,
+      "event_name": "Salamunov Memorial",
+      "source": "calendar_row:2024:119",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-05",
+      "to_end_date": "2024-06-09"
+    },
+    {
+      "event_id": 1216,
+      "event_name": "French Championships",
+      "source": "calendar_row:2024:120",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-07",
+      "to_end_date": "2024-06-09"
+    },
+    {
+      "event_id": 1295,
+      "event_name": "German Championships",
+      "source": "calendar_row:2024:121",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-08",
+      "to_end_date": "2024-06-09"
+    },
+    {
+      "event_id": 1313,
+      "event_name": "Swiss Olympic Trials",
+      "source": "calendar_row:2024:123",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-13",
+      "to_end_date": "2024-06-13"
+    },
+    {
+      "event_id": 1311,
+      "event_name": "Swiss Olympic Trials 2",
+      "source": "calendar_row:2024:124",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-15",
+      "to_end_date": "2024-06-15"
+    },
+    {
+      "event_id": 1244,
+      "event_name": "Spanish Championships",
+      "source": "calendar_row:2024:125",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-19",
+      "to_end_date": "2024-06-23"
+    },
+    {
+      "event_id": 1290,
+      "event_name": "Bulgarian Championships",
+      "source": "calendar_row:2024:126",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-21",
+      "to_end_date": "2024-06-22"
+    },
+    {
+      "event_id": 1307,
+      "event_name": "Croatian Event Championships",
+      "source": "calendar_row:2024:128",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-21",
+      "to_end_date": "2024-06-23"
+    },
+    {
+      "event_id": 1316,
+      "event_name": "Brazil Trophy",
+      "source": "calendar_row:2024:129",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-21",
+      "to_end_date": "2024-06-23"
+    },
+    {
+      "event_id": 1299,
+      "event_name": "German Olympic Trials",
+      "source": "calendar_row:2024:130",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-22",
+      "to_end_date": "2024-06-22"
+    },
+    {
+      "event_id": 1306,
+      "event_name": "Dutch Championships",
+      "source": "calendar_row:2024:132",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-22",
+      "to_end_date": "2024-06-23"
+    },
+    {
+      "event_id": 1212,
+      "event_name": "Swiss Championships",
+      "source": "calendar_row:2024:133",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-22",
+      "to_end_date": "2024-06-23"
+    },
+    {
+      "event_id": 1288,
+      "event_name": "U.S. Olympic Trials",
+      "source": "calendar_row:2024:134",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-27",
+      "to_end_date": "2024-06-30"
+    },
+    {
+      "event_id": 1215,
+      "event_name": "RomGym Trophy",
+      "source": "calendar_row:2024:135",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-28",
+      "to_end_date": "2024-06-30"
+    },
+    {
+      "event_id": 1300,
+      "event_name": "Troyes Friendly",
+      "source": "calendar_row:2024:138",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-29",
+      "to_end_date": "2024-06-29"
+    },
+    {
+      "event_id": 1213,
+      "event_name": "Swedish Championships",
+      "source": "calendar_row:2024:139",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-29",
+      "to_end_date": "2024-06-30"
+    },
+    {
+      "event_id": 1344,
+      "event_name": "Spanish League Final",
+      "source": "calendar_row:2024:140",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-06-29",
+      "to_end_date": "2024-06-30"
+    },
+    {
+      "event_id": 1308,
+      "event_name": "Italian Championships",
+      "source": "calendar_row:2024:141",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-05",
+      "to_end_date": "2024-07-07"
+    },
+    {
+      "event_id": 1379,
+      "event_name": "Haguenau Friendly",
+      "source": "calendar_row:2024:142",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-06",
+      "to_end_date": "2024-07-06"
+    },
+    {
+      "event_id": 1245,
+      "event_name": "Madrid Friendly",
+      "source": "calendar_row:2024:143",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-06",
+      "to_end_date": "2024-07-06"
+    },
+    {
+      "event_id": 1382,
+      "event_name": "Dutch Olympic Trials",
+      "source": "calendar_row:2024:144",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-06",
+      "to_end_date": "2024-07-06"
+    },
+    {
+      "event_id": 1198,
+      "event_name": "Olympic Games",
+      "source": "calendar_row:2024:145",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-26",
+      "to_end_date": "2024-08-11"
+    },
+    {
+      "event_id": 1280,
+      "event_name": "Russian Cup",
+      "source": "calendar_row:2024:146",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-07-29",
+      "to_end_date": "2024-08-05"
+    },
+    {
+      "event_id": 1274,
+      "event_name": "All-Japan Junior Championships",
+      "source": "calendar_row:2024:147",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-08-12",
+      "to_end_date": "2024-08-17"
+    },
+    {
+      "event_id": 1266,
+      "event_name": "All-Japan Student Championships",
+      "source": "calendar_row:2024:148",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-08-23",
+      "to_end_date": "2024-08-26"
+    },
+    {
+      "event_id": 1279,
+      "event_name": "Belarus Open Cup",
+      "source": "calendar_row:2024:149",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-08-26",
+      "to_end_date": "2024-08-31"
+    },
+    {
+      "event_id": 1281,
+      "event_name": "Norwegian Championships",
+      "source": "calendar_row:2024:151",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-07",
+      "to_end_date": "2024-09-08"
+    },
+    {
+      "event_id": 1380,
+      "event_name": "Hungarian Team Final Championships",
+      "source": "calendar_row:2024:153",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-14",
+      "to_end_date": "2024-09-14"
+    },
+    {
+      "event_id": 1272,
+      "event_name": "All-Japan Senior Championships",
+      "source": "calendar_row:2024:154",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-15",
+      "to_end_date": "2024-09-15"
+    },
+    {
+      "event_id": 1333,
+      "event_name": "Chinese Individual Championships",
+      "source": "calendar_row:2024:155",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-15",
+      "to_end_date": "2024-09-24"
+    },
+    {
+      "event_id": 1302,
+      "event_name": "Balkan Championships",
+      "source": "calendar_row:2024:157",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-19",
+      "to_end_date": "2024-09-21"
+    },
+    {
+      "event_id": 1317,
+      "event_name": "Brazilian Championships",
+      "source": "calendar_row:2024:158",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-20",
+      "to_end_date": "2024-09-22"
+    },
+    {
+      "event_id": 1184,
+      "event_name": "Northern European Championships",
+      "source": "calendar_row:2024:159",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-21",
+      "to_end_date": "2024-09-22"
+    },
+    {
+      "event_id": 1322,
+      "event_name": "Hungarian Event Championships",
+      "source": "calendar_row:2024:160",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-21",
+      "to_end_date": "2024-09-22"
+    },
+    {
+      "event_id": 1236,
+      "event_name": "Turkish Championships",
+      "source": "calendar_row:2024:161",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-27",
+      "to_end_date": "2024-09-29"
+    },
+    {
+      "event_id": 1327,
+      "event_name": "Ukrainian Championships",
+      "source": "calendar_row:2024:163",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-28",
+      "to_end_date": "2024-09-29"
+    },
+    {
+      "event_id": 1369,
+      "event_name": "Norwegian FIG Meet 2",
+      "source": "calendar_row:2024:164",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-09-28",
+      "to_end_date": "2024-09-29"
+    },
+    {
+      "event_id": 1253,
+      "event_name": "Szombathely Challenge Cup",
+      "source": "calendar_row:2024:165",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-04",
+      "to_end_date": "2024-10-06"
+    },
+    {
+      "event_id": 1289,
+      "event_name": "New Zealand Championships",
+      "source": "calendar_row:2024:167",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-07",
+      "to_end_date": "2024-10-11"
+    },
+    {
+      "event_id": 1179,
+      "event_name": "Wohnen Juniors Trophy",
+      "source": "calendar_row:2024:168",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-11",
+      "to_end_date": "2024-10-13"
+    },
+    {
+      "event_id": 1315,
+      "event_name": "Brazilian Junior Championships",
+      "source": "calendar_row:2024:169",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-11",
+      "to_end_date": "2024-10-13"
+    },
+    {
+      "event_id": 1364,
+      "event_name": "Leverkusen Cup",
+      "source": "calendar_row:2024:170",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-12",
+      "to_end_date": "2024-10-12"
+    },
+    {
+      "event_id": 1241,
+      "event_name": "3rd Bundesliga",
+      "source": "calendar_row:2024:171",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-12",
+      "to_end_date": "2024-10-12"
+    },
+    {
+      "event_id": 1241,
+      "event_name": "3rd Bundesliga",
+      "source": "calendar_row:2024:172",
+      "status": "no_change",
+      "start_date": "2024-10-12",
+      "end_date": "2024-10-12"
+    },
+    {
+      "event_id": 1321,
+      "event_name": "Hungarian Masters Championships",
+      "source": "calendar_row:2024:173",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-12",
+      "to_end_date": "2024-10-13"
+    },
+    {
+      "event_id": 1228,
+      "event_name": "British Team Championships",
+      "source": "calendar_row:2024:174",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-12",
+      "to_end_date": "2024-10-13"
+    },
+    {
+      "event_id": 1243,
+      "event_name": "South American Championships",
+      "source": "calendar_row:2024:175",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-18",
+      "to_end_date": "2024-10-20"
+    },
+    {
+      "event_id": 1367,
+      "event_name": "German Cup",
+      "source": "calendar_row:2024:177",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-19",
+      "to_end_date": "2024-10-20"
+    },
+    {
+      "event_id": 1200,
+      "event_name": "Gymnasiade",
+      "source": "calendar_row:2024:178",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-23",
+      "to_end_date": "2024-10-31"
+    },
+    {
+      "event_id": 1360,
+      "event_name": "Romanian Junior Championships",
+      "source": "calendar_row:2024:179",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-24",
+      "to_end_date": "2024-10-27"
+    },
+    {
+      "event_id": 1362,
+      "event_name": "French National Team Review",
+      "source": "calendar_row:2024:180",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-25",
+      "to_end_date": "2024-10-26"
+    },
+    {
+      "event_id": 1370,
+      "event_name": "Norwegian Junior Championships",
+      "source": "calendar_row:2024:181",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-25",
+      "to_end_date": "2024-10-27"
+    },
+    {
+      "event_id": 1204,
+      "event_name": "Wase Gymcup",
+      "source": "calendar_row:2024:182",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-26",
+      "to_end_date": "2024-10-27"
+    },
+    {
+      "event_id": 1337,
+      "event_name": "Rushmoor Rose Bowl",
+      "source": "calendar_row:2024:183",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-26",
+      "to_end_date": "2024-10-27"
+    },
+    {
+      "event_id": 1214,
+      "event_name": "M\u00e4lar Cup",
+      "source": "calendar_row:2024:184",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-10-31",
+      "to_end_date": "2024-11-03"
+    },
+    {
+      "event_id": 1372,
+      "event_name": "K\u00f6ln Espoir Friendly",
+      "source": "calendar_row:2024:185",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-02",
+      "to_end_date": "2024-11-02"
+    },
+    {
+      "event_id": 1291,
+      "event_name": "Danish Championships",
+      "source": "calendar_row:2024:186",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-02",
+      "to_end_date": "2024-11-03"
+    },
+    {
+      "event_id": 1371,
+      "event_name": "Norwegian FIG Meet 3",
+      "source": "calendar_row:2024:187",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-02",
+      "to_end_date": "2024-11-03"
+    },
+    {
+      "event_id": 1330,
+      "event_name": "Arthur Gander Memorial",
+      "source": "calendar_row:2024:188",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-06",
+      "to_end_date": "2024-11-06"
+    },
+    {
+      "event_id": 1283,
+      "event_name": "Swiss Cup Juniors",
+      "source": "calendar_row:2024:189",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-08",
+      "to_end_date": "2024-11-08"
+    },
+    {
+      "event_id": 1329,
+      "event_name": "Swiss Cup",
+      "source": "calendar_row:2024:190",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-09"
+    },
+    {
+      "event_id": 1297,
+      "event_name": "5th Bundesliga",
+      "source": "calendar_row:2024:192",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-09"
+    },
+    {
+      "event_id": 1343,
+      "event_name": "Tournoi International",
+      "source": "calendar_row:2024:193",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-10"
+    },
+    {
+      "event_id": 1358,
+      "event_name": "Gymnova Cup",
+      "source": "calendar_row:2024:194",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-10"
+    },
+    {
+      "event_id": 1249,
+      "event_name": "Horizon Cup",
+      "source": "calendar_row:2024:195",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-10"
+    },
+    {
+      "event_id": 1335,
+      "event_name": "Croatian Championships",
+      "source": "calendar_row:2024:196",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-10"
+    },
+    {
+      "event_id": 1248,
+      "event_name": "Latvian Championships",
+      "source": "calendar_row:2024:197",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-09",
+      "to_end_date": "2024-11-10"
+    },
+    {
+      "event_id": 1301,
+      "event_name": "Romanian Individual Championships",
+      "source": "calendar_row:2024:198",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-15",
+      "to_end_date": "2024-11-17"
+    },
+    {
+      "event_id": 1237,
+      "event_name": "6th Bundesliga",
+      "source": "calendar_row:2024:199",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-16",
+      "to_end_date": "2024-11-16"
+    },
+    {
+      "event_id": 1373,
+      "event_name": "Dutch Team Championships",
+      "source": "calendar_row:2024:201",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-16",
+      "to_end_date": "2024-11-16"
+    },
+    {
+      "event_id": 1223,
+      "event_name": "Platinum League Online",
+      "source": "calendar_row:2024:202",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-21",
+      "to_end_date": "2024-11-23"
+    },
+    {
+      "event_id": 1180,
+      "event_name": "Austrian Future Cup",
+      "source": "calendar_row:2024:203",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-22",
+      "to_end_date": "2024-11-23"
+    },
+    {
+      "event_id": 1267,
+      "event_name": "All-Japan Event Championships",
+      "source": "calendar_row:2024:205",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-22",
+      "to_end_date": "2024-11-24"
+    },
+    {
+      "event_id": 1269,
+      "event_name": "All-Japan Team Championships",
+      "source": "calendar_row:2024:206",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-23",
+      "to_end_date": "2024-11-23"
+    },
+    {
+      "event_id": 1284,
+      "event_name": "Chemnitz Junior Friendly",
+      "source": "calendar_row:2024:207",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-23",
+      "to_end_date": "2024-11-23"
+    },
+    {
+      "event_id": 1258,
+      "event_name": "South American Junior Championships",
+      "source": "calendar_row:2024:208",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-25",
+      "to_end_date": "2024-12-01"
+    },
+    {
+      "event_id": 1205,
+      "event_name": "Olympic Hopes Cup",
+      "source": "calendar_row:2024:209",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-29",
+      "to_end_date": "2024-12-01"
+    },
+    {
+      "event_id": 1318,
+      "event_name": "Sokol Grand Prix",
+      "source": "calendar_row:2024:211",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-30",
+      "to_end_date": "2024-11-30"
+    },
+    {
+      "event_id": 1240,
+      "event_name": "7th Bundesliga",
+      "source": "calendar_row:2024:212",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-11-30",
+      "to_end_date": "2024-11-30"
+    },
+    {
+      "event_id": 1357,
+      "event_name": "Italian Gold Championships",
+      "source": "calendar_row:2024:215",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-05",
+      "to_end_date": "2024-12-08"
+    },
+    {
+      "event_id": 1282,
+      "event_name": "Voronin Cup",
+      "source": "calendar_row:2024:216",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-06",
+      "to_end_date": "2024-12-08"
+    },
+    {
+      "event_id": 1257,
+      "event_name": "Argentinian Championships",
+      "source": "calendar_row:2024:217",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-07",
+      "to_end_date": "2024-12-07"
+    },
+    {
+      "event_id": 1261,
+      "event_name": "Bundesliga Finals",
+      "source": "calendar_row:2024:218",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-07",
+      "to_end_date": "2024-12-07"
+    },
+    {
+      "event_id": 1142,
+      "event_name": "Top 12 Series 3 (2024 Season)",
+      "source": "calendar_row:2024:219",
+      "status": "updated",
+      "from_start_date": "2023-12-09",
+      "from_end_date": "2023-12-09",
+      "to_start_date": "2024-12-07",
+      "to_end_date": "2024-12-07"
+    },
+    {
+      "event_id": 1376,
+      "event_name": "Michel Wanten Cup",
+      "source": "calendar_row:2024:220",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-07",
+      "to_end_date": "2024-12-08"
+    },
+    {
+      "event_id": 1276,
+      "event_name": "Christmas Cup",
+      "source": "calendar_row:2024:221",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-13",
+      "to_end_date": "2024-12-13"
+    },
+    {
+      "event_id": 1191,
+      "event_name": "Mediterranean Championships",
+      "source": "calendar_row:2024:223",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2024-12-16",
+      "to_end_date": "2024-12-18"
+    }
+  ],
+  "calendar_entries": [],
+  "unresolved": [
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "24",
+      "calendar_event": "European Gymnastics Online Series",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "28",
+      "calendar_event": "Swiss Junior Men's Euros Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "34",
+      "calendar_event": "Lithuanian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "39",
+      "calendar_event": "Hungarian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "49",
+      "calendar_event": "European Gymnastics Online Series 2",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "64",
+      "calendar_event": "Ravenna Junior Men's Friendly",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "78",
+      "calendar_event": "European Gymnastics Online Series 3",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "88",
+      "calendar_event": "European Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "98",
+      "calendar_event": "Asian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "122",
+      "calendar_event": "British Men's Team Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "127",
+      "calendar_event": "Turkish Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "131",
+      "calendar_event": "R\u00fcsselsheim Junior Men's Friendly",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "136",
+      "calendar_event": "German Junior Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "137",
+      "calendar_event": "Israeli Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "150",
+      "calendar_event": "Japanese National Sports Festival",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "156",
+      "calendar_event": "All-Japan Super Specialist Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "204",
+      "calendar_event": "Latvian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_event_match_review_slim.csv",
+      "calendar_row": "210",
+      "calendar_event": "Barborka Cup",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "1",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "2",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "3",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "4",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "5",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2024_source_conflicts_slim.csv",
+      "conflict_group": "6",
+      "reason": "source_conflict_requires_one_choice"
+    }
+  ],
+  "invalid_decision_details": [],
+  "skipped_details": [],
+  "source_issues": []
+}

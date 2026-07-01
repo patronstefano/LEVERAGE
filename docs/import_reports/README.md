@@ -454,6 +454,38 @@ Note di review 2023:
 - `German Worlds Trials 2` e stato chiuso come `db_only`;
 - `Top 12 Series 3 (MAG) (2024 season)` e stata chiusa come `calendar_only`.
 
+## Calendar 2024 - checkpoint review
+
+Il flusso 2024 e stato avviato considerando gia validi i sei collegamenti `season_year_spillover` provenienti dalla review 2023. I match diretti sicuri sono stati applicati, mentre i casi ambigui sono stati lasciati nei CSV di review admin.
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2024 | 222 |
+| Event DB 2024 | 207 |
+| Match diretti sicuri applicati | 192 |
+| Event DB 2024 gia coperti | 198 |
+| Calendar 2024 senza match corrente | 18 |
+| Event DB 2024 senza match corrente | 9 |
+| Event DB 2024 `db_only` gia verificati | 0 |
+| Righe Calendar 2024 `calendar_only` | 0 |
+| Conflitti stesso Event/date da rivedere | 6 |
+| Collegamenti `season_year_spillover` | 6 |
+| Collegamenti cross-year non controllati | 0 |
+
+Backup del primo commit sicuro 2024:
+
+```text
+backups/leverage_calendar_2024_20260702_012421.db
+```
+
+File operativi da compilare:
+
+- `calendar_2024_calendar_unmatched_current.csv`
+- `calendar_2024_db_unmatched_current.csv`
+- `calendar_2024_source_conflicts_slim.csv`
+
+La review 2024 usa gli stessi valori operativi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:
