@@ -668,6 +668,22 @@ class EventResultReminderNotificationResponse(BaseModel):
     reminders: list[EventResultReminder]
 
 
+class AdminEventCalendarSummary(BaseModel):
+    total_events: int
+    upcoming: int
+    ongoing: int
+    completed_no_results: int
+    completed_with_results: int
+    with_results: int
+    without_results: int
+
+
+class AdminEventCalendarView(BaseModel):
+    events: list[EventCalendarItem]
+    summary: AdminEventCalendarSummary
+    reminders: list[EventResultReminder]
+
+
 class AdminIncompleteAthlete(BaseModel):
     id: int
     first_name: str
@@ -1622,6 +1638,48 @@ class EventCreateManualOptions(BaseModel):
     required_fields: list[str]
     optional_fields: list[str]
     next_step: str
+
+
+class CalendarImportRowPreview(BaseModel):
+    sheet: str
+    row: int
+    year: int
+    date_label: str
+    event_name: str
+    start_date: Date
+    end_date: Date
+    matched_event_ids: list[int] = []
+    matched_event_names: list[str] = []
+    match_status: str
+    action: str
+    inferred_discipline: EventDisciplineEnum
+    inferred_category: EventCategoryEnum
+    inferred_level: LevelEnum
+
+
+class CalendarImportPreview(BaseModel):
+    filename: str
+    create_missing_from_year: int
+    parsed_rows: int
+    years: list[int]
+    matched_rows: int
+    matched_events: int
+    would_update_events: int
+    already_up_to_date_events: int
+    would_create_events: int
+    unmatched_historical_rows: int
+    duplicate_source_rows: list[dict]
+    issues: list[dict]
+    sample_rows: list[CalendarImportRowPreview]
+    rows: list[CalendarImportRowPreview]
+
+
+class CalendarImportCommit(CalendarImportPreview):
+    committed: bool
+    updated_events: int
+    created_events: int
+    skipped_unmatched_historical_rows: int
+    created_admin_notifications: int
 
 
 class GymternetImportPreview(BaseModel):

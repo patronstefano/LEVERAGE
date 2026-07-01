@@ -125,6 +125,8 @@ uvicorn app.main:app --reload
 - `POST /events/{event_id}/athletes/resolve`
   Endpoint admin-only per trovare un atleta esistente oppure creare una nuova entita `Athlete` compatibile con l'evento
 - `POST /events/{event_id}/results/bulk`
+- `GET /admin/calendar`
+  Endpoint admin-only per alimentare una sezione calendario gestionale: restituisce eventi, summary per stato, conteggi result e reminder degli eventi conclusi senza risultati
 - `GET /admin/entities-to-complete`
   Endpoint admin-only per alimentare una futura sezione di controllo: restituisce `Athlete` ed `Event` con campi opzionali ancora da completare dopo data entry manuale o import
 - `GET /admin/event-result-reminders`
@@ -298,7 +300,7 @@ Gli `Event` possono essere creati anche prima che la gara si svolga e possono qu
 - `completed_with_results`: evento concluso con result
 
 Lo stato non viene salvato manualmente nel database: deriva da `start_date`, `end_date`, data corrente e numero di `Result` associati.
-Per gli admin, `GET /admin/event-result-reminders` mostra gli eventi conclusi senza result; `POST /admin/event-result-reminders/notify` crea una notifica `event_results_reminder` per ricordare l'inserimento dei risultati.
+Per gli admin, `GET /admin/calendar` restituisce una vista gestionale aggregata con eventi, summary per stato e reminder. `GET /admin/event-result-reminders` mostra solo gli eventi conclusi senza result; `POST /admin/event-result-reminders/notify` crea una notifica `event_results_reminder` per ricordare l'inserimento dei risultati.
 
 ## Accesso pubblico e area personale
 LEVERAGE e pensato come sito pubblico consultabile senza login: atleti, eventi, risultati, classifiche e analytics sono leggibili da visitatori anonimi.
@@ -537,6 +539,24 @@ Parametri opzionali:
 - se lo stesso file contiene lo stesso atleta con nome/cognome invertiti o formato equivalente, il tool applica automaticamente `merge name order`: crea una sola chiave atleta e usa come ordine canonico il nome gia presente nel database, quando disponibile, oppure la variante piu ricorrente nel file importato.
   Se dopo questo merge emergono country diverse, la preview crea comunque una verifica bloccante `possible_athlete_identity_collision`: l'admin decide solo la parte country (`country_history`, `country_correction`, `keep_separate` o target manuale), non l'inversione nome/cognome.
 - `represented_country` non fa parte della chiave anti-duplicato del `Result`: se il sistema trova lo stesso contesto sportivo con paese rappresentato diverso, il record viene trattato come conflitto da review admin e non come duplicato innocuo.
+
+## Import calendario eventi
+LEVERAGE espone anche un import admin-only per file calendario Gymternet con fogli annuali e colonne `DATE` / `EVENT`.
+
+Endpoint:
+
+1. `POST /imports/calendar/preview`
+   Legge il file `.xlsx`, `.xlsm` o `.csv`, interpreta date come `Jan 11`, `Jan 11-15`, `Jan 11-Feb 3`, confronta gli eventi con il database e restituisce cosa verrebbe aggiornato o creato.
+2. `POST /imports/calendar/commit`
+   Ripete il parsing, aggiorna `start_date` / `end_date` degli eventi gia presenti e crea automaticamente solo gli eventi mancanti da `create_missing_from_year` in poi. Le righe storiche non matchate restano in review e non vengono create automaticamente.
+
+Default per nuovi eventi calendario:
+
+- `discipline`: `MAG and WAG`, salvo suffissi espliciti come `(MAG)` o `(WAG)`;
+- `category`: `junior and senior`, salvo indicazioni esplicite nel nome;
+- `level`: inferito da parole chiave essenziali (`Olympic`, `World Cup`, `World Championships`, ecc.), altrimenti `International Event`.
+
+Il commit genera una notifica admin `import_summary` con riepilogo degli eventi aggiornati, futuri creati e righe storiche rimaste in review.
 
 Esempio decisione admin:
 

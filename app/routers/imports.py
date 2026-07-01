@@ -1,10 +1,20 @@
 import json
+from datetime import date
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from sqlalchemy.orm import Session
 
 from app import models, schemas
+from app.audit import add_audit_log, model_snapshot
+from app.calendar_import import (
+    infer_event_category,
+    infer_event_discipline,
+    infer_event_level,
+    normalize_calendar_event_name,
+    parse_calendar_file,
+    summarize_calendar_import,
+)
 from app.database import get_db
 from app.gymternet_import import (
     apply_automatic_athlete_name_order_merges,
@@ -18,10 +28,69 @@ from app.gymternet_import import (
     parse_gymternet_file,
     summarize_records,
 )
+from app.i18n import translate
 from app.security import get_current_admin_user
 
 
 router = APIRouter()
+
+
+def build_calendar_import_preview_payload(
+    filename: str,
+    create_missing_from_year: int,
+    summary: dict,
+) -> dict:
+    return {
+        "filename": filename,
+        "create_missing_from_year": create_missing_from_year,
+        "parsed_rows": summary["parsed_rows"],
+        "years": summary["years"],
+        "matched_rows": summary["matched_rows"],
+        "matched_events": summary["matched_events"],
+        "would_update_events": summary["would_update_events"],
+        "already_up_to_date_events": summary["already_up_to_date_events"],
+        "would_create_events": summary["would_create_events"],
+        "unmatched_historical_rows": summary["unmatched_historical_rows"],
+        "duplicate_source_rows": summary["duplicate_source_rows"],
+        "issues": summary["issues"],
+        "sample_rows": summary["sample_rows"],
+        "rows": summary["rows"],
+    }
+
+
+def parse_and_summarize_calendar_upload(
+    file: UploadFile,
+    db: Session,
+    create_missing_from_year: Optional[int],
+) -> tuple[str, int, dict]:
+    resolved_create_missing_from_year = create_missing_from_year or date.today().year
+    filename = file.filename or "calendar_import"
+    content = file.file.read()
+    if not content:
+        summary = summarize_calendar_import(
+            db,
+            [],
+            [{"severity": "error", "message": "Uploaded file is empty"}],
+            resolved_create_missing_from_year,
+        )
+        return filename, resolved_create_missing_from_year, summary
+
+    try:
+        rows, issues = parse_calendar_file(filename, content)
+    except Exception as exc:
+        summary = summarize_calendar_import(
+            db,
+            [],
+            [{"severity": "error", "message": f"Could not parse calendar upload: {exc}"}],
+            resolved_create_missing_from_year,
+        )
+        return filename, resolved_create_missing_from_year, summary
+
+    return (
+        filename,
+        resolved_create_missing_from_year,
+        summarize_calendar_import(db, rows, issues, resolved_create_missing_from_year),
+    )
 
 
 def build_import_preview_payload(
@@ -207,6 +276,113 @@ def parse_orphan_dscore_decisions(raw: Optional[str]) -> Optional[list[dict]]:
 
 def parse_athlete_match_decisions(raw: Optional[str]) -> Optional[list[dict]]:
     return parse_json_decision_list(raw, "athlete_match_decisions")
+
+
+@router.post("/calendar/preview", response_model=schemas.CalendarImportPreview)
+def preview_calendar_import(
+    file: UploadFile = File(...),
+    create_missing_from_year: Optional[int] = Query(
+        None,
+        ge=1900,
+        le=2100,
+        description="Unmatched events from this year onward are treated as creatable future/calendar events.",
+    ),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    filename, resolved_create_missing_from_year, summary = parse_and_summarize_calendar_upload(
+        file,
+        db,
+        create_missing_from_year,
+    )
+    return build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary)
+
+
+@router.post("/calendar/commit", response_model=schemas.CalendarImportCommit)
+def commit_calendar_import(
+    file: UploadFile = File(...),
+    create_missing_from_year: Optional[int] = Query(
+        None,
+        ge=1900,
+        le=2100,
+        description="Unmatched events from this year onward are created; older unmatched rows stay in review.",
+    ),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    filename, resolved_create_missing_from_year, summary = parse_and_summarize_calendar_upload(
+        file,
+        db,
+        create_missing_from_year,
+    )
+    payload = build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary)
+    if has_error_issues(summary):
+        raise HTTPException(status_code=400, detail=payload)
+
+    updated_event_ids: set[int] = set()
+    created_events = 0
+    seen_created_source_keys: set[tuple[int, str]] = set()
+
+    for row in summary["rows"]:
+        if row["action"] == "update_dates":
+            for event_id in row["matched_event_ids"]:
+                event = db.query(models.Event).filter(
+                    models.Event.id == event_id,
+                    models.Event.is_deleted.is_(False),
+                ).first()
+                if not event:
+                    continue
+                if event.start_date == row["start_date"] and event.end_date == row["end_date"]:
+                    continue
+                before = model_snapshot(event)
+                event.start_date = row["start_date"]
+                event.end_date = row["end_date"]
+                updated_event_ids.add(event.id)
+                add_audit_log(db, current_user, "update", "Event", event.id, before=before, after=model_snapshot(event))
+
+        if row["action"] == "create_event":
+            source_key = (row["year"], normalize_calendar_event_name(row["event_name"]))
+            if source_key in seen_created_source_keys:
+                continue
+            seen_created_source_keys.add(source_key)
+            event = models.Event(
+                name=row["event_name"],
+                start_date=row["start_date"],
+                end_date=row["end_date"],
+                year=row["year"],
+                discipline=infer_event_discipline(row["event_name"]),
+                category=infer_event_category(row["event_name"]),
+                level=infer_event_level(row["event_name"]),
+            )
+            db.add(event)
+            db.flush()
+            created_events += 1
+            add_audit_log(db, current_user, "create", "Event", event.id, after=model_snapshot(event))
+
+    created_admin_notifications = 0
+    if updated_event_ids or created_events or summary["unmatched_historical_rows"]:
+        db.add(models.Notification(
+            user_id=current_user.id,
+            type=models.NotificationTypeEnum.IMPORT_SUMMARY,
+            message=translate(
+                "notification.calendar_import_summary",
+                current_user.preferred_language,
+                updated_events=len(updated_event_ids),
+                created_events=created_events,
+                skipped_unmatched_historical_rows=summary["unmatched_historical_rows"],
+            ),
+        ))
+        created_admin_notifications = 1
+
+    db.commit()
+    return {
+        **payload,
+        "committed": True,
+        "updated_events": len(updated_event_ids),
+        "created_events": created_events,
+        "skipped_unmatched_historical_rows": summary["unmatched_historical_rows"],
+        "created_admin_notifications": created_admin_notifications,
+    }
 
 
 @router.post("/gymternet/preview", response_model=schemas.GymternetImportPreview)

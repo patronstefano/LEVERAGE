@@ -8,7 +8,13 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.database import get_db
-from app.event_calendar import build_event_result_reminder, get_event_calendar_status
+from app.event_calendar import (
+    build_event_calendar_item,
+    build_event_result_reminder,
+    event_end_for_calendar,
+    event_start_for_calendar,
+    get_event_calendar_status,
+)
 from app.i18n import translate
 from app.security import get_current_admin_user, get_current_super_admin_user
 
@@ -296,6 +302,80 @@ def get_event_result_reminders(
         if get_event_calendar_status(event, result_count, today) == schemas.EventCalendarStatusEnum.COMPLETED_NO_RESULTS:
             reminders.append(build_event_result_reminder(event, result_count, today))
     return reminders[:limit]
+
+
+@router.get("/calendar", response_model=schemas.AdminEventCalendarView)
+def get_admin_event_calendar(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+    start_date: Optional[date] = Query(None, description="Include events ending on or after this date"),
+    end_date: Optional[date] = Query(None, description="Include events starting on or before this date"),
+    year: Optional[int] = Query(None),
+    status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
+    as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
+    limit: int = Query(500, ge=1, le=2000),
+    offset: int = Query(0, ge=0),
+):
+    today = as_of or date.today()
+    query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
+    if year is not None:
+        query = query.filter(models.Event.year == year)
+
+    events = query.order_by(models.Event.start_date, models.Event.year, models.Event.name, models.Event.id).all()
+    event_ids = [event.id for event in events]
+    result_counts = {
+        event_id: count
+        for event_id, count in db.query(models.Result.event_id, func.count(models.Result.id))
+        .filter(models.Result.event_id.in_(event_ids), models.Result.is_deleted.is_(False))
+        .group_by(models.Result.event_id)
+        .all()
+    } if event_ids else {}
+
+    filtered_items = []
+    summary_counts = {
+        schemas.EventCalendarStatusEnum.UPCOMING: 0,
+        schemas.EventCalendarStatusEnum.ONGOING: 0,
+        schemas.EventCalendarStatusEnum.COMPLETED_NO_RESULTS: 0,
+        schemas.EventCalendarStatusEnum.COMPLETED_WITH_RESULTS: 0,
+    }
+    reminders = []
+
+    for event in events:
+        effective_start = event_start_for_calendar(event)
+        effective_end = event_end_for_calendar(event)
+        if start_date and effective_end < start_date:
+            continue
+        if end_date and effective_start > end_date:
+            continue
+
+        result_count = result_counts.get(event.id, 0)
+        calendar_status = get_event_calendar_status(event, result_count, today)
+        if status and calendar_status != status:
+            continue
+
+        summary_counts[calendar_status] += 1
+        item = build_event_calendar_item(event, result_count, today)
+        filtered_items.append(item)
+        if calendar_status == schemas.EventCalendarStatusEnum.COMPLETED_NO_RESULTS:
+            reminders.append(build_event_result_reminder(event, result_count, today))
+
+    paginated_items = filtered_items[offset:offset + limit]
+    with_results = sum(1 for item in filtered_items if item["has_results"])
+    without_results = len(filtered_items) - with_results
+
+    return {
+        "events": paginated_items,
+        "summary": {
+            "total_events": len(filtered_items),
+            "upcoming": summary_counts[schemas.EventCalendarStatusEnum.UPCOMING],
+            "ongoing": summary_counts[schemas.EventCalendarStatusEnum.ONGOING],
+            "completed_no_results": summary_counts[schemas.EventCalendarStatusEnum.COMPLETED_NO_RESULTS],
+            "completed_with_results": summary_counts[schemas.EventCalendarStatusEnum.COMPLETED_WITH_RESULTS],
+            "with_results": with_results,
+            "without_results": without_results,
+        },
+        "reminders": reminders[:100],
+    }
 
 
 @router.get("/event-result-reminders", response_model=list[schemas.EventResultReminder])

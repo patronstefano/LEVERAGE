@@ -192,6 +192,24 @@ TRANSLATIONS = {
             "{skipped_duplicates} doublon(s) ignore(s)."
         ),
     },
+    "notification.calendar_import_summary": {
+        models.LanguageEnum.EN: (
+            "Calendar import report: {updated_events} event(s) updated with dates; "
+            "{created_events} future event(s) created; {skipped_unmatched_historical_rows} historical row(s) left in review."
+        ),
+        models.LanguageEnum.IT: (
+            "Report import calendario: {updated_events} evento/i aggiornato/i con date; "
+            "{created_events} evento/i futuro/i creato/i; {skipped_unmatched_historical_rows} riga/righe storiche lasciata/e in review."
+        ),
+        models.LanguageEnum.ES: (
+            "Reporte de importacion del calendario: {updated_events} evento(s) actualizado(s) con fechas; "
+            "{created_events} evento(s) futuro(s) creado(s); {skipped_unmatched_historical_rows} fila(s) historica(s) pendiente(s) de revision."
+        ),
+        models.LanguageEnum.FR: (
+            "Rapport d'import calendrier : {updated_events} evenement(s) mis a jour avec dates ; "
+            "{created_events} futur(s) evenement(s) cree(s) ; {skipped_unmatched_historical_rows} ligne(s) historique(s) restant en review."
+        ),
+    },
 }
 
 

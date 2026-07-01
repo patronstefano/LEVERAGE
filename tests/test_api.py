@@ -82,6 +82,24 @@ def login_as_user(email: str):
     return token_response.json()["access_token"]
 
 
+def make_calendar_workbook(rows_by_year: dict[int, list[tuple[str, str]]]) -> BytesIO:
+    from openpyxl import Workbook
+
+    workbook = Workbook()
+    default_sheet = workbook.active
+    workbook.remove(default_sheet)
+    for year, rows in rows_by_year.items():
+        worksheet = workbook.create_sheet(str(year))
+        worksheet.append(["DATE", "EVENT"])
+        for date_label, event_name in rows:
+            worksheet.append([date_label, event_name])
+
+    buffer = BytesIO()
+    workbook.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+
 def test_register_and_login():
     register_response = client.post(
         "/auth/register",
@@ -4015,6 +4033,21 @@ def test_event_calendar_exposes_future_events_and_computed_statuses():
     mixed_names = {event["name"] for event in mixed_response.json()}
     assert {"Completed Without Results", "Completed With Results", "Ongoing Event", "Upcoming Event"}.issubset(mixed_names)
 
+    admin_calendar_response = client.get(
+        "/admin/calendar?start_date=2024-04-01&end_date=2024-06-30&as_of=2024-05-02",
+        headers=headers,
+    )
+    assert admin_calendar_response.status_code == 200
+    admin_calendar = admin_calendar_response.json()
+    assert admin_calendar["summary"]["total_events"] == 4
+    assert admin_calendar["summary"]["completed_no_results"] == 1
+    assert admin_calendar["summary"]["completed_with_results"] == 1
+    assert admin_calendar["summary"]["ongoing"] == 1
+    assert admin_calendar["summary"]["upcoming"] == 1
+    assert admin_calendar["summary"]["with_results"] == 1
+    assert admin_calendar["summary"]["without_results"] == 3
+    assert [reminder["event"]["name"] for reminder in admin_calendar["reminders"]] == ["Completed Without Results"]
+
 
 def test_admin_event_result_reminders_are_admin_only_and_create_notifications_once():
     client.post("/auth/register", json={"email": "event_reminder_admin@example.com", "password": TEST_PASSWORD})
@@ -4073,6 +4106,108 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
     )
     assert duplicate_notify_response.status_code == 200
     assert duplicate_notify_response.json()["created_notifications"] == 0
+
+
+def test_calendar_import_preview_and_commit_update_existing_events_and_create_future_calendar_events():
+    client.post("/auth/register", json={"email": "calendar_import_admin@example.com", "password": TEST_PASSWORD})
+    admin_token = login_as_admin("calendar_import_admin@example.com")
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    client.post("/auth/register", json={"email": "calendar_import_user@example.com", "password": TEST_PASSWORD})
+    user_token = login_as_user("calendar_import_user@example.com")
+    user_headers = {"Authorization": f"Bearer {user_token}"}
+
+    existing_event = client.post(
+        "/events/",
+        json={
+            "name": "Swiss Cup",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=admin_headers,
+    ).json()
+
+    workbook = make_calendar_workbook({
+        2025: [
+            ("Nov 8-9", "Swiss Cup"),
+            ("Dec 1-3", "Historical Missing Event"),
+        ],
+        2026: [
+            ("Jan 31-Feb 3", "Future World Cup (MAG)"),
+        ],
+    })
+
+    forbidden_response = client.post(
+        "/imports/calendar/preview?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=user_headers,
+    )
+    assert forbidden_response.status_code == 403
+
+    workbook.seek(0)
+    preview_response = client.post(
+        "/imports/calendar/preview?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=admin_headers,
+    )
+    assert preview_response.status_code == 200
+    preview = preview_response.json()
+    assert preview["parsed_rows"] == 3
+    assert preview["matched_rows"] == 1
+    assert preview["matched_events"] == 1
+    assert preview["would_update_events"] == 1
+    assert preview["would_create_events"] == 1
+    assert preview["unmatched_historical_rows"] == 1
+    assert preview["issues"] == []
+
+    actions = {row["event_name"]: row for row in preview["rows"]}
+    assert actions["Swiss Cup"]["action"] == "update_dates"
+    assert actions["Swiss Cup"]["matched_event_ids"] == [existing_event["id"]]
+    assert actions["Historical Missing Event"]["action"] == "skip_unmatched_historical"
+    assert actions["Future World Cup (MAG)"]["action"] == "create_event"
+    assert actions["Future World Cup (MAG)"]["start_date"] == "2026-01-31"
+    assert actions["Future World Cup (MAG)"]["end_date"] == "2026-02-03"
+    assert actions["Future World Cup (MAG)"]["inferred_discipline"] == "MAG"
+
+    workbook.seek(0)
+    commit_response = client.post(
+        "/imports/calendar/commit?create_missing_from_year=2026",
+        files={"file": ("Calendar.xlsx", workbook.getvalue(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        headers=admin_headers,
+    )
+    assert commit_response.status_code == 200
+    commit_payload = commit_response.json()
+    assert commit_payload["committed"] is True
+    assert commit_payload["updated_events"] == 1
+    assert commit_payload["created_events"] == 1
+    assert commit_payload["skipped_unmatched_historical_rows"] == 1
+    assert commit_payload["created_admin_notifications"] == 1
+
+    updated_existing = client.get(f"/events/{existing_event['id']}").json()
+    assert updated_existing["start_date"] == "2025-11-08"
+    assert updated_existing["end_date"] == "2025-11-09"
+
+    calendar_response = client.get("/events/calendar?year=2026&as_of=2026-01-01")
+    assert calendar_response.status_code == 200
+    future_events = calendar_response.json()
+    assert len(future_events) == 1
+    assert future_events[0]["name"] == "Future World Cup (MAG)"
+    assert future_events[0]["discipline"] == "MAG"
+    assert future_events[0]["category"] == "junior and senior"
+    assert future_events[0]["level"] == "World Cup"
+    assert future_events[0]["calendar_status"] == "upcoming"
+
+    notifications_response = client.get("/notifications", headers=admin_headers)
+    assert notifications_response.status_code == 200
+    import_notifications = [
+        notification
+        for notification in notifications_response.json()
+        if notification["type"] == "import_summary"
+    ]
+    assert len(import_notifications) == 1
+    assert "Calendar import report" in import_notifications[0]["message"]
 
 
 def test_event_result_groups():
