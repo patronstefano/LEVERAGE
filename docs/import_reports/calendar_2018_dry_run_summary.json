@@ -10,12 +10,15 @@
   "direct_safe_rows": 189,
   "direct_skipped_conflict_rows": 16,
   "direct_skipped_multiple_match_rows": 0,
-  "review_match_rows": 0,
-  "resolved_source_conflicts": 0,
+  "review_match_rows": 10,
+  "resolved_source_conflicts": 8,
   "calendar_only_rows": 0,
-  "updated_events": 0,
+  "calendar_entries_created": 26,
+  "calendar_entries_updated": 0,
+  "calendar_entries_no_change": 0,
+  "updated_events": 8,
   "no_change_events": 189,
-  "unresolved_review_items": 17,
+  "unresolved_review_items": 0,
   "invalid_decisions": 0,
   "skipped": 0,
   "updates": [
@@ -1530,104 +1533,377 @@
       "status": "no_change",
       "start_date": "2018-12-12",
       "end_date": "2018-12-13"
+    },
+    {
+      "event_id": 43,
+      "event_name": "RD761 Junior International Cup",
+      "source": "calendar_review_slim:2018:2",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-01-19",
+      "to_end_date": "2018-01-21"
+    },
+    {
+      "event_id": 146,
+      "event_name": "Desert Lights Qualifier",
+      "source": "calendar_review_slim:2018:5",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-01-27",
+      "to_end_date": "2018-01-28"
+    },
+    {
+      "event_id": 379,
+      "event_name": "Buckeye National Qualifier",
+      "source": "calendar_review_slim:2018:6",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-01",
+      "to_end_date": "2018-02-02"
+    },
+    {
+      "event_id": 149,
+      "event_name": "Orlando Qualifier",
+      "source": "calendar_review_slim:2018:13",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-02-09",
+      "to_end_date": "2018-02-11"
+    },
+    {
+      "event_id": 119,
+      "event_name": "Top 12 Final",
+      "source": "calendar_review_slim:2018:37",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-03-17",
+      "to_end_date": "2018-03-17"
+    },
+    {
+      "event_id": 155,
+      "event_name": "U.S. Verification (April)",
+      "source": "calendar_review_slim:2018:49",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-04-07",
+      "to_end_date": "2018-04-08"
+    },
+    {
+      "event_id": 97,
+      "event_name": "German Worlds Trial",
+      "source": "calendar_review_slim:2018:158",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-15",
+      "to_end_date": "2018-09-15"
+    },
+    {
+      "event_id": 74,
+      "event_name": "U.S. Men's World Team Selection",
+      "source": "calendar_review_slim:2018:162",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2018-09-20",
+      "to_end_date": "2018-09-22"
     }
   ],
-  "unresolved": [
+  "calendar_entries": [
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "2",
-      "calendar_event": "RDI 761 Invitational",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 43,
+      "name": "RDI 761 Invitational",
+      "start_date": "2018-01-19",
+      "end_date": "2018-01-21",
+      "year": 2018,
+      "source_row": 2,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "5",
-      "calendar_event": "Desert Lights National Qualifier",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 146,
+      "name": "Desert Lights National Qualifier",
+      "start_date": "2018-01-27",
+      "end_date": "2018-01-28",
+      "year": 2018,
+      "source_row": 5,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "6",
-      "calendar_event": "Buckeye National Qualifier",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 379,
+      "name": "Buckeye National Qualifier",
+      "start_date": "2018-02-01",
+      "end_date": "2018-02-02",
+      "year": 2018,
+      "source_row": 6,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "13",
-      "calendar_event": "Orlando National Qualifier",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 149,
+      "name": "Orlando National Qualifier",
+      "start_date": "2018-02-09",
+      "end_date": "2018-02-11",
+      "year": 2018,
+      "source_row": 13,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "18",
-      "calendar_event": "Top 12 Semi-Final (MAG)",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 104,
+      "name": "Top 12 Semi-Final (MAG)",
+      "start_date": "2018-02-17",
+      "end_date": "2018-02-17",
+      "year": 2018,
+      "source_row": 18,
+      "source_note": "The \u201csemi-final\u201d has 2 competitions",
+      "discipline": "MAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "37",
-      "calendar_event": "Top 12 Finals (MAG & WAG)",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 106,
+      "name": "Top 12 Semi-Final (MAG)",
+      "start_date": "2018-02-17",
+      "end_date": "2018-02-17",
+      "year": 2018,
+      "source_row": 18,
+      "source_note": "The \u201csemi-final\u201d has 2 competitions",
+      "discipline": "MAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "49",
-      "calendar_event": "U.S. April Verification Camp",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 119,
+      "name": "Top 12 Finals (MAG & WAG)",
+      "start_date": "2018-03-17",
+      "end_date": "2018-03-17",
+      "year": 2018,
+      "source_row": 37,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "158",
-      "calendar_event": "German Worlds Trials",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 155,
+      "name": "U.S. April Verification Camp",
+      "start_date": "2018-04-07",
+      "end_date": "2018-04-08",
+      "year": 2018,
+      "source_row": 49,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_event_match_review_slim.csv",
-      "calendar_row": "162",
-      "calendar_event": "U.S. Men's Worlds Trials",
-      "reason": "missing_choice"
+      "status": "created",
+      "event_id": 97,
+      "name": "German Worlds Trials",
+      "start_date": "2018-09-15",
+      "end_date": "2018-09-15",
+      "year": 2018,
+      "source_row": 158,
+      "source_note": "2 is not inside 1?",
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "1",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 74,
+      "name": "U.S. Men's Worlds Trials",
+      "start_date": "2018-09-20",
+      "end_date": "2018-09-22",
+      "year": 2018,
+      "source_row": 162,
+      "source_note": null,
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "2",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 69,
+      "name": "Top 12 Series 3 (WAG)",
+      "start_date": "2018-01-27",
+      "end_date": "2018-01-27",
+      "year": 2018,
+      "source_row": 4,
+      "source_note": "MAG results connect to 2, WAG results connect to 1",
+      "discipline": "WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "3",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 69,
+      "name": "Top 12 Series 3 (MAG)",
+      "start_date": "2018-12-01",
+      "end_date": "2018-12-01",
+      "year": 2018,
+      "source_row": 208,
+      "source_note": "MAG results connect to 2, WAG results connect to 1",
+      "discipline": "MAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "4",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 8,
+      "name": "Top 12 Series 4 (WAG)",
+      "start_date": "2018-02-24",
+      "end_date": "2018-02-24",
+      "year": 2018,
+      "source_row": 22,
+      "source_note": "MAG results connect to 2, WAG results connect to 1",
+      "discipline": "WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "5",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 8,
+      "name": "Top 12 Series 4 (MAG)",
+      "start_date": "2018-12-15",
+      "end_date": "2018-12-15",
+      "year": 2018,
+      "source_row": 215,
+      "source_note": "MAG results connect to 2, WAG results connect to 1",
+      "discipline": "MAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "6",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 96,
+      "name": "1st Bundesliga (MAG)",
+      "start_date": "2018-03-03",
+      "end_date": "2018-03-03",
+      "year": 2018,
+      "source_row": 28,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "7",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 96,
+      "name": "1st Bundesliga",
+      "start_date": "2018-03-03",
+      "end_date": "2018-03-04",
+      "year": 2018,
+      "source_row": 29,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
     },
     {
-      "source": "docs/import_reports/calendar_2018_source_conflicts_slim.csv",
-      "conflict_group": "8",
-      "reason": "source_conflict_requires_one_choice"
+      "status": "created",
+      "event_id": 99,
+      "name": "2nd Bundesliga (MAG)",
+      "start_date": "2018-03-10",
+      "end_date": "2018-03-11",
+      "year": 2018,
+      "source_row": 33,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 99,
+      "name": "2nd Bundesliga",
+      "start_date": "2018-03-24",
+      "end_date": "2018-03-25",
+      "year": 2018,
+      "source_row": 41,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 112,
+      "name": "3rd Bundesliga (MAG)",
+      "start_date": "2018-03-31",
+      "end_date": "2018-03-31",
+      "year": 2018,
+      "source_row": 44,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 112,
+      "name": "3rd Bundesliga",
+      "start_date": "2018-04-14",
+      "end_date": "2018-04-15",
+      "year": 2018,
+      "source_row": 54,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 111,
+      "name": "4th Bundesliga (MAG)",
+      "start_date": "2018-04-07",
+      "end_date": "2018-04-07",
+      "year": 2018,
+      "source_row": 48,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 111,
+      "name": "4th Bundesliga",
+      "start_date": "2018-11-17",
+      "end_date": "2018-11-18",
+      "year": 2018,
+      "source_row": 197,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 102,
+      "name": "Top 12 Series 1 (MAG)",
+      "start_date": "2018-11-10",
+      "end_date": "2018-11-10",
+      "year": 2018,
+      "source_row": 186,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 102,
+      "name": "Top 12 Series 1",
+      "start_date": "2018-11-24",
+      "end_date": "2018-11-24",
+      "year": 2018,
+      "source_row": 202,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 107,
+      "name": "Top 12 Series 2 (MAG)",
+      "start_date": "2018-11-17",
+      "end_date": "2018-11-17",
+      "year": 2018,
+      "source_row": 196,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 107,
+      "name": "Top 12 Series 2",
+      "start_date": "2018-12-08",
+      "end_date": "2018-12-08",
+      "year": 2018,
+      "source_row": 212,
+      "source_note": "MAG results connect to 1, WAG results connect to 2",
+      "discipline": "MAG and WAG"
     }
   ],
+  "unresolved": [],
   "invalid_decision_details": [],
   "skipped_details": [],
   "source_issues": []

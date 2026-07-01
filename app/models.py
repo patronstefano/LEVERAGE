@@ -231,8 +231,41 @@ class Event(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     results = relationship("Result", back_populates="event", cascade="all, delete-orphan")
+    calendar_entries = relationship("EventCalendarEntry", back_populates="event")
     world_gymnastics_verified_by_admin = relationship("User", foreign_keys=[world_gymnastics_verified_by_admin_id])
     deleted_by_admin = relationship("User", foreign_keys=[deleted_by_admin_id])
+
+
+class EventCalendarEntry(Base):
+    __tablename__ = "event_calendar_entries"
+    __table_args__ = (
+        CheckConstraint("end_date >= start_date", name="ck_event_calendar_entries_date_order"),
+        Index("ix_event_calendar_entries_calendar", "is_deleted", "start_date", "year"),
+        Index("ix_event_calendar_entries_event", "event_id", "is_deleted"),
+        UniqueConstraint(
+            "source",
+            "year",
+            "source_row",
+            "event_id",
+            "name",
+            name="uq_event_calendar_entry_source",
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(Integer, ForeignKey("events.id", ondelete="SET NULL"), nullable=True, index=True)
+    name = Column(String(255), nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    year = Column(Integer, nullable=False, index=True)
+    discipline = Column(SQLEnum(EventDisciplineEnum), nullable=True)
+    source = Column(String(100), nullable=False, default="gymternet_calendar")
+    source_row = Column(Integer, nullable=True)
+    source_note = Column(Text, nullable=True)
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    event = relationship("Event", back_populates="calendar_entries")
 
 
 class Result(Base):

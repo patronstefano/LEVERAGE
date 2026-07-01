@@ -149,6 +149,8 @@ scripts/commit_calendar_year.py
 
 Lo script applica automaticamente solo i match sicuri e aggiorna i campi `start_date` / `end_date` degli `Event` associati. I mismatch e i conflitti MAG/WAG restano in review finche l'admin non compila i CSV.
 
+Quando una riga calendar o un conflitto indica piu opzioni valide, per esempio `choice = 1 and 2`, lo script non forza una data unica nel record `Event`. In questi casi crea invece record `EventCalendarEntry`, cioe voci calendario separate che possono puntare alla stessa scheda Event.
+
 Per la review manuale si usano preferibilmente i file `_slim.csv`.
 
 Nel file `calendar_<anno>_event_match_review_slim.csv`:
@@ -169,9 +171,12 @@ Primo commit calendario 2018:
 | Controllo | Conteggio |
 |---|---:|
 | Match sicuri applicati | 189 |
-| Event 2018 con date dopo commit | 189 |
-| Event 2018 ancora senza date | 22 |
-| Elementi review aperti | 17 |
+| Decisioni admin slim applicate | 10 |
+| Conflitti stesso Event/date risolti | 8 |
+| Event 2018 con date dopo commit | 196 |
+| Event 2018 ancora senza date | 15 |
+| Calendar entries 2018 create | 26 |
+| Elementi review aperti | 0 |
 
 Report:
 

@@ -2882,6 +2882,10 @@ Questi file mostrano soltanto:
 
 Se l'admin inserisce `choice = 1`, `2` o `3`, lo script associa la riga calendario alla relativa opzione. Se invece inserisce `choice = calendar_only`, la riga resta una voce calendario non collegata a una scheda Event: sara quindi visualizzabile nel calendario futuro ma non rimandera alla scheda evento.
 
+Durante la review 2018 sono emersi casi in cui la scelta corretta e multipla, ad esempio `choice = 1 and 2`. Questo accade quando due voci calendario sono entrambe corrette per lo stesso Event DB, spesso perche un Event `MAG and WAG` contiene risultati MAG e WAG disputati in date diverse.
+
+Decisione metodologica: in questi casi non si forza una data unica nel record `Event`, perche sarebbe semanticamente scorretto. Viene invece creata una voce `EventCalendarEntry`, cioe una riga calendario separata che puo puntare alla stessa scheda Event. In futuro, la UI calendario potra mostrare due righe distinte ma farle rimandare alla stessa scheda evento.
+
 Il primo dry-run 2018 ha individuato:
 
 | Controllo | Conteggio |
@@ -2905,11 +2909,13 @@ Esito del commit reale:
 
 | Controllo | Conteggio |
 |---|---:|
-| Event aggiornati con `start_date` / `end_date` | 189 |
+| Event aggiornati con `start_date` / `end_date` dal primo commit sicuro | 189 |
+| Event aggiornati con `start_date` / `end_date` dopo review slim | 8 |
 | Event 2018 totali nel DB | 211 |
-| Event 2018 con date dopo commit | 189 |
-| Event 2018 ancora senza date | 22 |
-| Elementi review ancora aperti | 17 |
+| Event 2018 con date dopo commit review | 196 |
+| Event 2018 ancora senza date | 15 |
+| Calendar entries 2018 create | 26 |
+| Elementi review ancora aperti | 0 |
 
 Un backup locale del database e stato creato automaticamente prima del commit. Il backup non viene tracciato da Git perche il database locale e escluso dal repository.
 

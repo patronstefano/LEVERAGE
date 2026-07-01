@@ -4,6 +4,7 @@ import argparse
 import csv
 import json
 import os
+import re
 import shutil
 import sys
 from collections import defaultdict
@@ -83,6 +84,22 @@ def selected_event_id_from_slim_choice(row: dict[str, str], detailed_row: dict[s
     return ""
 
 
+def choice_numbers(row: dict[str, str]) -> list[int]:
+    choice = normalized_choice(row)
+    return [int(value) for value in re.findall(r"\d+", choice)]
+
+
+def selected_event_ids_from_slim_choice(row: dict[str, str], detailed_row: dict[str, str]) -> list[str]:
+    manual_event_id = clean(row.get("manual_event_id"))
+    if manual_event_id:
+        return [manual_event_id]
+    return [
+        event_id
+        for number in choice_numbers(row)
+        if (event_id := clean(detailed_row.get(f"suggestion_{number}_event_id")))
+    ]
+
+
 def parse_date(value: str):
     from datetime import date
 
@@ -125,6 +142,78 @@ def update_event_dates(db, event, start_date, end_date, source: str, updates: li
     return True
 
 
+def create_or_update_calendar_entry(
+    db,
+    models,
+    event_id,
+    name: str,
+    start_date,
+    end_date,
+    year: int,
+    source_row: int,
+    source_note: str | None,
+    discipline,
+    entries: list[dict],
+    dry_run: bool,
+) -> str:
+    query = db.query(models.EventCalendarEntry).filter(
+        models.EventCalendarEntry.source == "gymternet_calendar",
+        models.EventCalendarEntry.year == year,
+        models.EventCalendarEntry.source_row == source_row,
+        models.EventCalendarEntry.name == name,
+        models.EventCalendarEntry.is_deleted.is_(False),
+    )
+    if event_id is None:
+        query = query.filter(models.EventCalendarEntry.event_id.is_(None))
+    else:
+        query = query.filter(models.EventCalendarEntry.event_id == event_id)
+
+    entry = query.first()
+    payload = {
+        "event_id": event_id,
+        "name": name,
+        "start_date": start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "year": year,
+        "source_row": source_row,
+        "source_note": source_note,
+        "discipline": discipline.value if discipline else None,
+    }
+    if not entry:
+        entries.append({"status": "created", **payload})
+        if not dry_run:
+            db.add(models.EventCalendarEntry(
+                event_id=event_id,
+                name=name,
+                start_date=start_date,
+                end_date=end_date,
+                year=year,
+                discipline=discipline,
+                source="gymternet_calendar",
+                source_row=source_row,
+                source_note=source_note,
+            ))
+        return "created"
+
+    changed = (
+        entry.start_date != start_date
+        or entry.end_date != end_date
+        or entry.source_note != source_note
+        or entry.discipline != discipline
+    )
+    if changed:
+        entries.append({"status": "updated", "entry_id": entry.id, **payload})
+        if not dry_run:
+            entry.start_date = start_date
+            entry.end_date = end_date
+            entry.source_note = source_note
+            entry.discipline = discipline
+        return "updated"
+
+    entries.append({"status": "no_change", "entry_id": entry.id, **payload})
+    return "no_change"
+
+
 def backup_database(db_path: Path, year: int) -> str | None:
     if not db_path.exists():
         return None
@@ -140,7 +229,7 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
     os.environ["DATABASE_URL"] = f"sqlite:///{args.db_path}"
 
     from app import models
-    from app.calendar_import import parse_calendar_file, summarize_calendar_import
+    from app.calendar_import import infer_event_discipline, parse_calendar_file, summarize_calendar_import
     from app.database import SessionLocal
 
     calendar_file: Path = args.calendar_file
@@ -151,6 +240,7 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
     rows, issues = parse_calendar_file(calendar_file.name, calendar_file.read_bytes())
     db = SessionLocal()
     updates: list[dict] = []
+    calendar_entries: list[dict] = []
     invalid_decisions: list[dict] = []
     unresolved: list[dict] = []
     skipped: list[dict] = []
@@ -174,6 +264,18 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
         direct_skipped_conflict_rows = 0
         direct_skipped_multiple_match_rows = 0
         calendar_only_rows = 0
+        calendar_entries_created = 0
+        calendar_entries_updated = 0
+        calendar_entries_no_change = 0
+
+        def record_calendar_entry_status(status: str) -> None:
+            nonlocal calendar_entries_created, calendar_entries_updated, calendar_entries_no_change
+            if status == "created":
+                calendar_entries_created += 1
+            elif status == "updated":
+                calendar_entries_updated += 1
+            elif status == "no_change":
+                calendar_entries_no_change += 1
 
         for row in year_rows:
             key = source_row_key(row)
@@ -233,6 +335,23 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                     continue
                 if choice in CALENDAR_ONLY_DECISIONS:
                     calendar_only_rows += 1
+                    source_row = source_by_key.get((year, int(calendar_row)))
+                    if source_row:
+                        status = create_or_update_calendar_entry(
+                            db,
+                            models,
+                            None,
+                            source_row["event_name"],
+                            source_row["start_date"],
+                            source_row["end_date"],
+                            year,
+                            source_row["row"],
+                            clean(slim_row.get("notes")) or None,
+                            infer_event_discipline(source_row["event_name"]),
+                            calendar_entries,
+                            dry_run,
+                        )
+                        record_calendar_entry_status(status)
                     continue
                 detailed_row = detailed_by_calendar_row.get(calendar_row)
                 if not detailed_row:
@@ -243,8 +362,8 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "detailed_calendar_row_not_found",
                     })
                     continue
-                selected_event_id = selected_event_id_from_slim_choice(slim_row, detailed_row)
-                if not selected_event_id:
+                selected_event_ids = selected_event_ids_from_slim_choice(slim_row, detailed_row)
+                if not selected_event_ids:
                     invalid_decisions.append({
                         "source": str(slim_match_review_path),
                         "calendar_row": calendar_row,
@@ -262,33 +381,58 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "calendar_source_row_not_found",
                     })
                     continue
-                event = db.query(models.Event).filter(
-                    models.Event.id == int(selected_event_id),
-                    models.Event.is_deleted.is_(False),
-                ).first()
-                if not event:
-                    invalid_decisions.append({
-                        "source": str(slim_match_review_path),
-                        "calendar_row": calendar_row,
-                        "calendar_event": clean(slim_row.get("calendar_event")),
-                        "selected_event_id": selected_event_id,
-                        "reason": "selected_event_not_found",
-                    })
+                events = []
+                row_has_invalid_event = False
+                for selected_event_id in selected_event_ids:
+                    event = db.query(models.Event).filter(
+                        models.Event.id == int(selected_event_id),
+                        models.Event.is_deleted.is_(False),
+                    ).first()
+                    if not event:
+                        invalid_decisions.append({
+                            "source": str(slim_match_review_path),
+                            "calendar_row": calendar_row,
+                            "calendar_event": clean(slim_row.get("calendar_event")),
+                            "selected_event_id": selected_event_id,
+                            "reason": "selected_event_not_found",
+                        })
+                        row_has_invalid_event = True
+                        continue
+                    events.append(event)
+                if row_has_invalid_event or not events:
                     continue
-                review_match_rows += 1
-                changed = update_event_dates(
-                    db,
-                    event,
-                    source_row["start_date"],
-                    source_row["end_date"],
-                    source=f"calendar_review_slim:{year}:{source_row['row']}",
-                    updates=updates,
-                    dry_run=dry_run,
-                )
-                if changed:
-                    updated_event_ids.add(event.id)
-                else:
-                    no_change_events += 1
+
+                review_match_rows += len(events)
+                if len(events) == 1:
+                    changed = update_event_dates(
+                        db,
+                        events[0],
+                        source_row["start_date"],
+                        source_row["end_date"],
+                        source=f"calendar_review_slim:{year}:{source_row['row']}",
+                        updates=updates,
+                        dry_run=dry_run,
+                    )
+                    if changed:
+                        updated_event_ids.add(events[0].id)
+                    else:
+                        no_change_events += 1
+                for event in events:
+                    status = create_or_update_calendar_entry(
+                        db,
+                        models,
+                        event.id,
+                        source_row["event_name"],
+                        source_row["start_date"],
+                        source_row["end_date"],
+                        year,
+                        source_row["row"],
+                        clean(slim_row.get("notes")) or None,
+                        infer_event_discipline(source_row["event_name"]),
+                        calendar_entries,
+                        dry_run,
+                    )
+                    record_calendar_entry_status(status)
         else:
             for csv_row in match_review_rows:
                 decision = normalized_decision(csv_row)
@@ -296,6 +440,23 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                     continue
                 if is_calendar_only_decision(csv_row):
                     calendar_only_rows += 1
+                    source_row = source_by_key.get(csv_source_row_key(csv_row))
+                    if source_row:
+                        status = create_or_update_calendar_entry(
+                            db,
+                            models,
+                            None,
+                            source_row["event_name"],
+                            source_row["start_date"],
+                            source_row["end_date"],
+                            year,
+                            source_row["row"],
+                            clean(csv_row.get("notes")) or None,
+                            infer_event_discipline(source_row["event_name"]),
+                            calendar_entries,
+                            dry_run,
+                        )
+                        record_calendar_entry_status(status)
                     continue
                 if not is_match_decision(csv_row):
                     unresolved.append({
@@ -351,6 +512,21 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                     updated_event_ids.add(event.id)
                 else:
                     no_change_events += 1
+                status = create_or_update_calendar_entry(
+                    db,
+                    models,
+                    event.id,
+                    source_row["event_name"],
+                    source_row["start_date"],
+                    source_row["end_date"],
+                    year,
+                    source_row["row"],
+                    clean(csv_row.get("notes")) or None,
+                    infer_event_discipline(source_row["event_name"]),
+                    calendar_entries,
+                    dry_run,
+                )
+                record_calendar_entry_status(status)
 
         source_conflict_path = report_dir / f"calendar_{year}_source_conflicts.csv"
         slim_source_conflict_path = report_dir / f"calendar_{year}_source_conflicts_slim.csv"
@@ -374,7 +550,8 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                     continue
                 if choice in IGNORE_DECISIONS or choice in CALENDAR_ONLY_DECISIONS:
                     continue
-                if not choice.isdigit() or int(choice) < 1 or int(choice) > len(group_rows):
+                selected_numbers = choice_numbers(slim_row)
+                if not selected_numbers or any(number < 1 or number > len(group_rows) for number in selected_numbers):
                     invalid_decisions.append({
                         "source": str(slim_source_conflict_path),
                         "conflict_group": group_id,
@@ -382,8 +559,8 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "choice_must_reference_an_available_option",
                     })
                     continue
-                csv_row = group_rows[int(choice) - 1]
-                event_id = int(clean(csv_row.get("event_id")))
+                selected_rows = [group_rows[number - 1] for number in selected_numbers]
+                event_id = int(clean(selected_rows[0].get("event_id")))
                 event = db.query(models.Event).filter(
                     models.Event.id == event_id,
                     models.Event.is_deleted.is_(False),
@@ -396,20 +573,39 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "event_not_found",
                     })
                     continue
-                changed = update_event_dates(
-                    db,
-                    event,
-                    parse_date(clean(csv_row.get("calendar_start_date"))),
-                    parse_date(clean(csv_row.get("calendar_end_date"))),
-                    source=f"calendar_source_conflict_slim:{year}:{group_id}",
-                    updates=updates,
-                    dry_run=dry_run,
-                )
                 resolved_source_conflicts += 1
-                if changed:
-                    updated_event_ids.add(event.id)
-                else:
-                    no_change_events += 1
+                if len(selected_rows) == 1:
+                    csv_row = selected_rows[0]
+                    changed = update_event_dates(
+                        db,
+                        event,
+                        parse_date(clean(csv_row.get("calendar_start_date"))),
+                        parse_date(clean(csv_row.get("calendar_end_date"))),
+                        source=f"calendar_source_conflict_slim:{year}:{group_id}",
+                        updates=updates,
+                        dry_run=dry_run,
+                    )
+                    if changed:
+                        updated_event_ids.add(event.id)
+                    else:
+                        no_change_events += 1
+
+                for csv_row in selected_rows:
+                    status = create_or_update_calendar_entry(
+                        db,
+                        models,
+                        event.id,
+                        clean(csv_row.get("calendar_event")),
+                        parse_date(clean(csv_row.get("calendar_start_date"))),
+                        parse_date(clean(csv_row.get("calendar_end_date"))),
+                        year,
+                        int(clean(csv_row.get("calendar_row"))),
+                        clean(slim_row.get("notes")) or None,
+                        infer_event_discipline(clean(csv_row.get("calendar_event"))),
+                        calendar_entries,
+                        dry_run,
+                    )
+                    record_calendar_entry_status(status)
         else:
             for group_id, group_rows in source_conflict_groups.items():
                 selected_rows = [row for row in group_rows if is_match_decision(row)]
@@ -480,12 +676,16 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
             "review_match_rows": review_match_rows,
             "resolved_source_conflicts": resolved_source_conflicts,
             "calendar_only_rows": calendar_only_rows,
+            "calendar_entries_created": calendar_entries_created,
+            "calendar_entries_updated": calendar_entries_updated,
+            "calendar_entries_no_change": calendar_entries_no_change,
             "updated_events": len(updated_event_ids),
             "no_change_events": no_change_events,
             "unresolved_review_items": len(unresolved),
             "invalid_decisions": len(invalid_decisions),
             "skipped": len(skipped),
             "updates": updates,
+            "calendar_entries": calendar_entries,
             "unresolved": unresolved,
             "invalid_decision_details": invalid_decisions,
             "skipped_details": skipped,
@@ -515,7 +715,14 @@ def main() -> None:
     printable = {
         key: value
         for key, value in output.items()
-        if key not in {"updates", "unresolved", "invalid_decision_details", "skipped_details", "source_issues"}
+        if key not in {
+            "updates",
+            "calendar_entries",
+            "unresolved",
+            "invalid_decision_details",
+            "skipped_details",
+            "source_issues",
+        }
     }
     print(json.dumps(printable, indent=2, default=str))
 
