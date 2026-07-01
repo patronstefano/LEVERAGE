@@ -1,0 +1,2 @@
+event_id,event_name,discipline,category,level,result_count,review_decision,notes
+1063,German Worlds Trials 2,MAG,senior,World Championships,111,db_only,Event derived from Results but not present in the Calendar source.

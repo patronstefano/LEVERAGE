@@ -1,7 +1,7 @@
 conflict_group,db_event,choice,notes,option_1,option_2,option_3,option_4
-1,ID 982 | Top 12 Series 4 | MAG and WAG | 225 result,,,1: calendar row 9 | Jan 28 | Top 12 Series 4 (MAG) | 2023-01-28 to 2023-01-28,2: calendar row 61 | Mar 25 | Top 12 Series 4 | 2023-03-25 to 2023-03-25,,
-2,ID 997 | 1st Bundesliga | MAG and WAG | 486 result,,,1: calendar row 36 | Mar 4 | 1st Bundesliga (MAG) | 2023-03-04 to 2023-03-04,2: calendar row 89 | Apr 30 | 1st Bundesliga | 2023-04-30 to 2023-04-30,,
-3,ID 998 | 2nd Bundesliga | MAG and WAG | 485 result,,,1: calendar row 82 | Apr 22-23 | 2nd Bundesliga (MAG) | 2023-04-22 to 2023-04-23,2: calendar row 141 | Jul 1 | 2nd Bundesliga | 2023-07-01 to 2023-07-01,,
-4,ID 999 | 3rd Bundesliga | MAG and WAG | 479 result,,,1: calendar row 86 | Apr 29-30 | 3rd Bundesliga (MAG) | 2023-04-29 to 2023-04-30,2: calendar row 207 | Oct 14 | 3rd Bundesliga | 2023-10-14 to 2023-10-14,,
-5,ID 1026 | 4th Bundesliga | MAG and WAG | 488 result,,,1: calendar row 213 | Oct 21 | 4th Bundesliga (MAG) | 2023-10-21 to 2023-10-21,2: calendar row 237 | Nov 11 | 4th Bundesliga | 2023-11-11 to 2023-11-11,,
-6,ID 979 | Swedish Cup | MAG and WAG | 322 result,,,1: calendar row 243 | Nov 17-19 | Swedish Cup (MAG) | 2023-11-17 to 2023-11-19,2: calendar row 246 | Nov 18 | Swedish Cup | 2023-11-18 to 2023-11-18,,
+1,ID 982 | Top 12 Series 4 | MAG and WAG | 225 result,1 and 2,,1: calendar row 9 | Jan 28 | Top 12 Series 4 (MAG) | 2023-01-28 to 2023-01-28,2: calendar row 61 | Mar 25 | Top 12 Series 4 | 2023-03-25 to 2023-03-25,,
+2,ID 997 | 1st Bundesliga | MAG and WAG | 486 result,1 and 2,,1: calendar row 36 | Mar 4 | 1st Bundesliga (MAG) | 2023-03-04 to 2023-03-04,2: calendar row 89 | Apr 30 | 1st Bundesliga | 2023-04-30 to 2023-04-30,,
+3,ID 998 | 2nd Bundesliga | MAG and WAG | 485 result,1 and 2,,1: calendar row 82 | Apr 22-23 | 2nd Bundesliga (MAG) | 2023-04-22 to 2023-04-23,2: calendar row 141 | Jul 1 | 2nd Bundesliga | 2023-07-01 to 2023-07-01,,
+4,ID 999 | 3rd Bundesliga | MAG and WAG | 479 result,1 and 2,,1: calendar row 86 | Apr 29-30 | 3rd Bundesliga (MAG) | 2023-04-29 to 2023-04-30,2: calendar row 207 | Oct 14 | 3rd Bundesliga | 2023-10-14 to 2023-10-14,,
+5,ID 1026 | 4th Bundesliga | MAG and WAG | 488 result,1 and 2,,1: calendar row 213 | Oct 21 | 4th Bundesliga (MAG) | 2023-10-21 to 2023-10-21,2: calendar row 237 | Nov 11 | 4th Bundesliga | 2023-11-11 to 2023-11-11,,
+6,ID 979 | Swedish Cup | MAG and WAG | 322 result,1 and 2,,1: calendar row 243 | Nov 17-19 | Swedish Cup (MAG) | 2023-11-17 to 2023-11-19,2: calendar row 246 | Nov 18 | Swedish Cup | 2023-11-18 to 2023-11-18,,

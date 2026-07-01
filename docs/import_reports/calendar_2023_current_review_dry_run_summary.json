@@ -1,0 +1,692 @@
+{
+  "year": 2023,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 30,
+  "applied_pairs": 30,
+  "updated_events": 23,
+  "calendar_entries_created": 30,
+  "calendar_entries_updated": 0,
+  "calendar_entries_relinked": 0,
+  "calendar_only_rows": 13,
+  "calendar_only_entries_created": 13,
+  "calendar_only_entries_updated": 0,
+  "db_only_events": 1,
+  "cleared_cross_year_event_dates": 0,
+  "preserved_existing_event_dates": 7,
+  "unresolved_review_items": 0,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 1115,
+      "event_name": "Las Vegas National Qualifier",
+      "calendar_row": 6,
+      "calendar_event": "Vegas Cup National Qualifier",
+      "start_date": "2023-01-27",
+      "end_date": "2023-01-29",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1126,
+      "event_name": "WOGA Classic National Qualifier",
+      "calendar_row": 20,
+      "calendar_event": "WOGA Classic & National Qualifier",
+      "start_date": "2023-02-17",
+      "end_date": "2023-02-19",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1169,
+      "event_name": "WOGA Classic",
+      "calendar_row": 20,
+      "calendar_event": "WOGA Classic & National Qualifier",
+      "start_date": "2023-02-17",
+      "end_date": "2023-02-19",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1098,
+      "event_name": "Swiss Euros Trials 1",
+      "calendar_row": 24,
+      "calendar_event": "Swiss Men's Euros Trials 1",
+      "start_date": "2023-02-25",
+      "end_date": "2023-02-25",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 944,
+      "event_name": "Finnish National Team Test",
+      "calendar_row": 30,
+      "calendar_event": "Finnish Men's National Team Test",
+      "start_date": "2023-03-03",
+      "end_date": "2023-03-03",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1058,
+      "event_name": "Innsbruck Friendly",
+      "calendar_row": 34,
+      "calendar_event": "Innsbruck Men's Friendly",
+      "start_date": "2023-03-04",
+      "end_date": "2023-03-04",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1100,
+      "event_name": "Swiss Euros Trials 2",
+      "calendar_row": 41,
+      "calendar_event": "Swiss Men's Euros Trials 2",
+      "start_date": "2023-03-09",
+      "end_date": "2023-03-09",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1099,
+      "event_name": "Swiss Euros Trials 3",
+      "calendar_row": 48,
+      "calendar_event": "Swiss Men's Euros Trials 3",
+      "start_date": "2023-03-11",
+      "end_date": "2023-03-11",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1176,
+      "event_name": "Dutch Euros Trials",
+      "calendar_row": 59,
+      "calendar_event": "Dutch Euros Trials 1",
+      "start_date": "2023-03-24",
+      "end_date": "2023-03-24",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 971,
+      "event_name": "Italian Serie A Final Six",
+      "calendar_row": 114,
+      "calendar_event": "Italian Serie A Finals",
+      "start_date": "2023-05-26",
+      "end_date": "2023-05-27",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1064,
+      "event_name": "Avignon Friendly",
+      "calendar_row": 118,
+      "calendar_event": "Avignon Men's Friendly",
+      "start_date": "2023-05-28",
+      "end_date": "2023-05-28",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1043,
+      "event_name": "Swiss Junior Championships",
+      "calendar_row": 125,
+      "calendar_event": "Swiss Junior Men's Championships",
+      "start_date": "2023-06-03",
+      "end_date": "2023-06-04",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1061,
+      "event_name": "German Junior Championships",
+      "calendar_row": 139,
+      "calendar_event": "German Junior Men's Championships",
+      "start_date": "2023-06-30",
+      "end_date": "2023-07-02",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1135,
+      "event_name": "July National Team Camp",
+      "calendar_row": 148,
+      "calendar_event": "July U.S. National Team Camp",
+      "start_date": "2023-07-09",
+      "end_date": "2023-07-12",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1065,
+      "event_name": "EYOF Mixed Pairs",
+      "calendar_row": 151,
+      "calendar_event": "European Youth Olympic Festival",
+      "start_date": "2023-07-25",
+      "end_date": "2023-07-29",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1008,
+      "event_name": "Lenzburg Friendly",
+      "calendar_row": 156,
+      "calendar_event": "Lenzburg Men's Friendly",
+      "start_date": "2023-08-05",
+      "end_date": "2023-08-05",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 992,
+      "event_name": "British Worlds Trials",
+      "calendar_row": 157,
+      "calendar_event": "British Men's Worlds Trials",
+      "start_date": "2023-08-12",
+      "end_date": "2023-08-12",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1096,
+      "event_name": "Swiss Worlds Trials",
+      "calendar_row": 160,
+      "calendar_event": "Swiss Men's Worlds Trials",
+      "start_date": "2023-08-17",
+      "end_date": "2023-08-19",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1006,
+      "event_name": "Dutch Worlds Trials 1",
+      "calendar_row": 161,
+      "calendar_event": "Dutch Men's Worlds Trials",
+      "start_date": "2023-08-18",
+      "end_date": "2023-08-18",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1081,
+      "event_name": "Ghent Friendly",
+      "calendar_row": 171,
+      "calendar_event": "Ghent Men's Friendly",
+      "start_date": "2023-08-26",
+      "end_date": "2023-08-26",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1094,
+      "event_name": "Dutch Worlds Trials 2",
+      "calendar_row": 174,
+      "calendar_event": "Dutch Men's Worlds Trials 2",
+      "start_date": "2023-08-29",
+      "end_date": "2023-08-29",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1006,
+      "event_name": "Dutch Worlds Trials 1",
+      "calendar_row": 180,
+      "calendar_event": "Dutch Worlds Trials",
+      "start_date": "2023-09-02",
+      "end_date": "2023-09-02",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1166,
+      "event_name": "Hungary Masters Championships",
+      "calendar_row": 230,
+      "calendar_event": "Hungarian Masters Championships",
+      "start_date": "2023-11-04",
+      "end_date": "2023-11-05",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1076,
+      "event_name": "Chinese National Student Youth Games",
+      "calendar_row": 234,
+      "calendar_event": "Chinese National Student-Youth Games",
+      "start_date": "2023-11-06",
+      "end_date": "2023-11-13",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1010,
+      "event_name": "Top 12 Series 1 (2024 Season)",
+      "calendar_row": 239,
+      "calendar_event": "Top 12 Series 1 (2024 season)",
+      "start_date": "2023-11-11",
+      "end_date": "2023-11-11",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    },
+    {
+      "event_id": 1010,
+      "event_name": "Top 12 Series 1 (2024 Season)",
+      "calendar_row": 245,
+      "calendar_event": "Top 12 Series 1 (MAG) (2024 season)",
+      "start_date": "2023-11-18",
+      "end_date": "2023-11-18",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    },
+    {
+      "event_id": 983,
+      "event_name": "Top 12 Series 2 (2024 Season)",
+      "calendar_row": 252,
+      "calendar_event": "Top 12 Series 2 (2024 season)",
+      "start_date": "2023-11-25",
+      "end_date": "2023-11-25",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    },
+    {
+      "event_id": 983,
+      "event_name": "Top 12 Series 2 (2024 Season)",
+      "calendar_row": 260,
+      "calendar_event": "Top 12 Series 2 (MAG) (2024 season)",
+      "start_date": "2023-12-02",
+      "end_date": "2023-12-02",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    },
+    {
+      "event_id": 1130,
+      "event_name": "1st Spanish League (2024 season)",
+      "calendar_row": 261,
+      "calendar_event": "1st Spanish League (2024 season)",
+      "start_date": "2023-12-02",
+      "end_date": "2023-12-03",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    },
+    {
+      "event_id": 1142,
+      "event_name": "Top 12 Series 3 (2024 Season)",
+      "calendar_row": 263,
+      "calendar_event": "Top 12 Series 3 (2024 season)",
+      "start_date": "2023-12-09",
+      "end_date": "2023-12-09",
+      "source": "season_year_spillover: linked to 2024 DB event after admin review"
+    }
+  ],
+  "calendar_only_details": [
+    {
+      "calendar_row": 173,
+      "calendar_event": "Finnish National Team Test 9",
+      "start_date": "2023-08-26",
+      "end_date": "2023-08-27",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 176,
+      "calendar_event": "Finnish Men's National Team Test 5",
+      "start_date": "2023-09-01",
+      "end_date": "2023-09-01",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 183,
+      "calendar_event": "Finnish Men's National Team Test 6",
+      "start_date": "2023-09-08",
+      "end_date": "2023-09-08",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 190,
+      "calendar_event": "Finnish National Team Test 10",
+      "start_date": "2023-09-15",
+      "end_date": "2023-09-17",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 200,
+      "calendar_event": "Finnish National Team Test 11",
+      "start_date": "2023-09-29",
+      "end_date": "2023-10-01",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 202,
+      "calendar_event": "Finnish Men's National Team Test 7",
+      "start_date": "2023-10-06",
+      "end_date": "2023-10-06",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 204,
+      "calendar_event": "Finnish Men's National Team Test 8",
+      "start_date": "2023-10-13",
+      "end_date": "2023-10-13",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 205,
+      "calendar_event": "Finnish National Team Test 12",
+      "start_date": "2023-10-13",
+      "end_date": "2023-10-15",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 215,
+      "calendar_event": "Finnish National Team Test 13",
+      "start_date": "2023-10-21",
+      "end_date": "2023-10-22",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 219,
+      "calendar_event": "Finnish National Team Test 14",
+      "start_date": "2023-10-27",
+      "end_date": "2023-10-29",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 228,
+      "calendar_event": "Austrian Junior Championships",
+      "start_date": "2023-11-04",
+      "end_date": "2023-11-04",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 231,
+      "calendar_event": "Hungarian Junior Men's Championships",
+      "start_date": "2023-11-04",
+      "end_date": "2023-11-05",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 264,
+      "calendar_event": "Top 12 Series 3 (MAG) (2024 season)",
+      "start_date": "2023-12-16",
+      "end_date": "2023-12-16",
+      "source": "calendar_only",
+      "notes": "No matching 2024 MAG Event DB found after admin review; kept as calendar_only.",
+      "status": "created"
+    }
+  ],
+  "db_only_details": [
+    {
+      "event_id": "1063",
+      "event_name": "German Worlds Trials 2",
+      "discipline": "MAG",
+      "category": "senior",
+      "level": "World Championships",
+      "result_count": "111",
+      "review_decision": "db_only",
+      "notes": "Event derived from Results but not present in the Calendar source."
+    }
+  ],
+  "updated_event_details": [
+    {
+      "event_id": 1115,
+      "event_name": "Las Vegas National Qualifier",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-01-27",
+      "new_end_date": "2023-01-29"
+    },
+    {
+      "event_id": 1126,
+      "event_name": "WOGA Classic National Qualifier",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-02-17",
+      "new_end_date": "2023-02-19"
+    },
+    {
+      "event_id": 1169,
+      "event_name": "WOGA Classic",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-02-17",
+      "new_end_date": "2023-02-19"
+    },
+    {
+      "event_id": 1058,
+      "event_name": "Innsbruck Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-03-04",
+      "new_end_date": "2023-03-04"
+    },
+    {
+      "event_id": 1099,
+      "event_name": "Swiss Euros Trials 3",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-03-11",
+      "new_end_date": "2023-03-11"
+    },
+    {
+      "event_id": 1176,
+      "event_name": "Dutch Euros Trials",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-03-24",
+      "new_end_date": "2023-03-24"
+    },
+    {
+      "event_id": 971,
+      "event_name": "Italian Serie A Final Six",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-05-26",
+      "new_end_date": "2023-05-27"
+    },
+    {
+      "event_id": 1064,
+      "event_name": "Avignon Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-05-28",
+      "new_end_date": "2023-05-28"
+    },
+    {
+      "event_id": 1135,
+      "event_name": "July National Team Camp",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-07-09",
+      "new_end_date": "2023-07-12"
+    },
+    {
+      "event_id": 1065,
+      "event_name": "EYOF Mixed Pairs",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-07-25",
+      "new_end_date": "2023-07-29"
+    },
+    {
+      "event_id": 1008,
+      "event_name": "Lenzburg Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-08-05",
+      "new_end_date": "2023-08-05"
+    },
+    {
+      "event_id": 1096,
+      "event_name": "Swiss Worlds Trials",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-08-17",
+      "new_end_date": "2023-08-19"
+    },
+    {
+      "event_id": 1006,
+      "event_name": "Dutch Worlds Trials 1",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-08-18",
+      "new_end_date": "2023-08-18"
+    },
+    {
+      "event_id": 1081,
+      "event_name": "Ghent Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-08-26",
+      "new_end_date": "2023-08-26"
+    },
+    {
+      "event_id": 1006,
+      "event_name": "Dutch Worlds Trials 1",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-09-02",
+      "new_end_date": "2023-09-02"
+    },
+    {
+      "event_id": 1166,
+      "event_name": "Hungary Masters Championships",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-11-04",
+      "new_end_date": "2023-11-05"
+    },
+    {
+      "event_id": 1076,
+      "event_name": "Chinese National Student Youth Games",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-11-06",
+      "new_end_date": "2023-11-13"
+    },
+    {
+      "event_id": 1010,
+      "event_name": "Top 12 Series 1 (2024 Season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-11-11",
+      "new_end_date": "2023-11-11"
+    },
+    {
+      "event_id": 1010,
+      "event_name": "Top 12 Series 1 (2024 Season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-11-18",
+      "new_end_date": "2023-11-18"
+    },
+    {
+      "event_id": 983,
+      "event_name": "Top 12 Series 2 (2024 Season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-11-25",
+      "new_end_date": "2023-11-25"
+    },
+    {
+      "event_id": 983,
+      "event_name": "Top 12 Series 2 (2024 Season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-12-02",
+      "new_end_date": "2023-12-02"
+    },
+    {
+      "event_id": 1130,
+      "event_name": "1st Spanish League (2024 season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-12-02",
+      "new_end_date": "2023-12-03"
+    },
+    {
+      "event_id": 1142,
+      "event_name": "Top 12 Series 3 (2024 Season)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2023-12-09",
+      "new_end_date": "2023-12-09"
+    }
+  ],
+  "cleared_cross_year_event_date_details": [],
+  "preserved_existing_event_date_details": [
+    {
+      "event_id": 1098,
+      "event_name": "Swiss Euros Trials 1",
+      "existing_start_date": "2023-03-01",
+      "existing_end_date": "2023-03-01",
+      "calendar_row": 24,
+      "calendar_event": "Swiss Men's Euros Trials 1",
+      "calendar_start_date": "2023-02-25",
+      "calendar_end_date": "2023-02-25",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 944,
+      "event_name": "Finnish National Team Test",
+      "existing_start_date": "2023-02-12",
+      "existing_end_date": "2023-02-12",
+      "calendar_row": 30,
+      "calendar_event": "Finnish Men's National Team Test",
+      "calendar_start_date": "2023-03-03",
+      "calendar_end_date": "2023-03-03",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1100,
+      "event_name": "Swiss Euros Trials 2",
+      "existing_start_date": "2023-03-11",
+      "existing_end_date": "2023-03-11",
+      "calendar_row": 41,
+      "calendar_event": "Swiss Men's Euros Trials 2",
+      "calendar_start_date": "2023-03-09",
+      "calendar_end_date": "2023-03-09",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1043,
+      "event_name": "Swiss Junior Championships",
+      "existing_start_date": "2023-06-10",
+      "existing_end_date": "2023-06-11",
+      "calendar_row": 125,
+      "calendar_event": "Swiss Junior Men's Championships",
+      "calendar_start_date": "2023-06-03",
+      "calendar_end_date": "2023-06-04",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1061,
+      "event_name": "German Junior Championships",
+      "existing_start_date": "2023-06-17",
+      "existing_end_date": "2023-06-18",
+      "calendar_row": 139,
+      "calendar_event": "German Junior Men's Championships",
+      "calendar_start_date": "2023-06-30",
+      "calendar_end_date": "2023-07-02",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 992,
+      "event_name": "British Worlds Trials",
+      "existing_start_date": "2023-08-26",
+      "existing_end_date": "2023-08-26",
+      "calendar_row": 157,
+      "calendar_event": "British Men's Worlds Trials",
+      "calendar_start_date": "2023-08-12",
+      "calendar_end_date": "2023-08-12",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1094,
+      "event_name": "Dutch Worlds Trials 2",
+      "existing_start_date": "2023-09-16",
+      "existing_end_date": "2023-09-16",
+      "calendar_row": 174,
+      "calendar_event": "Dutch Men's Worlds Trials 2",
+      "calendar_start_date": "2023-08-29",
+      "calendar_end_date": "2023-08-29",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    }
+  ],
+  "unresolved_decision_details": [],
+  "invalid_decision_details": []
+}

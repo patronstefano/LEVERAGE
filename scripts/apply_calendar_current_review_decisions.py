@@ -43,6 +43,14 @@ SKIP_CALENDAR_UNMATCHED_DECISIONS = {
     "handled_by_db_review",
     "handled by db review",
 }
+SKIP_DB_UNMATCHED_DECISIONS = {
+    "linked_by_cross_year_repair",
+    "linked by cross year repair",
+    "covered_by_cross_year_repair",
+    "covered by cross year repair",
+    "season_year_spillover_repaired",
+    "season year spillover repaired",
+}
 
 
 def clean(value) -> str:
@@ -146,6 +154,10 @@ def skip_calendar_unmatched_choice(value: str) -> bool:
     return decision_key(value) in SKIP_CALENDAR_UNMATCHED_DECISIONS
 
 
+def skip_db_unmatched_choice(value: str) -> bool:
+    return decision_key(value) in SKIP_DB_UNMATCHED_DECISIONS
+
+
 def season_year_spillover_choice(row: dict[str, str]) -> bool:
     return "season_year_spillover" in clean(row.get("notes", ""))
 
@@ -244,6 +256,8 @@ def run(args: argparse.Namespace) -> dict:
 
     for row in read_csv(db_unmatched_path):
         event_id = parse_int(row.get("event_id", ""))
+        if skip_db_unmatched_choice(row.get("choice_calendar_row", "")):
+            continue
         if db_only_choice(row.get("choice_calendar_row", "")):
             if event_id is None:
                 invalid_decisions.append({

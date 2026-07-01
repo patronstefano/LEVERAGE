@@ -3396,10 +3396,12 @@ Esito finale 2022:
 | Righe Calendar 2022 ancora da risolvere | 0 |
 | Righe Calendar 2022 `calendar_only` senza scheda Event | 0 |
 | Event DB 2022 `db_only` assenti dal Calendar sorgente | 0 |
-| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti `season_year_spillover` | 1 |
 | Collegamenti cross-year non controllati | 0 |
 
 Nota metodologica: il 2022 non ha richiesto eccezioni `calendar_only` o `db_only`. Tutti gli Event DB 2022 risultano collegati a righe Calendar sorgente, con i conflitti MAG/WAG e Bundesliga preservati tramite `EventCalendarEntry` quando erano presenti piu date corrette.
+
+Aggiornamento successivo durante la review 2023: la riga Calendar 2022 n. 205, `1st Spanish League – 2023 season`, e stata rilinkata dall'Event 2022 `1st Spanish League` all'Event 2023 `1st Spanish League 2023`. Questa correzione e marcata come `season_year_spillover`, perche la data reale e nel Calendar 2022 ma l'Event DB appartiene alla stagione/anno evento 2023. La copertura 2022 resta completa.
 
 ### Calendar 2023
 
@@ -3460,3 +3462,84 @@ Nota operativa: nella review 2023 compaiono righe come `Top 12 Series 1 (2024 se
 Pulizia sorgente Calendar 2023:
 
 Dopo il primo checkpoint 2023, e stata corretta la sorgente `Calendar.xlsx` per rimuovere URL rimasti dentro il testo visibile di alcune gare. La correzione ha riguardato solo il foglio 2023 e non ha modificato date, numero di righe o altri fogli. Le righe ripulite sono legate ai `Finnish National Team Test` / `Finnish Men's National Team Test`. I report 2023 sono stati rigenerati dopo la pulizia: i conteggi di matching sono rimasti invariati, ma i nomi gara nei CSV operativi risultano ora leggibili e privi di URL.
+
+Review admin corrente 2023:
+
+Le decisioni admin sono state lette dai file Numbers e riportate nei CSV operativi. Per `calendar_2023_calendar_unmatched_current` e stato usato il file compilato dopo la pulizia della sorgente, denominato `calendar_2023_calendar_unmatched_current 2.numbers`.
+
+Normalizzazioni e decisioni applicate:
+
+- `No one.` nelle righe Calendar e stato normalizzato in `calendar_only`;
+- `No one.` negli Event DB e stato normalizzato in `db_only`;
+- `EYOF Mixed Pairs` e stato collegato alla riga Calendar 151, `European Youth Olympic Festival`;
+- `1st Spanish League 2023` e stato collegato alla riga Calendar 2022 n. 205 come `season_year_spillover`;
+- le righe 2023 riferite alla stagione 2024 sono state collegate agli Event DB 2024 quando presenti;
+- `Top 12 Series 3 (MAG) (2024 season)` e stata chiusa come `calendar_only`, perche non e stato trovato un Event DB 2024 MAG corrispondente.
+
+Riparazione cross-year/spillover:
+
+| Riga Calendar | Foglio Calendar | Evento Calendar | Event DB collegato | Esito |
+|---:|---:|---|---|---|
+| 205 | 2022 | `1st Spanish League – 2023 season` | `1st Spanish League 2023` | Entry rilinkata dall'Event 888 all'Event 887 e marcata `season_year_spillover` |
+
+Esito dell'applicazione dei mismatch correnti:
+
+| Controllo | Conteggio |
+|---|---:|
+| Coppie Calendar/Event applicate dalla review corrente | 30 |
+| Event aggiornati con date dalla review corrente | 20 |
+| Calendar entries create dalla review corrente | 30 |
+| Righe Calendar chiuse come `calendar_only` | 13 |
+| Event DB marcati come `db_only` | 1 |
+| Date canoniche Event preservate e non sovrascritte | 10 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Backup locali creati automaticamente:
+
+```text
+backups/leverage_calendar_2023_spillover_repair_20260701_231737.db
+backups/leverage_calendar_current_review_2023_20260701_231759.db
+```
+
+Esito dei conflitti stesso Event/date diverse:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date risolti | 6 |
+| Calendar entries create dai conflitti multi-data | 12 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2023_20260702_011813.db
+```
+
+Collegamenti `season_year_spillover` rilevanti:
+
+| Foglio Calendar | Riga | Evento Calendar | Event DB | Event year |
+|---:|---:|---|---|---:|
+| 2022 | 205 | `1st Spanish League – 2023 season` | `1st Spanish League 2023` | 2023 |
+| 2023 | 239 | `Top 12 Series 1 (2024 season)` | `Top 12 Series 1 (2024 Season)` | 2024 |
+| 2023 | 245 | `Top 12 Series 1 (MAG) (2024 season)` | `Top 12 Series 1 (2024 Season)` | 2024 |
+| 2023 | 252 | `Top 12 Series 2 (2024 season)` | `Top 12 Series 2 (2024 Season)` | 2024 |
+| 2023 | 260 | `Top 12 Series 2 (MAG) (2024 season)` | `Top 12 Series 2 (2024 Season)` | 2024 |
+| 2023 | 261 | `1st Spanish League (2024 season)` | `1st Spanish League (2024 season)` | 2024 |
+| 2023 | 263 | `Top 12 Series 3 (2024 season)` | `Top 12 Series 3 (2024 Season)` | 2024 |
+
+Esito finale 2023:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2023 | 265 |
+| Event DB 2023 | 241 |
+| Event DB 2023 coperti o verificati | 241 |
+| Event DB 2023 senza copertura/review Calendar | 0 |
+| Righe Calendar 2023 ancora da risolvere | 0 |
+| Righe Calendar 2023 `calendar_only` senza scheda Event | 13 |
+| Event DB 2023 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 7 |
+| Collegamenti cross-year non controllati | 0 |
+
+L'Event DB 2023 chiuso come `db_only` e `German Worlds Trials 2`. Le righe `calendar_only` 2023 sono principalmente test nazionali finlandesi senza Event DB collegato, oltre a `Austrian Junior Championships`, `Hungarian Junior Men's Championships` e `Top 12 Series 3 (MAG) (2024 season)`.

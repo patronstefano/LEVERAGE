@@ -311,7 +311,7 @@ Il flusso 2021 e stato avviato con la stessa procedura usata per gli anni preced
 | Event DB 2021 senza match corrente | 24 |
 | Conflitti stesso Event/date da rivedere | 9 |
 | Righe Calendar 2021 `calendar_only` | 0 |
-| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti `season_year_spillover` | 1 |
 | Collegamenti cross-year non controllati | 0 |
 
 Backup del primo commit sicuro 2021:
@@ -394,7 +394,7 @@ Esito finale calendario 2022:
 | Collegamenti cross-year non controllati | 0 |
 | Conflitti stesso Event/date risolti | 7 |
 
-Nota di review: `EYOF Mixed Pairs` e stato collegato alla riga Calendar 142, `European Youth Olympic Festival`. Il 2022 si chiude senza eccezioni `calendar_only` o `db_only`.
+Nota di review: `EYOF Mixed Pairs` e stato collegato alla riga Calendar 142, `European Youth Olympic Festival`. Il 2022 si chiude senza eccezioni `calendar_only` o `db_only`. Durante la review 2023, la riga Calendar 2022 n. 205, `1st Spanish League – 2023 season`, e stata rilinkata all'Event 2023 `1st Spanish League 2023` come `season_year_spillover`; la copertura 2022 resta completa.
 
 ## Calendar 2023 - checkpoint review
 
@@ -430,6 +430,29 @@ File operativi da compilare:
 La review 2023 usa gli stessi valori operativi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
 
 Pulizia sorgente 2023: dopo il checkpoint iniziale, il file `Calendar.xlsx` e stato corretto per rimuovere URL rimasti nel testo visibile di alcune righe `Finnish National Team Test`. Solo il foglio 2023 presenta differenze rispetto alla versione precedente; i conteggi di matching sono rimasti invariati e i CSV 2023 sono stati rigenerati con nomi gara puliti.
+
+Esito finale calendario 2023:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2023 | 265 |
+| Event DB 2023 | 241 |
+| Event DB 2023 coperti o verificati | 241 |
+| Event DB 2023 senza copertura/review Calendar | 0 |
+| Righe Calendar 2023 ancora da risolvere | 0 |
+| Righe Calendar 2023 `calendar_only` senza scheda Event | 13 |
+| Event DB 2023 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 7 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 6 |
+
+Note di review 2023:
+
+- `EYOF Mixed Pairs` e stato collegato alla riga Calendar 151, `European Youth Olympic Festival`;
+- `1st Spanish League 2023` e stato collegato alla riga Calendar 2022 n. 205 come `season_year_spillover`;
+- sei righe Calendar 2023 riferite alla stagione 2024 sono state collegate agli Event DB 2024 corrispondenti come `season_year_spillover`;
+- `German Worlds Trials 2` e stato chiuso come `db_only`;
+- `Top 12 Series 3 (MAG) (2024 season)` e stata chiusa come `calendar_only`.
 
 ## Convenzione review atleta/country
 

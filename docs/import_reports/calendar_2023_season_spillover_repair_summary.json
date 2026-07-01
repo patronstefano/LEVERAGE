@@ -1,0 +1,22 @@
+{
+  "backup_path": "backups/leverage_calendar_2023_spillover_repair_20260701_231737.db",
+  "calendar_year": 2022,
+  "calendar_row": 205,
+  "calendar_event": "1st Spanish League \u2013 2023 season",
+  "start_date": "2022-11-18",
+  "end_date": "2022-11-20",
+  "target_event_id": 887,
+  "target_event_name": "1st Spanish League 2023",
+  "source_note": "season_year_spillover: linked to Calendar 2022 row 205 after admin review",
+  "entry_action": "relinked",
+  "previous_entry_event_id": 888,
+  "previous_entry_event_name": "1st Spanish League",
+  "previous_target_dates": {
+    "start_date": null,
+    "end_date": null
+  },
+  "new_target_dates": {
+    "start_date": "2022-11-18",
+    "end_date": "2022-11-20"
+  }
+}

@@ -11,14 +11,14 @@
   "direct_skipped_conflict_rows": 12,
   "direct_skipped_multiple_match_rows": 3,
   "review_match_rows": 0,
-  "resolved_source_conflicts": 0,
+  "resolved_source_conflicts": 6,
   "calendar_only_rows": 0,
-  "calendar_entries_created": 0,
+  "calendar_entries_created": 12,
   "calendar_entries_updated": 0,
   "calendar_entries_no_change": 0,
   "updated_events": 0,
   "no_change_events": 211,
-  "unresolved_review_items": 45,
+  "unresolved_review_items": 39,
   "invalid_decisions": 0,
   "skipped": 0,
   "updates": [
@@ -1711,7 +1711,140 @@
       "end_date": "2023-12-30"
     }
   ],
-  "calendar_entries": [],
+  "calendar_entries": [
+    {
+      "status": "created",
+      "event_id": 982,
+      "name": "Top 12 Series 4 (MAG)",
+      "start_date": "2023-01-28",
+      "end_date": "2023-01-28",
+      "year": 2023,
+      "source_row": 9,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 982,
+      "name": "Top 12 Series 4",
+      "start_date": "2023-03-25",
+      "end_date": "2023-03-25",
+      "year": 2023,
+      "source_row": 61,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 997,
+      "name": "1st Bundesliga (MAG)",
+      "start_date": "2023-03-04",
+      "end_date": "2023-03-04",
+      "year": 2023,
+      "source_row": 36,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 997,
+      "name": "1st Bundesliga",
+      "start_date": "2023-04-30",
+      "end_date": "2023-04-30",
+      "year": 2023,
+      "source_row": 89,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 998,
+      "name": "2nd Bundesliga (MAG)",
+      "start_date": "2023-04-22",
+      "end_date": "2023-04-23",
+      "year": 2023,
+      "source_row": 82,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 998,
+      "name": "2nd Bundesliga",
+      "start_date": "2023-07-01",
+      "end_date": "2023-07-01",
+      "year": 2023,
+      "source_row": 141,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 999,
+      "name": "3rd Bundesliga (MAG)",
+      "start_date": "2023-04-29",
+      "end_date": "2023-04-30",
+      "year": 2023,
+      "source_row": 86,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 999,
+      "name": "3rd Bundesliga",
+      "start_date": "2023-10-14",
+      "end_date": "2023-10-14",
+      "year": 2023,
+      "source_row": 207,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 1026,
+      "name": "4th Bundesliga (MAG)",
+      "start_date": "2023-10-21",
+      "end_date": "2023-10-21",
+      "year": 2023,
+      "source_row": 213,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 1026,
+      "name": "4th Bundesliga",
+      "start_date": "2023-11-11",
+      "end_date": "2023-11-11",
+      "year": 2023,
+      "source_row": 237,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 979,
+      "name": "Swedish Cup (MAG)",
+      "start_date": "2023-11-17",
+      "end_date": "2023-11-19",
+      "year": 2023,
+      "source_row": 243,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 979,
+      "name": "Swedish Cup",
+      "start_date": "2023-11-18",
+      "end_date": "2023-11-18",
+      "year": 2023,
+      "source_row": 246,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    }
+  ],
   "unresolved": [
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
@@ -1946,36 +2079,6 @@
       "calendar_row": "264",
       "calendar_event": "Top 12 Series 3 (MAG) (2024 season)",
       "reason": "missing_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "1",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "2",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "3",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "4",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "5",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2023_source_conflicts_slim.csv",
-      "conflict_group": "6",
-      "reason": "source_conflict_requires_one_choice"
     }
   ],
   "invalid_decision_details": [],
