@@ -1,0 +1,9 @@
+metric,value
+year,2019
+calendar_rows,244
+db_events,233
+calendar_unmatched_rows,13
+db_unmatched_events,11
+db_matched_events,222
+cross_year_calendar_entries,0
+source_issues,0

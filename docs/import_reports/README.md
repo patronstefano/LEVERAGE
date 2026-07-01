@@ -215,6 +215,28 @@ Esito finale 2018 dopo review corrente:
 | Calendar entries create nel secondo giro | 5 |
 | Calendar entries rilinkate da anno errato | 1 |
 
+Primo checkpoint calendario 2019:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2019 | 244 |
+| Event DB 2019 | 233 |
+| Match diretti sicuri applicati | 215 |
+| Event 2019 aggiornati con date | 214 |
+| Elementi review aperti dopo commit sicuro | 21 |
+| Calendar 2019 senza match corrente | 13 |
+| Event DB 2019 senza match corrente | 11 |
+| Conflitti stesso Event/date diverse | 8 |
+| Collegamenti cross-year rilevati | 0 |
+
+Per la review 2019 si usano:
+
+- `calendar_2019_calendar_unmatched_current.csv`
+- `calendar_2019_db_unmatched_current.csv`
+- `calendar_2019_source_conflicts_slim.csv`
+
+Il principio resta identico al controllo finale 2018: ogni review del Calendar di un anno deve proporre e applicare soltanto Event DB dello stesso anno.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

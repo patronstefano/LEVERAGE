@@ -2959,3 +2959,65 @@ Esito del secondo commit corrente 2018:
 Il controllo finale conferma quindi la copertura completa del 2018: tutte le 214 righe Calendar 2018 hanno almeno un match DB 2018 e tutti i 211 Event DB 2018 hanno una copertura calendario diretta o tramite `EventCalendarEntry`.
 
 Nota metodologica: l'aggiornamento delle date serve ad alimentare la futura UI calendario cliccabile. Ogni Event datato potra comparire nella vista calendario pubblica/admin con stato calcolato (`upcoming`, `ongoing`, `completed_with_results`, `completed_no_results`) e collegamento alla scheda evento.
+
+### Calendar 2019
+
+Il flusso Calendar 2019 e stato avviato applicando la regola corretta emersa dal controllo finale 2018: i suggerimenti e le associazioni automatiche devono rimanere nello stesso anno del foglio Calendar. Dunque le righe Calendar 2019 vengono confrontate solo con `Event.year = 2019`.
+
+Situazione iniziale:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2019 | 244 |
+| Event DB 2019 ricavati dai Result | 233 |
+| Righe Calendar 2019 con match automatico | 231 |
+| Righe Calendar 2019 senza match automatico | 13 |
+| Event DB 2019 con match automatico | 222 |
+| Event DB 2019 senza match automatico | 11 |
+| Event DB 2019 matched da piu righe Calendar | 9 |
+| Conflitti stesso Event/date diverse | 8 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2019:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 215 |
+| Event aggiornati con `start_date` / `end_date` | 214 |
+| Event gia coerenti/no change | 1 |
+| Righe saltate per conflitto stesso Event/date diverse | 16 |
+| Elementi review ancora aperti | 21 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2019_20260701_220455.db
+```
+
+Report generati per la review 2019:
+
+```text
+docs/import_reports/calendar_2019_event_match_review_slim.csv
+docs/import_reports/calendar_2019_source_conflicts_slim.csv
+docs/import_reports/calendar_2019_calendar_unmatched_current.csv
+docs/import_reports/calendar_2019_db_unmatched_current.csv
+docs/import_reports/calendar_2019_cross_year_calendar_entries.csv
+```
+
+Per la review manuale 2019 verranno usati soprattutto:
+
+- `calendar_2019_calendar_unmatched_current.csv`: righe Calendar 2019 ancora senza match DB 2019;
+- `calendar_2019_db_unmatched_current.csv`: Event DB 2019 ancora senza copertura Calendar;
+- `calendar_2019_source_conflicts_slim.csv`: Event gia matchati da piu righe Calendar con date diverse, spesso casi MAG/WAG o competizioni con piu giornate/serie.
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2019 senza match corrente | 13 |
+| Event DB 2019 senza match corrente | 11 |
+| Event DB 2019 gia coperti | 222 |
+| Collegamenti cross-year rilevati | 0 |
+
+Nota metodologica: nel caso in cui una riga Calendar e un Event DB rappresentino lo stesso evento ma con nomi abbreviati o leggermente diversi, l'associazione viene confermata dall'admin nei CSV. Nel caso in cui un Event `MAG and WAG` abbia piu righe Calendar/date distinte, il sistema puo creare o mantenere piu `EventCalendarEntry` collegate alla stessa scheda Event, senza forzare una singola data nel record `Event`.
