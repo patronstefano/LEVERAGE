@@ -237,6 +237,26 @@ Per la review 2019 si usano:
 
 Il principio resta identico al controllo finale 2018: ogni review del Calendar di un anno deve proporre e applicare soltanto Event DB dello stesso anno.
 
+Esito review corrente calendario 2019:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2019 | 244 |
+| Event DB 2019 | 233 |
+| Event DB 2019 coperti dal Calendar | 233 |
+| Event DB 2019 senza copertura Calendar | 0 |
+| Righe Calendar 2019 ancora da risolvere | 0 |
+| Righe Calendar 2019 `calendar_only` senza scheda Event | 2 |
+| Collegamenti cross-year finali | 0 |
+| Conflitti stesso Event/date risolti | 8 |
+| Calendar entries 2019 complessive create/aggiornate in review | 32 |
+
+Le due righe Calendar 2019 senza Event DB collegato sono state chiuse come `calendar_only`: `Zelena Jama Open` e `Brazilian Junior Championships`. Il file `Results 2019.xlsx` e stato controllato direttamente e non contiene risultati sorgente riconducibili a questi due eventi; potrebbero quindi essere gare non svolte oppure gare senza result sorgente disponibile.
+
+Regola metodologica aggiunta durante la chiusura 2019: la riuscita del matching Calendar non richiede che ogni riga Calendar abbia una scheda Event collegata. La metrica critica e che tutti gli Event DB ricavati dai Result abbiano copertura Calendar. Le righe Calendar senza Result possono restare come `calendar_only` e comparire in UI come voci non cliccabili verso una scheda evento.
+
+Regola tecnica rafforzata durante la chiusura 2019: se una decisione manuale collega una riga Calendar aggiuntiva a un Event che ha gia date canoniche valide, il sistema non sovrascrive `Event.start_date` / `Event.end_date`; conserva la data principale dell'Event e rappresenta la riga aggiuntiva con `EventCalendarEntry`.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

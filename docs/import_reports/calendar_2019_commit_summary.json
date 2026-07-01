@@ -4,21 +4,21 @@
   "database": "leverage.db",
   "dry_run": false,
   "committed": true,
-  "backup_path": "backups/leverage_calendar_2019_20260701_220455.db",
+  "backup_path": "backups/leverage_calendar_2019_20260701_223023.db",
   "parsed_rows_all_years": 1870,
   "calendar_rows": 244,
   "direct_safe_rows": 215,
   "direct_skipped_conflict_rows": 16,
   "direct_skipped_multiple_match_rows": 0,
   "review_match_rows": 0,
-  "resolved_source_conflicts": 0,
+  "resolved_source_conflicts": 8,
   "calendar_only_rows": 0,
-  "calendar_entries_created": 0,
+  "calendar_entries_created": 16,
   "calendar_entries_updated": 0,
   "calendar_entries_no_change": 0,
-  "updated_events": 214,
-  "no_change_events": 1,
-  "unresolved_review_items": 21,
+  "updated_events": 0,
+  "no_change_events": 215,
+  "unresolved_review_items": 13,
   "invalid_decisions": 0,
   "skipped": 0,
   "updates": [
@@ -26,2061 +26,1649 @@
       "event_id": 282,
       "event_name": "Top 12 Series 5",
       "source": "calendar_row:2019:3",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-01-19",
-      "to_end_date": "2019-01-21"
+      "status": "no_change",
+      "start_date": "2019-01-19",
+      "end_date": "2019-01-21"
     },
     {
       "event_id": 379,
       "event_name": "Buckeye National Qualifier",
       "source": "calendar_row:2019:4",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-01-31",
-      "to_end_date": "2019-02-03"
+      "status": "no_change",
+      "start_date": "2019-01-31",
+      "end_date": "2019-02-03"
     },
     {
       "event_id": 323,
       "event_name": "Houston National Invitational",
       "source": "calendar_row:2019:6",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-01",
-      "to_end_date": "2019-02-03"
+      "status": "no_change",
+      "start_date": "2019-02-01",
+      "end_date": "2019-02-03"
     },
     {
       "event_id": 219,
       "event_name": "Reykjavik International Games",
       "source": "calendar_row:2019:7",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-02",
-      "to_end_date": "2019-02-02"
+      "status": "no_change",
+      "start_date": "2019-02-02",
+      "end_date": "2019-02-02"
     },
     {
       "event_id": 231,
       "event_name": "Top 12 Series 6",
       "source": "calendar_row:2019:8",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-02",
-      "to_end_date": "2019-02-02"
+      "status": "no_change",
+      "start_date": "2019-02-02",
+      "end_date": "2019-02-02"
     },
     {
       "event_id": 372,
       "event_name": "1st Spanish League",
       "source": "calendar_row:2019:9",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-08",
-      "to_end_date": "2019-02-10"
+      "status": "no_change",
+      "start_date": "2019-02-08",
+      "end_date": "2019-02-10"
     },
     {
       "event_id": 427,
       "event_name": "WOGA Classic",
       "source": "calendar_row:2019:10",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-09",
-      "to_end_date": "2019-02-09"
+      "status": "no_change",
+      "start_date": "2019-02-09",
+      "end_date": "2019-02-09"
     },
     {
       "event_id": 331,
       "event_name": "Liukin Invitational",
       "source": "calendar_row:2019:11",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-09",
-      "to_end_date": "2019-02-09"
+      "status": "no_change",
+      "start_date": "2019-02-09",
+      "end_date": "2019-02-09"
     },
     {
       "event_id": 361,
       "event_name": "Gliders National Qualifier",
       "source": "calendar_row:2019:12",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-10",
-      "to_end_date": "2019-02-11"
+      "status": "no_change",
+      "start_date": "2019-02-10",
+      "end_date": "2019-02-11"
     },
     {
       "event_id": 365,
       "event_name": "World Champion's National Qualifier",
       "source": "calendar_row:2019:13",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-13",
-      "to_end_date": "2019-02-17"
+      "status": "no_change",
+      "start_date": "2019-02-13",
+      "end_date": "2019-02-17"
     },
     {
       "event_id": 256,
       "event_name": "Winter Cup Challenge",
       "source": "calendar_row:2019:14",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-15",
-      "to_end_date": "2019-02-17"
+      "status": "no_change",
+      "start_date": "2019-02-15",
+      "end_date": "2019-02-17"
     },
     {
       "event_id": 280,
       "event_name": "Melbourne World Cup",
       "source": "calendar_row:2019:17",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-21",
-      "to_end_date": "2019-02-24"
+      "status": "no_change",
+      "start_date": "2019-02-21",
+      "end_date": "2019-02-24"
     },
     {
       "event_id": 295,
       "event_name": "1st Italian Serie A",
       "source": "calendar_row:2019:18",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-23",
-      "to_end_date": "2019-02-23"
+      "status": "no_change",
+      "start_date": "2019-02-23",
+      "end_date": "2019-02-23"
     },
     {
       "event_id": 296,
       "event_name": "Welsh Championships",
       "source": "calendar_row:2019:19",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-23",
-      "to_end_date": "2019-02-24"
+      "status": "no_change",
+      "start_date": "2019-02-23",
+      "end_date": "2019-02-24"
     },
     {
       "event_id": 252,
       "event_name": "Scottish Championships",
       "source": "calendar_row:2019:20",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-02-23",
-      "to_end_date": "2019-02-24"
+      "status": "no_change",
+      "start_date": "2019-02-23",
+      "end_date": "2019-02-24"
     },
     {
       "event_id": 398,
       "event_name": "Icelandic Team Championships",
       "source": "calendar_row:2019:21",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-01",
-      "to_end_date": "2019-03-02"
+      "status": "no_change",
+      "start_date": "2019-03-01",
+      "end_date": "2019-03-02"
     },
     {
       "event_id": 254,
       "event_name": "English Championships",
       "source": "calendar_row:2019:22",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-01",
-      "to_end_date": "2019-03-03"
+      "status": "no_change",
+      "start_date": "2019-03-01",
+      "end_date": "2019-03-03"
     },
     {
       "event_id": 227,
       "event_name": "Turkish Championships",
       "source": "calendar_row:2019:23",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-01",
-      "to_end_date": "2019-03-03"
+      "status": "no_change",
+      "start_date": "2019-03-01",
+      "end_date": "2019-03-03"
     },
     {
       "event_id": 347,
       "event_name": "American Cup",
       "source": "calendar_row:2019:24",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-02",
-      "to_end_date": "2019-03-02"
+      "status": "no_change",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-02"
     },
     {
       "event_id": 307,
       "event_name": "Austrian Team Open",
       "source": "calendar_row:2019:25",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-02",
-      "to_end_date": "2019-03-02"
+      "status": "no_change",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-02"
     },
     {
       "event_id": 383,
       "event_name": "Top 12 Semi-Finals",
       "source": "calendar_row:2019:26",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-02",
-      "to_end_date": "2019-03-02"
+      "status": "no_change",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-02"
     },
     {
       "event_id": 410,
       "event_name": "City of Jesolo Trophy",
       "source": "calendar_row:2019:29",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-02",
-      "to_end_date": "2019-03-03"
+      "status": "no_change",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-03"
     },
     {
       "event_id": 305,
       "event_name": "Danish Championships",
       "source": "calendar_row:2019:30",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-02",
-      "to_end_date": "2019-03-03"
+      "status": "no_change",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-03"
     },
     {
       "event_id": 423,
       "event_name": "Ukrainian Championships",
       "source": "calendar_row:2019:32",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-03",
-      "to_end_date": "2019-03-07"
+      "status": "no_change",
+      "start_date": "2019-03-03",
+      "end_date": "2019-03-07"
     },
     {
       "event_id": 302,
       "event_name": "Russian Championships",
       "source": "calendar_row:2019:33",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-04",
-      "to_end_date": "2019-03-10"
+      "status": "no_change",
+      "start_date": "2019-03-04",
+      "end_date": "2019-03-10"
     },
     {
       "event_id": 378,
       "event_name": "KPAC National Qualifier",
       "source": "calendar_row:2019:34",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-07",
-      "to_end_date": "2019-03-09"
+      "status": "no_change",
+      "start_date": "2019-03-07",
+      "end_date": "2019-03-09"
     },
     {
       "event_id": 412,
       "event_name": "Tiger Cup",
       "source": "calendar_row:2019:35",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-08",
-      "to_end_date": "2019-03-09"
+      "status": "no_change",
+      "start_date": "2019-03-08",
+      "end_date": "2019-03-09"
     },
     {
       "event_id": 413,
       "event_name": "International Gymnix",
       "source": "calendar_row:2019:36",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-08",
-      "to_end_date": "2019-03-10"
+      "status": "no_change",
+      "start_date": "2019-03-08",
+      "end_date": "2019-03-10"
     },
     {
       "event_id": 242,
       "event_name": "Hungarian National League Championships",
       "source": "calendar_row:2019:38",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-09",
-      "to_end_date": "2019-03-10"
+      "status": "no_change",
+      "start_date": "2019-03-09",
+      "end_date": "2019-03-10"
     },
     {
       "event_id": 340,
       "event_name": "Lithuanian Championships",
       "source": "calendar_row:2019:39",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-14",
-      "to_end_date": "2019-03-15"
+      "status": "no_change",
+      "start_date": "2019-03-14",
+      "end_date": "2019-03-15"
     },
     {
       "event_id": 236,
       "event_name": "Baku World Cup",
       "source": "calendar_row:2019:40",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-14",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-14",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 223,
       "event_name": "British Championships",
       "source": "calendar_row:2019:41",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-14",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-14",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 265,
       "event_name": "DTB Team Challenge",
       "source": "calendar_row:2019:42",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-15",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-15",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 253,
       "event_name": "Polish Men's Cup",
       "source": "calendar_row:2019:44",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-15",
-      "to_end_date": "2019-03-16"
+      "status": "no_change",
+      "start_date": "2019-03-15",
+      "end_date": "2019-03-16"
     },
     {
       "event_id": 376,
       "event_name": "Polish Women's Cup",
       "source": "calendar_row:2019:45",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-15",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-15",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 359,
       "event_name": "Singapore Championships",
       "source": "calendar_row:2019:46",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-15",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-15",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 284,
       "event_name": "Stuttgart World Cup",
       "source": "calendar_row:2019:47",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-16",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-16",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 275,
       "event_name": "Icelandic Championships",
       "source": "calendar_row:2019:48",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-16",
-      "to_end_date": "2019-03-17"
+      "status": "no_change",
+      "start_date": "2019-03-16",
+      "end_date": "2019-03-17"
     },
     {
       "event_id": 240,
       "event_name": "Doha World Cup",
       "source": "calendar_row:2019:49",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-20",
-      "to_end_date": "2019-03-23"
+      "status": "no_change",
+      "start_date": "2019-03-20",
+      "end_date": "2019-03-23"
     },
     {
       "event_id": 416,
       "event_name": "Latvian Championships",
       "source": "calendar_row:2019:50",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-22",
-      "to_end_date": "2019-03-23"
+      "status": "no_change",
+      "start_date": "2019-03-22",
+      "end_date": "2019-03-23"
     },
     {
       "event_id": 324,
       "event_name": "Birmingham World Cup",
       "source": "calendar_row:2019:51",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-23",
-      "to_end_date": "2019-03-23"
+      "status": "no_change",
+      "start_date": "2019-03-23",
+      "end_date": "2019-03-23"
     },
     {
       "event_id": 374,
       "event_name": "2nd Spanish League",
       "source": "calendar_row:2019:52",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-23",
-      "to_end_date": "2019-03-24"
+      "status": "no_change",
+      "start_date": "2019-03-23",
+      "end_date": "2019-03-24"
     },
     {
       "event_id": 426,
       "event_name": "1st Norwegian FIG Meet",
       "source": "calendar_row:2019:53",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-23",
-      "to_end_date": "2019-03-24"
+      "status": "no_change",
+      "start_date": "2019-03-23",
+      "end_date": "2019-03-24"
     },
     {
       "event_id": 230,
       "event_name": "Stella Zakharova Cup",
       "source": "calendar_row:2019:54",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-28",
-      "to_end_date": "2019-03-31"
+      "status": "no_change",
+      "start_date": "2019-03-28",
+      "end_date": "2019-03-31"
     },
     {
       "event_id": 220,
       "event_name": "Unni & Haralds Trophy",
       "source": "calendar_row:2019:55",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-29",
-      "to_end_date": "2019-03-31"
+      "status": "no_change",
+      "start_date": "2019-03-29",
+      "end_date": "2019-03-31"
     },
     {
       "event_id": 294,
       "event_name": "2nd Italian Serie A",
       "source": "calendar_row:2019:56",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-30",
-      "to_end_date": "2019-03-30"
+      "status": "no_change",
+      "start_date": "2019-03-30",
+      "end_date": "2019-03-30"
     },
     {
       "event_id": 387,
       "event_name": "Elek Matolay Memorial",
       "source": "calendar_row:2019:57",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-03-30",
-      "to_end_date": "2019-03-31"
+      "status": "no_change",
+      "start_date": "2019-03-30",
+      "end_date": "2019-03-31"
     },
     {
       "event_id": 215,
       "event_name": "International Junior Team Cup",
       "source": "calendar_row:2019:58",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-05",
-      "to_end_date": "2019-04-05"
+      "status": "no_change",
+      "start_date": "2019-04-05",
+      "end_date": "2019-04-05"
     },
     {
       "event_id": 417,
       "event_name": "Pre-Olympic Youth Cup",
       "source": "calendar_row:2019:59",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-06",
-      "to_end_date": "2019-04-06"
+      "status": "no_change",
+      "start_date": "2019-04-06",
+      "end_date": "2019-04-06"
     },
     {
       "event_id": 342,
       "event_name": "Tokyo World Cup",
       "source": "calendar_row:2019:61",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-07",
-      "to_end_date": "2019-04-07"
+      "status": "no_change",
+      "start_date": "2019-04-07",
+      "end_date": "2019-04-07"
     },
     {
       "event_id": 217,
       "event_name": "European Championships",
       "source": "calendar_row:2019:62",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-10",
-      "to_end_date": "2019-04-14"
+      "status": "no_change",
+      "start_date": "2019-04-10",
+      "end_date": "2019-04-14"
     },
     {
       "event_id": 298,
       "event_name": "European Games Test Event",
       "source": "calendar_row:2019:63",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-25",
-      "to_end_date": "2019-04-27"
+      "status": "no_change",
+      "start_date": "2019-04-25",
+      "end_date": "2019-04-27"
     },
     {
       "event_id": 317,
       "event_name": "Top 12 Finals",
       "source": "calendar_row:2019:64",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-26",
-      "to_end_date": "2019-04-27"
+      "status": "no_change",
+      "start_date": "2019-04-26",
+      "end_date": "2019-04-27"
     },
     {
       "event_id": 289,
       "event_name": "All-Japan Championships",
       "source": "calendar_row:2019:65",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-26",
-      "to_end_date": "2019-04-28"
+      "status": "no_change",
+      "start_date": "2019-04-26",
+      "end_date": "2019-04-28"
     },
     {
       "event_id": 386,
       "event_name": "Italian Gold Championships",
       "source": "calendar_row:2019:66",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-26",
-      "to_end_date": "2019-04-28"
+      "status": "no_change",
+      "start_date": "2019-04-26",
+      "end_date": "2019-04-28"
     },
     {
       "event_id": 337,
       "event_name": "Polish Championships",
       "source": "calendar_row:2019:67",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-26",
-      "to_end_date": "2019-04-28"
+      "status": "no_change",
+      "start_date": "2019-04-26",
+      "end_date": "2019-04-28"
     },
     {
       "event_id": 371,
       "event_name": "3rd Spanish League",
       "source": "calendar_row:2019:68",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-27",
-      "to_end_date": "2019-04-27"
+      "status": "no_change",
+      "start_date": "2019-04-27",
+      "end_date": "2019-04-27"
     },
     {
       "event_id": 268,
       "event_name": "International GymSport",
       "source": "calendar_row:2019:69",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-27",
-      "to_end_date": "2019-04-28"
+      "status": "no_change",
+      "start_date": "2019-04-27",
+      "end_date": "2019-04-28"
     },
     {
       "event_id": 425,
       "event_name": "Danish Junior Championships",
       "source": "calendar_row:2019:70",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-04-27",
-      "to_end_date": "2019-04-28"
+      "status": "no_change",
+      "start_date": "2019-04-27",
+      "end_date": "2019-04-28"
     },
     {
       "event_id": 212,
       "event_name": "Indian Championships",
       "source": "calendar_row:2019:72",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-03",
-      "to_end_date": "2019-05-05"
+      "status": "no_change",
+      "start_date": "2019-05-03",
+      "end_date": "2019-05-05"
     },
     {
       "event_id": 293,
       "event_name": "3rd Italian Serie A",
       "source": "calendar_row:2019:73",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-04",
-      "to_end_date": "2019-05-04"
+      "status": "no_change",
+      "start_date": "2019-05-04",
+      "end_date": "2019-05-04"
     },
     {
       "event_id": 245,
       "event_name": "Swedish Junior Men's Championships",
       "source": "calendar_row:2019:74",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-04",
-      "to_end_date": "2019-05-04"
+      "status": "no_change",
+      "start_date": "2019-05-04",
+      "end_date": "2019-05-04"
     },
     {
       "event_id": 345,
       "event_name": "Chinese Championships",
       "source": "calendar_row:2019:76",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-08",
-      "to_end_date": "2019-05-13"
+      "status": "no_change",
+      "start_date": "2019-05-08",
+      "end_date": "2019-05-13"
     },
     {
       "event_id": 274,
       "event_name": "GK Championships",
       "source": "calendar_row:2019:77",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-11",
-      "to_end_date": "2019-05-11"
+      "status": "no_change",
+      "start_date": "2019-05-11",
+      "end_date": "2019-05-11"
     },
     {
       "event_id": 441,
       "event_name": "Korean National Team Selection",
       "source": "calendar_row:2019:78",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-11",
-      "to_end_date": "2019-05-11"
+      "status": "no_change",
+      "start_date": "2019-05-11",
+      "end_date": "2019-05-11"
     },
     {
       "event_id": 350,
       "event_name": "Portuguese Championships",
       "source": "calendar_row:2019:79",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-11",
-      "to_end_date": "2019-05-12"
+      "status": "no_change",
+      "start_date": "2019-05-11",
+      "end_date": "2019-05-12"
     },
     {
       "event_id": 301,
       "event_name": "Russian Junior Championships",
       "source": "calendar_row:2019:81",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-13",
-      "to_end_date": "2019-05-18"
+      "status": "no_change",
+      "start_date": "2019-05-13",
+      "end_date": "2019-05-18"
     },
     {
       "event_id": 402,
       "event_name": "Luxembourg Championships",
       "source": "calendar_row:2019:82",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-18",
-      "to_end_date": "2019-05-18"
+      "status": "no_change",
+      "start_date": "2019-05-18",
+      "end_date": "2019-05-18"
     },
     {
       "event_id": 358,
       "event_name": "NHK Trophy",
       "source": "calendar_row:2019:83",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-18",
-      "to_end_date": "2019-05-19"
+      "status": "no_change",
+      "start_date": "2019-05-18",
+      "end_date": "2019-05-19"
     },
     {
       "event_id": 214,
       "event_name": "Nordic Junior Championships",
       "source": "calendar_row:2019:84",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-18",
-      "to_end_date": "2019-05-19"
+      "status": "no_change",
+      "start_date": "2019-05-18",
+      "end_date": "2019-05-19"
     },
     {
       "event_id": 439,
       "event_name": "Rus Pokal",
       "source": "calendar_row:2019:86",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-18",
-      "to_end_date": "2019-05-19"
+      "status": "no_change",
+      "start_date": "2019-05-18",
+      "end_date": "2019-05-19"
     },
     {
       "event_id": 237,
       "event_name": "Zhaoqing Challenge Cup",
       "source": "calendar_row:2019:87",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-19",
-      "to_end_date": "2019-05-21"
+      "status": "no_change",
+      "start_date": "2019-05-19",
+      "end_date": "2019-05-21"
     },
     {
       "event_id": 315,
       "event_name": "Australian Championships",
       "source": "calendar_row:2019:88",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-20",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-20",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 370,
       "event_name": "Argentinian Club Championships",
       "source": "calendar_row:2019:89",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-21",
-      "to_end_date": "2019-05-25"
+      "status": "no_change",
+      "start_date": "2019-05-21",
+      "end_date": "2019-05-25"
     },
     {
       "event_id": 226,
       "event_name": "Canadian Championships",
       "source": "calendar_row:2019:90",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-21",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-21",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 243,
       "event_name": "Osijek Challenge Cup",
       "source": "calendar_row:2019:91",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-23",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-23",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 381,
       "event_name": "Slovakian Cup",
       "source": "calendar_row:2019:92",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-24",
-      "to_end_date": "2019-05-25"
+      "status": "no_change",
+      "start_date": "2019-05-24",
+      "end_date": "2019-05-25"
     },
     {
       "event_id": 213,
       "event_name": "Finnish Championships",
       "source": "calendar_row:2019:93",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-24",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-24",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 421,
       "event_name": "German Junior Championships",
       "source": "calendar_row:2019:94",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-25",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-25",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 222,
       "event_name": "Irish Championships",
       "source": "calendar_row:2019:95",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-25",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-25",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 408,
       "event_name": "Z\u00fcri-Oberland Cup",
       "source": "calendar_row:2019:96",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-25",
-      "to_end_date": "2019-05-26"
+      "status": "no_change",
+      "start_date": "2019-05-25",
+      "end_date": "2019-05-26"
     },
     {
       "event_id": 255,
       "event_name": "Koper Challenge Cup",
       "source": "calendar_row:2019:97",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-30",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-05-30",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 299,
       "event_name": "Mexican Championships",
       "source": "calendar_row:2019:98",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-30",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-05-30",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 440,
       "event_name": "IAG SportEvent",
       "source": "calendar_row:2019:99",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-05-30",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-05-30",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 352,
       "event_name": "Belgian Championships",
       "source": "calendar_row:2019:100",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 335,
       "event_name": "Czech Championships",
       "source": "calendar_row:2019:101",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 394,
       "event_name": "Swiss Junior Championships",
       "source": "calendar_row:2019:102",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 424,
       "event_name": "Norwegian Junior Championships",
       "source": "calendar_row:2019:103",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 420,
       "event_name": "Austrian Junior Championships",
       "source": "calendar_row:2019:104",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 380,
       "event_name": "Gym Festival Trnava",
       "source": "calendar_row:2019:105",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-02"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02"
     },
     {
       "event_id": 366,
       "event_name": "Parkettes National Qualifier",
       "source": "calendar_row:2019:106",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-03"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-03"
     },
     {
       "event_id": 322,
       "event_name": "Singapore Open",
       "source": "calendar_row:2019:107",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-01",
-      "to_end_date": "2019-06-03"
+      "status": "no_change",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-03"
     },
     {
       "event_id": 400,
       "event_name": "Mexican Pan Ams Selection",
       "source": "calendar_row:2019:108",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-03",
-      "to_end_date": "2019-06-03"
+      "status": "no_change",
+      "start_date": "2019-06-03",
+      "end_date": "2019-06-03"
     },
     {
       "event_id": 326,
       "event_name": "Brazilian Event Championships",
       "source": "calendar_row:2019:109",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-07",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-07",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 392,
       "event_name": "Auburn National Qualifier",
       "source": "calendar_row:2019:110",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-07",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-07",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 308,
       "event_name": "Colombian Championships",
       "source": "calendar_row:2019:111",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-07",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-07",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 390,
       "event_name": "Petrom Cup",
       "source": "calendar_row:2019:112",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-07",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-07",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 399,
       "event_name": "FIT Challenge",
       "source": "calendar_row:2019:113",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-08",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-08",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 247,
       "event_name": "French Championships",
       "source": "calendar_row:2019:114",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-08",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-08",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 382,
       "event_name": "Slovenian Cup",
       "source": "calendar_row:2019:115",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-08",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-08",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 341,
       "event_name": "Croatian Championships",
       "source": "calendar_row:2019:116",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-08",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-08",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 351,
       "event_name": "Portuguese Super Finals",
       "source": "calendar_row:2019:117",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-09",
-      "to_end_date": "2019-06-09"
+      "status": "no_change",
+      "start_date": "2019-06-09",
+      "end_date": "2019-06-09"
     },
     {
       "event_id": 333,
       "event_name": "Asian Junior Cup",
       "source": "calendar_row:2019:118",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-12",
-      "to_end_date": "2019-06-15"
+      "status": "no_change",
+      "start_date": "2019-06-12",
+      "end_date": "2019-06-15"
     },
     {
       "event_id": 436,
       "event_name": "Chinese Junior Championships",
       "source": "calendar_row:2019:119",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-12",
-      "to_end_date": "2019-06-19"
+      "status": "no_change",
+      "start_date": "2019-06-12",
+      "end_date": "2019-06-19"
     },
     {
       "event_id": 428,
       "event_name": "U.S. Junior Worlds Trials",
       "source": "calendar_row:2019:120",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-14",
-      "to_end_date": "2019-06-14"
+      "status": "no_change",
+      "start_date": "2019-06-14",
+      "end_date": "2019-06-14"
     },
     {
       "event_id": 391,
       "event_name": "Romanian Junior Championships",
       "source": "calendar_row:2019:121",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-14",
-      "to_end_date": "2019-06-14"
+      "status": "no_change",
+      "start_date": "2019-06-14",
+      "end_date": "2019-06-14"
     },
     {
       "event_id": 437,
       "event_name": "Puerto Rican Championships",
       "source": "calendar_row:2019:122",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-15",
-      "to_end_date": "2019-06-15"
+      "status": "no_change",
+      "start_date": "2019-06-15",
+      "end_date": "2019-06-15"
     },
     {
       "event_id": 375,
       "event_name": "Spanish League Finals",
       "source": "calendar_row:2019:123",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-15",
-      "to_end_date": "2019-06-16"
+      "status": "no_change",
+      "start_date": "2019-06-15",
+      "end_date": "2019-06-16"
     },
     {
       "event_id": 395,
       "event_name": "Swiss Turnfest",
       "source": "calendar_row:2019:124",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-15",
-      "to_end_date": "2019-06-16"
+      "status": "no_change",
+      "start_date": "2019-06-15",
+      "end_date": "2019-06-16"
     },
     {
       "event_id": 343,
       "event_name": "Korea Cup",
       "source": "calendar_row:2019:125",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-18",
-      "to_end_date": "2019-06-19"
+      "status": "no_change",
+      "start_date": "2019-06-18",
+      "end_date": "2019-06-19"
     },
     {
       "event_id": 262,
       "event_name": "South American Championships",
       "source": "calendar_row:2019:126",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-18",
-      "to_end_date": "2019-06-23"
+      "status": "no_change",
+      "start_date": "2019-06-18",
+      "end_date": "2019-06-23"
     },
     {
       "event_id": 234,
       "event_name": "Asian Championships",
       "source": "calendar_row:2019:127",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-19",
-      "to_end_date": "2019-06-22"
+      "status": "no_change",
+      "start_date": "2019-06-19",
+      "end_date": "2019-06-22"
     },
     {
       "event_id": 433,
       "event_name": "Hopes Classic",
       "source": "calendar_row:2019:128",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-21",
-      "to_end_date": "2019-06-21"
+      "status": "no_change",
+      "start_date": "2019-06-21",
+      "end_date": "2019-06-21"
     },
     {
       "event_id": 336,
       "event_name": "All-Japan Event Championships",
       "source": "calendar_row:2019:130",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-21",
-      "to_end_date": "2019-06-23"
+      "status": "no_change",
+      "start_date": "2019-06-21",
+      "end_date": "2019-06-23"
     },
     {
       "event_id": 367,
       "event_name": "American Classic",
       "source": "calendar_row:2019:131",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-22",
-      "to_end_date": "2019-06-22"
+      "status": "no_change",
+      "start_date": "2019-06-22",
+      "end_date": "2019-06-22"
     },
     {
       "event_id": 346,
       "event_name": "Dutch Championships",
       "source": "calendar_row:2019:132",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-22",
-      "to_end_date": "2019-06-23"
+      "status": "no_change",
+      "start_date": "2019-06-22",
+      "end_date": "2019-06-23"
     },
     {
       "event_id": 229,
       "event_name": "Junior World Championships",
       "source": "calendar_row:2019:133",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-24",
-      "to_end_date": "2019-06-30"
+      "status": "no_change",
+      "start_date": "2019-06-24",
+      "end_date": "2019-06-30"
     },
     {
       "event_id": 246,
       "event_name": "Swedish Championships",
       "source": "calendar_row:2019:134",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-26",
-      "to_end_date": "2019-06-27"
+      "status": "no_change",
+      "start_date": "2019-06-26",
+      "end_date": "2019-06-27"
     },
     {
       "event_id": 241,
       "event_name": "European Games",
       "source": "calendar_row:2019:135",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-27",
-      "to_end_date": "2019-06-30"
+      "status": "no_change",
+      "start_date": "2019-06-27",
+      "end_date": "2019-06-30"
     },
     {
       "event_id": 290,
       "event_name": "Norwegian Championships",
       "source": "calendar_row:2019:136",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-28",
-      "to_end_date": "2019-06-29"
+      "status": "no_change",
+      "start_date": "2019-06-28",
+      "end_date": "2019-06-29"
     },
     {
       "event_id": 264,
       "event_name": "Spanish Championships",
       "source": "calendar_row:2019:137",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-06-30",
-      "to_end_date": "2019-07-07"
+      "status": "no_change",
+      "start_date": "2019-06-30",
+      "end_date": "2019-07-07"
     },
     {
       "event_id": 239,
       "event_name": "Summer Universiade",
       "source": "calendar_row:2019:138",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-05",
-      "to_end_date": "2019-07-15"
+      "status": "no_change",
+      "start_date": "2019-07-05",
+      "end_date": "2019-07-15"
     },
     {
       "event_id": 396,
       "event_name": "Saint\u00e9 Gym Cup",
       "source": "calendar_row:2019:139",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-06",
-      "to_end_date": "2019-07-06"
+      "status": "no_change",
+      "start_date": "2019-07-06",
+      "end_date": "2019-07-06"
     },
     {
       "event_id": 353,
       "event_name": "Lingvallen Cup",
       "source": "calendar_row:2019:140",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-06",
-      "to_end_date": "2019-07-06"
+      "status": "no_change",
+      "start_date": "2019-07-06",
+      "end_date": "2019-07-06"
     },
     {
       "event_id": 267,
       "event_name": "U.S. Men's National Qualifier",
       "source": "calendar_row:2019:141",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-06",
-      "to_end_date": "2019-07-07"
+      "status": "no_change",
+      "start_date": "2019-07-06",
+      "end_date": "2019-07-07"
     },
     {
       "event_id": 259,
       "event_name": "Greek Championships",
       "source": "calendar_row:2019:142",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-13",
-      "to_end_date": "2019-07-14"
+      "status": "no_change",
+      "start_date": "2019-07-13",
+      "end_date": "2019-07-14"
     },
     {
       "event_id": 432,
       "event_name": "Hopes Championships",
       "source": "calendar_row:2019:144",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-19",
-      "to_end_date": "2019-07-19"
+      "status": "no_change",
+      "start_date": "2019-07-19",
+      "end_date": "2019-07-19"
     },
     {
       "event_id": 368,
       "event_name": "U.S. Classic",
       "source": "calendar_row:2019:145",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-20",
-      "to_end_date": "2019-07-20"
+      "status": "no_change",
+      "start_date": "2019-07-20",
+      "end_date": "2019-07-20"
     },
     {
       "event_id": 271,
       "event_name": "European Youth Olympic Festival",
       "source": "calendar_row:2019:146",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-20",
-      "to_end_date": "2019-07-28"
+      "status": "no_change",
+      "start_date": "2019-07-20",
+      "end_date": "2019-07-28"
     },
     {
       "event_id": 261,
       "event_name": "Pan American Games",
       "source": "calendar_row:2019:147",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-26",
-      "to_end_date": "2019-07-31"
+      "status": "no_change",
+      "start_date": "2019-07-26",
+      "end_date": "2019-07-31"
     },
     {
       "event_id": 221,
       "event_name": "Irish Super Championships",
       "source": "calendar_row:2019:148",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-27",
-      "to_end_date": "2019-07-28"
+      "status": "no_change",
+      "start_date": "2019-07-27",
+      "end_date": "2019-07-28"
     },
     {
       "event_id": 356,
       "event_name": "Chinese National Youth Games",
       "source": "calendar_row:2019:149",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-07-28",
-      "to_end_date": "2019-08-06"
+      "status": "no_change",
+      "start_date": "2019-07-28",
+      "end_date": "2019-08-06"
     },
     {
       "event_id": 411,
       "event_name": "International Youth Games",
       "source": "calendar_row:2019:150",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-02",
-      "to_end_date": "2019-08-03"
+      "status": "no_change",
+      "start_date": "2019-08-02",
+      "end_date": "2019-08-03"
     },
     {
       "event_id": 314,
       "event_name": "German Championships",
       "source": "calendar_row:2019:151",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-03",
-      "to_end_date": "2019-08-04"
+      "status": "no_change",
+      "start_date": "2019-08-03",
+      "end_date": "2019-08-04"
     },
     {
       "event_id": 286,
       "event_name": "All-Japan Junior Championships",
       "source": "calendar_row:2019:153",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-12",
-      "to_end_date": "2019-08-17"
+      "status": "no_change",
+      "start_date": "2019-08-12",
+      "end_date": "2019-08-17"
     },
     {
       "event_id": 292,
       "event_name": "Brazilian Championships",
       "source": "calendar_row:2019:154",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-13",
-      "to_end_date": "2019-08-18"
+      "status": "no_change",
+      "start_date": "2019-08-13",
+      "end_date": "2019-08-18"
     },
     {
       "event_id": 251,
       "event_name": "Israeli Championships",
       "source": "calendar_row:2019:155",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-16",
-      "to_end_date": "2019-08-17"
+      "status": "no_change",
+      "start_date": "2019-08-16",
+      "end_date": "2019-08-17"
     },
     {
       "event_id": 434,
       "event_name": "South African Championships",
       "source": "calendar_row:2019:156",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-16",
-      "to_end_date": "2019-08-17"
+      "status": "no_change",
+      "start_date": "2019-08-16",
+      "end_date": "2019-08-17"
     },
     {
       "event_id": 329,
       "event_name": "German Men's Worlds Trials",
       "source": "calendar_row:2019:157",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-17",
-      "to_end_date": "2019-08-17"
+      "status": "no_change",
+      "start_date": "2019-08-17",
+      "end_date": "2019-08-17"
     },
     {
       "event_id": 389,
       "event_name": "Finnish Worlds Trials",
       "source": "calendar_row:2019:158",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-17",
-      "to_end_date": "2019-08-17"
+      "status": "no_change",
+      "start_date": "2019-08-17",
+      "end_date": "2019-08-17"
     },
     {
       "event_id": 288,
       "event_name": "All-Japan Student Championships",
       "source": "calendar_row:2019:159",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-20",
-      "to_end_date": "2019-08-22"
+      "status": "no_change",
+      "start_date": "2019-08-20",
+      "end_date": "2019-08-22"
     },
     {
       "event_id": 369,
       "event_name": "Argentinian Championships",
       "source": "calendar_row:2019:160",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-20",
-      "to_end_date": "2019-08-24"
+      "status": "no_change",
+      "start_date": "2019-08-20",
+      "end_date": "2019-08-24"
     },
     {
       "event_id": 303,
       "event_name": "Russian Cup",
       "source": "calendar_row:2019:161",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-23",
-      "to_end_date": "2019-08-27"
+      "status": "no_change",
+      "start_date": "2019-08-23",
+      "end_date": "2019-08-27"
     },
     {
       "event_id": 443,
       "event_name": "German Worlds Trials",
       "source": "calendar_row:2019:162",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-24",
-      "to_end_date": "2019-08-24"
+      "status": "no_change",
+      "start_date": "2019-08-24",
+      "end_date": "2019-08-24"
     },
     {
       "event_id": 349,
       "event_name": "Cardiff Men's Friendly",
       "source": "calendar_row:2019:163",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-24",
-      "to_end_date": "2019-08-24"
+      "status": "no_change",
+      "start_date": "2019-08-24",
+      "end_date": "2019-08-24"
     },
     {
       "event_id": 266,
       "event_name": "Magglingen Men's Friendly",
       "source": "calendar_row:2019:164",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-24",
-      "to_end_date": "2019-08-24"
+      "status": "no_change",
+      "start_date": "2019-08-24",
+      "end_date": "2019-08-24"
     },
     {
       "event_id": 278,
       "event_name": "African Games",
       "source": "calendar_row:2019:165",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-26",
-      "to_end_date": "2019-08-29"
+      "status": "no_change",
+      "start_date": "2019-08-26",
+      "end_date": "2019-08-29"
     },
     {
       "event_id": 276,
       "event_name": "Mersin Challenge Cup",
       "source": "calendar_row:2019:166",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-30",
-      "to_end_date": "2019-09-01"
+      "status": "no_change",
+      "start_date": "2019-08-30",
+      "end_date": "2019-09-01"
     },
     {
       "event_id": 244,
       "event_name": "Hungarian Championships",
       "source": "calendar_row:2019:167",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-30",
-      "to_end_date": "2019-09-01"
+      "status": "no_change",
+      "start_date": "2019-08-30",
+      "end_date": "2019-09-01"
     },
     {
       "event_id": 419,
       "event_name": "Heerenveen Friendly",
       "source": "calendar_row:2019:168",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-31",
-      "to_end_date": "2019-08-31"
+      "status": "no_change",
+      "start_date": "2019-08-31",
+      "end_date": "2019-08-31"
     },
     {
       "event_id": 445,
       "event_name": "2nd Finnish Worlds Trials",
       "source": "calendar_row:2019:169",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-31",
-      "to_end_date": "2019-08-31"
+      "status": "no_change",
+      "start_date": "2019-08-31",
+      "end_date": "2019-08-31"
     },
     {
       "event_id": 442,
       "event_name": "Chinese Taipei Worlds Trial",
       "source": "calendar_row:2019:170",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-08-31",
-      "to_end_date": "2019-09-01"
+      "status": "no_change",
+      "start_date": "2019-08-31",
+      "end_date": "2019-09-01"
     },
     {
       "event_id": 344,
       "event_name": "Chinese Individual Championships",
       "source": "calendar_row:2019:171",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-03",
-      "to_end_date": "2019-09-07"
+      "status": "no_change",
+      "start_date": "2019-09-03",
+      "end_date": "2019-09-07"
     },
     {
       "event_id": 304,
       "event_name": "Szombathely Challenge Cup",
       "source": "calendar_row:2019:172",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-06",
-      "to_end_date": "2019-09-08"
+      "status": "no_change",
+      "start_date": "2019-09-06",
+      "end_date": "2019-09-08"
     },
     {
       "event_id": 260,
       "event_name": "Romanian Championships",
       "source": "calendar_row:2019:173",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-06",
-      "to_end_date": "2019-09-08"
+      "status": "no_change",
+      "start_date": "2019-09-06",
+      "end_date": "2019-09-08"
     },
     {
       "event_id": 422,
       "event_name": "Worms Friendly",
       "source": "calendar_row:2019:174",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-07",
-      "to_end_date": "2019-09-07"
+      "status": "no_change",
+      "start_date": "2019-09-07",
+      "end_date": "2019-09-07"
     },
     {
       "event_id": 263,
       "event_name": "Heerenveen Men's Friendly",
       "source": "calendar_row:2019:175",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-07",
-      "to_end_date": "2019-09-07"
+      "status": "no_change",
+      "start_date": "2019-09-07",
+      "end_date": "2019-09-07"
     },
     {
       "event_id": 334,
       "event_name": "Swiss Championships",
       "source": "calendar_row:2019:176",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-07",
-      "to_end_date": "2019-09-08"
+      "status": "no_change",
+      "start_date": "2019-09-07",
+      "end_date": "2019-09-08"
     },
     {
       "event_id": 327,
       "event_name": "Italian Championships",
       "source": "calendar_row:2019:177",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-13",
-      "to_end_date": "2019-09-15"
+      "status": "no_change",
+      "start_date": "2019-09-13",
+      "end_date": "2019-09-15"
     },
     {
       "event_id": 414,
       "event_name": "2nd Heerenveen Friendly",
       "source": "calendar_row:2019:178",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-14",
-      "to_end_date": "2019-09-14"
+      "status": "no_change",
+      "start_date": "2019-09-14",
+      "end_date": "2019-09-14"
     },
     {
       "event_id": 328,
       "event_name": "Backnang Men's Friendly",
       "source": "calendar_row:2019:179",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-14",
-      "to_end_date": "2019-09-14"
+      "status": "no_change",
+      "start_date": "2019-09-14",
+      "end_date": "2019-09-14"
     },
     {
       "event_id": 238,
       "event_name": "Paris Challenge Cup",
       "source": "calendar_row:2019:180",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-14",
-      "to_end_date": "2019-09-15"
+      "status": "no_change",
+      "start_date": "2019-09-14",
+      "end_date": "2019-09-15"
     },
     {
       "event_id": 364,
       "event_name": "British Team Championships",
       "source": "calendar_row:2019:181",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-14",
-      "to_end_date": "2019-09-15"
+      "status": "no_change",
+      "start_date": "2019-09-14",
+      "end_date": "2019-09-15"
     },
     {
       "event_id": 407,
       "event_name": "2nd Norwegian FIG Meet",
       "source": "calendar_row:2019:182",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-14",
-      "to_end_date": "2019-09-15"
+      "status": "no_change",
+      "start_date": "2019-09-14",
+      "end_date": "2019-09-15"
     },
     {
       "event_id": 403,
       "event_name": "Australian Classic",
       "source": "calendar_row:2019:183",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-15",
-      "to_end_date": "2019-09-18"
+      "status": "no_change",
+      "start_date": "2019-09-15",
+      "end_date": "2019-09-18"
     },
     {
       "event_id": 332,
       "event_name": "Guimaraes Challenge Cup",
       "source": "calendar_row:2019:184",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-19",
-      "to_end_date": "2019-09-22"
+      "status": "no_change",
+      "start_date": "2019-09-19",
+      "end_date": "2019-09-22"
     },
     {
       "event_id": 338,
       "event_name": "Northern European Championships",
       "source": "calendar_row:2019:185",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-21",
-      "to_end_date": "2019-09-22"
+      "status": "no_change",
+      "start_date": "2019-09-21",
+      "end_date": "2019-09-22"
     },
     {
       "event_id": 415,
       "event_name": "U.S. Worlds Trials",
       "source": "calendar_row:2019:186",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-22",
-      "to_end_date": "2019-09-22"
+      "status": "no_change",
+      "start_date": "2019-09-22",
+      "end_date": "2019-09-22"
     },
     {
       "event_id": 228,
       "event_name": "Mediterranean Championships",
       "source": "calendar_row:2019:187",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-26",
-      "to_end_date": "2019-09-28"
+      "status": "no_change",
+      "start_date": "2019-09-26",
+      "end_date": "2019-09-28"
     },
     {
       "event_id": 405,
       "event_name": "3rd Norwegian FIG Meet",
       "source": "calendar_row:2019:188",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-09-28",
-      "to_end_date": "2019-09-29"
+      "status": "no_change",
+      "start_date": "2019-09-28",
+      "end_date": "2019-09-29"
     },
     {
       "event_id": 321,
       "event_name": "New Zealand Championships",
       "source": "calendar_row:2019:189",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-02",
-      "to_end_date": "2019-10-05"
+      "status": "no_change",
+      "start_date": "2019-10-02",
+      "end_date": "2019-10-05"
     },
     {
       "event_id": 235,
       "event_name": "World Championships",
       "source": "calendar_row:2019:190",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-04",
-      "to_end_date": "2019-10-13"
+      "status": "no_change",
+      "start_date": "2019-10-04",
+      "end_date": "2019-10-13"
     },
     {
       "event_id": 430,
       "event_name": "Romanian Individual Championships",
       "source": "calendar_row:2019:191",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-18",
-      "to_end_date": "2019-10-20"
+      "status": "no_change",
+      "start_date": "2019-10-18",
+      "end_date": "2019-10-20"
     },
     {
       "event_id": 355,
       "event_name": "South American Junior Championships",
       "source": "calendar_row:2019:192",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-18",
-      "to_end_date": "2019-10-20"
+      "status": "no_change",
+      "start_date": "2019-10-18",
+      "end_date": "2019-10-20"
     },
     {
       "event_id": 409,
       "event_name": "German Junior Cup",
       "source": "calendar_row:2019:194",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-19",
-      "to_end_date": "2019-10-20"
+      "status": "no_change",
+      "start_date": "2019-10-19",
+      "end_date": "2019-10-20"
     },
     {
       "event_id": 297,
       "event_name": "Salamunov Memorial",
       "source": "calendar_row:2019:196",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-25",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-25",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 348,
       "event_name": "Brabant Trophy",
       "source": "calendar_row:2019:198",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 218,
       "event_name": "Wase Gymcup",
       "source": "calendar_row:2019:199",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 283,
       "event_name": "5th Bundesliga",
       "source": "calendar_row:2019:200",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 363,
       "event_name": "Rushmoor Rose Bowl",
       "source": "calendar_row:2019:201",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 224,
       "event_name": "Swiss Team Championships",
       "source": "calendar_row:2019:202",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 438,
       "event_name": "Icelandic Fall Championships",
       "source": "calendar_row:2019:203",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-26",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 393,
       "event_name": "Leverkusen Cup",
       "source": "calendar_row:2019:204",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-27",
-      "to_end_date": "2019-10-27"
+      "status": "no_change",
+      "start_date": "2019-10-27",
+      "end_date": "2019-10-27"
     },
     {
       "event_id": 330,
       "event_name": "Arthur Gander Memorial",
       "source": "calendar_row:2019:205",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-10-30",
-      "to_end_date": "2019-10-30"
+      "status": "no_change",
+      "start_date": "2019-10-30",
+      "end_date": "2019-10-30"
     },
     {
       "event_id": 404,
       "event_name": "Swiss Cup Juniors",
       "source": "calendar_row:2019:206",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-01",
-      "to_end_date": "2019-11-01"
+      "status": "no_change",
+      "start_date": "2019-11-01",
+      "end_date": "2019-11-01"
     },
     {
       "event_id": 444,
       "event_name": "Malta Championships",
       "source": "calendar_row:2019:207",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-01",
-      "to_end_date": "2019-11-01"
+      "status": "no_change",
+      "start_date": "2019-11-01",
+      "end_date": "2019-11-01"
     },
     {
       "event_id": 216,
       "event_name": "M\u00e4lar Cup",
       "source": "calendar_row:2019:208",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-01",
-      "to_end_date": "2019-11-03"
+      "status": "no_change",
+      "start_date": "2019-11-01",
+      "end_date": "2019-11-03"
     },
     {
       "event_id": 325,
       "event_name": "Swiss Cup",
       "source": "calendar_row:2019:210",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-03",
-      "to_end_date": "2019-11-03"
+      "status": "no_change",
+      "start_date": "2019-11-03",
+      "end_date": "2019-11-03"
     },
     {
       "event_id": 270,
       "event_name": "Horizon Cup",
       "source": "calendar_row:2019:212",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-08",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-08",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 309,
       "event_name": "6th Bundesliga",
       "source": "calendar_row:2019:213",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-09"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-09"
     },
     {
       "event_id": 306,
       "event_name": "Austrian Championships",
       "source": "calendar_row:2019:215",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 388,
       "event_name": "Gymnova Cup",
       "source": "calendar_row:2019:216",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 287,
       "event_name": "All-Japan Team Championships",
       "source": "calendar_row:2019:217",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 362,
       "event_name": "Irish Team Championships",
       "source": "calendar_row:2019:218",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 377,
       "event_name": "Bj\u00f6rk International",
       "source": "calendar_row:2019:219",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-09",
-      "to_end_date": "2019-11-10"
+      "status": "no_change",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-10"
     },
     {
       "event_id": 281,
       "event_name": "7th Bundesliga",
       "source": "calendar_row:2019:220",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-16",
-      "to_end_date": "2019-11-16"
+      "status": "no_change",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-16"
     },
     {
       "event_id": 397,
       "event_name": "Swedish Cup",
       "source": "calendar_row:2019:222",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-16",
-      "to_end_date": "2019-11-17"
+      "status": "no_change",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-17"
     },
     {
       "event_id": 360,
       "event_name": "Tournoi International",
       "source": "calendar_row:2019:223",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-16",
-      "to_end_date": "2019-11-17"
+      "status": "no_change",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-17"
     },
     {
       "event_id": 435,
       "event_name": "Dutch Team Championships",
       "source": "calendar_row:2019:225",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-16",
-      "to_end_date": "2019-11-17"
+      "status": "no_change",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-17"
     },
     {
       "event_id": 406,
       "event_name": "GymStars International",
       "source": "calendar_row:2019:226",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-16",
-      "to_end_date": "2019-11-17"
+      "status": "no_change",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-17"
     },
     {
       "event_id": 233,
       "event_name": "Cottbus World Cup",
       "source": "calendar_row:2019:227",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-21",
-      "to_end_date": "2019-11-24"
+      "status": "no_change",
+      "start_date": "2019-11-21",
+      "end_date": "2019-11-24"
     },
     {
       "event_id": 384,
       "event_name": "Elite Gym Massilia",
       "source": "calendar_row:2019:228",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-22",
-      "to_end_date": "2019-11-24"
+      "status": "no_change",
+      "start_date": "2019-11-22",
+      "end_date": "2019-11-24"
     },
     {
       "event_id": 250,
       "event_name": "Olympic Hopes Cup",
       "source": "calendar_row:2019:229",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-28",
-      "to_end_date": "2019-11-30"
+      "status": "no_change",
+      "start_date": "2019-11-28",
+      "end_date": "2019-11-30"
     },
     {
       "event_id": 277,
       "event_name": "Voronin Cup",
       "source": "calendar_row:2019:230",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-29",
-      "to_end_date": "2019-11-30"
+      "status": "no_change",
+      "start_date": "2019-11-29",
+      "end_date": "2019-11-30"
     },
     {
       "event_id": 285,
       "event_name": "Sokol Grand Prix",
       "source": "calendar_row:2019:231",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-30",
-      "to_end_date": "2019-11-30"
+      "status": "no_change",
+      "start_date": "2019-11-30",
+      "end_date": "2019-11-30"
     },
     {
       "event_id": 279,
       "event_name": "Bundesliga Final",
       "source": "calendar_row:2019:232",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-30",
-      "to_end_date": "2019-11-30"
+      "status": "no_change",
+      "start_date": "2019-11-30",
+      "end_date": "2019-11-30"
     },
     {
       "event_id": 279,
@@ -2094,84 +1682,245 @@
       "event_id": 431,
       "event_name": "Top Gym Tournament",
       "source": "calendar_row:2019:235",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-30",
-      "to_end_date": "2019-12-01"
+      "status": "no_change",
+      "start_date": "2019-11-30",
+      "end_date": "2019-12-01"
     },
     {
       "event_id": 300,
       "event_name": "Barborka Cup",
       "source": "calendar_row:2019:236",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-30",
-      "to_end_date": "2019-12-01"
+      "status": "no_change",
+      "start_date": "2019-11-30",
+      "end_date": "2019-12-01"
     },
     {
       "event_id": 272,
       "event_name": "Southeast Asian Games",
       "source": "calendar_row:2019:237",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-11-30",
-      "to_end_date": "2019-12-11"
+      "status": "no_change",
+      "start_date": "2019-11-30",
+      "end_date": "2019-12-11"
     },
     {
       "event_id": 401,
       "event_name": "Japanese International Trials",
       "source": "calendar_row:2019:238",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-12-01",
-      "to_end_date": "2019-12-01"
+      "status": "no_change",
+      "start_date": "2019-12-01",
+      "end_date": "2019-12-01"
     },
     {
       "event_id": 232,
       "event_name": "Top 12 Series 4",
       "source": "calendar_row:2019:241",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-12-07",
-      "to_end_date": "2019-12-07"
+      "status": "no_change",
+      "start_date": "2019-12-07",
+      "end_date": "2019-12-07"
     },
     {
       "event_id": 385,
       "event_name": "Krstic & Delatovic Memorial",
       "source": "calendar_row:2019:243",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-12-07",
-      "to_end_date": "2019-12-08"
+      "status": "no_change",
+      "start_date": "2019-12-07",
+      "end_date": "2019-12-08"
     },
     {
       "event_id": 354,
       "event_name": "Toyota International",
       "source": "calendar_row:2019:244",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-12-14",
-      "to_end_date": "2019-12-15"
+      "status": "no_change",
+      "start_date": "2019-12-14",
+      "end_date": "2019-12-15"
     },
     {
       "event_id": 418,
       "event_name": "Christmas Cup",
       "source": "calendar_row:2019:245",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2019-12-14",
-      "to_end_date": "2019-12-15"
+      "status": "no_change",
+      "start_date": "2019-12-14",
+      "end_date": "2019-12-15"
     }
   ],
-  "calendar_entries": [],
+  "calendar_entries": [
+    {
+      "status": "created",
+      "event_id": 225,
+      "name": "Elite Canada",
+      "start_date": "2019-02-01",
+      "end_date": "2019-02-03",
+      "year": 2019,
+      "source_row": 5,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 225,
+      "name": "Elite Canada (MAG)",
+      "start_date": "2019-07-17",
+      "end_date": "2019-07-20",
+      "year": 2019,
+      "source_row": 143,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 316,
+      "name": "Top 12 Series 3",
+      "start_date": "2019-02-16",
+      "end_date": "2019-02-16",
+      "year": 2019,
+      "source_row": 15,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 316,
+      "name": "Top 12 Series 3 (MAG)",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-16",
+      "year": 2019,
+      "source_row": 221,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 311,
+      "name": "1st Bundesliga (MAG)",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-02",
+      "year": 2019,
+      "source_row": 28,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 311,
+      "name": "1st Bundesliga",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-03",
+      "year": 2019,
+      "source_row": 31,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 313,
+      "name": "2nd Bundesliga (MAG)",
+      "start_date": "2019-03-09",
+      "end_date": "2019-03-10",
+      "year": 2019,
+      "source_row": 37,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 313,
+      "name": "2nd Bundesliga",
+      "start_date": "2019-05-11",
+      "end_date": "2019-05-12",
+      "year": 2019,
+      "source_row": 80,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 312,
+      "name": "3rd Bundesliga (MAG)",
+      "start_date": "2019-04-27",
+      "end_date": "2019-04-28",
+      "year": 2019,
+      "source_row": 71,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 312,
+      "name": "3rd Bundesliga",
+      "start_date": "2019-11-02",
+      "end_date": "2019-11-03",
+      "year": 2019,
+      "source_row": 209,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 310,
+      "name": "4th Bundesliga (MAG)",
+      "start_date": "2019-10-19",
+      "end_date": "2019-10-19",
+      "year": 2019,
+      "source_row": 193,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 310,
+      "name": "4th Bundesliga",
+      "start_date": "2019-11-16",
+      "end_date": "2019-11-17",
+      "year": 2019,
+      "source_row": 224,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 248,
+      "name": "Top 12 Series 1 (MAG)",
+      "start_date": "2019-10-26",
+      "end_date": "2019-10-26",
+      "year": 2019,
+      "source_row": 197,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 248,
+      "name": "Top 12 Series 1",
+      "start_date": "2019-11-30",
+      "end_date": "2019-11-30",
+      "year": 2019,
+      "source_row": 234,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 318,
+      "name": "Top 12 Series 2 (MAG)",
+      "start_date": "2019-11-09",
+      "end_date": "2019-11-09",
+      "year": 2019,
+      "source_row": 214,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 318,
+      "name": "Top 12 Series 2",
+      "start_date": "2019-12-07",
+      "end_date": "2019-12-07",
+      "year": 2019,
+      "source_row": 240,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    }
+  ],
   "unresolved": [
     {
       "source": "docs/import_reports/calendar_2019_event_match_review_slim.csv",
@@ -2250,46 +1999,6 @@
       "calendar_row": "242",
       "calendar_event": "1st Spanish League (2020 season)",
       "reason": "missing_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "1",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "2",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "3",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "4",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "5",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "6",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "7",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2019_source_conflicts_slim.csv",
-      "conflict_group": "8",
-      "reason": "source_conflict_requires_one_choice"
     }
   ],
   "invalid_decision_details": [],

@@ -1,0 +1,196 @@
+{
+  "year": 2019,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 14,
+  "applied_pairs": 14,
+  "updated_events": 0,
+  "calendar_entries_created": 0,
+  "calendar_entries_updated": 14,
+  "calendar_entries_relinked": 0,
+  "calendar_only_rows": 2,
+  "calendar_only_entries_created": 2,
+  "calendar_only_entries_updated": 0,
+  "cleared_cross_year_event_dates": 0,
+  "preserved_existing_event_dates": 2,
+  "unresolved_review_items": 0,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 339,
+      "event_name": "RD761 International Cup",
+      "calendar_row": 2,
+      "calendar_event": "RD761 Junior International Cup",
+      "start_date": "2019-01-18",
+      "end_date": "2019-01-20",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 319,
+      "event_name": "Top 12 Semi-Final I",
+      "calendar_row": 16,
+      "calendar_event": "Top 12 Semi-Finals I (MAG)",
+      "start_date": "2019-02-16",
+      "end_date": "2019-02-16",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 273,
+      "event_name": "Iceland Team Championships",
+      "calendar_row": 21,
+      "calendar_event": "Icelandic Team Championships",
+      "start_date": "2019-03-01",
+      "end_date": "2019-03-02",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 320,
+      "event_name": "Top 12 Semi-Final II",
+      "calendar_row": 27,
+      "calendar_event": "Top 12 Semi-Finals II (MAG)",
+      "start_date": "2019-03-02",
+      "end_date": "2019-03-02",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 357,
+      "event_name": "Calgary International Cup",
+      "calendar_row": 43,
+      "calendar_event": "U of Calgary International Cup",
+      "start_date": "2019-03-15",
+      "end_date": "2019-03-17",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 301,
+      "event_name": "Russian Junior Championships",
+      "calendar_row": 75,
+      "calendar_event": "Russian Junior Men's Championships",
+      "start_date": "2019-05-06",
+      "end_date": "2019-05-11",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 214,
+      "event_name": "Nordic Junior Championships",
+      "calendar_row": 85,
+      "calendar_event": "Nordic Junior Men's Championships",
+      "start_date": "2019-05-18",
+      "end_date": "2019-05-19",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 291,
+      "event_name": "Norweigan Junior Championships",
+      "calendar_row": 103,
+      "calendar_event": "Norwegian Junior Championships",
+      "start_date": "2019-06-01",
+      "end_date": "2019-06-02",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 429,
+      "event_name": "Sarreguemines Cup",
+      "calendar_row": 129,
+      "calendar_event": "Sarruguemines Cup",
+      "start_date": "2019-06-21",
+      "end_date": "2019-06-22",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 257,
+      "event_name": "U.S. Championships D2",
+      "calendar_row": 152,
+      "calendar_event": "U.S. Championships",
+      "start_date": "2019-08-08",
+      "end_date": "2019-08-11",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 258,
+      "event_name": "U.S. Championships D1",
+      "calendar_row": 152,
+      "calendar_event": "U.S. Championships",
+      "start_date": "2019-08-08",
+      "end_date": "2019-08-11",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 249,
+      "event_name": "Hungarian Masters",
+      "calendar_row": 195,
+      "calendar_event": "Hungarian Master Championships",
+      "start_date": "2019-10-25",
+      "end_date": "2019-10-26",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 269,
+      "event_name": "Larisa Latynina Cup",
+      "calendar_row": 239,
+      "calendar_event": "Latynina Cup",
+      "start_date": "2019-12-01",
+      "end_date": "2019-12-05",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 372,
+      "event_name": "1st Spanish League",
+      "calendar_row": 242,
+      "calendar_event": "1st Spanish League (2020 season)",
+      "start_date": "2019-12-07",
+      "end_date": "2019-12-08",
+      "source": "calendar_unmatched_current"
+    }
+  ],
+  "calendar_only_details": [
+    {
+      "calendar_row": 60,
+      "calendar_event": "Zelena Jama Open",
+      "start_date": "2019-04-06",
+      "end_date": "2019-04-06",
+      "source": "calendar_only",
+      "notes": "No Results 2019 source match; possible not-held/no-result calendar entry",
+      "status": "created"
+    },
+    {
+      "calendar_row": 211,
+      "calendar_event": "Brazilian Junior Championships",
+      "start_date": "2019-11-05",
+      "end_date": "2019-11-10",
+      "source": "calendar_only",
+      "notes": "No Results 2019 source match; possible not-held/no-result calendar entry",
+      "status": "created"
+    }
+  ],
+  "updated_event_details": [],
+  "cleared_cross_year_event_date_details": [],
+  "preserved_existing_event_date_details": [
+    {
+      "event_id": 301,
+      "event_name": "Russian Junior Championships",
+      "existing_start_date": "2019-05-13",
+      "existing_end_date": "2019-05-18",
+      "calendar_row": 75,
+      "calendar_event": "Russian Junior Men's Championships",
+      "calendar_start_date": "2019-05-06",
+      "calendar_end_date": "2019-05-11",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 372,
+      "event_name": "1st Spanish League",
+      "existing_start_date": "2019-02-08",
+      "existing_end_date": "2019-02-10",
+      "calendar_row": 242,
+      "calendar_event": "1st Spanish League (2020 season)",
+      "calendar_start_date": "2019-12-07",
+      "calendar_end_date": "2019-12-08",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    }
+  ],
+  "unresolved_decision_details": [],
+  "invalid_decision_details": []
+}

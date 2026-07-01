@@ -154,11 +154,15 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
         ).all()
 
         entry_event_ids_by_row: dict[int, set[int]] = {}
+        calendar_only_source_rows: set[int] = set()
         cross_year_rows = []
         for entry, event in entries:
             if entry.source_row is None:
                 continue
-            if event is None or event.year != args.year:
+            if event is None:
+                calendar_only_source_rows.add(entry.source_row)
+                continue
+            if event.year != args.year:
                 cross_year_rows.append({
                     "calendar_row": entry.source_row,
                     "calendar_event": entry.name,
@@ -180,7 +184,7 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             matched_ids = {event.id for event in matched_events}
             matched_ids.update(entry_event_ids_by_row.get(row.row_number, set()))
             matched_event_ids.update(matched_ids)
-            if matched_ids:
+            if matched_ids or row.row_number in calendar_only_source_rows:
                 continue
 
             options = event_options_for_calendar_row(row, db_events, result_counts, args.suggestion_limit)
@@ -224,6 +228,7 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             "calendar_unmatched_rows": len(calendar_unmatched_rows),
             "db_unmatched_events": len(db_unmatched_rows),
             "db_matched_events": len(db_events) - len(db_unmatched_rows),
+            "calendar_only_rows": len(calendar_only_source_rows),
             "cross_year_calendar_entries": len(cross_year_rows),
             "source_issues": len(issues),
         }

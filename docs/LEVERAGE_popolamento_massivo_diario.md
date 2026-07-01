@@ -3021,3 +3021,55 @@ Fotografia post-commit sicuro:
 | Collegamenti cross-year rilevati | 0 |
 
 Nota metodologica: nel caso in cui una riga Calendar e un Event DB rappresentino lo stesso evento ma con nomi abbreviati o leggermente diversi, l'associazione viene confermata dall'admin nei CSV. Nel caso in cui un Event `MAG and WAG` abbia piu righe Calendar/date distinte, il sistema puo creare o mantenere piu `EventCalendarEntry` collegate alla stessa scheda Event, senza forzare una singola data nel record `Event`.
+
+Review admin corrente 2019:
+
+Le decisioni admin sono state lette dai file compilati in Numbers e riportate nei CSV operativi. Sono stati usati tre livelli di controllo:
+
+- righe Calendar 2019 senza match DB 2019;
+- Event DB 2019 senza copertura Calendar;
+- conflitti in cui piu righe Calendar puntavano allo stesso Event con date diverse.
+
+Esito dell'applicazione:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date diverse risolti | 8 |
+| Calendar entries create dai conflitti MAG/WAG o multi-data | 16 |
+| Coppie Calendar/Event applicate dalla review corrente | 14 |
+| Calendar entries aggiornate dalla review corrente | 14 |
+| Righe Calendar chiuse come `calendar_only` | 2 |
+| Date canoniche Event preservate e non sovrascritte | 2 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+| Collegamenti cross-year finali | 0 |
+
+Durante la verifica e stata rafforzata una regola semantica: se un Event ha gia una data canonica valida e una riga Calendar aggiuntiva rappresenta un sotto-caso dello stesso evento, il sistema non sovrascrive `Event.start_date` / `Event.end_date`. In questi casi conserva la data principale dell'Event e usa `EventCalendarEntry` per la riga calendario aggiuntiva.
+
+I due casi verificati nel 2019 sono:
+
+| Event DB | Data canonica preservata | Riga Calendar aggiuntiva |
+|---|---|---|
+| `Russian Junior Championships` | May 13-18 | `Russian Junior Men's Championships`, May 6-11 |
+| `1st Spanish League` | Feb 8-10 | `1st Spanish League (2020 season)`, Dec 7-8 |
+
+Il controllo finale 2019 conferma:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2019 | 244 |
+| Event DB 2019 | 233 |
+| Event DB 2019 coperti dal Calendar | 233 |
+| Event DB 2019 senza copertura Calendar | 0 |
+| Righe Calendar 2019 ancora da risolvere | 0 |
+| Righe Calendar 2019 `calendar_only` senza scheda Event | 2 |
+| Collegamenti cross-year finali | 0 |
+
+Le due righe Calendar chiuse come `calendar_only`, quindi visualizzabili nel calendario ma non cliccabili verso una scheda Event DB, sono:
+
+| Riga Calendar | Evento | Data | Esito |
+|---:|---|---|---|
+| 60 | `Zelena Jama Open` | Apr 6 | Nessun match DB 2019 confermato; non trovato in `Results 2019.xlsx`; possibile evento non svolto o senza risultati sorgente |
+| 211 | `Brazilian Junior Championships` | Nov 5-10 | Nessun match DB 2019 confermato; non trovato in `Results 2019.xlsx`; possibile evento non svolto o senza risultati sorgente |
+
+Nota metodologica: da questo passaggio in poi, la chiusura di un anno calendario non richiede che ogni riga Calendar abbia un Event DB collegato. Alcune gare presenti nel calendario possono non comparire negli Event ricavati dai Result perche potrebbero non essere state svolte, oppure perche non esiste un risultato Gymternet sorgente associato. La metrica critica e quindi che tutti gli Event DB creati dai Result abbiano una copertura Calendar; le righe Calendar senza Result possono restare come `calendar_only`. Il file `Results 2019.xlsx` e stato controllato direttamente: contiene risultati per `Hungarian Masters`, che e stato associato all'Event DB `Hungarian Masters`, ma non contiene risultati riconducibili a `Zelena Jama Open` o `Brazilian Junior Championships`.

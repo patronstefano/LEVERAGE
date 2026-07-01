@@ -14,6 +14,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+CALENDAR_ONLY_DECISIONS = {"calendar_only", "calendar only", "calendar-only", "no_match", "no match", "no-match"}
+
 
 def clean(value) -> str:
     return "" if value is None else str(value).strip()
@@ -68,6 +70,14 @@ def selected_calendar_row_from_db_row(row: dict[str, str]) -> int | None:
     return parse_int(selected)
 
 
+def unresolved_choice(value: str) -> bool:
+    return clean(value).lower() in {"", "?", "review", "todo", "no match", "none"}
+
+
+def calendar_only_choice(value: str) -> bool:
+    return clean(value).lower() in CALENDAR_ONLY_DECISIONS
+
+
 def backup_database(db_path: Path, year: int) -> str | None:
     if not db_path.exists():
         return None
@@ -93,16 +103,34 @@ def run(args: argparse.Namespace) -> dict:
     db_unmatched_path = report_dir / f"calendar_{args.year}_db_unmatched_current.csv"
 
     pairs: dict[tuple[int, int], str] = {}
+    calendar_only_rows: list[dict[str, str]] = []
     invalid_decisions: list[dict] = []
+    unresolved_decisions: list[dict] = []
 
     for row in read_csv(calendar_unmatched_path):
         calendar_row = parse_int(row.get("calendar_row", ""))
+        if calendar_only_choice(row.get("choice", "")):
+            if calendar_row is None:
+                invalid_decisions.append({
+                    "source": str(calendar_unmatched_path),
+                    "calendar_row": row.get("calendar_row", ""),
+                    "calendar_event": row.get("calendar_event", ""),
+                    "choice": row.get("choice", ""),
+                    "reason": "missing_calendar_row_for_calendar_only",
+                })
+                continue
+            calendar_only_rows.append(row)
+            continue
         selected_event_id = selected_event_id_from_calendar_row(row)
         if calendar_row is None or selected_event_id is None:
-            invalid_decisions.append({
+            target = unresolved_decisions if unresolved_choice(row.get("choice", "")) else invalid_decisions
+            target.append({
                 "source": str(calendar_unmatched_path),
                 "calendar_row": row.get("calendar_row", ""),
-                "reason": "missing_calendar_row_or_selected_event",
+                "calendar_event": row.get("calendar_event", ""),
+                "choice": row.get("choice", ""),
+                "notes": row.get("notes", ""),
+                "reason": "unresolved_calendar_row" if target is unresolved_decisions else "missing_calendar_row_or_selected_event",
             })
             continue
         pairs[(selected_event_id, calendar_row)] = "calendar_unmatched_current"
@@ -111,10 +139,14 @@ def run(args: argparse.Namespace) -> dict:
         event_id = parse_int(row.get("event_id", ""))
         calendar_row = selected_calendar_row_from_db_row(row)
         if event_id is None or calendar_row is None:
-            invalid_decisions.append({
+            target = unresolved_decisions if unresolved_choice(row.get("choice_calendar_row", "")) else invalid_decisions
+            target.append({
                 "source": str(db_unmatched_path),
                 "event_id": row.get("event_id", ""),
-                "reason": "missing_event_id_or_selected_calendar_row",
+                "event_name": row.get("event_name", ""),
+                "choice_calendar_row": row.get("choice_calendar_row", ""),
+                "notes": row.get("notes", ""),
+                "reason": "unresolved_db_event" if target is unresolved_decisions else "missing_event_id_or_selected_calendar_row",
             })
             continue
         pairs[(event_id, calendar_row)] = "db_unmatched_current"
@@ -129,6 +161,76 @@ def run(args: argparse.Namespace) -> dict:
         calendar_entries_updated = 0
         calendar_entries_relinked = 0
         cleared_cross_year_event_dates = []
+        preserved_existing_event_dates = []
+        calendar_only_entries_created = 0
+        calendar_only_entries_updated = 0
+        calendar_only_details = []
+
+        for row in calendar_only_rows:
+            calendar_row_number = parse_int(row.get("calendar_row", ""))
+            calendar_row = calendar_by_row.get(calendar_row_number) if calendar_row_number is not None else None
+            if not calendar_row:
+                invalid_decisions.append({
+                    "calendar_row": row.get("calendar_row", ""),
+                    "calendar_event": row.get("calendar_event", ""),
+                    "reason": "calendar_only_row_not_found_for_year",
+                })
+                continue
+
+            note = clean(row.get("notes", "")) or "calendar_only"
+            entry = db.query(models.EventCalendarEntry).filter(
+                models.EventCalendarEntry.source == "gymternet_calendar",
+                models.EventCalendarEntry.year == args.year,
+                models.EventCalendarEntry.source_row == calendar_row.row_number,
+                models.EventCalendarEntry.event_id.is_(None),
+                models.EventCalendarEntry.is_deleted.is_(False),
+            ).first()
+
+            detail = {
+                "calendar_row": calendar_row.row_number,
+                "calendar_event": calendar_row.event_name,
+                "start_date": calendar_row.start_date.isoformat(),
+                "end_date": calendar_row.end_date.isoformat(),
+                "source": "calendar_only",
+                "notes": note,
+            }
+            discipline = infer_event_discipline(calendar_row.event_name)
+            if entry:
+                changed = (
+                    entry.name != calendar_row.event_name
+                    or entry.start_date != calendar_row.start_date
+                    or entry.end_date != calendar_row.end_date
+                    or entry.discipline != discipline
+                    or entry.source_note != note
+                )
+                if changed:
+                    calendar_only_entries_updated += 1
+                    detail["status"] = "updated"
+                    if not dry_run:
+                        entry.name = calendar_row.event_name
+                        entry.start_date = calendar_row.start_date
+                        entry.end_date = calendar_row.end_date
+                        entry.discipline = discipline
+                        entry.source_note = note
+                else:
+                    detail["status"] = "no_change"
+                calendar_only_details.append(detail)
+            else:
+                calendar_only_entries_created += 1
+                detail["status"] = "created"
+                calendar_only_details.append(detail)
+                if not dry_run:
+                    db.add(models.EventCalendarEntry(
+                        event_id=None,
+                        name=calendar_row.event_name,
+                        start_date=calendar_row.start_date,
+                        end_date=calendar_row.end_date,
+                        year=args.year,
+                        discipline=discipline,
+                        source="gymternet_calendar",
+                        source_row=calendar_row.row_number,
+                        source_note=note,
+                    ))
 
         for (event_id, calendar_row_number), source in sorted(pairs.items(), key=lambda item: (item[0][1], item[0][0])):
             calendar_row = calendar_by_row.get(calendar_row_number)
@@ -161,7 +263,9 @@ def run(args: argparse.Namespace) -> dict:
                 })
                 continue
 
-            if event.start_date != calendar_row.start_date or event.end_date != calendar_row.end_date:
+            dates_differ = event.start_date != calendar_row.start_date or event.end_date != calendar_row.end_date
+            event_has_dates = event.start_date is not None or event.end_date is not None
+            if dates_differ and not event_has_dates:
                 updated_events.append({
                     "event_id": event.id,
                     "event_name": event.name,
@@ -173,6 +277,18 @@ def run(args: argparse.Namespace) -> dict:
                 if not dry_run:
                     event.start_date = calendar_row.start_date
                     event.end_date = calendar_row.end_date
+            elif dates_differ:
+                preserved_existing_event_dates.append({
+                    "event_id": event.id,
+                    "event_name": event.name,
+                    "existing_start_date": event.start_date.isoformat() if event.start_date else None,
+                    "existing_end_date": event.end_date.isoformat() if event.end_date else None,
+                    "calendar_row": calendar_row.row_number,
+                    "calendar_event": calendar_row.event_name,
+                    "calendar_start_date": calendar_row.start_date.isoformat(),
+                    "calendar_end_date": calendar_row.end_date.isoformat(),
+                    "reason": "event_already_has_canonical_dates_calendar_entry_preserved",
+                })
 
             entry = db.query(models.EventCalendarEntry).filter(
                 models.EventCalendarEntry.source == "gymternet_calendar",
@@ -268,12 +384,20 @@ def run(args: argparse.Namespace) -> dict:
             "calendar_entries_created": calendar_entries_created,
             "calendar_entries_updated": calendar_entries_updated,
             "calendar_entries_relinked": calendar_entries_relinked,
+            "calendar_only_rows": len(calendar_only_rows),
+            "calendar_only_entries_created": calendar_only_entries_created,
+            "calendar_only_entries_updated": calendar_only_entries_updated,
             "cleared_cross_year_event_dates": len(cleared_cross_year_event_dates),
+            "preserved_existing_event_dates": len(preserved_existing_event_dates),
+            "unresolved_review_items": len(unresolved_decisions),
             "invalid_decisions": len(invalid_decisions),
             "source_issues": len(issues),
             "applied_pair_details": applied_pairs,
+            "calendar_only_details": calendar_only_details,
             "updated_event_details": updated_events,
             "cleared_cross_year_event_date_details": cleared_cross_year_event_dates,
+            "preserved_existing_event_date_details": preserved_existing_event_dates,
+            "unresolved_decision_details": unresolved_decisions,
             "invalid_decision_details": invalid_decisions,
         }
     finally:
@@ -300,8 +424,11 @@ def main() -> None:
         for key, value in output.items()
         if key not in {
             "applied_pair_details",
+            "calendar_only_details",
             "updated_event_details",
             "cleared_cross_year_event_date_details",
+            "preserved_existing_event_date_details",
+            "unresolved_decision_details",
             "invalid_decision_details",
         }
     }
