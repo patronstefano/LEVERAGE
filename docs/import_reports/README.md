@@ -396,6 +396,39 @@ Esito finale calendario 2022:
 
 Nota di review: `EYOF Mixed Pairs` e stato collegato alla riga Calendar 142, `European Youth Olympic Festival`. Il 2022 si chiude senza eccezioni `calendar_only` o `db_only`.
 
+## Calendar 2023 - checkpoint review
+
+Il flusso 2023 e stato avviato applicando solo i match diretti sicuri. I casi ambigui, inclusi quelli con etichetta `2024 season` ma data nel 2023, sono lasciati alla review admin.
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2023 | 265 |
+| Event DB 2023 | 241 |
+| Match diretti sicuri applicati | 211 |
+| Event DB 2023 gia coperti | 223 |
+| Calendar 2023 senza match corrente | 39 |
+| Event DB 2023 senza match corrente | 18 |
+| Event DB 2023 `db_only` gia verificati | 0 |
+| Righe Calendar 2023 `calendar_only` | 0 |
+| Conflitti stesso Event/date da rivedere | 6 |
+| Righe saltate per piu match possibili | 3 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+Backup del primo commit sicuro 2023:
+
+```text
+backups/leverage_calendar_2023_20260702_003617.db
+```
+
+File operativi da compilare:
+
+- `calendar_2023_calendar_unmatched_current.csv`
+- `calendar_2023_db_unmatched_current.csv`
+- `calendar_2023_source_conflicts_slim.csv`
+
+La review 2023 usa gli stessi valori operativi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

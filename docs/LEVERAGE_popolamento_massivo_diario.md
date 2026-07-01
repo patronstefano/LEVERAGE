@@ -3400,3 +3400,59 @@ Esito finale 2022:
 | Collegamenti cross-year non controllati | 0 |
 
 Nota metodologica: il 2022 non ha richiesto eccezioni `calendar_only` o `db_only`. Tutti gli Event DB 2022 risultano collegati a righe Calendar sorgente, con i conflitti MAG/WAG e Bundesliga preservati tramite `EventCalendarEntry` quando erano presenti piu date corrette.
+
+### Calendar 2023
+
+Il flusso Calendar 2023 e stato avviato con la stessa metodologia consolidata: applicazione automatica dei soli match sicuri, mantenimento in review dei casi con ambiguita, e uso di `EventCalendarEntry` per piu date corrette riferite allo stesso Event. Il 2023 contiene anche alcune righe di calendario riferite alla stagione 2024 ma datate nel 2023; queste righe vengono lasciate alla review admin e non trattate automaticamente come errore.
+
+Fotografia iniziale 2023:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2023 | 265 |
+| Event DB 2023 | 241 |
+| Righe Calendar 2023 con match automatico | 226 |
+| Righe Calendar 2023 senza match automatico | 39 |
+| Righe Calendar 2023 con piu possibili Event DB | 3 |
+| Event DB 2023 matched automaticamente | 223 |
+| Event DB 2023 senza match automatico con result | 18 |
+| Event DB 2023 matched da piu righe Calendar | 6 |
+| Conflitti stesso Event/date diverse | 6 |
+| Duplicate source rows | 0 |
+
+Primo commit sicuro 2023:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 211 |
+| Event aggiornati con `start_date` / `end_date` | 211 |
+| Righe saltate per conflitto stesso Event/date diverse | 12 |
+| Righe saltate per piu match possibili | 3 |
+| Elementi review ancora aperti | 45 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2023_20260702_003617.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2023 senza match corrente | 39 |
+| Event DB 2023 senza match corrente | 18 |
+| Event DB 2023 gia coperti | 223 |
+| Event DB 2023 `db_only` gia verificati | 0 |
+| Righe Calendar 2023 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year rilevati | 0 |
+
+File preparati per la review admin 2023:
+
+- `calendar_2023_calendar_unmatched_current.csv`
+- `calendar_2023_db_unmatched_current.csv`
+- `calendar_2023_source_conflicts_slim.csv`
+
+Nota operativa: nella review 2023 compaiono righe come `Top 12 Series 1 (2024 season)`, `Top 12 Series 2 (2024 season)`, `Top 12 Series 3 (2024 season)` e `1st Spanish League (2024 season)`. La scelta corretta deve essere verificata dall'admin come per i precedenti casi di stagione a cavallo d'anno: se la riga Calendar e la scheda Event rappresentano la stessa competizione, si collega; se invece non esiste un collegamento supportato dai dati sorgente, si usa `calendar_only` o `db_only` secondo il lato mancante.

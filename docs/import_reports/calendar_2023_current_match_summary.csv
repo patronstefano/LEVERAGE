@@ -1,0 +1,12 @@
+metric,value
+year,2023
+calendar_rows,265
+db_events,241
+calendar_unmatched_rows,39
+db_unmatched_events,18
+db_matched_events,223
+db_only_events,0
+calendar_only_rows,0
+season_year_spillover_entries,0
+cross_year_calendar_entries,0
+source_issues,0
