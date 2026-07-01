@@ -1,0 +1,2 @@
+calendar_row,calendar_event,calendar_start_date,calendar_end_date,linked_event_id,linked_event_name,linked_event_year,action,notes
+6,Buckeye National Qualifier,2018-02-01,2018-02-02,379,Buckeye National Qualifier,2019,review_and_relink_to_same_year_event,

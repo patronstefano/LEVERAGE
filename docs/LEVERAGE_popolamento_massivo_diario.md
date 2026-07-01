@@ -2919,4 +2919,43 @@ Esito del commit reale:
 
 Un backup locale del database e stato creato automaticamente prima del commit. Il backup non viene tracciato da Git perche il database locale e escluso dal repository.
 
+Secondo controllo di copertura 2018:
+
+Dopo il primo commit e stato effettuato un controllo piu restrittivo, imponendo che i suggerimenti di match fossero sempre interni a `Event.year = 2018`. Questo ha evidenziato un collegamento cross-year errato: la riga Calendar 2018 `Buckeye National Qualifier` era stata associata all'Event DB `Buckeye National Qualifier` del 2019, mentre il corrispettivo corretto nel DB 2018 era `Buckeye Qualifier`.
+
+Sono stati generati file di review corrente:
+
+```text
+docs/import_reports/calendar_2018_calendar_unmatched_current.csv
+docs/import_reports/calendar_2018_db_unmatched_current.csv
+docs/import_reports/calendar_2018_cross_year_calendar_entries.csv
+```
+
+Le decisioni admin hanno associato:
+
+| Event DB 2018 | Riga Calendar 2018 |
+|---|---|
+| `Buckeye Qualifier` | `Buckeye National Qualifier` |
+| `Houston National Invite` | `Houston National Invitational` |
+| `DTB Team Challenge` | `DTB Pokal Team Challenge` |
+| `Junior Pan Am Championships` | `Junior Pan American Championships` |
+| `Ukraine Open Cup` | `Kiev Open Cup` |
+| `Swiss Duel` | `Swiss Cup` |
+
+Esito del secondo commit corrente 2018:
+
+| Controllo | Conteggio |
+|---|---:|
+| Decisioni applicate | 6 |
+| Event 2018 aggiornati con date | 6 |
+| Calendar entries create | 5 |
+| Calendar entries rilinkate da anno errato | 1 |
+| Date 2018 rimosse da Event 2019 errato | 1 |
+| Decisioni invalide | 0 |
+| Calendar 2018 senza match finale | 0 |
+| Event DB 2018 senza match finale | 0 |
+| Collegamenti cross-year finali | 0 |
+
+Il controllo finale conferma quindi la copertura completa del 2018: tutte le 214 righe Calendar 2018 hanno almeno un match DB 2018 e tutti i 211 Event DB 2018 hanno una copertura calendario diretta o tramite `EventCalendarEntry`.
+
 Nota metodologica: l'aggiornamento delle date serve ad alimentare la futura UI calendario cliccabile. Ogni Event datato potra comparire nella vista calendario pubblica/admin con stato calcolato (`upcoming`, `ongoing`, `completed_with_results`, `completed_no_results`) e collegamento alla scheda evento.

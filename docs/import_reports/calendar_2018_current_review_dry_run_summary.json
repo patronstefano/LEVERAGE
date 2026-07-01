@@ -1,0 +1,131 @@
+{
+  "year": 2018,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 6,
+  "applied_pairs": 6,
+  "updated_events": 6,
+  "calendar_entries_created": 5,
+  "calendar_entries_updated": 0,
+  "calendar_entries_relinked": 1,
+  "cleared_cross_year_event_dates": 1,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 148,
+      "event_name": "Buckeye Qualifier",
+      "calendar_row": 6,
+      "calendar_event": "Buckeye National Qualifier",
+      "start_date": "2018-02-01",
+      "end_date": "2018-02-02",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 54,
+      "event_name": "Houston National Invite",
+      "calendar_row": 8,
+      "calendar_event": "Houston National Invitational",
+      "start_date": "2018-02-02",
+      "end_date": "2018-02-04",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 82,
+      "event_name": "DTB Team Challenge",
+      "calendar_row": 36,
+      "calendar_event": "DTB Pokal Team Challenge",
+      "start_date": "2018-03-16",
+      "end_date": "2018-03-18",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 64,
+      "event_name": "Junior Pan Am Championships",
+      "calendar_row": 104,
+      "calendar_event": "Junior Pan American Championships",
+      "start_date": "2018-06-09",
+      "end_date": "2018-06-16",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 117,
+      "event_name": "Ukraine Open Cup",
+      "calendar_row": 178,
+      "calendar_event": "Kiev Open Cup",
+      "start_date": "2018-10-13",
+      "end_date": "2018-10-13",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 129,
+      "event_name": "Swiss Duel",
+      "calendar_row": 198,
+      "calendar_event": "Swiss Cup",
+      "start_date": "2018-11-18",
+      "end_date": "2018-11-18",
+      "source": "db_unmatched_current"
+    }
+  ],
+  "updated_event_details": [
+    {
+      "event_id": 148,
+      "event_name": "Buckeye Qualifier",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-02-01",
+      "new_end_date": "2018-02-02"
+    },
+    {
+      "event_id": 54,
+      "event_name": "Houston National Invite",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-02-02",
+      "new_end_date": "2018-02-04"
+    },
+    {
+      "event_id": 82,
+      "event_name": "DTB Team Challenge",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-03-16",
+      "new_end_date": "2018-03-18"
+    },
+    {
+      "event_id": 64,
+      "event_name": "Junior Pan Am Championships",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-06-09",
+      "new_end_date": "2018-06-16"
+    },
+    {
+      "event_id": 117,
+      "event_name": "Ukraine Open Cup",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-10-13",
+      "new_end_date": "2018-10-13"
+    },
+    {
+      "event_id": 129,
+      "event_name": "Swiss Duel",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2018-11-18",
+      "new_end_date": "2018-11-18"
+    }
+  ],
+  "cleared_cross_year_event_date_details": [
+    {
+      "event_id": 379,
+      "event_name": "Buckeye National Qualifier",
+      "event_year": 2019,
+      "old_start_date": "2018-02-01",
+      "old_end_date": "2018-02-02"
+    }
+  ],
+  "invalid_decision_details": []
+}

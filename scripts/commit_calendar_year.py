@@ -398,6 +398,18 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         })
                         row_has_invalid_event = True
                         continue
+                    if event.year != year:
+                        invalid_decisions.append({
+                            "source": str(slim_match_review_path),
+                            "calendar_row": calendar_row,
+                            "calendar_event": clean(slim_row.get("calendar_event")),
+                            "selected_event_id": selected_event_id,
+                            "selected_event_year": event.year,
+                            "expected_year": year,
+                            "reason": "selected_event_year_mismatch",
+                        })
+                        row_has_invalid_event = True
+                        continue
                     events.append(event)
                 if row_has_invalid_event or not events:
                     continue
@@ -498,6 +510,17 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "selected_event_not_found",
                     })
                     continue
+                if event.year != year:
+                    invalid_decisions.append({
+                        "source": str(match_review_path),
+                        "calendar_row": clean(csv_row.get("calendar_row")),
+                        "calendar_event": clean(csv_row.get("calendar_event")),
+                        "selected_event_id": selected_event_id,
+                        "selected_event_year": event.year,
+                        "expected_year": year,
+                        "reason": "selected_event_year_mismatch",
+                    })
+                    continue
                 review_match_rows += 1
                 changed = update_event_dates(
                     db,
@@ -573,6 +596,16 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "reason": "event_not_found",
                     })
                     continue
+                if event.year != year:
+                    invalid_decisions.append({
+                        "source": str(slim_source_conflict_path),
+                        "conflict_group": group_id,
+                        "event_id": event_id,
+                        "event_year": event.year,
+                        "expected_year": year,
+                        "reason": "selected_event_year_mismatch",
+                    })
+                    continue
                 resolved_source_conflicts += 1
                 if len(selected_rows) == 1:
                     csv_row = selected_rows[0]
@@ -637,6 +670,16 @@ def run_calendar_year_commit(args: argparse.Namespace) -> dict:
                         "conflict_group": group_id,
                         "event_id": event_id,
                         "reason": "event_not_found",
+                    })
+                    continue
+                if event.year != year:
+                    invalid_decisions.append({
+                        "source": str(source_conflict_path),
+                        "conflict_group": group_id,
+                        "event_id": event_id,
+                        "event_year": event.year,
+                        "expected_year": year,
+                        "reason": "selected_event_year_mismatch",
                     })
                     continue
                 changed = update_event_dates(

@@ -473,7 +473,12 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--create-missing-from-year", type=int, default=2026)
     parser.add_argument("--suggestion-limit", type=int, default=3)
-    parser.add_argument("--year-window", type=int, default=1)
+    parser.add_argument(
+        "--year-window",
+        type=int,
+        default=0,
+        help="Only suggest DB events from the same year by default.",
+    )
     parser.add_argument("--summary-output", type=Path)
     parser.add_argument("--db-unmatched-output", type=Path)
     parser.add_argument("--source-conflicts-output", type=Path)

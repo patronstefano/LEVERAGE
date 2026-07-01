@@ -183,6 +183,38 @@ Report:
 - `calendar_2018_dry_run_summary.json`
 - `calendar_2018_commit_summary.json`
 
+Secondo controllo calendario 2018:
+
+Il primo giro aveva correttamente gestito i casi MAG/WAG multi-data, ma il controllo successivo ha imposto una regola piu stretta: per un foglio Calendar di un anno, i suggerimenti devono riferirsi solo a `Event.year` dello stesso anno. Questo evita collegamenti cross-year come una riga Calendar 2018 associata a un Event DB 2019.
+
+Script introdotti:
+
+```text
+scripts/generate_calendar_current_coverage_reports.py
+scripts/apply_calendar_current_review_decisions.py
+```
+
+Report 2018 generati:
+
+- `calendar_2018_calendar_unmatched_current.csv`
+- `calendar_2018_db_unmatched_current.csv`
+- `calendar_2018_cross_year_calendar_entries.csv`
+- `calendar_2018_current_review_dry_run_summary.json`
+- `calendar_2018_current_review_commit_summary.json`
+
+Esito finale 2018 dopo review corrente:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2018 | 214 |
+| Event DB 2018 | 211 |
+| Calendar 2018 senza match finale | 0 |
+| Event DB 2018 senza match finale | 0 |
+| Collegamenti cross-year finali | 0 |
+| Event 2018 aggiornati nel secondo giro | 6 |
+| Calendar entries create nel secondo giro | 5 |
+| Calendar entries rilinkate da anno errato | 1 |
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:
