@@ -16,8 +16,8 @@
   "calendar_entries_created": 0,
   "calendar_entries_updated": 0,
   "calendar_entries_no_change": 0,
-  "updated_events": 211,
-  "no_change_events": 0,
+  "updated_events": 0,
+  "no_change_events": 211,
   "unresolved_review_items": 45,
   "invalid_decisions": 0,
   "skipped": 0,
@@ -26,2111 +26,1689 @@
       "event_id": 1031,
       "event_name": "Beach Blast Invitational",
       "source": "calendar_row:2023:2",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-01-12",
-      "to_end_date": "2023-01-15"
+      "status": "no_change",
+      "start_date": "2023-01-12",
+      "end_date": "2023-01-15"
     },
     {
       "event_id": 1035,
       "event_name": "Houston National Invitational",
       "source": "calendar_row:2023:3",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-01-13",
-      "to_end_date": "2023-01-15"
+      "status": "no_change",
+      "start_date": "2023-01-13",
+      "end_date": "2023-01-15"
     },
     {
       "event_id": 995,
       "event_name": "Elite Canada",
       "source": "calendar_row:2023:4",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-01-20",
-      "to_end_date": "2023-01-22"
+      "status": "no_change",
+      "start_date": "2023-01-20",
+      "end_date": "2023-01-22"
     },
     {
       "event_id": 1057,
       "event_name": "HGA Invitational",
       "source": "calendar_row:2023:5",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-01-20",
-      "to_end_date": "2023-01-22"
+      "status": "no_change",
+      "start_date": "2023-01-20",
+      "end_date": "2023-01-22"
     },
     {
       "event_id": 1029,
       "event_name": "Stanford Open",
       "source": "calendar_row:2023:7",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-01-27",
-      "to_end_date": "2023-01-29"
+      "status": "no_change",
+      "start_date": "2023-01-27",
+      "end_date": "2023-01-29"
     },
     {
       "event_id": 1132,
       "event_name": "Buckeye National Qualifier",
       "source": "calendar_row:2023:10",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-03",
-      "to_end_date": "2023-02-05"
+      "status": "no_change",
+      "start_date": "2023-02-03",
+      "end_date": "2023-02-05"
     },
     {
       "event_id": 1045,
       "event_name": "Blackjack Invitational",
       "source": "calendar_row:2023:11",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-03",
-      "to_end_date": "2023-02-05"
+      "status": "no_change",
+      "start_date": "2023-02-03",
+      "end_date": "2023-02-05"
     },
     {
       "event_id": 1129,
       "event_name": "2nd Spanish League",
       "source": "calendar_row:2023:12",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-04",
-      "to_end_date": "2023-02-05"
+      "status": "no_change",
+      "start_date": "2023-02-04",
+      "end_date": "2023-02-05"
     },
     {
       "event_id": 973,
       "event_name": "1st Italian Serie A",
       "source": "calendar_row:2023:13",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-10",
-      "to_end_date": "2023-02-11"
+      "status": "no_change",
+      "start_date": "2023-02-10",
+      "end_date": "2023-02-11"
     },
     {
       "event_id": 1136,
       "event_name": "City of Lights National Qualifier",
       "source": "calendar_row:2023:14",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-10",
-      "to_end_date": "2023-02-12"
+      "status": "no_change",
+      "start_date": "2023-02-10",
+      "end_date": "2023-02-12"
     },
     {
       "event_id": 947,
       "event_name": "Top 12 Series 5",
       "source": "calendar_row:2023:16",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-11",
-      "to_end_date": "2023-02-11"
+      "status": "no_change",
+      "start_date": "2023-02-11",
+      "end_date": "2023-02-11"
     },
     {
       "event_id": 944,
       "event_name": "Finnish National Team Test",
       "source": "calendar_row:2023:17",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-12",
-      "to_end_date": "2023-02-12"
+      "status": "no_change",
+      "start_date": "2023-02-12",
+      "end_date": "2023-02-12"
     },
     {
       "event_id": 1020,
       "event_name": "Luxembourg Open",
       "source": "calendar_row:2023:18",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-17",
-      "to_end_date": "2023-02-19"
+      "status": "no_change",
+      "start_date": "2023-02-17",
+      "end_date": "2023-02-19"
     },
     {
       "event_id": 948,
       "event_name": "Scottish Championships",
       "source": "calendar_row:2023:19",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-17",
-      "to_end_date": "2023-02-19"
+      "status": "no_change",
+      "start_date": "2023-02-17",
+      "end_date": "2023-02-19"
     },
     {
       "event_id": 958,
       "event_name": "Cottbus World Cup",
       "source": "calendar_row:2023:21",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-23",
-      "to_end_date": "2023-02-26"
+      "status": "no_change",
+      "start_date": "2023-02-23",
+      "end_date": "2023-02-26"
     },
     {
       "event_id": 987,
       "event_name": "Winter Cup",
       "source": "calendar_row:2023:22",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-23",
-      "to_end_date": "2023-02-26"
+      "status": "no_change",
+      "start_date": "2023-02-23",
+      "end_date": "2023-02-26"
     },
     {
       "event_id": 991,
       "event_name": "English Championships",
       "source": "calendar_row:2023:23",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-24",
-      "to_end_date": "2023-02-26"
+      "status": "no_change",
+      "start_date": "2023-02-24",
+      "end_date": "2023-02-26"
     },
     {
       "event_id": 985,
       "event_name": "Top 12 Series 6",
       "source": "calendar_row:2023:26",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-25",
-      "to_end_date": "2023-02-25"
+      "status": "no_change",
+      "start_date": "2023-02-25",
+      "end_date": "2023-02-25"
     },
     {
       "event_id": 1143,
       "event_name": "Finnish National Team Test 2",
       "source": "calendar_row:2023:27",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-02-25",
-      "to_end_date": "2023-02-25"
+      "status": "no_change",
+      "start_date": "2023-02-25",
+      "end_date": "2023-02-25"
     },
     {
       "event_id": 1098,
       "event_name": "Swiss Euros Trials 1",
       "source": "calendar_row:2023:28",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-01",
-      "to_end_date": "2023-03-01"
+      "status": "no_change",
+      "start_date": "2023-03-01",
+      "end_date": "2023-03-01"
     },
     {
       "event_id": 961,
       "event_name": "Doha World Cup",
       "source": "calendar_row:2023:29",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-01",
-      "to_end_date": "2023-03-04"
+      "status": "no_change",
+      "start_date": "2023-03-01",
+      "end_date": "2023-03-04"
     },
     {
       "event_id": 974,
       "event_name": "2nd Italian Serie A",
       "source": "calendar_row:2023:31",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-03",
-      "to_end_date": "2023-03-04"
+      "status": "no_change",
+      "start_date": "2023-03-03",
+      "end_date": "2023-03-04"
     },
     {
       "event_id": 1085,
       "event_name": "Tiger Cup",
       "source": "calendar_row:2023:32",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-03",
-      "to_end_date": "2023-03-05"
+      "status": "no_change",
+      "start_date": "2023-03-03",
+      "end_date": "2023-03-05"
     },
     {
       "event_id": 1048,
       "event_name": "Ifact Norges Cup",
       "source": "calendar_row:2023:33",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-03",
-      "to_end_date": "2023-03-05"
+      "status": "no_change",
+      "start_date": "2023-03-03",
+      "end_date": "2023-03-05"
     },
     {
       "event_id": 1165,
       "event_name": "Hungarian Junior Event Championships",
       "source": "calendar_row:2023:35",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-04",
-      "to_end_date": "2023-03-04"
+      "status": "no_change",
+      "start_date": "2023-03-04",
+      "end_date": "2023-03-04"
     },
     {
       "event_id": 1174,
       "event_name": "Finnish National Team Test 3",
       "source": "calendar_row:2023:37",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-04",
-      "to_end_date": "2023-03-04"
+      "status": "no_change",
+      "start_date": "2023-03-04",
+      "end_date": "2023-03-04"
     },
     {
       "event_id": 1150,
       "event_name": "Norwegian FIG Meet 1",
       "source": "calendar_row:2023:38",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-04",
-      "to_end_date": "2023-03-05"
+      "status": "no_change",
+      "start_date": "2023-03-04",
+      "end_date": "2023-03-05"
     },
     {
       "event_id": 1117,
       "event_name": "U.S.-Canada Junior Friendly",
       "source": "calendar_row:2023:39",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-07",
-      "to_end_date": "2023-03-07"
+      "status": "no_change",
+      "start_date": "2023-03-07",
+      "end_date": "2023-03-07"
     },
     {
       "event_id": 1051,
       "event_name": "Russian Championships",
       "source": "calendar_row:2023:40",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-08",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-08",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 957,
       "event_name": "Baku World Cup",
       "source": "calendar_row:2023:42",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-09",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-09",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 1089,
       "event_name": "Singapore Championships",
       "source": "calendar_row:2023:43",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-09",
-      "to_end_date": "2023-03-19"
+      "status": "no_change",
+      "start_date": "2023-03-09",
+      "end_date": "2023-03-19"
     },
     {
       "event_id": 943,
       "event_name": "Finnish Men's National Team Test 2",
       "source": "calendar_row:2023:44",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-10",
-      "to_end_date": "2023-03-10"
+      "status": "no_change",
+      "start_date": "2023-03-10",
+      "end_date": "2023-03-10"
     },
     {
       "event_id": 1114,
       "event_name": "Magical March National Qualifier",
       "source": "calendar_row:2023:45",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-10",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-10",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 1016,
       "event_name": "Iceland Classic",
       "source": "calendar_row:2023:46",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-10",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-10",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 1100,
       "event_name": "Swiss Euros Trials 2",
       "source": "calendar_row:2023:47",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-11",
-      "to_end_date": "2023-03-11"
+      "status": "no_change",
+      "start_date": "2023-03-11",
+      "end_date": "2023-03-11"
     },
     {
       "event_id": 1144,
       "event_name": "Finnish National Team Test 4",
       "source": "calendar_row:2023:49",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-11",
-      "to_end_date": "2023-03-11"
+      "status": "no_change",
+      "start_date": "2023-03-11",
+      "end_date": "2023-03-11"
     },
     {
       "event_id": 1164,
       "event_name": "Polish Championships",
       "source": "calendar_row:2023:50",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-11",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-11",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 990,
       "event_name": "Welsh Championships",
       "source": "calendar_row:2023:51",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-11",
-      "to_end_date": "2023-03-12"
+      "status": "no_change",
+      "start_date": "2023-03-11",
+      "end_date": "2023-03-12"
     },
     {
       "event_id": 1040,
       "event_name": "Finnish Men's National Team Test 3",
       "source": "calendar_row:2023:52",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-17",
-      "to_end_date": "2023-03-17"
+      "status": "no_change",
+      "start_date": "2023-03-17",
+      "end_date": "2023-03-17"
     },
     {
       "event_id": 1084,
       "event_name": "Latvian Championships",
       "source": "calendar_row:2023:53",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-17",
-      "to_end_date": "2023-03-18"
+      "status": "no_change",
+      "start_date": "2023-03-17",
+      "end_date": "2023-03-18"
     },
     {
       "event_id": 941,
       "event_name": "DTB Pokal Team Challenge",
       "source": "calendar_row:2023:54",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-17",
-      "to_end_date": "2023-03-19"
+      "status": "no_change",
+      "start_date": "2023-03-17",
+      "end_date": "2023-03-19"
     },
     {
       "event_id": 1156,
       "event_name": "Magglingen Friendly",
       "source": "calendar_row:2023:55",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-18",
-      "to_end_date": "2023-03-18"
+      "status": "no_change",
+      "start_date": "2023-03-18",
+      "end_date": "2023-03-18"
     },
     {
       "event_id": 1093,
       "event_name": "Hungarian Team Championships",
       "source": "calendar_row:2023:56",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-18",
-      "to_end_date": "2023-03-19"
+      "status": "no_change",
+      "start_date": "2023-03-18",
+      "end_date": "2023-03-19"
     },
     {
       "event_id": 1079,
       "event_name": "DTB Pokal Mixed Cup",
       "source": "calendar_row:2023:57",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-19",
-      "to_end_date": "2023-03-19"
+      "status": "no_change",
+      "start_date": "2023-03-19",
+      "end_date": "2023-03-19"
     },
     {
       "event_id": 949,
       "event_name": "British Championships",
       "source": "calendar_row:2023:58",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-23",
-      "to_end_date": "2023-03-26"
+      "status": "no_change",
+      "start_date": "2023-03-23",
+      "end_date": "2023-03-26"
     },
     {
       "event_id": 1041,
       "event_name": "Finnish Men's National Team Test 4",
       "source": "calendar_row:2023:60",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-24",
-      "to_end_date": "2023-03-24"
+      "status": "no_change",
+      "start_date": "2023-03-24",
+      "end_date": "2023-03-24"
     },
     {
       "event_id": 981,
       "event_name": "Top 12 Series 7",
       "source": "calendar_row:2023:62",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-25",
-      "to_end_date": "2023-03-25"
+      "status": "no_change",
+      "start_date": "2023-03-25",
+      "end_date": "2023-03-25"
     },
     {
       "event_id": 975,
       "event_name": "Icelandic Championships",
       "source": "calendar_row:2023:63",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-25",
-      "to_end_date": "2023-03-26"
+      "status": "no_change",
+      "start_date": "2023-03-25",
+      "end_date": "2023-03-26"
     },
     {
       "event_id": 1155,
       "event_name": "Malta Championships",
       "source": "calendar_row:2023:64",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-25",
-      "to_end_date": "2023-03-26"
+      "status": "no_change",
+      "start_date": "2023-03-25",
+      "end_date": "2023-03-26"
     },
     {
       "event_id": 1151,
       "event_name": "Norwegian FIG Meet 2",
       "source": "calendar_row:2023:65",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-25",
-      "to_end_date": "2023-03-26"
+      "status": "no_change",
+      "start_date": "2023-03-25",
+      "end_date": "2023-03-26"
     },
     {
       "event_id": 942,
       "event_name": "Junior World Championships",
       "source": "calendar_row:2023:66",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-29",
-      "to_end_date": "2023-04-02"
+      "status": "no_change",
+      "start_date": "2023-03-29",
+      "end_date": "2023-04-02"
     },
     {
       "event_id": 1153,
       "event_name": "City of Jesolo Trophy",
       "source": "calendar_row:2023:67",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-30",
-      "to_end_date": "2023-04-02"
+      "status": "no_change",
+      "start_date": "2023-03-30",
+      "end_date": "2023-04-02"
     },
     {
       "event_id": 1172,
       "event_name": "South African Championships",
       "source": "calendar_row:2023:68",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-31",
-      "to_end_date": "2023-04-01"
+      "status": "no_change",
+      "start_date": "2023-03-31",
+      "end_date": "2023-04-01"
     },
     {
       "event_id": 1119,
       "event_name": "Finnish National Team Test 5",
       "source": "calendar_row:2023:69",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-03-31",
-      "to_end_date": "2023-04-02"
+      "status": "no_change",
+      "start_date": "2023-03-31",
+      "end_date": "2023-04-02"
     },
     {
       "event_id": 1177,
       "event_name": "Dutch Euros Trials 2",
       "source": "calendar_row:2023:70",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-01",
-      "to_end_date": "2023-04-01"
+      "status": "no_change",
+      "start_date": "2023-04-01",
+      "end_date": "2023-04-01"
     },
     {
       "event_id": 1152,
       "event_name": "Zelena Jama Open",
       "source": "calendar_row:2023:71",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-01",
-      "to_end_date": "2023-04-01"
+      "status": "no_change",
+      "start_date": "2023-04-01",
+      "end_date": "2023-04-01"
     },
     {
       "event_id": 1073,
       "event_name": "Barents Winter Games",
       "source": "calendar_row:2023:72",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-01",
-      "to_end_date": "2023-04-01"
+      "status": "no_change",
+      "start_date": "2023-04-01",
+      "end_date": "2023-04-01"
     },
     {
       "event_id": 1138,
       "event_name": "Elek Matolay Memorial",
       "source": "calendar_row:2023:73",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-01",
-      "to_end_date": "2023-04-02"
+      "status": "no_change",
+      "start_date": "2023-04-01",
+      "end_date": "2023-04-02"
     },
     {
       "event_id": 1054,
       "event_name": "Belarus Open Cup",
       "source": "calendar_row:2023:74",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-10",
-      "to_end_date": "2023-04-14"
+      "status": "no_change",
+      "start_date": "2023-04-10",
+      "end_date": "2023-04-14"
     },
     {
       "event_id": 989,
       "event_name": "European Championships",
       "source": "calendar_row:2023:75",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-11",
-      "to_end_date": "2023-04-16"
+      "status": "no_change",
+      "start_date": "2023-04-11",
+      "end_date": "2023-04-16"
     },
     {
       "event_id": 1086,
       "event_name": "Brazil Trophy",
       "source": "calendar_row:2023:76",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-11",
-      "to_end_date": "2023-04-16"
+      "status": "no_change",
+      "start_date": "2023-04-11",
+      "end_date": "2023-04-16"
     },
     {
       "event_id": 1028,
       "event_name": "South Korean Championships",
       "source": "calendar_row:2023:77",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-14",
-      "to_end_date": "2023-04-16"
+      "status": "no_change",
+      "start_date": "2023-04-14",
+      "end_date": "2023-04-16"
     },
     {
       "event_id": 1145,
       "event_name": "Finnish National Team Test 6",
       "source": "calendar_row:2023:78",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-14",
-      "to_end_date": "2023-04-16"
+      "status": "no_change",
+      "start_date": "2023-04-14",
+      "end_date": "2023-04-16"
     },
     {
       "event_id": 1066,
       "event_name": "Colombian Championships",
       "source": "calendar_row:2023:79",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-19",
-      "to_end_date": "2023-04-23"
+      "status": "no_change",
+      "start_date": "2023-04-19",
+      "end_date": "2023-04-23"
     },
     {
       "event_id": 1034,
       "event_name": "All-Japan Championships",
       "source": "calendar_row:2023:80",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-20",
-      "to_end_date": "2023-04-23"
+      "status": "no_change",
+      "start_date": "2023-04-20",
+      "end_date": "2023-04-23"
     },
     {
       "event_id": 1042,
       "event_name": "Hanspeter Demetz Memorial",
       "source": "calendar_row:2023:81",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-22",
-      "to_end_date": "2023-04-22"
+      "status": "no_change",
+      "start_date": "2023-04-22",
+      "end_date": "2023-04-22"
     },
     {
       "event_id": 956,
       "event_name": "Cairo World Cup",
       "source": "calendar_row:2023:83",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-27",
-      "to_end_date": "2023-04-30"
+      "status": "no_change",
+      "start_date": "2023-04-27",
+      "end_date": "2023-04-30"
     },
     {
       "event_id": 1012,
       "event_name": "International GymSport",
       "source": "calendar_row:2023:84",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-28",
-      "to_end_date": "2023-04-29"
+      "status": "no_change",
+      "start_date": "2023-04-28",
+      "end_date": "2023-04-29"
     },
     {
       "event_id": 1069,
       "event_name": "Top 12 Finals",
       "source": "calendar_row:2023:85",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-29",
-      "to_end_date": "2023-04-29"
+      "status": "no_change",
+      "start_date": "2023-04-29",
+      "end_date": "2023-04-29"
     },
     {
       "event_id": 1127,
       "event_name": "3rd Spanish League",
       "source": "calendar_row:2023:87",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-29",
-      "to_end_date": "2023-04-30"
+      "status": "no_change",
+      "start_date": "2023-04-29",
+      "end_date": "2023-04-30"
     },
     {
       "event_id": 1049,
       "event_name": "Ifact Norges Cup 2",
       "source": "calendar_row:2023:88",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-29",
-      "to_end_date": "2023-04-30"
+      "status": "no_change",
+      "start_date": "2023-04-29",
+      "end_date": "2023-04-30"
     },
     {
       "event_id": 1133,
       "event_name": "U.S. Pan American Trials",
       "source": "calendar_row:2023:90",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-04-30",
-      "to_end_date": "2023-04-30"
+      "status": "no_change",
+      "start_date": "2023-04-30",
+      "end_date": "2023-04-30"
     },
     {
       "event_id": 938,
       "event_name": "Finnish Championships",
       "source": "calendar_row:2023:91",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-05",
-      "to_end_date": "2023-05-06"
+      "status": "no_change",
+      "start_date": "2023-05-05",
+      "end_date": "2023-05-06"
     },
     {
       "event_id": 972,
       "event_name": "3rd Italian Serie A",
       "source": "calendar_row:2023:92",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-05",
-      "to_end_date": "2023-05-06"
+      "status": "no_change",
+      "start_date": "2023-05-05",
+      "end_date": "2023-05-06"
     },
     {
       "event_id": 969,
       "event_name": "Southeast Asian Games",
       "source": "calendar_row:2023:93",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-05",
-      "to_end_date": "2023-05-17"
+      "status": "no_change",
+      "start_date": "2023-05-05",
+      "end_date": "2023-05-17"
     },
     {
       "event_id": 1107,
       "event_name": "Oceania Championships",
       "source": "calendar_row:2023:94",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-06",
-      "to_end_date": "2023-05-06"
+      "status": "no_change",
+      "start_date": "2023-05-06",
+      "end_date": "2023-05-06"
     },
     {
       "event_id": 1173,
       "event_name": "Australian Junior Classic",
       "source": "calendar_row:2023:95",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-06",
-      "to_end_date": "2023-05-06"
+      "status": "no_change",
+      "start_date": "2023-05-06",
+      "end_date": "2023-05-06"
     },
     {
       "event_id": 1015,
       "event_name": "GK Championships",
       "source": "calendar_row:2023:96",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-07",
-      "to_end_date": "2023-05-07"
+      "status": "no_change",
+      "start_date": "2023-05-07",
+      "end_date": "2023-05-07"
     },
     {
       "event_id": 967,
       "event_name": "Russian Junior Championships",
       "source": "calendar_row:2023:97",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-09",
-      "to_end_date": "2023-05-13"
+      "status": "no_change",
+      "start_date": "2023-05-09",
+      "end_date": "2023-05-13"
     },
     {
       "event_id": 1030,
       "event_name": "Australian Championships",
       "source": "calendar_row:2023:98",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-10",
-      "to_end_date": "2023-05-13"
+      "status": "no_change",
+      "start_date": "2023-05-10",
+      "end_date": "2023-05-13"
     },
     {
       "event_id": 984,
       "event_name": "International Junior Team Cup",
       "source": "calendar_row:2023:99",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-12",
-      "to_end_date": "2023-05-13"
+      "status": "no_change",
+      "start_date": "2023-05-12",
+      "end_date": "2023-05-13"
     },
     {
       "event_id": 1120,
       "event_name": "Finnish National Team Test 7",
       "source": "calendar_row:2023:100",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-12",
-      "to_end_date": "2023-05-14"
+      "status": "no_change",
+      "start_date": "2023-05-12",
+      "end_date": "2023-05-14"
     },
     {
       "event_id": 1078,
       "event_name": "Danish Championships",
       "source": "calendar_row:2023:101",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-13",
-      "to_end_date": "2023-05-14"
+      "status": "no_change",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14"
     },
     {
       "event_id": 1059,
       "event_name": "Austrian Championships",
       "source": "calendar_row:2023:102",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-13",
-      "to_end_date": "2023-05-14"
+      "status": "no_change",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14"
     },
     {
       "event_id": 1101,
       "event_name": "Portuguese Championships",
       "source": "calendar_row:2023:103",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-13",
-      "to_end_date": "2023-05-14"
+      "status": "no_change",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14"
     },
     {
       "event_id": 1067,
       "event_name": "Greek Championships",
       "source": "calendar_row:2023:104",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-13",
-      "to_end_date": "2023-05-14"
+      "status": "no_change",
+      "start_date": "2023-05-13",
+      "end_date": "2023-05-14"
     },
     {
       "event_id": 1011,
       "event_name": "Mexican Championships",
       "source": "calendar_row:2023:105",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-14",
-      "to_end_date": "2023-05-18"
+      "status": "no_change",
+      "start_date": "2023-05-14",
+      "end_date": "2023-05-18"
     },
     {
       "event_id": 994,
       "event_name": "Canadian Championships",
       "source": "calendar_row:2023:106",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-19",
-      "to_end_date": "2023-05-21"
+      "status": "no_change",
+      "start_date": "2023-05-19",
+      "end_date": "2023-05-21"
     },
     {
       "event_id": 945,
       "event_name": "Nordic Junior Championships",
       "source": "calendar_row:2023:107",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-19",
-      "to_end_date": "2023-05-21"
+      "status": "no_change",
+      "start_date": "2023-05-19",
+      "end_date": "2023-05-21"
     },
     {
       "event_id": 1108,
       "event_name": "NHK Trophy",
       "source": "calendar_row:2023:108",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-20",
-      "to_end_date": "2023-05-21"
+      "status": "no_change",
+      "start_date": "2023-05-20",
+      "end_date": "2023-05-21"
     },
     {
       "event_id": 966,
       "event_name": "Irish Championships",
       "source": "calendar_row:2023:109",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-20",
-      "to_end_date": "2023-05-21"
+      "status": "no_change",
+      "start_date": "2023-05-20",
+      "end_date": "2023-05-21"
     },
     {
       "event_id": 1162,
       "event_name": "Hungarian Junior Championships",
       "source": "calendar_row:2023:110",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-20",
-      "to_end_date": "2023-05-21"
+      "status": "no_change",
+      "start_date": "2023-05-20",
+      "end_date": "2023-05-21"
     },
     {
       "event_id": 1105,
       "event_name": "Chinese Championships",
       "source": "calendar_row:2023:111",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-21",
-      "to_end_date": "2023-05-28"
+      "status": "no_change",
+      "start_date": "2023-05-21",
+      "end_date": "2023-05-28"
     },
     {
       "event_id": 964,
       "event_name": "Varna Challenge Cup",
       "source": "calendar_row:2023:112",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-25",
-      "to_end_date": "2023-05-28"
+      "status": "no_change",
+      "start_date": "2023-05-25",
+      "end_date": "2023-05-28"
     },
     {
       "event_id": 955,
       "event_name": "African Championships",
       "source": "calendar_row:2023:113",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-26",
-      "to_end_date": "2023-05-27"
+      "status": "no_change",
+      "start_date": "2023-05-26",
+      "end_date": "2023-05-27"
     },
     {
       "event_id": 1005,
       "event_name": "Pan American Championships",
       "source": "calendar_row:2023:115",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-26",
-      "to_end_date": "2023-05-28"
+      "status": "no_change",
+      "start_date": "2023-05-26",
+      "end_date": "2023-05-28"
     },
     {
       "event_id": 1167,
       "event_name": "Finnish National Team Test 8",
       "source": "calendar_row:2023:116",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-26",
-      "to_end_date": "2023-05-28"
+      "status": "no_change",
+      "start_date": "2023-05-26",
+      "end_date": "2023-05-28"
     },
     {
       "event_id": 1055,
       "event_name": "Belgian Championships",
       "source": "calendar_row:2023:117",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-05-27",
-      "to_end_date": "2023-05-29"
+      "status": "no_change",
+      "start_date": "2023-05-27",
+      "end_date": "2023-05-29"
     },
     {
       "event_id": 1025,
       "event_name": "Tel Aviv Challenge Cup",
       "source": "calendar_row:2023:119",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-01",
-      "to_end_date": "2023-06-04"
+      "status": "no_change",
+      "start_date": "2023-06-01",
+      "end_date": "2023-06-04"
     },
     {
       "event_id": 1077,
       "event_name": "Singapore Open",
       "source": "calendar_row:2023:120",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-02",
-      "to_end_date": "2023-06-04"
+      "status": "no_change",
+      "start_date": "2023-06-02",
+      "end_date": "2023-06-04"
     },
     {
       "event_id": 988,
       "event_name": "Czech Championships",
       "source": "calendar_row:2023:121",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-02",
-      "to_end_date": "2023-06-04"
+      "status": "no_change",
+      "start_date": "2023-06-02",
+      "end_date": "2023-06-04"
     },
     {
       "event_id": 1121,
       "event_name": "Parkettes National Qualifier",
       "source": "calendar_row:2023:122",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-02",
-      "to_end_date": "2023-06-04"
+      "status": "no_change",
+      "start_date": "2023-06-02",
+      "end_date": "2023-06-04"
     },
     {
       "event_id": 1159,
       "event_name": "German EYOF Trials",
       "source": "calendar_row:2023:123",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-03",
-      "to_end_date": "2023-06-03"
+      "status": "no_change",
+      "start_date": "2023-06-03",
+      "end_date": "2023-06-03"
     },
     {
       "event_id": 1014,
       "event_name": "Norwegian Junior Championships",
       "source": "calendar_row:2023:124",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-03",
-      "to_end_date": "2023-06-04"
+      "status": "no_change",
+      "start_date": "2023-06-03",
+      "end_date": "2023-06-04"
     },
     {
       "event_id": 993,
       "event_name": "Osijek Challenge Cup",
       "source": "calendar_row:2023:126",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-08",
-      "to_end_date": "2023-06-11"
+      "status": "no_change",
+      "start_date": "2023-06-08",
+      "end_date": "2023-06-11"
     },
     {
       "event_id": 1038,
       "event_name": "All-Japan Event Championships",
       "source": "calendar_row:2023:127",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-10",
-      "to_end_date": "2023-06-11"
+      "status": "no_change",
+      "start_date": "2023-06-10",
+      "end_date": "2023-06-11"
     },
     {
       "event_id": 1043,
       "event_name": "Swiss Junior Championships",
       "source": "calendar_row:2023:128",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-10",
-      "to_end_date": "2023-06-11"
+      "status": "no_change",
+      "start_date": "2023-06-10",
+      "end_date": "2023-06-11"
     },
     {
       "event_id": 962,
       "event_name": "Asian Championships",
       "source": "calendar_row:2023:129",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-10",
-      "to_end_date": "2023-06-18"
+      "status": "no_change",
+      "start_date": "2023-06-10",
+      "end_date": "2023-06-18"
     },
     {
       "event_id": 980,
       "event_name": "French Championships",
       "source": "calendar_row:2023:130",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-15",
-      "to_end_date": "2023-06-17"
+      "status": "no_change",
+      "start_date": "2023-06-15",
+      "end_date": "2023-06-17"
     },
     {
       "event_id": 1147,
       "event_name": "Rising Stars Trophy",
       "source": "calendar_row:2023:131",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-16",
-      "to_end_date": "2023-06-17"
+      "status": "no_change",
+      "start_date": "2023-06-16",
+      "end_date": "2023-06-17"
     },
     {
       "event_id": 1128,
       "event_name": "Spanish League Final",
       "source": "calendar_row:2023:132",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-16",
-      "to_end_date": "2023-06-18"
+      "status": "no_change",
+      "start_date": "2023-06-16",
+      "end_date": "2023-06-18"
     },
     {
       "event_id": 1047,
       "event_name": "Norwegian Championships",
       "source": "calendar_row:2023:133",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-17",
-      "to_end_date": "2023-06-18"
+      "status": "no_change",
+      "start_date": "2023-06-17",
+      "end_date": "2023-06-18"
     },
     {
       "event_id": 1061,
       "event_name": "German Junior Championships",
       "source": "calendar_row:2023:134",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-17",
-      "to_end_date": "2023-06-18"
+      "status": "no_change",
+      "start_date": "2023-06-17",
+      "end_date": "2023-06-18"
     },
     {
       "event_id": 1044,
       "event_name": "Salamunov Memorial",
       "source": "calendar_row:2023:135",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-21",
-      "to_end_date": "2023-06-25"
+      "status": "no_change",
+      "start_date": "2023-06-21",
+      "end_date": "2023-06-25"
     },
     {
       "event_id": 951,
       "event_name": "Dutch Championships",
       "source": "calendar_row:2023:136",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-24",
-      "to_end_date": "2023-06-25"
+      "status": "no_change",
+      "start_date": "2023-06-24",
+      "end_date": "2023-06-25"
     },
     {
       "event_id": 1003,
       "event_name": "Central American & Caribbean Games",
       "source": "calendar_row:2023:137",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-24",
-      "to_end_date": "2023-06-28"
+      "status": "no_change",
+      "start_date": "2023-06-24",
+      "end_date": "2023-06-28"
     },
     {
       "event_id": 978,
       "event_name": "Swedish Championships",
       "source": "calendar_row:2023:138",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-06-28",
-      "to_end_date": "2023-06-29"
+      "status": "no_change",
+      "start_date": "2023-06-28",
+      "end_date": "2023-06-29"
     },
     {
       "event_id": 1158,
       "event_name": "Epernay Friendly",
       "source": "calendar_row:2023:140",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-01",
-      "to_end_date": "2023-07-01"
+      "status": "no_change",
+      "start_date": "2023-07-01",
+      "end_date": "2023-07-01"
     },
     {
       "event_id": 1046,
       "event_name": "Bulgarian Championships",
       "source": "calendar_row:2023:142",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-01",
-      "to_end_date": "2023-07-02"
+      "status": "no_change",
+      "start_date": "2023-07-01",
+      "end_date": "2023-07-02"
     },
     {
       "event_id": 1095,
       "event_name": "New Zealand Championships",
       "source": "calendar_row:2023:143",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-05",
-      "to_end_date": "2023-07-08"
+      "status": "no_change",
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-08"
     },
     {
       "event_id": 953,
       "event_name": "German Championships",
       "source": "calendar_row:2023:144",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-06",
-      "to_end_date": "2023-07-09"
+      "status": "no_change",
+      "start_date": "2023-07-06",
+      "end_date": "2023-07-09"
     },
     {
       "event_id": 950,
       "event_name": "Dutch EYOF Trials",
       "source": "calendar_row:2023:145",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-07",
-      "to_end_date": "2023-07-08"
+      "status": "no_change",
+      "start_date": "2023-07-07",
+      "end_date": "2023-07-08"
     },
     {
       "event_id": 1112,
       "event_name": "Hopes Classic",
       "source": "calendar_row:2023:146",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-08",
-      "to_end_date": "2023-07-09"
+      "status": "no_change",
+      "start_date": "2023-07-08",
+      "end_date": "2023-07-09"
     },
     {
       "event_id": 1137,
       "event_name": "American Classic",
       "source": "calendar_row:2023:147",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-08",
-      "to_end_date": "2023-07-09"
+      "status": "no_change",
+      "start_date": "2023-07-08",
+      "end_date": "2023-07-09"
     },
     {
       "event_id": 1083,
       "event_name": "2nd Colombian Championships",
       "source": "calendar_row:2023:149",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-13",
-      "to_end_date": "2023-07-16"
+      "status": "no_change",
+      "start_date": "2023-07-13",
+      "end_date": "2023-07-16"
     },
     {
       "event_id": 1009,
       "event_name": "Spanish Championships",
       "source": "calendar_row:2023:150",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-19",
-      "to_end_date": "2023-07-23"
+      "status": "no_change",
+      "start_date": "2023-07-19",
+      "end_date": "2023-07-23"
     },
     {
       "event_id": 952,
       "event_name": "European Youth Olympic Festival",
       "source": "calendar_row:2023:151",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-25",
-      "to_end_date": "2023-07-29"
+      "status": "no_change",
+      "start_date": "2023-07-25",
+      "end_date": "2023-07-29"
     },
     {
       "event_id": 1052,
       "event_name": "Minsk Friendly",
       "source": "calendar_row:2023:152",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-07-27",
-      "to_end_date": "2023-07-27"
+      "status": "no_change",
+      "start_date": "2023-07-27",
+      "end_date": "2023-07-27"
     },
     {
       "event_id": 996,
       "event_name": "Summer Universiade",
       "source": "calendar_row:2023:153",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-01",
-      "to_end_date": "2023-08-05"
+      "status": "no_change",
+      "start_date": "2023-08-01",
+      "end_date": "2023-08-05"
     },
     {
       "event_id": 1113,
       "event_name": "Hopes Championships",
       "source": "calendar_row:2023:154",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-04",
-      "to_end_date": "2023-08-04"
+      "status": "no_change",
+      "start_date": "2023-08-04",
+      "end_date": "2023-08-04"
     },
     {
       "event_id": 1013,
       "event_name": "U.S. Classic",
       "source": "calendar_row:2023:155",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-04",
-      "to_end_date": "2023-08-06"
+      "status": "no_change",
+      "start_date": "2023-08-04",
+      "end_date": "2023-08-06"
     },
     {
       "event_id": 1039,
       "event_name": "All-Japan Junior Championships",
       "source": "calendar_row:2023:158",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-12",
-      "to_end_date": "2023-08-17"
+      "status": "no_change",
+      "start_date": "2023-08-12",
+      "end_date": "2023-08-17"
     },
     {
       "event_id": 1087,
       "event_name": "Brazilian Championships",
       "source": "calendar_row:2023:159",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-14",
-      "to_end_date": "2023-08-20"
+      "status": "no_change",
+      "start_date": "2023-08-14",
+      "end_date": "2023-08-20"
     },
     {
       "event_id": 954,
       "event_name": "Pharaoh's Cup",
       "source": "calendar_row:2023:162",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-18",
-      "to_end_date": "2023-08-20"
+      "status": "no_change",
+      "start_date": "2023-08-18",
+      "end_date": "2023-08-20"
     },
     {
       "event_id": 1032,
       "event_name": "All-Japan Student Championships",
       "source": "calendar_row:2023:163",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-19",
-      "to_end_date": "2023-08-22"
+      "status": "no_change",
+      "start_date": "2023-08-19",
+      "end_date": "2023-08-22"
     },
     {
       "event_id": 1110,
       "event_name": "Chinese Worlds Trials",
       "source": "calendar_row:2023:164",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-20",
-      "to_end_date": "2023-08-22"
+      "status": "no_change",
+      "start_date": "2023-08-20",
+      "end_date": "2023-08-22"
     },
     {
       "event_id": 986,
       "event_name": "U.S. Championships",
       "source": "calendar_row:2023:165",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-24",
-      "to_end_date": "2023-08-27"
+      "status": "no_change",
+      "start_date": "2023-08-24",
+      "end_date": "2023-08-27"
     },
     {
       "event_id": 1170,
       "event_name": "Canadian Worlds Trials",
       "source": "calendar_row:2023:166",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-25",
-      "to_end_date": "2023-08-26"
+      "status": "no_change",
+      "start_date": "2023-08-25",
+      "end_date": "2023-08-26"
     },
     {
       "event_id": 1000,
       "event_name": "Turkish Championships",
       "source": "calendar_row:2023:167",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-25",
-      "to_end_date": "2023-08-27"
+      "status": "no_change",
+      "start_date": "2023-08-25",
+      "end_date": "2023-08-27"
     },
     {
       "event_id": 992,
       "event_name": "British Worlds Trials",
       "source": "calendar_row:2023:168",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-26",
-      "to_end_date": "2023-08-26"
+      "status": "no_change",
+      "start_date": "2023-08-26",
+      "end_date": "2023-08-26"
     },
     {
       "event_id": 1062,
       "event_name": "German Worlds Trials 1",
       "source": "calendar_row:2023:169",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-26",
-      "to_end_date": "2023-08-26"
+      "status": "no_change",
+      "start_date": "2023-08-26",
+      "end_date": "2023-08-26"
     },
     {
       "event_id": 1139,
       "event_name": "Linz Friendly",
       "source": "calendar_row:2023:170",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-26",
-      "to_end_date": "2023-08-26"
+      "status": "no_change",
+      "start_date": "2023-08-26",
+      "end_date": "2023-08-26"
     },
     {
       "event_id": 1104,
       "event_name": "South American Junior Championships",
       "source": "calendar_row:2023:172",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-26",
-      "to_end_date": "2023-09-02"
+      "status": "no_change",
+      "start_date": "2023-08-26",
+      "end_date": "2023-09-02"
     },
     {
       "event_id": 1050,
       "event_name": "Russian Cup",
       "source": "calendar_row:2023:175",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-08-30",
-      "to_end_date": "2023-09-03"
+      "status": "no_change",
+      "start_date": "2023-08-30",
+      "end_date": "2023-09-03"
     },
     {
       "event_id": 963,
       "event_name": "Mersin Challenge Cup",
       "source": "calendar_row:2023:177",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-01",
-      "to_end_date": "2023-09-03"
+      "status": "no_change",
+      "start_date": "2023-09-01",
+      "end_date": "2023-09-03"
     },
     {
       "event_id": 1007,
       "event_name": "RomGym Trophy",
       "source": "calendar_row:2023:178",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-01",
-      "to_end_date": "2023-09-03"
+      "status": "no_change",
+      "start_date": "2023-09-01",
+      "end_date": "2023-09-03"
     },
     {
       "event_id": 1068,
       "event_name": "Romanian Championships",
       "source": "calendar_row:2023:179",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-01",
-      "to_end_date": "2023-09-03"
+      "status": "no_change",
+      "start_date": "2023-09-01",
+      "end_date": "2023-09-03"
     },
     {
       "event_id": 1175,
       "event_name": "Dutch Worlds Trials",
       "source": "calendar_row:2023:180",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-02",
-      "to_end_date": "2023-09-02"
+      "status": "no_change",
+      "start_date": "2023-09-02",
+      "end_date": "2023-09-02"
     },
     {
       "event_id": 1097,
       "event_name": "Swiss Championships",
       "source": "calendar_row:2023:181",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-02",
-      "to_end_date": "2023-09-03"
+      "status": "no_change",
+      "start_date": "2023-09-02",
+      "end_date": "2023-09-03"
     },
     {
       "event_id": 1022,
       "event_name": "Italian Championships",
       "source": "calendar_row:2023:182",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-06",
-      "to_end_date": "2023-09-10"
+      "status": "no_change",
+      "start_date": "2023-09-06",
+      "end_date": "2023-09-10"
     },
     {
       "event_id": 1019,
       "event_name": "South American Championships",
       "source": "calendar_row:2023:184",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-08",
-      "to_end_date": "2023-09-10"
+      "status": "no_change",
+      "start_date": "2023-09-08",
+      "end_date": "2023-09-10"
     },
     {
       "event_id": 1071,
       "event_name": "Szombathely Challenge Cup",
       "source": "calendar_row:2023:185",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-08",
-      "to_end_date": "2023-09-10"
+      "status": "no_change",
+      "start_date": "2023-09-08",
+      "end_date": "2023-09-10"
     },
     {
       "event_id": 1074,
       "event_name": "Unni & Haralds Trophy",
       "source": "calendar_row:2023:186",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-08",
-      "to_end_date": "2023-09-10"
+      "status": "no_change",
+      "start_date": "2023-09-08",
+      "end_date": "2023-09-10"
     },
     {
       "event_id": 1157,
       "event_name": "Heidelberg Friendly",
       "source": "calendar_row:2023:187",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-09",
-      "to_end_date": "2023-09-09"
+      "status": "no_change",
+      "start_date": "2023-09-09",
+      "end_date": "2023-09-09"
     },
     {
       "event_id": 1036,
       "event_name": "All-Japan Senior Championships",
       "source": "calendar_row:2023:188",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-09",
-      "to_end_date": "2023-09-09"
+      "status": "no_change",
+      "start_date": "2023-09-09",
+      "end_date": "2023-09-09"
     },
     {
       "event_id": 1037,
       "event_name": "All-Japan Super Specialist Championships",
       "source": "calendar_row:2023:189",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-10",
-      "to_end_date": "2023-09-10"
+      "status": "no_change",
+      "start_date": "2023-09-10",
+      "end_date": "2023-09-10"
     },
     {
       "event_id": 1094,
       "event_name": "Dutch Worlds Trials 2",
       "source": "calendar_row:2023:191",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-16",
-      "to_end_date": "2023-09-16"
+      "status": "no_change",
+      "start_date": "2023-09-16",
+      "end_date": "2023-09-16"
     },
     {
       "event_id": 1082,
       "event_name": "Magglingen Friendly 2",
       "source": "calendar_row:2023:192",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-16",
-      "to_end_date": "2023-09-16"
+      "status": "no_change",
+      "start_date": "2023-09-16",
+      "end_date": "2023-09-16"
     },
     {
       "event_id": 959,
       "event_name": "Paris Challenge Cup",
       "source": "calendar_row:2023:193",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-16",
-      "to_end_date": "2023-09-17"
+      "status": "no_change",
+      "start_date": "2023-09-16",
+      "end_date": "2023-09-17"
     },
     {
       "event_id": 1091,
       "event_name": "Hungarian Championships",
       "source": "calendar_row:2023:194",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-16",
-      "to_end_date": "2023-09-17"
+      "status": "no_change",
+      "start_date": "2023-09-16",
+      "end_date": "2023-09-17"
     },
     {
       "event_id": 1134,
       "event_name": "U.S. Worlds Trials",
       "source": "calendar_row:2023:195",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-19",
-      "to_end_date": "2023-09-20"
+      "status": "no_change",
+      "start_date": "2023-09-19",
+      "end_date": "2023-09-20"
     },
     {
       "event_id": 1021,
       "event_name": "Balkan Championships",
       "source": "calendar_row:2023:196",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-21",
-      "to_end_date": "2023-09-23"
+      "status": "no_change",
+      "start_date": "2023-09-21",
+      "end_date": "2023-09-23"
     },
     {
       "event_id": 970,
       "event_name": "Asian Games",
       "source": "calendar_row:2023:197",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-24",
-      "to_end_date": "2023-09-29"
+      "status": "no_change",
+      "start_date": "2023-09-24",
+      "end_date": "2023-09-29"
     },
     {
       "event_id": 1131,
       "event_name": "Australian Classic",
       "source": "calendar_row:2023:198",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-24",
-      "to_end_date": "2023-10-01"
+      "status": "no_change",
+      "start_date": "2023-09-24",
+      "end_date": "2023-10-01"
     },
     {
       "event_id": 976,
       "event_name": "Wohnen Juniors Trophy",
       "source": "calendar_row:2023:199",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-29",
-      "to_end_date": "2023-09-30"
+      "status": "no_change",
+      "start_date": "2023-09-29",
+      "end_date": "2023-09-30"
     },
     {
       "event_id": 960,
       "event_name": "World Championships",
       "source": "calendar_row:2023:201",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-09-30",
-      "to_end_date": "2023-10-08"
+      "status": "no_change",
+      "start_date": "2023-09-30",
+      "end_date": "2023-10-08"
     },
     {
       "event_id": 1163,
       "event_name": "2nd Hungarian Junior Championships",
       "source": "calendar_row:2023:203",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-07",
-      "to_end_date": "2023-10-07"
+      "status": "no_change",
+      "start_date": "2023-10-07",
+      "end_date": "2023-10-07"
     },
     {
       "event_id": 1125,
       "event_name": "Leverkusen Cup",
       "source": "calendar_row:2023:206",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-14",
-      "to_end_date": "2023-10-14"
+      "status": "no_change",
+      "start_date": "2023-10-14",
+      "end_date": "2023-10-14"
     },
     {
       "event_id": 1111,
       "event_name": "British Team Championships",
       "source": "calendar_row:2023:208",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-14",
-      "to_end_date": "2023-10-15"
+      "status": "no_change",
+      "start_date": "2023-10-14",
+      "end_date": "2023-10-15"
     },
     {
       "event_id": 1017,
       "event_name": "Icelandic Fall Championships",
       "source": "calendar_row:2023:209",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-14",
-      "to_end_date": "2023-10-15"
+      "status": "no_change",
+      "start_date": "2023-10-14",
+      "end_date": "2023-10-15"
     },
     {
       "event_id": 1004,
       "event_name": "Pan American Games",
       "source": "calendar_row:2023:210",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-20",
-      "to_end_date": "2023-11-05"
+      "status": "no_change",
+      "start_date": "2023-10-20",
+      "end_date": "2023-11-05"
     },
     {
       "event_id": 1072,
       "event_name": "Mediterranean Championships",
       "source": "calendar_row:2023:211",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-20",
-      "to_end_date": "2023-10-22"
+      "status": "no_change",
+      "start_date": "2023-10-20",
+      "end_date": "2023-10-22"
     },
     {
       "event_id": 1154,
       "event_name": "German Junior Cup",
       "source": "calendar_row:2023:212",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-20",
-      "to_end_date": "2023-10-22"
+      "status": "no_change",
+      "start_date": "2023-10-20",
+      "end_date": "2023-10-22"
     },
     {
       "event_id": 1123,
       "event_name": "Rushmoor Rose Bowl",
       "source": "calendar_row:2023:214",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-21",
-      "to_end_date": "2023-10-22"
+      "status": "no_change",
+      "start_date": "2023-10-21",
+      "end_date": "2023-10-22"
     },
     {
       "event_id": 1106,
       "event_name": "Chinese Individual Championships",
       "source": "calendar_row:2023:216",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-25",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-25",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 1160,
       "event_name": "French National Team Review",
       "source": "calendar_row:2023:217",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-27",
-      "to_end_date": "2023-10-28"
+      "status": "no_change",
+      "start_date": "2023-10-27",
+      "end_date": "2023-10-28"
     },
     {
       "event_id": 1090,
       "event_name": "Ifact Norges Cup 3",
       "source": "calendar_row:2023:218",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-27",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-27",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 1146,
       "event_name": "Romanian Junior Championships",
       "source": "calendar_row:2023:220",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-28",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-28",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 1060,
       "event_name": "5th Bundesliga",
       "source": "calendar_row:2023:221",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-28",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-28",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 977,
       "event_name": "Swiss Team Championships",
       "source": "calendar_row:2023:222",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-28",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-28",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 1149,
       "event_name": "Norwegian FIG Meet 3",
       "source": "calendar_row:2023:223",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-28",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-28",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 968,
       "event_name": "Wase Gymcup",
       "source": "calendar_row:2023:224",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-10-28",
-      "to_end_date": "2023-10-29"
+      "status": "no_change",
+      "start_date": "2023-10-28",
+      "end_date": "2023-10-29"
     },
     {
       "event_id": 1001,
       "event_name": "Arthur Gander Memorial",
       "source": "calendar_row:2023:225",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-01",
-      "to_end_date": "2023-11-01"
+      "status": "no_change",
+      "start_date": "2023-11-01",
+      "end_date": "2023-11-01"
     },
     {
       "event_id": 1168,
       "event_name": "Swiss Cup Juniors",
       "source": "calendar_row:2023:226",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-03",
-      "to_end_date": "2023-11-03"
+      "status": "no_change",
+      "start_date": "2023-11-03",
+      "end_date": "2023-11-03"
     },
     {
       "event_id": 939,
       "event_name": "M\u00e4lar Cup",
       "source": "calendar_row:2023:227",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-03",
-      "to_end_date": "2023-11-05"
+      "status": "no_change",
+      "start_date": "2023-11-03",
+      "end_date": "2023-11-05"
     },
     {
       "event_id": 1056,
       "event_name": "Andrea Massucchi Trophy",
       "source": "calendar_row:2023:229",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-04",
-      "to_end_date": "2023-11-04"
+      "status": "no_change",
+      "start_date": "2023-11-04",
+      "end_date": "2023-11-04"
     },
     {
       "event_id": 1092,
       "event_name": "Hungarian Masters Championships",
       "source": "calendar_row:2023:230",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-04",
-      "to_end_date": "2023-11-05"
+      "status": "no_change",
+      "start_date": "2023-11-04",
+      "end_date": "2023-11-05"
     },
     {
       "event_id": 1002,
       "event_name": "Swiss Cup",
       "source": "calendar_row:2023:232",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-05",
-      "to_end_date": "2023-11-05"
+      "status": "no_change",
+      "start_date": "2023-11-05",
+      "end_date": "2023-11-05"
     },
     {
       "event_id": 1161,
       "event_name": "Argentinian Championships",
       "source": "calendar_row:2023:233",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-06",
-      "to_end_date": "2023-11-12"
+      "status": "no_change",
+      "start_date": "2023-11-06",
+      "end_date": "2023-11-12"
     },
     {
       "event_id": 1088,
       "event_name": "Brazilian Junior Championships",
       "source": "calendar_row:2023:235",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-08",
-      "to_end_date": "2023-11-12"
+      "status": "no_change",
+      "start_date": "2023-11-08",
+      "end_date": "2023-11-12"
     },
     {
       "event_id": 965,
       "event_name": "Horizon Cup",
       "source": "calendar_row:2023:236",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-10",
-      "to_end_date": "2023-11-12"
+      "status": "no_change",
+      "start_date": "2023-11-10",
+      "end_date": "2023-11-12"
     },
     {
       "event_id": 1024,
       "event_name": "6th Bundesliga",
       "source": "calendar_row:2023:238",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-11",
-      "to_end_date": "2023-11-11"
+      "status": "no_change",
+      "start_date": "2023-11-11",
+      "end_date": "2023-11-11"
     },
     {
       "event_id": 1116,
       "event_name": "Gymnova Cup",
       "source": "calendar_row:2023:240",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-11",
-      "to_end_date": "2023-11-12"
+      "status": "no_change",
+      "start_date": "2023-11-11",
+      "end_date": "2023-11-12"
     },
     {
       "event_id": 940,
       "event_name": "Austrian Future Cup",
       "source": "calendar_row:2023:241",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-17",
-      "to_end_date": "2023-11-18"
+      "status": "no_change",
+      "start_date": "2023-11-17",
+      "end_date": "2023-11-18"
     },
     {
       "event_id": 1124,
       "event_name": "Italian Gold Championships Qualifier",
       "source": "calendar_row:2023:242",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-17",
-      "to_end_date": "2023-11-19"
+      "status": "no_change",
+      "start_date": "2023-11-17",
+      "end_date": "2023-11-19"
     },
     {
       "event_id": 1023,
       "event_name": "7th Bundesliga",
       "source": "calendar_row:2023:244",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-18",
-      "to_end_date": "2023-11-18"
+      "status": "no_change",
+      "start_date": "2023-11-18",
+      "end_date": "2023-11-18"
     },
     {
       "event_id": 1118,
       "event_name": "Tournoi International",
       "source": "calendar_row:2023:247",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-18",
-      "to_end_date": "2023-11-19"
+      "status": "no_change",
+      "start_date": "2023-11-18",
+      "end_date": "2023-11-19"
     },
     {
       "event_id": 1053,
       "event_name": "Kazan Friendly",
       "source": "calendar_row:2023:248",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-22",
-      "to_end_date": "2023-11-25"
+      "status": "no_change",
+      "start_date": "2023-11-22",
+      "end_date": "2023-11-25"
     },
     {
       "event_id": 1075,
       "event_name": "Olympic Hopes Cup",
       "source": "calendar_row:2023:249",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-24",
-      "to_end_date": "2023-11-26"
+      "status": "no_change",
+      "start_date": "2023-11-24",
+      "end_date": "2023-11-26"
     },
     {
       "event_id": 1102,
       "event_name": "Sokol Grand Prix",
       "source": "calendar_row:2023:250",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-25",
-      "to_end_date": "2023-11-25"
+      "status": "no_change",
+      "start_date": "2023-11-25",
+      "end_date": "2023-11-25"
     },
     {
       "event_id": 946,
       "event_name": "Northern European Championships",
       "source": "calendar_row:2023:251",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-24",
-      "to_end_date": "2023-11-26"
+      "status": "no_change",
+      "start_date": "2023-11-24",
+      "end_date": "2023-11-26"
     },
     {
       "event_id": 1080,
       "event_name": "Lenzburg Junior Friendly",
       "source": "calendar_row:2023:253",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-25",
-      "to_end_date": "2023-11-25"
+      "status": "no_change",
+      "start_date": "2023-11-25",
+      "end_date": "2023-11-25"
     },
     {
       "event_id": 1122,
       "event_name": "Top Gym Tournament",
       "source": "calendar_row:2023:254",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-25",
-      "to_end_date": "2023-11-26"
+      "status": "no_change",
+      "start_date": "2023-11-25",
+      "end_date": "2023-11-26"
     },
     {
       "event_id": 1033,
       "event_name": "All-Japan Team Championships",
       "source": "calendar_row:2023:255",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-26",
-      "to_end_date": "2023-11-26"
+      "status": "no_change",
+      "start_date": "2023-11-26",
+      "end_date": "2023-11-26"
     },
     {
       "event_id": 1103,
       "event_name": "Croatian Championships",
       "source": "calendar_row:2023:256",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-11-28",
-      "to_end_date": "2023-11-29"
+      "status": "no_change",
+      "start_date": "2023-11-28",
+      "end_date": "2023-11-29"
     },
     {
       "event_id": 1018,
       "event_name": "European Online Test Event",
       "source": "calendar_row:2023:257",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-01",
-      "to_end_date": "2023-12-01"
+      "status": "no_change",
+      "start_date": "2023-12-01",
+      "end_date": "2023-12-01"
     },
     {
       "event_id": 1148,
       "event_name": "Italian Gold Championships",
       "source": "calendar_row:2023:258",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-01",
-      "to_end_date": "2023-12-03"
+      "status": "no_change",
+      "start_date": "2023-12-01",
+      "end_date": "2023-12-03"
     },
     {
       "event_id": 1027,
       "event_name": "Bundesliga Finals",
       "source": "calendar_row:2023:259",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-02",
-      "to_end_date": "2023-12-02"
+      "status": "no_change",
+      "start_date": "2023-12-02",
+      "end_date": "2023-12-02"
     },
     {
       "event_id": 1171,
       "event_name": "Michel Wanten Cup",
       "source": "calendar_row:2023:262",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-02",
-      "to_end_date": "2023-12-03"
+      "status": "no_change",
+      "start_date": "2023-12-02",
+      "end_date": "2023-12-03"
     },
     {
       "event_id": 1109,
       "event_name": "Philippine National Games",
       "source": "calendar_row:2023:265",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-17",
-      "to_end_date": "2023-12-22"
+      "status": "no_change",
+      "start_date": "2023-12-17",
+      "end_date": "2023-12-22"
     },
     {
       "event_id": 937,
       "event_name": "Indian Junior Championships",
       "source": "calendar_row:2023:266",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2023-12-28",
-      "to_end_date": "2023-12-30"
+      "status": "no_change",
+      "start_date": "2023-12-28",
+      "end_date": "2023-12-30"
     }
   ],
   "calendar_entries": [],
@@ -2246,7 +1824,7 @@
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "173",
-      "calendar_event": "Finnish National Team Test 9 https://live.sporteventsystems.se/Score/WebScore/2700",
+      "calendar_event": "Finnish National Team Test 9",
       "reason": "missing_choice"
     },
     {
@@ -2258,55 +1836,55 @@
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "176",
-      "calendar_event": "Finnish Men's National Team Test 5 - https://live.sporteventsystems.se/Score/WebScore/2709",
+      "calendar_event": "Finnish Men's National Team Test 5",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "183",
-      "calendar_event": "Finnish Men's National Team Test 6 https://live.sporteventsystems.se/Score/WebScore/2710",
+      "calendar_event": "Finnish Men's National Team Test 6",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "190",
-      "calendar_event": "Finnish National Team Test 10 https://live.sporteventsystems.se/Score/WebScore/2718?f=w6255",
+      "calendar_event": "Finnish National Team Test 10",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "200",
-      "calendar_event": "Finnish National Team Test 11 https://live.sporteventsystems.se/Score/WebScore/2734?f=w6370",
+      "calendar_event": "Finnish National Team Test 11",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "202",
-      "calendar_event": "Finnish Men's National Team Test 7 https://live.sporteventsystems.se/Score/WebScore/2745",
+      "calendar_event": "Finnish Men's National Team Test 7",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "204",
-      "calendar_event": "Finnish Men's National Team Test 8 https://live.sporteventsystems.se/Score/WebScore/2755",
+      "calendar_event": "Finnish Men's National Team Test 8",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "205",
-      "calendar_event": "Finnish National Team Test 12 https://live.sporteventsystems.se/Score/WebScore/2759",
+      "calendar_event": "Finnish National Team Test 12",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "215",
-      "calendar_event": "Finnish National Team Test 13 https://live.sporteventsystems.se/Score/WebScore/2770?f=w6626",
+      "calendar_event": "Finnish National Team Test 13",
       "reason": "missing_choice"
     },
     {
       "source": "docs/import_reports/calendar_2023_event_match_review_slim.csv",
       "calendar_row": "219",
-      "calendar_event": "Finnish National Team Test 14 https://live.sporteventsystems.se/Score/WebScore/2753?f=w6641",
+      "calendar_event": "Finnish National Team Test 14",
       "reason": "missing_choice"
     },
     {

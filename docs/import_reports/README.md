@@ -429,6 +429,8 @@ File operativi da compilare:
 
 La review 2023 usa gli stessi valori operativi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
 
+Pulizia sorgente 2023: dopo il checkpoint iniziale, il file `Calendar.xlsx` e stato corretto per rimuovere URL rimasti nel testo visibile di alcune righe `Finnish National Team Test`. Solo il foglio 2023 presenta differenze rispetto alla versione precedente; i conteggi di matching sono rimasti invariati e i CSV 2023 sono stati rigenerati con nomi gara puliti.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

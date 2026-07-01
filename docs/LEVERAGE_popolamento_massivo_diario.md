@@ -3456,3 +3456,7 @@ File preparati per la review admin 2023:
 - `calendar_2023_source_conflicts_slim.csv`
 
 Nota operativa: nella review 2023 compaiono righe come `Top 12 Series 1 (2024 season)`, `Top 12 Series 2 (2024 season)`, `Top 12 Series 3 (2024 season)` e `1st Spanish League (2024 season)`. La scelta corretta deve essere verificata dall'admin come per i precedenti casi di stagione a cavallo d'anno: se la riga Calendar e la scheda Event rappresentano la stessa competizione, si collega; se invece non esiste un collegamento supportato dai dati sorgente, si usa `calendar_only` o `db_only` secondo il lato mancante.
+
+Pulizia sorgente Calendar 2023:
+
+Dopo il primo checkpoint 2023, e stata corretta la sorgente `Calendar.xlsx` per rimuovere URL rimasti dentro il testo visibile di alcune gare. La correzione ha riguardato solo il foglio 2023 e non ha modificato date, numero di righe o altri fogli. Le righe ripulite sono legate ai `Finnish National Team Test` / `Finnish Men's National Team Test`. I report 2023 sono stati rigenerati dopo la pulizia: i conteggi di matching sono rimasti invariati, ma i nomi gara nei CSV operativi risultano ora leggibili e privi di URL.
