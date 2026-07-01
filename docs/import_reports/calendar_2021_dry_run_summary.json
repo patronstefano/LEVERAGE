@@ -11,14 +11,14 @@
   "direct_skipped_conflict_rows": 18,
   "direct_skipped_multiple_match_rows": 0,
   "review_match_rows": 0,
-  "resolved_source_conflicts": 0,
+  "resolved_source_conflicts": 9,
   "calendar_only_rows": 0,
-  "calendar_entries_created": 0,
+  "calendar_entries_created": 18,
   "calendar_entries_updated": 0,
   "calendar_entries_no_change": 0,
-  "updated_events": 163,
-  "no_change_events": 0,
-  "unresolved_review_items": 38,
+  "updated_events": 0,
+  "no_change_events": 163,
+  "unresolved_review_items": 29,
   "invalid_decisions": 0,
   "skipped": 0,
   "updates": [
@@ -26,1634 +26,1507 @@
       "event_id": 575,
       "event_name": "Beach Blast Invitational",
       "source": "calendar_row:2021:2",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-01-14",
-      "to_end_date": "2021-01-16"
+      "status": "no_change",
+      "start_date": "2021-01-14",
+      "end_date": "2021-01-16"
     },
     {
       "event_id": 646,
       "event_name": "Biles National Qualifier",
       "source": "calendar_row:2021:3",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-01-21",
-      "to_end_date": "2021-01-24"
+      "status": "no_change",
+      "start_date": "2021-01-21",
+      "end_date": "2021-01-24"
     },
     {
       "event_id": 655,
       "event_name": "Buckeye National Qualifier",
       "source": "calendar_row:2021:4",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-05",
-      "to_end_date": "2021-02-07"
+      "status": "no_change",
+      "start_date": "2021-02-05",
+      "end_date": "2021-02-07"
     },
     {
       "event_id": 662,
       "event_name": "WOGA Classic",
       "source": "calendar_row:2021:5",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-06",
-      "to_end_date": "2021-02-06"
+      "status": "no_change",
+      "start_date": "2021-02-06",
+      "end_date": "2021-02-06"
     },
     {
       "event_id": 625,
       "event_name": "Liukin Invitational",
       "source": "calendar_row:2021:6",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-06",
-      "to_end_date": "2021-02-06"
+      "status": "no_change",
+      "start_date": "2021-02-06",
+      "end_date": "2021-02-06"
     },
     {
       "event_id": 714,
       "event_name": "Singapore Virtual Competition",
       "source": "calendar_row:2021:7",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-07",
-      "to_end_date": "2021-02-07"
+      "status": "no_change",
+      "start_date": "2021-02-07",
+      "end_date": "2021-02-07"
     },
     {
       "event_id": 660,
       "event_name": "Russian Federal Championships",
       "source": "calendar_row:2021:8",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-08",
-      "to_end_date": "2021-02-12"
+      "status": "no_change",
+      "start_date": "2021-02-08",
+      "end_date": "2021-02-12"
     },
     {
       "event_id": 659,
       "event_name": "Brestyan's National Qualifier",
       "source": "calendar_row:2021:9",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-11",
-      "to_end_date": "2021-02-14"
+      "status": "no_change",
+      "start_date": "2021-02-11",
+      "end_date": "2021-02-14"
     },
     {
       "event_id": 690,
       "event_name": "Israeli Winter Cup",
       "source": "calendar_row:2021:10",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-12",
-      "to_end_date": "2021-02-13"
+      "status": "no_change",
+      "start_date": "2021-02-12",
+      "end_date": "2021-02-13"
     },
     {
       "event_id": 562,
       "event_name": "Winter Cup",
       "source": "calendar_row:2021:13",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-26",
-      "to_end_date": "2021-02-28"
+      "status": "no_change",
+      "start_date": "2021-02-26",
+      "end_date": "2021-02-28"
     },
     {
       "event_id": 583,
       "event_name": "Finnish Euros Trials",
       "source": "calendar_row:2021:14",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-27",
-      "to_end_date": "2021-02-27"
+      "status": "no_change",
+      "start_date": "2021-02-27",
+      "end_date": "2021-02-27"
     },
     {
       "event_id": 565,
       "event_name": "Icelandic Team Championships",
       "source": "calendar_row:2021:15",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-02-27",
-      "to_end_date": "2021-02-27"
+      "status": "no_change",
+      "start_date": "2021-02-27",
+      "end_date": "2021-02-27"
     },
     {
       "event_id": 703,
       "event_name": "Belgian Test Meet",
       "source": "calendar_row:2021:17",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-05",
-      "to_end_date": "2021-03-05"
+      "status": "no_change",
+      "start_date": "2021-03-05",
+      "end_date": "2021-03-05"
     },
     {
       "event_id": 592,
       "event_name": "1st Italian Serie A",
       "source": "calendar_row:2021:18",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-06",
-      "to_end_date": "2021-03-06"
+      "status": "no_change",
+      "start_date": "2021-03-06",
+      "end_date": "2021-03-06"
     },
     {
       "event_id": 599,
       "event_name": "Russian Championships",
       "source": "calendar_row:2021:19",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-10",
-      "to_end_date": "2021-03-14"
+      "status": "no_change",
+      "start_date": "2021-03-10",
+      "end_date": "2021-03-14"
     },
     {
       "event_id": 553,
       "event_name": "Canadian Technical Trial",
       "source": "calendar_row:2021:20",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-12",
-      "to_end_date": "2021-03-14"
+      "status": "no_change",
+      "start_date": "2021-03-12",
+      "end_date": "2021-03-14"
     },
     {
       "event_id": 542,
       "event_name": "Singapore Championships",
       "source": "calendar_row:2021:21",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-12",
-      "to_end_date": "2021-03-21"
+      "status": "no_change",
+      "start_date": "2021-03-12",
+      "end_date": "2021-03-21"
     },
     {
       "event_id": 593,
       "event_name": "Belarusian Open Cup",
       "source": "calendar_row:2021:26",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-15",
-      "to_end_date": "2021-03-17"
+      "status": "no_change",
+      "start_date": "2021-03-15",
+      "end_date": "2021-03-17"
     },
     {
       "event_id": 710,
       "event_name": "German Euros Trials",
       "source": "calendar_row:2021:29",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-20",
-      "to_end_date": "2021-03-20"
+      "status": "no_change",
+      "start_date": "2021-03-20",
+      "end_date": "2021-03-20"
     },
     {
       "event_id": 566,
       "event_name": "Icelandic Championships",
       "source": "calendar_row:2021:32",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-20",
-      "to_end_date": "2021-03-21"
+      "status": "no_change",
+      "start_date": "2021-03-20",
+      "end_date": "2021-03-21"
     },
     {
       "event_id": 555,
       "event_name": "Turkish Championships",
       "source": "calendar_row:2021:34",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-26",
-      "to_end_date": "2021-03-28"
+      "status": "no_change",
+      "start_date": "2021-03-26",
+      "end_date": "2021-03-28"
     },
     {
       "event_id": 665,
       "event_name": "2nd Italian Serie A",
       "source": "calendar_row:2021:37",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-27",
-      "to_end_date": "2021-03-27"
+      "status": "no_change",
+      "start_date": "2021-03-27",
+      "end_date": "2021-03-27"
     },
     {
       "event_id": 650,
       "event_name": "Polish Senior Cup",
       "source": "calendar_row:2021:38",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-27",
-      "to_end_date": "2021-03-28"
+      "status": "no_change",
+      "start_date": "2021-03-27",
+      "end_date": "2021-03-28"
     },
     {
       "event_id": 639,
       "event_name": "Hungarian Event Championships",
       "source": "calendar_row:2021:40",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-27",
-      "to_end_date": "2021-03-28"
+      "status": "no_change",
+      "start_date": "2021-03-27",
+      "end_date": "2021-03-28"
     },
     {
       "event_id": 711,
       "event_name": "Yangtze Delta Invitational",
       "source": "calendar_row:2021:43",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-03-29",
-      "to_end_date": "2021-03-30"
+      "status": "no_change",
+      "start_date": "2021-03-29",
+      "end_date": "2021-03-30"
     },
     {
       "event_id": 688,
       "event_name": "Russian Junior Championships",
       "source": "calendar_row:2021:44",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-01",
-      "to_end_date": "2021-04-04"
+      "status": "no_change",
+      "start_date": "2021-04-01",
+      "end_date": "2021-04-04"
     },
     {
       "event_id": 679,
       "event_name": "Canadian Technical Trial 1",
       "source": "calendar_row:2021:45",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-02",
-      "to_end_date": "2021-04-03"
+      "status": "no_change",
+      "start_date": "2021-04-02",
+      "end_date": "2021-04-03"
     },
     {
       "event_id": 666,
       "event_name": "Lithuanian Championships",
       "source": "calendar_row:2021:46",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-02",
-      "to_end_date": "2021-04-03"
+      "status": "no_change",
+      "start_date": "2021-04-02",
+      "end_date": "2021-04-03"
     },
     {
       "event_id": 619,
       "event_name": "Ukrainian Championships",
       "source": "calendar_row:2021:47",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-02",
-      "to_end_date": "2021-04-07"
+      "status": "no_change",
+      "start_date": "2021-04-02",
+      "end_date": "2021-04-07"
     },
     {
       "event_id": 704,
       "event_name": "Heerenveen Friendly",
       "source": "calendar_row:2021:48",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-03",
-      "to_end_date": "2021-04-03"
+      "status": "no_change",
+      "start_date": "2021-04-03",
+      "end_date": "2021-04-03"
     },
     {
       "event_id": 699,
       "event_name": "South African National Trials",
       "source": "calendar_row:2021:49",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-08",
-      "to_end_date": "2021-04-11"
+      "status": "no_change",
+      "start_date": "2021-04-08",
+      "end_date": "2021-04-11"
     },
     {
       "event_id": 642,
       "event_name": "Parkettes National Qualifier",
       "source": "calendar_row:2021:50",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-09",
-      "to_end_date": "2021-04-11"
+      "status": "no_change",
+      "start_date": "2021-04-09",
+      "end_date": "2021-04-11"
     },
     {
       "event_id": 709,
       "event_name": "2nd German Euros Trials",
       "source": "calendar_row:2021:51",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-10",
-      "to_end_date": "2021-04-10"
+      "status": "no_change",
+      "start_date": "2021-04-10",
+      "end_date": "2021-04-10"
     },
     {
       "event_id": 590,
       "event_name": "3rd Italian Serie A",
       "source": "calendar_row:2021:52",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-10",
-      "to_end_date": "2021-04-10"
+      "status": "no_change",
+      "start_date": "2021-04-10",
+      "end_date": "2021-04-10"
     },
     {
       "event_id": 577,
       "event_name": "All-Japan Championships",
       "source": "calendar_row:2021:53",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-15",
-      "to_end_date": "2021-04-18"
+      "status": "no_change",
+      "start_date": "2021-04-15",
+      "end_date": "2021-04-18"
     },
     {
       "event_id": 547,
       "event_name": "European Championships",
       "source": "calendar_row:2021:54",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-21",
-      "to_end_date": "2021-04-25"
+      "status": "no_change",
+      "start_date": "2021-04-21",
+      "end_date": "2021-04-25"
     },
     {
       "event_id": 654,
       "event_name": "Hopes Classic",
       "source": "calendar_row:2021:55",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-23",
-      "to_end_date": "2021-04-23"
+      "status": "no_change",
+      "start_date": "2021-04-23",
+      "end_date": "2021-04-23"
     },
     {
       "event_id": 652,
       "event_name": "American Classic",
       "source": "calendar_row:2021:56",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-04-24",
-      "to_end_date": "2021-04-24"
+      "status": "no_change",
+      "start_date": "2021-04-24",
+      "end_date": "2021-04-24"
     },
     {
       "event_id": 693,
       "event_name": "German Junior Meet",
       "source": "calendar_row:2021:57",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-01",
-      "to_end_date": "2021-05-01"
+      "status": "no_change",
+      "start_date": "2021-05-01",
+      "end_date": "2021-05-01"
     },
     {
       "event_id": 573,
       "event_name": "South Korean Championships",
       "source": "calendar_row:2021:58",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-01",
-      "to_end_date": "2021-05-02"
+      "status": "no_change",
+      "start_date": "2021-05-01",
+      "end_date": "2021-05-02"
     },
     {
       "event_id": 698,
       "event_name": "Canadian Technical Trial 2",
       "source": "calendar_row:2021:59",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-01",
-      "to_end_date": "2021-05-02"
+      "status": "no_change",
+      "start_date": "2021-05-01",
+      "end_date": "2021-05-02"
     },
     {
       "event_id": 632,
       "event_name": "Chinese Championships",
       "source": "calendar_row:2021:60",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-04",
-      "to_end_date": "2021-05-09"
+      "status": "no_change",
+      "start_date": "2021-05-04",
+      "end_date": "2021-05-09"
     },
     {
       "event_id": 695,
       "event_name": "Canadian Championships",
       "source": "calendar_row:2021:62",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-14",
-      "to_end_date": "2021-05-23"
+      "status": "no_change",
+      "start_date": "2021-05-14",
+      "end_date": "2021-05-23"
     },
     {
       "event_id": 638,
       "event_name": "NHK Trophy",
       "source": "calendar_row:2021:63",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-15",
-      "to_end_date": "2021-05-16"
+      "status": "no_change",
+      "start_date": "2021-05-15",
+      "end_date": "2021-05-16"
     },
     {
       "event_id": 589,
       "event_name": "Italian Serie A Final Six",
       "source": "calendar_row:2021:64",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-15",
-      "to_end_date": "2021-05-16"
+      "status": "no_change",
+      "start_date": "2021-05-15",
+      "end_date": "2021-05-16"
     },
     {
       "event_id": 569,
       "event_name": "Ukraine International Cup",
       "source": "calendar_row:2021:65",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-20",
-      "to_end_date": "2021-05-23"
+      "status": "no_change",
+      "start_date": "2021-05-20",
+      "end_date": "2021-05-23"
     },
     {
       "event_id": 656,
       "event_name": "Hopes Championships",
       "source": "calendar_row:2021:67",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-21",
-      "to_end_date": "2021-05-21"
+      "status": "no_change",
+      "start_date": "2021-05-21",
+      "end_date": "2021-05-21"
     },
     {
       "event_id": 653,
       "event_name": "U.S. Classic",
       "source": "calendar_row:2021:68",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-21",
-      "to_end_date": "2021-05-22"
+      "status": "no_change",
+      "start_date": "2021-05-21",
+      "end_date": "2021-05-22"
     },
     {
       "event_id": 550,
       "event_name": "Australian Championships",
       "source": "calendar_row:2021:69",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-21",
-      "to_end_date": "2021-05-23"
+      "status": "no_change",
+      "start_date": "2021-05-21",
+      "end_date": "2021-05-23"
     },
     {
       "event_id": 564,
       "event_name": "GK Championships",
       "source": "calendar_row:2021:70",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-22",
-      "to_end_date": "2021-05-23"
+      "status": "no_change",
+      "start_date": "2021-05-22",
+      "end_date": "2021-05-23"
     },
     {
       "event_id": 539,
       "event_name": "African Championships",
       "source": "calendar_row:2021:71",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-26",
-      "to_end_date": "2021-05-27"
+      "status": "no_change",
+      "start_date": "2021-05-26",
+      "end_date": "2021-05-27"
     },
     {
       "event_id": 543,
       "event_name": "Varna Challenge Cup",
       "source": "calendar_row:2021:72",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-27",
-      "to_end_date": "2021-05-30"
+      "status": "no_change",
+      "start_date": "2021-05-27",
+      "end_date": "2021-05-30"
     },
     {
       "event_id": 616,
       "event_name": "1st Swiss Men's Olympic Trials",
       "source": "calendar_row:2021:73",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-29",
-      "to_end_date": "2021-05-29"
+      "status": "no_change",
+      "start_date": "2021-05-29",
+      "end_date": "2021-05-29"
     },
     {
       "event_id": 706,
       "event_name": "Hungarian Junior Championships",
       "source": "calendar_row:2021:74",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-05-29",
-      "to_end_date": "2021-05-30"
+      "status": "no_change",
+      "start_date": "2021-05-29",
+      "end_date": "2021-05-30"
     },
     {
       "event_id": 540,
       "event_name": "Cairo Challenge Cup",
       "source": "calendar_row:2021:76",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-03",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-03",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 563,
       "event_name": "German Championships",
       "source": "calendar_row:2021:77",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-03",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-03",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 529,
       "event_name": "U.S. Championships",
       "source": "calendar_row:2021:78",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-03",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-03",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 621,
       "event_name": "Pan American Championships",
       "source": "calendar_row:2021:79",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-04",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-04",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 545,
       "event_name": "French Championships",
       "source": "calendar_row:2021:80",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-05",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-05",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 579,
       "event_name": "All-Japan Event Championships",
       "source": "calendar_row:2021:81",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-05",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-05",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 611,
       "event_name": "Danish Championships",
       "source": "calendar_row:2021:82",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-05",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-05",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 604,
       "event_name": "Austrian Championships",
       "source": "calendar_row:2021:83",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-05",
-      "to_end_date": "2021-06-06"
+      "status": "no_change",
+      "start_date": "2021-06-05",
+      "end_date": "2021-06-06"
     },
     {
       "event_id": 601,
       "event_name": "Russian Cup",
       "source": "calendar_row:2021:84",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-08",
-      "to_end_date": "2021-06-13"
+      "status": "no_change",
+      "start_date": "2021-06-08",
+      "end_date": "2021-06-13"
     },
     {
       "event_id": 617,
       "event_name": "2nd Swiss Men's Olympic Trials",
       "source": "calendar_row:2021:85",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-10",
-      "to_end_date": "2021-06-10"
+      "status": "no_change",
+      "start_date": "2021-06-10",
+      "end_date": "2021-06-10"
     },
     {
       "event_id": 557,
       "event_name": "Osijek Challenge Cup",
       "source": "calendar_row:2021:86",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-10",
-      "to_end_date": "2021-06-13"
+      "status": "no_change",
+      "start_date": "2021-06-10",
+      "end_date": "2021-06-13"
     },
     {
       "event_id": 680,
       "event_name": "Romanian Junior Championships",
       "source": "calendar_row:2021:87",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-11",
-      "to_end_date": "2021-06-11"
+      "status": "no_change",
+      "start_date": "2021-06-11",
+      "end_date": "2021-06-11"
     },
     {
       "event_id": 612,
       "event_name": "German Olympic Trials",
       "source": "calendar_row:2021:88",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-12",
-      "to_end_date": "2021-06-12"
+      "status": "no_change",
+      "start_date": "2021-06-12",
+      "end_date": "2021-06-12"
     },
     {
       "event_id": 692,
       "event_name": "Munich Junior Friendly",
       "source": "calendar_row:2021:89",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-12",
-      "to_end_date": "2021-06-12"
+      "status": "no_change",
+      "start_date": "2021-06-12",
+      "end_date": "2021-06-12"
     },
     {
       "event_id": 618,
       "event_name": "3rd Swiss Men's Olympic Trials",
       "source": "calendar_row:2021:90",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-12",
-      "to_end_date": "2021-06-12"
+      "status": "no_change",
+      "start_date": "2021-06-12",
+      "end_date": "2021-06-12"
     },
     {
       "event_id": 626,
       "event_name": "South Korean Olympic Trials",
       "source": "calendar_row:2021:91",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-12",
-      "to_end_date": "2021-06-13"
+      "status": "no_change",
+      "start_date": "2021-06-12",
+      "end_date": "2021-06-13"
     },
     {
       "event_id": 670,
       "event_name": "Swiss Junior Championships",
       "source": "calendar_row:2021:92",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-12",
-      "to_end_date": "2021-06-13"
+      "status": "no_change",
+      "start_date": "2021-06-12",
+      "end_date": "2021-06-13"
     },
     {
       "event_id": 696,
       "event_name": "1st Dutch Olympic Trials",
       "source": "calendar_row:2021:93",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-13",
-      "to_end_date": "2021-06-13"
+      "status": "no_change",
+      "start_date": "2021-06-13",
+      "end_date": "2021-06-13"
     },
     {
       "event_id": 715,
       "event_name": "1st Chinese Olympic Trials",
       "source": "calendar_row:2021:94",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-18",
-      "to_end_date": "2021-06-18"
+      "status": "no_change",
+      "start_date": "2021-06-18",
+      "end_date": "2021-06-18"
     },
     {
       "event_id": 614,
       "event_name": "Junior Pan American Championships",
       "source": "calendar_row:2021:95",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-18",
-      "to_end_date": "2021-06-20"
+      "status": "no_change",
+      "start_date": "2021-06-18",
+      "end_date": "2021-06-20"
     },
     {
       "event_id": 701,
       "event_name": "Iceland Classic",
       "source": "calendar_row:2021:96",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-18",
-      "to_end_date": "2021-06-20"
+      "status": "no_change",
+      "start_date": "2021-06-18",
+      "end_date": "2021-06-20"
     },
     {
       "event_id": 647,
       "event_name": "1st Spanish League",
       "source": "calendar_row:2021:98",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-19",
-      "to_end_date": "2021-06-20"
+      "status": "no_change",
+      "start_date": "2021-06-19",
+      "end_date": "2021-06-20"
     },
     {
       "event_id": 673,
       "event_name": "Norwegian FIG Meet",
       "source": "calendar_row:2021:99",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-21",
-      "to_end_date": "2021-06-25"
+      "status": "no_change",
+      "start_date": "2021-06-21",
+      "end_date": "2021-06-25"
     },
     {
       "event_id": 651,
       "event_name": "Israeli Championships",
       "source": "calendar_row:2021:100",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-22",
-      "to_end_date": "2021-06-23"
+      "status": "no_change",
+      "start_date": "2021-06-22",
+      "end_date": "2021-06-23"
     },
     {
       "event_id": 558,
       "event_name": "Doha World Cup",
       "source": "calendar_row:2021:101",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-23",
-      "to_end_date": "2021-06-26"
+      "status": "no_change",
+      "start_date": "2021-06-23",
+      "end_date": "2021-06-26"
     },
     {
       "event_id": 574,
       "event_name": "U.S. Olympic Trials",
       "source": "calendar_row:2021:102",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-24",
-      "to_end_date": "2021-06-27"
+      "status": "no_change",
+      "start_date": "2021-06-24",
+      "end_date": "2021-06-27"
     },
     {
       "event_id": 671,
       "event_name": "FIT Challenge",
       "source": "calendar_row:2021:103",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-25",
-      "to_end_date": "2021-06-27"
+      "status": "no_change",
+      "start_date": "2021-06-25",
+      "end_date": "2021-06-27"
     },
     {
       "event_id": 552,
       "event_name": "Czech Championships",
       "source": "calendar_row:2021:104",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-25",
-      "to_end_date": "2021-06-27"
+      "status": "no_change",
+      "start_date": "2021-06-25",
+      "end_date": "2021-06-27"
     },
     {
       "event_id": 697,
       "event_name": "2nd Dutch Olympic Trials",
       "source": "calendar_row:2021:105",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-26",
-      "to_end_date": "2021-06-26"
+      "status": "no_change",
+      "start_date": "2021-06-26",
+      "end_date": "2021-06-26"
     },
     {
       "event_id": 588,
       "event_name": "Swiss Championships",
       "source": "calendar_row:2021:106",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-06-26",
-      "to_end_date": "2021-06-26"
+      "status": "no_change",
+      "start_date": "2021-06-26",
+      "end_date": "2021-06-26"
     },
     {
       "event_id": 640,
       "event_name": "Chinese Men's Olympic Trials",
       "source": "calendar_row:2021:107",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-01",
-      "to_end_date": "2021-07-01"
+      "status": "no_change",
+      "start_date": "2021-07-01",
+      "end_date": "2021-07-01"
     },
     {
       "event_id": 716,
       "event_name": "2nd Chinese Olympic Trials",
       "source": "calendar_row:2021:108",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-02",
-      "to_end_date": "2021-07-02"
+      "status": "no_change",
+      "start_date": "2021-07-02",
+      "end_date": "2021-07-02"
     },
     {
       "event_id": 631,
       "event_name": "Magglingen Men's Friendly",
       "source": "calendar_row:2021:109",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-03",
-      "to_end_date": "2021-07-03"
+      "status": "no_change",
+      "start_date": "2021-07-03",
+      "end_date": "2021-07-03"
     },
     {
       "event_id": 600,
       "event_name": "Russian Youth Spartakiade",
       "source": "calendar_row:2021:110",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-04",
-      "to_end_date": "2021-07-11"
+      "status": "no_change",
+      "start_date": "2021-07-04",
+      "end_date": "2021-07-11"
     },
     {
       "event_id": 713,
       "event_name": "Malta Championships",
       "source": "calendar_row:2021:111",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-09",
-      "to_end_date": "2021-07-11"
+      "status": "no_change",
+      "start_date": "2021-07-09",
+      "end_date": "2021-07-11"
     },
     {
       "event_id": 609,
       "event_name": "Italian Championships",
       "source": "calendar_row:2021:112",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-10",
-      "to_end_date": "2021-07-11"
+      "status": "no_change",
+      "start_date": "2021-07-10",
+      "end_date": "2021-07-11"
     },
     {
       "event_id": 637,
       "event_name": "Chinese Youth Games",
       "source": "calendar_row:2021:113",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-11",
-      "to_end_date": "2021-07-14"
+      "status": "no_change",
+      "start_date": "2021-07-11",
+      "end_date": "2021-07-14"
     },
     {
       "event_id": 607,
       "event_name": "Greek Championships",
       "source": "calendar_row:2021:114",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-17",
-      "to_end_date": "2021-07-18"
+      "status": "no_change",
+      "start_date": "2021-07-17",
+      "end_date": "2021-07-18"
     },
     {
       "event_id": 530,
       "event_name": "New Zealand Championships",
       "source": "calendar_row:2021:115",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-21",
-      "to_end_date": "2021-07-24"
+      "status": "no_change",
+      "start_date": "2021-07-21",
+      "end_date": "2021-07-24"
     },
     {
       "event_id": 556,
       "event_name": "Olympic Games",
       "source": "calendar_row:2021:116",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-07-23",
-      "to_end_date": "2021-08-08"
+      "status": "no_change",
+      "start_date": "2021-07-23",
+      "end_date": "2021-08-08"
     },
     {
       "event_id": 581,
       "event_name": "All-Japan Junior Championships",
       "source": "calendar_row:2021:117",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-08-12",
-      "to_end_date": "2021-08-17"
+      "status": "no_change",
+      "start_date": "2021-08-12",
+      "end_date": "2021-08-17"
     },
     {
       "event_id": 636,
       "event_name": "Brazilian Junior Championships",
       "source": "calendar_row:2021:118",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-08-25",
-      "to_end_date": "2021-08-29"
+      "status": "no_change",
+      "start_date": "2021-08-25",
+      "end_date": "2021-08-29"
     },
     {
       "event_id": 649,
       "event_name": "Finnish Worlds Trials",
       "source": "calendar_row:2021:120",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-08-29",
-      "to_end_date": "2021-08-29"
+      "status": "no_change",
+      "start_date": "2021-08-29",
+      "end_date": "2021-08-29"
     },
     {
       "event_id": 580,
       "event_name": "All-Japan Student Championships",
       "source": "calendar_row:2021:121",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-01",
-      "to_end_date": "2021-09-04"
+      "status": "no_change",
+      "start_date": "2021-09-01",
+      "end_date": "2021-09-04"
     },
     {
       "event_id": 548,
       "event_name": "Koper Challenge Cup",
       "source": "calendar_row:2021:122",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-02",
-      "to_end_date": "2021-09-05"
+      "status": "no_change",
+      "start_date": "2021-09-02",
+      "end_date": "2021-09-05"
     },
     {
       "event_id": 705,
       "event_name": "British Worlds Trials",
       "source": "calendar_row:2021:124",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-04",
-      "to_end_date": "2021-09-05"
+      "status": "no_change",
+      "start_date": "2021-09-04",
+      "end_date": "2021-09-05"
     },
     {
       "event_id": 717,
       "event_name": "2nd Finnish Worlds Trials",
       "source": "calendar_row:2021:125",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-05",
-      "to_end_date": "2021-09-05"
+      "status": "no_change",
+      "start_date": "2021-09-05",
+      "end_date": "2021-09-05"
     },
     {
       "event_id": 568,
       "event_name": "Mersin Challenge Cup",
       "source": "calendar_row:2021:127",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-10",
-      "to_end_date": "2021-09-12"
+      "status": "no_change",
+      "start_date": "2021-09-10",
+      "end_date": "2021-09-12"
     },
     {
       "event_id": 598,
       "event_name": "Unnis & Haralds Trophy",
       "source": "calendar_row:2021:128",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-10",
-      "to_end_date": "2021-09-12"
+      "status": "no_change",
+      "start_date": "2021-09-10",
+      "end_date": "2021-09-12"
     },
     {
       "event_id": 635,
       "event_name": "1st Dutch Worlds Trials",
       "source": "calendar_row:2021:129",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-11",
-      "to_end_date": "2021-09-11"
+      "status": "no_change",
+      "start_date": "2021-09-11",
+      "end_date": "2021-09-11"
     },
     {
       "event_id": 657,
       "event_name": "Gym Festival Trnava",
       "source": "calendar_row:2021:131",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-11",
-      "to_end_date": "2021-09-12"
+      "status": "no_change",
+      "start_date": "2021-09-11",
+      "end_date": "2021-09-12"
     },
     {
       "event_id": 613,
       "event_name": "Romanian Championships",
       "source": "calendar_row:2021:134",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-17",
-      "to_end_date": "2021-09-19"
+      "status": "no_change",
+      "start_date": "2021-09-17",
+      "end_date": "2021-09-19"
     },
     {
       "event_id": 522,
       "event_name": "Finnish Championships",
       "source": "calendar_row:2021:135",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-17",
-      "to_end_date": "2021-09-19"
+      "status": "no_change",
+      "start_date": "2021-09-17",
+      "end_date": "2021-09-19"
     },
     {
       "event_id": 559,
       "event_name": "Turkish Team Championships",
       "source": "calendar_row:2021:136",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-17",
-      "to_end_date": "2021-09-19"
+      "status": "no_change",
+      "start_date": "2021-09-17",
+      "end_date": "2021-09-19"
     },
     {
       "event_id": 633,
       "event_name": "2nd Dutch Worlds Trials",
       "source": "calendar_row:2021:138",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-18",
-      "to_end_date": "2021-09-18"
+      "status": "no_change",
+      "start_date": "2021-09-18",
+      "end_date": "2021-09-18"
     },
     {
       "event_id": 712,
       "event_name": "Croatian Worlds Trials",
       "source": "calendar_row:2021:139",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-18",
-      "to_end_date": "2021-09-18"
+      "status": "no_change",
+      "start_date": "2021-09-18",
+      "end_date": "2021-09-18"
     },
     {
       "event_id": 627,
       "event_name": "Chinese National Games",
       "source": "calendar_row:2021:140",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-19",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-19",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 578,
       "event_name": "All-Japan Senior Championships",
       "source": "calendar_row:2021:141",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-23",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-23",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 549,
       "event_name": "Hungarian Grand Prix",
       "source": "calendar_row:2021:142",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-24",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-24",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 596,
       "event_name": "Unisport Norges Cup",
       "source": "calendar_row:2021:145",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-25",
-      "to_end_date": "2021-09-25"
+      "status": "no_change",
+      "start_date": "2021-09-25",
+      "end_date": "2021-09-25"
     },
     {
       "event_id": 560,
       "event_name": "Wohnen Juniors Trophy",
       "source": "calendar_row:2021:146",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-25",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-25",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 672,
       "event_name": "2nd Norwegian FIG Meet",
       "source": "calendar_row:2021:147",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-25",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-25",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 707,
       "event_name": "Scottish Championships",
       "source": "calendar_row:2021:148",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-26",
-      "to_end_date": "2021-09-26"
+      "status": "no_change",
+      "start_date": "2021-09-26",
+      "end_date": "2021-09-26"
     },
     {
       "event_id": 623,
       "event_name": "Brazilian Championships",
       "source": "calendar_row:2021:149",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-09-30",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-09-30",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 546,
       "event_name": "Hungarian Championships",
       "source": "calendar_row:2021:150",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-01",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-10-01",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 708,
       "event_name": "South African Championships",
       "source": "calendar_row:2021:151",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-01",
-      "to_end_date": "2021-10-10"
+      "status": "no_change",
+      "start_date": "2021-10-01",
+      "end_date": "2021-10-10"
     },
     {
       "event_id": 608,
       "event_name": "Hanspeter Demetz Memorial",
       "source": "calendar_row:2021:153",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-02",
-      "to_end_date": "2021-10-02"
+      "status": "no_change",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-02"
     },
     {
       "event_id": 641,
       "event_name": "Norwegian Championships",
       "source": "calendar_row:2021:157",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-02",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 526,
       "event_name": "Swedish Championships",
       "source": "calendar_row:2021:158",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-02",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 674,
       "event_name": "Danish Junior Championships",
       "source": "calendar_row:2021:159",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-02",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 602,
       "event_name": "Danish Team Championships Qualifier",
       "source": "calendar_row:2021:160",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-02",
-      "to_end_date": "2021-10-03"
+      "status": "no_change",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-03"
     },
     {
       "event_id": 576,
       "event_name": "U.S. Worlds Trials",
       "source": "calendar_row:2021:163",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-08",
-      "to_end_date": "2021-10-08"
+      "status": "no_change",
+      "start_date": "2021-10-08",
+      "end_date": "2021-10-08"
     },
     {
       "event_id": 572,
       "event_name": "Korean National Sports Festival",
       "source": "calendar_row:2021:164",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-08",
-      "to_end_date": "2021-10-10"
+      "status": "no_change",
+      "start_date": "2021-10-08",
+      "end_date": "2021-10-10"
     },
     {
       "event_id": 669,
       "event_name": "2nd Spanish League",
       "source": "calendar_row:2021:165",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-09",
-      "to_end_date": "2021-10-10"
+      "status": "no_change",
+      "start_date": "2021-10-09",
+      "end_date": "2021-10-10"
     },
     {
       "event_id": 541,
       "event_name": "World Championships",
       "source": "calendar_row:2021:168",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-18",
-      "to_end_date": "2021-10-24"
+      "status": "no_change",
+      "start_date": "2021-10-18",
+      "end_date": "2021-10-24"
     },
     {
       "event_id": 676,
       "event_name": "German Junior Championships",
       "source": "calendar_row:2021:170",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-23",
-      "to_end_date": "2021-10-24"
+      "status": "no_change",
+      "start_date": "2021-10-23",
+      "end_date": "2021-10-24"
     },
     {
       "event_id": 597,
       "event_name": "Norwegian Junior Championships",
       "source": "calendar_row:2021:171",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-23",
-      "to_end_date": "2021-10-24"
+      "status": "no_change",
+      "start_date": "2021-10-23",
+      "end_date": "2021-10-24"
     },
     {
       "event_id": 523,
       "event_name": "Nordic Junior Championships",
       "source": "calendar_row:2021:172",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-29",
-      "to_end_date": "2021-10-30"
+      "status": "no_change",
+      "start_date": "2021-10-29",
+      "end_date": "2021-10-30"
     },
     {
       "event_id": 643,
       "event_name": "Rushmoor Rosebowl",
       "source": "calendar_row:2021:174",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-30",
-      "to_end_date": "2021-10-30"
+      "status": "no_change",
+      "start_date": "2021-10-30",
+      "end_date": "2021-10-30"
     },
     {
       "event_id": 528,
       "event_name": "Wase Gymcup",
       "source": "calendar_row:2021:175",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-30",
-      "to_end_date": "2021-10-31"
+      "status": "no_change",
+      "start_date": "2021-10-30",
+      "end_date": "2021-10-31"
     },
     {
       "event_id": 668,
       "event_name": "Gymstars International",
       "source": "calendar_row:2021:176",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-10-31",
-      "to_end_date": "2021-10-31"
+      "status": "no_change",
+      "start_date": "2021-10-31",
+      "end_date": "2021-10-31"
     },
     {
       "event_id": 570,
       "event_name": "Arthur Gander Memorial",
       "source": "calendar_row:2021:177",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-03",
-      "to_end_date": "2021-11-03"
+      "status": "no_change",
+      "start_date": "2021-11-03",
+      "end_date": "2021-11-03"
     },
     {
       "event_id": 603,
       "event_name": "Danish Team Championships",
       "source": "calendar_row:2021:178",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-06",
-      "to_end_date": "2021-11-06"
+      "status": "no_change",
+      "start_date": "2021-11-06",
+      "end_date": "2021-11-06"
     },
     {
       "event_id": 694,
       "event_name": "Swiss Cup Juniors",
       "source": "calendar_row:2021:179",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-06",
-      "to_end_date": "2021-11-06"
+      "status": "no_change",
+      "start_date": "2021-11-06",
+      "end_date": "2021-11-06"
     },
     {
       "event_id": 594,
       "event_name": "Olympic Hopes Cup",
       "source": "calendar_row:2021:181",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-06",
-      "to_end_date": "2021-11-07"
+      "status": "no_change",
+      "start_date": "2021-11-06",
+      "end_date": "2021-11-07"
     },
     {
       "event_id": 525,
       "event_name": "M\u00e4lar Cup",
       "source": "calendar_row:2021:182",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-06",
-      "to_end_date": "2021-11-07"
+      "status": "no_change",
+      "start_date": "2021-11-06",
+      "end_date": "2021-11-07"
     },
     {
       "event_id": 700,
       "event_name": "Austrian Junior Championships",
       "source": "calendar_row:2021:183",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-06",
-      "to_end_date": "2021-11-07"
+      "status": "no_change",
+      "start_date": "2021-11-06",
+      "end_date": "2021-11-07"
     },
     {
       "event_id": 681,
       "event_name": "Swiss Cup",
       "source": "calendar_row:2021:185",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-07",
-      "to_end_date": "2021-11-07"
+      "status": "no_change",
+      "start_date": "2021-11-07",
+      "end_date": "2021-11-07"
     },
     {
       "event_id": 620,
       "event_name": "South American Junior Championships",
       "source": "calendar_row:2021:186",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-11",
-      "to_end_date": "2021-11-15"
+      "status": "no_change",
+      "start_date": "2021-11-11",
+      "end_date": "2021-11-15"
     },
     {
       "event_id": 582,
       "event_name": "Northern European Championships",
       "source": "calendar_row:2021:187",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-12",
-      "to_end_date": "2021-11-14"
+      "status": "no_change",
+      "start_date": "2021-11-12",
+      "end_date": "2021-11-14"
     },
     {
       "event_id": 645,
       "event_name": "Elite Gym Massilia",
       "source": "calendar_row:2021:188",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-12",
-      "to_end_date": "2021-11-14"
+      "status": "no_change",
+      "start_date": "2021-11-12",
+      "end_date": "2021-11-14"
     },
     {
       "event_id": 648,
       "event_name": "3rd Spanish League",
       "source": "calendar_row:2021:189",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-12",
-      "to_end_date": "2021-11-14"
+      "status": "no_change",
+      "start_date": "2021-11-12",
+      "end_date": "2021-11-14"
     },
     {
       "event_id": 534,
       "event_name": "3rd Bundesliga",
       "source": "calendar_row:2021:190",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-13",
-      "to_end_date": "2021-11-13"
+      "status": "no_change",
+      "start_date": "2021-11-13",
+      "end_date": "2021-11-13"
     },
     {
       "event_id": 661,
       "event_name": "Gymnova Cup",
       "source": "calendar_row:2021:192",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-13",
-      "to_end_date": "2021-11-14"
+      "status": "no_change",
+      "start_date": "2021-11-13",
+      "end_date": "2021-11-14"
     },
     {
       "event_id": 702,
       "event_name": "U.S. Junior Pan Am Games Trials",
       "source": "calendar_row:2021:193",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-15",
-      "to_end_date": "2021-11-18"
+      "status": "no_change",
+      "start_date": "2021-11-15",
+      "end_date": "2021-11-18"
     },
     {
       "event_id": 629,
       "event_name": "Hungarian Masters Championships",
       "source": "calendar_row:2021:194",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-19",
-      "to_end_date": "2021-11-21"
+      "status": "no_change",
+      "start_date": "2021-11-19",
+      "end_date": "2021-11-21"
     },
     {
       "event_id": 678,
       "event_name": "Tournoi International",
       "source": "calendar_row:2021:197",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-20",
-      "to_end_date": "2021-11-21"
+      "status": "no_change",
+      "start_date": "2021-11-20",
+      "end_date": "2021-11-21"
     },
     {
       "event_id": 544,
       "event_name": "Swedish Cup",
       "source": "calendar_row:2021:198",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-20",
-      "to_end_date": "2021-11-21"
+      "status": "no_change",
+      "start_date": "2021-11-20",
+      "end_date": "2021-11-21"
     },
     {
       "event_id": 615,
       "event_name": "Junior Pan American Games",
       "source": "calendar_row:2021:199",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-25",
-      "to_end_date": "2021-12-05"
+      "status": "no_change",
+      "start_date": "2021-11-25",
+      "end_date": "2021-12-05"
     },
     {
       "event_id": 551,
       "event_name": "British Championships",
       "source": "calendar_row:2021:202",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-27",
-      "to_end_date": "2021-11-28"
+      "status": "no_change",
+      "start_date": "2021-11-27",
+      "end_date": "2021-11-28"
     },
     {
       "event_id": 644,
       "event_name": "Top Gym Tournament",
       "source": "calendar_row:2021:203",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-11-27",
-      "to_end_date": "2021-11-28"
+      "status": "no_change",
+      "start_date": "2021-11-27",
+      "end_date": "2021-11-28"
     },
     {
       "event_id": 561,
       "event_name": "Spanish Championships",
       "source": "calendar_row:2021:204",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-03",
-      "to_end_date": "2021-12-08"
+      "status": "no_change",
+      "start_date": "2021-12-03",
+      "end_date": "2021-12-08"
     },
     {
       "event_id": 571,
       "event_name": "Bundesliga Finals",
       "source": "calendar_row:2021:205",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-04",
-      "to_end_date": "2021-12-04"
+      "status": "no_change",
+      "start_date": "2021-12-04",
+      "end_date": "2021-12-04"
     },
     {
       "event_id": 658,
       "event_name": "Czech Team Championships",
       "source": "calendar_row:2021:206",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-04",
-      "to_end_date": "2021-12-05"
+      "status": "no_change",
+      "start_date": "2021-12-04",
+      "end_date": "2021-12-05"
     },
     {
       "event_id": 567,
       "event_name": "South American Championships",
       "source": "calendar_row:2021:207",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-08",
-      "to_end_date": "2021-12-12"
+      "status": "no_change",
+      "start_date": "2021-12-08",
+      "end_date": "2021-12-12"
     },
     {
       "event_id": 663,
       "event_name": "Spanish League Finals",
       "source": "calendar_row:2021:208",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-10",
-      "to_end_date": "2021-12-12"
+      "status": "no_change",
+      "start_date": "2021-12-10",
+      "end_date": "2021-12-12"
     },
     {
       "event_id": 622,
       "event_name": "All-Japan Team Championships",
       "source": "calendar_row:2021:209",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-11",
-      "to_end_date": "2021-12-12"
+      "status": "no_change",
+      "start_date": "2021-12-11",
+      "end_date": "2021-12-12"
     },
     {
       "event_id": 664,
       "event_name": "Italian Gold Championships",
       "source": "calendar_row:2021:210",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-11",
-      "to_end_date": "2021-12-12"
+      "status": "no_change",
+      "start_date": "2021-12-11",
+      "end_date": "2021-12-12"
     },
     {
       "event_id": 689,
       "event_name": "French National Team Review",
       "source": "calendar_row:2021:211",
-      "status": "updated",
-      "from_start_date": null,
-      "from_end_date": null,
-      "to_start_date": "2021-12-18",
-      "to_end_date": "2021-12-19"
+      "status": "no_change",
+      "start_date": "2021-12-18",
+      "end_date": "2021-12-19"
     }
   ],
-  "calendar_entries": [],
+  "calendar_entries": [
+    {
+      "status": "created",
+      "event_id": 554,
+      "name": "Elite Canada",
+      "start_date": "2021-02-13",
+      "end_date": "2021-02-14",
+      "year": 2021,
+      "source_row": 11,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 554,
+      "name": "Elite Canada (MAG)",
+      "start_date": "2021-02-19",
+      "end_date": "2021-02-21",
+      "year": 2021,
+      "source_row": 12,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 587,
+      "name": "2nd Finnish Euros Trials",
+      "start_date": "2021-03-13",
+      "end_date": "2021-03-13",
+      "year": 2021,
+      "source_row": 23,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 587,
+      "name": "2nd Finnish Euros Trials (MAG)",
+      "start_date": "2021-03-14",
+      "end_date": "2021-03-14",
+      "year": 2021,
+      "source_row": 25,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 524,
+      "name": "3rd Finnish Euros Trials (MAG)",
+      "start_date": "2021-03-19",
+      "end_date": "2021-03-19",
+      "year": 2021,
+      "source_row": 27,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 524,
+      "name": "3rd Finnish Euros Trials",
+      "start_date": "2021-03-20",
+      "end_date": "2021-03-20",
+      "year": 2021,
+      "source_row": 31,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 595,
+      "name": "Polish Junior Cup",
+      "start_date": "2021-03-19",
+      "end_date": "2021-03-21",
+      "year": 2021,
+      "source_row": 28,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 595,
+      "name": "Polish Junior Cup (MAG)",
+      "start_date": "2021-03-26",
+      "end_date": "2021-03-27",
+      "year": 2021,
+      "source_row": 35,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 628,
+      "name": "Hungarian Super Team Championships",
+      "start_date": "2021-03-20",
+      "end_date": "2021-03-20",
+      "year": 2021,
+      "source_row": 30,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 628,
+      "name": "Hungarian Super Team Championships (MAG)",
+      "start_date": "2021-03-26",
+      "end_date": "2021-03-26",
+      "year": 2021,
+      "source_row": 33,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 527,
+      "name": "Top 12 Championships",
+      "start_date": "2021-03-27",
+      "end_date": "2021-03-27",
+      "year": 2021,
+      "source_row": 36,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 527,
+      "name": "Top 12 Championships (MAG)",
+      "start_date": "2021-03-28",
+      "end_date": "2021-03-28",
+      "year": 2021,
+      "source_row": 42,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 630,
+      "name": "Polish Championships (MAG)",
+      "start_date": "2021-03-27",
+      "end_date": "2021-03-28",
+      "year": 2021,
+      "source_row": 39,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 630,
+      "name": "Polish Championships",
+      "start_date": "2021-06-03",
+      "end_date": "2021-06-05",
+      "year": 2021,
+      "source_row": 75,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 536,
+      "name": "1st Bundesliga (MAG)",
+      "start_date": "2021-09-25",
+      "end_date": "2021-09-25",
+      "year": 2021,
+      "source_row": 143,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 536,
+      "name": "1st Bundesliga",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-02",
+      "year": 2021,
+      "source_row": 152,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    },
+    {
+      "status": "created",
+      "event_id": 535,
+      "name": "2nd Bundesliga (MAG)",
+      "start_date": "2021-10-02",
+      "end_date": "2021-10-02",
+      "year": 2021,
+      "source_row": 154,
+      "source_note": null,
+      "discipline": "MAG"
+    },
+    {
+      "status": "created",
+      "event_id": 535,
+      "name": "2nd Bundesliga",
+      "start_date": "2021-10-30",
+      "end_date": "2021-10-30",
+      "year": 2021,
+      "source_row": 173,
+      "source_note": null,
+      "discipline": "MAG and WAG"
+    }
+  ],
   "unresolved": [
     {
       "source": "docs/import_reports/calendar_2021_event_match_review_slim.csv",
@@ -1828,51 +1701,6 @@
       "calendar_row": "201",
       "calendar_event": "Bundesliga Relegation and Promotion Match",
       "reason": "missing_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "1",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "2",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "3",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "4",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "5",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "6",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "7",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "8",
-      "reason": "source_conflict_requires_one_choice"
-    },
-    {
-      "source": "docs/import_reports/calendar_2021_source_conflicts_slim.csv",
-      "conflict_group": "9",
-      "reason": "source_conflict_requires_one_choice"
     }
   ],
   "invalid_decision_details": [],

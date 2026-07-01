@@ -25,10 +25,32 @@ CALENDAR_ONLY_DECISIONS = {
     "no one of the options",
     "none of the options",
 }
+DB_ONLY_DECISIONS = {
+    *CALENDAR_ONLY_DECISIONS,
+    "db_only",
+    "db only",
+    "db-only",
+    "not in calendar",
+    "missing from calendar",
+    "no calendar",
+    "no calendar source",
+}
+SKIP_CALENDAR_UNMATCHED_DECISIONS = {
+    "linked_by_db_review",
+    "linked by db review",
+    "covered_by_db_review",
+    "covered by db review",
+    "handled_by_db_review",
+    "handled by db review",
+}
 
 
 def clean(value) -> str:
     return "" if value is None else str(value).strip()
+
+
+def decision_key(value) -> str:
+    return re.sub(r"\s+", " ", clean(value).lower().strip(" .;:"))
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -56,6 +78,34 @@ def selected_option_number(value: str) -> int | None:
     return int(match.group(0)) if match else None
 
 
+def selected_option_numbers(value: str) -> list[int]:
+    value = clean(value).lower()
+    if not value:
+        return []
+    normalized = re.sub(r"\.0\b", "", value)
+    numeric_choice_pattern = r"\d+(?:\s*(?:,|and|&|\+)\s*\d+)*"
+    if not re.fullmatch(numeric_choice_pattern, normalized):
+        return []
+    return [int(match) for match in re.findall(r"\d+", normalized)]
+
+
+def selected_event_ids_from_calendar_row(row: dict[str, str]) -> list[int]:
+    manual_event_id = clean(row.get("manual_event_id", ""))
+    if manual_event_id:
+        return [
+            int(value)
+            for value in re.findall(r"\d+", re.sub(r"\.0\b", "", manual_event_id))
+        ]
+
+    event_ids = []
+    for option_number in selected_option_numbers(row.get("choice", "")):
+        option = clean(row.get(f"option_{option_number}", ""))
+        match = re.search(r"\bID\s+(\d+)\b", option)
+        if match:
+            event_ids.append(int(match.group(1)))
+    return event_ids
+
+
 def selected_event_id_from_calendar_row(row: dict[str, str]) -> int | None:
     manual_event_id = parse_int(row.get("manual_event_id", ""))
     if manual_event_id is not None:
@@ -81,11 +131,19 @@ def selected_calendar_row_from_db_row(row: dict[str, str]) -> int | None:
 
 
 def unresolved_choice(value: str) -> bool:
-    return clean(value).lower() in {"", "?", "review", "todo", "no match", "none"}
+    return decision_key(value) in {"", "?", "review", "todo"}
 
 
 def calendar_only_choice(value: str) -> bool:
-    return clean(value).lower() in CALENDAR_ONLY_DECISIONS
+    return decision_key(value) in CALENDAR_ONLY_DECISIONS
+
+
+def db_only_choice(value: str) -> bool:
+    return decision_key(value) in DB_ONLY_DECISIONS
+
+
+def skip_calendar_unmatched_choice(value: str) -> bool:
+    return decision_key(value) in SKIP_CALENDAR_UNMATCHED_DECISIONS
 
 
 def season_year_spillover_choice(row: dict[str, str]) -> bool:
@@ -103,6 +161,34 @@ def backup_database(db_path: Path, year: int) -> str | None:
     return str(backup_path)
 
 
+def write_db_only_report(path: Path, rows: list[dict]) -> None:
+    fieldnames = [
+        "event_id",
+        "event_name",
+        "discipline",
+        "category",
+        "level",
+        "result_count",
+        "review_decision",
+        "notes",
+    ]
+    existing = read_csv(path)
+    reviewed_ids = {clean(row.get("event_id", "")) for row in rows}
+    merged = [
+        row
+        for row in existing
+        if clean(row.get("event_id", "")) not in reviewed_ids
+    ]
+    merged.extend(rows)
+    merged.sort(key=lambda row: (clean(row.get("event_name", "")), clean(row.get("event_id", ""))))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in merged:
+            writer.writerow({field: row.get(field, "") for field in fieldnames})
+
+
 def run(args: argparse.Namespace) -> dict:
     os.environ["DATABASE_URL"] = f"sqlite:///{args.db_path}"
 
@@ -118,11 +204,14 @@ def run(args: argparse.Namespace) -> dict:
 
     pairs: dict[tuple[int, int], str] = {}
     calendar_only_rows: list[dict[str, str]] = []
+    db_only_rows: list[dict[str, str]] = []
     invalid_decisions: list[dict] = []
     unresolved_decisions: list[dict] = []
 
     for row in read_csv(calendar_unmatched_path):
         calendar_row = parse_int(row.get("calendar_row", ""))
+        if skip_calendar_unmatched_choice(row.get("choice", "")):
+            continue
         if calendar_only_choice(row.get("choice", "")):
             if calendar_row is None:
                 invalid_decisions.append({
@@ -135,8 +224,8 @@ def run(args: argparse.Namespace) -> dict:
                 continue
             calendar_only_rows.append(row)
             continue
-        selected_event_id = selected_event_id_from_calendar_row(row)
-        if calendar_row is None or selected_event_id is None:
+        selected_event_ids = selected_event_ids_from_calendar_row(row)
+        if calendar_row is None or not selected_event_ids:
             target = unresolved_decisions if unresolved_choice(row.get("choice", "")) else invalid_decisions
             target.append({
                 "source": str(calendar_unmatched_path),
@@ -150,10 +239,24 @@ def run(args: argparse.Namespace) -> dict:
         source = "calendar_unmatched_current"
         if season_year_spillover_choice(row):
             source = clean(row.get("notes", "")) or "season_year_spillover"
-        pairs[(selected_event_id, calendar_row)] = source
+        for selected_event_id in selected_event_ids:
+            pairs[(selected_event_id, calendar_row)] = source
 
     for row in read_csv(db_unmatched_path):
         event_id = parse_int(row.get("event_id", ""))
+        if db_only_choice(row.get("choice_calendar_row", "")):
+            if event_id is None:
+                invalid_decisions.append({
+                    "source": str(db_unmatched_path),
+                    "event_id": row.get("event_id", ""),
+                    "event_name": row.get("event_name", ""),
+                    "choice_calendar_row": row.get("choice_calendar_row", ""),
+                    "notes": row.get("notes", ""),
+                    "reason": "missing_event_id_for_db_only",
+                })
+                continue
+            db_only_rows.append(row)
+            continue
         calendar_row = selected_calendar_row_from_db_row(row)
         if event_id is None or calendar_row is None:
             target = unresolved_decisions if unresolved_choice(row.get("choice_calendar_row", "")) else invalid_decisions
@@ -174,6 +277,7 @@ def run(args: argparse.Namespace) -> dict:
     try:
         applied_pairs = []
         updated_events = []
+        db_only_details = []
         calendar_entries_created = 0
         calendar_entries_updated = 0
         calendar_entries_relinked = 0
@@ -248,6 +352,39 @@ def run(args: argparse.Namespace) -> dict:
                         source_row=calendar_row.row_number,
                         source_note=note,
                     ))
+
+        for row in db_only_rows:
+            event_id = parse_int(row.get("event_id", ""))
+            event = db.query(models.Event).filter(
+                models.Event.id == event_id,
+                models.Event.is_deleted.is_(False),
+            ).first()
+            if not event:
+                invalid_decisions.append({
+                    "event_id": row.get("event_id", ""),
+                    "event_name": row.get("event_name", ""),
+                    "reason": "db_only_event_not_found",
+                })
+                continue
+            if event.year != args.year:
+                invalid_decisions.append({
+                    "event_id": event.id,
+                    "event_name": event.name,
+                    "event_year": event.year,
+                    "expected_year": args.year,
+                    "reason": "db_only_event_year_mismatch",
+                })
+                continue
+            db_only_details.append({
+                "event_id": str(event.id),
+                "event_name": event.name,
+                "discipline": event.discipline.value,
+                "category": event.category.value,
+                "level": event.level.value,
+                "result_count": clean(row.get("result_count", "")),
+                "review_decision": "db_only",
+                "notes": clean(row.get("notes", "")) or "Event derived from Results but not present in the Calendar source.",
+            })
 
         for (event_id, calendar_row_number), source in sorted(pairs.items(), key=lambda item: (item[0][1], item[0][0])):
             calendar_row = calendar_by_row.get(calendar_row_number)
@@ -391,6 +528,12 @@ def run(args: argparse.Namespace) -> dict:
         else:
             db.rollback()
 
+        if args.commit and not invalid_decisions and db_only_details:
+            write_db_only_report(
+                report_dir / f"calendar_{args.year}_db_only_events.csv",
+                db_only_details,
+            )
+
         output = {
             "year": args.year,
             "dry_run": dry_run,
@@ -405,6 +548,7 @@ def run(args: argparse.Namespace) -> dict:
             "calendar_only_rows": len(calendar_only_rows),
             "calendar_only_entries_created": calendar_only_entries_created,
             "calendar_only_entries_updated": calendar_only_entries_updated,
+            "db_only_events": len(db_only_details),
             "cleared_cross_year_event_dates": len(cleared_cross_year_event_dates),
             "preserved_existing_event_dates": len(preserved_existing_event_dates),
             "unresolved_review_items": len(unresolved_decisions),
@@ -412,6 +556,7 @@ def run(args: argparse.Namespace) -> dict:
             "source_issues": len(issues),
             "applied_pair_details": applied_pairs,
             "calendar_only_details": calendar_only_details,
+            "db_only_details": db_only_details,
             "updated_event_details": updated_events,
             "cleared_cross_year_event_date_details": cleared_cross_year_event_dates,
             "preserved_existing_event_date_details": preserved_existing_event_dates,
@@ -443,6 +588,7 @@ def main() -> None:
         if key not in {
             "applied_pair_details",
             "calendar_only_details",
+            "db_only_details",
             "updated_event_details",
             "cleared_cross_year_event_date_details",
             "preserved_existing_event_date_details",

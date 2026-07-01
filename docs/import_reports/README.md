@@ -253,7 +253,7 @@ Esito review corrente calendario 2019:
 
 Le due righe Calendar 2019 senza Event DB collegato sono state chiuse come `calendar_only`: `Zelena Jama Open` e `Brazilian Junior Championships`. Il file `Results 2019.xlsx` e stato controllato direttamente e non contiene risultati sorgente riconducibili a questi due eventi; potrebbero quindi essere gare non svolte oppure gare senza result sorgente disponibile.
 
-Regola metodologica aggiunta durante la chiusura 2019: la riuscita del matching Calendar non richiede che ogni riga Calendar abbia una scheda Event collegata. La metrica critica e che tutti gli Event DB ricavati dai Result abbiano copertura Calendar. Le righe Calendar senza Result possono restare come `calendar_only` e comparire in UI come voci non cliccabili verso una scheda evento.
+Regola metodologica aggiunta durante la chiusura 2019: la riuscita del matching Calendar non richiede che ogni riga Calendar abbia una scheda Event collegata. La metrica critica e che tutti gli Event DB ricavati dai Result abbiano copertura Calendar oppure una review esplicita admin se il Calendar sorgente non contiene la gara. Le righe Calendar senza Result possono restare come `calendar_only` e comparire in UI come voci non cliccabili verso una scheda evento.
 
 Regola tecnica rafforzata durante la chiusura 2019: se una decisione manuale collega una riga Calendar aggiuntiva a un Event che ha gia date canoniche valide, il sistema non sovrascrive `Event.start_date` / `Event.end_date`; conserva la data principale dell'Event e rappresenta la riga aggiuntiva con `EventCalendarEntry`.
 
@@ -279,7 +279,7 @@ Per la review 2020 si usano:
 - `calendar_2020_db_unmatched_current.csv`
 - `calendar_2020_source_conflicts_slim.csv`
 
-Il criterio resta quello definito a fine 2019: l'obiettivo essenziale e coprire tutti gli Event DB ricavati dai Result. Le righe Calendar senza Result possono essere chiuse come `calendar_only`.
+Il criterio resta quello definito a fine 2019: l'obiettivo essenziale e coprire tutti gli Event DB ricavati dai Result oppure marcarli con review esplicita admin se il Calendar sorgente non contiene la gara. Le righe Calendar senza Result possono essere chiuse come `calendar_only`.
 
 Esito finale calendario 2020:
 
@@ -326,7 +326,26 @@ File operativi da compilare:
 - `calendar_2021_db_unmatched_current.csv`
 - `calendar_2021_source_conflicts_slim.csv`
 
-La review 2021 deve continuare a seguire la regola metodologica gia fissata: ogni Event DB derivato dai Result deve avere copertura Calendar; una riga Calendar senza Event DB puo invece restare solo calendario tramite `calendar_only` se non esiste un Result sorgente collegabile.
+La review 2021 deve continuare a seguire la regola metodologica gia fissata: ogni Event DB derivato dai Result deve avere copertura Calendar oppure review esplicita admin come `db_only`; una riga Calendar senza Event DB puo invece restare solo calendario tramite `calendar_only` se non esiste un Result sorgente collegabile.
+
+Esito finale calendario 2021:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2021 | 210 |
+| Event DB 2021 | 196 |
+| Event DB 2021 coperti o verificati | 196 |
+| Event DB 2021 senza copertura/review Calendar | 0 |
+| Righe Calendar 2021 ancora da risolvere | 0 |
+| Righe Calendar 2021 `calendar_only` senza scheda Event | 1 |
+| Event DB 2021 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 9 |
+
+La riga `calendar_only` 2021 e `Oceania Championships`. L'Event `db_only` 2021 e `RomGym Trophy`, ricavato dai Result ma non presente nel Calendar sorgente.
+
+Regola metodologica aggiunta durante la chiusura 2021: un Event DB ricavato dai Result puo non comparire nel Calendar sorgente. In questo caso non si forza un'associazione artificiale; dopo verifica admin viene registrato come `db_only`, resta consultabile come scheda Event/Result, ma non viene usato come voce del calendario interattivo finche non esiste una data sorgente affidabile.
 
 ## Convenzione review atleta/country
 

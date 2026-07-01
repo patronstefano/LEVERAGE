@@ -132,6 +132,24 @@ def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
         writer.writerows(rows)
 
 
+def read_csv(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as handle:
+        return list(csv.DictReader(handle))
+
+
+def reviewed_db_only_event_ids(report_dir: Path, year: int) -> set[int]:
+    path = report_dir / f"calendar_{year}_db_only_events.csv"
+    event_ids = set()
+    for row in read_csv(path):
+        try:
+            event_ids.add(int(float(row.get("event_id", ""))))
+        except ValueError:
+            continue
+    return event_ids
+
+
 def is_season_year_spillover(entry: models.EventCalendarEntry) -> bool:
     return "season_year_spillover" in (entry.source_note or "")
 
@@ -139,6 +157,7 @@ def is_season_year_spillover(entry: models.EventCalendarEntry) -> bool:
 def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
     rows, issues = parse_calendar_file(args.calendar_file.name, args.calendar_file.read_bytes())
     year_rows = [row for row in rows if row.year == args.year]
+    db_only_event_ids = reviewed_db_only_event_ids(args.report_dir, args.year)
 
     db = SessionLocal()
     try:
@@ -242,8 +261,12 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             calendar_unmatched_rows.append(output)
 
         db_unmatched_rows = []
+        db_event_ids = {event.id for event in db_events}
+        reviewed_db_only_ids = db_only_event_ids & db_event_ids
         for event in db_events:
             if event.id in matched_event_ids:
+                continue
+            if event.id in reviewed_db_only_ids:
                 continue
             options = calendar_options_for_event(event, year_rows, args.suggestion_limit)
             output = {
@@ -267,6 +290,7 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             "calendar_unmatched_rows": len(calendar_unmatched_rows),
             "db_unmatched_events": len(db_unmatched_rows),
             "db_matched_events": len(db_events) - len(db_unmatched_rows),
+            "db_only_events": len(reviewed_db_only_ids),
             "calendar_only_rows": len(calendar_only_source_rows),
             "season_year_spillover_entries": len(season_year_spillover_rows),
             "cross_year_calendar_entries": len(cross_year_rows),

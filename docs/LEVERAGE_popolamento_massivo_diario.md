@@ -3072,11 +3072,11 @@ Le due righe Calendar chiuse come `calendar_only`, quindi visualizzabili nel cal
 | 60 | `Zelena Jama Open` | Apr 6 | Nessun match DB 2019 confermato; non trovato in `Results 2019.xlsx`; possibile evento non svolto o senza risultati sorgente |
 | 211 | `Brazilian Junior Championships` | Nov 5-10 | Nessun match DB 2019 confermato; non trovato in `Results 2019.xlsx`; possibile evento non svolto o senza risultati sorgente |
 
-Nota metodologica: da questo passaggio in poi, la chiusura di un anno calendario non richiede che ogni riga Calendar abbia un Event DB collegato. Alcune gare presenti nel calendario possono non comparire negli Event ricavati dai Result perche potrebbero non essere state svolte, oppure perche non esiste un risultato Gymternet sorgente associato. La metrica critica e quindi che tutti gli Event DB creati dai Result abbiano una copertura Calendar; le righe Calendar senza Result possono restare come `calendar_only`. Il file `Results 2019.xlsx` e stato controllato direttamente: contiene risultati per `Hungarian Masters`, che e stato associato all'Event DB `Hungarian Masters`, ma non contiene risultati riconducibili a `Zelena Jama Open` o `Brazilian Junior Championships`.
+Nota metodologica: da questo passaggio in poi, la chiusura di un anno calendario non richiede che ogni riga Calendar abbia un Event DB collegato. Alcune gare presenti nel calendario possono non comparire negli Event ricavati dai Result perche potrebbero non essere state svolte, oppure perche non esiste un risultato Gymternet sorgente associato. La metrica critica e quindi che tutti gli Event DB creati dai Result abbiano una copertura Calendar oppure, se il Calendar sorgente non contiene la gara, una review esplicita admin; le righe Calendar senza Result possono restare come `calendar_only`. Il file `Results 2019.xlsx` e stato controllato direttamente: contiene risultati per `Hungarian Masters`, che e stato associato all'Event DB `Hungarian Masters`, ma non contiene risultati riconducibili a `Zelena Jama Open` o `Brazilian Junior Championships`.
 
 ### Calendar 2020
 
-Il flusso Calendar 2020 e stato avviato dopo la chiusura metodologica del 2019. La regola di successo applicata e: tutti gli Event DB creati dai Result devono avere copertura Calendar; le righe Calendar senza Result possono restare come `calendar_only`.
+Il flusso Calendar 2020 e stato avviato dopo la chiusura metodologica del 2019. La regola di successo applicata e: tutti gli Event DB creati dai Result devono avere copertura Calendar oppure una review esplicita admin se il Calendar sorgente non contiene la gara; le righe Calendar senza Result possono restare come `calendar_only`.
 
 Situazione iniziale:
 
@@ -3171,7 +3171,7 @@ Nota metodologica: `season_year_spillover` e una eccezione controllata, non un e
 
 ### Calendar 2021
 
-Il flusso Calendar 2021 e stato avviato con la stessa metodologia consolidata per 2018-2020: prima applicazione automatica solo dei match sicuri, poi preparazione di file CSV snelli per la review admin dei casi non risolti. La regola guida resta che tutti gli Event DB creati dai Result devono ottenere copertura Calendar, mentre le righe Calendar prive di Result possono essere chiuse come `calendar_only` se rappresentano eventi non svolti o privi di risultati sorgente.
+Il flusso Calendar 2021 e stato avviato con la stessa metodologia consolidata per 2018-2020: prima applicazione automatica solo dei match sicuri, poi preparazione di file CSV snelli per la review admin dei casi non risolti. La regola guida resta che tutti gli Event DB creati dai Result devono ottenere copertura Calendar oppure una review esplicita admin come `db_only` se il Calendar sorgente non contiene la gara, mentre le righe Calendar prive di Result possono essere chiuse come `calendar_only` se rappresentano eventi non svolti o privi di risultati sorgente.
 
 Fotografia iniziale 2021:
 
@@ -3221,3 +3221,75 @@ File preparati per la review admin 2021:
 - `calendar_2021_source_conflicts_slim.csv`
 
 Nota operativa: i tre file restano volutamente snelli. Nel primo si decide se una riga Calendar va collegata a un Event DB suggerito oppure chiusa come `calendar_only`; nel secondo si collega un Event DB ancora senza data alla riga Calendar corretta; nel terzo si risolve il caso in cui lo stesso Event DB puo essere rappresentato da piu righe Calendar, spesso per differenze MAG/WAG o giornate multiple.
+
+Review admin corrente 2021:
+
+Le decisioni admin sono state lette dai file Numbers e riportate nei CSV operativi. Durante questa review e emersa una nuova eccezione metodologica: alcuni Event DB ricavati dai Result possono non comparire nel Calendar sorgente. In questi casi non bisogna forzare un match artificiale; l'Event va marcato come `db_only` dopo verifica admin, mantenendo traccia del motivo.
+
+Normalizzazioni applicate:
+
+- `No one.` nel file Calendar-unmatched e stato normalizzato in `calendar_only`;
+- `No one.` nel file DB-unmatched e stato normalizzato in `db_only`;
+- le righe Calendar 24 e 61 dei British Olympic Trials sono state marcate come `linked_by_db_review`, perche rappresentano righe calendario aggregate collegate a piu Event DB distinti tramite il file DB-unmatched;
+- le scelte multi-riga `1 and 2` e simili sono state conservate per creare `EventCalendarEntry` multipli senza comprimere date diverse dentro un solo intervallo canonico Event.
+
+Esito dell'applicazione dei mismatch correnti:
+
+| Controllo | Conteggio |
+|---|---:|
+| Coppie Calendar/Event applicate dalla review corrente | 37 |
+| Event aggiornati con date dalla review corrente | 25 |
+| Calendar entries create dalla review corrente | 37 |
+| Righe Calendar chiuse come `calendar_only` | 1 |
+| Event DB marcati come `db_only` | 1 |
+| Date canoniche Event preservate e non sovrascritte | 12 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_current_review_2021_20260701_220954.db
+```
+
+Esito dei conflitti stesso Event/date diverse:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date risolti | 9 |
+| Calendar entries create dai conflitti multi-data | 18 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2021_20260702_001020.db
+```
+
+Esito finale 2021:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2021 | 210 |
+| Event DB 2021 | 196 |
+| Event DB 2021 coperti o verificati | 196 |
+| Event DB 2021 senza copertura/review Calendar | 0 |
+| Righe Calendar 2021 ancora da risolvere | 0 |
+| Righe Calendar 2021 `calendar_only` senza scheda Event | 1 |
+| Event DB 2021 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+La riga Calendar 2021 chiusa come `calendar_only` e:
+
+| Riga Calendar | Evento | Data | Esito |
+|---:|---|---|---|
+| 66 | `Oceania Championships` | May 21 | Nessun Event DB 2021 collegato; voce Calendar mantenuta senza scheda Event collegata |
+
+L'Event DB 2021 chiuso come `db_only` e:
+
+| Event ID | Evento | Discipline | Result | Esito |
+|---:|---|---|---:|---|
+| 691 | `RomGym Trophy` | WAG | 16 | Event ricavato dai Result ma assente dal Calendar sorgente; non viene forzato un match Calendar artificiale |
+
+Nota metodologica: da questo punto in avanti la qualita della riconciliazione Calendar non richiede che ogni Event DB abbia per forza una riga Calendar. Richiede invece che ogni Event DB sia o collegato a una riga Calendar, oppure marcato esplicitamente come `db_only` dopo verifica admin. Questa regola evita di creare date o collegamenti non supportati dal file Calendar sorgente.
