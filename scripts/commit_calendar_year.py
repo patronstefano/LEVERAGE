@@ -20,7 +20,17 @@ if str(PROJECT_ROOT) not in sys.path:
 
 MATCH_DECISIONS = {"match", "use", "accept", "accept_suggestion", "manual_match", "update_dates"}
 IGNORE_DECISIONS = {"ignore", "skip", "keep separate", "keep_separate"}
-CALENDAR_ONLY_DECISIONS = {"calendar_only", "calendar only", "calendar-only", "no_match", "no match", "no-match"}
+CALENDAR_ONLY_DECISIONS = {
+    "calendar_only",
+    "calendar only",
+    "calendar-only",
+    "no_match",
+    "no match",
+    "no-match",
+    "no one",
+    "no one of the options",
+    "none of the options",
+}
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

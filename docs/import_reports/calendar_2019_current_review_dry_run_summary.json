@@ -10,10 +10,10 @@
   "calendar_entries_updated": 14,
   "calendar_entries_relinked": 0,
   "calendar_only_rows": 2,
-  "calendar_only_entries_created": 2,
+  "calendar_only_entries_created": 0,
   "calendar_only_entries_updated": 0,
   "cleared_cross_year_event_dates": 0,
-  "preserved_existing_event_dates": 2,
+  "preserved_existing_event_dates": 1,
   "unresolved_review_items": 0,
   "invalid_decisions": 0,
   "source_issues": 0,
@@ -136,13 +136,13 @@
       "source": "db_unmatched_current"
     },
     {
-      "event_id": 372,
-      "event_name": "1st Spanish League",
+      "event_id": 373,
+      "event_name": "1st Spanish League (2020 season)",
       "calendar_row": 242,
       "calendar_event": "1st Spanish League (2020 season)",
       "start_date": "2019-12-07",
       "end_date": "2019-12-08",
-      "source": "calendar_unmatched_current"
+      "source": "season_year_spillover: Event.year=2020, Calendar sheet year=2019"
     }
   ],
   "calendar_only_details": [
@@ -153,7 +153,7 @@
       "end_date": "2019-04-06",
       "source": "calendar_only",
       "notes": "No Results 2019 source match; possible not-held/no-result calendar entry",
-      "status": "created"
+      "status": "no_change"
     },
     {
       "calendar_row": 211,
@@ -162,7 +162,7 @@
       "end_date": "2019-11-10",
       "source": "calendar_only",
       "notes": "No Results 2019 source match; possible not-held/no-result calendar entry",
-      "status": "created"
+      "status": "no_change"
     }
   ],
   "updated_event_details": [],
@@ -177,17 +177,6 @@
       "calendar_event": "Russian Junior Men's Championships",
       "calendar_start_date": "2019-05-06",
       "calendar_end_date": "2019-05-11",
-      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
-    },
-    {
-      "event_id": 372,
-      "event_name": "1st Spanish League",
-      "existing_start_date": "2019-02-08",
-      "existing_end_date": "2019-02-10",
-      "calendar_row": 242,
-      "calendar_event": "1st Spanish League (2020 season)",
-      "calendar_start_date": "2019-12-07",
-      "calendar_end_date": "2019-12-08",
       "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
     }
   ],

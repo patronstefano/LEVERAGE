@@ -6,5 +6,6 @@ calendar_unmatched_rows,0
 db_unmatched_events,0
 db_matched_events,233
 calendar_only_rows,2
+season_year_spillover_entries,1
 cross_year_calendar_entries,0
 source_issues,0

@@ -14,7 +14,17 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-CALENDAR_ONLY_DECISIONS = {"calendar_only", "calendar only", "calendar-only", "no_match", "no match", "no-match"}
+CALENDAR_ONLY_DECISIONS = {
+    "calendar_only",
+    "calendar only",
+    "calendar-only",
+    "no_match",
+    "no match",
+    "no-match",
+    "no one",
+    "no one of the options",
+    "none of the options",
+}
 
 
 def clean(value) -> str:
@@ -78,6 +88,10 @@ def calendar_only_choice(value: str) -> bool:
     return clean(value).lower() in CALENDAR_ONLY_DECISIONS
 
 
+def season_year_spillover_choice(row: dict[str, str]) -> bool:
+    return "season_year_spillover" in clean(row.get("notes", ""))
+
+
 def backup_database(db_path: Path, year: int) -> str | None:
     if not db_path.exists():
         return None
@@ -133,7 +147,10 @@ def run(args: argparse.Namespace) -> dict:
                 "reason": "unresolved_calendar_row" if target is unresolved_decisions else "missing_calendar_row_or_selected_event",
             })
             continue
-        pairs[(selected_event_id, calendar_row)] = "calendar_unmatched_current"
+        source = "calendar_unmatched_current"
+        if season_year_spillover_choice(row):
+            source = clean(row.get("notes", "")) or "season_year_spillover"
+        pairs[(selected_event_id, calendar_row)] = source
 
     for row in read_csv(db_unmatched_path):
         event_id = parse_int(row.get("event_id", ""))
@@ -254,14 +271,15 @@ def run(args: argparse.Namespace) -> dict:
                 })
                 continue
             if event.year != args.year:
-                invalid_decisions.append({
-                    "event_id": event_id,
-                    "event_year": event.year,
-                    "expected_year": args.year,
-                    "calendar_row": calendar_row_number,
-                    "reason": "event_year_mismatch",
-                })
-                continue
+                if "season_year_spillover" not in source:
+                    invalid_decisions.append({
+                        "event_id": event_id,
+                        "event_year": event.year,
+                        "expected_year": args.year,
+                        "calendar_row": calendar_row_number,
+                        "reason": "event_year_mismatch",
+                    })
+                    continue
 
             dates_differ = event.start_date != calendar_row.start_date or event.end_date != calendar_row.end_date
             event_has_dates = event.start_date is not None or event.end_date is not None

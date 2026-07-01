@@ -3126,3 +3126,45 @@ File preparati per la review admin 2020:
 - `calendar_2020_source_conflicts_slim.csv`
 
 Nota metodologica: le righe Calendar senza Event DB non sono automaticamente errori. Durante la review verranno collegate a un Event DB solo se rappresentano effettivamente risultati presenti in LEVERAGE; in caso contrario verranno chiuse come `calendar_only`.
+
+Review admin corrente 2020:
+
+Le decisioni admin sono state lette dai file Numbers e riportate nei CSV operativi. Nel file `calendar_2020_calendar_unmatched_current.csv`, la decisione `No one` e stata normalizzata in `calendar_only`. Nel file `calendar_2020_db_unmatched_current.csv`, la scelta testuale `Unisport Norges Cup` e stata interpretata come riferimento alla riga Calendar 26.
+
+Esito dell'applicazione:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date diverse risolti | 3 |
+| Calendar entries create dai conflitti multi-data | 5 |
+| Coppie Calendar/Event applicate dalla review corrente | 15 |
+| Calendar entries create dalla review corrente | 15 |
+| Righe Calendar chiuse come `calendar_only` | 2 |
+| Event aggiornati con date dalla review corrente | 5 |
+| Date canoniche Event preservate e non sovrascritte | 7 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Durante la review 2020 e stato corretto un caso di stagione a cavallo d'anno: `1st Spanish League (2020 season)` e un Event DB con `Event.year=2020`, ma la riga Calendar corrispondente e nel foglio 2019, riga 242, con data Dec 7-8 2019. Il collegamento precedentemente associato all'Event 2019 `1st Spanish League` e stato rilinkato all'Event 2020 corretto e marcato con `season_year_spillover`.
+
+Esito finale 2020:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2020 | 90 |
+| Event DB 2020 | 77 |
+| Event DB 2020 coperti dal Calendar | 77 |
+| Event DB 2020 senza copertura Calendar | 0 |
+| Righe Calendar 2020 ancora da risolvere | 0 |
+| Righe Calendar 2020 `calendar_only` senza scheda Event | 2 |
+| Collegamenti `season_year_spillover` | 1 |
+| Collegamenti cross-year non controllati | 0 |
+
+Le due righe Calendar 2020 chiuse come `calendar_only` sono:
+
+| Riga Calendar | Evento | Data | Esito |
+|---:|---|---|---|
+| 42 | `Stella Zakharova Cup` | Sep 26-27 | Nessun Result DB 2020 collegato; possibile evento non svolto o senza risultati sorgente |
+| 79 | `Hungarian Master Championships` | Nov 13-15 | Nessun Result DB 2020 collegato; possibile evento non svolto o senza risultati sorgente |
+
+Nota metodologica: `season_year_spillover` e una eccezione controllata, non un errore cross-year. Si usa quando l'Event DB appartiene a una stagione/anno dati diverso dal foglio Calendar in cui cade la data reale dell'evento.

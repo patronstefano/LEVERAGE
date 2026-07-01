@@ -1,0 +1,21 @@
+{
+  "year": 2020,
+  "committed": true,
+  "backup_path": "backups/leverage_calendar_2020_before_spanish_spillover_repair_20260701_211637.db",
+  "repairs": [
+    {
+      "reason": "season_year_spillover",
+      "calendar_sheet_year": 2019,
+      "calendar_row": 242,
+      "calendar_event": "1st Spanish League (2020 season)",
+      "calendar_start_date": "2019-12-07",
+      "calendar_end_date": "2019-12-08",
+      "previous_event_id": 372,
+      "previous_event_name": "1st Spanish League",
+      "target_event_id": 373,
+      "target_event_name": "1st Spanish League (2020 season)",
+      "target_event_year": 2020,
+      "source_note": "season_year_spillover: Event.year=2020, Calendar sheet year=2019"
+    }
+  ]
+}

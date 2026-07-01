@@ -257,6 +257,8 @@ Regola metodologica aggiunta durante la chiusura 2019: la riuscita del matching 
 
 Regola tecnica rafforzata durante la chiusura 2019: se una decisione manuale collega una riga Calendar aggiuntiva a un Event che ha gia date canoniche valide, il sistema non sovrascrive `Event.start_date` / `Event.end_date`; conserva la data principale dell'Event e rappresenta la riga aggiuntiva con `EventCalendarEntry`.
 
+Regola tecnica aggiunta durante la chiusura 2020: `season_year_spillover` indica una eccezione controllata in cui l'Event DB appartiene a una stagione/anno diverso dal foglio Calendar in cui cade la data reale. Il caso guida e `1st Spanish League (2020 season)`: `Event.year=2020`, ma data reale Dec 7-8 2019 nel Calendar 2019.
+
 Primo checkpoint calendario 2020:
 
 | Controllo | Conteggio |
@@ -278,6 +280,22 @@ Per la review 2020 si usano:
 - `calendar_2020_source_conflicts_slim.csv`
 
 Il criterio resta quello definito a fine 2019: l'obiettivo essenziale e coprire tutti gli Event DB ricavati dai Result. Le righe Calendar senza Result possono essere chiuse come `calendar_only`.
+
+Esito finale calendario 2020:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2020 | 90 |
+| Event DB 2020 | 77 |
+| Event DB 2020 coperti dal Calendar | 77 |
+| Event DB 2020 senza copertura Calendar | 0 |
+| Righe Calendar 2020 ancora da risolvere | 0 |
+| Righe Calendar 2020 `calendar_only` senza scheda Event | 2 |
+| Collegamenti `season_year_spillover` | 1 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 3 |
+
+Le due righe Calendar 2020 chiuse come `calendar_only` sono `Stella Zakharova Cup` e `Hungarian Master Championships`.
 
 ## Convenzione review atleta/country
 

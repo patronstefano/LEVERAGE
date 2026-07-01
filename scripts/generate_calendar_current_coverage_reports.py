@@ -132,6 +132,10 @@ def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
         writer.writerows(rows)
 
 
+def is_season_year_spillover(entry: models.EventCalendarEntry) -> bool:
+    return "season_year_spillover" in (entry.source_note or "")
+
+
 def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
     rows, issues = parse_calendar_file(args.calendar_file.name, args.calendar_file.read_bytes())
     year_rows = [row for row in rows if row.year == args.year]
@@ -150,17 +154,52 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             models.EventCalendarEntry.event_id == models.Event.id,
         ).filter(
             models.EventCalendarEntry.is_deleted.is_(False),
-            models.EventCalendarEntry.year == args.year,
+            (
+                (models.EventCalendarEntry.year == args.year)
+                | (models.Event.year == args.year)
+            ),
         ).all()
 
         entry_event_ids_by_row: dict[int, set[int]] = {}
         calendar_only_source_rows: set[int] = set()
+        matched_event_ids_from_entries: set[int] = set()
+        season_year_spillover_rows = []
         cross_year_rows = []
         for entry, event in entries:
             if entry.source_row is None:
                 continue
+            if event and event.year == args.year and (entry.year == args.year or is_season_year_spillover(entry)):
+                matched_event_ids_from_entries.add(event.id)
+                if entry.year != args.year and is_season_year_spillover(entry):
+                    season_year_spillover_rows.append({
+                        "calendar_row": entry.source_row,
+                        "calendar_event": entry.name,
+                        "calendar_start_date": entry.start_date.isoformat(),
+                        "calendar_end_date": entry.end_date.isoformat(),
+                        "linked_event_id": entry.event_id or "",
+                        "linked_event_name": event.name,
+                        "linked_event_year": event.year,
+                        "action": "season_year_spillover",
+                        "notes": entry.source_note or "",
+                    })
+            if entry.year != args.year:
+                continue
             if event is None:
                 calendar_only_source_rows.add(entry.source_row)
+                continue
+            if event.year != args.year and is_season_year_spillover(entry):
+                season_year_spillover_rows.append({
+                    "calendar_row": entry.source_row,
+                    "calendar_event": entry.name,
+                    "calendar_start_date": entry.start_date.isoformat(),
+                    "calendar_end_date": entry.end_date.isoformat(),
+                    "linked_event_id": entry.event_id or "",
+                    "linked_event_name": event.name,
+                    "linked_event_year": event.year,
+                    "action": "season_year_spillover",
+                    "notes": entry.source_note or "",
+                })
+                entry_event_ids_by_row.setdefault(entry.source_row, set()).add(event.id)
                 continue
             if event.year != args.year:
                 cross_year_rows.append({
@@ -177,7 +216,7 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
                 continue
             entry_event_ids_by_row.setdefault(entry.source_row, set()).add(event.id)
 
-        matched_event_ids: set[int] = set()
+        matched_event_ids: set[int] = set(matched_event_ids_from_entries)
         calendar_unmatched_rows = []
         for row in year_rows:
             matched_events = direct_matches(row, event_lookup)
@@ -229,6 +268,7 @@ def generate_current_coverage_reports(args: argparse.Namespace) -> dict:
             "db_unmatched_events": len(db_unmatched_rows),
             "db_matched_events": len(db_events) - len(db_unmatched_rows),
             "calendar_only_rows": len(calendar_only_source_rows),
+            "season_year_spillover_entries": len(season_year_spillover_rows),
             "cross_year_calendar_entries": len(cross_year_rows),
             "source_issues": len(issues),
         }
