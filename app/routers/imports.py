@@ -3,6 +3,7 @@ from datetime import date
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -317,7 +318,9 @@ def commit_calendar_import(
     )
     payload = build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary)
     if has_error_issues(summary):
-        raise HTTPException(status_code=400, detail=payload)
+        raise HTTPException(status_code=400, detail=jsonable_encoder(payload))
+    if summary["duplicate_source_rows"]:
+        raise HTTPException(status_code=409, detail=jsonable_encoder(payload))
 
     updated_event_ids: set[int] = set()
     created_events = 0

@@ -549,6 +549,7 @@ Endpoint:
    Legge il file `.xlsx`, `.xlsm` o `.csv`, interpreta date come `Jan 11`, `Jan 11-15`, `Jan 11-Feb 3`, confronta gli eventi con il database e restituisce cosa verrebbe aggiornato o creato.
 2. `POST /imports/calendar/commit`
    Ripete il parsing, aggiorna `start_date` / `end_date` degli eventi gia presenti e crea automaticamente solo gli eventi mancanti da `create_missing_from_year` in poi. Le righe storiche non matchate restano in review e non vengono create automaticamente.
+   Se la preview rileva duplicati sorgente, cioe stesso nome evento nello stesso foglio/anno con righe diverse, il commit viene bloccato finche il file non viene corretto o disambiguato.
 
 Default per nuovi eventi calendario:
 
