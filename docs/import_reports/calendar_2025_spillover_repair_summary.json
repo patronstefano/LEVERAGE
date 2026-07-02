@@ -1,0 +1,32 @@
+{
+  "committed": true,
+  "backup_path": "backups/leverage_calendar_spillover_2024_1219_20260702_063816.db",
+  "source_issues": 0,
+  "event": {
+    "id": 1219,
+    "name": "Top 12 Series 3 (2025)",
+    "year": 2025,
+    "discipline": "MAG",
+    "before": {
+      "start_date": null,
+      "end_date": null
+    },
+    "after": {
+      "start_date": "2024-12-07",
+      "end_date": "2024-12-07"
+    },
+    "updated_dates": true
+  },
+  "calendar_row": {
+    "year": 2024,
+    "row": 219,
+    "name": "Top 12 Series 3 (MAG)",
+    "date_label": "Dec 7",
+    "start_date": "2024-12-07",
+    "end_date": "2024-12-07"
+  },
+  "calendar_entry": {
+    "status": "created",
+    "source_note": "season_year_spillover: Calendar 2024 row 219 linked to Event 1219 after Calendar 2025 admin review"
+  }
+}

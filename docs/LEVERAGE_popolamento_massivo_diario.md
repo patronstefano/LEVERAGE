@@ -3722,3 +3722,88 @@ File preparati per la review admin 2025:
 - `calendar_2025_source_conflicts_slim.csv`
 
 Nota operativa: il 2025 resta in review su 13 righe Calendar senza match corrente, 13 Event DB senza match corrente e 7 conflitti stesso Event/date diverse. Il file sorgente contiene anche 1 duplicate source row da controllare nel flusso di review. Al momento non risultano righe `calendar_only`, Event DB `db_only`, collegamenti `season_year_spillover` o cross-year gia verificati.
+
+Review admin corrente 2025:
+
+Le decisioni admin sono state lette dai tre file Numbers e riportate nei CSV operativi tramite lo script:
+
+```text
+scripts/apply_calendar_numbers_decisions.py
+```
+
+Normalizzazioni applicate:
+
+- le 13 righe Calendar-unmatched sono state collegate tramite scelta numerica;
+- `No one.` nell'Event DB `Dutch Worlds Trials 3` e stato normalizzato in `db_only`;
+- `EYOF Mixed Pairs` e stato indicato testualmente come `European Youth Olympic Festival` e normalizzato sulla riga Calendar 144 (`European Youth Olympic Festival`, Jul 20-26);
+- `Top 12 Series 3 (2025)` e stato indicato con nota `See the 2024 calendar`: il caso e stato gestito come `season_year_spillover`, collegando la riga Calendar 2024 n. 219 (`Top 12 Series 3 (MAG)`, Dec 7) all'Event DB 2025 ID 1219.
+
+Per lo spillover `Top 12 Series 3 (2025)` e stato aggiunto e usato lo script:
+
+```text
+scripts/link_calendar_spillover_entry.py
+```
+
+Backup locale creato automaticamente per lo spillover:
+
+```text
+backups/leverage_calendar_spillover_2024_1219_20260702_063816.db
+```
+
+Esito dell'applicazione dei mismatch correnti:
+
+| Controllo | Conteggio |
+|---|---:|
+| Coppie Calendar/Event applicate dalla review corrente | 20 |
+| Event aggiornati con date dalla review corrente | 12 |
+| Calendar entries create dalla review corrente | 20 |
+| Righe Calendar chiuse come `calendar_only` | 0 |
+| Event DB marcati come `db_only` | 1 |
+| Date canoniche Event preservate e non sovrascritte | 8 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_current_review_2025_20260702_063831.db
+```
+
+Esito dei conflitti stesso Event/date diverse:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date risolti | 6 |
+| Calendar entries create dai conflitti multi-data | 11 |
+| Calendar entries aggiornate dai conflitti multi-data | 13 |
+| Event aggiornati dai conflitti source/date | 9 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2025_20260702_083911.db
+```
+
+Esito finale 2025:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2025 | 227 |
+| Event DB 2025 | 224 |
+| Event DB 2025 coperti o verificati | 224 |
+| Event DB 2025 senza copertura/review Calendar | 0 |
+| Righe Calendar 2025 ancora da risolvere | 0 |
+| Righe Calendar 2025 `calendar_only` senza scheda Event | 0 |
+| Event DB 2025 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 1 |
+| Collegamenti cross-year non controllati | 0 |
+| Source issues | 0 |
+
+L'Event DB 2025 chiuso come `db_only` e:
+
+| Event ID | Evento | Disciplina | Note |
+|---:|---|---|---|
+| 1538 | `Dutch Worlds Trials 3` | MAG | Nessuna riga Calendar 2025 corrispondente confermata dall'admin |
+
+Regola semantica UI confermata durante la review 2025: per gli Event storici con disciplina `MAG and WAG`, l'interfaccia utente non deve mostrare un pulsante autonomo `MAG and WAG` per filtrare i Result. Deve invece mostrare i pulsanti realmente cliccabili `MAG` e/o `WAG` quando esistono Result con quei valori. La scheda Event puo restare `MAG and WAG` come contenitore semantico, ma classifiche, grafici e filtri devono lavorare sul campo `Result.discipline`, cosi l'utente puo visualizzare separatamente risultati maschili e femminili.

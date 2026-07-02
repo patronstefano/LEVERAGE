@@ -536,6 +536,29 @@ File operativi da compilare:
 
 La review 2025 usa gli stessi valori operativi degli anni gia chiusi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente. I conflitti stesso Event/date diverse possono essere risolti anche con scelte multiple come `1 and 2`, creando `EventCalendarEntry` invece di comprimere piu date in un solo range dell'Event.
 
+Esito finale calendario 2025:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2025 | 227 |
+| Event DB 2025 | 224 |
+| Event DB 2025 coperti o verificati | 224 |
+| Event DB 2025 senza copertura/review Calendar | 0 |
+| Righe Calendar 2025 ancora da risolvere | 0 |
+| Righe Calendar 2025 `calendar_only` senza scheda Event | 0 |
+| Event DB 2025 `db_only` assenti dal Calendar sorgente | 1 |
+| Collegamenti `season_year_spillover` | 1 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 6 |
+
+Normalizzazioni rilevanti:
+
+- `Dutch Worlds Trials 3` e stato chiuso come `db_only`;
+- `EYOF Mixed Pairs` e stato collegato alla riga Calendar 144, `European Youth Olympic Festival`;
+- `Top 12 Series 3 (2025)` e stato collegato alla riga Calendar 2024 n. 219 come `season_year_spillover`.
+
+Nota UI/filter: gli Event `MAG and WAG` restano contenitori misti, ma filtri, classifiche e grafici devono esporre separatamente i pulsanti `MAG` e `WAG` quando esistono Result con quei valori. La selezione dell'utente filtra sul campo `Result.discipline`, non sul valore aggregato dell'Event.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

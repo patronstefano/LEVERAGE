@@ -1,0 +1,407 @@
+{
+  "year": 2025,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 20,
+  "applied_pairs": 20,
+  "updated_events": 12,
+  "calendar_entries_created": 20,
+  "calendar_entries_updated": 0,
+  "calendar_entries_relinked": 0,
+  "calendar_only_rows": 0,
+  "calendar_only_entries_created": 0,
+  "calendar_only_entries_updated": 0,
+  "db_only_events": 1,
+  "cleared_cross_year_event_dates": 0,
+  "preserved_existing_event_dates": 8,
+  "unresolved_review_items": 0,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 1600,
+      "event_name": "Dragon Invite National Qualifier",
+      "calendar_row": 8,
+      "calendar_event": "Dragion Invitational National Qualifier",
+      "start_date": "2025-02-06",
+      "end_date": "2025-02-09",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1570,
+      "event_name": "Metroplex National Qualifier",
+      "calendar_row": 12,
+      "calendar_event": "Metroplex Challenge National Qualifier",
+      "start_date": "2025-02-13",
+      "end_date": "2025-02-16",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1414,
+      "event_name": "Russian Junior Championships",
+      "calendar_row": 41,
+      "calendar_event": "Russian Junior Men's Championships",
+      "start_date": "2025-03-22",
+      "end_date": "2025-03-29",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1543,
+      "event_name": "Swiss Euros Trials",
+      "calendar_row": 55,
+      "calendar_event": "Swiss Men's Euros Trials",
+      "start_date": "2025-04-10",
+      "end_date": "2025-04-12",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1474,
+      "event_name": "All-Japan Event Championships",
+      "calendar_row": 63,
+      "calendar_event": "All-Japan Championships",
+      "start_date": "2025-04-17",
+      "end_date": "2025-04-20",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1537,
+      "event_name": "Hungarian Team Championships",
+      "calendar_row": 73,
+      "calendar_event": "Hungarian Championships",
+      "start_date": "2025-04-26",
+      "end_date": "2025-04-27",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1566,
+      "event_name": "Saint-\u00c9tienne Friendly",
+      "calendar_row": 84,
+      "calendar_event": "Saint \u00c9tienne Friendly",
+      "start_date": "2025-05-07",
+      "end_date": "2025-05-07",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1447,
+      "event_name": "European Championships MT",
+      "calendar_row": 99,
+      "calendar_event": "European Championships",
+      "start_date": "2025-05-26",
+      "end_date": "2025-05-31",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1503,
+      "event_name": "German Junior Championships",
+      "calendar_row": 100,
+      "calendar_event": "German Junior Men's Championships",
+      "start_date": "2025-05-27",
+      "end_date": "2025-05-29",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1423,
+      "event_name": "Swiss Junior Championships",
+      "calendar_row": 102,
+      "calendar_event": "Swiss Junior Men's Championships",
+      "start_date": "2025-05-27",
+      "end_date": "2025-05-31",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1406,
+      "event_name": "Asian Championships",
+      "calendar_row": 109,
+      "calendar_event": "Asian Men's Championships",
+      "start_date": "2025-06-05",
+      "end_date": "2025-06-08",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1438,
+      "event_name": "British Team Championships",
+      "calendar_row": 115,
+      "calendar_event": "British Men's Team Championships",
+      "start_date": "2025-06-07",
+      "end_date": "2025-06-08",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1497,
+      "event_name": "Biel Junior Friendly",
+      "calendar_row": 136,
+      "calendar_event": "Biel Junior Men's Friendly",
+      "start_date": "2025-07-05",
+      "end_date": "2025-07-05",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1463,
+      "event_name": "European Youth Olymipc Festival",
+      "calendar_row": 144,
+      "calendar_event": "European Youth Olympic Festival",
+      "start_date": "2025-07-20",
+      "end_date": "2025-07-26",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1542,
+      "event_name": "EYOF Mixed Pairs",
+      "calendar_row": 144,
+      "calendar_event": "European Youth Olympic Festival",
+      "start_date": "2025-07-20",
+      "end_date": "2025-07-26",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1481,
+      "event_name": "Swiss Worlds Trials",
+      "calendar_row": 152,
+      "calendar_event": "Swiss Men's Worlds Trials",
+      "start_date": "2025-08-23",
+      "end_date": "2025-09-05",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1604,
+      "event_name": "China Junior National Games",
+      "calendar_row": 156,
+      "calendar_event": "Chinese Junior National Games",
+      "start_date": "2025-09-05",
+      "end_date": "2025-09-10",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1573,
+      "event_name": "Japanese National Spots Festival",
+      "calendar_row": 162,
+      "calendar_event": "Japanese National Sports Festival",
+      "start_date": "2025-09-12",
+      "end_date": "2025-09-15",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1504,
+      "event_name": "German Cup",
+      "calendar_row": 197,
+      "calendar_event": "German Men's Cup",
+      "start_date": "2025-11-01",
+      "end_date": "2025-11-02",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1458,
+      "event_name": "Latvian Championships",
+      "calendar_row": 212,
+      "calendar_event": "Latvian Men's Championships",
+      "start_date": "2025-11-21",
+      "end_date": "2025-11-22",
+      "source": "calendar_unmatched_current"
+    }
+  ],
+  "calendar_only_details": [],
+  "db_only_details": [
+    {
+      "event_id": "1538",
+      "event_name": "Dutch Worlds Trials 3",
+      "discipline": "MAG",
+      "category": "senior",
+      "level": "World Championships",
+      "result_count": "5",
+      "review_decision": "db_only",
+      "notes": "No matching 2025 Calendar row confirmed by admin."
+    }
+  ],
+  "updated_event_details": [
+    {
+      "event_id": 1600,
+      "event_name": "Dragon Invite National Qualifier",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-02-06",
+      "new_end_date": "2025-02-09"
+    },
+    {
+      "event_id": 1570,
+      "event_name": "Metroplex National Qualifier",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-02-13",
+      "new_end_date": "2025-02-16"
+    },
+    {
+      "event_id": 1474,
+      "event_name": "All-Japan Event Championships",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-04-17",
+      "new_end_date": "2025-04-20"
+    },
+    {
+      "event_id": 1537,
+      "event_name": "Hungarian Team Championships",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-04-26",
+      "new_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1566,
+      "event_name": "Saint-\u00c9tienne Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-05-07",
+      "new_end_date": "2025-05-07"
+    },
+    {
+      "event_id": 1447,
+      "event_name": "European Championships MT",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-05-26",
+      "new_end_date": "2025-05-31"
+    },
+    {
+      "event_id": 1497,
+      "event_name": "Biel Junior Friendly",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-07-05",
+      "new_end_date": "2025-07-05"
+    },
+    {
+      "event_id": 1463,
+      "event_name": "European Youth Olymipc Festival",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-07-20",
+      "new_end_date": "2025-07-26"
+    },
+    {
+      "event_id": 1542,
+      "event_name": "EYOF Mixed Pairs",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-07-20",
+      "new_end_date": "2025-07-26"
+    },
+    {
+      "event_id": 1481,
+      "event_name": "Swiss Worlds Trials",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-08-23",
+      "new_end_date": "2025-09-05"
+    },
+    {
+      "event_id": 1604,
+      "event_name": "China Junior National Games",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-09-05",
+      "new_end_date": "2025-09-10"
+    },
+    {
+      "event_id": 1573,
+      "event_name": "Japanese National Spots Festival",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2025-09-12",
+      "new_end_date": "2025-09-15"
+    }
+  ],
+  "cleared_cross_year_event_date_details": [],
+  "preserved_existing_event_date_details": [
+    {
+      "event_id": 1414,
+      "event_name": "Russian Junior Championships",
+      "existing_start_date": "2025-03-29",
+      "existing_end_date": "2025-04-05",
+      "calendar_row": 41,
+      "calendar_event": "Russian Junior Men's Championships",
+      "calendar_start_date": "2025-03-22",
+      "calendar_end_date": "2025-03-29",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1543,
+      "event_name": "Swiss Euros Trials",
+      "existing_start_date": "2025-04-05",
+      "existing_end_date": "2025-04-12",
+      "calendar_row": 55,
+      "calendar_event": "Swiss Men's Euros Trials",
+      "calendar_start_date": "2025-04-10",
+      "calendar_end_date": "2025-04-12",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1503,
+      "event_name": "German Junior Championships",
+      "existing_start_date": "2025-05-30",
+      "existing_end_date": "2025-06-01",
+      "calendar_row": 100,
+      "calendar_event": "German Junior Men's Championships",
+      "calendar_start_date": "2025-05-27",
+      "calendar_end_date": "2025-05-29",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1423,
+      "event_name": "Swiss Junior Championships",
+      "existing_start_date": "2025-06-07",
+      "existing_end_date": "2025-06-08",
+      "calendar_row": 102,
+      "calendar_event": "Swiss Junior Men's Championships",
+      "calendar_start_date": "2025-05-27",
+      "calendar_end_date": "2025-05-31",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1406,
+      "event_name": "Asian Championships",
+      "existing_start_date": "2025-06-12",
+      "existing_end_date": "2025-06-15",
+      "calendar_row": 109,
+      "calendar_event": "Asian Men's Championships",
+      "calendar_start_date": "2025-06-05",
+      "calendar_end_date": "2025-06-08",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1438,
+      "event_name": "British Team Championships",
+      "existing_start_date": "2025-10-18",
+      "existing_end_date": "2025-10-19",
+      "calendar_row": 115,
+      "calendar_event": "British Men's Team Championships",
+      "calendar_start_date": "2025-06-07",
+      "calendar_end_date": "2025-06-08",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1504,
+      "event_name": "German Cup",
+      "existing_start_date": "2025-10-18",
+      "existing_end_date": "2025-10-19",
+      "calendar_row": 197,
+      "calendar_event": "German Men's Cup",
+      "calendar_start_date": "2025-11-01",
+      "calendar_end_date": "2025-11-02",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1458,
+      "event_name": "Latvian Championships",
+      "existing_start_date": "2025-11-07",
+      "existing_end_date": "2025-11-08",
+      "calendar_row": 212,
+      "calendar_event": "Latvian Men's Championships",
+      "calendar_start_date": "2025-11-21",
+      "calendar_end_date": "2025-11-22",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    }
+  ],
+  "unresolved_decision_details": [],
+  "invalid_decision_details": []
+}
