@@ -3807,3 +3807,8 @@ L'Event DB 2025 chiuso come `db_only` e:
 | 1538 | `Dutch Worlds Trials 3` | MAG | Nessuna riga Calendar 2025 corrispondente confermata dall'admin |
 
 Regola semantica UI confermata durante la review 2025: per gli Event storici con disciplina `MAG and WAG`, l'interfaccia utente non deve mostrare un pulsante autonomo `MAG and WAG` per filtrare i Result. Deve invece mostrare i pulsanti realmente cliccabili `MAG` e/o `WAG` quando esistono Result con quei valori. La scheda Event puo restare `MAG and WAG` come contenitore semantico, ma classifiche, grafici e filtri devono lavorare sul campo `Result.discipline`, cosi l'utente puo visualizzare separatamente risultati maschili e femminili.
+
+Regole metodologiche persistenti aggiunte dopo la chiusura Calendar 2025:
+
+- `EYOF` significa sempre `European Youth Olympic Festival`. Nei futuri match Calendar/Event e negli import, il sistema deve espandere semanticamente questa abbreviazione prima di trattarla come mismatch.
+- Gli Event `Top 12` possono appartenere alla stessa stagione sportiva pur cadendo a cavallo tra due fogli calendario/anni diversi. Questo non e automaticamente un errore: va gestito con collegamenti espliciti `EventCalendarEntry` e note `season_year_spillover`, senza forzare tutte le date dentro l'anno nominale dell'Event DB.

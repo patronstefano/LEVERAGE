@@ -559,6 +559,11 @@ Normalizzazioni rilevanti:
 
 Nota UI/filter: gli Event `MAG and WAG` restano contenitori misti, ma filtri, classifiche e grafici devono esporre separatamente i pulsanti `MAG` e `WAG` quando esistono Result con quei valori. La selezione dell'utente filtra sul campo `Result.discipline`, non sul valore aggregato dell'Event.
 
+Regole persistenti per review future:
+
+- `EYOF` va interpretato sempre come `European Youth Olympic Festival`.
+- Gli Event `Top 12` possono cadere a cavallo tra due calendari annuali della stessa stagione. In questi casi usare collegamenti `EventCalendarEntry` e note `season_year_spillover`, invece di considerarli automaticamente errori di matching.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:
