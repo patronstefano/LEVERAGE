@@ -503,6 +503,39 @@ Esito finale calendario 2024:
 
 Le due righe `calendar_only` 2024 sono `Israeli Championships` e `Japanese National Sports Festival`. Il 2024 si chiude senza Event DB `db_only`.
 
+## Calendar 2025 - checkpoint review
+
+Il primo passaggio 2025 ha applicato solo le date Calendar sicure al database, lasciando in review le righe ambigue o conflittuali.
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2025 | 227 |
+| Event DB 2025 | 224 |
+| Match diretti sicuri applicati | 200 |
+| Event DB 2025 gia coperti | 211 |
+| Calendar 2025 senza match corrente | 13 |
+| Event DB 2025 senza match corrente | 13 |
+| Event DB 2025 `db_only` gia verificati | 0 |
+| Righe Calendar 2025 `calendar_only` | 0 |
+| Conflitti stesso Event/date da rivedere | 7 |
+| Duplicate source rows | 1 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year non controllati | 0 |
+
+Backup del primo commit sicuro 2025:
+
+```text
+backups/leverage_calendar_2025_20260702_081522.db
+```
+
+File operativi da compilare:
+
+- `calendar_2025_calendar_unmatched_current.csv`
+- `calendar_2025_db_unmatched_current.csv`
+- `calendar_2025_source_conflicts_slim.csv`
+
+La review 2025 usa gli stessi valori operativi degli anni gia chiusi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente. I conflitti stesso Event/date diverse possono essere risolti anche con scelte multiple come `1 and 2`, creando `EventCalendarEntry` invece di comprimere piu date in un solo range dell'Event.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

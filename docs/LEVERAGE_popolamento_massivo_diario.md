@@ -3664,3 +3664,61 @@ Le righe Calendar 2024 chiuse come `calendar_only` sono:
 | 150 | `Japanese National Sports Festival` | Sep 5-8 | Nessun Event DB 2024 collegato; voce Calendar mantenuta senza scheda Event collegata |
 
 Nota metodologica: il 2024 si chiude senza Event DB `db_only`. Tutti gli Event DB 2024 risultano coperti da righe Calendar dello stesso foglio oppure dai collegamenti `season_year_spillover` gia creati durante la review 2023.
+
+### Calendar 2025
+
+Il flusso Calendar 2025 e stato avviato con la stessa metodologia applicata agli anni precedenti: matching same-year strict, normalizzazione semantica MAG/WAG, applicazione automatica solo delle date sicure e mantenimento in review delle righe ambigue o conflittuali.
+
+Fotografia iniziale 2025:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2025 | 227 |
+| Event DB 2025 | 224 |
+| Righe Calendar 2025 con match automatico | 214 |
+| Righe Calendar 2025 senza match automatico | 13 |
+| Event DB 2025 matched automaticamente | 211 |
+| Event DB 2025 senza match automatico con result | 13 |
+| Event DB 2025 matched da piu righe Calendar | 7 |
+| Conflitti stesso Event/date diverse | 7 |
+| Duplicate source rows | 1 |
+| Delta Calendar unmatched - DB unmatched | 0 |
+
+Primo commit sicuro 2025:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe dirette sicure applicate | 200 |
+| Event aggiornati con `start_date` / `end_date` | 200 |
+| Event gia coerenti con la data sorgente | 0 |
+| Righe saltate per conflitto stesso Event/date diverse | 12 |
+| Righe saltate per match multiplo | 2 |
+| Elementi review ancora aperti | 20 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2025_20260702_081522.db
+```
+
+Fotografia post-commit sicuro:
+
+| Controllo | Conteggio |
+|---|---:|
+| Calendar 2025 senza match corrente | 13 |
+| Event DB 2025 senza match corrente | 13 |
+| Event DB 2025 gia coperti | 211 |
+| Event DB 2025 `db_only` gia verificati | 0 |
+| Righe Calendar 2025 `calendar_only` | 0 |
+| Collegamenti `season_year_spillover` | 0 |
+| Collegamenti cross-year rilevati | 0 |
+| Source issues | 0 |
+
+File preparati per la review admin 2025:
+
+- `calendar_2025_calendar_unmatched_current.csv`
+- `calendar_2025_db_unmatched_current.csv`
+- `calendar_2025_source_conflicts_slim.csv`
+
+Nota operativa: il 2025 resta in review su 13 righe Calendar senza match corrente, 13 Event DB senza match corrente e 7 conflitti stesso Event/date diverse. Il file sorgente contiene anche 1 duplicate source row da controllare nel flusso di review. Al momento non risultano righe `calendar_only`, Event DB `db_only`, collegamenti `season_year_spillover` o cross-year gia verificati.

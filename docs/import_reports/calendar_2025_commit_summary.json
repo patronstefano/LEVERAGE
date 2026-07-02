@@ -1,0 +1,2145 @@
+{
+  "year": 2025,
+  "calendar_file": "docs/import_reports/Calendar_date_normalized.xlsx",
+  "database": "leverage.db",
+  "dry_run": false,
+  "committed": true,
+  "backup_path": "backups/leverage_calendar_2025_20260702_081522.db",
+  "parsed_rows_all_years": 1870,
+  "calendar_rows": 227,
+  "direct_safe_rows": 200,
+  "direct_skipped_conflict_rows": 12,
+  "direct_skipped_multiple_match_rows": 2,
+  "review_match_rows": 0,
+  "resolved_source_conflicts": 0,
+  "calendar_only_rows": 0,
+  "calendar_entries_created": 0,
+  "calendar_entries_updated": 0,
+  "calendar_entries_no_change": 0,
+  "updated_events": 200,
+  "no_change_events": 0,
+  "unresolved_review_items": 20,
+  "invalid_decisions": 0,
+  "skipped": 0,
+  "updates": [
+    {
+      "event_id": 1605,
+      "event_name": "Taiwan Trial Meet",
+      "source": "calendar_row:2025:2",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-01-11",
+      "to_end_date": "2025-01-11"
+    },
+    {
+      "event_id": 1561,
+      "event_name": "Vegas Cup National Qualifier",
+      "source": "calendar_row:2025:3",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-01-16",
+      "to_end_date": "2025-01-19"
+    },
+    {
+      "event_id": 1581,
+      "event_name": "Pikes Peak Cup National Qualifier",
+      "source": "calendar_row:2025:4",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-01-23",
+      "to_end_date": "2025-01-26"
+    },
+    {
+      "event_id": 1499,
+      "event_name": "Houston National Invitational",
+      "source": "calendar_row:2025:5",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-01-23",
+      "to_end_date": "2025-01-26"
+    },
+    {
+      "event_id": 1557,
+      "event_name": "Buckeye National Qualifier",
+      "source": "calendar_row:2025:7",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-01-30",
+      "to_end_date": "2025-02-02"
+    },
+    {
+      "event_id": 1420,
+      "event_name": "1st Italian Serie A",
+      "source": "calendar_row:2025:9",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-07",
+      "to_end_date": "2025-02-08"
+    },
+    {
+      "event_id": 1430,
+      "event_name": "Top 12 Series 5",
+      "source": "calendar_row:2025:10",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-08",
+      "to_end_date": "2025-02-08"
+    },
+    {
+      "event_id": 1384,
+      "event_name": "Indian National Games",
+      "source": "calendar_row:2025:11",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-08",
+      "to_end_date": "2025-02-13"
+    },
+    {
+      "event_id": 1468,
+      "event_name": "Elite Canada",
+      "source": "calendar_row:2025:13",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-14",
+      "to_end_date": "2025-02-16"
+    },
+    {
+      "event_id": 1424,
+      "event_name": "Welsh Championships",
+      "source": "calendar_row:2025:14",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-14",
+      "to_end_date": "2025-02-16"
+    },
+    {
+      "event_id": 1555,
+      "event_name": "1st Spanish League",
+      "source": "calendar_row:2025:15",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-15",
+      "to_end_date": "2025-02-16"
+    },
+    {
+      "event_id": 1411,
+      "event_name": "Cottbus World Cup",
+      "source": "calendar_row:2025:16",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-20",
+      "to_end_date": "2025-02-23"
+    },
+    {
+      "event_id": 1433,
+      "event_name": "Winter Cup",
+      "source": "calendar_row:2025:17",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-21",
+      "to_end_date": "2025-02-23"
+    },
+    {
+      "event_id": 1586,
+      "event_name": "WOGA Classic",
+      "source": "calendar_row:2025:18",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-21",
+      "to_end_date": "2025-02-23"
+    },
+    {
+      "event_id": 1518,
+      "event_name": "Liukin Invitational",
+      "source": "calendar_row:2025:19",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-21",
+      "to_end_date": "2025-02-23"
+    },
+    {
+      "event_id": 1392,
+      "event_name": "Top 12 Series 6",
+      "source": "calendar_row:2025:21",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-22",
+      "to_end_date": "2025-02-22"
+    },
+    {
+      "event_id": 1460,
+      "event_name": "Tiger Cup",
+      "source": "calendar_row:2025:22",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-27",
+      "to_end_date": "2025-03-01"
+    },
+    {
+      "event_id": 1529,
+      "event_name": "Iceland Classic",
+      "source": "calendar_row:2025:23",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-28",
+      "to_end_date": "2025-03-01"
+    },
+    {
+      "event_id": 1439,
+      "event_name": "English Championships",
+      "source": "calendar_row:2025:24",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-02-28",
+      "to_end_date": "2025-03-02"
+    },
+    {
+      "event_id": 1393,
+      "event_name": "Scottish Championships",
+      "source": "calendar_row:2025:25",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-01",
+      "to_end_date": "2025-03-02"
+    },
+    {
+      "event_id": 1500,
+      "event_name": "Baku World Cup",
+      "source": "calendar_row:2025:26",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-06",
+      "to_end_date": "2025-03-09"
+    },
+    {
+      "event_id": 1418,
+      "event_name": "2nd Italian Serie A",
+      "source": "calendar_row:2025:27",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-07",
+      "to_end_date": "2025-03-08"
+    },
+    {
+      "event_id": 1550,
+      "event_name": "International Gymnix",
+      "source": "calendar_row:2025:28",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-07",
+      "to_end_date": "2025-03-09"
+    },
+    {
+      "event_id": 1568,
+      "event_name": "Polish Cup",
+      "source": "calendar_row:2025:29",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-13",
+      "to_end_date": "2025-03-14"
+    },
+    {
+      "event_id": 1560,
+      "event_name": "KPAC National Qualifier",
+      "source": "calendar_row:2025:30",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-13",
+      "to_end_date": "2025-03-16"
+    },
+    {
+      "event_id": 1594,
+      "event_name": "Malta Championships",
+      "source": "calendar_row:2025:31",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-14",
+      "to_end_date": "2025-03-16"
+    },
+    {
+      "event_id": 1407,
+      "event_name": "Singapore Championships",
+      "source": "calendar_row:2025:32",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-14",
+      "to_end_date": "2025-03-23"
+    },
+    {
+      "event_id": 1431,
+      "event_name": "Top 12 Semifinals",
+      "source": "calendar_row:2025:34",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-15",
+      "to_end_date": "2025-03-15"
+    },
+    {
+      "event_id": 1590,
+      "event_name": "Norwegian FIG Meet",
+      "source": "calendar_row:2025:35",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-15",
+      "to_end_date": "2025-03-16"
+    },
+    {
+      "event_id": 1429,
+      "event_name": "Antalya World Cup",
+      "source": "calendar_row:2025:36",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-20",
+      "to_end_date": "2025-03-23"
+    },
+    {
+      "event_id": 1395,
+      "event_name": "British Championships",
+      "source": "calendar_row:2025:37",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-20",
+      "to_end_date": "2025-03-23"
+    },
+    {
+      "event_id": 1577,
+      "event_name": "Finnish National Team Test",
+      "source": "calendar_row:2025:38",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-21",
+      "to_end_date": "2025-03-21"
+    },
+    {
+      "event_id": 1419,
+      "event_name": "3rd Italian Serie A",
+      "source": "calendar_row:2025:39",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-21",
+      "to_end_date": "2025-03-22"
+    },
+    {
+      "event_id": 1603,
+      "event_name": "Hungarian Junior Event Championships",
+      "source": "calendar_row:2025:40",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-22",
+      "to_end_date": "2025-03-22"
+    },
+    {
+      "event_id": 1399,
+      "event_name": "DTB Pokal Team Challenge",
+      "source": "calendar_row:2025:42",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-27",
+      "to_end_date": "2025-03-30"
+    },
+    {
+      "event_id": 1485,
+      "event_name": "Lithuanian Championships",
+      "source": "calendar_row:2025:43",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-28",
+      "to_end_date": "2025-03-29"
+    },
+    {
+      "event_id": 1510,
+      "event_name": "DTB Pokal Mixed Cup",
+      "source": "calendar_row:2025:44",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-29",
+      "to_end_date": "2025-03-29"
+    },
+    {
+      "event_id": 1432,
+      "event_name": "Top 12 Finals",
+      "source": "calendar_row:2025:45",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-29",
+      "to_end_date": "2025-03-29"
+    },
+    {
+      "event_id": 1511,
+      "event_name": "Hanspeter Demetz Memorial",
+      "source": "calendar_row:2025:46",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-29",
+      "to_end_date": "2025-03-29"
+    },
+    {
+      "event_id": 1535,
+      "event_name": "Ifact Norgescup",
+      "source": "calendar_row:2025:47",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-29",
+      "to_end_date": "2025-03-30"
+    },
+    {
+      "event_id": 1414,
+      "event_name": "Russian Junior Championships",
+      "source": "calendar_row:2025:48",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-29",
+      "to_end_date": "2025-04-05"
+    },
+    {
+      "event_id": 1486,
+      "event_name": "Gymnastics Legends",
+      "source": "calendar_row:2025:49",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-03-30",
+      "to_end_date": "2025-04-04"
+    },
+    {
+      "event_id": 1492,
+      "event_name": "Unni & Haralds Trophy",
+      "source": "calendar_row:2025:50",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-04",
+      "to_end_date": "2025-04-06"
+    },
+    {
+      "event_id": 1563,
+      "event_name": "Elek Matolay Memorial",
+      "source": "calendar_row:2025:51",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-05",
+      "to_end_date": "2025-04-06"
+    },
+    {
+      "event_id": 1578,
+      "event_name": "Zelena Jama Open",
+      "source": "calendar_row:2025:52",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-05",
+      "to_end_date": "2025-04-06"
+    },
+    {
+      "event_id": 1543,
+      "event_name": "Swiss Euros Trials",
+      "source": "calendar_row:2025:53",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-05",
+      "to_end_date": "2025-04-12"
+    },
+    {
+      "event_id": 1385,
+      "event_name": "Gymnasiade",
+      "source": "calendar_row:2025:54",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-06",
+      "to_end_date": "2025-04-07"
+    },
+    {
+      "event_id": 1410,
+      "event_name": "Osijek World Cup",
+      "source": "calendar_row:2025:56",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-10",
+      "to_end_date": "2025-04-13"
+    },
+    {
+      "event_id": 1441,
+      "event_name": "Polish Championships",
+      "source": "calendar_row:2025:57",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-11",
+      "to_end_date": "2025-04-13"
+    },
+    {
+      "event_id": 1551,
+      "event_name": "City of Jesolo Trophy",
+      "source": "calendar_row:2025:59",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-12",
+      "to_end_date": "2025-04-13"
+    },
+    {
+      "event_id": 1394,
+      "event_name": "International GymSport",
+      "source": "calendar_row:2025:60",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-12",
+      "to_end_date": "2025-04-13"
+    },
+    {
+      "event_id": 1462,
+      "event_name": "Doha World Cup",
+      "source": "calendar_row:2025:61",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-16",
+      "to_end_date": "2025-04-19"
+    },
+    {
+      "event_id": 1412,
+      "event_name": "Luxembourg Open",
+      "source": "calendar_row:2025:62",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-17",
+      "to_end_date": "2025-04-18"
+    },
+    {
+      "event_id": 1473,
+      "event_name": "All-Japan Championships",
+      "source": "calendar_row:2025:63",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-17",
+      "to_end_date": "2025-04-20"
+    },
+    {
+      "event_id": 1427,
+      "event_name": "French Championships",
+      "source": "calendar_row:2025:64",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-18",
+      "to_end_date": "2025-04-20"
+    },
+    {
+      "event_id": 1466,
+      "event_name": "South Korean Championships",
+      "source": "calendar_row:2025:65",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-18",
+      "to_end_date": "2025-04-20"
+    },
+    {
+      "event_id": 1487,
+      "event_name": "Russian Cup",
+      "source": "calendar_row:2025:66",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-22",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1519,
+      "event_name": "Dutch Euros Trials",
+      "source": "calendar_row:2025:67",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-25",
+      "to_end_date": "2025-04-25"
+    },
+    {
+      "event_id": 1459,
+      "event_name": "Latvian Cup",
+      "source": "calendar_row:2025:68",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-25",
+      "to_end_date": "2025-04-26"
+    },
+    {
+      "event_id": 1446,
+      "event_name": "Turkish Team Championships",
+      "source": "calendar_row:2025:69",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-25",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1404,
+      "event_name": "Cairo World Cup",
+      "source": "calendar_row:2025:70",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-25",
+      "to_end_date": "2025-04-28"
+    },
+    {
+      "event_id": 1491,
+      "event_name": "Ifact Norgescup 2",
+      "source": "calendar_row:2025:72",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-26"
+    },
+    {
+      "event_id": 1536,
+      "event_name": "Hungarian Championships",
+      "source": "calendar_row:2025:73",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1425,
+      "event_name": "Swedish Championships",
+      "source": "calendar_row:2025:74",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1505,
+      "event_name": "Austrian Championships",
+      "source": "calendar_row:2025:75",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1527,
+      "event_name": "Icelandic Championships",
+      "source": "calendar_row:2025:76",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1512,
+      "event_name": "Greek Championships",
+      "source": "calendar_row:2025:77",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1591,
+      "event_name": "GAGE National Qualifier",
+      "source": "calendar_row:2025:78",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-04-26",
+      "to_end_date": "2025-04-27"
+    },
+    {
+      "event_id": 1421,
+      "event_name": "Italian Serie A Final",
+      "source": "calendar_row:2025:79",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-03",
+      "to_end_date": "2025-05-03"
+    },
+    {
+      "event_id": 1599,
+      "event_name": "Pre-Olympic Youth Cup",
+      "source": "calendar_row:2025:80",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-03",
+      "to_end_date": "2025-05-03"
+    },
+    {
+      "event_id": 1387,
+      "event_name": "Finnish Championships",
+      "source": "calendar_row:2025:82",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-03",
+      "to_end_date": "2025-05-04"
+    },
+    {
+      "event_id": 1579,
+      "event_name": "Norwegian FIG Meet 2",
+      "source": "calendar_row:2025:83",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-03",
+      "to_end_date": "2025-05-04"
+    },
+    {
+      "event_id": 1544,
+      "event_name": "Brazil Trophy",
+      "source": "calendar_row:2025:85",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-07",
+      "to_end_date": "2025-05-11"
+    },
+    {
+      "event_id": 1413,
+      "event_name": "Varna Challenge Cup",
+      "source": "calendar_row:2025:86",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-08",
+      "to_end_date": "2025-05-11"
+    },
+    {
+      "event_id": 1596,
+      "event_name": "Magglingen Friendly",
+      "source": "calendar_row:2025:87",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-10",
+      "to_end_date": "2025-05-10"
+    },
+    {
+      "event_id": 1562,
+      "event_name": "Prievidza Friendly",
+      "source": "calendar_row:2025:88",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-10",
+      "to_end_date": "2025-05-10"
+    },
+    {
+      "event_id": 1397,
+      "event_name": "Dutch Euros Trials 2",
+      "source": "calendar_row:2025:89",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-10",
+      "to_end_date": "2025-05-10"
+    },
+    {
+      "event_id": 1480,
+      "event_name": "Koper Challenge Cup",
+      "source": "calendar_row:2025:90",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-15",
+      "to_end_date": "2025-05-18"
+    },
+    {
+      "event_id": 1524,
+      "event_name": "Colombian Championships",
+      "source": "calendar_row:2025:91",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-15",
+      "to_end_date": "2025-05-18"
+    },
+    {
+      "event_id": 1520,
+      "event_name": "Chinese Championships",
+      "source": "calendar_row:2025:92",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-15",
+      "to_end_date": "2025-05-22"
+    },
+    {
+      "event_id": 1435,
+      "event_name": "International Junior Team Cup",
+      "source": "calendar_row:2025:93",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-16",
+      "to_end_date": "2025-05-17"
+    },
+    {
+      "event_id": 1478,
+      "event_name": "NHK Trophy",
+      "source": "calendar_row:2025:94",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-16",
+      "to_end_date": "2025-05-18"
+    },
+    {
+      "event_id": 1554,
+      "event_name": "2nd Spanish League",
+      "source": "calendar_row:2025:95",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-16",
+      "to_end_date": "2025-05-18"
+    },
+    {
+      "event_id": 1437,
+      "event_name": "Irish Championships",
+      "source": "calendar_row:2025:96",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-17",
+      "to_end_date": "2025-05-18"
+    },
+    {
+      "event_id": 1498,
+      "event_name": "Belgian Championships",
+      "source": "calendar_row:2025:97",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-24",
+      "to_end_date": "2025-05-25"
+    },
+    {
+      "event_id": 1442,
+      "event_name": "Canadian Championships",
+      "source": "calendar_row:2025:98",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-26",
+      "to_end_date": "2025-05-30"
+    },
+    {
+      "event_id": 1443,
+      "event_name": "European Championships",
+      "source": "calendar_row:2025:99",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-26",
+      "to_end_date": "2025-05-31"
+    },
+    {
+      "event_id": 1541,
+      "event_name": "Games of the Small States",
+      "source": "calendar_row:2025:101",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-27",
+      "to_end_date": "2025-05-31"
+    },
+    {
+      "event_id": 1452,
+      "event_name": "Mexican Championships",
+      "source": "calendar_row:2025:103",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-28",
+      "to_end_date": "2025-06-03"
+    },
+    {
+      "event_id": 1514,
+      "event_name": "Singapore Open",
+      "source": "calendar_row:2025:104",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-29",
+      "to_end_date": "2025-06-01"
+    },
+    {
+      "event_id": 1503,
+      "event_name": "German Junior Championships",
+      "source": "calendar_row:2025:105",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-30",
+      "to_end_date": "2025-06-01"
+    },
+    {
+      "event_id": 1602,
+      "event_name": "Hungarian Junior Championships",
+      "source": "calendar_row:2025:106",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-31",
+      "to_end_date": "2025-06-01"
+    },
+    {
+      "event_id": 1559,
+      "event_name": "Coastal Realm National Qualifier",
+      "source": "calendar_row:2025:107",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-05-31",
+      "to_end_date": "2025-06-01"
+    },
+    {
+      "event_id": 1483,
+      "event_name": "Salamunov Memorial",
+      "source": "calendar_row:2025:108",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-04",
+      "to_end_date": "2025-06-08"
+    },
+    {
+      "event_id": 1386,
+      "event_name": "Nordic Junior Championships",
+      "source": "calendar_row:2025:110",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-05",
+      "to_end_date": "2025-06-08"
+    },
+    {
+      "event_id": 1523,
+      "event_name": "Croatian Event Championships",
+      "source": "calendar_row:2025:111",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-06",
+      "to_end_date": "2025-06-08"
+    },
+    {
+      "event_id": 1417,
+      "event_name": "Champion's Cup",
+      "source": "calendar_row:2025:112",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-06",
+      "to_end_date": "2025-06-08"
+    },
+    {
+      "event_id": 1423,
+      "event_name": "Swiss Junior Championships",
+      "source": "calendar_row:2025:114",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-07",
+      "to_end_date": "2025-06-08"
+    },
+    {
+      "event_id": 1448,
+      "event_name": "Pan American Championships",
+      "source": "calendar_row:2025:116",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-12",
+      "to_end_date": "2025-06-15"
+    },
+    {
+      "event_id": 1406,
+      "event_name": "Asian Championships",
+      "source": "calendar_row:2025:117",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-12",
+      "to_end_date": "2025-06-15"
+    },
+    {
+      "event_id": 1565,
+      "event_name": "Romanian Junior Championships",
+      "source": "calendar_row:2025:118",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-12",
+      "to_end_date": "2025-06-14"
+    },
+    {
+      "event_id": 1434,
+      "event_name": "Czech Championships",
+      "source": "calendar_row:2025:119",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-13",
+      "to_end_date": "2025-06-15"
+    },
+    {
+      "event_id": 1422,
+      "event_name": "Swiss Championships",
+      "source": "calendar_row:2025:120",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-14",
+      "to_end_date": "2025-06-14"
+    },
+    {
+      "event_id": 1490,
+      "event_name": "Norwegian Championships",
+      "source": "calendar_row:2025:121",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-14",
+      "to_end_date": "2025-06-15"
+    },
+    {
+      "event_id": 1409,
+      "event_name": "Tashkent Challenge Cup",
+      "source": "calendar_row:2025:122",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-18",
+      "to_end_date": "2025-06-21"
+    },
+    {
+      "event_id": 1451,
+      "event_name": "Spanish Championships",
+      "source": "calendar_row:2025:123",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-24",
+      "to_end_date": "2025-06-29"
+    },
+    {
+      "event_id": 1469,
+      "event_name": "Russian Youth Spartakiade",
+      "source": "calendar_row:2025:124",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-25",
+      "to_end_date": "2025-06-29"
+    },
+    {
+      "event_id": 1546,
+      "event_name": "Chinese Junior Championships",
+      "source": "calendar_row:2025:125",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-26",
+      "to_end_date": "2025-07-03"
+    },
+    {
+      "event_id": 1571,
+      "event_name": "Hopes Classic",
+      "source": "calendar_row:2025:126",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-27",
+      "to_end_date": "2025-06-27"
+    },
+    {
+      "event_id": 1558,
+      "event_name": "American Classic",
+      "source": "calendar_row:2025:127",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-28",
+      "to_end_date": "2025-06-28"
+    },
+    {
+      "event_id": 1517,
+      "event_name": "Givet Friendly",
+      "source": "calendar_row:2025:128",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-28",
+      "to_end_date": "2025-06-28"
+    },
+    {
+      "event_id": 1589,
+      "event_name": "Sens Junior Friendly",
+      "source": "calendar_row:2025:129",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-28",
+      "to_end_date": "2025-06-28"
+    },
+    {
+      "event_id": 1396,
+      "event_name": "Dutch Championships",
+      "source": "calendar_row:2025:130",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-28",
+      "to_end_date": "2025-06-29"
+    },
+    {
+      "event_id": 1502,
+      "event_name": "Danish Team Championships",
+      "source": "calendar_row:2025:131",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-28",
+      "to_end_date": "2025-06-29"
+    },
+    {
+      "event_id": 1489,
+      "event_name": "Bulgarian Championships",
+      "source": "calendar_row:2025:132",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-06-30",
+      "to_end_date": "2025-07-01"
+    },
+    {
+      "event_id": 1465,
+      "event_name": "Strongest Athletes Cup",
+      "source": "calendar_row:2025:133",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-03",
+      "to_end_date": "2025-07-06"
+    },
+    {
+      "event_id": 1470,
+      "event_name": "Australian Championships",
+      "source": "calendar_row:2025:134",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-03",
+      "to_end_date": "2025-07-09"
+    },
+    {
+      "event_id": 1575,
+      "event_name": "Spanish League Final",
+      "source": "calendar_row:2025:137",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-05",
+      "to_end_date": "2025-07-06"
+    },
+    {
+      "event_id": 1516,
+      "event_name": "Israeli Championships",
+      "source": "calendar_row:2025:138",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-08",
+      "to_end_date": "2025-07-11"
+    },
+    {
+      "event_id": 1494,
+      "event_name": "EYOF Preparation Event",
+      "source": "calendar_row:2025:139",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-09",
+      "to_end_date": "2025-07-09"
+    },
+    {
+      "event_id": 1530,
+      "event_name": "Island Games",
+      "source": "calendar_row:2025:140",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-12",
+      "to_end_date": "2025-07-18"
+    },
+    {
+      "event_id": 1390,
+      "event_name": "World University Games",
+      "source": "calendar_row:2025:141",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-16",
+      "to_end_date": "2025-07-27"
+    },
+    {
+      "event_id": 1572,
+      "event_name": "Hopes Championships",
+      "source": "calendar_row:2025:142",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-18",
+      "to_end_date": "2025-07-18"
+    },
+    {
+      "event_id": 1556,
+      "event_name": "U.S. Classic",
+      "source": "calendar_row:2025:143",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-18",
+      "to_end_date": "2025-07-19"
+    },
+    {
+      "event_id": 1569,
+      "event_name": "European Youth Olympic Festival",
+      "source": "calendar_row:2025:144",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-20",
+      "to_end_date": "2025-07-26"
+    },
+    {
+      "event_id": 1509,
+      "event_name": "German Championships",
+      "source": "calendar_row:2025:145",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-07-31",
+      "to_end_date": "2025-08-03"
+    },
+    {
+      "event_id": 1580,
+      "event_name": "South African Worlds Trials",
+      "source": "calendar_row:2025:146",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-06",
+      "to_end_date": "2025-08-08"
+    },
+    {
+      "event_id": 1401,
+      "event_name": "U.S. Championships",
+      "source": "calendar_row:2025:147",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-07",
+      "to_end_date": "2025-08-10"
+    },
+    {
+      "event_id": 1593,
+      "event_name": "Argentinian Championships",
+      "source": "calendar_row:2025:148",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-08",
+      "to_end_date": "2025-08-09"
+    },
+    {
+      "event_id": 1476,
+      "event_name": "All-Japan Junior Championships",
+      "source": "calendar_row:2025:149",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-12",
+      "to_end_date": "2025-08-17"
+    },
+    {
+      "event_id": 1398,
+      "event_name": "Junior Pan American Games",
+      "source": "calendar_row:2025:150",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-19",
+      "to_end_date": "2025-08-22"
+    },
+    {
+      "event_id": 1472,
+      "event_name": "All-Japan Student Championships",
+      "source": "calendar_row:2025:151",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-19",
+      "to_end_date": "2025-08-22"
+    },
+    {
+      "event_id": 1440,
+      "event_name": "British Worlds Trials",
+      "source": "calendar_row:2025:153",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-30",
+      "to_end_date": "2025-08-30"
+    },
+    {
+      "event_id": 1595,
+      "event_name": "Romanian Worlds Trials",
+      "source": "calendar_row:2025:154",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-08-31",
+      "to_end_date": "2025-08-31"
+    },
+    {
+      "event_id": 1532,
+      "event_name": "Brazilian Championships",
+      "source": "calendar_row:2025:155",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-04",
+      "to_end_date": "2025-09-07"
+    },
+    {
+      "event_id": 1547,
+      "event_name": "Chinese Junior National Games",
+      "source": "calendar_row:2025:156",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-05",
+      "to_end_date": "2025-09-10"
+    },
+    {
+      "event_id": 1477,
+      "event_name": "All-Japan Senior Championships",
+      "source": "calendar_row:2025:157",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-06",
+      "to_end_date": "2025-09-06"
+    },
+    {
+      "event_id": 1479,
+      "event_name": "All-Japan Super Specialist Championships",
+      "source": "calendar_row:2025:159",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-07",
+      "to_end_date": "2025-09-07"
+    },
+    {
+      "event_id": 1548,
+      "event_name": "Chinese Worlds Trials",
+      "source": "calendar_row:2025:160",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-09",
+      "to_end_date": "2025-09-10"
+    },
+    {
+      "event_id": 1444,
+      "event_name": "Turkish Championships",
+      "source": "calendar_row:2025:161",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-12",
+      "to_end_date": "2025-09-14"
+    },
+    {
+      "event_id": 1525,
+      "event_name": "Japanese National Sports Festival",
+      "source": "calendar_row:2025:162",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-12",
+      "to_end_date": "2025-09-15"
+    },
+    {
+      "event_id": 1540,
+      "event_name": "Dutch Worlds Trials",
+      "source": "calendar_row:2025:163",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-13",
+      "to_end_date": "2025-09-13"
+    },
+    {
+      "event_id": 1428,
+      "event_name": "Paris Challenge Cup",
+      "source": "calendar_row:2025:164",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-13",
+      "to_end_date": "2025-09-14"
+    },
+    {
+      "event_id": 1403,
+      "event_name": "Pharaoh's Cup",
+      "source": "calendar_row:2025:165",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-18",
+      "to_end_date": "2025-09-21"
+    },
+    {
+      "event_id": 1588,
+      "event_name": "Austrian Team Championships",
+      "source": "calendar_row:2025:166",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-20",
+      "to_end_date": "2025-09-20"
+    },
+    {
+      "event_id": 1598,
+      "event_name": "Hungarian Team & Event Championships",
+      "source": "calendar_row:2025:167",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-20",
+      "to_end_date": "2025-09-21"
+    },
+    {
+      "event_id": 1534,
+      "event_name": "German Worlds Trials",
+      "source": "calendar_row:2025:168",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-23",
+      "to_end_date": "2025-09-23"
+    },
+    {
+      "event_id": 1549,
+      "event_name": "New Zealand Championships",
+      "source": "calendar_row:2025:169",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-23",
+      "to_end_date": "2025-09-27"
+    },
+    {
+      "event_id": 1467,
+      "event_name": "Korean National Sports Festival",
+      "source": "calendar_row:2025:170",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-25",
+      "to_end_date": "2025-09-27"
+    },
+    {
+      "event_id": 1416,
+      "event_name": "Szombathely Challenge Cup",
+      "source": "calendar_row:2025:171",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-26",
+      "to_end_date": "2025-09-28"
+    },
+    {
+      "event_id": 1522,
+      "event_name": "Italian Championships",
+      "source": "calendar_row:2025:172",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-26",
+      "to_end_date": "2025-09-28"
+    },
+    {
+      "event_id": 1539,
+      "event_name": "Dutch Worlds Trials 2",
+      "source": "calendar_row:2025:173",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-27",
+      "to_end_date": "2025-09-27"
+    },
+    {
+      "event_id": 1495,
+      "event_name": "Russian Championships",
+      "source": "calendar_row:2025:174",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-28",
+      "to_end_date": "2025-10-05"
+    },
+    {
+      "event_id": 1601,
+      "event_name": "U.S. Worlds Trials",
+      "source": "calendar_row:2025:175",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-09-30",
+      "to_end_date": "2025-10-01"
+    },
+    {
+      "event_id": 1513,
+      "event_name": "Romanian Championships",
+      "source": "calendar_row:2025:176",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-02",
+      "to_end_date": "2025-10-04"
+    },
+    {
+      "event_id": 1461,
+      "event_name": "Worlds Preparation Event",
+      "source": "calendar_row:2025:177",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-04",
+      "to_end_date": "2025-10-04"
+    },
+    {
+      "event_id": 1583,
+      "event_name": "Norwegian FIG Meet 3",
+      "source": "calendar_row:2025:178",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-04",
+      "to_end_date": "2025-10-05"
+    },
+    {
+      "event_id": 1402,
+      "event_name": "Mediterranean Championships",
+      "source": "calendar_row:2025:179",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-05",
+      "to_end_date": "2025-10-07"
+    },
+    {
+      "event_id": 1531,
+      "event_name": "Brazilian Junior Championships",
+      "source": "calendar_row:2025:180",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-09",
+      "to_end_date": "2025-10-12"
+    },
+    {
+      "event_id": 1400,
+      "event_name": "Wohnen Juniors Trophy",
+      "source": "calendar_row:2025:181",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-10",
+      "to_end_date": "2025-10-12"
+    },
+    {
+      "event_id": 1526,
+      "event_name": "Lausitz Cup",
+      "source": "calendar_row:2025:183",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-11",
+      "to_end_date": "2025-10-11"
+    },
+    {
+      "event_id": 1488,
+      "event_name": "Central American Games",
+      "source": "calendar_row:2025:184",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-15",
+      "to_end_date": "2025-10-27"
+    },
+    {
+      "event_id": 1576,
+      "event_name": "French National Team Review",
+      "source": "calendar_row:2025:185",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-17",
+      "to_end_date": "2025-10-18"
+    },
+    {
+      "event_id": 1438,
+      "event_name": "British Team Championships",
+      "source": "calendar_row:2025:186",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-18",
+      "to_end_date": "2025-10-19"
+    },
+    {
+      "event_id": 1504,
+      "event_name": "German Cup",
+      "source": "calendar_row:2025:187",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-18",
+      "to_end_date": "2025-10-19"
+    },
+    {
+      "event_id": 1405,
+      "event_name": "World Championships",
+      "source": "calendar_row:2025:188",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-19",
+      "to_end_date": "2025-10-25"
+    },
+    {
+      "event_id": 1389,
+      "event_name": "Northern European Championships",
+      "source": "calendar_row:2025:189",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-24",
+      "to_end_date": "2025-10-26"
+    },
+    {
+      "event_id": 1493,
+      "event_name": "Norwegian Junior Championships",
+      "source": "calendar_row:2025:190",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-25",
+      "to_end_date": "2025-10-26"
+    },
+    {
+      "event_id": 1552,
+      "event_name": "Rushmoor Rose Bowl",
+      "source": "calendar_row:2025:191",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-25",
+      "to_end_date": "2025-10-26"
+    },
+    {
+      "event_id": 1415,
+      "event_name": "Wase Gymcup",
+      "source": "calendar_row:2025:192",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-25",
+      "to_end_date": "2025-10-26"
+    },
+    {
+      "event_id": 1426,
+      "event_name": "M\u00e4lar Cup",
+      "source": "calendar_row:2025:193",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-10-30",
+      "to_end_date": "2025-11-02"
+    },
+    {
+      "event_id": 1587,
+      "event_name": "Kutu Espoir Friendly",
+      "source": "calendar_row:2025:194",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-01",
+      "to_end_date": "2025-11-01"
+    },
+    {
+      "event_id": 1574,
+      "event_name": "Tournoi International",
+      "source": "calendar_row:2025:195",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-01",
+      "to_end_date": "2025-11-02"
+    },
+    {
+      "event_id": 1501,
+      "event_name": "Danish Championships",
+      "source": "calendar_row:2025:196",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-01",
+      "to_end_date": "2025-11-02"
+    },
+    {
+      "event_id": 1464,
+      "event_name": "Balkan Championships",
+      "source": "calendar_row:2025:198",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-04",
+      "to_end_date": "2025-11-06"
+    },
+    {
+      "event_id": 1533,
+      "event_name": "Arthur Gander Memorial",
+      "source": "calendar_row:2025:199",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-05",
+      "to_end_date": "2025-11-05"
+    },
+    {
+      "event_id": 1458,
+      "event_name": "Latvian Championships",
+      "source": "calendar_row:2025:200",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-07",
+      "to_end_date": "2025-11-08"
+    },
+    {
+      "event_id": 1449,
+      "event_name": "South American Championships",
+      "source": "calendar_row:2025:201",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-07",
+      "to_end_date": "2025-11-09"
+    },
+    {
+      "event_id": 1471,
+      "event_name": "Horizon Cup",
+      "source": "calendar_row:2025:202",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-07",
+      "to_end_date": "2025-11-09"
+    },
+    {
+      "event_id": 1456,
+      "event_name": "5th Bundesliga",
+      "source": "calendar_row:2025:203",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-08",
+      "to_end_date": "2025-11-08"
+    },
+    {
+      "event_id": 1553,
+      "event_name": "Gymnova Cup",
+      "source": "calendar_row:2025:205",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-08",
+      "to_end_date": "2025-11-09"
+    },
+    {
+      "event_id": 1521,
+      "event_name": "Chinese National Games",
+      "source": "calendar_row:2025:206",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-10",
+      "to_end_date": "2025-11-17"
+    },
+    {
+      "event_id": 1475,
+      "event_name": "All-Japan Team Championships",
+      "source": "calendar_row:2025:207",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-13",
+      "to_end_date": "2025-11-16"
+    },
+    {
+      "event_id": 1506,
+      "event_name": "6th Bundesliga",
+      "source": "calendar_row:2025:209",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-15",
+      "to_end_date": "2025-11-15"
+    },
+    {
+      "event_id": 1388,
+      "event_name": "Junior World Championships",
+      "source": "calendar_row:2025:210",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-20",
+      "to_end_date": "2025-11-24"
+    },
+    {
+      "event_id": 1545,
+      "event_name": "Croatian Championships",
+      "source": "calendar_row:2025:211",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-21",
+      "to_end_date": "2025-11-22"
+    },
+    {
+      "event_id": 1457,
+      "event_name": "7th Bundesliga",
+      "source": "calendar_row:2025:213",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-22",
+      "to_end_date": "2025-11-22"
+    },
+    {
+      "event_id": 1592,
+      "event_name": "Dutch Team Championships",
+      "source": "calendar_row:2025:214",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-22",
+      "to_end_date": "2025-11-23"
+    },
+    {
+      "event_id": 1482,
+      "event_name": "Barborka Cup",
+      "source": "calendar_row:2025:215",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-22",
+      "to_end_date": "2025-11-23"
+    },
+    {
+      "event_id": 1453,
+      "event_name": "Swiss Team Championships",
+      "source": "calendar_row:2025:216",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-23",
+      "to_end_date": "2025-11-23"
+    },
+    {
+      "event_id": 1496,
+      "event_name": "Voronin Cup",
+      "source": "calendar_row:2025:217",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-24",
+      "to_end_date": "2025-11-25"
+    },
+    {
+      "event_id": 1450,
+      "event_name": "Bolivarian Games",
+      "source": "calendar_row:2025:218",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-27",
+      "to_end_date": "2025-11-29"
+    },
+    {
+      "event_id": 1436,
+      "event_name": "Olympic Hopes Cup",
+      "source": "calendar_row:2025:219",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-28",
+      "to_end_date": "2025-11-30"
+    },
+    {
+      "event_id": 1515,
+      "event_name": "Sokol Grand Prix",
+      "source": "calendar_row:2025:220",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-29",
+      "to_end_date": "2025-11-29"
+    },
+    {
+      "event_id": 1484,
+      "event_name": "Rotterdam Friendly",
+      "source": "calendar_row:2025:221",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-29",
+      "to_end_date": "2025-11-29"
+    },
+    {
+      "event_id": 1597,
+      "event_name": "Top Gym Tournament",
+      "source": "calendar_row:2025:222",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-29",
+      "to_end_date": "2025-11-30"
+    },
+    {
+      "event_id": 1528,
+      "event_name": "Slovenian Championships",
+      "source": "calendar_row:2025:223",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-29",
+      "to_end_date": "2025-11-30"
+    },
+    {
+      "event_id": 1507,
+      "event_name": "Bundesliga Finals",
+      "source": "calendar_row:2025:224",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-11-30",
+      "to_end_date": "2025-11-30"
+    },
+    {
+      "event_id": 1408,
+      "event_name": "Southeast Asian Games",
+      "source": "calendar_row:2025:226",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-12-09",
+      "to_end_date": "2025-12-11"
+    },
+    {
+      "event_id": 1567,
+      "event_name": "Italian Gold Championships",
+      "source": "calendar_row:2025:228",
+      "status": "updated",
+      "from_start_date": null,
+      "from_end_date": null,
+      "to_start_date": "2025-12-19",
+      "to_end_date": "2025-12-21"
+    }
+  ],
+  "calendar_entries": [],
+  "unresolved": [
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "8",
+      "calendar_event": "Dragion Invitational National Qualifier",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "12",
+      "calendar_event": "Metroplex Challenge National Qualifier",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "41",
+      "calendar_event": "Russian Junior Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "55",
+      "calendar_event": "Swiss Men's Euros Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "84",
+      "calendar_event": "Saint \u00c9tienne Friendly",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "100",
+      "calendar_event": "German Junior Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "102",
+      "calendar_event": "Swiss Junior Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "109",
+      "calendar_event": "Asian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "115",
+      "calendar_event": "British Men's Team Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "136",
+      "calendar_event": "Biel Junior Men's Friendly",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "152",
+      "calendar_event": "Swiss Men's Worlds Trials",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "197",
+      "calendar_event": "German Men's Cup",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_event_match_review_slim.csv",
+      "calendar_row": "212",
+      "calendar_event": "Latvian Men's Championships",
+      "reason": "missing_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "1",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "2",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "3",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "4",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "5",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "6",
+      "reason": "source_conflict_requires_one_choice"
+    },
+    {
+      "source": "docs/import_reports/calendar_2025_source_conflicts_slim.csv",
+      "conflict_group": "7",
+      "reason": "source_conflict_requires_one_choice"
+    }
+  ],
+  "invalid_decision_details": [],
+  "skipped_details": [],
+  "source_issues": []
+}
