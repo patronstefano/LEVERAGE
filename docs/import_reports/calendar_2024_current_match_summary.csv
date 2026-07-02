@@ -2,11 +2,11 @@ metric,value
 year,2024
 calendar_rows,222
 db_events,207
-calendar_unmatched_rows,18
-db_unmatched_events,9
-db_matched_events,198
+calendar_unmatched_rows,0
+db_unmatched_events,0
+db_matched_events,207
 db_only_events,0
-calendar_only_rows,0
+calendar_only_rows,2
 season_year_spillover_entries,6
 cross_year_calendar_entries,0
 source_issues,0

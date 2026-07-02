@@ -486,6 +486,23 @@ File operativi da compilare:
 
 La review 2024 usa gli stessi valori operativi: scelta numerica o `manual_event_id` quando esiste un collegamento Calendar/Event, `calendar_only` per righe Calendar senza Event DB, `db_only` per Event DB ricavati dai Result ma assenti dal Calendar sorgente.
 
+Esito finale calendario 2024:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2024 | 222 |
+| Event DB 2024 | 207 |
+| Event DB 2024 coperti o verificati | 207 |
+| Event DB 2024 senza copertura/review Calendar | 0 |
+| Righe Calendar 2024 ancora da risolvere | 0 |
+| Righe Calendar 2024 `calendar_only` senza scheda Event | 2 |
+| Event DB 2024 `db_only` assenti dal Calendar sorgente | 0 |
+| Collegamenti `season_year_spillover` | 6 |
+| Collegamenti cross-year non controllati | 0 |
+| Conflitti stesso Event/date risolti | 6 |
+
+Le due righe `calendar_only` 2024 sono `Israeli Championships` e `Japanese National Sports Festival`. Il 2024 si chiude senza Event DB `db_only`.
+
 ## Convenzione review atleta/country
 
 Nei CSV semplificati:

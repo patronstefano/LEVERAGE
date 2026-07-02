@@ -3598,3 +3598,69 @@ File preparati per la review admin 2024:
 - `calendar_2024_source_conflicts_slim.csv`
 
 Nota operativa: nel 2024 restano da verificare alcune righe Calendar senza Event DB evidente, come `European Gymnastics Online Series`, gare MAG nazionali e amichevoli junior, oltre a 9 Event DB non ancora collegati. I conflitti source riguardano soprattutto Top 12 e Bundesliga, quindi vanno gestiti con la stessa logica multi-data gia usata negli anni precedenti.
+
+Review admin corrente 2024:
+
+Le decisioni admin sono state lette dai file Numbers e riportate nei CSV operativi. Per `calendar_2024_calendar_unmatched_current` e `calendar_2024_source_conflicts_slim` sono stati usati i file compilati con suffisso `2.numbers`.
+
+Normalizzazioni applicate:
+
+- `No one.` nelle righe Calendar e stato normalizzato in `calendar_only`;
+- le righe DB-unmatched sono state tutte collegate tramite scelta numerica;
+- i conflitti same Event/date sono stati risolti con scelte multiple `1 and 2`, creando `EventCalendarEntry` multipli.
+
+Esito dell'applicazione dei mismatch correnti:
+
+| Controllo | Conteggio |
+|---|---:|
+| Coppie Calendar/Event applicate dalla review corrente | 18 |
+| Event aggiornati con date dalla review corrente | 9 |
+| Calendar entries create dalla review corrente | 18 |
+| Righe Calendar chiuse come `calendar_only` | 2 |
+| Event DB marcati come `db_only` | 0 |
+| Date canoniche Event preservate e non sovrascritte | 9 |
+| Elementi review ancora aperti | 0 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_current_review_2024_20260702_060927.db
+```
+
+Esito dei conflitti stesso Event/date diverse:
+
+| Controllo | Conteggio |
+|---|---:|
+| Conflitti stesso Event/date risolti | 6 |
+| Calendar entries create dai conflitti multi-data | 12 |
+| Decisioni invalide | 0 |
+
+Backup locale creato automaticamente:
+
+```text
+backups/leverage_calendar_2024_20260702_080943.db
+```
+
+Esito finale 2024:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe Calendar 2024 | 222 |
+| Event DB 2024 | 207 |
+| Event DB 2024 coperti o verificati | 207 |
+| Event DB 2024 senza copertura/review Calendar | 0 |
+| Righe Calendar 2024 ancora da risolvere | 0 |
+| Righe Calendar 2024 `calendar_only` senza scheda Event | 2 |
+| Event DB 2024 `db_only` assenti dal Calendar sorgente | 0 |
+| Collegamenti `season_year_spillover` | 6 |
+| Collegamenti cross-year non controllati | 0 |
+
+Le righe Calendar 2024 chiuse come `calendar_only` sono:
+
+| Riga Calendar | Evento | Data | Esito |
+|---:|---|---|---|
+| 137 | `Israeli Championships` | Jun 28-Jul 8 | Nessun Event DB 2024 collegato; voce Calendar mantenuta senza scheda Event collegata |
+| 150 | `Japanese National Sports Festival` | Sep 5-8 | Nessun Event DB 2024 collegato; voce Calendar mantenuta senza scheda Event collegata |
+
+Nota metodologica: il 2024 si chiude senza Event DB `db_only`. Tutti gli Event DB 2024 risultano coperti da righe Calendar dello stesso foglio oppure dai collegamenti `season_year_spillover` gia creati durante la review 2023.
