@@ -3812,3 +3812,62 @@ Regole metodologiche persistenti aggiunte dopo la chiusura Calendar 2025:
 
 - `EYOF` significa sempre `European Youth Olympic Festival`. Nei futuri match Calendar/Event e negli import, il sistema deve espandere semanticamente questa abbreviazione prima di trattarla come mismatch.
 - Gli Event `Top 12` possono appartenere alla stessa stagione sportiva pur cadendo a cavallo tra due fogli calendario/anni diversi. Questo non e automaticamente un errore: va gestito con collegamenti espliciti `EventCalendarEntry` e note `season_year_spillover`, senza forzare tutte le date dentro l'anno nominale dell'Event DB.
+
+## 16. Milestone - Chiusura blocco storico 2018-2025
+
+Data milestone: 2 luglio 2026
+
+Stato raggiunto: il blocco storico iniziale di LEVERAGE e stato completato per Results e Calendar dal 2018 al 2025. Il database locale contiene ora la base dati storica consolidata, verificata, documentata e versionata su GitHub.
+
+Sintesi quantitativa del database locale alla milestone:
+
+| Entita / controllo | Valore |
+|---|---:|
+| Athlete attivi | 26.259 |
+| Event attivi | 1.605 |
+| Result attivi | 753.723 |
+| EventCalendarEntry attive | 287 |
+| Event 2026 gia presenti da spillover 2025 | 1 |
+| Result 2026 gia presenti da spillover 2025 | 108 |
+
+Distribuzione Result per anno evento:
+
+| Anno evento | Result |
+|---:|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 117.256 |
+| 2024 | 107.046 |
+| 2025 | 124.417 |
+| 2026 | 108 |
+
+Stato funzionale della milestone:
+
+- popolamento Gymternet Results 2018-2025 completato;
+- collisioni atleta/country/nome 2018-2025 verificate e risolte;
+- regole persistenti di import e collisione salvate nel progetto;
+- D-score orfani e warning storici conservati nei report;
+- Calendar 2018-2025 riconciliato con gli Event DB;
+- regole `calendar_only`, `db_only`, `EventCalendarEntry` e `season_year_spillover` consolidate;
+- regole persistenti `EYOF = European Youth Olympic Festival` e `Top 12` a cavallo d'anno documentate;
+- capitoli di tesi dedicati a popolamento Results e riconciliazione Calendar creati in Markdown e Word;
+- repository GitHub aggiornato con checkpoint e commit per ogni fase rilevante.
+
+Valutazione di avanzamento al 2 luglio 2026:
+
+| Area | Avanzamento stimato |
+|---|---:|
+| Backend core e modello dati | 90% |
+| Tool import Gymternet storico | 95% |
+| Popolamento storico 2018-2025 | 100% |
+| Riconciliazione Calendar 2018-2025 | 100% |
+| Documentazione tecnica/tesi della fase dati | 90% |
+| Backend pronto per UI MVP | 80% |
+| Frontend/UI pubblica e admin | 0% |
+| Deploy online produzione | 0% |
+| MVP online complessivo | 70% |
+
+Passo successivo sospeso: attendere il file `Results 2026` del primo semestre. Una volta ricevuto, il lavoro riprendera con preview import 2026, review conflitti, controllo duplicati rispetto ai 108 result 2026 gia presenti da `Results 2025.xlsx`, commit controllato, e successiva riconciliazione Calendar 2026.

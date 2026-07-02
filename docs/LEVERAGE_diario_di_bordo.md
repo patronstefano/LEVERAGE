@@ -1673,14 +1673,68 @@ Azioni:
 
 ---
 
-## 15. Conclusione
+## 15. Milestone - Backend dati storico completato
 
-LEVERAGE oggi non e piu solo un semplice backend CRUD. E diventato un sistema dati articolato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics e strumenti admin.
+Data milestone: 2 luglio 2026
 
-Il progetto e pronto per tre passaggi importanti:
+LEVERAGE ha raggiunto una milestone centrale del progetto MVP: il backend e la base dati storica 2018-2025 sono stati consolidati, verificati, documentati e versionati su GitHub.
 
-1. versionamento su GitHub;
-2. popolamento storico controllato 2018-2025;
-3. progettazione della UI pubblica e admin.
+Rispetto allo stato precedente, sono stati completati:
 
-La direzione tecnica e solida: il backend e gia stato preparato non solo per salvare dati, ma per renderli interrogabili, spiegabili, verificabili e utili in una futura piattaforma web completa.
+- repository GitHub e versionamento stabile;
+- popolamento storico controllato dei Results 2018-2025;
+- review delle collisioni atleta/country/nome per ogni anno;
+- riconciliazione Calendar/Event 2018-2025;
+- introduzione e utilizzo di `EventCalendarEntry`;
+- gestione delle eccezioni `calendar_only`, `db_only` e `season_year_spillover`;
+- regole persistenti `EYOF = European Youth Olympic Festival` e `Top 12` a cavallo d'anno;
+- documentazione di tesi per metodologia di popolamento Results;
+- documentazione di tesi per metodologia di riconciliazione Calendar/Event.
+
+Fotografia quantitativa del database locale:
+
+| Entita / controllo | Valore |
+|---|---:|
+| Athlete attivi | 26.259 |
+| Event attivi | 1.605 |
+| Result attivi | 753.723 |
+| EventCalendarEntry attive | 287 |
+| Event 2026 gia presenti da spillover 2025 | 1 |
+| Result 2026 gia presenti da spillover 2025 | 108 |
+
+Valutazione di avanzamento al 2 luglio 2026:
+
+| Area | Avanzamento stimato |
+|---|---:|
+| Backend core e modello dati | 90% |
+| Import storico Gymternet | 95% |
+| Popolamento dati 2018-2025 | 100% |
+| Riconciliazione Calendar 2018-2025 | 100% |
+| Documentazione tecnica/tesi della fase dati | 90% |
+| Backend pronto per UI MVP | 80% |
+| Frontend/UI | 0% |
+| Deploy online produzione | 0% |
+| MVP online complessivo | 70% |
+
+## 16. Prossimo passo 2026
+
+Il progetto resta in attesa del file `Results 2026` del primo semestre.
+
+Quando il file verra consegnato, il flusso corretto sara:
+
+1. copiare il file sorgente in `import_files`;
+2. eseguire preview Gymternet 2026 senza scrivere nel DB;
+3. verificare i duplicati rispetto ai 108 result 2026 gia presenti da `Results 2025.xlsx`;
+4. generare i CSV di review per conflitti atleta/country/nome;
+5. compilare e applicare le decisioni admin;
+6. rieseguire preview post-decisione;
+7. eseguire backup e commit reale solo se pulito;
+8. aggiornare diario, capitoli e report;
+9. procedere alla riconciliazione Calendar 2026;
+10. distinguere eventi Calendar 2026 con risultati, eventi futuri, eventi senza risultati e possibili `calendar_only` / `db_only` / `season_year_spillover`.
+
+## 17. Conclusione
+
+LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
+
+La prossima grande fase non e piu il popolamento storico 2018-2025, ormai completato, ma la trasformazione del backend in piattaforma web utilizzabile: frontend pubblico, area utente, area admin, calendario interattivo, schede atleta, schede evento, grafici, deploy online e gestione produzione.
