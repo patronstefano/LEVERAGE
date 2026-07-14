@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
+import shutil
 import sqlite3
 import sys
 from collections import Counter
@@ -34,6 +36,15 @@ def database_counts(db_path: Path) -> dict[str, int]:
         }
     finally:
         con.close()
+
+
+def create_backup(db_path: Path, backup_path: Path | None, year: int) -> Path:
+    if backup_path is None:
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_path = Path("backups") / f"leverage_gymternet_{year}_pre_commit_{timestamp}.db"
+    backup_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(db_path, backup_path)
+    return backup_path
 
 
 def post_import_checks(db_path: Path, imported_event_years: list[int]) -> dict[str, Any]:
@@ -188,6 +199,8 @@ def main() -> None:
         if athlete_decision_stats.get("unresolved") or athlete_decision_stats.get("invalid_decisions"):
             raise RuntimeError(f"Invalid athlete decision stats: {athlete_decision_stats}")
 
+        backup_path = create_backup(args.db_path, args.backup, args.year)
+
         stats = commit_records(
             db,
             summary["importable_records"],
@@ -211,7 +224,7 @@ def main() -> None:
         "file": str(source_path),
         "committed": True,
         "decisions_used": str(decisions_path),
-        "backup_path": str(args.backup) if args.backup else None,
+        "backup_path": str(backup_path),
         "db_counts_before_commit": counts_before,
         "preflight": preflight,
         "commit_stats": stats,

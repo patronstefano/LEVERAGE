@@ -3871,3 +3871,330 @@ Valutazione di avanzamento al 2 luglio 2026:
 | MVP online complessivo | 70% |
 
 Passo successivo sospeso: attendere il file `Results 2026` del primo semestre. Una volta ricevuto, il lavoro riprendera con preview import 2026, review conflitti, controllo duplicati rispetto ai 108 result 2026 gia presenti da `Results 2025.xlsx`, commit controllato, e successiva riconciliazione Calendar 2026.
+
+## 17. Avvio import Results 2026 - primo semestre
+
+Data: 14 luglio 2026
+
+File ricevuto:
+
+```text
+/Users/patronstefano/Downloads/RESULTS/Results 2026.xlsx
+```
+
+Il file e stato copiato nel workspace locale come:
+
+```text
+import_files/Results 2026.xlsx
+```
+
+### 17.1 Controllo preliminare DB
+
+Prima della preview 2026 il database locale conteneva gia un evento 2026 importato come spillover dal file `Results 2025.xlsx`:
+
+| Event ID | Event | Result gia presenti |
+|---:|---|---:|
+| 1584 | `Top 12 Series 3 (2026)` | 108 |
+
+Questo controllo era necessario per evitare duplicazioni durante l'import del file 2026.
+
+### 17.2 Preview senza scrittura nel DB
+
+E stata eseguita la preview Gymternet 2026 senza commit reale:
+
+```text
+.venv/bin/python scripts/generate_gymternet_preview_reports.py 2026 --source-dir import_files --report-dir docs/import_reports --db-path leverage.db
+```
+
+Il DB e rimasto invariato dopo la preview:
+
+| Controllo DB | Valore |
+|---|---:|
+| Event 2026 | 1 |
+| Result 2026 | 108 |
+
+### 17.3 Correzione mapping country
+
+La prima preview ha evidenziato country non ancora mappati (`Togo`, `Mali`, `DR Congo`). Prima della review admin e stato aggiornato il mapping nel backend/importer:
+
+| Nome sorgente | Codice LEVERAGE |
+|---|---|
+| `Togo` | `TOG` |
+| `Mali` | `MLI` |
+| `DR Congo` | `COD` |
+| `Democratic Republic of Congo` | `COD` |
+
+E stato aggiunto un test di regressione a `tests/test_api.py`.
+
+Test eseguito:
+
+```text
+.venv/bin/python -m pytest tests/test_api.py::test_gymternet_country_aliases_cover_results_files
+```
+
+Esito: passato.
+
+### 17.4 Esito preview 2026 rigenerata
+
+La preview rigenerata ha prodotto:
+
+| Voce | Conteggio |
+|---|---:|
+| Righe parse | 66.017 |
+| Result importabili | 66.016 |
+| Athlete che verrebbero creati senza decisioni admin | 2.029 |
+| Event che verrebbero creati | 114 |
+| Duplicati identici interni al file | 1 |
+| Conflitti bloccanti | 0 |
+| Warning | 3 |
+| D-score orfani | 287 |
+| Review atleta/country | 414 |
+
+Warning residui:
+
+- 287 D-score non agganciati a final score;
+- assegnazione automatica `day` applicata a 22 chiavi multi-day, con 44 righe valorizzate fino a `day=2`;
+- import legacy successivo al 2025: vengono applicate le regole 2025+ su vault e componenti mancanti; E_score, Penalty e Bonus mancanti restano `not available`.
+
+### 17.5 Duplicato interno al file
+
+La preview non segnala duplicati contro il DB gia popolato. Il solo duplicato e interno al file 2026:
+
+| Event | Athlete | Country | Discipline | Category | Apparatus | Format | Round | Score | Source row |
+|---|---|---|---|---|---|---|---|---:|---:|
+| `Fuzion National Qualifier` | `Elaina Sliney` | USA | WAG | senior | FX | individual | final | 12.600 | 1948 |
+
+Decisione provvisoria: duplicato identico skippabile in commit reale, salvo diversa verifica admin.
+
+### 17.6 File di review generati
+
+| File | Righe operative | Stato |
+|---|---:|---|
+| `docs/import_reports/gymternet_2026_existing_athlete_match_review.csv` | 407 | 166 decisioni precompilate; 241 da controllare |
+| `docs/import_reports/gymternet_2026_new_athlete_country_conflicts.csv` | 7 | 7 da controllare |
+| `docs/import_reports/gymternet_2026_orphan_dscores.csv` | 287 | conservazione D-score orfani fuori dal DB |
+
+Distribuzione delle 241 decisioni ancora da controllare nel CSV existing athlete:
+
+| Tipo review | Righe |
+|---|---:|
+| `possible_existing_athlete_match` | 161 |
+| `possible_athlete_country_change` | 47 |
+| `possible_athlete_identity_collision` | 33 |
+
+Le 166 decisioni gia precompilate derivano dalla regola persistente `same_country_review_reuse`, applicata solo a casi same-country gia verificati negli anni precedenti. I casi con cambio country restano sempre in review admin.
+
+### 17.7 Prossimo passo
+
+L'admin deve ora compilare:
+
+- `docs/import_reports/gymternet_2026_existing_athlete_match_review.csv`;
+- `docs/import_reports/gymternet_2026_new_athlete_country_conflicts.csv`.
+
+Dopo la compilazione:
+
+1. le decisioni saranno trasferite dai file Numbers ai CSV operativi;
+2. sara generato il payload `gymternet_2026_athlete_match_decisions.json`;
+3. verra eseguita una preview post-decisione;
+4. se pulita, si procedera con backup e commit reale Results 2026;
+5. infine si passera alla riconciliazione Calendar 2026.
+
+### 17.8 Review admin completata e payload decisionale
+
+L'admin ha completato i due file Numbers operativi:
+
+| File Numbers | Righe trasferite nel CSV operativo |
+|---|---:|
+| `gymternet_2026_existing_athlete_match_review.numbers` | 407 |
+| `gymternet_2026_new_athlete_country_conflicts.numbers` | 7 |
+
+Le decisioni sono state trasferite nei CSV operativi con lo script:
+
+```text
+.venv/bin/python scripts/apply_gymternet_review_decisions.py 2026 --source-dir import_files --report-dir docs/import_reports
+```
+
+Durante la review admin e stata segnalata una correzione nome:
+
+| Review | Athlete ID | Nome precedente | Nome corretto |
+|---|---:|---|---|
+| `athlete_match_d7eb122b7c46b2a0` | 21148 | Francesco Berarellt | Francesco Bertarelli |
+
+La correzione e stata registrata nel file:
+
+```text
+docs/import_reports/gymternet_2026_athlete_name_corrections.csv
+```
+
+Il payload decisionale generato e:
+
+```text
+docs/import_reports/gymternet_2026_athlete_match_decisions.json
+```
+
+Distribuzione iniziale delle azioni:
+
+| Azione | Conteggio |
+|---|---:|
+| `accept_suggestion` | 287 |
+| `create_new` | 40 |
+| `merge_as_same_athlete` | 40 |
+| `keep_existing_country` | 32 |
+| `update_country` | 15 |
+
+### 17.9 Prima preview post-decisione e correzione Julianne Thibault
+
+La prima preview post-decisione ha prodotto:
+
+| Controllo | Conteggio |
+|---|---:|
+| Decisioni applicate | 414 |
+| Decisioni irrisolte | 0 |
+| Decisioni invalide | 0 |
+| Duplicati identici | 1 |
+| Conflitti post-decisione | 10 |
+
+I 10 conflitti erano tutti riconducibili a un unico merge rischioso:
+
+| Athlete importato | Athlete suggerito | Evento | Problema |
+|---|---|---|---|
+| Julianne Thibault | Julia Thibault | Canadian Championships 2026 | stesso contesto Result con score/D_score diversi |
+
+Decisione applicata: `keep separate`, secondo la regola persistente `same_context_different_score_keep_separate`.
+
+La riga corretta e:
+
+```text
+athlete_match_b99769b3ed6d5e29
+```
+
+Nota operativa inserita:
+
+```text
+Post-decision conflict review: same context with different scores; keep separate.
+```
+
+Il payload e stato rigenerato dai CSV operativi con:
+
+```text
+.venv/bin/python scripts/apply_gymternet_review_decisions.py 2026 --source-dir import_files --report-dir docs/import_reports --skip-numbers
+```
+
+Distribuzione finale delle azioni:
+
+| Azione | Conteggio |
+|---|---:|
+| `accept_suggestion` | 286 |
+| `create_new` | 41 |
+| `merge_as_same_athlete` | 40 |
+| `keep_existing_country` | 32 |
+| `update_country` | 15 |
+
+### 17.10 Preview post-decisione finale
+
+La seconda preview post-decisione e risultata pulita:
+
+| Controllo | Conteggio |
+|---|---:|
+| Righe parse | 66.017 |
+| Result importabili | 66.016 |
+| Duplicati identici | 1 |
+| Conflitti | 0 |
+| Decisioni irrisolte | 0 |
+| Decisioni invalide | 0 |
+| D-score orfani | 287 |
+
+Il duplicato residuo e il duplicato identico interno al file:
+
+| Event | Athlete | Country | Discipline | Category | Apparatus | Format | Round | Score |
+|---|---|---|---|---|---|---|---|---:|
+| `Fuzion National Qualifier` | `Elaina Sliney` | USA | WAG | senior | FX | individual | final | 12.600 |
+
+### 17.11 Commit reale Results 2026
+
+Il commit reale del file `Results 2026.xlsx` e stato eseguito con:
+
+```text
+.venv/bin/python scripts/commit_gymternet_year.py 2026 --source-dir import_files --report-dir docs/import_reports --db-path leverage.db
+```
+
+Report tecnico:
+
+```text
+docs/import_reports/gymternet_2026_commit_summary.json
+```
+
+Statistiche commit:
+
+| Voce | Conteggio |
+|---|---:|
+| Athlete creati | 1.662 |
+| Event creati | 114 |
+| Result creati | 66.016 |
+| Result completi creati | 53.496 |
+| Result parziali creati | 12.520 |
+| D-score orfani non importati | 287 |
+| Event aggiornati | 138 |
+| Athlete country aggiornati | 19 |
+| Athlete name aggiornati | 1 |
+| Represented country corretti | 421 |
+| Athlete con nuovi result | 6.378 |
+| Event con nuovi result | 114 |
+| Duplicati skippati | 1 |
+
+Conteggi DB dopo il commit:
+
+| Entita | Conteggio |
+|---|---:|
+| Athlete | 27.921 |
+| Event | 1.719 |
+| Result | 819.739 |
+
+Distribuzione Result dopo il commit:
+
+| Anno evento | Result |
+|---:|---:|
+| 2018 | 89.988 |
+| 2019 | 106.084 |
+| 2020 | 34.326 |
+| 2021 | 77.423 |
+| 2022 | 97.075 |
+| 2023 | 117.256 |
+| 2024 | 107.046 |
+| 2025 | 124.417 |
+| 2026 | 66.124 |
+
+Controlli post-import:
+
+| Controllo | Conteggio |
+|---|---:|
+| Gruppi duplicati semantici | 0 |
+| Result 2026 completi con score e D_score | 53.591 |
+| Result 2026 con final score ma senza D_score | 10.934 |
+| Result 2026 senza final score | 1.599 |
+
+### 17.12 Nota backup e correzione procedura
+
+Durante il commit reale lo script ha riportato `backup_path: null`, perche il backup veniva creato solo se l'argomento `--backup` era passato esplicitamente.
+
+Subito dopo il commit e stata creata una copia post-commit:
+
+```text
+backups/leverage_gymternet_2026_post_commit_20260714_202134.db
+```
+
+La procedura tecnica e stata corretta in `scripts/commit_gymternet_year.py`: da ora lo script crea automaticamente un backup pre-commit in `backups/` anche quando `--backup` non viene specificato.
+
+### 17.13 Stato finale Results 2026
+
+La fase Results 2026 e completata:
+
+- review admin completata;
+- correzione nome `Francesco Berarellt` -> `Francesco Bertarelli` applicata;
+- conflitto `Julianne Thibault` / `Julia Thibault` risolto con `keep separate`;
+- preview post-decisione pulita;
+- commit reale eseguito;
+- database aggiornato fino al primo semestre 2026;
+- duplicati semantici post-import pari a 0.
+
+Prossimo passo: riconciliazione Calendar 2026.

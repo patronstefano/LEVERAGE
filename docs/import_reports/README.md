@@ -107,6 +107,19 @@ docs/GYMTERNET_IMPORT_DECISION_MEMORY.md
 | `gymternet_2025_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2025. Inizialmente conteneva 33 conflitti; dopo le decisioni `keep separate` e stato rigenerato vuoto. |
 | `gymternet_2025_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2025; vuoto. |
 | `gymternet_2025_commit_summary.json` | Report tecnico del commit reale 2025, con backup, statistiche di import e controlli post-import. |
+| `gymternet_2026_preview_summary.json` | Sintesi tecnica della preview 2026 eseguita sul DB post-2025, senza commit. |
+| `gymternet_2026_duplicates.csv` | Audit dei duplicati identici interni al file 2026; contiene 1 duplicato interno. |
+| `gymternet_2026_conflicts.csv` | Audit dei conflitti bloccanti 2026; vuoto nella preview iniziale. |
+| `gymternet_2026_orphan_dscores.csv` | D-score del file Gymternet 2026 non agganciati automaticamente a un result con final score. |
+| `gymternet_2026_athlete_review.csv` | Review atleta/country 2026 completa e tecnica. |
+| `gymternet_2026_existing_athlete_match_review.csv` | CSV operativo per verificare se un atleta importato nel 2026 corrisponde a un atleta gia presente nel DB post-2025. Include decisioni same-country precompilate quando la memoria storica e univoca. |
+| `gymternet_2026_new_athlete_country_conflicts.csv` | CSV operativo separato per nuovi atleti 2026 che presentano conflitti country nel file 2026. |
+| `gymternet_2026_athlete_name_corrections.csv` | Correzione nome atleta esistente verificata durante la review 2026: `Francesco Berarellt` -> `Francesco Bertarelli`. |
+| `gymternet_2026_athlete_match_decisions.json` | Payload tecnico generato dalle decisioni admin 2026, inclusa 1 correzione nome atleta e la correzione post-preview `Julianne Thibault` / `Julia Thibault` come `keep separate`. |
+| `gymternet_2026_preview_with_decisions_summary.json` | Preview 2026 eseguita con decisioni admin applicate; esito finale pulito con 0 conflitti. |
+| `gymternet_2026_post_decision_conflicts.csv` | Audit dei conflitti post-decisione 2026. Inizialmente conteneva 10 conflitti su `Julianne Thibault`; dopo la correzione `keep separate` e stato rigenerato vuoto. |
+| `gymternet_2026_post_decision_duplicates.csv` | Audit dei duplicati identici residui dopo le decisioni 2026; contiene 1 duplicato interno skippato in commit. |
+| `gymternet_2026_commit_summary.json` | Report tecnico del commit reale 2026, con statistiche di import e controlli post-import. |
 
 ## Report calendario eventi
 

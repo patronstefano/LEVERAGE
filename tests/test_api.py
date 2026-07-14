@@ -6639,6 +6639,9 @@ def test_gymternet_country_aliases_cover_results_files():
         "MAG,Ada Ten,Slovkia,Alias Cup 2024,FX,13.2,4.9\n"
         "MAG,Ada Eleven,Montenegro,Alias Cup 2024,FX,13.1,4.8\n"
         "MAG,Ada Twelve,Ita,Alias Cup 2024,FX,13.0,4.7\n"
+        "MAG,Ada Thirteen,Togo,Alias Cup 2024,FX,12.9,4.6\n"
+        "MAG,Ada Fourteen,Mali,Alias Cup 2024,FX,12.8,4.5\n"
+        "MAG,Ada Fifteen,DR Congo,Alias Cup 2024,FX,12.7,4.4\n"
     )
 
     parsed = parse_gymternet_file("aliases.csv", csv_text.encode("utf-8"), year_hint=2024)
@@ -6656,6 +6659,9 @@ def test_gymternet_country_aliases_cover_results_files():
         "SVK",
         "MNE",
         "ITA",
+        "TOG",
+        "MLI",
+        "COD",
     ]
     assert not any("Unknown country mapping" in issue["message"] for issue in parsed.issues)
 

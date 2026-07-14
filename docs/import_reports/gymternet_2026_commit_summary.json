@@ -1,0 +1,115 @@
+{
+  "file": "import_files/Results 2026.xlsx",
+  "committed": true,
+  "decisions_used": "docs/import_reports/gymternet_2026_athlete_match_decisions.json",
+  "backup_path": null,
+  "post_commit_backup_path": "backups/leverage_gymternet_2026_post_commit_20260714_202134.db",
+  "db_counts_before_commit": {
+    "athletes": 26259,
+    "events": 1605,
+    "results": 753723,
+    "notifications": 0
+  },
+  "preflight": {
+    "parsed_rows": 66017,
+    "importable_results": 66016,
+    "duplicates": 1,
+    "duplicates_by_reason": {
+      "duplicate_in_file": 1
+    },
+    "conflicts": 0,
+    "conflicts_by_reason": {},
+    "error_issues": 0,
+    "orphan_dscore_review_count": 287,
+    "athlete_match_review_count": 414,
+    "athlete_match_decision_stats": {
+      "accepted_suggestions": 286,
+      "manual_corrections": 0,
+      "confirmed_new": 41,
+      "identity_merges": 40,
+      "identity_kept_separate": 0,
+      "country_updates": 19,
+      "country_kept": 33,
+      "athlete_name_updates": 1,
+      "represented_country_corrections": 63,
+      "invalid_decisions": 0,
+      "unresolved": 0,
+      "automatic_name_order_merges": 2,
+      "automatic_name_order_variant_keys": 3,
+      "automatic_name_order_records_normalized": 10
+    },
+    "would_create_athletes": 1662,
+    "would_create_events": 114
+  },
+  "commit_stats": {
+    "created_athletes": 1662,
+    "created_events": 114,
+    "created_results": 66016,
+    "created_complete_results": 53496,
+    "created_partial_results": 12520,
+    "orphan_dscore_review_uncommitted": 287,
+    "updated_events": 138,
+    "updated_athlete_countries": 19,
+    "updated_athlete_names": 1,
+    "corrected_represented_countries": 421,
+    "athletes_with_new_results": 6378,
+    "events_with_new_results": 114,
+    "created_admin_notifications": 0,
+    "skipped_duplicates": 1
+  },
+  "db_counts_after_commit": {
+    "athletes": 27921,
+    "events": 1719,
+    "results": 819739,
+    "notifications": 0
+  },
+  "post_import_checks": {
+    "results_by_year": [
+      {
+        "year": 2018,
+        "results": 89988
+      },
+      {
+        "year": 2019,
+        "results": 106084
+      },
+      {
+        "year": 2020,
+        "results": 34326
+      },
+      {
+        "year": 2021,
+        "results": 77423
+      },
+      {
+        "year": 2022,
+        "results": 97075
+      },
+      {
+        "year": 2023,
+        "results": 117256
+      },
+      {
+        "year": 2024,
+        "results": 107046
+      },
+      {
+        "year": 2025,
+        "results": 124417
+      },
+      {
+        "year": 2026,
+        "results": 66124
+      }
+    ],
+    "semantic_duplicate_groups": 0,
+    "quality_by_year": [
+      {
+        "year": 2026,
+        "complete": 53591,
+        "missing_d_score": 10934,
+        "missing_score": 1599
+      }
+    ]
+  }
+}
