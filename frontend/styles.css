@@ -119,7 +119,6 @@ button {
   min-width: 168px;
 }
 
-.language-select,
 .signin-link,
 .api-config input,
 .api-config button,
@@ -133,11 +132,48 @@ button {
   border-radius: var(--control-radius);
 }
 
-.language-select {
+.language-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   height: 36px;
-  min-width: 58px;
-  padding: 0 12px;
-  border-color: rgba(25, 23, 71, 0.16);
+  min-width: 64px;
+  border: 1px solid rgba(25, 23, 71, 0.16);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.language-control::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 13px;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid rgba(17, 17, 20, 0.58);
+  border-bottom: 1.5px solid rgba(17, 17, 20, 0.58);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.language-select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 100%;
+  padding: 0 28px 0 12px;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.language-select::-ms-expand {
+  display: none;
 }
 
 .signin-link {
@@ -150,7 +186,7 @@ button {
   border-color: var(--brand-blue);
 }
 
-.language-select:hover,
+.language-control:hover,
 .api-config input:hover,
 .api-config button:hover,
 .filter-button:hover,
@@ -159,7 +195,7 @@ button {
   border-color: rgba(25, 23, 71, 0.34);
 }
 
-.language-select:focus-visible,
+.language-control:focus-within,
 .signin-link:focus-visible,
 .api-config input:focus-visible,
 .api-config button:focus-visible,
