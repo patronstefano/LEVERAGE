@@ -181,8 +181,7 @@ button {
   line-height: 1.35;
 }
 
-.nav-group:hover .nav-menu,
-.nav-group:focus-within .nav-menu {
+.nav-group:hover .nav-menu {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(-50%) translateY(0) scale(1);
