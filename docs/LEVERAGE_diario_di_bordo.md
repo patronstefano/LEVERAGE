@@ -1815,6 +1815,7 @@ Funzionalita frontend iniziali implementate:
 - home pubblica con titolo LEVERAGE, sottotitolo `Artistic Gymnastics Analytics`, ricerca globale e filtri rapidi `MAG`, `WAG`, `Senior`, `Junior`;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
+- allineamento cromatico del sottotitolo della home al grigio secondario standard della UI, usando la variabile condivisa `--muted`;
 - revisione della hero iniziale in composizione centrata, con ricerca e filtri immediatamente sotto al titolo e status API ridotto a indicatore compatto;
 - collegamento agli endpoint pubblici per mostrare preview Calendar e Ranking;
 - pagine iniziali per `Athletes`, `Events`, `Rankings`, `Analytics` e `Login`;

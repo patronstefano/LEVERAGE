@@ -520,7 +520,7 @@ button {
 
 .home-subtitle {
   margin: 12px 0 0;
-  color: rgba(17, 17, 20, 0.58);
+  color: var(--muted);
   font-size: clamp(17px, 2vw, 22px);
   font-weight: 500;
   line-height: 1.25;
