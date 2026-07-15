@@ -117,18 +117,31 @@ button {
 }
 
 .nav-trigger {
+  position: relative;
   display: inline-flex;
   align-items: center;
   min-height: 36px;
   padding: 0 12px;
   border-radius: var(--control-radius);
+  transition: color 120ms ease;
 }
 
 .nav-trigger[aria-current="page"],
 .nav-trigger:hover,
 .nav-group:hover .nav-trigger {
   color: var(--ink);
-  background: rgba(245, 245, 247, 0.9);
+  background: transparent;
+}
+
+.nav-trigger[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  bottom: 5px;
+  left: 12px;
+  height: 1px;
+  border-radius: 1px;
+  background: rgba(25, 23, 71, 0.32);
 }
 
 .nav-menu {
