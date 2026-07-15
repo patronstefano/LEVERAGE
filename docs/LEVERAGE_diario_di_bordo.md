@@ -1820,6 +1820,7 @@ Funzionalita frontend iniziali implementate:
 - menu di navigazione a tendina per `Athletes`, `Events`, `Rankings`, `Analytics`, con azioni principali visibili al passaggio del mouse;
 - correzione dello stato visivo della topbar: le voci di navigazione restano evidenziate solo quando realmente attive o in hover, evitando che `Analytics` rimanga grigio dopo interazioni precedenti;
 - correzione ulteriore dei dropdown topbar: rimossa l'apertura tramite `focus-within`, cosi un pannello come `Analytics` non puo restare visibile/scuro dopo un click o dopo il mantenimento del focus;
+- rimozione definitiva del riquadro grigio pieno dalle voci della topbar: lo stato attivo usa solo testo scuro e una linea sottile, evitando box persistenti o visivamente pesanti;
 - selettore lingua custom, arrotondato e coerente con lo stile app;
 - menu lingua compatto con pulsante dedicato e popover separato, mantenendo la lingua selezionata visibile e mostrando solo le opzioni non selezionate;
 - micro-animazione progressiva del contorno/espansione del controllo lingua;
@@ -1845,6 +1846,7 @@ Commit principali della fase UI iniziale:
 | `e96c938` | Aggiunta dropdown di navigazione frontend |
 | `e3b3e09` | Correzione evidenziazione persistente topbar |
 | `f6a5665` | Impedisce ai dropdown topbar di restare aperti su focus |
+| `92aa850` | Rimozione del riquadro pieno dalle voci topbar |
 | `950b610` | Menu lingua incastonato nel controllo |
 | `bbf1dbc` | Nasconde dal menu la lingua gia selezionata |
 | `0bb81c1` | Animazione progressiva del controllo lingua |
