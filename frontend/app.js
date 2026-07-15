@@ -389,6 +389,23 @@ function closeLanguageMenu() {
   button.setAttribute("aria-expanded", "false");
 }
 
+function setupIntroSplash() {
+  const splash = $("#introSplash");
+  if (!splash) return;
+  const initialRoute = window.location.hash.replace(/^#/, "") || "/";
+  if (initialRoute !== "/") {
+    document.body.classList.remove("intro-active");
+    splash.remove();
+    return;
+  }
+  const finishIntro = () => {
+    document.body.classList.remove("intro-active");
+    splash.remove();
+  };
+  splash.addEventListener("animationend", finishIntro, { once: true });
+  window.setTimeout(finishIntro, 2200);
+}
+
 function apiUrl(path, params = {}) {
   const url = new URL(path, state.apiBase);
   Object.entries(params).forEach(([key, value]) => {
@@ -495,12 +512,11 @@ function emptyState() {
 
 async function renderHome() {
   setApp(`
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">${t("heroEyebrow")}</p>
-        <h1>${t("heroTitle")}</h1>
-        <p class="hero-subtitle">${t("heroSubtitle")}</p>
-        <p class="hero-subtitle">${t("heroBody")}</p>
+    <section class="hero home-hero">
+      <div class="hero-copy home-hero-copy">
+        <h1 class="home-title">${t("heroTitle")}</h1>
+        <p class="home-subtitle">${t("heroSubtitle")}</p>
+        <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
           <form class="search-form" id="globalSearchForm">
             <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
@@ -513,20 +529,11 @@ async function renderHome() {
             ${filterButton(t("junior"), "category", "junior")}
           </div>
         </div>
-      </div>
-      <aside class="hero-aside">
-        <div class="snapshot" id="apiSnapshot">
-          <div>
-            <img class="snapshot-logo" src="./assets/leverage-logo.png" alt="">
-            <h2>${t("exploreTitle")}</h2>
-            <p>${t("exploreSubtitle")}</p>
-          </div>
-          <div class="status-line">
-            <span><span class="status-dot" id="statusDot"></span>${t("systemStatus")}</span>
-            <strong id="statusText">${t("loading")}</strong>
-          </div>
+        <div class="home-status" id="apiSnapshot">
+          <span><span class="status-dot" id="statusDot"></span>${t("systemStatus")}</span>
+          <strong id="statusText">${t("loading")}</strong>
         </div>
-      </aside>
+      </div>
     </section>
 
     <section class="section">
@@ -791,6 +798,7 @@ function render() {
 }
 
 function init() {
+  setupIntroSplash();
   $("#apiBaseInput").value = state.apiBase;
   syncLanguageControl();
   $("#languageButton").addEventListener("click", (event) => {
