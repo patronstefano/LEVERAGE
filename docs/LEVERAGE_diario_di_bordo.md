@@ -1819,7 +1819,7 @@ Funzionalita frontend iniziali implementate:
 - gestione lingua `EN / IT / ES / FR` tramite local storage;
 - menu di navigazione a tendina per `Athletes`, `Events`, `Rankings`, `Analytics`, con azioni principali visibili al passaggio del mouse;
 - selettore lingua custom, arrotondato e coerente con lo stile app;
-- menu lingua incastonato nel pulsante, con lingua selezionata sempre visibile e opzioni non selezionate mostrate in modo leggero;
+- menu lingua compatto con pulsante dedicato e popover separato, mantenendo la lingua selezionata visibile e mostrando solo le opzioni non selezionate;
 - micro-animazione progressiva del contorno/espansione del controllo lingua;
 - rifinitura del controllo lingua per evitare il bordo sdoppiato: il contorno viene disegnato da un solo guscio animato, mentre il pulsante interno resta trasparente e gestisce solo label/freccia;
 - calibrazione dimensionale del controllo lingua per mantenere il selettore compatto, alto 36px e allineato al pulsante `Sign in`;
@@ -1827,6 +1827,7 @@ Funzionalita frontend iniziali implementate:
 - rifinitura della spaziatura del selettore lingua: il triangolino viene separato dalla sigla selezionata e le opzioni del menu vengono centrate con margini laterali coerenti rispetto al bordo espanso;
 - uniformazione del bordo del selettore lingua ai pulsanti della topbar: sostituita la finta linea via `box-shadow` con un bordo reale da 1px, coerente con `Sign in` e con gli altri controlli;
 - riduzione del peso visivo del selettore lingua, con pill chiusa piu stretta e menu aperto meno alto, per non competere visivamente con `Sign in`;
+- revisione finale della logica del selettore lingua: la versione incastonata e stata sostituita da un popover compatto, piu simile alla funzionalita iniziale e piu proporzionato rispetto al pulsante `Sign in`;
 - variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
 - supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
 
@@ -1849,6 +1850,7 @@ Commit principali della fase UI iniziale:
 | `252d78e` | Rifinitura spaziatura del dropdown lingua |
 | `41535ff` | Uniformazione bordo del selettore lingua |
 | `1c05880` | Riduzione del peso visivo del selettore lingua |
+| `ee3f42e` | Ritorno a selettore lingua compatto con popover |
 
 Decisione metodologica per la tesi:
 
