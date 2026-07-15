@@ -50,8 +50,17 @@ const translations = {
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Search athletes, events and rankings from a curated gymnastics database built for comparison, context and clarity.",
-    searchPlaceholder: "Search athletes, events, countries...",
+    searchPlaceholder: "Search athletes, events, countries, apparatus...",
     search: "Search",
+    globalSearchHeading: "Search",
+    globalSearchIntro: "Search across athletes, events, countries, apparatus and results.",
+    matchingAthletes: "Athletes",
+    matchingEvents: "Events",
+    matchingCountries: "Countries",
+    matchingApparatuses: "Apparatus",
+    matchingResults: "Results",
+    noGlobalSearchQuery: "Type a search term to explore all LEVERAGE data.",
+    noGlobalSearchResults: "No global results found.",
     systemStatus: "API status",
     online: "Online",
     offline: "Offline",
@@ -134,8 +143,17 @@ const translations = {
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Cerca atleti, eventi e classifiche in un database di ginnastica progettato per confronto, contesto e chiarezza.",
-    searchPlaceholder: "Cerca atleti, eventi, nazioni...",
+    searchPlaceholder: "Cerca atleti, eventi, nazioni, attrezzi...",
     search: "Cerca",
+    globalSearchHeading: "Ricerca",
+    globalSearchIntro: "Cerca in atleti, eventi, nazioni, attrezzi e risultati.",
+    matchingAthletes: "Atleti",
+    matchingEvents: "Eventi",
+    matchingCountries: "Nazioni",
+    matchingApparatuses: "Attrezzi",
+    matchingResults: "Risultati",
+    noGlobalSearchQuery: "Scrivi un termine per cercare in tutti i dati di LEVERAGE.",
+    noGlobalSearchResults: "Nessun risultato globale trovato.",
     systemStatus: "Stato API",
     online: "Online",
     offline: "Offline",
@@ -218,8 +236,17 @@ const translations = {
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Busca atletas, eventos y rankings en una base de datos de gimnasia creada para comparar con claridad.",
-    searchPlaceholder: "Buscar atletas, eventos, paises...",
+    searchPlaceholder: "Buscar atletas, eventos, paises, aparatos...",
     search: "Buscar",
+    globalSearchHeading: "Buscar",
+    globalSearchIntro: "Busca en atletas, eventos, paises, aparatos y resultados.",
+    matchingAthletes: "Atletas",
+    matchingEvents: "Eventos",
+    matchingCountries: "Paises",
+    matchingApparatuses: "Aparatos",
+    matchingResults: "Resultados",
+    noGlobalSearchQuery: "Escribe un termino para explorar todos los datos de LEVERAGE.",
+    noGlobalSearchResults: "No se encontraron resultados globales.",
     systemStatus: "Estado API",
     online: "Online",
     offline: "Offline",
@@ -302,8 +329,17 @@ const translations = {
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Recherchez athletes, evenements et classements dans une base de donnees concue pour comparer clairement.",
-    searchPlaceholder: "Rechercher athletes, evenements, pays...",
+    searchPlaceholder: "Rechercher athletes, evenements, pays, appareils...",
     search: "Rechercher",
+    globalSearchHeading: "Recherche",
+    globalSearchIntro: "Recherchez athletes, evenements, pays, appareils et resultats.",
+    matchingAthletes: "Athletes",
+    matchingEvents: "Evenements",
+    matchingCountries: "Pays",
+    matchingApparatuses: "Appareils",
+    matchingResults: "Resultats",
+    noGlobalSearchQuery: "Saisissez un terme pour explorer toutes les donnees LEVERAGE.",
+    noGlobalSearchResults: "Aucun resultat global trouve.",
     systemStatus: "Statut API",
     online: "Online",
     offline: "Offline",
@@ -353,6 +389,13 @@ const translations = {
 
 const $ = (selector) => document.querySelector(selector);
 const t = (key) => translations[state.language]?.[key] || translations.en[key] || key;
+const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+}[character]));
 
 function setLanguage(language) {
   state.language = language;
@@ -431,6 +474,25 @@ async function getJson(path, params = {}) {
     throw new Error(`${response.status} ${response.statusText}`);
   }
   return response.json();
+}
+
+async function trackSiteSearch(query) {
+  try {
+    await fetch(apiUrl("/site-analytics/events"), {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_type: "search",
+        path: state.route,
+        search_query: query,
+      }),
+    });
+  } catch (_error) {
+    // Analytics must never block public search.
+  }
 }
 
 function formatDateRange(item) {
@@ -519,6 +581,10 @@ function emptyState() {
   return `<div class="empty-state">${t("noResults")}</div>`;
 }
 
+function messageState(message) {
+  return `<div class="empty-state">${message}</div>`;
+}
+
 async function renderHome() {
   setApp(`
     <section class="hero home-hero">
@@ -583,11 +649,109 @@ async function renderHome() {
   $("#globalSearchForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const query = $("#globalSearchInput").value.trim();
-    window.location.hash = query ? `#/athletes?search=${encodeURIComponent(query)}` : "#/athletes";
+    window.location.hash = query ? `#/search?q=${encodeURIComponent(query)}` : "#/search";
   });
 
   bindFilterButtons();
   await hydrateHome();
+}
+
+function searchSection(title, items) {
+  if (!items.length) return "";
+  return `
+    <section class="panel search-result-section">
+      <div class="section-header">
+        <h2>${title}</h2>
+      </div>
+      <div class="entity-list">${items.join("")}</div>
+    </section>
+  `;
+}
+
+function searchCountLabel(item) {
+  const parts = [];
+  if (item.result_count) parts.push(resultLabel(item.result_count));
+  if (item.athlete_count) parts.push(`${item.athlete_count.toLocaleString()} ${t("navAthletes").toLowerCase()}`);
+  return parts.join(" · ") || t("noResults");
+}
+
+function scoreLabel(value) {
+  return value === null || value === undefined ? "not available" : Number(value).toFixed(3);
+}
+
+function renderGlobalSearchResults(data) {
+  if (!data.total_count) {
+    return messageState(t("noGlobalSearchResults"));
+  }
+  const athleteItems = data.athletes.map((athlete) => {
+    const pills = [
+      { label: athlete.discipline, variant: "brand" },
+      ...(athlete.country ? [{ label: athlete.country }] : []),
+      { label: resultLabel(athlete.result_count) },
+    ];
+    return entityCard(athlete.name, athlete.country || t("country"), pills, `#/athletes/${athlete.id}`);
+  });
+  const eventItems = data.events.map((event) => {
+    const pills = [
+      { label: event.discipline, variant: "brand" },
+      { label: event.category },
+      { label: resultLabel(event.result_count) },
+    ];
+    const meta = [event.location, formatDateRange(event) || String(event.year)].filter(Boolean).join(" · ");
+    return entityCard(event.name, meta, pills, `#/events/${event.id}`);
+  });
+  const countryItems = data.countries.map((country) => (
+    entityCard(country.label, searchCountLabel(country), [{ label: t("country"), variant: "brand" }], `#/search?q=${encodeURIComponent(country.value)}`)
+  ));
+  const apparatusItems = data.apparatuses.map((apparatus) => (
+    entityCard(apparatus.label, resultLabel(apparatus.result_count), [{ label: t("matchingApparatuses"), variant: "brand" }], `#/search?q=${encodeURIComponent(apparatus.value)}`)
+  ));
+  const resultItems = data.results.map((result) => {
+    const pills = [
+      { label: `${t("score")} ${scoreLabel(result.score)}`, variant: "brand" },
+      ...(result.apparatus ? [{ label: result.apparatus }] : []),
+      { label: result.discipline },
+      ...(result.country ? [{ label: result.country }] : []),
+    ];
+    const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
+    return entityCard(result.athlete_name, meta, pills, `#/events/${result.event_id}`);
+  });
+  return `
+    <div class="search-results">
+      ${searchSection(t("matchingAthletes"), athleteItems)}
+      ${searchSection(t("matchingEvents"), eventItems)}
+      ${searchSection(t("matchingCountries"), countryItems)}
+      ${searchSection(t("matchingApparatuses"), apparatusItems)}
+      ${searchSection(t("matchingResults"), resultItems)}
+    </div>
+  `;
+}
+
+async function renderGlobalSearch() {
+  const params = currentParams();
+  const query = params.get("q") || "";
+  const escapedQuery = escapeHtml(query);
+  setApp(`
+    ${pageHeading("globalSearchHeading", "globalSearchIntro")}
+    <form class="search-form search-page-form" id="globalSearchPageForm">
+      <input class="search-input" id="globalSearchPageInput" type="search" autocomplete="off" value="${escapedQuery}" placeholder="${t("searchPlaceholder")}">
+      <button class="primary-button" type="submit">${t("search")}</button>
+    </form>
+    <div id="globalSearchResults">${query ? loadingState() : messageState(t("noGlobalSearchQuery"))}</div>
+  `);
+  $("#globalSearchPageForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const nextQuery = $("#globalSearchPageInput").value.trim();
+    window.location.hash = nextQuery ? `#/search?q=${encodeURIComponent(nextQuery)}` : "#/search";
+  });
+  if (!query) return;
+  try {
+    trackSiteSearch(query);
+    const results = await getJson("/search", { q: query, limit: 8 });
+    $("#globalSearchResults").innerHTML = renderGlobalSearchResults(results);
+  } catch (error) {
+    $("#globalSearchResults").innerHTML = errorState(error);
+  }
 }
 
 function featureCard(title, text, href) {
@@ -799,6 +963,8 @@ function render() {
     renderEvents();
   } else if (state.route.startsWith("/rankings")) {
     renderRankings();
+  } else if (state.route.startsWith("/search")) {
+    renderGlobalSearch();
   } else if (state.route.startsWith("/analytics")) {
     renderStaticPage("analyticsHeading", "analyticsIntro");
   } else if (state.route.startsWith("/login")) {

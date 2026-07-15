@@ -1320,6 +1320,61 @@ class ResultRanking(BaseModel):
     ranking: list[ResultRankingEntry]
 
 
+class GlobalSearchAthlete(BaseModel):
+    id: int
+    name: str
+    country: Optional[str] = None
+    discipline: DisciplineEnum
+    result_count: int = 0
+
+
+class GlobalSearchEvent(BaseModel):
+    id: int
+    name: str
+    location: Optional[str] = None
+    year: int
+    start_date: Optional[Date] = None
+    end_date: Optional[Date] = None
+    discipline: EventDisciplineEnum
+    category: EventCategoryEnum
+    result_count: int = 0
+
+
+class GlobalSearchFacet(BaseModel):
+    value: str
+    label: str
+    result_count: int = 0
+    athlete_count: int = 0
+
+
+class GlobalSearchResult(BaseModel):
+    result_id: int
+    athlete_id: int
+    athlete_name: str
+    country: Optional[str] = None
+    event_id: int
+    event_name: str
+    year: int
+    date: Optional[Date] = None
+    discipline: DisciplineEnum
+    category: ResultCategoryEnum
+    apparatus: Optional[str] = None
+    format: FormatEnum
+    round: RoundEnum
+    score: Optional[float] = None
+    D_score: Optional[float] = None
+
+
+class GlobalSearchResponse(BaseModel):
+    query: str
+    total_count: int
+    athletes: list[GlobalSearchAthlete] = Field(default_factory=list)
+    events: list[GlobalSearchEvent] = Field(default_factory=list)
+    countries: list[GlobalSearchFacet] = Field(default_factory=list)
+    apparatuses: list[GlobalSearchFacet] = Field(default_factory=list)
+    results: list[GlobalSearchResult] = Field(default_factory=list)
+
+
 class AnalyticsAggregationEnum(str, Enum):
     RAW = "raw"
     BEST_BY_EVENT = "best_by_event"

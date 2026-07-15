@@ -848,6 +848,72 @@ def test_result_duplicate_context_is_blocked_for_direct_and_bulk_entry():
     assert bulk_response.json()["detail"]["duplicates"][0]["reason"] == "duplicate_in_request"
 
 
+def test_global_search_covers_athletes_events_countries_apparatus_and_results():
+    client.post("/auth/register", json={"email": "global_search_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("global_search_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Simone",
+            "last_name": "Biles",
+            "discipline": "WAG",
+            "country": "USA",
+        },
+        headers=headers,
+    ).json()
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Pacific Classic",
+            "location": "Los Angeles",
+            "year": 2024,
+            "discipline": "WAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    ).json()
+    result_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "represented_country": "USA",
+            "discipline": "WAG",
+            "category": "senior",
+            "apparatus": "BB",
+            "format": "individual",
+            "round": "final",
+            "D_score": 6.4,
+            "score": 14.5,
+        },
+        headers=headers,
+    )
+    assert result_response.status_code == 200
+    result = result_response.json()
+
+    athlete_search = client.get("/search", params={"q": "Simone", "limit": 5})
+    assert athlete_search.status_code == 200
+    assert athlete_search.json()["athletes"][0]["id"] == athlete["id"]
+
+    event_search = client.get("/search", params={"q": "Pacific", "limit": 5})
+    assert event_search.status_code == 200
+    assert event_search.json()["events"][0]["id"] == event["id"]
+    assert event_search.json()["results"][0]["result_id"] == result["id"]
+
+    country_search = client.get("/search", params={"q": "USA", "limit": 5})
+    assert country_search.status_code == 200
+    assert country_search.json()["countries"][0]["value"] == "USA"
+    assert country_search.json()["countries"][0]["result_count"] == 1
+
+    apparatus_search = client.get("/search", params={"q": "balance", "limit": 5})
+    assert apparatus_search.status_code == 200
+    assert apparatus_search.json()["apparatuses"][0]["value"] == "BB"
+    assert apparatus_search.json()["results"][0]["apparatus"] == "BB"
+
+
 def test_admin_can_audit_existing_result_duplicate_groups():
     client.post("/auth/register", json={"email": "duplicate_audit_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("duplicate_audit_admin@example.com")

@@ -553,6 +553,11 @@ button {
   margin-top: 30px;
 }
 
+.search-page-form {
+  width: min(760px, 100%);
+  margin-bottom: 22px;
+}
+
 .search-form {
   position: relative;
   display: flex;
@@ -794,6 +799,19 @@ button {
 
 .panel {
   padding: 22px;
+}
+
+.search-results {
+  display: grid;
+  gap: 16px;
+}
+
+.search-result-section .section-header {
+  margin-bottom: 14px;
+}
+
+.search-result-section .section-header h2 {
+  font-size: 20px;
 }
 
 .entity-list {

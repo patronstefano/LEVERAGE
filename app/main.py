@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_cors_origins, validate_runtime_settings
-from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, site_analytics, world_gymnastics
+from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, search, site_analytics, world_gymnastics
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -36,6 +36,7 @@ app.include_router(data_suggestions.router, prefix="/data-suggestions", tags=["d
 app.include_router(events.router, prefix="/events", tags=["events"])
 app.include_router(world_gymnastics.router, prefix="/world-gymnastics", tags=["world-gymnastics"])
 app.include_router(results.router, prefix="/results", tags=["results"])
+app.include_router(search.router, prefix="/search", tags=["search"])
 app.include_router(imports.router, prefix="/imports", tags=["imports"])
 app.include_router(preferences.router, prefix="/preferences", tags=["preferences"])
 app.include_router(notifications.router, prefix="/notifications", tags=["notifications"])
