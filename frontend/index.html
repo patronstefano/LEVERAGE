@@ -24,15 +24,18 @@
         </nav>
 
         <div class="topbar-actions">
-          <label class="sr-only" for="languageSelect" data-i18n="language">Language</label>
-          <span class="language-control">
-            <select id="languageSelect" class="language-select" aria-label="Language">
-              <option value="en">EN</option>
-              <option value="it">IT</option>
-              <option value="es">ES</option>
-              <option value="fr">FR</option>
-            </select>
-          </span>
+          <div class="language-control" id="languageControl">
+            <button id="languageButton" class="language-button" type="button" aria-label="Language" aria-haspopup="listbox" aria-expanded="false">
+              <span id="languageLabel">EN</span>
+              <span class="language-caret" aria-hidden="true"></span>
+            </button>
+            <div class="language-menu" id="languageMenu" role="listbox" aria-label="Language">
+              <button type="button" role="option" data-language-option="en">EN</button>
+              <button type="button" role="option" data-language-option="it">IT</button>
+              <button type="button" role="option" data-language-option="es">ES</button>
+              <button type="button" role="option" data-language-option="fr">FR</button>
+            </div>
+          </div>
           <a class="signin-link" href="#/login" data-i18n="signIn">Sign in</a>
         </div>
       </header>

@@ -263,6 +263,7 @@ function setLanguage(language) {
   localStorage.setItem(LANGUAGE_KEY, language);
   document.documentElement.lang = language;
   applyTranslations();
+  syncLanguageControl();
   render();
 }
 
@@ -270,6 +271,24 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((node) => {
     node.textContent = t(node.dataset.i18n);
   });
+}
+
+function syncLanguageControl() {
+  const label = $("#languageLabel");
+  if (label) {
+    label.textContent = state.language.toUpperCase();
+  }
+  document.querySelectorAll("[data-language-option]").forEach((button) => {
+    button.setAttribute("aria-selected", String(button.dataset.languageOption === state.language));
+  });
+}
+
+function closeLanguageMenu() {
+  const control = $("#languageControl");
+  const button = $("#languageButton");
+  if (!control || !button) return;
+  control.classList.remove("is-open");
+  button.setAttribute("aria-expanded", "false");
 }
 
 function apiUrl(path, params = {}) {
@@ -670,9 +689,27 @@ function render() {
 }
 
 function init() {
-  $("#languageSelect").value = state.language;
   $("#apiBaseInput").value = state.apiBase;
-  $("#languageSelect").addEventListener("change", (event) => setLanguage(event.target.value));
+  syncLanguageControl();
+  $("#languageButton").addEventListener("click", (event) => {
+    event.stopPropagation();
+    const control = $("#languageControl");
+    const isOpen = control.classList.toggle("is-open");
+    $("#languageButton").setAttribute("aria-expanded", String(isOpen));
+  });
+  document.querySelectorAll("[data-language-option]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setLanguage(button.dataset.languageOption);
+      closeLanguageMenu();
+    });
+  });
+  document.addEventListener("click", closeLanguageMenu);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeLanguageMenu();
+    }
+  });
   $("#apiConfigForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const value = $("#apiBaseInput").value.trim().replace(/\/$/, "");
