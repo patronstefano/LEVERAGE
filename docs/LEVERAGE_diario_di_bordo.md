@@ -1813,6 +1813,8 @@ Funzionalita frontend iniziali implementate:
 
 - topbar con logo, wordmark, navigazione principale e azione `Sign in`;
 - home pubblica con titolo LEVERAGE, sottotitolo `Artistic Gymnastics Analytics`, ricerca globale e filtri rapidi `MAG`, `WAG`, `Senior`, `Junior`;
+- introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
+- revisione della hero iniziale in composizione centrata, con ricerca e filtri immediatamente sotto al titolo e status API ridotto a indicatore compatto;
 - collegamento agli endpoint pubblici per mostrare preview Calendar e Ranking;
 - pagine iniziali per `Athletes`, `Events`, `Rankings`, `Analytics` e `Login`;
 - footer con configurazione locale dell'API base;
@@ -1840,6 +1842,7 @@ Commit principali della fase UI iniziale:
 | Commit | Contenuto |
 |---|---|
 | `1df670f` | Aggiunta prima interfaccia pubblica frontend |
+| `e71f08c` | Introduzione splash iniziale e home centrata |
 | `4e89b71` | Rifinitura styling dei controlli frontend |
 | `535c42e` | Sostituzione del selettore lingua nativo con controllo custom |
 | `1546cba` | Rimozione outline blu/focus non coerente |
