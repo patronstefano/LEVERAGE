@@ -1824,6 +1824,7 @@ Funzionalita frontend iniziali implementate:
 - rifinitura del controllo lingua per evitare il bordo sdoppiato: il contorno viene disegnato da un solo guscio animato, mentre il pulsante interno resta trasparente e gestisce solo label/freccia;
 - calibrazione dimensionale del controllo lingua per mantenere il selettore compatto, alto 36px e allineato al pulsante `Sign in`;
 - allineamento tipografico e verticale del selettore lingua: la lingua selezionata e le opzioni sottostanti condividono la stessa scala testuale e lo stesso asse centrale, mentre la freccia non sposta piu il testo;
+- rifinitura della spaziatura del selettore lingua: il triangolino viene separato dalla sigla selezionata e le opzioni del menu vengono centrate con margini laterali coerenti rispetto al bordo espanso;
 - variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
 - supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
 
@@ -1843,6 +1844,7 @@ Commit principali della fase UI iniziale:
 | `9a5dce5` | Calibrazione dimensionale del controllo lingua |
 | `e4ddac6` | Allineamento del controllo lingua al pulsante Sign in |
 | `125ddc6` | Allineamento tipografico delle opzioni lingua |
+| `252d78e` | Rifinitura spaziatura del dropdown lingua |
 
 Decisione metodologica per la tesi:
 
