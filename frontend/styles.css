@@ -214,7 +214,6 @@ button {
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-width: 56px;
   height: 36px;
 }
 
@@ -222,18 +221,16 @@ button {
   appearance: none;
   -webkit-appearance: none;
   position: relative;
-  z-index: 34;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
+  gap: 6px;
   height: 36px;
-  width: 100%;
-  min-width: 0;
-  padding: 0 8px;
-  border: 0;
+  min-width: 54px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
   border-radius: var(--control-radius);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.88);
   box-shadow: none;
   color: var(--ink);
   cursor: pointer;
@@ -250,8 +247,6 @@ button {
 }
 
 .language-caret {
-  position: absolute;
-  right: 7px;
   width: 0;
   height: 0;
   border-left: 3px solid transparent;
@@ -262,27 +257,26 @@ button {
 
 .language-menu {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: calc(100% + 6px);
+  left: 50%;
   z-index: 33;
-  width: 100%;
-  min-width: 56px;
-  padding: 36px 3px 3px;
+  min-width: 54px;
+  padding: 4px;
   border: 1px solid var(--line);
   border-radius: var(--control-radius);
-  background: rgba(245, 245, 247, 0.92);
-  box-shadow: 0 0 0 rgba(16, 16, 20, 0);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 34px rgba(16, 16, 20, 0.1);
   display: grid;
-  gap: 3px;
-  max-height: 36px;
-  overflow: hidden;
+  gap: 2px;
+  opacity: 0;
   pointer-events: none;
-  transform: none;
+  transform: translateX(-50%) translateY(-4px) scale(0.98);
+  transform-origin: top center;
   transition:
-    max-height var(--control-expand-motion),
-    background var(--control-fade-motion),
-    border-color var(--control-fade-motion),
-    box-shadow var(--control-expand-motion);
+    opacity var(--control-fade-motion),
+    transform var(--control-expand-motion),
+    visibility var(--control-fade-motion);
+  visibility: hidden;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -292,11 +286,10 @@ button {
 }
 
 .language-control.is-open .language-menu {
-  max-height: 108px;
+  opacity: 1;
   pointer-events: auto;
-  background: rgba(245, 245, 247, 0.78);
-  border-color: rgba(231, 231, 236, 0.88);
-  box-shadow: 0 16px 42px rgba(16, 16, 20, 0.1);
+  transform: translateX(-50%) translateY(0) scale(1);
+  visibility: visible;
 }
 
 .language-control.is-open .language-caret {
@@ -307,7 +300,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 20px;
+  height: 24px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -315,9 +308,8 @@ button {
   font-size: inherit;
   line-height: 1;
   text-align: center;
-  justify-self: center;
-  padding: 0;
-  width: calc(100% - 6px);
+  padding: 0 6px;
+  width: 100%;
   transition:
     background 120ms ease,
     color 120ms ease;
@@ -350,10 +342,12 @@ button {
   border-color: rgba(25, 23, 71, 0.34);
 }
 
-.language-control:not(.is-open):hover .language-menu {
+.language-button:hover,
+.language-control.is-open .language-button {
   border-color: rgba(25, 23, 71, 0.34);
 }
 
+.language-button:focus-visible,
 .nav-trigger:focus-visible,
 .signin-link:focus-visible,
 .api-config input:focus-visible,
@@ -364,21 +358,6 @@ button {
 .quiet-button:focus-visible {
   outline: 3px solid rgba(25, 23, 71, 0.16);
   outline-offset: 2px;
-}
-
-.language-button:focus-visible {
-  outline: 0;
-}
-
-.language-control:focus-within .language-menu {
-  border-color: rgba(25, 23, 71, 0.34);
-  box-shadow: 0 0 0 3px rgba(17, 17, 20, 0.08);
-}
-
-.language-control.is-open:focus-within .language-menu {
-  box-shadow:
-    0 16px 42px rgba(16, 16, 20, 0.1),
-    0 0 0 3px rgba(17, 17, 20, 0.08);
 }
 
 .main-view {
