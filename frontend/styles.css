@@ -59,8 +59,13 @@ body {
   will-change: transform, opacity, filter;
 }
 
-.intro-active .app-shell {
-  animation: appReveal 720ms ease 950ms both;
+.intro-active .topbar {
+  animation: topbarCurtainDrop 760ms cubic-bezier(0.22, 1, 0.36, 1) 1760ms both;
+}
+
+.intro-active .main-view,
+.intro-active .footer {
+  animation: contentReveal 680ms ease 2100ms both;
 }
 
 @keyframes introSplash {
@@ -94,7 +99,18 @@ body {
   }
 }
 
-@keyframes appReveal {
+@keyframes topbarCurtainDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contentReveal {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -489,8 +505,17 @@ button {
 
 .home-title {
   color: var(--brand-blue);
-  font-size: clamp(58px, 9vw, 126px);
-  line-height: 0.9;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  line-height: 1;
+}
+
+.home-wordmark {
+  display: block;
+  width: clamp(260px, 42vw, 540px);
+  max-width: 92vw;
+  height: auto;
 }
 
 .home-subtitle {
@@ -910,7 +935,9 @@ button {
   }
 
   .intro-logo,
-  .intro-active .app-shell {
+  .intro-active .topbar,
+  .intro-active .main-view,
+  .intro-active .footer {
     animation: none;
   }
 

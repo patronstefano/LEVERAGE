@@ -398,12 +398,21 @@ function setupIntroSplash() {
     splash.remove();
     return;
   }
-  const finishIntro = () => {
-    document.body.classList.remove("intro-active");
+  let splashFinished = false;
+  const finishSplash = () => {
+    if (splashFinished) return;
+    splashFinished = true;
     splash.remove();
   };
-  splash.addEventListener("animationend", finishIntro, { once: true });
-  window.setTimeout(finishIntro, 2200);
+  const finishIntro = () => {
+    finishSplash();
+    document.body.classList.remove("intro-active");
+  };
+  splash.addEventListener("animationend", (event) => {
+    if (event.target === splash) finishSplash();
+  });
+  window.setTimeout(finishSplash, 1900);
+  window.setTimeout(finishIntro, 2900);
 }
 
 function apiUrl(path, params = {}) {
@@ -514,7 +523,9 @@ async function renderHome() {
   setApp(`
     <section class="hero home-hero">
       <div class="hero-copy home-hero-copy">
-        <h1 class="home-title">${t("heroTitle")}</h1>
+        <h1 class="home-title" aria-label="${t("heroTitle")}">
+          <img class="home-wordmark" src="./assets/leverage-wordmark.png" alt="">
+        </h1>
         <p class="home-subtitle">${t("heroSubtitle")}</p>
         <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
