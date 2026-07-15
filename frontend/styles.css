@@ -10,6 +10,8 @@
   --warning: #9a6700;
   --danger: #b42318;
   --shadow: 0 24px 70px rgba(16, 16, 20, 0.08);
+  --control-radius: 12px;
+  --large-control-radius: 18px;
   color-scheme: light;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
 }
@@ -78,7 +80,7 @@ button {
 .brand-mark {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: 9px;
   display: block;
 }
 
@@ -128,22 +130,45 @@ button {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.88);
   color: var(--ink);
-  border-radius: 999px;
+  border-radius: var(--control-radius);
 }
 
 .language-select {
-  height: 34px;
+  height: 36px;
+  min-width: 58px;
   padding: 0 12px;
+  border-color: rgba(25, 23, 71, 0.16);
 }
 
 .signin-link {
-  height: 34px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
-  padding: 0 15px;
+  padding: 0 16px;
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
+}
+
+.language-select:hover,
+.api-config input:hover,
+.api-config button:hover,
+.filter-button:hover,
+.primary-button:hover,
+.quiet-button:hover {
+  border-color: rgba(25, 23, 71, 0.34);
+}
+
+.language-select:focus-visible,
+.signin-link:focus-visible,
+.api-config input:focus-visible,
+.api-config button:focus-visible,
+.search-input:focus-visible,
+.filter-button:focus-visible,
+.primary-button:focus-visible,
+.quiet-button:focus-visible {
+  outline: 3px solid rgba(25, 23, 71, 0.16);
+  outline-offset: 2px;
 }
 
 .main-view {
@@ -203,7 +228,7 @@ button {
   padding: 8px;
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(231, 231, 236, 0.86);
-  border-radius: 999px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
 }
 
@@ -221,6 +246,7 @@ button {
 .primary-button {
   height: 50px;
   padding: 0 22px;
+  border-radius: var(--large-control-radius);
   border-color: var(--brand-blue);
   background: var(--brand-blue);
   color: #fff;
@@ -245,6 +271,7 @@ button {
   min-height: 36px;
   padding: 0 14px;
   color: rgba(17, 17, 20, 0.76);
+  border-color: rgba(25, 23, 71, 0.14);
 }
 
 .filter-button[aria-pressed="true"],
@@ -510,12 +537,12 @@ button {
 
 .api-config input {
   width: 220px;
-  height: 34px;
+  height: 36px;
   padding: 0 12px;
 }
 
 .api-config button {
-  height: 34px;
+  height: 36px;
   padding: 0 13px;
 }
 
