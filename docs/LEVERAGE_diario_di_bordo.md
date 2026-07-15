@@ -1786,8 +1786,87 @@ Valutazione di avanzamento al 15 luglio 2026:
 | Deploy online produzione | 0% |
 | MVP online complessivo | 74% |
 
-## 18. Conclusione
+## 18. Milestone - Avvio frontend pubblico e UI MVP
+
+Data milestone: 15 luglio 2026
+
+Dopo il completamento del popolamento storico e della riconciliazione Calendar fino al primo semestre 2026, e stata avviata la fase di trasformazione di LEVERAGE da backend/API platform a piattaforma web consultabile.
+
+Scelta architetturale:
+
+- il frontend viene sviluppato nella stessa repository GitHub del backend, dentro la cartella `frontend/`;
+- in questa prima fase e stato scelto un frontend dependency-free in HTML, CSS e JavaScript vanilla, perche l'ambiente locale non disponeva di Node/npm e perche l'obiettivo iniziale era validare struttura, navigazione, stile e collegamento agli endpoint pubblici senza introdurre toolchain prematura;
+- il backend FastAPI e stato predisposto con CORS configurabile per permettere al frontend locale di interrogare le API;
+- la UI usa di default `http://localhost:8000` come API base, modificabile dal footer durante i test locali.
+
+Scelte di prodotto e UX:
+
+- LEVERAGE deve presentarsi come piattaforma dati, non come landing page puramente descrittiva;
+- la prima schermata deve permettere subito ricerca, filtri e accesso ai dati principali;
+- lo stile visivo scelto e minimale, pulito, moderno, ispirato all'esperienza Apple;
+- il colore identitario e il blu del brand LEVERAGE fornito dal logo;
+- logo e wordmark sono stati importati dagli asset forniti e usati nella topbar;
+- l'interfaccia e in inglese di default, con supporto iniziale anche per italiano, spagnolo e francese;
+- anche l'utente non loggato puo cambiare lingua, con preferenza salvata localmente nel browser.
+
+Funzionalita frontend iniziali implementate:
+
+- topbar con logo, wordmark, navigazione principale e azione `Sign in`;
+- home pubblica con titolo LEVERAGE, sottotitolo `Artistic Gymnastics Analytics`, ricerca globale e filtri rapidi `MAG`, `WAG`, `Senior`, `Junior`;
+- collegamento agli endpoint pubblici per mostrare preview Calendar e Ranking;
+- pagine iniziali per `Athletes`, `Events`, `Rankings`, `Analytics` e `Login`;
+- footer con configurazione locale dell'API base;
+- gestione lingua `EN / IT / ES / FR` tramite local storage;
+- menu di navigazione a tendina per `Athletes`, `Events`, `Rankings`, `Analytics`, con azioni principali visibili al passaggio del mouse;
+- selettore lingua custom, arrotondato e coerente con lo stile app;
+- menu lingua incastonato nel pulsante, con lingua selezionata sempre visibile e opzioni non selezionate mostrate in modo leggero;
+- micro-animazione progressiva del contorno/espansione del controllo lingua;
+- variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
+- supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
+
+Commit principali della fase UI iniziale:
+
+| Commit | Contenuto |
+|---|---|
+| `1df670f` | Aggiunta prima interfaccia pubblica frontend |
+| `4e89b71` | Rifinitura styling dei controlli frontend |
+| `535c42e` | Sostituzione del selettore lingua nativo con controllo custom |
+| `1546cba` | Rimozione outline blu/focus non coerente |
+| `e96c938` | Aggiunta dropdown di navigazione frontend |
+| `950b610` | Menu lingua incastonato nel controllo |
+| `bbf1dbc` | Nasconde dal menu la lingua gia selezionata |
+| `0bb81c1` | Animazione progressiva del controllo lingua |
+
+Decisione metodologica per la tesi:
+
+Da questa milestone in poi, ogni sviluppo UI/UX significativo deve essere annotato nel diario di bordo e nei file di avanzamento del progetto, includendo:
+
+- richiesta o problema da risolvere;
+- scelta progettuale adottata;
+- motivazione semantica/funzionale;
+- impatto su frontend, backend o modello dati;
+- commit Git rilevanti;
+- eventuali limiti o sviluppi successivi.
+
+Valutazione di avanzamento aggiornata al 15 luglio 2026:
+
+| Area | Avanzamento stimato |
+|---|---:|
+| Backend core e modello dati | 92% |
+| Import storico Gymternet | 97% |
+| Popolamento dati 2018-2025 | 100% |
+| Popolamento dati 2026 primo semestre | 100% |
+| Riconciliazione Calendar 2018-2025 | 100% |
+| Riconciliazione Calendar 2026 primo semestre | 100% |
+| Documentazione tecnica/tesi della fase dati | 94% |
+| Backend pronto per UI MVP | 82% |
+| Frontend/UI pubblica iniziale | 12% |
+| UI admin | 0% |
+| Deploy online produzione | 0% |
+| MVP online complessivo | 76% |
+
+## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
 
-La prossima grande fase non e piu il popolamento storico 2018-2025, ormai completato, ma la trasformazione del backend in piattaforma web utilizzabile: frontend pubblico, area utente, area admin, calendario interattivo, schede atleta, schede evento, grafici, deploy online e gestione produzione.
+La fase di trasformazione del backend in piattaforma web utilizzabile e ora iniziata con una prima UI pubblica minimal. I prossimi sviluppi dovranno consolidare frontend pubblico, area utente, area admin, calendario interattivo, schede atleta, schede evento, grafici, deploy online e gestione produzione.
