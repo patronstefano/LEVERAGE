@@ -1822,7 +1822,7 @@ Funzionalita frontend iniziali implementate:
 - menu lingua incastonato nel pulsante, con lingua selezionata sempre visibile e opzioni non selezionate mostrate in modo leggero;
 - micro-animazione progressiva del contorno/espansione del controllo lingua;
 - rifinitura del controllo lingua per evitare il bordo sdoppiato: il contorno viene disegnato da un solo guscio animato, mentre il pulsante interno resta trasparente e gestisce solo label/freccia;
-- calibrazione dimensionale del controllo lingua per mantenere il selettore compatto e coerente con gli altri pulsanti della topbar;
+- calibrazione dimensionale del controllo lingua per mantenere il selettore compatto, alto 36px e allineato al pulsante `Sign in`;
 - variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
 - supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
 
@@ -1840,6 +1840,7 @@ Commit principali della fase UI iniziale:
 | `0bb81c1` | Animazione progressiva del controllo lingua |
 | `a00add5` | Rimozione bordo sdoppiato dal controllo lingua |
 | `9a5dce5` | Calibrazione dimensionale del controllo lingua |
+| `e4ddac6` | Allineamento del controllo lingua al pulsante Sign in |
 
 Decisione metodologica per la tesi:
 
