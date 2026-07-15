@@ -1828,6 +1828,7 @@ Funzionalita frontend iniziali implementate:
 - uniformazione del bordo del selettore lingua ai pulsanti della topbar: sostituita la finta linea via `box-shadow` con un bordo reale da 1px, coerente con `Sign in` e con gli altri controlli;
 - riduzione del peso visivo del selettore lingua, con pill chiusa piu stretta e menu aperto meno alto, per non competere visivamente con `Sign in`;
 - revisione finale della logica del selettore lingua: la versione incastonata e stata sostituita da un popover compatto, piu simile alla funzionalita iniziale e piu proporzionato rispetto al pulsante `Sign in`;
+- ulteriore riduzione del selettore lingua a pill minimale senza freccia, mantenendo la sigla selezionata visibile e il menu cliccabile ma alleggerendo definitivamente la topbar;
 - variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
 - supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
 
@@ -1851,6 +1852,7 @@ Commit principali della fase UI iniziale:
 | `41535ff` | Uniformazione bordo del selettore lingua |
 | `1c05880` | Riduzione del peso visivo del selettore lingua |
 | `ee3f42e` | Ritorno a selettore lingua compatto con popover |
+| `69cdee4` | Riduzione del selettore lingua a pill minimale |
 
 Decisione metodologica per la tesi:
 
