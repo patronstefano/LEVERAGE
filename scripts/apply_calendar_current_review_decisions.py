@@ -42,6 +42,12 @@ SKIP_CALENDAR_UNMATCHED_DECISIONS = {
     "covered by db review",
     "handled_by_db_review",
     "handled by db review",
+    "future_standby",
+    "future standby",
+    "future review",
+    "future_review",
+    "standby_future",
+    "standby future",
 }
 SKIP_DB_UNMATCHED_DECISIONS = {
     "linked_by_cross_year_repair",
@@ -136,6 +142,22 @@ def selected_calendar_row_from_db_row(row: dict[str, str]) -> int | None:
     if option_match:
         return int(option_match.group(1))
     return parse_int(selected)
+
+
+def selected_calendar_rows_from_db_row(row: dict[str, str]) -> list[int]:
+    selected = clean(row.get("choice_calendar_row", ""))
+    if not selected:
+        return []
+    rows = []
+    for option_number in selected_option_numbers(selected):
+        option = clean(row.get(f"option_{option_number}", ""))
+        option_match = re.search(r"\brow\s+(\d+)\b", option)
+        if option_match:
+            rows.append(int(option_match.group(1)))
+    if rows:
+        return rows
+    single = selected_calendar_row_from_db_row(row)
+    return [single] if single is not None else []
 
 
 def unresolved_choice(value: str) -> bool:
@@ -271,8 +293,8 @@ def run(args: argparse.Namespace) -> dict:
                 continue
             db_only_rows.append(row)
             continue
-        calendar_row = selected_calendar_row_from_db_row(row)
-        if event_id is None or calendar_row is None:
+        calendar_rows = selected_calendar_rows_from_db_row(row)
+        if event_id is None or not calendar_rows:
             target = unresolved_decisions if unresolved_choice(row.get("choice_calendar_row", "")) else invalid_decisions
             target.append({
                 "source": str(db_unmatched_path),
@@ -283,7 +305,8 @@ def run(args: argparse.Namespace) -> dict:
                 "reason": "unresolved_db_event" if target is unresolved_decisions else "missing_event_id_or_selected_calendar_row",
             })
             continue
-        pairs[(event_id, calendar_row)] = "db_unmatched_current"
+        for calendar_row in calendar_rows:
+            pairs[(event_id, calendar_row)] = "db_unmatched_current"
 
     dry_run = not args.commit
     backup_path = None if dry_run else backup_database(args.db_path, args.year)

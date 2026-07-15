@@ -1,0 +1,3 @@
+event_id,event_name,discipline,category,level,result_count,review_decision,notes
+1687,Colombian Championships,MAG and WAG,junior and senior,International Event,559,db_only,"Admin note referenced Row 76 as Colombian Championships, but Calendar 2026 row 76 is Varna Challenge Cup and no Colombian Championships source row exists; marked db_only pending source correction."
+1708,Romanian Euros Trials,WAG,senior,International Event,45,db_only,Event derived from Results but not present in the Calendar source.

@@ -1,0 +1,9 @@
+conflict_group,event_id,event_name,event_year,event_discipline,event_category,event_result_count,calendar_sheet,calendar_row,calendar_year,calendar_date,calendar_start_date,calendar_end_date,calendar_event,decision,action,notes
+1,1659,1st Bundesliga,2026,MAG and WAG,junior and senior,488,2026,52,2026,Mar 28-29,2026-03-28,2026-03-29,1st Bundesliga (MAG),,,
+1,1659,1st Bundesliga,2026,MAG and WAG,junior and senior,488,2026,88,2026,May 16,2026-05-16,2026-05-16,1st Bundesliga,,,
+2,1626,2nd Bundesliga,2026,MAG,junior and senior,197,2026,58,2026,Apr 11,2026-04-11,2026-04-11,2nd Bundesliga (MAG),,,
+2,1626,2nd Bundesliga,2026,MAG,junior and senior,197,2026,125,2026,Jul 11,2026-07-11,2026-07-11,2nd Bundesliga,,,
+3,1683,3rd Bundesliga,2026,MAG,junior and senior,197,2026,63,2026,Apr 18,2026-04-18,2026-04-18,3rd Bundesliga (MAG),,,
+3,1683,3rd Bundesliga,2026,MAG,junior and senior,197,2026,145,2026,Sep 26,2026-09-26,2026-09-26,3rd Bundesliga,,,
+4,1625,4th Bundesliga,2026,MAG,junior and senior,193,2026,68,2026,Apr 25,2026-04-25,2026-04-25,4th Bundesliga (MAG),,,
+4,1625,4th Bundesliga,2026,MAG,junior and senior,193,2026,164,2026,Nov 14,2026-11-14,2026-11-14,4th Bundesliga,,,

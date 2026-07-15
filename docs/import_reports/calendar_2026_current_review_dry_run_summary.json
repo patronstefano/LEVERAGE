@@ -1,0 +1,230 @@
+{
+  "year": 2026,
+  "dry_run": true,
+  "committed": false,
+  "backup_path": null,
+  "decision_pairs": 7,
+  "applied_pairs": 7,
+  "updated_events": 3,
+  "calendar_entries_created": 7,
+  "calendar_entries_updated": 0,
+  "calendar_entries_relinked": 0,
+  "calendar_only_rows": 5,
+  "calendar_only_entries_created": 5,
+  "calendar_only_entries_updated": 0,
+  "db_only_events": 2,
+  "cleared_cross_year_event_dates": 0,
+  "preserved_existing_event_dates": 4,
+  "unresolved_review_items": 0,
+  "invalid_decisions": 0,
+  "source_issues": 0,
+  "applied_pair_details": [
+    {
+      "event_id": 1629,
+      "event_name": "NCAA Week 11 (Meet 2)",
+      "calendar_row": 44,
+      "calendar_event": "NCAA Week 11",
+      "start_date": "2026-03-16",
+      "end_date": "2026-03-22",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1667,
+      "event_name": "Russian Junior Team Championships",
+      "calendar_row": 50,
+      "calendar_event": "Russian Junior Men's Team Championships",
+      "start_date": "2026-03-22",
+      "end_date": "2026-03-29",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1686,
+      "event_name": "Chinese Championships MT",
+      "calendar_row": 84,
+      "calendar_event": "Chinese Championships",
+      "start_date": "2026-05-14",
+      "end_date": "2026-05-20",
+      "source": "db_unmatched_current"
+    },
+    {
+      "event_id": 1654,
+      "event_name": "British Team Championships",
+      "calendar_row": 101,
+      "calendar_event": "British Men's Team Championships",
+      "start_date": "2026-06-06",
+      "end_date": "2026-06-07",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1636,
+      "event_name": "Asian Championships",
+      "calendar_row": 108,
+      "calendar_event": "Asian Men's Championships",
+      "start_date": "2026-06-18",
+      "end_date": "2026-06-21",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1678,
+      "event_name": "German Junior Championships",
+      "calendar_row": 115,
+      "calendar_event": "German Junior Men's Championships",
+      "start_date": "2026-06-26",
+      "end_date": "2026-06-28",
+      "source": "calendar_unmatched_current"
+    },
+    {
+      "event_id": 1686,
+      "event_name": "Chinese Championships MT",
+      "calendar_row": 123,
+      "calendar_event": "Chinese Junior Championships",
+      "start_date": "2026-07-10",
+      "end_date": "2026-07-19",
+      "source": "db_unmatched_current"
+    }
+  ],
+  "calendar_only_details": [
+    {
+      "calendar_row": 5,
+      "calendar_event": "NCAA Week 2",
+      "start_date": "2026-01-16",
+      "end_date": "2026-01-18",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 49,
+      "calendar_event": "Fj\u00f6lnir Cup",
+      "start_date": "2026-03-21",
+      "end_date": "2026-03-21",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    },
+    {
+      "calendar_row": 65,
+      "calendar_event": "Ifact Norges Cup 1",
+      "start_date": "2026-04-18",
+      "end_date": "2026-04-19",
+      "source": "calendar_only",
+      "notes": "In the 2026 results; Admin note referenced Results 2026, but parsed Results/Event DB contain no Ifact/Norges Cup 1/2 event; kept as calendar_only pending future source correction.",
+      "status": "created"
+    },
+    {
+      "calendar_row": 80,
+      "calendar_event": "Ifact Norges Cup 2",
+      "start_date": "2026-05-09",
+      "end_date": "2026-05-10",
+      "source": "calendar_only",
+      "notes": "In the 2026 results; Admin note referenced Results 2026, but parsed Results/Event DB contain no Ifact/Norges Cup 1/2 event; kept as calendar_only pending future source correction.",
+      "status": "created"
+    },
+    {
+      "calendar_row": 114,
+      "calendar_event": "Hopes Classic",
+      "start_date": "2026-06-26",
+      "end_date": "2026-06-26",
+      "source": "calendar_only",
+      "notes": "calendar_only",
+      "status": "created"
+    }
+  ],
+  "db_only_details": [
+    {
+      "event_id": "1687",
+      "event_name": "Colombian Championships",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "result_count": "559",
+      "review_decision": "db_only",
+      "notes": "Admin note referenced Row 76 as Colombian Championships, but Calendar 2026 row 76 is Varna Challenge Cup and no Colombian Championships source row exists; marked db_only pending source correction."
+    },
+    {
+      "event_id": "1708",
+      "event_name": "Romanian Euros Trials",
+      "discipline": "WAG",
+      "category": "senior",
+      "level": "International Event",
+      "result_count": "45",
+      "review_decision": "db_only",
+      "notes": "Event derived from Results but not present in the Calendar source."
+    }
+  ],
+  "updated_event_details": [
+    {
+      "event_id": 1629,
+      "event_name": "NCAA Week 11 (Meet 2)",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2026-03-16",
+      "new_end_date": "2026-03-22"
+    },
+    {
+      "event_id": 1686,
+      "event_name": "Chinese Championships MT",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2026-05-14",
+      "new_end_date": "2026-05-20"
+    },
+    {
+      "event_id": 1686,
+      "event_name": "Chinese Championships MT",
+      "old_start_date": null,
+      "old_end_date": null,
+      "new_start_date": "2026-07-10",
+      "new_end_date": "2026-07-19"
+    }
+  ],
+  "cleared_cross_year_event_date_details": [],
+  "preserved_existing_event_date_details": [
+    {
+      "event_id": 1667,
+      "event_name": "Russian Junior Team Championships",
+      "existing_start_date": "2026-03-16",
+      "existing_end_date": "2026-03-22",
+      "calendar_row": 50,
+      "calendar_event": "Russian Junior Men's Team Championships",
+      "calendar_start_date": "2026-03-22",
+      "calendar_end_date": "2026-03-29",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1654,
+      "event_name": "British Team Championships",
+      "existing_start_date": "2026-10-10",
+      "existing_end_date": "2026-10-11",
+      "calendar_row": 101,
+      "calendar_event": "British Men's Team Championships",
+      "calendar_start_date": "2026-06-06",
+      "calendar_end_date": "2026-06-07",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1636,
+      "event_name": "Asian Championships",
+      "existing_start_date": "2026-06-25",
+      "existing_end_date": "2026-06-28",
+      "calendar_row": 108,
+      "calendar_event": "Asian Men's Championships",
+      "calendar_start_date": "2026-06-18",
+      "calendar_end_date": "2026-06-21",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    },
+    {
+      "event_id": 1678,
+      "event_name": "German Junior Championships",
+      "existing_start_date": "2026-07-04",
+      "existing_end_date": "2026-07-05",
+      "calendar_row": 115,
+      "calendar_event": "German Junior Men's Championships",
+      "calendar_start_date": "2026-06-26",
+      "calendar_end_date": "2026-06-28",
+      "reason": "event_already_has_canonical_dates_calendar_entry_preserved"
+    }
+  ],
+  "unresolved_decision_details": [],
+  "invalid_decision_details": []
+}

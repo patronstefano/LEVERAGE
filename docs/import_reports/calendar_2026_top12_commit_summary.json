@@ -1,0 +1,40 @@
+{
+  "year": 2026,
+  "source": "docs/import_reports/calendar_2026_top12_manual_review.csv",
+  "committed": true,
+  "source_issues": 0,
+  "decisions": [
+    {
+      "case_id": "top12_2026_mag_same_year",
+      "event_id": 1650,
+      "event_name": "Top 12 Series 3",
+      "event_year": 2026,
+      "event_discipline": "MAG",
+      "calendar_year": 2026,
+      "calendar_row": 31,
+      "calendar_event": "Top 12 Series 3 (MAG)",
+      "start_date": "2026-02-28",
+      "end_date": "2026-02-28",
+      "action": "linked_same_year",
+      "source_note": "top12_2026_same_year: Calendar 2026 row 31 linked to Event 1650 after admin review"
+    },
+    {
+      "case_id": "top12_2026_wag_season_spillover",
+      "event_id": 1584,
+      "event_name": "Top 12 Series 3 (2026)",
+      "event_year": 2026,
+      "event_discipline": "WAG",
+      "calendar_year": 2025,
+      "calendar_row": 227,
+      "calendar_event": "Top 12 Series 3",
+      "start_date": "2025-12-13",
+      "end_date": "2025-12-13",
+      "action": "season_year_spillover",
+      "source_note": "season_year_spillover: Calendar 2025 row 227 linked to Event 1584 (2026) after admin review"
+    }
+  ],
+  "backups": [
+    "backups/leverage_calendar_spillover_2026_1650_20260715_154341.db",
+    "backups/leverage_calendar_spillover_2025_1584_20260715_154341.db"
+  ]
+}

@@ -375,4 +375,39 @@ Lo stato finale della fase Results 2026 e:
 - D-score orfani conservati nei report e non importati come result autonomi;
 - duplicati semantici post-import pari a 0.
 
-Prossimo passo: riconciliazione Calendar 2026.
+## 18. Chiusura Calendar 2026 collegata al Results 2026
+
+La riconciliazione Calendar 2026 e stata completata il 15 luglio 2026 per il perimetro disponibile al primo semestre.
+
+Report principali:
+
+| Report | Contenuto |
+|---|---|
+| `docs/import_reports/calendar_2026_commit_summary.json` | Commit automatico sicuro e conflitti source Bundesliga |
+| `docs/import_reports/calendar_2026_current_review_commit_summary.json` | Applicazione decisioni admin correnti |
+| `docs/import_reports/calendar_2026_current_match_summary.csv` | Copertura finale Calendar/Event 2026 |
+| `docs/import_reports/calendar_2026_db_only_events.csv` | Event DB 2026 senza riga Calendar sorgente |
+| `docs/import_reports/calendar_2026_top12_commit_summary.json` | Decisioni Top 12 2026 |
+
+Esito finale:
+
+| Metrica | Valore |
+|---|---:|
+| Righe Calendar 2026 | 170 |
+| Event DB 2026 | 115 |
+| Event DB 2026 coperti | 115 |
+| Event DB 2026 non coperti | 0 |
+| Righe Calendar future/in standby | 45 |
+| Event `db_only` | 2 |
+| Righe `calendar_only` | 5 |
+| Collegamenti `season_year_spillover` | 1 |
+
+Decisioni specifiche:
+
+- `Ifact Norges Cup 1/2`: `calendar_only`;
+- `Colombian Championships`: `db_only`, per assenza di riscontro nel Calendar 2026 sorgente;
+- `Romanian Euros Trials`: `db_only`;
+- `Top 12 Series 3 (2026)` WAG: collegamento al Calendar 2025 come `season_year_spillover`;
+- eventi Bundesliga: conservazione delle date multiple tramite `EventCalendarEntry`.
+
+La fase Results + Calendar 2026 primo semestre e quindi chiusa.

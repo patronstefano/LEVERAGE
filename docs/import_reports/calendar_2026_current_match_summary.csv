@@ -1,0 +1,12 @@
+metric,value
+year,2026
+calendar_rows,170
+db_events,115
+calendar_unmatched_rows,45
+db_unmatched_events,0
+db_matched_events,115
+db_only_events,2
+calendar_only_rows,5
+season_year_spillover_entries,1
+cross_year_calendar_entries,0
+source_issues,0

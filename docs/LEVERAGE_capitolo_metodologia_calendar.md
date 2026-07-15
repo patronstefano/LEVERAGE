@@ -1,8 +1,8 @@
 # Capitolo X - Metodologia di riconciliazione Calendar/Event in LEVERAGE
 
-Documento aggiornato al 2 luglio 2026
+Documento aggiornato al 15 luglio 2026
 Repository: `patronstefano/LEVERAGE`
-Stato operativo: riconciliazione Calendar 2018-2025 completata, verificata e versionata; Calendar 2026 in standby in attesa dei Result 2026
+Stato operativo: riconciliazione Calendar 2018-2025 completata, verificata e versionata; Calendar 2026 riconciliato per il primo semestre dopo import Results 2026
 
 ---
 
@@ -541,19 +541,56 @@ Per la chiusura Calendar 2025, la verifica finale ha prodotto:
 
 ---
 
-## 11. Lavoro residuo sul 2026
+## 11. Riconciliazione Calendar 2026
 
-Il Calendar 2026 e gia presente nel file sorgente, ma la riconciliazione completa e stata lasciata in standby perche i `Results 2026` non sono ancora disponibili.
+Il Calendar 2026 e stato riconciliato dopo l'import controllato dei `Results 2026` del primo semestre.
 
-Il flusso futuro sara:
+La review 2026 ha seguito lo stesso schema degli anni precedenti:
 
-1. import controllato dei Results 2026;
-2. preview e review dei conflitti atleta/country/nome;
-3. verifica duplicati rispetto ai 108 result 2026 gia creati dal file 2025;
-4. riconciliazione Calendar 2026;
-5. distinzione tra eventi 2026 con risultati e voci calendario future/senza risultati;
-6. eventuale uso di `calendar_only`, `db_only` e `season_year_spillover`;
-7. aggiornamento del diario e dei capitoli di tesi.
+1. applicazione automatica dei match sicuri;
+2. review admin delle righe Calendar senza match diretto;
+3. review admin degli Event DB senza riga Calendar diretta;
+4. gestione dei conflitti same Event/date diverse con `EventCalendarEntry`;
+5. gestione dei casi `Top 12`;
+6. separazione tra primo semestre con risultati e righe future in standby.
+
+### 11.1 Esito quantitativo
+
+| Metrica | Valore |
+|---|---:|
+| Righe Calendar 2026 | 170 |
+| Event DB 2026 | 115 |
+| Event DB 2026 coperti | 115 |
+| Event DB 2026 non coperti | 0 |
+| Righe Calendar 2026 non abbinate | 45 |
+| Event `db_only` | 2 |
+| Righe `calendar_only` | 5 |
+| Collegamenti `season_year_spillover` | 1 |
+| Cross-year errati | 0 |
+| Issue sorgente | 0 |
+
+Le 45 righe Calendar 2026 non abbinate sono successive al 1 luglio 2026 e restano in standby fino a un successivo import dei Results 2026.
+
+### 11.2 Decisioni metodologiche 2026
+
+`Ifact Norges Cup 1` e `Ifact Norges Cup 2` sono state mantenute come `calendar_only`: sono presenti nel Calendar 2026, ma non e stato trovato un Event DB corrispondente nei Results importati.
+
+`Colombian Championships` e `Romanian Euros Trials` sono stati mantenuti come `db_only`: gli Event esistono nel DB perche derivano dai Results, ma non hanno un riscontro sicuro nel Calendar 2026 sorgente.
+
+I casi Bundesliga sono stati modellati con `EventCalendarEntry`, perche piu righe calendario corrette possono riferirsi allo stesso Event.
+
+I casi `Top 12` sono stati trattati in modo esplicito:
+
+| Caso | Trattamento |
+|---|---|
+| `Top 12 Series 3` MAG | collegamento same-year alla riga Calendar 2026 n. 31 |
+| `Top 12 Series 3 (2026)` WAG | collegamento al Calendar 2025 n. 227 come `season_year_spillover` |
+
+### 11.3 Stato finale 2026
+
+La riconciliazione Calendar 2026 e chiusa per il perimetro disponibile al 1 luglio 2026.
+
+Non tutte le righe Calendar 2026 devono avere oggi un Event DB collegato: molte rappresentano eventi futuri o senza risultati ancora importati. La metrica critica e che tutti gli Event DB 2026 creati dai Results abbiano una copertura calendario oppure una decisione admin esplicita (`db_only`). Questa condizione e soddisfatta.
 
 ---
 

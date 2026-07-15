@@ -1,0 +1,3 @@
+case_id,recommended_action,event_id,event_name,event_year,event_discipline,result_count,calendar_year,calendar_row,calendar_event,calendar_date,start_date,end_date,admin_decision,notes
+top12_2026_mag_same_year,link_same_year,1650,Top 12 Series 3,2026,MAG,199,2026,31,Top 12 Series 3 (MAG),Feb 28,2026-02-28,2026-02-28,Accepted the note,Suggested: link Calendar 2026 row 31 to Event 1650. Same-year Top 12 MAG row.
+top12_2026_wag_season_spillover,season_year_spillover,1584,Top 12 Series 3 (2026),2026,WAG,108,2025,227,Top 12 Series 3,Dec 13,2025-12-13,2025-12-13,Accepted the note,"Suggested: link Calendar 2025 row 227 to Event 1584 as season_year_spillover, analogous to Top 12 Series 3 (2025)."

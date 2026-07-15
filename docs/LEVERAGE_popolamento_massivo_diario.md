@@ -4197,4 +4197,204 @@ La fase Results 2026 e completata:
 - database aggiornato fino al primo semestre 2026;
 - duplicati semantici post-import pari a 0.
 
-Prossimo passo: riconciliazione Calendar 2026.
+## 18. Riconciliazione Calendar 2026 - primo semestre
+
+Data: 15 luglio 2026
+
+La fase Calendar 2026 e stata eseguita dopo il commit reale dei `Results 2026` del primo semestre.
+
+File sorgente utilizzato:
+
+```text
+import_files/Calendar.xlsx
+```
+
+### 18.1 Obiettivo
+
+L'obiettivo era collegare gli `Event` 2026 creati dai risultati Gymternet alle righe del calendario 2026, distinguendo:
+
+- eventi 2026 con risultati gia importati;
+- righe calendario future successive al 1 luglio 2026;
+- righe calendario senza Event DB collegabile;
+- Event DB derivati dai Results ma non presenti nel calendario sorgente;
+- casi multi-data da salvare come `EventCalendarEntry`;
+- casi `Top 12` a cavallo tra calendario e stagione.
+
+### 18.2 Applicazione automatica sicura
+
+Il primo commit automatico ha applicato solo i match diretti non ambigui.
+
+Report:
+
+```text
+docs/import_reports/calendar_2026_commit_summary.json
+```
+
+Backup locale:
+
+```text
+backups/leverage_calendar_2026_20260714_203147.db
+```
+
+Sintesi:
+
+| Metrica | Valore |
+|---|---:|
+| Righe Calendar 2026 | 170 |
+| Event DB 2026 | 115 |
+| Match automatici sicuri aggiornati | 105 |
+| Event gia invariati | 1 |
+| Review ancora necessarie dopo automatico | 4 |
+
+### 18.3 Review admin corrente
+
+Dopo la review admin sono state applicate le decisioni contenute nei report correnti.
+
+Comando operativo:
+
+```text
+.venv/bin/python scripts/apply_calendar_current_review_decisions.py import_files/Calendar.xlsx --year 2026 --db-path leverage.db --report-dir docs/import_reports --commit
+```
+
+Report:
+
+```text
+docs/import_reports/calendar_2026_current_review_commit_summary.json
+```
+
+Backup locale:
+
+```text
+backups/leverage_calendar_current_review_2026_20260715_154044.db
+```
+
+Esito:
+
+| Metrica | Valore |
+|---|---:|
+| Coppie Event/Calendar applicate | 7 |
+| Event aggiornati | 2 |
+| `EventCalendarEntry` create | 7 |
+| Righe `calendar_only` create | 5 |
+| Event `db_only` registrati | 2 |
+| Decisioni irrisolte | 0 |
+| Decisioni invalide | 0 |
+
+Decisioni particolari:
+
+- `Ifact Norges Cup 1` e `Ifact Norges Cup 2` sono state mantenute come `calendar_only`, perche nel file Calendar esistono ma non e stato trovato un Event DB 2026 corrispondente nei Results importati.
+- `Colombian Championships` e stato registrato come `db_only`, perche l'Event esiste nel DB con risultati, ma non e stato trovato riscontro nel Calendar 2026 sorgente. La nota admin citava la riga 76, ma la riga 76 del Calendar 2026 corrisponde a `Varna Challenge Cup`.
+- `Romanian Euros Trials` e stato registrato come `db_only`, perche deriva dai Results ma non ha una riga Calendar sorgente collegabile.
+
+### 18.4 Conflitti source Bundesliga
+
+I conflitti in cui piu righe calendario puntavano allo stesso Event DB sono stati risolti con la logica gia usata negli anni precedenti: non si forza una data unica nel record `Event`, ma si creano voci `EventCalendarEntry`.
+
+Comando:
+
+```text
+.venv/bin/python scripts/commit_calendar_year.py import_files/Calendar.xlsx --year 2026 --db-path leverage.db --report-dir docs/import_reports --commit
+```
+
+Report:
+
+```text
+docs/import_reports/calendar_2026_commit_summary.json
+```
+
+Backup locale:
+
+```text
+backups/leverage_calendar_2026_20260715_174222.db
+```
+
+Esito:
+
+| Metrica | Valore |
+|---|---:|
+| Conflitti source risolti | 4 |
+| `EventCalendarEntry` create | 5 |
+| Decisioni irrisolte | 0 |
+| Decisioni invalide | 0 |
+
+### 18.5 Casi Top 12 2026
+
+Sono stati applicati anche i due casi `Top 12` gia accettati dall'admin.
+
+Report:
+
+```text
+docs/import_reports/calendar_2026_top12_commit_summary.json
+```
+
+Backup locali:
+
+```text
+backups/leverage_calendar_spillover_2026_1650_20260715_154341.db
+backups/leverage_calendar_spillover_2025_1584_20260715_154341.db
+```
+
+Decisioni:
+
+| Caso | Decisione |
+|---|---|
+| `Top 12 Series 3` MAG, Event 1650 | collegato alla riga Calendar 2026 n. 31, `Top 12 Series 3 (MAG)`, data 2026-02-28 |
+| `Top 12 Series 3 (2026)` WAG, Event 1584 | collegato alla riga Calendar 2025 n. 227 come `season_year_spillover`, data 2025-12-13 |
+
+### 18.6 Copertura finale Calendar 2026
+
+Report finale:
+
+```text
+docs/import_reports/calendar_2026_current_match_summary.csv
+```
+
+Esito finale:
+
+| Metrica | Valore |
+|---|---:|
+| Righe Calendar 2026 | 170 |
+| Event DB 2026 | 115 |
+| Event DB 2026 coperti | 115 |
+| Event DB 2026 ancora senza copertura | 0 |
+| Righe Calendar 2026 non abbinate | 45 |
+| Event `db_only` | 2 |
+| Righe `calendar_only` | 5 |
+| Collegamenti `season_year_spillover` per Event 2026 | 1 |
+| Cross-year errati | 0 |
+| Issue sorgente | 0 |
+
+Le 45 righe Calendar 2026 non abbinate sono successive al 1 luglio 2026 e restano in standby fino al successivo import dei Results 2026 di fine anno.
+
+### 18.7 Stato database locale dopo Results + Calendar 2026
+
+| Entita | Totale |
+|---|---:|
+| Athlete attivi | 27.921 |
+| Event attivi | 1.719 |
+| Result attivi | 819.739 |
+| Event 2026 | 115 |
+| Result 2026 | 66.124 |
+| EventCalendarEntry 2026 | 18 |
+| Righe `calendar_only` 2026 | 5 |
+
+Event 2026 senza `start_date` diretta:
+
+| Event | Motivo |
+|---|---|
+| `1st Bundesliga` | Evento multi-data conservato tramite `EventCalendarEntry` |
+| `Colombian Championships` | `db_only`, Results presenti ma Calendar sorgente senza riscontro |
+| `Romanian Euros Trials` | `db_only`, Results presenti ma Calendar sorgente senza riscontro |
+
+### 18.8 Milestone
+
+Milestone raggiunta il 15 luglio 2026: LEVERAGE e popolato e riconciliato fino al primo semestre 2026.
+
+La fase dati storici ora copre:
+
+- Results 2018-2025 completi;
+- Results 2026 primo semestre;
+- Calendar 2018-2025 completo;
+- Calendar 2026 riconciliato per gli Event con risultati disponibili e predisposto per gli eventi futuri.
+
+Il prossimo completamento dati avverra quando sara disponibile il file Results 2026 di fine anno o un secondo file 2026 aggiornato.

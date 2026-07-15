@@ -1718,9 +1718,9 @@ Valutazione di avanzamento al 2 luglio 2026:
 
 ## 16. Prossimo passo 2026
 
-Il progetto resta in attesa del file `Results 2026` del primo semestre.
+Il progetto era in attesa del file `Results 2026` del primo semestre. Il file e stato poi ricevuto, controllato e importato il 14 luglio 2026.
 
-Quando il file verra consegnato, il flusso corretto sara:
+Il flusso previsto e stato seguito:
 
 1. copiare il file sorgente in `import_files`;
 2. eseguire preview Gymternet 2026 senza scrivere nel DB;
@@ -1733,7 +1733,60 @@ Quando il file verra consegnato, il flusso corretto sara:
 9. procedere alla riconciliazione Calendar 2026;
 10. distinguere eventi Calendar 2026 con risultati, eventi futuri, eventi senza risultati e possibili `calendar_only` / `db_only` / `season_year_spillover`.
 
-## 17. Conclusione
+## 17. Milestone - Dati riconciliati fino al primo semestre 2026
+
+Data milestone: 15 luglio 2026
+
+LEVERAGE ha raggiunto una nuova milestone dati: il database locale e stato popolato con i Results Gymternet 2018-2025, con i Results 2026 del primo semestre e con il Calendar riconciliato fino agli Event 2026 disponibili.
+
+Sintesi quantitativa:
+
+| Metrica | Valore |
+|---|---:|
+| Athlete attivi | 27.921 |
+| Event attivi | 1.719 |
+| Result attivi | 819.739 |
+| Event 2026 | 115 |
+| Result 2026 | 66.124 |
+| EventCalendarEntry 2026 | 18 |
+| Righe `calendar_only` 2026 | 5 |
+
+Esito Calendar 2026:
+
+| Metrica | Valore |
+|---|---:|
+| Righe Calendar 2026 | 170 |
+| Event DB 2026 | 115 |
+| Event DB 2026 coperti | 115 |
+| Event DB 2026 non coperti | 0 |
+| Righe Calendar 2026 future/in standby | 45 |
+| Event `db_only` | 2 |
+| Collegamenti `season_year_spillover` | 1 |
+
+Decisioni rilevanti:
+
+- `Ifact Norges Cup 1/2` restano `calendar_only`;
+- `Colombian Championships` e `Romanian Euros Trials` restano `db_only`;
+- `Bundesliga` e modellata con `EventCalendarEntry` quando una scheda Event ha piu date calendario corrette;
+- `Top 12 Series 3 (2026)` WAG e collegato al Calendar 2025 come `season_year_spillover`.
+
+Valutazione di avanzamento al 15 luglio 2026:
+
+| Area | Avanzamento stimato |
+|---|---:|
+| Backend core e modello dati | 92% |
+| Import storico Gymternet | 97% |
+| Popolamento dati 2018-2025 | 100% |
+| Popolamento dati 2026 primo semestre | 100% |
+| Riconciliazione Calendar 2018-2025 | 100% |
+| Riconciliazione Calendar 2026 primo semestre | 100% |
+| Documentazione tecnica/tesi della fase dati | 94% |
+| Backend pronto per UI MVP | 82% |
+| Frontend/UI | 0% |
+| Deploy online produzione | 0% |
+| MVP online complessivo | 74% |
+
+## 18. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
 
