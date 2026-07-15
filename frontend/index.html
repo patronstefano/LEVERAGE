@@ -17,10 +17,74 @@
         </a>
 
         <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#/athletes" data-i18n="navAthletes">Athletes</a>
-          <a href="#/events" data-i18n="navEvents">Events</a>
-          <a href="#/rankings" data-i18n="navRankings">Rankings</a>
-          <a href="#/analytics" data-i18n="navAnalytics">Analytics</a>
+          <div class="nav-group">
+            <a class="nav-trigger" href="#/athletes" data-i18n="navAthletes">Athletes</a>
+            <div class="nav-menu" aria-label="Athlete actions">
+              <a href="#/athletes">
+                <strong data-i18n="athletesMenuSearch">Search athletes</strong>
+                <span data-i18n="athletesMenuSearchText">Find gymnasts by name, country or discipline.</span>
+              </a>
+              <a href="#/athletes">
+                <strong data-i18n="athletesMenuProfiles">Athlete profiles</strong>
+                <span data-i18n="athletesMenuProfilesText">Open clean athlete cards with official details.</span>
+              </a>
+              <a href="#/analytics">
+                <strong data-i18n="athletesMenuCompare">Compare athletes</strong>
+                <span data-i18n="athletesMenuCompareText">Prepare trends and side-by-side analysis.</span>
+              </a>
+            </div>
+          </div>
+          <div class="nav-group">
+            <a class="nav-trigger" href="#/events" data-i18n="navEvents">Events</a>
+            <div class="nav-menu" aria-label="Event actions">
+              <a href="#/events">
+                <strong data-i18n="eventsMenuCalendar">Calendar</strong>
+                <span data-i18n="eventsMenuCalendarText">Browse past and upcoming competitions.</span>
+              </a>
+              <a href="#/events">
+                <strong data-i18n="eventsMenuResults">Event results</strong>
+                <span data-i18n="eventsMenuResultsText">Filter rankings by discipline, category and round.</span>
+              </a>
+              <a href="#/rankings">
+                <strong data-i18n="eventsMenuRankings">Competition rankings</strong>
+                <span data-i18n="eventsMenuRankingsText">Move from an event to its score tables.</span>
+              </a>
+            </div>
+          </div>
+          <div class="nav-group">
+            <a class="nav-trigger" href="#/rankings" data-i18n="navRankings">Rankings</a>
+            <div class="nav-menu" aria-label="Ranking actions">
+              <a href="#/rankings">
+                <strong data-i18n="rankingsMenuScores">Score rankings</strong>
+                <span data-i18n="rankingsMenuScoresText">Sort by final score and available components.</span>
+              </a>
+              <a href="#/rankings">
+                <strong data-i18n="rankingsMenuFilters">Smart filters</strong>
+                <span data-i18n="rankingsMenuFiltersText">Use only values that exist in the data.</span>
+              </a>
+              <a href="#/analytics">
+                <strong data-i18n="rankingsMenuQuality">Data quality</strong>
+                <span data-i18n="rankingsMenuQualityText">Spot estimated or not available values.</span>
+              </a>
+            </div>
+          </div>
+          <div class="nav-group">
+            <a class="nav-trigger" href="#/analytics" data-i18n="navAnalytics">Analytics</a>
+            <div class="nav-menu" aria-label="Analytics actions">
+              <a href="#/analytics">
+                <strong data-i18n="analyticsMenuTrends">Performance trends</strong>
+                <span data-i18n="analyticsMenuTrendsText">Follow scores across selected periods.</span>
+              </a>
+              <a href="#/analytics">
+                <strong data-i18n="analyticsMenuAge">Age and country</strong>
+                <span data-i18n="analyticsMenuAgeText">Study age distributions by country and event.</span>
+              </a>
+              <a href="#/analytics">
+                <strong data-i18n="analyticsMenuApparatus">Apparatus profiles</strong>
+                <span data-i18n="analyticsMenuApparatusText">Prepare MAG and WAG apparatus diagrams.</span>
+              </a>
+            </div>
+          </div>
         </nav>
 
         <div class="topbar-actions">
