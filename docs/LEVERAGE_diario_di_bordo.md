@@ -1826,6 +1826,7 @@ Funzionalita frontend iniziali implementate:
 - allineamento tipografico e verticale del selettore lingua: la lingua selezionata e le opzioni sottostanti condividono la stessa scala testuale e lo stesso asse centrale, mentre la freccia non sposta piu il testo;
 - rifinitura della spaziatura del selettore lingua: il triangolino viene separato dalla sigla selezionata e le opzioni del menu vengono centrate con margini laterali coerenti rispetto al bordo espanso;
 - uniformazione del bordo del selettore lingua ai pulsanti della topbar: sostituita la finta linea via `box-shadow` con un bordo reale da 1px, coerente con `Sign in` e con gli altri controlli;
+- riduzione del peso visivo del selettore lingua, con pill chiusa piu stretta e menu aperto meno alto, per non competere visivamente con `Sign in`;
 - variabili CSS riutilizzabili `--control-expand-motion` e `--control-fade-motion`, pensate per mantenere coerenza nelle future animazioni di pulsanti/dropdown simili;
 - supporto a `prefers-reduced-motion` per rispettare utenti che disattivano le animazioni di sistema.
 
@@ -1847,6 +1848,7 @@ Commit principali della fase UI iniziale:
 | `125ddc6` | Allineamento tipografico delle opzioni lingua |
 | `252d78e` | Rifinitura spaziatura del dropdown lingua |
 | `41535ff` | Uniformazione bordo del selettore lingua |
+| `1c05880` | Riduzione del peso visivo del selettore lingua |
 
 Decisione metodologica per la tesi:
 
