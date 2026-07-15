@@ -126,7 +126,7 @@ button {
 
 .nav-trigger[aria-current="page"],
 .nav-trigger:hover,
-.nav-group:focus-within .nav-trigger {
+.nav-group:hover .nav-trigger {
   color: var(--ink);
   background: rgba(245, 245, 247, 0.9);
 }

@@ -436,7 +436,11 @@ function normalizeRoute() {
 function setActiveNav() {
   document.querySelectorAll(".nav-trigger").forEach((link) => {
     const route = link.getAttribute("href")?.replace("#", "");
-    const active = route !== "/" && state.route.startsWith(route);
+    const active = route !== "/" && (
+      state.route === route ||
+      state.route.startsWith(`${route}/`) ||
+      state.route.startsWith(`${route}?`)
+    );
     if (active) {
       link.setAttribute("aria-current", "page");
     } else {
