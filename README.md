@@ -26,6 +26,17 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
+## Frontend MVP
+
+La prima interfaccia pubblica minimal si trova in `frontend/`. Al momento e dependency-free perche l'ambiente locale non ha Node/npm installati.
+
+```bash
+cd frontend
+python3 -m http.server 5173
+```
+
+Poi aprire `http://localhost:5173`. Il frontend usa di default l'API su `http://localhost:8000`.
+
 ## API principali
 - `POST /auth/register`
   Registra un account con email e password; l'account resta non verificato finche l'utente non conferma il link email

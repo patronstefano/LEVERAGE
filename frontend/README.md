@@ -1,0 +1,45 @@
+# LEVERAGE Frontend
+
+Minimal dependency-free frontend prototype for the LEVERAGE MVP.
+
+The current machine does not have Node/npm installed, so this first UI layer is plain HTML/CSS/JavaScript. It can be served locally with Python and already talks to the public FastAPI endpoints.
+
+## Local Run
+
+Start the API from the project root:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Start the frontend from this folder:
+
+```bash
+python3 -m http.server 5173
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+Default API base URL:
+
+```text
+http://localhost:8000
+```
+
+You can change it from the UI footer during local testing.
+
+## Scope
+
+- Public home screen
+- Minimal routing
+- Athlete search
+- Event calendar browser
+- Rankings preview
+- EN/IT/ES/FR language selector
+- LEVERAGE brand assets
+
+This folder is intentionally light. It can later be migrated to React/Vite once Node is installed, while preserving the visual direction and API contracts.

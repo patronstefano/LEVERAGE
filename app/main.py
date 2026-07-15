@@ -3,8 +3,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
-from app.config import validate_runtime_settings
+from app.config import get_cors_origins, validate_runtime_settings
 from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, site_analytics, world_gymnastics
 
 @asynccontextmanager
@@ -14,6 +15,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="LEVERAGE API", version="0.1.0", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=get_cors_origins(),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 uploads_path = Path("uploads")
 uploads_path.mkdir(parents=True, exist_ok=True)

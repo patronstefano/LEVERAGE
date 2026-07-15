@@ -20,6 +20,10 @@ class Settings:
     )
     access_token_expire_minutes: int = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
     frontend_base_url: str = os.environ.get("FRONTEND_BASE_URL", "http://localhost:3000")
+    cors_origins: str = os.environ.get(
+        "CORS_ORIGINS",
+        "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://127.0.0.1:5173",
+    )
     email_token_expire_minutes: int = int(os.environ.get("EMAIL_TOKEN_EXPIRE_MINUTES", "30"))
     password_reset_expire_minutes: int = int(os.environ.get("PASSWORD_RESET_EXPIRE_MINUTES", "30"))
     auth_email_cooldown_seconds: int = int(os.environ.get("AUTH_EMAIL_COOLDOWN_SECONDS", "60"))
@@ -39,6 +43,14 @@ class Settings:
 
 
 settings = Settings()
+
+
+def get_cors_origins() -> list[str]:
+    return [
+        origin.strip()
+        for origin in settings.cors_origins.split(",")
+        if origin.strip()
+    ]
 
 
 def validate_runtime_settings() -> None:

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="LEVERAGE - Artistic Gymnastics Analytics">
+    <title>LEVERAGE | Artistic Gymnastics Analytics</title>
+    <link rel="icon" href="./assets/leverage-logo.png">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#/" aria-label="LEVERAGE home">
+          <img class="brand-mark" src="./assets/leverage-logo.png" alt="">
+          <img class="brand-wordmark" src="./assets/leverage-wordmark.png" alt="LEVERAGE">
+        </a>
+
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#/athletes" data-i18n="navAthletes">Athletes</a>
+          <a href="#/events" data-i18n="navEvents">Events</a>
+          <a href="#/rankings" data-i18n="navRankings">Rankings</a>
+          <a href="#/analytics" data-i18n="navAnalytics">Analytics</a>
+        </nav>
+
+        <div class="topbar-actions">
+          <label class="sr-only" for="languageSelect" data-i18n="language">Language</label>
+          <select id="languageSelect" class="language-select" aria-label="Language">
+            <option value="en">EN</option>
+            <option value="it">IT</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+          </select>
+          <a class="signin-link" href="#/login" data-i18n="signIn">Sign in</a>
+        </div>
+      </header>
+
+      <main id="app" class="main-view" tabindex="-1"></main>
+
+      <footer class="footer">
+        <div>
+          <strong>LEVERAGE</strong>
+          <span data-i18n="footerTagline">Artistic Gymnastics Analytics</span>
+        </div>
+        <form class="api-config" id="apiConfigForm">
+          <label for="apiBaseInput">API</label>
+          <input id="apiBaseInput" name="apiBase" type="url" autocomplete="off">
+          <button type="submit" data-i18n="save">Save</button>
+        </form>
+      </footer>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
