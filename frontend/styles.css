@@ -224,10 +224,9 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
   height: 36px;
-  min-width: 54px;
-  padding: 0 10px;
+  min-width: 44px;
+  padding: 0 9px;
   border: 1px solid var(--line);
   border-radius: var(--control-radius);
   background: rgba(255, 255, 255, 0.88);
@@ -247,12 +246,7 @@ button {
 }
 
 .language-caret {
-  width: 0;
-  height: 0;
-  border-left: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-top: 4px solid rgba(17, 17, 20, 0.52);
-  transition: transform var(--control-expand-motion);
+  display: none;
 }
 
 .language-menu {
@@ -260,8 +254,8 @@ button {
   top: calc(100% + 6px);
   left: 50%;
   z-index: 33;
-  min-width: 54px;
-  padding: 4px;
+  min-width: 44px;
+  padding: 3px;
   border: 1px solid var(--line);
   border-radius: var(--control-radius);
   background: rgba(255, 255, 255, 0.86);
@@ -292,15 +286,11 @@ button {
   visibility: visible;
 }
 
-.language-control.is-open .language-caret {
-  transform: rotate(180deg);
-}
-
 .language-menu button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
+  height: 22px;
   border: 0;
   border-radius: 6px;
   background: transparent;
@@ -308,7 +298,7 @@ button {
   font-size: inherit;
   line-height: 1;
   text-align: center;
-  padding: 0 6px;
+  padding: 0 4px;
   width: 100%;
   transition:
     background 120ms ease,
