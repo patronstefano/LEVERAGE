@@ -375,7 +375,9 @@ function syncLanguageControl() {
     label.textContent = state.language.toUpperCase();
   }
   document.querySelectorAll("[data-language-option]").forEach((button) => {
-    button.setAttribute("aria-selected", String(button.dataset.languageOption === state.language));
+    const isSelected = button.dataset.languageOption === state.language;
+    button.hidden = isSelected;
+    button.setAttribute("aria-selected", String(isSelected));
   });
 }
 
