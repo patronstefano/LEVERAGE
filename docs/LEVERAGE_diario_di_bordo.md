@@ -1813,6 +1813,10 @@ Funzionalita frontend iniziali implementate:
 
 - topbar con logo, wordmark, navigazione principale e azione `Sign in`;
 - home pubblica con titolo LEVERAGE, sottotitolo `Artistic Gymnastics Analytics`, ricerca globale e filtri rapidi `MAG`, `WAG`, `Senior`, `Junior`;
+- trasformazione della barra iniziale in vera ricerca globale LEVERAGE: la query viene instradata a `#/search?q=...` e non piu limitata alla sola pagina atleti;
+- aggiunta dell'endpoint pubblico `/search`, con response strutturata per `athletes`, `events`, `countries`, `apparatuses` e `results`, pensata sia per la UI attuale sia per futuri autocomplete/filtri rapidi;
+- aggiunta della pagina frontend `Search`, con risultati raggruppati per atleti, eventi, nazioni, attrezzi e risultati, mantenendo layout minimale e coerente con la home;
+- integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
 - allineamento cromatico del sottotitolo della home al grigio secondario standard della UI, usando la variabile condivisa `--muted`;
@@ -1844,6 +1848,7 @@ Commit principali della fase UI iniziale:
 | Commit | Contenuto |
 |---|---|
 | `1df670f` | Aggiunta prima interfaccia pubblica frontend |
+| `51dafe1` | Aggiunta ricerca globale backend/frontend |
 | `e71f08c` | Introduzione splash iniziale e home centrata |
 | `2a4dc9f` | Rifinitura intro home con topbar a tendina e wordmark ufficiale |
 | `4e89b71` | Rifinitura styling dei controlli frontend |
