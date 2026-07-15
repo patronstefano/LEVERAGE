@@ -232,15 +232,12 @@ button {
   padding: 0 12px;
   border: 0;
   border-radius: var(--control-radius);
-  background: rgba(245, 245, 247, 0.92);
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 20, 0.1);
+  background: transparent;
+  box-shadow: none;
   color: var(--ink);
   cursor: pointer;
   outline: 0;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    background var(--control-fade-motion),
-    box-shadow var(--control-fade-motion);
 }
 
 .language-caret {
@@ -293,11 +290,6 @@ button {
     0 16px 42px rgba(16, 16, 20, 0.1);
 }
 
-.language-control.is-open .language-button {
-  background: transparent;
-  box-shadow: none;
-}
-
 .language-control.is-open .language-caret {
   transform: rotate(180deg);
 }
@@ -335,7 +327,6 @@ button {
   border-color: var(--brand-blue);
 }
 
-.language-button:hover,
 .api-config input:hover,
 .api-config button:hover,
 .filter-button:hover,
@@ -344,12 +335,12 @@ button {
   border-color: rgba(25, 23, 71, 0.34);
 }
 
-.language-button:hover {
-  border-color: transparent;
-  box-shadow: inset 0 0 0 1px rgba(17, 17, 20, 0.18);
+.language-control:not(.is-open):hover .language-menu {
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 17, 20, 0.18),
+    0 0 0 rgba(16, 16, 20, 0);
 }
 
-.language-button:focus-visible,
 .nav-trigger:focus-visible,
 .signin-link:focus-visible,
 .api-config input:focus-visible,
@@ -364,8 +355,18 @@ button {
 
 .language-button:focus-visible {
   outline: 0;
+}
+
+.language-control:focus-within .language-menu {
   box-shadow:
     inset 0 0 0 1px rgba(17, 17, 20, 0.18),
+    0 0 0 3px rgba(17, 17, 20, 0.08);
+}
+
+.language-control.is-open:focus-within .language-menu {
+  box-shadow:
+    inset 0 0 0 1px rgba(17, 17, 20, 0.08),
+    0 16px 42px rgba(16, 16, 20, 0.1),
     0 0 0 3px rgba(17, 17, 20, 0.08);
 }
 
