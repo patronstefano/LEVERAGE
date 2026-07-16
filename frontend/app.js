@@ -8,8 +8,8 @@ const state = {
   homeCalendarMonthOffset: 0,
   eventsCalendarMonthOffset: 0,
   filters: {
-    discipline: "",
-    category: "",
+    discipline: [],
+    category: [],
     scoringCycle: "",
   },
 };
@@ -1064,15 +1064,38 @@ function featureCard(title, text, href) {
   `;
 }
 
+function filterValues(type) {
+  const value = state.filters[type];
+  if (Array.isArray(value)) return value;
+  return value ? [value] : [];
+}
+
+function multiFilterParam(type) {
+  return filterValues(type).join(",");
+}
+
+function singleFilterParam(type) {
+  const values = filterValues(type);
+  return values.length === 1 ? values[0] : "";
+}
+
+function filterIsActive(type, value, activeValue = state.filters[type]) {
+  return Array.isArray(activeValue) ? activeValue.includes(value) : activeValue === value;
+}
+
 function rankingDiscipline() {
-  return state.filters.discipline || "MAG";
+  return singleFilterParam("discipline") || "MAG";
+}
+
+function rankingCategory() {
+  return singleFilterParam("category");
 }
 
 function rankingQueryParams(limit) {
   const params = {
     limit,
     discipline: rankingDiscipline(),
-    category: state.filters.category,
+    category: rankingCategory(),
   };
   if (state.filters.scoringCycle === "all") {
     params.include_all_scoring_cycles = true;
@@ -1095,7 +1118,7 @@ function eventsCalendarDate() {
 }
 
 function filterButton(label, type, value, activeValue = state.filters[type]) {
-  return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${activeValue === value}">${label}</button>`;
+  return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, activeValue)}">${label}</button>`;
 }
 
 function bindFilterButtons() {
@@ -1103,7 +1126,14 @@ function bindFilterButtons() {
     button.addEventListener("click", () => {
       const type = button.dataset.filterType;
       const value = button.dataset.filterValue;
-      state.filters[type] = state.filters[type] === value ? "" : value;
+      if (Array.isArray(state.filters[type])) {
+        const values = filterValues(type);
+        state.filters[type] = values.includes(value)
+          ? values.filter((item) => item !== value)
+          : [...values, value];
+      } else {
+        state.filters[type] = state.filters[type] === value ? "" : value;
+      }
       render();
     });
   });
@@ -1137,14 +1167,27 @@ async function hydrateHomeCalendar() {
     end_date: formatLocalIso(monthEnd),
     as_of: formatLocalIso(TODAY),
     limit: 1000,
-    discipline: state.filters.discipline,
-    category: state.filters.category,
+    discipline: multiFilterParam("discipline"),
+    category: multiFilterParam("category"),
   });
   renderHomeCalendar("#homeEvents", events, calendarDate);
 }
 
 async function changeHomeCalendarMonth(delta) {
   state.homeCalendarMonthOffset += delta;
+  try {
+    await hydrateHomeCalendar();
+    $("#statusDot").className = "status-dot online";
+    $("#statusText").textContent = t("online");
+  } catch (error) {
+    $("#statusDot").className = "status-dot offline";
+    $("#statusText").textContent = t("offline");
+    $("#homeEvents").innerHTML = errorState(error);
+  }
+}
+
+async function resetHomeCalendarMonth() {
+  state.homeCalendarMonthOffset = 0;
   try {
     await hydrateHomeCalendar();
     $("#statusDot").className = "status-dot online";
@@ -1165,8 +1208,8 @@ async function hydrateEventsCalendar() {
     end_date: formatLocalIso(monthEnd),
     as_of: formatLocalIso(TODAY),
     limit: 1000,
-    discipline: state.filters.discipline,
-    category: state.filters.category,
+    discipline: multiFilterParam("discipline"),
+    category: multiFilterParam("category"),
   });
   renderHomeCalendar("#eventResults", events, calendarDate, {
     navScope: "events",
@@ -1177,6 +1220,15 @@ async function hydrateEventsCalendar() {
 
 async function changeEventsCalendarMonth(delta) {
   state.eventsCalendarMonthOffset += delta;
+  try {
+    await hydrateEventsCalendar();
+  } catch (error) {
+    $("#eventResults").innerHTML = errorState(error);
+  }
+}
+
+async function resetEventsCalendarMonth() {
+  state.eventsCalendarMonthOffset = 0;
   try {
     await hydrateEventsCalendar();
   } catch (error) {
@@ -1279,6 +1331,7 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
             <span class="calendar-kicker">${t("calendarMonth")}</span>
             <strong>${escapeHtml(monthName)}</strong>
           </div>
+          <button class="calendar-today-button" type="button" data-calendar-today-scope="${navScope}" aria-label="${t("today")}" title="${t("today")}">${t("today")}</button>
           <button class="calendar-nav-button" type="button" data-calendar-nav="1" data-calendar-nav-scope="${navScope}" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
         </div>
         <div class="calendar-legend" aria-label="${t("status")}">
@@ -1351,6 +1404,15 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
       changeHomeCalendarMonth(delta);
     });
   });
+  node.querySelectorAll("[data-calendar-today-scope]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.calendarTodayScope === "events") {
+        resetEventsCalendarMonth();
+        return;
+      }
+      resetHomeCalendarMonth();
+    });
+  });
 }
 
 function renderRankingContext(payload) {
@@ -1414,7 +1476,7 @@ async function renderAthletes() {
   try {
     const athletes = await getJson("/athletes", {
       search,
-      discipline: state.filters.discipline,
+      discipline: singleFilterParam("discipline"),
       limit: 40,
     });
     if (!athletes.length) {

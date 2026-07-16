@@ -70,7 +70,7 @@ def build_event_discipline_filters(
         filters.append(models.EventDisciplineEnum.MAG)
     if models.DisciplineEnum.WAG in selected:
         filters.append(models.EventDisciplineEnum.WAG)
-    if selected == {models.DisciplineEnum.MAG, models.DisciplineEnum.WAG}:
+    if selected & {models.DisciplineEnum.MAG, models.DisciplineEnum.WAG}:
         filters.append(models.EventDisciplineEnum.MAG_AND_WAG)
     return filters
 
@@ -87,7 +87,7 @@ def build_event_category_filters(
         filters.append(models.EventCategoryEnum.JUNIOR)
     if models.ResultCategoryEnum.SENIOR in selected:
         filters.append(models.EventCategoryEnum.SENIOR)
-    if selected == {models.ResultCategoryEnum.JUNIOR, models.ResultCategoryEnum.SENIOR}:
+    if selected & {models.ResultCategoryEnum.JUNIOR, models.ResultCategoryEnum.SENIOR}:
         filters.append(models.EventCategoryEnum.JUNIOR_AND_SENIOR)
     return filters
 

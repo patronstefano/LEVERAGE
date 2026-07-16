@@ -4254,7 +4254,12 @@ def test_event_calendar_exposes_future_events_and_computed_statuses():
     assert mag_response.status_code == 200
     mag_names = {event["name"] for event in mag_response.json()}
     assert "Upcoming Event" not in mag_names
-    assert mag_names == {"Completed Without Results", "Completed With Results"}
+    assert mag_names == {"Completed Without Results", "Completed With Results", "Ongoing Event"}
+
+    senior_response = client.get("/events/calendar?category=senior&as_of=2024-05-02")
+    assert senior_response.status_code == 200
+    senior_names = {event["name"] for event in senior_response.json()}
+    assert senior_names == {"Completed Without Results", "Completed With Results", "Ongoing Event"}
 
     mixed_response = client.get("/events/calendar?discipline=MAG,WAG&as_of=2024-05-02")
     assert mixed_response.status_code == 200
@@ -6677,11 +6682,11 @@ def test_event_filters_treat_combined_values_as_dual_selection():
 
     mag_only = client.get("/events/?discipline=MAG")
     assert mag_only.status_code == 200
-    assert {event["name"] for event in mag_only.json()} == {"MAG Event"}
+    assert {event["name"] for event in mag_only.json()} == {"MAG Event", "Combined Event"}
 
     wag_only = client.get("/events/?discipline=WAG")
     assert wag_only.status_code == 200
-    assert {event["name"] for event in wag_only.json()} == {"WAG Event"}
+    assert {event["name"] for event in wag_only.json()} == {"WAG Event", "Combined Event"}
 
     both_disciplines = client.get("/events/?discipline=MAG&discipline=WAG")
     assert both_disciplines.status_code == 200
@@ -6693,7 +6698,11 @@ def test_event_filters_treat_combined_values_as_dual_selection():
 
     junior_only = client.get("/events/?category=junior")
     assert junior_only.status_code == 200
-    assert {event["name"] for event in junior_only.json()} == {"MAG Event"}
+    assert {event["name"] for event in junior_only.json()} == {"MAG Event", "Combined Event"}
+
+    senior_only = client.get("/events/?category=senior")
+    assert senior_only.status_code == 200
+    assert {event["name"] for event in senior_only.json()} == {"WAG Event", "Combined Event"}
 
     both_categories = client.get("/events/?category=junior&category=senior")
     assert both_categories.status_code == 200

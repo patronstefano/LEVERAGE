@@ -948,14 +948,34 @@ button {
   transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
+.calendar-today-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
 .calendar-nav-button:hover,
-.calendar-nav-button:focus-visible {
+.calendar-nav-button:focus-visible,
+.calendar-today-button:hover,
+.calendar-today-button:focus-visible {
   border-color: rgba(25, 23, 71, 0.24);
   color: #fff;
   background: var(--brand-blue);
 }
 
-.calendar-nav-button:active {
+.calendar-nav-button:active,
+.calendar-today-button:active {
   transform: scale(0.96);
 }
 
