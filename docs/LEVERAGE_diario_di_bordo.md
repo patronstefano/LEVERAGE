@@ -1820,6 +1820,7 @@ Funzionalita frontend iniziali implementate:
 - aggiunta dei suggerimenti live nella barra di ricerca globale, visibili sia mentre l'utente digita sia mentre cancella, con risultati provenienti dallo stesso endpoint `/search` e raggruppabili in atleti, eventi, nazioni, attrezzi e risultati;
 - correzione della visibilita dei suggerimenti live: chiamata frontend indirizzata direttamente a `/search/` per evitare redirect, stato `Loading...` immediato durante l'attesa del backend e cache-buster su CSS/JS per forzare il caricamento della versione aggiornata in anteprima locale;
 - aggiunta della pagina frontend `Search`, con risultati raggruppati per atleti, eventi, nazioni, attrezzi e risultati, mantenendo layout minimale e coerente con la home;
+- rifinitura dei bordi dei componenti dati: card, pannelli, suggerimenti di ricerca e pill dei risultati sono stati allineati a raggi piu controllati, evitando l'effetto eccessivamente "a pillola" nei calendari, nelle classifiche e nelle schede risultato;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -1880,6 +1881,7 @@ Commit principali della fase UI iniziale:
 | `2d512ad` | Ricerca globale strutturata per intento e autocomplete ordinato |
 | `d2dff49` | Aggregazione reale dei filtri nella pagina risultati |
 | `a66858e` | Correzione outlier punteggi e protezione import Gymternet |
+| `9ef341b` | Rifinitura raggi visivi di card e pill dati frontend |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -1944,6 +1946,29 @@ Implementazione:
 - la UI usa questo flag per renderizzare la pagina in modalita `Filtered results`;
 - le sezioni separate `Athletes`, `Events`, `Countries`, `Apparatus` restano disponibili per ricerche semplici, ma non dominano piu le ricerche strutturate sui risultati;
 - aggiunta verifica automatica che distingue ricerca semplice da ricerca composta.
+
+Aggiornamento del 16 luglio 2026: coerenza dei bordi nei dati frontend
+
+Problema emerso:
+
+Nelle viste pubbliche iniziali, molti dati visualizzati in calendario, classifiche e risultati di ricerca apparivano dentro bordi troppo arrotondati, con un effetto "pillola" non sempre coerente con lo stile app scelto per LEVERAGE.
+
+Scelta progettuale adottata:
+
+- introdotte due variabili CSS condivise: `--surface-radius` per card/pannelli e `--data-chip-radius` per piccole etichette dati;
+- ridotto il raggio delle `pill` usate per score, discipline, country, apparatus, stato calendario e conteggio risultati;
+- normalizzato il raggio di card, pannelli, suggerimenti di ricerca e stato API compatto;
+- aggiornato il cache-buster degli asset frontend per forzare il caricamento della versione corretta in anteprima locale.
+
+Motivazione UI:
+
+Lo stile deve restare morbido e riconoscibile come interfaccia moderna, ma i dati sportivi non devono apparire come pulsanti primari o capsule troppo evidenti. La gerarchia visiva diventa cosi piu chiara: i controlli restano controlli, mentre i metadati dei risultati diventano etichette leggere e ordinate.
+
+Verifiche:
+
+- server frontend locale verificato con risposta HTTP `200`;
+- controllo `git diff --check` pulito;
+- modifica salvata nel commit `9ef341b`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
 
