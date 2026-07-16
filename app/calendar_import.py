@@ -287,7 +287,7 @@ def infer_event_discipline(event_name: str) -> models.EventDisciplineEnum:
 
 def infer_event_category(event_name: str) -> models.EventCategoryEnum:
     lower_name = event_name.lower()
-    has_junior = "junior" in lower_name
+    has_junior = "junior" in lower_name or "youth" in lower_name
     has_senior = "senior" in lower_name
     if has_junior and not has_senior:
         return models.EventCategoryEnum.JUNIOR

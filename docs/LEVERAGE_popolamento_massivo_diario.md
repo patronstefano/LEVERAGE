@@ -4406,7 +4406,42 @@ Decisione metodologica:
 - `British Team Championships` era gia presente come Event futuro e non e stato duplicato;
 - `3rd Bundesliga` e `4th Bundesliga` avevano gia Event 2026 con risultati e date di aprile: le date future sono state conservate come `EventCalendarEntry`, senza sovrascrivere le date degli Event gia popolati.
 
-### 18.7 Stato database locale dopo Results + Calendar 2026
+### 18.7 Correzione semantica Youth
+
+Durante il controllo dei filtri calendario e stato deciso che ogni evento contenente `Youth` nel nome deve essere trattato come evento junior.
+
+Questa regola e stata applicata sia alla logica futura di import Calendar sia ai dati locali gia popolati.
+
+Report prodotto:
+
+```text
+docs/import_reports/youth_category_correction_20260716.json
+```
+
+Backup locale post-correzione:
+
+```text
+backups/leverage_youth_category_correction_20260716_123000.db
+```
+
+Esito correzione:
+
+| Metrica | Valore |
+|---|---:|
+| Event corretti da `junior and senior` a `junior` | 5 |
+| Result collegati corretti da `senior` a `junior` | 191 |
+
+Event corretti:
+
+| Event ID | Year | Event | Result corretti |
+|---:|---:|---|---:|
+| 271 | 2019 | European Youth Olympic Festival | 5 |
+| 411 | 2019 | International Youth Games | 12 |
+| 508 | 2020 | Pre-Olympic Youth Cup | 41 |
+| 1718 | 2026 | Pre-Olympic Youth Cup | 133 |
+| 1749 | 2026 | Youth Olympic Games | 0 |
+
+### 18.8 Stato database locale dopo Results + Calendar 2026
 
 | Entita | Totale |
 |---|---:|
@@ -4428,7 +4463,7 @@ Event 2026 senza `start_date` diretta:
 | `Colombian Championships` | `db_only`, Results presenti ma Calendar sorgente senza riscontro |
 | `Romanian Euros Trials` | `db_only`, Results presenti ma Calendar sorgente senza riscontro |
 
-### 18.8 Milestone
+### 18.9 Milestone
 
 Milestone raggiunta il 15 luglio 2026: LEVERAGE e popolato e riconciliato fino al primo semestre 2026.
 

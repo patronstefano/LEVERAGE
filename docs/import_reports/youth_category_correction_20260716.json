@@ -1,0 +1,51 @@
+{
+  "date": "2026-07-16",
+  "reason": "Events whose name contains Youth must be treated as junior competitions.",
+  "scope": {
+    "events_updated": 5,
+    "results_updated": 191
+  },
+  "updated_events": [
+    {
+      "event_id": 271,
+      "year": 2019,
+      "name": "European Youth Olympic Festival",
+      "previous_category": "junior and senior",
+      "new_category": "junior",
+      "results_updated": 5
+    },
+    {
+      "event_id": 411,
+      "year": 2019,
+      "name": "International Youth Games",
+      "previous_category": "junior and senior",
+      "new_category": "junior",
+      "results_updated": 12
+    },
+    {
+      "event_id": 508,
+      "year": 2020,
+      "name": "Pre-Olympic Youth Cup",
+      "previous_category": "junior and senior",
+      "new_category": "junior",
+      "results_updated": 41
+    },
+    {
+      "event_id": 1718,
+      "year": 2026,
+      "name": "Pre-Olympic Youth Cup",
+      "previous_category": "junior and senior",
+      "new_category": "junior",
+      "results_updated": 133
+    },
+    {
+      "event_id": 1749,
+      "year": 2026,
+      "name": "Youth Olympic Games",
+      "previous_category": "junior and senior",
+      "new_category": "junior",
+      "results_updated": 0
+    }
+  ],
+  "local_backup_after_correction": "backups/leverage_youth_category_correction_20260716_123000.db"
+}

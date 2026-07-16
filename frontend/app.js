@@ -10,6 +10,7 @@ const state = {
   filters: {
     discipline: [],
     category: [],
+    calendarStatus: "",
     scoringCycle: "",
   },
 };
@@ -93,6 +94,8 @@ const translations = {
     resultsMissing: "Results missing",
     ongoing: "Ongoing",
     upcoming: "Upcoming",
+    completedWithResults: "With results",
+    completedNoResults: "Missing results",
     calendarOnly: "Calendar only",
     rankingPreview: "Ranking preview",
     viewAll: "View all",
@@ -200,6 +203,8 @@ const translations = {
     resultsMissing: "Risultati mancanti",
     ongoing: "In corso",
     upcoming: "In programma",
+    completedWithResults: "Con risultati",
+    completedNoResults: "Risultati mancanti",
     calendarOnly: "Solo calendario",
     rankingPreview: "Anteprima classifica",
     viewAll: "Vedi tutto",
@@ -307,6 +312,8 @@ const translations = {
     resultsMissing: "Resultados pendientes",
     ongoing: "En curso",
     upcoming: "Programado",
+    completedWithResults: "Con resultados",
+    completedNoResults: "Resultados pendientes",
     calendarOnly: "Solo calendario",
     rankingPreview: "Vista rankings",
     viewAll: "Ver todo",
@@ -414,6 +421,8 @@ const translations = {
     resultsMissing: "Resultats manquants",
     ongoing: "En cours",
     upcoming: "A venir",
+    completedWithResults: "Avec resultats",
+    completedNoResults: "Resultats manquants",
     calendarOnly: "Calendrier seul",
     rankingPreview: "Apercu classement",
     viewAll: "Tout voir",
@@ -721,6 +730,12 @@ async function renderHome() {
             ${filterButton("WAG", "discipline", "WAG")}
             ${filterButton(t("senior"), "category", "senior")}
             ${filterButton(t("junior"), "category", "junior")}
+          </div>
+          <div class="filter-row calendar-status-filters">
+            ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results")}
+            ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results")}
+            ${filterButton(t("ongoing"), "calendarStatus", "ongoing")}
+            ${filterButton(t("upcoming"), "calendarStatus", "upcoming")}
           </div>
         </div>
         <div class="home-status" id="apiSnapshot">
@@ -1087,6 +1102,10 @@ function rankingDiscipline() {
   return singleFilterParam("discipline") || "MAG";
 }
 
+function calendarStatusParam() {
+  return state.filters.calendarStatus || "";
+}
+
 function rankingCategory() {
   return singleFilterParam("category");
 }
@@ -1121,6 +1140,24 @@ function filterButton(label, type, value, activeValue = state.filters[type]) {
   return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, activeValue)}">${label}</button>`;
 }
 
+function disciplineSegmentedControl() {
+  const selected = rankingDiscipline();
+  return `
+    <div class="segmented-control" role="radiogroup" aria-label="${t("discipline")}">
+      ${["MAG", "WAG"].map((value) => `
+        <button
+          class="segmented-option"
+          type="button"
+          role="radio"
+          aria-checked="${selected === value}"
+          data-ranking-discipline="${value}"
+        >${value}</button>
+      `).join("")}
+      <span class="segmented-thumb" data-selected="${selected}"></span>
+    </div>
+  `;
+}
+
 function bindFilterButtons() {
   document.querySelectorAll("[data-filter-type]").forEach((button) => {
     button.addEventListener("click", () => {
@@ -1134,6 +1171,15 @@ function bindFilterButtons() {
       } else {
         state.filters[type] = state.filters[type] === value ? "" : value;
       }
+      render();
+    });
+  });
+}
+
+function bindRankingDisciplineControl() {
+  document.querySelectorAll("[data-ranking-discipline]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.filters.discipline = [button.dataset.rankingDiscipline];
       render();
     });
   });
@@ -1169,6 +1215,7 @@ async function hydrateHomeCalendar() {
     limit: 1000,
     discipline: multiFilterParam("discipline"),
     category: multiFilterParam("category"),
+    status: calendarStatusParam(),
   });
   renderHomeCalendar("#homeEvents", events, calendarDate);
 }
@@ -1210,6 +1257,7 @@ async function hydrateEventsCalendar() {
     limit: 1000,
     discipline: multiFilterParam("discipline"),
     category: multiFilterParam("category"),
+    status: calendarStatusParam(),
   });
   renderHomeCalendar("#eventResults", events, calendarDate, {
     navScope: "events",
@@ -1331,8 +1379,8 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
             <span class="calendar-kicker">${t("calendarMonth")}</span>
             <strong>${escapeHtml(monthName)}</strong>
           </div>
-          <button class="calendar-today-button" type="button" data-calendar-today-scope="${navScope}" aria-label="${t("today")}" title="${t("today")}">${t("today")}</button>
           <button class="calendar-nav-button" type="button" data-calendar-nav="1" data-calendar-nav-scope="${navScope}" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
+          <button class="calendar-today-button" type="button" data-calendar-today-scope="${navScope}" aria-label="${t("today")}" title="${t("today")}">${t("today")}</button>
         </div>
         <div class="calendar-legend" aria-label="${t("status")}">
           <span><i class="legend-dot has-results"></i>${t("resultsAvailable")}</span>
@@ -1504,6 +1552,10 @@ async function renderEvents() {
       ${filterButton("WAG", "discipline", "WAG")}
       ${filterButton(t("senior"), "category", "senior")}
       ${filterButton(t("junior"), "category", "junior")}
+      ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results")}
+      ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results")}
+      ${filterButton(t("ongoing"), "calendarStatus", "ongoing")}
+      ${filterButton(t("upcoming"), "calendarStatus", "upcoming")}
     </div>
     <section class="panel calendar-page-panel">
       <div id="eventResults">${loadingState()}</div>
@@ -1521,8 +1573,7 @@ async function renderRankings() {
   setApp(`
     ${pageHeading("rankingsHeading", "rankingsIntro")}
     <div class="toolbar">
-      ${filterButton("MAG", "discipline", "MAG", rankingDiscipline())}
-      ${filterButton("WAG", "discipline", "WAG", rankingDiscipline())}
+      ${disciplineSegmentedControl()}
       ${filterButton(t("senior"), "category", "senior")}
       ${filterButton(t("junior"), "category", "junior")}
     </div>
@@ -1535,6 +1586,7 @@ async function renderRankings() {
     <div id="rankingResults">${loadingState()}</div>
   `);
   bindFilterButtons();
+  bindRankingDisciplineControl();
   try {
     const rankings = await getJson("/analytics/rankings", {
       ...rankingQueryParams(60),

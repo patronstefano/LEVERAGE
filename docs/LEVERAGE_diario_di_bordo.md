@@ -2068,6 +2068,13 @@ Aggiornamento successivo:
 - il backend tratta i valori aggregati in modo inclusivo: `MAG and WAG` e compatibile con il filtro `MAG` e con il filtro `WAG`, mentre `junior and senior` e compatibile con il filtro `junior` e con il filtro `senior`;
 - il pulsante localizzato `Today` / `Oggi` riporta il calendario visualizzato al mese corrente, sia nella preview home sia nella vista completa `Events`.
 
+Aggiornamento UI successivo:
+
+- i filtri calendario includono ora anche lo stato dell'evento: con risultati, risultati mancanti, in corso, in programma;
+- il filtro di stato viene passato a `/events/calendar`, quindi funziona anche per eventi futuri o in corso privi di Results;
+- il pulsante `Today` / `Oggi` e stato spostato piu a destra, dopo la freccia di avanzamento mese, per renderlo meno compresso vicino al nome del mese;
+- nella pagina `Rankings`, MAG/WAG non sono piu due bottoni apparentemente multi-selezionabili: sono un controllo segmentato esclusivo, coerente con la scelta semantica di non mischiare classifiche MAG e WAG.
+
 Correzione dati successiva:
 
 - dal file `import_files/Calendar.xlsx` sono state lette 45 righe Calendar 2026 future dal 16 luglio 2026 in poi;
@@ -2075,6 +2082,13 @@ Correzione dati successiva:
 - `British Team Championships` era gia presente e non e stato duplicato;
 - `3rd Bundesliga` e `4th Bundesliga` avevano gia Event con risultati e date di aprile: le nuove date future sono state salvate come `EventCalendarEntry`, preservando le date originali degli Event popolati;
 - dopo la correzione, il calendario pubblico restituisce eventi futuri fino a dicembre 2026, inclusi U.S. Classic, Commonwealth Games, European Championships, World Championships, Youth Olympic Games e All-Japan Team & Event Championships.
+
+Correzione semantica successiva:
+
+- tutti gli Event contenenti `Youth` nel nome devono essere interpretati come junior;
+- la regola di inferenza dell'import Calendar e stata aggiornata: `Youth` vale come indicatore junior, analogamente a `Junior`;
+- nel database locale sono stati corretti 5 Event precedentemente classificati come `junior and senior` e 191 Result collegati, ora coerenti con `category = junior`;
+- l'intervento e stato registrato nel report `docs/import_reports/youth_category_correction_20260716.json`.
 
 Verifiche:
 
@@ -2090,6 +2104,7 @@ Verifiche:
 - calendario completo e supporto `EventCalendarEntry` salvati nel commit `2f9127e`;
 - filtri calendario multi-selezione e pulsante ritorno a oggi salvati nel commit `2b9bd88`;
 - materializzazione eventi futuri Calendar 2026 eseguita con report `calendar_2026_future_materialization_commit_summary.json`;
+- correzione semantica `Youth = junior` verificata sui dati locali e tracciata nel report `youth_category_correction_20260716.json`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview

@@ -4250,6 +4250,10 @@ def test_event_calendar_exposes_future_events_and_computed_statuses():
     assert upcoming_response.status_code == 200
     assert [event["name"] for event in upcoming_response.json()] == ["Upcoming Event"]
 
+    ongoing_response = client.get("/events/calendar?status=ongoing&as_of=2024-05-02")
+    assert ongoing_response.status_code == 200
+    assert [event["name"] for event in ongoing_response.json()] == ["Ongoing Event"]
+
     mag_response = client.get("/events/calendar?discipline=MAG&as_of=2024-05-02")
     assert mag_response.status_code == 200
     mag_names = {event["name"] for event in mag_response.json()}
@@ -4407,6 +4411,7 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
         ],
         2026: [
             ("Jan 31-Feb 3", "Future World Cup (MAG)"),
+            ("Jun 1-3", "Youth Olympic Games"),
         ],
     })
 
@@ -4425,11 +4430,11 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     )
     assert preview_response.status_code == 200
     preview = preview_response.json()
-    assert preview["parsed_rows"] == 3
+    assert preview["parsed_rows"] == 4
     assert preview["matched_rows"] == 1
     assert preview["matched_events"] == 1
     assert preview["would_update_events"] == 1
-    assert preview["would_create_events"] == 1
+    assert preview["would_create_events"] == 2
     assert preview["unmatched_historical_rows"] == 1
     assert preview["matched_event_source_conflicts"] == []
     assert preview["issues"] == []
@@ -4442,6 +4447,8 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     assert actions["Future World Cup (MAG)"]["start_date"] == "2026-01-31"
     assert actions["Future World Cup (MAG)"]["end_date"] == "2026-02-03"
     assert actions["Future World Cup (MAG)"]["inferred_discipline"] == "MAG"
+    assert actions["Youth Olympic Games"]["action"] == "create_event"
+    assert actions["Youth Olympic Games"]["inferred_category"] == "junior"
 
     workbook.seek(0)
     commit_response = client.post(
@@ -4453,7 +4460,7 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     commit_payload = commit_response.json()
     assert commit_payload["committed"] is True
     assert commit_payload["updated_events"] == 1
-    assert commit_payload["created_events"] == 1
+    assert commit_payload["created_events"] == 2
     assert commit_payload["skipped_unmatched_historical_rows"] == 1
     assert commit_payload["created_admin_notifications"] == 1
 
@@ -4463,13 +4470,13 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
 
     calendar_response = client.get("/events/calendar?year=2026&as_of=2026-01-01")
     assert calendar_response.status_code == 200
-    future_events = calendar_response.json()
-    assert len(future_events) == 1
-    assert future_events[0]["name"] == "Future World Cup (MAG)"
-    assert future_events[0]["discipline"] == "MAG"
-    assert future_events[0]["category"] == "junior and senior"
-    assert future_events[0]["level"] == "World Cup"
-    assert future_events[0]["calendar_status"] == "upcoming"
+    future_events = {event["name"]: event for event in calendar_response.json()}
+    assert len(future_events) == 2
+    assert future_events["Future World Cup (MAG)"]["discipline"] == "MAG"
+    assert future_events["Future World Cup (MAG)"]["category"] == "junior and senior"
+    assert future_events["Future World Cup (MAG)"]["level"] == "World Cup"
+    assert future_events["Future World Cup (MAG)"]["calendar_status"] == "upcoming"
+    assert future_events["Youth Olympic Games"]["category"] == "junior"
 
     notifications_response = client.get("/notifications", headers=admin_headers)
     assert notifications_response.status_code == 200
