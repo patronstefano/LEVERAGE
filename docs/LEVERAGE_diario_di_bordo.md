@@ -1825,6 +1825,8 @@ Funzionalita frontend iniziali implementate:
 - trasformazione dell'anteprima calendario della home in una vera griglia mensile interattiva: gli eventi datati vengono visualizzati come barre multi-day sulle settimane, con corsie separate per gestire sovrapposizioni e indicatore del giorno corrente;
 - aggiunta della navigazione mese precedente/successivo direttamente nell'anteprima calendario della home, con frecce accanto al nome del mese e ricarica mirata del range calendario selezionato;
 - ribilanciamento della sezione home `Calendar preview` / `Ranking preview`: il calendario riceve piu spazio orizzontale, mentre la classifica resta una preview piu compatta;
+- trasformazione della pagina `Events` in calendario mensile completo: la vista non e piu una lista di card, ma una griglia piu ampia con barre multi-day, legenda completa e navigazione mese precedente/successivo;
+- estensione dell'endpoint pubblico `/events/calendar` alle voci `EventCalendarEntry`, incluse righe `calendar_only` senza scheda evento collegata, cosi il calendario puo mostrare anche eventi schedulati senza risultati;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -2051,16 +2053,27 @@ La micro-etichetta sul giorno corrente rende piu leggibile il significato dell'e
 
 Il ribilanciamento calendario/ranking risponde alla nuova gerarchia della home: il calendario non e piu una semplice lista di eventi ma una vista interattiva, quindi richiede piu ampiezza per mostrare sovrapposizioni e barre multi-day; la ranking resta utile come anteprima sportiva, ma non deve competere visivamente con il calendario.
 
+Aggiornamento successivo:
+
+- la pagina `Events` usa la stessa logica calendario della home, ma in versione piu ampia, con piu corsie evento visibili per settimana;
+- la legenda distingue risultati disponibili, risultati mancanti, evento in corso ed evento futuro;
+- `/events/calendar` non legge piu soltanto la tabella `events`, ma integra anche `event_calendar_entries`;
+- le righe `calendar_only` vengono restituite con `id = null`, `calendar_entry_id` valorizzato e `is_calendar_only = true`, cosi la UI puo mostrarle nel calendario senza rimandare a una scheda evento inesistente;
+- gli `Event` senza date precise non vengono piu inseriti nei range mensili come se durassero tutto l'anno: nel calendario mensile compaiono solo eventi con date reali o voci `EventCalendarEntry`;
+- la verifica sul database locale al 16 luglio 2026 ha confermato che, dopo tale data, risultava presente un solo evento futuro datato (`British Team Championships`) e nessuna riga futura `calendar_only`; quindi l'assenza di altri futuri senza risultati dipendeva dai dati effettivamente materializzati nel DB, non solo dalla UI.
+
 Verifiche:
 
 - endpoint calendario mese corrente verificato con risposta HTTP `200`;
 - frontend locale verificato con risposta HTTP `200`;
 - controllo `git diff --check` pulito;
 - runtime JavaScript locale non disponibile (`node`, `deno` e `bun` assenti), quindi la validazione sintattica JS e stata sostituita da ispezione del diff e verifica via preview servita;
+- suite completa backend verificata con `117 passed`;
 - modifica salvata nel commit `30817a3`.
 - navigazione mese calendario salvata nel commit `2abbea1`;
 - tooltip localizzato del giorno corrente salvato nel commit `f1166ce`;
 - ribilanciamento layout calendario/ranking salvato nel commit `d7d603e`;
+- calendario completo e supporto `EventCalendarEntry` salvati nel commit `2f9127e`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
