@@ -671,43 +671,98 @@ function suggestionMeta(parts) {
   return parts.filter(Boolean).join(" · ");
 }
 
+function athleteSuggestion(athlete) {
+  return {
+    label: athlete.name,
+    meta: suggestionMeta([t("athlete"), athlete.country, athlete.discipline]),
+    href: `#/athletes/${athlete.id}`,
+  };
+}
+
+function eventSuggestion(event) {
+  return {
+    label: event.name,
+    meta: suggestionMeta([t("event"), event.location, String(event.year)]),
+    href: `#/events/${event.id}`,
+  };
+}
+
+function resultSuggestion(result) {
+  return {
+    label: result.athlete_name,
+    meta: suggestionMeta([t("matchingResults"), result.event_name, result.apparatus, scoreLabel(result.score)]),
+    href: `#/events/${result.event_id}`,
+  };
+}
+
+function facetSuggestion(label, query, meta) {
+  return {
+    label,
+    meta,
+    query,
+  };
+}
+
+function appendUniqueSuggestions(target, source, key) {
+  const existing = new Set(target.map(key));
+  source.forEach((item) => {
+    const value = key(item);
+    if (existing.has(value)) return;
+    existing.add(value);
+    target.push(item);
+  });
+}
+
 function buildSuggestionItems(data) {
+  const athletes = data.athletes || [];
+  const events = data.events || [];
+  const results = data.results || [];
+  const countries = data.countries || [];
+  const apparatuses = data.apparatuses || [];
   const items = [];
-  data.events.slice(0, 4).forEach((event) => {
-    items.push({
-      label: event.name,
-      meta: suggestionMeta([t("event"), event.location, String(event.year)]),
-      href: `#/events/${event.id}`,
-    });
-  });
-  data.athletes.slice(0, 4).forEach((athlete) => {
-    items.push({
-      label: athlete.name,
-      meta: suggestionMeta([t("athlete"), athlete.country, athlete.discipline]),
-      href: `#/athletes/${athlete.id}`,
-    });
-  });
-  data.countries.slice(0, 3).forEach((country) => {
-    items.push({
-      label: country.label,
-      meta: suggestionMeta([t("country"), searchCountLabel(country)]),
-      query: country.value,
-    });
-  });
-  data.apparatuses.slice(0, 3).forEach((apparatus) => {
-    items.push({
-      label: apparatus.label,
-      meta: suggestionMeta([t("matchingApparatuses"), resultLabel(apparatus.result_count)]),
-      query: apparatus.value,
-    });
-  });
-  data.results.slice(0, 3).forEach((result) => {
-    items.push({
-      label: result.athlete_name,
-      meta: suggestionMeta([t("matchingResults"), result.event_name, result.apparatus, scoreLabel(result.score)]),
-      href: `#/events/${result.event_id}`,
-    });
-  });
+
+  const athleteIds = new Set(athletes.map((athlete) => athlete.id));
+  const eventIds = new Set(events.map((event) => event.id));
+  const athleteResults = results.filter((result) => athleteIds.has(result.athlete_id));
+  const eventResults = results.filter((result) => eventIds.has(result.event_id));
+  const otherResults = results.filter((result) => (
+    !athleteIds.has(result.athlete_id) && !eventIds.has(result.event_id)
+  ));
+
+  if (athletes.length) {
+    appendUniqueSuggestions(items, athletes.slice(0, 3).map(athleteSuggestion), (item) => item.href || item.query || item.label);
+    appendUniqueSuggestions(items, athleteResults.slice(0, 4).map(resultSuggestion), (item) => `${item.href}-${item.label}-${item.meta}`);
+    appendUniqueSuggestions(items, events.slice(0, 2).map(eventSuggestion), (item) => item.href || item.query || item.label);
+  } else if (events.length) {
+    appendUniqueSuggestions(items, events.slice(0, 3).map(eventSuggestion), (item) => item.href || item.query || item.label);
+    appendUniqueSuggestions(items, eventResults.slice(0, 4).map(resultSuggestion), (item) => `${item.href}-${item.label}-${item.meta}`);
+    appendUniqueSuggestions(items, athletes.slice(0, 2).map(athleteSuggestion), (item) => item.href || item.query || item.label);
+  }
+
+  appendUniqueSuggestions(items, otherResults.slice(0, 3).map(resultSuggestion), (item) => `${item.href}-${item.label}-${item.meta}`);
+  appendUniqueSuggestions(items, apparatuses.slice(0, 3).map((apparatus) => (
+    facetSuggestion(
+      apparatus.label,
+      apparatus.value,
+      suggestionMeta([t("matchingApparatuses"), resultLabel(apparatus.result_count)])
+    )
+  )), (item) => item.query || item.label);
+  appendUniqueSuggestions(items, countries.slice(0, 3).map((country) => (
+    facetSuggestion(
+      country.label,
+      country.value,
+      suggestionMeta([t("country"), searchCountLabel(country)])
+    )
+  )), (item) => item.query || item.label);
+
+  if (!items.length) {
+    appendUniqueSuggestions(items, results.slice(0, 5).map(resultSuggestion), (item) => `${item.href}-${item.label}-${item.meta}`);
+  }
+  if (!items.length) {
+    appendUniqueSuggestions(items, athletes.slice(0, 3).map(athleteSuggestion), (item) => item.href || item.query || item.label);
+    appendUniqueSuggestions(items, events.slice(0, 3).map(eventSuggestion), (item) => item.href || item.query || item.label);
+  }
+
   return items.slice(0, 7);
 }
 

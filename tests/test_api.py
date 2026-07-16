@@ -923,11 +923,33 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    stefano_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Stefano",
+            "last_name": "Patron",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
     serie_a_event = client.post(
         "/events/",
         json={
             "name": "Serie A",
             "location": "Naples, Italy",
+            "year": 2026,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "National Event",
+        },
+        headers=headers,
+    ).json()
+    italian_classic_event = client.post(
+        "/events/",
+        json={
+            "name": "Italian Classic",
+            "location": "Rome, Italy",
             "year": 2026,
             "discipline": "MAG",
             "category": "senior",
@@ -944,6 +966,74 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
             "discipline": "MAG and WAG",
             "category": "senior",
             "level": "National Event",
+        },
+        headers=headers,
+    ).json()
+    stefano_serie_a_vt = client.post(
+        "/results/",
+        json={
+            "athlete_id": stefano_athlete["id"],
+            "event_id": serie_a_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "VT",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.6,
+            "E_score": 8.5,
+            "score": 14.1,
+        },
+        headers=headers,
+    ).json()
+    stefano_serie_a_fx = client.post(
+        "/results/",
+        json={
+            "athlete_id": stefano_athlete["id"],
+            "event_id": serie_a_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.3,
+            "E_score": 8.0,
+            "score": 13.3,
+        },
+        headers=headers,
+    ).json()
+    mario_serie_a_vt = client.post(
+        "/results/",
+        json={
+            "athlete_id": italian_athlete["id"],
+            "event_id": serie_a_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "VT",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.1,
+            "E_score": 8.2,
+            "score": 13.3,
+        },
+        headers=headers,
+    ).json()
+    stefano_classic_vt = client.post(
+        "/results/",
+        json={
+            "athlete_id": stefano_athlete["id"],
+            "event_id": italian_classic_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "VT",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.4,
+            "E_score": 8.3,
+            "score": 13.7,
         },
         headers=headers,
     ).json()
@@ -969,6 +1059,19 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert country_code_search.status_code == 200
     assert any(athlete["id"] == italian_athlete["id"] for athlete in country_code_search.json()["athletes"])
     assert any(event["id"] == serie_a_event["id"] for event in country_code_search.json()["events"])
+
+    structured_search = client.get(
+        "/search",
+        params={"q": "Stefano Patron, Serie A 2026, volteggio", "limit": 10},
+    )
+    assert structured_search.status_code == 200
+    structured_payload = structured_search.json()
+    assert structured_payload["athletes"][0]["id"] == stefano_athlete["id"]
+    assert any(event["id"] == serie_a_event["id"] for event in structured_payload["events"])
+    assert [item["result_id"] for item in structured_payload["results"]] == [stefano_serie_a_vt["id"]]
+    assert stefano_serie_a_fx["id"] not in [item["result_id"] for item in structured_payload["results"]]
+    assert mario_serie_a_vt["id"] not in [item["result_id"] for item in structured_payload["results"]]
+    assert stefano_classic_vt["id"] not in [item["result_id"] for item in structured_payload["results"]]
 
 
 def test_admin_can_audit_existing_result_duplicate_groups():

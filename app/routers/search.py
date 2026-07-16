@@ -26,7 +26,60 @@ APPARATUS_LABELS = {
     "VT": "Vault",
     "VT AVG": "Vault Average",
 }
+APPARATUS_ALIASES = {
+    "all around": {"AA"},
+    "all-around": {"AA"},
+    "concorso generale": {"AA"},
+    "aa": {"AA"},
+    "floor": {"FX"},
+    "floor exercise": {"FX"},
+    "corpo libero": {"FX"},
+    "fx": {"FX"},
+    "pommel horse": {"PH"},
+    "cavallo con maniglie": {"PH"},
+    "cavallo": {"PH"},
+    "ph": {"PH"},
+    "still rings": {"SR"},
+    "rings": {"SR"},
+    "anelli": {"SR"},
+    "sr": {"SR"},
+    "vault": {"VT"},
+    "volteggio": {"VT"},
+    "salto": {"VT"},
+    "vt": {"VT"},
+    "vault average": {"VT AVG"},
+    "vault avg": {"VT AVG"},
+    "media volteggio": {"VT AVG"},
+    "vt avg": {"VT AVG"},
+    "parallel bars": {"PB"},
+    "parallele pari": {"PB"},
+    "parallele": {"PB", "UB"},
+    "pb": {"PB"},
+    "high bar": {"HB"},
+    "horizontal bar": {"HB"},
+    "sbarra": {"HB"},
+    "hb": {"HB"},
+    "uneven bars": {"UB"},
+    "parallele asimmetriche": {"UB"},
+    "asimmetriche": {"UB"},
+    "ub": {"UB"},
+    "balance beam": {"BB"},
+    "beam": {"BB"},
+    "trave": {"BB"},
+    "bb": {"BB"},
+}
 YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
+
+
+@dataclass(frozen=True)
+class SearchClause:
+    raw: str
+    text_query: str
+    text_terms: set[str]
+    years: set[int]
+    country_codes: set[str]
+    country_terms: set[str]
+    apparatus_codes: set[str]
 
 
 @dataclass(frozen=True)
@@ -37,6 +90,8 @@ class SearchParts:
     years: set[int]
     country_codes: set[str]
     country_terms: set[str]
+    apparatus_codes: set[str]
+    clauses: list[SearchClause]
 
 
 def normalized_like(query: str) -> str:
@@ -82,6 +137,28 @@ def search_text_terms(query: str) -> set[str]:
     return {normalized_like(variant) for variant in numeric_search_variants(query)}
 
 
+def strip_apparatus_aliases(query: str, apparatus_codes: set[str]) -> str:
+    stripped = f" {query.lower()} "
+    for alias, codes in sorted(APPARATUS_ALIASES.items(), key=lambda item: len(item[0]), reverse=True):
+        if apparatus_codes.intersection(codes):
+            stripped = re.sub(rf"\b{re.escape(alias)}\b", " ", stripped, flags=re.IGNORECASE)
+    return compact_whitespace(stripped)
+
+
+def is_apparatus_only_query(query: str, apparatus_codes: set[str]) -> bool:
+    normalized_query = query.strip().lower()
+    if not normalized_query or not apparatus_codes:
+        return False
+    for code in apparatus_codes:
+        label = APPARATUS_LABELS.get(code, "").lower()
+        if normalized_query == code.lower() or normalized_query in label:
+            return True
+    for alias, codes in APPARATUS_ALIASES.items():
+        if apparatus_codes.intersection(codes) and normalized_query == alias:
+            return True
+    return False
+
+
 def country_aliases_by_code() -> dict[str, set[str]]:
     aliases: dict[str, set[str]] = defaultdict(set)
     for alias, code in COUNTRY_CODES.items():
@@ -117,17 +194,42 @@ def resolve_country_terms(country_codes: set[str]) -> set[str]:
     return {term for term in terms if term}
 
 
-def parse_search_query(query: str) -> SearchParts:
+def parse_search_clause(query: str) -> SearchClause:
     years = {int(match) for match in YEAR_PATTERN.findall(query)}
     text_query = compact_whitespace(YEAR_PATTERN.sub(" ", query))
     country_codes = resolve_country_codes(query) | resolve_country_codes(text_query)
-    return SearchParts(
-        query=query,
+    apparatus_codes = matching_apparatus_codes(text_query or query)
+    text_query = strip_apparatus_aliases(text_query, apparatus_codes)
+    if is_apparatus_only_query(text_query, apparatus_codes):
+        text_query = ""
+    return SearchClause(
+        raw=query,
         text_query=text_query,
         text_terms=search_text_terms(text_query) if text_query else set(),
         years=years,
         country_codes=country_codes,
         country_terms=resolve_country_terms(country_codes),
+        apparatus_codes=apparatus_codes,
+    )
+
+
+def parse_search_query(query: str) -> SearchParts:
+    clauses = [
+        parse_search_clause(clause)
+        for clause in (part.strip() for part in query.split(","))
+        if clause
+    ]
+    years = set().union(*(clause.years for clause in clauses)) if clauses else set()
+    text_query = compact_whitespace(YEAR_PATTERN.sub(" ", query))
+    return SearchParts(
+        query=query,
+        text_query=text_query,
+        text_terms=set().union(*(clause.text_terms for clause in clauses)) if clauses else set(),
+        years=years,
+        country_codes=set().union(*(clause.country_codes for clause in clauses)) if clauses else set(),
+        country_terms=set().union(*(clause.country_terms for clause in clauses)) if clauses else set(),
+        apparatus_codes=set().union(*(clause.apparatus_codes for clause in clauses)) if clauses else set(),
+        clauses=clauses,
     )
 
 
@@ -161,11 +263,17 @@ def event_conditions(term: str):
 
 def matching_apparatus_codes(query: str) -> set[str]:
     normalized_query = query.strip().lower()
-    return {
+    direct_matches = {
         code
         for code, label in APPARATUS_LABELS.items()
         if normalized_query in code.lower() or normalized_query in label.lower()
     }
+    alias_matches = set()
+    normalized_with_padding = f" {normalized_query} "
+    for alias, codes in APPARATUS_ALIASES.items():
+        if re.search(rf"\b{re.escape(alias)}\b", normalized_with_padding, flags=re.IGNORECASE):
+            alias_matches.update(codes)
+    return direct_matches | alias_matches
 
 
 def athlete_result_counts(db: Session, athlete_ids: list[int]) -> dict[int, int]:
@@ -224,6 +332,94 @@ def add_year_filter(query, years: set[int]):
     if years:
         return query.filter(models.Event.year.in_(years))
     return query
+
+
+def clause_athlete_conditions(clause: SearchClause):
+    conditions = []
+    for term in clause.text_terms:
+        conditions.extend(athlete_name_conditions(term))
+    conditions.extend(country_like_conditions(models.Athlete.country, clause.country_terms))
+    return conditions
+
+
+def clause_event_conditions(clause: SearchClause):
+    conditions = []
+    for term in clause.text_terms:
+        conditions.extend(event_conditions(term))
+    for country_term in clause.country_terms:
+        term = normalized_like(country_term)
+        conditions.extend((
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+    return conditions
+
+
+def clause_result_context_conditions(clause: SearchClause, represented_country):
+    conditions = []
+    for term in clause.text_terms:
+        conditions.extend((
+            represented_country.ilike(term),
+            models.Result.discipline.ilike(term),
+            models.Result.category.ilike(term),
+            models.Result.format.ilike(term),
+            models.Result.round.ilike(term),
+        ))
+    conditions.extend(country_like_conditions(represented_country, clause.country_terms))
+    return conditions
+
+
+def has_matching_athlete(db: Session, clause: SearchClause) -> bool:
+    conditions = clause_athlete_conditions(clause)
+    if not conditions:
+        return False
+    return db.query(models.Athlete.id).filter(
+        models.Athlete.is_deleted.is_(False),
+        or_(*conditions),
+    ).first() is not None
+
+
+def has_matching_event(db: Session, clause: SearchClause) -> bool:
+    conditions = clause_event_conditions(clause)
+    if not conditions and not clause.years:
+        return False
+    query = db.query(models.Event.id).filter(models.Event.is_deleted.is_(False))
+    if conditions:
+        query = query.filter(or_(*conditions))
+    query = add_year_filter(query, clause.years)
+    return query.first() is not None
+
+
+def build_structured_result_filter_groups(db: Session, parts: SearchParts, represented_country):
+    groups = []
+    def append_group(conditions):
+        if conditions:
+            groups.append(conditions)
+
+    for clause in parts.clauses:
+        if clause.apparatus_codes and not clause.text_terms and not clause.country_terms and not clause.years:
+            continue
+
+        athlete_conditions = clause_athlete_conditions(clause)
+        event_conditions_for_clause = clause_event_conditions(clause)
+        context_conditions = clause_result_context_conditions(clause, represented_country)
+
+        athlete_match = has_matching_athlete(db, clause)
+        event_match = has_matching_event(db, clause)
+
+        if clause.years and event_conditions_for_clause:
+            append_group(event_conditions_for_clause + context_conditions)
+        elif athlete_match and not event_match:
+            append_group(athlete_conditions + context_conditions)
+        elif event_match and not athlete_match:
+            append_group(event_conditions_for_clause + context_conditions)
+        elif athlete_match and event_match:
+            append_group(athlete_conditions + event_conditions_for_clause + context_conditions)
+        else:
+            fallback_conditions = athlete_conditions + event_conditions_for_clause + context_conditions
+            append_group(fallback_conditions)
+    return groups
 
 
 def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
@@ -287,7 +483,7 @@ def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[sc
 
 def build_apparatus_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
     apparatus_query = parts.text_query or parts.query
-    matched_codes = matching_apparatus_codes(apparatus_query)
+    matched_codes = parts.apparatus_codes or matching_apparatus_codes(apparatus_query)
     if not apparatus_query and not matched_codes:
         return []
     query = (
@@ -325,28 +521,6 @@ def build_global_results(
     limit: int,
 ) -> list[schemas.GlobalSearchResult]:
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
-    result_conditions = []
-    for term in parts.text_terms:
-        result_conditions.extend((
-            *athlete_name_conditions(term),
-            *event_conditions(term),
-            represented_country.ilike(term),
-            models.Result.apparatus.ilike(term),
-            models.Result.discipline.ilike(term),
-            models.Result.category.ilike(term),
-            models.Result.format.ilike(term),
-            models.Result.round.ilike(term),
-        ))
-    result_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
-    for country_term in parts.country_terms:
-        term = normalized_like(country_term)
-        result_conditions.extend((
-            models.Event.location.ilike(term),
-            models.Event.venue.ilike(term),
-        ))
-    if apparatus_codes:
-        result_conditions.append(models.Result.apparatus.in_(apparatus_codes))
-
     query = (
         db.query(models.Result)
         .options(joinedload(models.Result.athlete), joinedload(models.Result.event))
@@ -359,8 +533,10 @@ def build_global_results(
         )
     )
     query = add_year_filter(query, parts.years)
-    if result_conditions:
-        query = query.filter(or_(*result_conditions))
+    if apparatus_codes:
+        query = query.filter(models.Result.apparatus.in_(apparatus_codes))
+    for filter_group in build_structured_result_filter_groups(db, parts, represented_country):
+        query = query.filter(or_(*filter_group))
     results = query.order_by(
         models.Event.year.desc(),
         models.Event.start_date.desc(),
@@ -400,7 +576,7 @@ def global_search(
     if not query:
         return schemas.GlobalSearchResponse(query="", total_count=0)
     parts = parse_search_query(query)
-    apparatus_codes = matching_apparatus_codes(parts.text_query or parts.query)
+    apparatus_codes = parts.apparatus_codes
 
     athlete_conditions = athlete_search_conditions(parts)
     athletes = []
