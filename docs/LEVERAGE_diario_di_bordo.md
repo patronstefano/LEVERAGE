@@ -2074,7 +2074,7 @@ Aggiornamento UI successivo:
 - il filtro di stato viene passato a `/events/calendar`, quindi funziona anche per eventi futuri o in corso privi di Results;
 - il pulsante `Today` / `Oggi` e stato spostato piu a destra, dopo la freccia di avanzamento mese, per renderlo meno compresso vicino al nome del mese;
 - nella pagina `Rankings`, MAG/WAG non sono piu due bottoni apparentemente multi-selezionabili: sono un controllo segmentato esclusivo, coerente con la scelta semantica di non mischiare classifiche MAG e WAG.
-- la `Ranking preview` della home e stata accorciata: carica 4 risultati invece di 6 e usa card piu compatte solo nella home, cosi il pannello resta visivamente coerente con l'anteprima calendario.
+- la `Ranking preview` della home e stata riallineata all'altezza dell'anteprima calendario: il riquadro segue la lunghezza del calendario e contiene la ranking completa in uno scroll interno, senza allungare la sezione home.
 - i filtri categoria del calendario ora usano una categoria effettiva calcolata anche dal nome della voce calendario: una riga come `Chinese Junior Championships`, anche se collegata a un Event piu ampio `junior and senior`, viene filtrata e restituita come `junior` e non compare piu con filtro `senior`.
 
 Correzione dati successiva:

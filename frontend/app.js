@@ -761,19 +761,21 @@ async function renderHome() {
     </section>
 
     <section class="section content-grid home-preview-grid">
-      <div class="panel">
+      <div class="panel home-calendar-panel" id="homeCalendarPanel">
         <div class="section-header">
           <h2>${t("recentEvents")}</h2>
           <a class="quiet-button" href="#/events">${t("viewAll")}</a>
         </div>
         <div id="homeEvents">${loadingState()}</div>
       </div>
-      <div class="panel home-ranking-panel">
+      <div class="panel home-ranking-panel" id="homeRankingPanel">
         <div class="section-header">
           <h2>${t("rankingPreview")}</h2>
           <a class="quiet-button" href="#/rankings">${t("viewAll")}</a>
         </div>
-        <div id="homeRankings">${loadingState()}</div>
+        <div class="home-ranking-scroll" id="homeRankingScroll">
+          <div id="homeRankings">${loadingState()}</div>
+        </div>
       </div>
     </section>
   `);
@@ -1189,13 +1191,14 @@ async function hydrateHome() {
   try {
     const [rankings] = await Promise.all([
       getJson("/analytics/rankings", {
-        ...rankingQueryParams(4),
+        ...rankingQueryParams(60),
       }),
       hydrateHomeCalendar(),
     ]);
     $("#statusDot").className = "status-dot online";
     $("#statusText").textContent = t("online");
     renderRankingList("#homeRankings", rankings);
+    syncHomePreviewHeights();
   } catch (error) {
     $("#statusDot").className = "status-dot offline";
     $("#statusText").textContent = t("offline");
@@ -1218,6 +1221,7 @@ async function hydrateHomeCalendar() {
     status: calendarStatusParam(),
   });
   renderHomeCalendar("#homeEvents", events, calendarDate);
+  requestAnimationFrame(syncHomePreviewHeights);
 }
 
 async function changeHomeCalendarMonth(delta) {
@@ -1231,6 +1235,29 @@ async function changeHomeCalendarMonth(delta) {
     $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
   }
+}
+
+function syncHomePreviewHeights() {
+  const calendarPanel = $("#homeCalendarPanel");
+  const rankingPanel = $("#homeRankingPanel");
+  const rankingScroll = $("#homeRankingScroll");
+  if (!calendarPanel || !rankingPanel || !rankingScroll) return;
+
+  rankingPanel.style.height = "";
+  rankingScroll.style.maxHeight = "";
+
+  const calendarHeight = calendarPanel.getBoundingClientRect().height;
+  if (!calendarHeight) return;
+
+  rankingPanel.style.height = `${Math.round(calendarHeight)}px`;
+  const panelStyle = getComputedStyle(rankingPanel);
+  const header = rankingPanel.querySelector(".section-header");
+  const headerStyle = header ? getComputedStyle(header) : null;
+  const headerHeight = header ? header.getBoundingClientRect().height : 0;
+  const headerMargin = headerStyle ? parseFloat(headerStyle.marginBottom) || 0 : 0;
+  const verticalPadding = (parseFloat(panelStyle.paddingTop) || 0) + (parseFloat(panelStyle.paddingBottom) || 0);
+  const scrollHeight = Math.max(140, calendarHeight - verticalPadding - headerHeight - headerMargin);
+  rankingScroll.style.maxHeight = `${Math.round(scrollHeight)}px`;
 }
 
 async function resetHomeCalendarMonth() {
@@ -1667,6 +1694,7 @@ function init() {
     }
   });
   window.addEventListener("hashchange", render);
+  window.addEventListener("resize", syncHomePreviewHeights);
   render();
 }
 
