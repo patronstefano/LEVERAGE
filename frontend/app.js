@@ -12,6 +12,7 @@ const state = {
   },
 };
 const CURRENT_YEAR = new Date().getFullYear();
+const TODAY = new Date();
 let searchAutocompleteRequestId = 0;
 
 const translations = {
@@ -81,6 +82,10 @@ const translations = {
     compareText: "Prepare athlete comparisons and long-term trends.",
     open: "Open",
     recentEvents: "Calendar preview",
+    currentMonth: "Current month",
+    today: "Today",
+    resultsAvailable: "Results available",
+    resultsMissing: "Results missing",
     rankingPreview: "Ranking preview",
     viewAll: "View all",
     athletesHeading: "Athletes",
@@ -178,6 +183,10 @@ const translations = {
     compareText: "Prepara confronti atleta e trend nel tempo.",
     open: "Apri",
     recentEvents: "Anteprima calendario",
+    currentMonth: "Mese corrente",
+    today: "Oggi",
+    resultsAvailable: "Risultati disponibili",
+    resultsMissing: "Risultati mancanti",
     rankingPreview: "Anteprima classifica",
     viewAll: "Vedi tutto",
     athletesHeading: "Atleti",
@@ -275,6 +284,10 @@ const translations = {
     compareText: "Prepara comparaciones y tendencias a largo plazo.",
     open: "Abrir",
     recentEvents: "Vista calendario",
+    currentMonth: "Mes actual",
+    today: "Hoy",
+    resultsAvailable: "Resultados disponibles",
+    resultsMissing: "Resultados pendientes",
     rankingPreview: "Vista rankings",
     viewAll: "Ver todo",
     athletesHeading: "Atletas",
@@ -372,6 +385,10 @@ const translations = {
     compareText: "Preparez comparaisons et tendances dans le temps.",
     open: "Ouvrir",
     recentEvents: "Apercu calendrier",
+    currentMonth: "Mois courant",
+    today: "Aujourd'hui",
+    resultsAvailable: "Resultats disponibles",
+    resultsMissing: "Resultats manquants",
     rankingPreview: "Apercu classement",
     viewAll: "Tout voir",
     athletesHeading: "Athletes",
@@ -526,6 +543,54 @@ function formatDateRange(item) {
   if (!start && !end) return "";
   if (start === end || !end) return start;
   return `${start} - ${end}`;
+}
+
+function parseLocalDate(value) {
+  if (!value) return null;
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day);
+}
+
+function formatLocalIso(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function addDays(date, days) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function startOfWeekMonday(date) {
+  const start = new Date(date);
+  const offset = (start.getDay() + 6) % 7;
+  start.setDate(start.getDate() - offset);
+  return start;
+}
+
+function sameDay(left, right) {
+  return left.getFullYear() === right.getFullYear() &&
+    left.getMonth() === right.getMonth() &&
+    left.getDate() === right.getDate();
+}
+
+function sameMonth(left, right) {
+  return left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth();
+}
+
+function monthLabel(date) {
+  return new Intl.DateTimeFormat(state.language, { month: "long", year: "numeric" }).format(date);
+}
+
+function weekdayLabels() {
+  const monday = new Date(2026, 0, 5);
+  return Array.from({ length: 7 }, (_, index) => (
+    new Intl.DateTimeFormat(state.language, { weekday: "short" }).format(addDays(monday, index))
+  ));
 }
 
 function sortCalendarItems(items) {
@@ -1008,10 +1073,14 @@ function bindFilterButtons() {
 
 async function hydrateHome() {
   try {
+    const monthStart = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
+    const monthEnd = new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 0);
     const [events, rankings] = await Promise.all([
       getJson("/events/calendar", {
-        year: CURRENT_YEAR,
-        limit: 80,
+        start_date: formatLocalIso(monthStart),
+        end_date: formatLocalIso(monthEnd),
+        as_of: formatLocalIso(TODAY),
+        limit: 1000,
         discipline: state.filters.discipline,
         category: state.filters.category,
       }),
@@ -1021,7 +1090,7 @@ async function hydrateHome() {
     ]);
     $("#statusDot").className = "status-dot online";
     $("#statusText").textContent = t("online");
-    renderEventList("#homeEvents", sortCalendarItems(events).slice(0, 6));
+    renderHomeCalendar("#homeEvents", events, TODAY);
     renderRankingList("#homeRankings", rankings);
   } catch (error) {
     $("#statusDot").className = "status-dot offline";
@@ -1046,6 +1115,130 @@ function renderEventList(selector, events) {
     ];
     return entityCard(event.name, [event.location, formatDateRange(event)].filter(Boolean).join(" · "), pills, `#/events/${event.id}`);
   }).join("")}</div>`;
+}
+
+function buildCalendarWeeks(monthDate) {
+  const firstOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+  const lastOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+  let cursor = startOfWeekMonday(firstOfMonth);
+  const weeks = [];
+  while (cursor <= lastOfMonth || weeks.length < 5) {
+    const days = Array.from({ length: 7 }, (_, index) => addDays(cursor, index));
+    weeks.push({
+      start: days[0],
+      end: days[6],
+      days,
+    });
+    cursor = addDays(cursor, 7);
+  }
+  return weeks;
+}
+
+function calendarStatusClass(event) {
+  if (event.calendar_status === "completed_with_results") return "has-results";
+  if (event.calendar_status === "completed_no_results") return "missing-results";
+  if (event.calendar_status === "ongoing") return "ongoing";
+  return "upcoming";
+}
+
+function buildWeekEventSegments(events, week) {
+  const segments = [];
+  events.forEach((event) => {
+    const eventStart = parseLocalDate(event.start_date) || new Date(event.year, 0, 1);
+    const eventEnd = parseLocalDate(event.end_date) || eventStart;
+    if (eventEnd < week.start || eventStart > week.end) return;
+
+    const segmentStart = eventStart < week.start ? week.start : eventStart;
+    const segmentEnd = eventEnd > week.end ? week.end : eventEnd;
+    segments.push({
+      event,
+      startColumn: ((segmentStart.getDay() + 6) % 7) + 1,
+      endColumn: ((segmentEnd.getDay() + 6) % 7) + 1,
+    });
+  });
+
+  segments.sort((left, right) => (
+    left.startColumn - right.startColumn ||
+    right.endColumn - left.endColumn ||
+    left.event.name.localeCompare(right.event.name)
+  ));
+
+  const lanes = [];
+  segments.forEach((segment) => {
+    let lane = lanes.findIndex((laneEnd) => segment.startColumn > laneEnd);
+    if (lane === -1) {
+      lane = lanes.length;
+      lanes.push(0);
+    }
+    lanes[lane] = segment.endColumn;
+    segment.lane = lane;
+  });
+  return segments;
+}
+
+function renderHomeCalendar(selector, events, monthDate = TODAY) {
+  const node = $(selector);
+  const weeks = buildCalendarWeeks(monthDate);
+  const labels = weekdayLabels();
+  const sortedEvents = sortCalendarItems(events).filter((event) => event.start_date || event.end_date);
+  const monthName = monthLabel(monthDate);
+
+  node.innerHTML = `
+    <div class="home-calendar" aria-label="${escapeHtml(`${t("currentMonth")} ${monthName}`)}">
+      <div class="calendar-toolbar">
+        <div>
+          <span class="calendar-kicker">${t("currentMonth")}</span>
+          <strong>${escapeHtml(monthName)}</strong>
+        </div>
+        <div class="calendar-legend" aria-label="${t("status")}">
+          <span><i class="legend-dot has-results"></i>${t("resultsAvailable")}</span>
+          <span><i class="legend-dot missing-results"></i>${t("resultsMissing")}</span>
+        </div>
+      </div>
+      <div class="calendar-weekdays">
+        ${labels.map((label) => `<span>${escapeHtml(label)}</span>`).join("")}
+      </div>
+      <div class="calendar-month-grid">
+        ${weeks.map((week) => {
+          const segments = buildWeekEventSegments(sortedEvents, week);
+          const visibleSegments = segments.filter((segment) => segment.lane < 4);
+          const hiddenCount = segments.length - visibleSegments.length;
+          const lanes = Math.max(1, Math.min(4, segments.length));
+          return `
+            <div class="calendar-week" style="--calendar-lanes: ${lanes};">
+              <div class="calendar-days">
+                ${week.days.map((day) => {
+                  const isCurrentMonth = sameMonth(day, monthDate);
+                  const isToday = sameDay(day, TODAY);
+                  return `
+                    <div class="calendar-day ${isCurrentMonth ? "" : "outside"} ${isToday ? "today" : ""}">
+                      <span class="calendar-day-number">${day.getDate()}</span>
+                      ${isToday ? `<span class="sr-only">${t("today")}</span>` : ""}
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+              <div class="calendar-bars">
+                ${visibleSegments.map((segment) => {
+                  const event = segment.event;
+                  const href = event.id ? `#/events/${event.id}` : "";
+                  const element = `
+                    <span class="calendar-event-label">${escapeHtml(event.name)}</span>
+                  `;
+                  const style = `grid-column: ${segment.startColumn} / ${segment.endColumn + 1}; grid-row: ${segment.lane + 1};`;
+                  const className = `calendar-event-bar ${calendarStatusClass(event)}`;
+                  return href
+                    ? `<a class="${className}" href="${href}" style="${style}" title="${escapeHtml(event.name)}">${element}</a>`
+                    : `<span class="${className}" style="${style}" title="${escapeHtml(event.name)}">${element}</span>`;
+                }).join("")}
+                ${hiddenCount > 0 ? `<span class="calendar-more" style="grid-column: 1 / 8; grid-row: 5;">+${hiddenCount}</span>` : ""}
+              </div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    </div>
+  `;
 }
 
 function renderRankingContext(payload) {
