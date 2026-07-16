@@ -1877,6 +1877,50 @@ Commit principali della fase UI iniziale:
 | `1c05880` | Riduzione del peso visivo del selettore lingua |
 | `ee3f42e` | Ritorno a selettore lingua compatto con popover |
 | `69cdee4` | Riduzione del selettore lingua a pill minimale |
+| `2d512ad` | Ricerca globale strutturata per intento e autocomplete ordinato |
+
+Aggiornamento del 16 luglio 2026: ricerca globale strutturata
+
+Problema emerso:
+
+La ricerca globale non deve limitarsi a sommare risultati eterogenei provenienti da atleti, eventi, paesi, attrezzi e risultati. Deve invece comportarsi come un punto di accesso unico al patrimonio dati di LEVERAGE, capace di interpretare indicazioni composte inserite dall'utente nella barra di ricerca.
+
+Esempio funzionale:
+
+`Stefano Patron, Serie A 2026, volteggio`
+
+La query viene interpretata come combinazione di tre intenzioni:
+
+- atleta: `Stefano Patron`;
+- evento/anno: `Serie A 2026`;
+- attrezzo: `volteggio`, normalizzato semanticamente in `VT`.
+
+Scelta progettuale adottata:
+
+- il backend divide la query in blocchi semantici quando l'utente usa virgole;
+- ciascun blocco viene analizzato per riconoscere testo libero, anni, paesi e alias degli attrezzi in inglese/italiano;
+- i risultati vengono filtrati per intersezione logica tra i blocchi riconosciuti, evitando che una ricerca composta diventi una semplice somma disordinata di risultati;
+- gli alias attrezzo come `volteggio`, `balance`, `trave`, `anelli`, `sbarra`, `parallele`, `corpo libero` vengono trattati come filtri sportivi e non come testo generico;
+- il frontend ordina i suggerimenti in modo piu narrativo: prima la scheda entita principale, poi i risultati collegati, poi eventuali filtri/facet.
+
+Motivazione semantica:
+
+Questa scelta avvicina LEVERAGE al comportamento atteso da una piattaforma dati sportiva: l'utente non deve conoscere ID interni o parametri tecnici, ma puo scrivere una richiesta naturale e progressivamente precisa. La ricerca globale diventa quindi l'unione guidata di ricerca atleti, ricerca eventi e ricerca risultati.
+
+Impatto funzionale:
+
+- cercando un atleta, il primo suggerimento resta la scheda atleta;
+- subito sotto compaiono i punteggi collegati all'atleta;
+- cercando un evento, il primo suggerimento resta la scheda evento;
+- cercando query composte, i risultati vengono filtrati su atleta, evento/anno e attrezzo quando questi elementi sono riconosciuti;
+- la ricerca `Bundesliga 2` continua a riconoscere correttamente `2nd Bundesliga`;
+- la ricerca per anno e paese continua a restituire eventi, atleti e risultati coerenti.
+
+Verifiche:
+
+- aggiunto test automatico sull'esempio `Stefano Patron, Serie A 2026, volteggio`;
+- il test verifica che venga restituito solo il risultato `VT` dell'atleta corretto nell'evento corretto, escludendo risultati dello stesso atleta su altri attrezzi, risultati di altri atleti nello stesso evento e risultati dello stesso atleta in altri eventi;
+- suite API verificata con `114 passed`.
 
 Decisione metodologica per la tesi:
 
