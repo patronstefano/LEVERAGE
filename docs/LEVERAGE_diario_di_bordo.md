@@ -2036,13 +2036,16 @@ Scelta progettuale adottata:
 - il giorno corrente viene evidenziato direttamente nel numero del giorno;
 - gli eventi senza date precise non vengono posizionati nella griglia della home, per evitare una rappresentazione giornaliera falsa;
 - il mese visualizzato puo essere cambiato dalla home con frecce precedente/successivo collocate accanto al nome del mese;
-- il cambio mese aggiorna lo stato locale della home e ricarica da `/events/calendar` solo il range del nuovo mese, mantenendo indipendente la preview ranking.
+- il cambio mese aggiorna lo stato locale della home e ricarica da `/events/calendar` solo il range del nuovo mese, mantenendo indipendente la preview ranking;
+- il giorno corrente espone una micro-etichetta localizzata (`Today`, `Oggi`, `Hoy`, `Aujourd'hui`) al passaggio del mouse e al focus da tastiera.
 
 Motivazione UI:
 
 Il calendario e una delle viste centrali di LEVERAGE: non deve sembrare una lista secondaria, ma un vero strumento di orientamento nella stagione. La home mantiene comunque una versione compatta, mentre una futura pagina `Events/Calendar` potra espandere la stessa logica con navigazione mese/anno, filtri piu ricchi e viste admin.
 
 La navigazione mese-per-mese anticipa il comportamento della futura pagina calendario completa senza appesantire la home: l'utente puo esplorare rapidamente eventi passati e futuri, mentre la UI resta minimal e coerente con i controlli arrotondati in stile app scelti per LEVERAGE.
+
+La micro-etichetta sul giorno corrente rende piu leggibile il significato dell'evidenziazione blu senza aggiungere testo fisso nella griglia, mantenendo la schermata pulita.
 
 Verifiche:
 
@@ -2052,6 +2055,7 @@ Verifiche:
 - runtime JavaScript locale non disponibile (`node`, `deno` e `bun` assenti), quindi la validazione sintattica JS e stata sostituita da ispezione del diff e verifica via preview servita;
 - modifica salvata nel commit `30817a3`.
 - navigazione mese calendario salvata nel commit `2abbea1`;
+- tooltip localizzato del giorno corrente salvato nel commit `f1166ce`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
