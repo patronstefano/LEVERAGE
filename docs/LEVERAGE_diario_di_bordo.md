@@ -1822,6 +1822,7 @@ Funzionalita frontend iniziali implementate:
 - aggiunta della pagina frontend `Search`, con risultati raggruppati per atleti, eventi, nazioni, attrezzi e risultati, mantenendo layout minimale e coerente con la home;
 - rifinitura dei bordi dei componenti dati: card, pannelli, suggerimenti di ricerca e pill dei risultati sono stati allineati a raggi piu controllati, evitando l'effetto eccessivamente "a pillola" nei calendari, nelle classifiche e nelle schede risultato;
 - separazione semantica delle classifiche globali: le ranking complessive richiedono una disciplina esplicita `MAG` o `WAG` e applicano un contesto di ciclo di punteggio, evitando confronti impliciti tra GAM/GAF o tra codici di punteggio diversi;
+- trasformazione dell'anteprima calendario della home in una vera griglia mensile interattiva: gli eventi datati vengono visualizzati come barre multi-day sulle settimane, con corsie separate per gestire sovrapposizioni e indicatore del giorno corrente;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -1885,6 +1886,7 @@ Commit principali della fase UI iniziale:
 | `9ef341b` | Rifinitura raggi visivi di card e pill dati frontend |
 | `fb88ea7` | Separazione ranking globali per disciplina e ciclo di punteggio |
 | `7e877c5` | Warning ranking calcolati sul contesto completo anche con risultati limitati |
+| `30817a3` | Calendario mensile interattivo nella home |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -2016,6 +2018,34 @@ Verifiche:
 - frontend locale verificato con risposta HTTP `200`;
 - modifica salvata nel commit `fb88ea7`.
 - correzione successiva salvata nel commit `7e877c5`: i warning metodologici restano calcolati sul contesto completo anche con `limit` basso.
+
+Aggiornamento del 16 luglio 2026: calendario mensile interattivo nella home
+
+Problema emerso:
+
+L'anteprima calendario della home era ancora una lista di eventi. Questo rendeva meno immediata la lettura temporale delle competizioni, soprattutto per eventi multi-day e per piu eventi sovrapposti nello stesso periodo.
+
+Scelta progettuale adottata:
+
+- la home carica il mese corrente tramite `/events/calendar`, usando `start_date`, `end_date` e `as_of`;
+- l'anteprima viene renderizzata come griglia mensile con settimane da lunedi a domenica;
+- gli eventi con date precise vengono visualizzati come barre che attraversano le colonne dei giorni interessati;
+- gli eventi sovrapposti vengono distribuiti su corsie separate, fino a quattro corsie visibili per settimana;
+- se una settimana contiene piu eventi di quelli mostrabili, viene visualizzato un indicatore compatto `+N`;
+- il giorno corrente viene evidenziato direttamente nel numero del giorno;
+- gli eventi senza date precise non vengono posizionati nella griglia della home, per evitare una rappresentazione giornaliera falsa.
+
+Motivazione UI:
+
+Il calendario e una delle viste centrali di LEVERAGE: non deve sembrare una lista secondaria, ma un vero strumento di orientamento nella stagione. La home mantiene comunque una versione compatta, mentre una futura pagina `Events/Calendar` potra espandere la stessa logica con navigazione mese/anno, filtri piu ricchi e viste admin.
+
+Verifiche:
+
+- endpoint calendario mese corrente verificato con risposta HTTP `200`;
+- frontend locale verificato con risposta HTTP `200`;
+- controllo `git diff --check` pulito;
+- runtime JavaScript locale non disponibile (`node`, `deno` e `bun` assenti), quindi la validazione sintattica JS e stata sostituita da ispezione del diff e verifica via preview servita;
+- modifica salvata nel commit `30817a3`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
 
