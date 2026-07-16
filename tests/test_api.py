@@ -4303,9 +4303,28 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
         source="gymternet_calendar",
         source_row=99,
     )
+    broad_event = models.Event(
+        name="Chinese Championships MT",
+        year=2026,
+        discipline=models.EventDisciplineEnum.MAG_AND_WAG,
+        category=models.EventCategoryEnum.JUNIOR_AND_SENIOR,
+        level=models.LevelEnum.NATIONAL_EVENT,
+        start_date=date(2026, 5, 14),
+        end_date=date(2026, 5, 20),
+    )
+    linked_junior_entry = models.EventCalendarEntry(
+        event=broad_event,
+        name="Chinese Junior Championships",
+        year=2026,
+        start_date=date(2026, 11, 16),
+        end_date=date(2026, 11, 20),
+        discipline=models.EventDisciplineEnum.MAG_AND_WAG,
+        source="gymternet_calendar",
+        source_row=100,
+    )
     db = SessionLocal()
     try:
-        db.add_all([undated_event, calendar_only_entry])
+        db.add_all([undated_event, calendar_only_entry, broad_event, linked_junior_entry])
         db.commit()
     finally:
         db.close()
@@ -4322,6 +4341,20 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
     assert calendar["Future Calendar Only Cup"]["discipline"] == "WAG"
     assert calendar["Future Calendar Only Cup"]["has_results"] is False
     assert calendar["Future Calendar Only Cup"]["calendar_status"] == "upcoming"
+
+    junior_response = client.get(
+        "/events/calendar?start_date=2026-11-01&end_date=2026-11-30&as_of=2026-07-16&category=junior"
+    )
+    assert junior_response.status_code == 200
+    junior_calendar = {event["name"]: event for event in junior_response.json()}
+    assert junior_calendar["Chinese Junior Championships"]["category"] == "junior"
+
+    senior_response = client.get(
+        "/events/calendar?start_date=2026-11-01&end_date=2026-11-30&as_of=2026-07-16&category=senior"
+    )
+    assert senior_response.status_code == 200
+    senior_names = {event["name"] for event in senior_response.json()}
+    assert "Chinese Junior Championships" not in senior_names
 
 
 def test_admin_event_result_reminders_are_admin_only_and_create_notifications_once():

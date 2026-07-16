@@ -14,6 +14,8 @@ from app.database import get_db
 from app.event_calendar import (
     build_calendar_entry_item,
     build_event_calendar_item,
+    effective_calendar_entry_category,
+    effective_event_calendar_category,
     event_end_for_calendar,
     event_start_for_calendar,
     get_event_calendar_status,
@@ -113,9 +115,7 @@ def calendar_entry_discipline(entry: models.EventCalendarEntry) -> models.EventD
 
 
 def calendar_entry_category(entry: models.EventCalendarEntry) -> models.EventCategoryEnum:
-    if entry.event:
-        return entry.event.category
-    return models.EventCategoryEnum.JUNIOR_AND_SENIOR
+    return effective_calendar_entry_category(entry)
 
 
 def calendar_entry_level(entry: models.EventCalendarEntry) -> models.LevelEnum:
@@ -487,6 +487,9 @@ def get_events_calendar(
     calendar_items = []
     direct_event_keys = set()
     for event in events:
+        if category_filters and effective_event_calendar_category(event) not in category_filters:
+            continue
+
         has_precise_dates = bool(event.start_date or event.end_date)
         if not has_precise_dates and (start_date or end_date or event.id in entry_event_ids):
             continue

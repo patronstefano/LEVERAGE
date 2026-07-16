@@ -42,6 +42,30 @@ def get_event_calendar_status(
     )
 
 
+def infer_calendar_category_from_name(name: str) -> Optional[models.EventCategoryEnum]:
+    lower_name = name.lower()
+    has_junior = "junior" in lower_name or "youth" in lower_name
+    has_senior = "senior" in lower_name
+    if has_junior and not has_senior:
+        return models.EventCategoryEnum.JUNIOR
+    if has_senior and not has_junior:
+        return models.EventCategoryEnum.SENIOR
+    return None
+
+
+def effective_event_calendar_category(event: models.Event) -> models.EventCategoryEnum:
+    return infer_calendar_category_from_name(event.name) or event.category
+
+
+def effective_calendar_entry_category(entry: models.EventCalendarEntry) -> models.EventCategoryEnum:
+    explicit_category = infer_calendar_category_from_name(entry.name)
+    if explicit_category:
+        return explicit_category
+    if entry.event:
+        return effective_event_calendar_category(entry.event)
+    return models.EventCategoryEnum.JUNIOR_AND_SENIOR
+
+
 def build_event_calendar_item(
     event: models.Event,
     result_count: int,
@@ -56,7 +80,7 @@ def build_event_calendar_item(
         "end_date": event.end_date,
         "year": event.year,
         "discipline": event.discipline.value,
-        "category": event.category.value,
+        "category": effective_event_calendar_category(event).value,
         "level": event.level.value,
         "image_url": event.image_url,
         "world_gymnastics_event_id": event.world_gymnastics_event_id,
@@ -91,7 +115,7 @@ def build_calendar_entry_item(
         "end_date": entry.end_date,
         "year": entry.year,
         "discipline": (entry.discipline or (event.discipline if event else models.EventDisciplineEnum.MAG_AND_WAG)).value,
-        "category": (event.category if event else models.EventCategoryEnum.JUNIOR_AND_SENIOR).value,
+        "category": effective_calendar_entry_category(entry).value,
         "level": (event.level if event else models.LevelEnum.INTERNATIONAL_EVENT).value,
         "image_url": event.image_url if event else None,
         "world_gymnastics_event_id": event.world_gymnastics_event_id if event else None,

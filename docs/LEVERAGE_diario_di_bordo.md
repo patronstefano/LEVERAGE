@@ -2075,6 +2075,7 @@ Aggiornamento UI successivo:
 - il pulsante `Today` / `Oggi` e stato spostato piu a destra, dopo la freccia di avanzamento mese, per renderlo meno compresso vicino al nome del mese;
 - nella pagina `Rankings`, MAG/WAG non sono piu due bottoni apparentemente multi-selezionabili: sono un controllo segmentato esclusivo, coerente con la scelta semantica di non mischiare classifiche MAG e WAG.
 - la `Ranking preview` della home e stata accorciata: carica 4 risultati invece di 6 e usa card piu compatte solo nella home, cosi il pannello resta visivamente coerente con l'anteprima calendario.
+- i filtri categoria del calendario ora usano una categoria effettiva calcolata anche dal nome della voce calendario: una riga come `Chinese Junior Championships`, anche se collegata a un Event piu ampio `junior and senior`, viene filtrata e restituita come `junior` e non compare piu con filtro `senior`.
 
 Correzione dati successiva:
 
@@ -2106,6 +2107,7 @@ Verifiche:
 - filtri calendario multi-selezione e pulsante ritorno a oggi salvati nel commit `2b9bd88`;
 - materializzazione eventi futuri Calendar 2026 eseguita con report `calendar_2026_future_materialization_commit_summary.json`;
 - correzione semantica `Youth = junior` verificata sui dati locali e tracciata nel report `youth_category_correction_20260716.json`;
+- filtro calendario `senior` verificato sul caso `Chinese Junior Championships`: la voce non compare piu tra gli eventi senior e resta disponibile nel filtro `junior`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
