@@ -915,6 +915,43 @@ button {
   padding: 22px;
 }
 
+.home-ranking-panel {
+  align-self: start;
+}
+
+.home-ranking-panel .section-header {
+  margin-bottom: 12px;
+}
+
+.home-ranking-panel .entity-list {
+  gap: 8px;
+}
+
+.home-ranking-panel .entity-card {
+  gap: 6px;
+  padding: 12px;
+}
+
+.home-ranking-panel .entity-card h3 {
+  font-size: 15px;
+}
+
+.home-ranking-panel .entity-card p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.home-ranking-panel .pill-row {
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.home-ranking-panel .pill {
+  padding: 3px 6px;
+  font-size: 10px;
+}
+
 .search-results {
   display: grid;
   gap: 16px;

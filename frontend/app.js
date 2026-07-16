@@ -768,7 +768,7 @@ async function renderHome() {
         </div>
         <div id="homeEvents">${loadingState()}</div>
       </div>
-      <div class="panel">
+      <div class="panel home-ranking-panel">
         <div class="section-header">
           <h2>${t("rankingPreview")}</h2>
           <a class="quiet-button" href="#/rankings">${t("viewAll")}</a>
@@ -1189,7 +1189,7 @@ async function hydrateHome() {
   try {
     const [rankings] = await Promise.all([
       getJson("/analytics/rankings", {
-        ...rankingQueryParams(6),
+        ...rankingQueryParams(4),
       }),
       hydrateHomeCalendar(),
     ]);
