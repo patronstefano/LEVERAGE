@@ -913,6 +913,47 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert apparatus_search.json()["apparatuses"][0]["value"] == "BB"
     assert apparatus_search.json()["results"][0]["apparatus"] == "BB"
 
+    italian_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Mario",
+            "last_name": "Rossi",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+    serie_a_event = client.post(
+        "/events/",
+        json={
+            "name": "Serie A",
+            "location": "Naples, Italy",
+            "year": 2026,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "National Event",
+        },
+        headers=headers,
+    ).json()
+
+    event_year_search = client.get("/search", params={"q": "Serie A 2026", "limit": 5})
+    assert event_year_search.status_code == 200
+    assert any(event["id"] == serie_a_event["id"] for event in event_year_search.json()["events"])
+
+    year_only_search = client.get("/search", params={"q": "2026", "limit": 5})
+    assert year_only_search.status_code == 200
+    assert any(event["id"] == serie_a_event["id"] for event in year_only_search.json()["events"])
+
+    country_name_search = client.get("/search", params={"q": "Italy", "limit": 5})
+    assert country_name_search.status_code == 200
+    assert any(athlete["id"] == italian_athlete["id"] for athlete in country_name_search.json()["athletes"])
+    assert any(event["id"] == serie_a_event["id"] for event in country_name_search.json()["events"])
+
+    country_code_search = client.get("/search", params={"q": "ITA", "limit": 5})
+    assert country_code_search.status_code == 200
+    assert any(athlete["id"] == italian_athlete["id"] for athlete in country_code_search.json()["athletes"])
+    assert any(event["id"] == serie_a_event["id"] for event in country_code_search.json()["events"])
+
 
 def test_admin_can_audit_existing_result_duplicate_groups():
     client.post("/auth/register", json={"email": "duplicate_audit_admin@example.com", "password": TEST_PASSWORD})

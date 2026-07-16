@@ -1,4 +1,7 @@
+import re
 from collections import defaultdict
+from dataclasses import dataclass
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import func, or_
@@ -6,6 +9,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.database import get_db
+from app.gymternet_import import COUNTRY_CODES, normalize_country_lookup_key
 from app.result_ranking import result_represented_country
 
 router = APIRouter()
@@ -22,10 +26,78 @@ APPARATUS_LABELS = {
     "VT": "Vault",
     "VT AVG": "Vault Average",
 }
+YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
+
+
+@dataclass(frozen=True)
+class SearchParts:
+    query: str
+    text_query: str
+    text_term: Optional[str]
+    years: set[int]
+    country_codes: set[str]
+    country_terms: set[str]
 
 
 def normalized_like(query: str) -> str:
     return f"%{query.strip().lower()}%"
+
+
+def compact_whitespace(value: str) -> str:
+    return " ".join(value.split())
+
+
+def country_aliases_by_code() -> dict[str, set[str]]:
+    aliases: dict[str, set[str]] = defaultdict(set)
+    for alias, code in COUNTRY_CODES.items():
+        aliases[code].add(alias)
+    return aliases
+
+
+COUNTRY_ALIASES_BY_CODE = country_aliases_by_code()
+
+
+def resolve_country_codes(query: str) -> set[str]:
+    lookup_values = {
+        query.strip().lower(),
+        normalize_country_lookup_key(query),
+    }
+    normalized_query = f" {normalize_country_lookup_key(query)} "
+    codes = {
+        COUNTRY_CODES[value]
+        for value in lookup_values
+        if value and value in COUNTRY_CODES
+    }
+    for alias, code in COUNTRY_CODES.items():
+        normalized_alias = normalize_country_lookup_key(alias)
+        if normalized_alias and f" {normalized_alias} " in normalized_query:
+            codes.add(code)
+    return codes
+
+
+def resolve_country_terms(country_codes: set[str]) -> set[str]:
+    terms = set(country_codes)
+    for code in country_codes:
+        terms.update(COUNTRY_ALIASES_BY_CODE.get(code, set()))
+    return {term for term in terms if term}
+
+
+def parse_search_query(query: str) -> SearchParts:
+    years = {int(match) for match in YEAR_PATTERN.findall(query)}
+    text_query = compact_whitespace(YEAR_PATTERN.sub(" ", query))
+    country_codes = resolve_country_codes(query) | resolve_country_codes(text_query)
+    return SearchParts(
+        query=query,
+        text_query=text_query,
+        text_term=normalized_like(text_query) if text_query else None,
+        years=years,
+        country_codes=country_codes,
+        country_terms=resolve_country_terms(country_codes),
+    )
+
+
+def country_like_conditions(column, country_terms: set[str]):
+    return [column.ilike(normalized_like(term)) for term in country_terms]
 
 
 def athlete_name_conditions(term: str):
@@ -91,14 +163,48 @@ def event_result_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
     }
 
 
-def build_country_facets(db: Session, term: str, limit: int) -> list[schemas.GlobalSearchFacet]:
+def athlete_search_conditions(parts: SearchParts):
+    conditions = []
+    if parts.text_term:
+        conditions.extend(athlete_name_conditions(parts.text_term))
+    conditions.extend(country_like_conditions(models.Athlete.country, parts.country_terms))
+    return conditions
+
+
+def event_search_conditions(parts: SearchParts):
+    conditions = []
+    if parts.text_term:
+        conditions.extend(event_conditions(parts.text_term))
+    for country_term in parts.country_terms:
+        term = normalized_like(country_term)
+        conditions.extend((
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+    return conditions
+
+
+def add_year_filter(query, years: set[int]):
+    if years:
+        return query.filter(models.Event.year.in_(years))
+    return query
+
+
+def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
+    if not parts.text_term and not parts.country_terms:
+        return []
     countries: dict[str, dict[str, int]] = defaultdict(lambda: {"athlete_count": 0, "result_count": 0})
+    athlete_country_conditions = []
+    if parts.text_term:
+        athlete_country_conditions.append(models.Athlete.country.ilike(parts.text_term))
+    athlete_country_conditions.extend(country_like_conditions(models.Athlete.country, parts.country_terms))
     athlete_rows = (
         db.query(models.Athlete.country, func.count(models.Athlete.id))
         .filter(
             models.Athlete.is_deleted.is_(False),
             models.Athlete.country.is_not(None),
-            models.Athlete.country.ilike(term),
+            or_(*athlete_country_conditions),
         )
         .group_by(models.Athlete.country)
         .all()
@@ -108,7 +214,11 @@ def build_country_facets(db: Session, term: str, limit: int) -> list[schemas.Glo
             countries[country]["athlete_count"] += count
 
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
-    result_rows = (
+    result_country_conditions = []
+    if parts.text_term:
+        result_country_conditions.append(represented_country.ilike(parts.text_term))
+    result_country_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
+    result_query = (
         db.query(represented_country.label("country"), func.count(models.Result.id))
         .join(models.Athlete)
         .join(models.Event)
@@ -117,11 +227,11 @@ def build_country_facets(db: Session, term: str, limit: int) -> list[schemas.Glo
             models.Athlete.is_deleted.is_(False),
             models.Event.is_deleted.is_(False),
             represented_country.is_not(None),
-            represented_country.ilike(term),
+            or_(*result_country_conditions),
         )
-        .group_by(represented_country)
-        .all()
     )
+    result_query = add_year_filter(result_query, parts.years)
+    result_rows = result_query.group_by(represented_country).all()
     for country, count in result_rows:
         if country:
             countries[country]["result_count"] += count
@@ -140,9 +250,12 @@ def build_country_facets(db: Session, term: str, limit: int) -> list[schemas.Glo
     ]
 
 
-def build_apparatus_facets(db: Session, query: str, limit: int) -> list[schemas.GlobalSearchFacet]:
-    matched_codes = matching_apparatus_codes(query)
-    rows = (
+def build_apparatus_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
+    apparatus_query = parts.text_query or parts.query
+    matched_codes = matching_apparatus_codes(apparatus_query)
+    if not apparatus_query and not matched_codes:
+        return []
+    query = (
         db.query(models.Result.apparatus, func.count(models.Result.id))
         .join(models.Athlete)
         .join(models.Event)
@@ -152,15 +265,16 @@ def build_apparatus_facets(db: Session, query: str, limit: int) -> list[schemas.
             models.Event.is_deleted.is_(False),
             models.Result.apparatus.is_not(None),
         )
-        .group_by(models.Result.apparatus)
-        .all()
     )
+    query = add_year_filter(query, parts.years)
+    rows = query.group_by(models.Result.apparatus).all()
     facets = []
+    normalized_apparatus_query = apparatus_query.strip().lower()
     for apparatus, count in rows:
         if not apparatus:
             continue
         label = APPARATUS_LABELS.get(apparatus, apparatus)
-        if apparatus in matched_codes or query.strip().lower() in apparatus.lower() or query.strip().lower() in label.lower():
+        if apparatus in matched_codes or normalized_apparatus_query in apparatus.lower() or normalized_apparatus_query in label.lower():
             facets.append(schemas.GlobalSearchFacet(
                 value=apparatus,
                 label=f"{apparatus} - {label}" if label != apparatus else apparatus,
@@ -171,25 +285,34 @@ def build_apparatus_facets(db: Session, query: str, limit: int) -> list[schemas.
 
 def build_global_results(
     db: Session,
-    term: str,
+    parts: SearchParts,
     apparatus_codes: set[str],
     limit: int,
 ) -> list[schemas.GlobalSearchResult]:
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
-    result_conditions = [
-        *athlete_name_conditions(term),
-        *event_conditions(term),
-        represented_country.ilike(term),
-        models.Result.apparatus.ilike(term),
-        models.Result.discipline.ilike(term),
-        models.Result.category.ilike(term),
-        models.Result.format.ilike(term),
-        models.Result.round.ilike(term),
-    ]
+    result_conditions = []
+    if parts.text_term:
+        result_conditions.extend((
+            *athlete_name_conditions(parts.text_term),
+            *event_conditions(parts.text_term),
+            represented_country.ilike(parts.text_term),
+            models.Result.apparatus.ilike(parts.text_term),
+            models.Result.discipline.ilike(parts.text_term),
+            models.Result.category.ilike(parts.text_term),
+            models.Result.format.ilike(parts.text_term),
+            models.Result.round.ilike(parts.text_term),
+        ))
+    result_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
+    for country_term in parts.country_terms:
+        term = normalized_like(country_term)
+        result_conditions.extend((
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
     if apparatus_codes:
         result_conditions.append(models.Result.apparatus.in_(apparatus_codes))
 
-    results = (
+    query = (
         db.query(models.Result)
         .options(joinedload(models.Result.athlete), joinedload(models.Result.event))
         .join(models.Athlete)
@@ -198,12 +321,17 @@ def build_global_results(
             models.Result.is_deleted.is_(False),
             models.Athlete.is_deleted.is_(False),
             models.Event.is_deleted.is_(False),
-            or_(*result_conditions),
         )
-        .order_by(models.Event.year.desc(), models.Event.start_date.desc(), models.Result.score.desc(), models.Result.id.desc())
-        .limit(limit)
-        .all()
     )
+    query = add_year_filter(query, parts.years)
+    if result_conditions:
+        query = query.filter(or_(*result_conditions))
+    results = query.order_by(
+        models.Event.year.desc(),
+        models.Event.start_date.desc(),
+        models.Result.score.desc(),
+        models.Result.id.desc(),
+    ).limit(limit).all()
 
     return [
         schemas.GlobalSearchResult(
@@ -236,36 +364,41 @@ def global_search(
     query = q.strip()
     if not query:
         return schemas.GlobalSearchResponse(query="", total_count=0)
-    term = normalized_like(query)
-    apparatus_codes = matching_apparatus_codes(query)
+    parts = parse_search_query(query)
+    apparatus_codes = matching_apparatus_codes(parts.text_query or parts.query)
 
-    athletes = (
-        db.query(models.Athlete)
-        .filter(
-            models.Athlete.is_deleted.is_(False),
-            or_(*athlete_name_conditions(term)),
+    athlete_conditions = athlete_search_conditions(parts)
+    athletes = []
+    if athlete_conditions:
+        athletes = (
+            db.query(models.Athlete)
+            .filter(
+                models.Athlete.is_deleted.is_(False),
+                or_(*athlete_conditions),
+            )
+            .order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id)
+            .limit(limit)
+            .all()
         )
-        .order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id)
-        .limit(limit)
-        .all()
-    )
     athlete_counts = athlete_result_counts(db, [athlete.id for athlete in athletes])
 
+    event_conditions_for_query = event_search_conditions(parts)
+    events_query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
+    events_query = add_year_filter(events_query, parts.years)
+    if event_conditions_for_query:
+        events_query = events_query.filter(or_(*event_conditions_for_query))
     events = (
-        db.query(models.Event)
-        .filter(
-            models.Event.is_deleted.is_(False),
-            or_(*event_conditions(term)),
-        )
-        .order_by(models.Event.year.desc(), models.Event.start_date.desc(), models.Event.name, models.Event.id)
+        events_query.order_by(models.Event.year.desc(), models.Event.start_date.desc(), models.Event.name, models.Event.id)
         .limit(limit)
         .all()
+        if event_conditions_for_query or parts.years
+        else []
     )
     event_counts = event_result_counts(db, [event.id for event in events])
 
-    countries = build_country_facets(db, term, limit)
-    apparatuses = build_apparatus_facets(db, query, limit)
-    results = build_global_results(db, term, apparatus_codes, limit)
+    countries = build_country_facets(db, parts, limit)
+    apparatuses = build_apparatus_facets(db, parts, limit)
+    results = build_global_results(db, parts, apparatus_codes, limit)
 
     athlete_items = [
         schemas.GlobalSearchAthlete(
