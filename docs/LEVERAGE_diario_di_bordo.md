@@ -1824,6 +1824,7 @@ Funzionalita frontend iniziali implementate:
 - separazione semantica delle classifiche globali: le ranking complessive richiedono una disciplina esplicita `MAG` o `WAG` e applicano un contesto di ciclo di punteggio, evitando confronti impliciti tra GAM/GAF o tra codici di punteggio diversi;
 - trasformazione dell'anteprima calendario della home in una vera griglia mensile interattiva: gli eventi datati vengono visualizzati come barre multi-day sulle settimane, con corsie separate per gestire sovrapposizioni e indicatore del giorno corrente;
 - aggiunta della navigazione mese precedente/successivo direttamente nell'anteprima calendario della home, con frecce accanto al nome del mese e ricarica mirata del range calendario selezionato;
+- ribilanciamento della sezione home `Calendar preview` / `Ranking preview`: il calendario riceve piu spazio orizzontale, mentre la classifica resta una preview piu compatta;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -2037,7 +2038,8 @@ Scelta progettuale adottata:
 - gli eventi senza date precise non vengono posizionati nella griglia della home, per evitare una rappresentazione giornaliera falsa;
 - il mese visualizzato puo essere cambiato dalla home con frecce precedente/successivo collocate accanto al nome del mese;
 - il cambio mese aggiorna lo stato locale della home e ricarica da `/events/calendar` solo il range del nuovo mese, mantenendo indipendente la preview ranking;
-- il giorno corrente espone una micro-etichetta localizzata (`Today`, `Oggi`, `Hoy`, `Aujourd'hui`) al passaggio del mouse e al focus da tastiera.
+- il giorno corrente espone una micro-etichetta localizzata (`Today`, `Oggi`, `Hoy`, `Aujourd'hui`) al passaggio del mouse e al focus da tastiera;
+- la griglia home dedicata a calendario e ranking usa una proporzione specifica, separata dalla `content-grid` generale, per dare al calendario il ruolo visivo principale senza alterare le altre pagine.
 
 Motivazione UI:
 
@@ -2046,6 +2048,8 @@ Il calendario e una delle viste centrali di LEVERAGE: non deve sembrare una list
 La navigazione mese-per-mese anticipa il comportamento della futura pagina calendario completa senza appesantire la home: l'utente puo esplorare rapidamente eventi passati e futuri, mentre la UI resta minimal e coerente con i controlli arrotondati in stile app scelti per LEVERAGE.
 
 La micro-etichetta sul giorno corrente rende piu leggibile il significato dell'evidenziazione blu senza aggiungere testo fisso nella griglia, mantenendo la schermata pulita.
+
+Il ribilanciamento calendario/ranking risponde alla nuova gerarchia della home: il calendario non e piu una semplice lista di eventi ma una vista interattiva, quindi richiede piu ampiezza per mostrare sovrapposizioni e barre multi-day; la ranking resta utile come anteprima sportiva, ma non deve competere visivamente con il calendario.
 
 Verifiche:
 
@@ -2056,6 +2060,7 @@ Verifiche:
 - modifica salvata nel commit `30817a3`.
 - navigazione mese calendario salvata nel commit `2abbea1`;
 - tooltip localizzato del giorno corrente salvato nel commit `f1166ce`;
+- ribilanciamento layout calendario/ranking salvato nel commit `d7d603e`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
