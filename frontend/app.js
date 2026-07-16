@@ -732,7 +732,7 @@ async function renderHome() {
       </div>
     </section>
 
-    <section class="section content-grid">
+    <section class="section content-grid home-preview-grid">
       <div class="panel">
         <div class="section-header">
           <h2>${t("recentEvents")}</h2>

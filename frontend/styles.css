@@ -812,6 +812,10 @@ button {
   grid-template-columns: 1.1fr 0.9fr;
 }
 
+.home-preview-grid {
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.65fr);
+}
+
 .feature-card,
 .entity-card,
 .panel,
