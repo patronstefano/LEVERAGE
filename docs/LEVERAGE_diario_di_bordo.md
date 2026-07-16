@@ -1884,6 +1884,7 @@ Commit principali della fase UI iniziale:
 | `a66858e` | Correzione outlier punteggi e protezione import Gymternet |
 | `9ef341b` | Rifinitura raggi visivi di card e pill dati frontend |
 | `fb88ea7` | Separazione ranking globali per disciplina e ciclo di punteggio |
+| `7e877c5` | Warning ranking calcolati sul contesto completo anche con risultati limitati |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -1992,6 +1993,7 @@ Scelta progettuale adottata:
 - gli endpoint globali `/analytics/rankings` e `/results/analytics/rankings` richiedono ora `discipline=MAG` o `discipline=WAG`, salvo uso esplicito di `allow_mixed_disciplines=true`;
 - se l'utente non imposta un periodo o un ciclo specifico, il backend applica di default il ciclo di punteggio piu recente disponibile nel set filtrato;
 - l'opzione `include_all_scoring_cycles=true` permette analisi trasversali, ma il payload restituisce warning espliciti;
+- i warning vengono calcolati sull'intero set filtrato prima del `limit`, cosi restano visibili anche quando la UI mostra solo una parte della classifica;
 - il payload ranking include ora `discipline`, `scoring_cycle`, `available_scoring_cycles` e `warnings`.
 
 Impatto UI:
@@ -2013,6 +2015,7 @@ Verifiche:
 - suite completa verificata con `116 passed`;
 - frontend locale verificato con risposta HTTP `200`;
 - modifica salvata nel commit `fb88ea7`.
+- correzione successiva salvata nel commit `7e877c5`: i warning metodologici restano calcolati sul contesto completo anche con `limit` basso.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
 
