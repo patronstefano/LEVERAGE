@@ -1316,8 +1316,19 @@ class ResultRankingEntry(BaseModel):
     data_warnings: list[str] = Field(default_factory=list)
 
 
+class ScoringCycleRead(BaseModel):
+    label: str
+    start_year: int
+    end_year: int
+    is_covid_extended: bool = False
+
+
 class ResultRanking(BaseModel):
     ranking: list[ResultRankingEntry]
+    discipline: Optional[DisciplineEnum] = None
+    scoring_cycle: Optional[ScoringCycleRead] = None
+    available_scoring_cycles: list[ScoringCycleRead] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
 
 
 class GlobalSearchAthlete(BaseModel):
@@ -1400,6 +1411,7 @@ class AnalyticsFilterOptions(BaseModel):
     event_levels: list[LevelEnum]
     ranking_metrics: list[ResultRankingMetricEnum]
     data_qualities: list[ResultDataQualityEnum]
+    scoring_cycles: list[ScoringCycleRead] = Field(default_factory=list)
     default_ranking_metric: ResultRankingMetricEnum = ResultRankingMetricEnum.SCORE
     default_data_quality: ResultDataQualityEnum = ResultDataQualityEnum.ALL
 

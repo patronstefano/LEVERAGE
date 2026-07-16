@@ -11,9 +11,14 @@ from app.database import get_db
 from app.i18n import result_context_label, translate
 from app.result_ranking import (
     apply_data_quality_filter,
-    build_ranking_entries,
     order_ranking_query,
     result_represented_country,
+)
+from app.ranking_context import (
+    apply_ranking_scoring_cycle_scope,
+    build_ranking_response,
+    has_explicit_period_filter,
+    validate_global_ranking_scope,
 )
 from app.security import get_current_admin_user, get_current_super_admin_user
 
@@ -422,6 +427,22 @@ def get_result_rankings(
     round: Optional[models.RoundEnum] = Query(None),
     day: Optional[int] = Query(None, ge=1),
     country: Optional[str] = Query(None),
+    start_year: Optional[int] = Query(None, ge=1900, le=2100),
+    end_year: Optional[int] = Query(None, ge=1900, le=2100),
+    start_date: Optional[date] = Query(None),
+    end_date: Optional[date] = Query(None),
+    scoring_cycle: Optional[str] = Query(
+        None,
+        description="Gymnastics scoring cycle, for example 2017-2021, 2022-2024, 2025-2028",
+    ),
+    include_all_scoring_cycles: bool = Query(
+        False,
+        description="Explicitly allow rankings across multiple scoring cycles",
+    ),
+    allow_mixed_disciplines: bool = Query(
+        False,
+        description="Explicitly allow global rankings that mix MAG and WAG",
+    ),
     sort_by: schemas.ResultRankingMetricEnum = Query(
         schemas.ResultRankingMetricEnum.SCORE,
         description="Ranking metric: score, D_score, execution_estimate, E_score, Penalty, Bonus",
@@ -447,6 +468,9 @@ def get_result_rankings(
         if not event:
             raise HTTPException(status_code=404, detail="Event not found")
         query = query.filter(models.Result.event_id == event_id)
+    else:
+        event = None
+    validate_global_ranking_scope(event, discipline, allow_mixed_disciplines)
     if discipline:
         query = query.filter(models.Result.discipline == discipline)
     if category:
@@ -463,10 +487,30 @@ def get_result_rankings(
         query = query.filter(
             func.coalesce(models.Result.represented_country, models.Athlete.country).ilike(f"%{country}%")
         )
+    if start_year is not None:
+        query = query.filter(models.Event.year >= start_year)
+    if end_year is not None:
+        query = query.filter(models.Event.year <= end_year)
+    if start_date:
+        query = query.filter(models.Event.start_date >= start_date)
+    if end_date:
+        query = query.filter(models.Event.start_date <= end_date)
     query = apply_data_quality_filter(query, data_quality)
+    query, selected_cycle = apply_ranking_scoring_cycle_scope(
+        query,
+        scoring_cycle,
+        include_all_scoring_cycles,
+        has_explicit_period_filter(start_year, end_year, start_date, end_date),
+    )
 
     results = order_ranking_query(query, sort_by, use_official_rank=event_id is not None).limit(limit).all()
-    return schemas.ResultRanking(ranking=build_ranking_entries(results, sort_by))
+    return build_ranking_response(
+        results,
+        sort_by,
+        discipline,
+        selected_cycle,
+        allow_mixed_disciplines,
+    )
 
 
 @router.get("/analytics/trends", response_model=schemas.ResultTrend)

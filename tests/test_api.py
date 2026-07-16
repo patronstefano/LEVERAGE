@@ -6146,12 +6146,14 @@ def test_public_dashboard_analytics_filter_options_compare_and_dashboard():
     assert [point["value"] for point in dashboard["trend"]] == [5.0, 5.4]
     assert [stat["key"] for stat in dashboard["by_year"]] == ["2022", "2023"]
 
-    ranking_response = client.get("/analytics/rankings?start_year=2023&apparatus=FX&sort_by=D_score")
+    ranking_response = client.get("/analytics/rankings?discipline=MAG&start_year=2023&apparatus=FX&sort_by=D_score")
     assert ranking_response.status_code == 200
     ranking = ranking_response.json()["ranking"]
     assert [entry["athlete_id"] for entry in ranking] == [athlete2["id"], athlete1["id"]]
 
-    execution_response = client.get("/analytics/rankings?start_year=2023&apparatus=FX&sort_by=execution_estimate")
+    execution_response = client.get(
+        "/analytics/rankings?discipline=MAG&start_year=2023&apparatus=FX&sort_by=execution_estimate"
+    )
     assert execution_response.status_code == 200
     execution_ranking = execution_response.json()["ranking"]
     assert [entry["athlete_id"] for entry in execution_ranking] == [athlete1["id"], athlete2["id"]]
@@ -6159,6 +6161,145 @@ def test_public_dashboard_analytics_filter_options_compare_and_dashboard():
         pytest.approx(8.6),
         pytest.approx(7.5),
     ]
+
+
+def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
+    client.post("/auth/register", json={"email": "ranking_context_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("ranking_context_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    mag_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Marco",
+            "last_name": "Cycle",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+    wag_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Anna",
+            "last_name": "Cycle",
+            "discipline": "WAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+
+    mag_2024_event = client.post(
+        "/events/",
+        json={
+            "name": "Cycle Cup 2024",
+            "year": 2024,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+            "start_date": "2024-05-01",
+        },
+        headers=headers,
+    ).json()
+    mag_2025_event = client.post(
+        "/events/",
+        json={
+            "name": "Cycle Cup 2025",
+            "year": 2025,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+            "start_date": "2025-05-01",
+        },
+        headers=headers,
+    ).json()
+    wag_2025_event = client.post(
+        "/events/",
+        json={
+            "name": "WAG Cycle Cup 2025",
+            "year": 2025,
+            "discipline": "WAG",
+            "category": "senior",
+            "level": "International Event",
+            "start_date": "2025-05-02",
+        },
+        headers=headers,
+    ).json()
+
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": mag_athlete["id"],
+            "event_id": mag_2024_event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.5,
+            "score": 14.0,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": mag_athlete["id"],
+            "event_id": mag_2025_event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.7,
+            "score": 14.2,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": wag_athlete["id"],
+            "event_id": wag_2025_event["id"],
+            "discipline": "WAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.2,
+            "score": 13.9,
+        },
+        headers=headers,
+    )
+
+    missing_discipline = client.get("/analytics/rankings")
+    assert missing_discipline.status_code == 400
+
+    mag_default = client.get("/analytics/rankings?discipline=MAG&apparatus=FX")
+    assert mag_default.status_code == 200
+    default_payload = mag_default.json()
+    assert default_payload["discipline"] == "MAG"
+    assert default_payload["scoring_cycle"]["label"] == "2025-2028"
+    assert [entry["event_id"] for entry in default_payload["ranking"]] == [mag_2025_event["id"]]
+    assert default_payload["warnings"] == []
+
+    mag_all_cycles = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true"
+    )
+    assert mag_all_cycles.status_code == 200
+    all_cycle_payload = mag_all_cycles.json()
+    assert all_cycle_payload["scoring_cycle"] is None
+    assert [cycle["label"] for cycle in all_cycle_payload["available_scoring_cycles"]] == [
+        "2022-2024",
+        "2025-2028",
+    ]
+    assert "multiple gymnastics scoring cycles" in all_cycle_payload["warnings"][0]
+
+    mixed_disciplines = client.get(
+        "/analytics/rankings?allow_mixed_disciplines=true&include_all_scoring_cycles=true"
+    )
+    assert mixed_disciplines.status_code == 200
+    assert any("mixes MAG and WAG" in warning for warning in mixed_disciplines.json()["warnings"])
 
 
 def test_public_analytics_age_by_country_uses_birth_year_and_unique_athlete_event_pairs():
@@ -8382,8 +8523,8 @@ def test_gymternet_identity_merge_preserves_historical_result_country():
     results = client.get("/results/").json()
     assert {result["represented_country"] for result in results} == {"USA", "ITA"}
 
-    usa_ranking = client.get("/results/analytics/rankings?country=USA").json()["ranking"]
-    ita_ranking = client.get("/results/analytics/rankings?country=ITA").json()["ranking"]
+    usa_ranking = client.get("/results/analytics/rankings?discipline=MAG&country=USA").json()["ranking"]
+    ita_ranking = client.get("/results/analytics/rankings?discipline=MAG&country=ITA").json()["ranking"]
     assert len(usa_ranking) == 1
     assert usa_ranking[0]["country"] == "USA"
     assert len(ita_ranking) == 1
@@ -8440,8 +8581,8 @@ def test_gymternet_identity_merge_can_correct_erroneous_result_country():
     results = client.get("/results/").json()
     assert {result["represented_country"] for result in results} == {"ITA"}
 
-    usa_ranking = client.get("/results/analytics/rankings?country=USA").json()["ranking"]
-    ita_ranking = client.get("/results/analytics/rankings?country=ITA").json()["ranking"]
+    usa_ranking = client.get("/results/analytics/rankings?discipline=MAG&country=USA").json()["ranking"]
+    ita_ranking = client.get("/results/analytics/rankings?discipline=MAG&country=ITA").json()["ranking"]
     assert usa_ranking == []
     assert len(ita_ranking) == 2
 

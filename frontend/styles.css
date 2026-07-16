@@ -877,6 +877,24 @@ button {
   gap: 10px;
 }
 
+.context-note {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(25, 23, 71, 0.08);
+  border-radius: var(--data-chip-radius);
+  background: rgba(245, 245, 247, 0.72);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.context-note span:first-child {
+  color: rgba(17, 17, 20, 0.72);
+  font-weight: 650;
+}
+
 .entity-card {
   display: grid;
   gap: 8px;
@@ -938,6 +956,10 @@ button {
 
 .toolbar {
   margin-bottom: 18px;
+}
+
+.secondary-toolbar {
+  margin-top: -8px;
 }
 
 .toolbar .search-input {

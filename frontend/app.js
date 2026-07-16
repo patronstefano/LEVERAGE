@@ -8,6 +8,7 @@ const state = {
   filters: {
     discipline: "",
     category: "",
+    scoringCycle: "",
   },
 };
 const CURRENT_YEAR = new Date().getFullYear();
@@ -87,7 +88,7 @@ const translations = {
     eventsHeading: "Events",
     eventsIntro: "Calendar entries, completed competitions and upcoming events in one view.",
     rankingsHeading: "Rankings",
-    rankingsIntro: "A first public ranking view powered by LEVERAGE analytics endpoints.",
+    rankingsIntro: "Rankings stay separated by discipline and scoring cycle to keep comparisons meaningful.",
     analyticsHeading: "Analytics",
     analyticsIntro: "The backend is ready for trends, comparisons, apparatus profiles and age analysis.",
     loginHeading: "Sign in",
@@ -102,6 +103,8 @@ const translations = {
     results: "results",
     result: "result",
     score: "Score",
+    scoringCycle: "Scoring cycle",
+    allCycles: "All cycles",
     country: "Country",
     date: "Date",
     status: "Status",
@@ -182,7 +185,7 @@ const translations = {
     eventsHeading: "Eventi",
     eventsIntro: "Calendario, competizioni concluse ed eventi futuri in una sola vista.",
     rankingsHeading: "Classifiche",
-    rankingsIntro: "Prima vista pubblica delle classifiche basata sugli endpoint analytics.",
+    rankingsIntro: "Le classifiche restano separate per disciplina e ciclo di punteggio, cosi i confronti restano significativi.",
     analyticsHeading: "Analytics",
     analyticsIntro: "Il backend e pronto per trend, confronti, profili attrezzi e analisi eta.",
     loginHeading: "Accedi",
@@ -197,6 +200,8 @@ const translations = {
     results: "risultati",
     result: "risultato",
     score: "Score",
+    scoringCycle: "Ciclo punteggio",
+    allCycles: "Tutti i cicli",
     country: "Nazione",
     date: "Data",
     status: "Stato",
@@ -277,7 +282,7 @@ const translations = {
     eventsHeading: "Eventos",
     eventsIntro: "Calendario, competiciones completadas y eventos futuros.",
     rankingsHeading: "Rankings",
-    rankingsIntro: "Primera vista publica conectada a los endpoints analytics.",
+    rankingsIntro: "Los rankings se separan por disciplina y ciclo de puntuacion para mantener comparaciones coherentes.",
     analyticsHeading: "Analitica",
     analyticsIntro: "El backend ya soporta tendencias, comparaciones y perfiles por aparato.",
     loginHeading: "Entrar",
@@ -292,6 +297,8 @@ const translations = {
     results: "resultados",
     result: "resultado",
     score: "Score",
+    scoringCycle: "Ciclo de puntuacion",
+    allCycles: "Todos los ciclos",
     country: "Pais",
     date: "Fecha",
     status: "Estado",
@@ -372,7 +379,7 @@ const translations = {
     eventsHeading: "Evenements",
     eventsIntro: "Calendrier, competitions terminees et evenements futurs.",
     rankingsHeading: "Classements",
-    rankingsIntro: "Premiere vue publique basee sur les endpoints analytics.",
+    rankingsIntro: "Les classements restent separes par discipline et cycle de notation pour garder des comparaisons coherentes.",
     analyticsHeading: "Analytique",
     analyticsIntro: "Le backend supporte tendances, comparaisons et profils par appareil.",
     loginHeading: "Connexion",
@@ -387,6 +394,8 @@ const translations = {
     results: "resultats",
     result: "resultat",
     score: "Score",
+    scoringCycle: "Cycle de notation",
+    allCycles: "Tous les cycles",
     country: "Pays",
     date: "Date",
     status: "Statut",
@@ -964,8 +973,26 @@ function featureCard(title, text, href) {
   `;
 }
 
-function filterButton(label, type, value) {
-  return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${state.filters[type] === value}">${label}</button>`;
+function rankingDiscipline() {
+  return state.filters.discipline || "MAG";
+}
+
+function rankingQueryParams(limit) {
+  const params = {
+    limit,
+    discipline: rankingDiscipline(),
+    category: state.filters.category,
+  };
+  if (state.filters.scoringCycle === "all") {
+    params.include_all_scoring_cycles = true;
+  } else if (state.filters.scoringCycle) {
+    params.scoring_cycle = state.filters.scoringCycle;
+  }
+  return params;
+}
+
+function filterButton(label, type, value, activeValue = state.filters[type]) {
+  return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${activeValue === value}">${label}</button>`;
 }
 
 function bindFilterButtons() {
@@ -989,15 +1016,13 @@ async function hydrateHome() {
         category: state.filters.category,
       }),
       getJson("/analytics/rankings", {
-        limit: 6,
-        discipline: state.filters.discipline,
-        category: state.filters.category,
+        ...rankingQueryParams(6),
       }),
     ]);
     $("#statusDot").className = "status-dot online";
     $("#statusText").textContent = t("online");
     renderEventList("#homeEvents", sortCalendarItems(events).slice(0, 6));
-    renderRankingList("#homeRankings", rankings.ranking?.slice(0, 6) || []);
+    renderRankingList("#homeRankings", rankings);
   } catch (error) {
     $("#statusDot").className = "status-dot offline";
     $("#statusText").textContent = t("offline");
@@ -1023,13 +1048,30 @@ function renderEventList(selector, events) {
   }).join("")}</div>`;
 }
 
-function renderRankingList(selector, rankings) {
+function renderRankingContext(payload) {
+  const parts = [];
+  if (payload?.discipline) parts.push(payload.discipline);
+  if (payload?.scoring_cycle?.label) parts.push(`${t("scoringCycle")} ${payload.scoring_cycle.label}`);
+  const warnings = payload?.warnings || [];
+  if (!parts.length && !warnings.length) return "";
+  return `
+    <div class="context-note">
+      ${parts.length ? `<span>${escapeHtml(parts.join(" · "))}</span>` : ""}
+      ${warnings.map((warning) => `<span>${escapeHtml(warning)}</span>`).join("")}
+    </div>
+  `;
+}
+
+function renderRankingList(selector, payloadOrRankings) {
   const node = $(selector);
+  const payload = Array.isArray(payloadOrRankings) ? { ranking: payloadOrRankings } : (payloadOrRankings || {});
+  const rankings = payload.ranking || [];
+  const context = renderRankingContext(payload);
   if (!rankings.length) {
-    node.innerHTML = emptyState();
+    node.innerHTML = `${context}${emptyState()}`;
     return;
   }
-  node.innerHTML = `<div class="entity-list">${rankings.map((entry) => {
+  node.innerHTML = `${context}<div class="entity-list">${rankings.map((entry) => {
     const score = entry.score === null || entry.score === undefined ? "not available" : Number(entry.score).toFixed(3);
     const pills = [
       { label: `${t("score")} ${score}`, variant: "brand" },
@@ -1116,21 +1158,25 @@ async function renderRankings() {
   setApp(`
     ${pageHeading("rankingsHeading", "rankingsIntro")}
     <div class="toolbar">
-      ${filterButton("MAG", "discipline", "MAG")}
-      ${filterButton("WAG", "discipline", "WAG")}
+      ${filterButton("MAG", "discipline", "MAG", rankingDiscipline())}
+      ${filterButton("WAG", "discipline", "WAG", rankingDiscipline())}
       ${filterButton(t("senior"), "category", "senior")}
       ${filterButton(t("junior"), "category", "junior")}
+    </div>
+    <div class="toolbar secondary-toolbar">
+      ${filterButton("2017-2021", "scoringCycle", "2017-2021")}
+      ${filterButton("2022-2024", "scoringCycle", "2022-2024")}
+      ${filterButton("2025-2028", "scoringCycle", "2025-2028")}
+      ${filterButton(t("allCycles"), "scoringCycle", "all")}
     </div>
     <div id="rankingResults">${loadingState()}</div>
   `);
   bindFilterButtons();
   try {
     const rankings = await getJson("/analytics/rankings", {
-      limit: 60,
-      discipline: state.filters.discipline,
-      category: state.filters.category,
+      ...rankingQueryParams(60),
     });
-    renderRankingList("#rankingResults", rankings.ranking || []);
+    renderRankingList("#rankingResults", rankings);
   } catch (error) {
     $("#rankingResults").innerHTML = errorState(error);
   }
