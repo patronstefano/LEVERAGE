@@ -1879,6 +1879,7 @@ Commit principali della fase UI iniziale:
 | `69cdee4` | Riduzione del selettore lingua a pill minimale |
 | `2d512ad` | Ricerca globale strutturata per intento e autocomplete ordinato |
 | `d2dff49` | Aggregazione reale dei filtri nella pagina risultati |
+| `a66858e` | Correzione outlier punteggi e protezione import Gymternet |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -1943,6 +1944,57 @@ Implementazione:
 - la UI usa questo flag per renderizzare la pagina in modalita `Filtered results`;
 - le sezioni separate `Athletes`, `Events`, `Countries`, `Apparatus` restano disponibili per ricerche semplici, ma non dominano piu le ricerche strutturate sui risultati;
 - aggiunta verifica automatica che distingue ricerca semplice da ricerca composta.
+
+Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
+
+Problema emerso:
+
+Nella `Ranking preview` della home comparivano tre punteggi impossibili per la ginnastica artistica:
+
+- Daniel Serban, German Junior Championships 2023, PB: `1205.0`;
+- Keisuke Komori, All-Japan Team Championships 2021, FX: `142.33`;
+- Silas Bortt, 4th Bundesliga 2021, PB: `110.65`.
+
+Controllo effettuato:
+
+- i valori erano realmente presenti nel database, quindi l'errore non era nella classifica ma nel dato importato;
+- le stesse anomalie erano presenti nelle celle sorgenti dei file Gymternet normalizzati;
+- lo scan completo del database ha individuato solo tre `score > 100`;
+- e stato individuato anche un `D_score > 20`, relativo a Elene Sanna UB (`22.0`), corretto per evitare futuri errori nelle classifiche per D-score.
+
+Correzioni applicate:
+
+| Result ID | Campo | Da | A | Fonte |
+|---:|---|---:|---:|---|
+| `416930` | `score` | `1205.0` | `12.05` | `Results 2023.xlsx`, MAG row 2352 |
+| `246431` | `score` | `142.33` | `14.233` | `Results 2021.xlsx`, MAG row 3639 |
+| `260503` | `score` | `110.65` | `11.065` | `Results 2021.xlsx`, MAG row 6784 |
+| `278214` | `D_score` | `22.0` | `2.2` | `Results 2021.xlsx`, WAG D row 1908 |
+
+Scelta progettuale:
+
+- la correzione non e stata fatta in modo opaco: e stato creato lo script `scripts/repair_known_result_score_outliers.py`;
+- lo script controlla `result_id` e valore atteso prima di aggiornare il DB;
+- prima dell'applicazione e stato creato il backup locale `backups/leverage_before_score_outlier_repair_20260716_101004.db`;
+- il report tracciabile e stato salvato in `docs/import_reports/result_score_outlier_repair_20260716.csv`.
+
+Protezione futura:
+
+Il parser Gymternet ora intercetta outlier evidenti durante l'import:
+
+- final score AA sopra `100`;
+- final score non-AA sopra `20`;
+- D-score sopra `20`.
+
+Quando possibile, il parser corregge automaticamente il decimale mancante dividendo per `10`, `100` o `1000` e registra un warning nel report import. Se non trova una correzione plausibile, registra un errore.
+
+Verifiche:
+
+- dopo la correzione: `score > 100 = 0`;
+- dopo la correzione: `D_score > 20 = 0`;
+- la ranking preview torna a mostrare punteggi AA plausibili, con Zhang Boheng `89.299` come primo risultato;
+- aggiunto test automatico `test_gymternet_parser_corrects_clear_score_outliers`;
+- suite API verificata con `115 passed`.
 
 Decisione metodologica per la tesi:
 
