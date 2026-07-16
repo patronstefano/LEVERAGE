@@ -935,10 +935,26 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    bundesliga_event = client.post(
+        "/events/",
+        json={
+            "name": "2nd Bundesliga",
+            "location": "Germany",
+            "year": 2026,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "National Event",
+        },
+        headers=headers,
+    ).json()
 
     event_year_search = client.get("/search", params={"q": "Serie A 2026", "limit": 5})
     assert event_year_search.status_code == 200
     assert any(event["id"] == serie_a_event["id"] for event in event_year_search.json()["events"])
+
+    ordinal_search = client.get("/search", params={"q": "Bundesliga 2", "limit": 5})
+    assert ordinal_search.status_code == 200
+    assert any(event["id"] == bundesliga_event["id"] for event in ordinal_search.json()["events"])
 
     year_only_search = client.get("/search", params={"q": "2026", "limit": 5})
     assert year_only_search.status_code == 200

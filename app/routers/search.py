@@ -33,7 +33,7 @@ YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
 class SearchParts:
     query: str
     text_query: str
-    text_term: Optional[str]
+    text_terms: set[str]
     years: set[int]
     country_codes: set[str]
     country_terms: set[str]
@@ -45,6 +45,41 @@ def normalized_like(query: str) -> str:
 
 def compact_whitespace(value: str) -> str:
     return " ".join(value.split())
+
+
+def ordinal_suffix(number: int) -> str:
+    if 10 <= number % 100 <= 20:
+        return "th"
+    return {1: "st", 2: "nd", 3: "rd"}.get(number % 10, "th")
+
+
+def ordinal_label(number: int) -> str:
+    return f"{number}{ordinal_suffix(number)}"
+
+
+def numeric_search_variants(query: str) -> set[str]:
+    variants = {query} if query else set()
+    trailing_number = re.match(r"^(?P<name>.+?)\s+(?P<number>\d{1,2})$", query)
+    if trailing_number:
+        name = trailing_number.group("name").strip()
+        number = int(trailing_number.group("number"))
+        variants.add(f"{ordinal_label(number)} {name}")
+        variants.add(f"{number} {name}")
+    leading_number = re.match(r"^(?P<number>\d{1,2})\s+(?P<name>.+)$", query)
+    if leading_number:
+        number = int(leading_number.group("number"))
+        name = leading_number.group("name").strip()
+        variants.add(f"{ordinal_label(number)} {name}")
+    ordinal = re.match(r"^(?P<number>\d{1,2})(st|nd|rd|th)\s+(?P<name>.+)$", query, flags=re.IGNORECASE)
+    if ordinal:
+        number = int(ordinal.group("number"))
+        name = ordinal.group("name").strip()
+        variants.add(f"{name} {number}")
+    return {compact_whitespace(variant) for variant in variants if compact_whitespace(variant)}
+
+
+def search_text_terms(query: str) -> set[str]:
+    return {normalized_like(variant) for variant in numeric_search_variants(query)}
 
 
 def country_aliases_by_code() -> dict[str, set[str]]:
@@ -89,7 +124,7 @@ def parse_search_query(query: str) -> SearchParts:
     return SearchParts(
         query=query,
         text_query=text_query,
-        text_term=normalized_like(text_query) if text_query else None,
+        text_terms=search_text_terms(text_query) if text_query else set(),
         years=years,
         country_codes=country_codes,
         country_terms=resolve_country_terms(country_codes),
@@ -165,16 +200,16 @@ def event_result_counts(db: Session, event_ids: list[int]) -> dict[int, int]:
 
 def athlete_search_conditions(parts: SearchParts):
     conditions = []
-    if parts.text_term:
-        conditions.extend(athlete_name_conditions(parts.text_term))
+    for term in parts.text_terms:
+        conditions.extend(athlete_name_conditions(term))
     conditions.extend(country_like_conditions(models.Athlete.country, parts.country_terms))
     return conditions
 
 
 def event_search_conditions(parts: SearchParts):
     conditions = []
-    if parts.text_term:
-        conditions.extend(event_conditions(parts.text_term))
+    for term in parts.text_terms:
+        conditions.extend(event_conditions(term))
     for country_term in parts.country_terms:
         term = normalized_like(country_term)
         conditions.extend((
@@ -192,12 +227,12 @@ def add_year_filter(query, years: set[int]):
 
 
 def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
-    if not parts.text_term and not parts.country_terms:
+    if not parts.text_terms and not parts.country_terms:
         return []
     countries: dict[str, dict[str, int]] = defaultdict(lambda: {"athlete_count": 0, "result_count": 0})
     athlete_country_conditions = []
-    if parts.text_term:
-        athlete_country_conditions.append(models.Athlete.country.ilike(parts.text_term))
+    for term in parts.text_terms:
+        athlete_country_conditions.append(models.Athlete.country.ilike(term))
     athlete_country_conditions.extend(country_like_conditions(models.Athlete.country, parts.country_terms))
     athlete_rows = (
         db.query(models.Athlete.country, func.count(models.Athlete.id))
@@ -215,8 +250,8 @@ def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[sc
 
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
     result_country_conditions = []
-    if parts.text_term:
-        result_country_conditions.append(represented_country.ilike(parts.text_term))
+    for term in parts.text_terms:
+        result_country_conditions.append(represented_country.ilike(term))
     result_country_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
     result_query = (
         db.query(represented_country.label("country"), func.count(models.Result.id))
@@ -291,16 +326,16 @@ def build_global_results(
 ) -> list[schemas.GlobalSearchResult]:
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
     result_conditions = []
-    if parts.text_term:
+    for term in parts.text_terms:
         result_conditions.extend((
-            *athlete_name_conditions(parts.text_term),
-            *event_conditions(parts.text_term),
-            represented_country.ilike(parts.text_term),
-            models.Result.apparatus.ilike(parts.text_term),
-            models.Result.discipline.ilike(parts.text_term),
-            models.Result.category.ilike(parts.text_term),
-            models.Result.format.ilike(parts.text_term),
-            models.Result.round.ilike(parts.text_term),
+            *athlete_name_conditions(term),
+            *event_conditions(term),
+            represented_country.ilike(term),
+            models.Result.apparatus.ilike(term),
+            models.Result.discipline.ilike(term),
+            models.Result.category.ilike(term),
+            models.Result.format.ilike(term),
+            models.Result.round.ilike(term),
         ))
     result_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
     for country_term in parts.country_terms:

@@ -11,6 +11,7 @@ const state = {
   },
 };
 const CURRENT_YEAR = new Date().getFullYear();
+let searchAutocompleteRequestId = 0;
 
 const translations = {
   en: {
@@ -432,6 +433,13 @@ function closeLanguageMenu() {
   button.setAttribute("aria-expanded", "false");
 }
 
+function closeSearchSuggestions() {
+  document.querySelectorAll(".search-suggestions").forEach((node) => {
+    node.hidden = true;
+    node.innerHTML = "";
+  });
+}
+
 function setupIntroSplash() {
   const splash = $("#introSplash");
   if (!splash) return;
@@ -598,6 +606,7 @@ async function renderHome() {
           <form class="search-form" id="globalSearchForm">
             <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
             <button class="primary-button" type="submit">${t("search")}</button>
+            <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
           </form>
           <div class="filter-row">
             ${filterButton("MAG", "discipline", "MAG")}
@@ -648,12 +657,122 @@ async function renderHome() {
 
   $("#globalSearchForm").addEventListener("submit", (event) => {
     event.preventDefault();
+    closeSearchSuggestions();
     const query = $("#globalSearchInput").value.trim();
     window.location.hash = query ? `#/search?q=${encodeURIComponent(query)}` : "#/search";
   });
+  setupSearchAutocomplete("#globalSearchInput", "#globalSearchSuggestions");
 
   bindFilterButtons();
   await hydrateHome();
+}
+
+function suggestionMeta(parts) {
+  return parts.filter(Boolean).join(" · ");
+}
+
+function buildSuggestionItems(data) {
+  const items = [];
+  data.events.slice(0, 4).forEach((event) => {
+    items.push({
+      label: event.name,
+      meta: suggestionMeta([t("event"), event.location, String(event.year)]),
+      href: `#/events/${event.id}`,
+    });
+  });
+  data.athletes.slice(0, 4).forEach((athlete) => {
+    items.push({
+      label: athlete.name,
+      meta: suggestionMeta([t("athlete"), athlete.country, athlete.discipline]),
+      href: `#/athletes/${athlete.id}`,
+    });
+  });
+  data.countries.slice(0, 3).forEach((country) => {
+    items.push({
+      label: country.label,
+      meta: suggestionMeta([t("country"), searchCountLabel(country)]),
+      query: country.value,
+    });
+  });
+  data.apparatuses.slice(0, 3).forEach((apparatus) => {
+    items.push({
+      label: apparatus.label,
+      meta: suggestionMeta([t("matchingApparatuses"), resultLabel(apparatus.result_count)]),
+      query: apparatus.value,
+    });
+  });
+  data.results.slice(0, 3).forEach((result) => {
+    items.push({
+      label: result.athlete_name,
+      meta: suggestionMeta([t("matchingResults"), result.event_name, result.apparatus, scoreLabel(result.score)]),
+      href: `#/events/${result.event_id}`,
+    });
+  });
+  return items.slice(0, 7);
+}
+
+function renderSearchSuggestions(container, items) {
+  if (!items.length) {
+    container.hidden = true;
+    container.innerHTML = "";
+    return;
+  }
+  container.innerHTML = items.map((item) => `
+    <button class="search-suggestion" type="button" role="option" data-suggestion-query="${escapeHtml(item.query || item.label)}" ${item.href ? `data-suggestion-href="${escapeHtml(item.href)}"` : ""}>
+      <strong>${escapeHtml(item.label)}</strong>
+      <span>${escapeHtml(item.meta)}</span>
+    </button>
+  `).join("");
+  container.hidden = false;
+  container.querySelectorAll(".search-suggestion").forEach((button) => {
+    button.addEventListener("click", () => {
+      closeSearchSuggestions();
+      if (button.dataset.suggestionHref) {
+        window.location.hash = button.dataset.suggestionHref;
+        return;
+      }
+      window.location.hash = `#/search?q=${encodeURIComponent(button.dataset.suggestionQuery || "")}`;
+    });
+  });
+}
+
+function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
+  const input = $(inputSelector);
+  const suggestions = $(suggestionsSelector);
+  if (!input || !suggestions) return;
+  input.closest(".search-form")?.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+  let debounceTimer;
+  const updateSuggestions = () => {
+    window.clearTimeout(debounceTimer);
+    const query = input.value.trim();
+    if (query.length < 2) {
+      suggestions.hidden = true;
+      suggestions.innerHTML = "";
+      return;
+    }
+    debounceTimer = window.setTimeout(async () => {
+      const requestId = ++searchAutocompleteRequestId;
+      try {
+        const data = await getJson("/search", { q: query, limit: 5 });
+        if (requestId !== searchAutocompleteRequestId) return;
+        renderSearchSuggestions(suggestions, buildSuggestionItems(data));
+      } catch (_error) {
+        if (requestId !== searchAutocompleteRequestId) return;
+        suggestions.hidden = true;
+        suggestions.innerHTML = "";
+      }
+    }, 170);
+  };
+  input.addEventListener("input", updateSuggestions);
+  input.addEventListener("focus", updateSuggestions);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSearchSuggestions();
+      input.blur();
+    }
+  });
 }
 
 function searchSection(title, items) {
@@ -736,14 +855,17 @@ async function renderGlobalSearch() {
     <form class="search-form search-page-form" id="globalSearchPageForm">
       <input class="search-input" id="globalSearchPageInput" type="search" autocomplete="off" value="${escapedQuery}" placeholder="${t("searchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
+      <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>
     </form>
     <div id="globalSearchResults">${query ? loadingState() : messageState(t("noGlobalSearchQuery"))}</div>
   `);
   $("#globalSearchPageForm").addEventListener("submit", (event) => {
     event.preventDefault();
+    closeSearchSuggestions();
     const nextQuery = $("#globalSearchPageInput").value.trim();
     window.location.hash = nextQuery ? `#/search?q=${encodeURIComponent(nextQuery)}` : "#/search";
   });
+  setupSearchAutocomplete("#globalSearchPageInput", "#globalSearchPageSuggestions");
   if (!query) return;
   try {
     trackSiteSearch(query);
@@ -992,6 +1114,7 @@ function init() {
     });
   });
   document.addEventListener("click", closeLanguageMenu);
+  document.addEventListener("click", closeSearchSuggestions);
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeLanguageMenu();
