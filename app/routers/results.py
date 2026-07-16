@@ -502,6 +502,11 @@ def get_result_rankings(
         include_all_scoring_cycles,
         has_explicit_period_filter(start_year, end_year, start_date, end_date),
     )
+    context_years = [year for (year,) in query.with_entities(models.Event.year).distinct().all()]
+    context_disciplines = [
+        result_discipline
+        for (result_discipline,) in query.with_entities(models.Result.discipline).distinct().all()
+    ]
 
     results = order_ranking_query(query, sort_by, use_official_rank=event_id is not None).limit(limit).all()
     return build_ranking_response(
@@ -510,6 +515,8 @@ def get_result_rankings(
         discipline,
         selected_cycle,
         allow_mixed_disciplines,
+        context_years=context_years,
+        context_disciplines=context_disciplines,
     )
 
 

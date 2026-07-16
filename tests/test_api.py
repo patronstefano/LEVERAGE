@@ -6284,7 +6284,7 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     assert default_payload["warnings"] == []
 
     mag_all_cycles = client.get(
-        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true"
+        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true&limit=1"
     )
     assert mag_all_cycles.status_code == 200
     all_cycle_payload = mag_all_cycles.json()

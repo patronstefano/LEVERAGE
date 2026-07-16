@@ -76,12 +76,23 @@ def build_ranking_response(
     discipline: Optional[models.DisciplineEnum],
     selected_cycle,
     allow_mixed_disciplines: bool,
+    context_years: Optional[list[int]] = None,
+    context_disciplines: Optional[list[models.DisciplineEnum]] = None,
 ) -> schemas.ResultRanking:
-    available_cycles = unique_scoring_cycles_for_years([
-        result.event.year for result in results if result.event is not None
-    ])
+    available_cycles = unique_scoring_cycles_for_years(
+        context_years
+        if context_years is not None
+        else [result.event.year for result in results if result.event is not None]
+    )
     warnings = []
-    result_disciplines = sorted({result.discipline.value for result in results})
+    result_disciplines = sorted({
+        result_discipline.value if hasattr(result_discipline, "value") else str(result_discipline)
+        for result_discipline in (
+            context_disciplines
+            if context_disciplines is not None
+            else [result.discipline for result in results]
+        )
+    })
     if len(result_disciplines) > 1:
         warnings.append(
             "This ranking intentionally mixes MAG and WAG results. Apparatus rules and score scales may not be directly comparable."
