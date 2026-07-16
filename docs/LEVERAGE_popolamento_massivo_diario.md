@@ -4364,19 +4364,61 @@ Esito finale:
 | Cross-year errati | 0 |
 | Issue sorgente | 0 |
 
-Le 45 righe Calendar 2026 non abbinate sono successive al 1 luglio 2026 e restano in standby fino al successivo import dei Results 2026 di fine anno.
+Le 45 righe Calendar 2026 non abbinate sono successive al 1 luglio 2026 e, al momento della prima chiusura del calendario, erano state lasciate in standby fino al successivo import dei Results 2026 di fine anno.
+
+Aggiornamento del 16 luglio 2026:
+
+Per rendere visibili nel calendario pubblico anche gli eventi futuri gia schedulati ma privi di Results, le 45 righe future sono state materializzate nel database locale.
+
+Flusso usato:
+
+```text
+.venv/bin/python scripts/materialize_future_calendar_events.py import_files/Calendar.xlsx --year 2026 --from-date 2026-07-16
+.venv/bin/python scripts/materialize_future_calendar_events.py import_files/Calendar.xlsx --year 2026 --from-date 2026-07-16 --commit
+```
+
+Report prodotti:
+
+```text
+docs/import_reports/calendar_2026_future_materialization_dry_run_summary.json
+docs/import_reports/calendar_2026_future_materialization_commit_summary.json
+```
+
+Backup locale creato prima del commit:
+
+```text
+backups/leverage_future_calendar_2026_20260716_120535.db
+```
+
+Esito materializzazione:
+
+| Metrica | Valore |
+|---|---:|
+| Righe future Calendar 2026 processate | 45 |
+| Nuovi Event futuri creati | 42 |
+| Event futuro gia esistente | 1 |
+| EventCalendarEntry future create | 2 |
+| Righe ambigue | 0 |
+
+Decisione metodologica:
+
+- le righe future senza Event DB sono state create come nuovi `Event`, con `result_count = 0`, per renderle cliccabili/salvabili e predisporre il successivo inserimento Results;
+- `British Team Championships` era gia presente come Event futuro e non e stato duplicato;
+- `3rd Bundesliga` e `4th Bundesliga` avevano gia Event 2026 con risultati e date di aprile: le date future sono state conservate come `EventCalendarEntry`, senza sovrascrivere le date degli Event gia popolati.
 
 ### 18.7 Stato database locale dopo Results + Calendar 2026
 
 | Entita | Totale |
 |---|---:|
 | Athlete attivi | 27.921 |
-| Event attivi | 1.719 |
+| Event attivi | 1.761 |
 | Result attivi | 819.739 |
-| Event 2026 | 115 |
+| Event 2026 | 157 |
 | Result 2026 | 66.124 |
-| EventCalendarEntry 2026 | 18 |
+| EventCalendarEntry 2026 | 20 |
 | Righe `calendar_only` 2026 | 5 |
+| Event futuri datati dal 16 luglio 2026 | 43 |
+| EventCalendarEntry future dal 16 luglio 2026 | 2 |
 
 Event 2026 senza `start_date` diretta:
 
@@ -4395,6 +4437,6 @@ La fase dati storici ora copre:
 - Results 2018-2025 completi;
 - Results 2026 primo semestre;
 - Calendar 2018-2025 completo;
-- Calendar 2026 riconciliato per gli Event con risultati disponibili e predisposto per gli eventi futuri.
+- Calendar 2026 riconciliato per gli Event con risultati disponibili e materializzato anche per gli eventi futuri schedulati dal 16 luglio 2026.
 
 Il prossimo completamento dati avverra quando sara disponibile il file Results 2026 di fine anno o un secondo file 2026 aggiornato.

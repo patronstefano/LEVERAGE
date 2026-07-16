@@ -1,0 +1,476 @@
+{
+  "calendar_file": "import_files/Calendar.xlsx",
+  "database": "/Users/patronstefano/Sviluppo/LEVERAGE/leverage.db",
+  "year": 2026,
+  "from_date": "2026-07-16",
+  "dry_run": false,
+  "committed": true,
+  "backup_path": "backups/leverage_future_calendar_2026_20260716_120535.db",
+  "source_issues": [],
+  "future_rows": 45,
+  "created_events": 42,
+  "existing_events": 1,
+  "calendar_entries": 2,
+  "ambiguous_rows": 0,
+  "created_event_details": [
+    {
+      "calendar_row": 127,
+      "event_name": "U.S. Classic",
+      "start_date": "2026-07-16",
+      "end_date": "2026-07-20",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 128,
+      "event_name": "Dortmund Junior Friendly",
+      "start_date": "2026-07-18",
+      "end_date": "2026-07-18",
+      "discipline": "MAG and WAG",
+      "category": "junior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 129,
+      "event_name": "Nordic Championships",
+      "start_date": "2026-07-21",
+      "end_date": "2026-07-24",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 130,
+      "event_name": "German Championships",
+      "start_date": "2026-07-23",
+      "end_date": "2026-07-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 131,
+      "event_name": "Commonwealth Games",
+      "start_date": "2026-07-23",
+      "end_date": "2026-08-02",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 132,
+      "event_name": "Central American & Caribbean Games",
+      "start_date": "2026-07-24",
+      "end_date": "2026-08-08",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 133,
+      "event_name": "Italian Championships",
+      "start_date": "2026-07-25",
+      "end_date": "2026-07-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 134,
+      "event_name": "Hungarian National Meet",
+      "start_date": "2026-07-25",
+      "end_date": "2026-07-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 135,
+      "event_name": "All-Japan - Team??",
+      "start_date": "2026-08-01",
+      "end_date": "2026-08-01",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 136,
+      "event_name": "Brazilian Championships",
+      "start_date": "2026-08-05",
+      "end_date": "2026-08-09",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 137,
+      "event_name": "U.S. Championships",
+      "start_date": "2026-08-06",
+      "end_date": "2026-08-09",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 138,
+      "event_name": "Brazilian Junior Championships",
+      "start_date": "2026-08-12",
+      "end_date": "2026-08-16",
+      "discipline": "MAG and WAG",
+      "category": "junior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 139,
+      "event_name": "European Championships",
+      "start_date": "2026-08-13",
+      "end_date": "2026-08-16",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "Continental Championships",
+      "status": "created"
+    },
+    {
+      "calendar_row": 140,
+      "event_name": "Mediterranean Games",
+      "start_date": "2026-08-22",
+      "end_date": "2026-08-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 141,
+      "event_name": "South American Games",
+      "start_date": "2026-09-12",
+      "end_date": "2026-09-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 142,
+      "event_name": "Szombathely Challenge Cup",
+      "start_date": "2026-09-18",
+      "end_date": "2026-09-20",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 143,
+      "event_name": "Asian Games",
+      "start_date": "2026-09-19",
+      "end_date": "2026-10-04",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "Continental Championships",
+      "status": "created"
+    },
+    {
+      "calendar_row": 144,
+      "event_name": "Russian Junior Men's Championships",
+      "start_date": "2026-09-21",
+      "end_date": "2026-09-28",
+      "discipline": "MAG and WAG",
+      "category": "junior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 146,
+      "event_name": "Paris Challenge Cup",
+      "start_date": "2026-09-26",
+      "end_date": "2026-09-27",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 147,
+      "event_name": "Hungarian Masters Championships",
+      "start_date": "2026-09-26",
+      "end_date": "2026-09-27",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 148,
+      "event_name": "Russian Junior Championships",
+      "start_date": "2026-09-29",
+      "end_date": "2026-10-11",
+      "discipline": "MAG and WAG",
+      "category": "junior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 149,
+      "event_name": "Leverkusen Cup",
+      "start_date": "2026-10-03",
+      "end_date": "2026-10-03",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 150,
+      "event_name": "Norwegian FIG Meet 3",
+      "start_date": "2026-10-03",
+      "end_date": "2026-10-04",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 151,
+      "event_name": "Polish Cup",
+      "start_date": "2026-10-04",
+      "end_date": "2026-10-06",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 153,
+      "event_name": "Ifact Norges Cup 3",
+      "start_date": "2026-10-10",
+      "end_date": "2026-10-11",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 154,
+      "event_name": "German Cup",
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-18",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 155,
+      "event_name": "World Championships",
+      "start_date": "2026-10-17",
+      "end_date": "2026-10-25",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "World Championships",
+      "status": "created"
+    },
+    {
+      "calendar_row": 156,
+      "event_name": "Norwegian Junior Championships",
+      "start_date": "2026-10-31",
+      "end_date": "2026-11-01",
+      "discipline": "MAG and WAG",
+      "category": "junior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 157,
+      "event_name": "German Men's Cup",
+      "start_date": "2026-10-31",
+      "end_date": "2026-11-01",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 158,
+      "event_name": "Youth Olympic Games",
+      "start_date": "2026-10-31",
+      "end_date": "2026-11-13",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "Olympic Games",
+      "status": "created"
+    },
+    {
+      "calendar_row": 159,
+      "event_name": "Arthur Gander Memorial",
+      "start_date": "2026-11-04",
+      "end_date": "2026-11-04",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 160,
+      "event_name": "Latvian Championships",
+      "start_date": "2026-11-06",
+      "end_date": "2026-11-08",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 161,
+      "event_name": "Swiss Cup",
+      "start_date": "2026-11-07",
+      "end_date": "2026-11-07",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 162,
+      "event_name": "5th Bundesliga (MAG)",
+      "start_date": "2026-11-07",
+      "end_date": "2026-11-07",
+      "discipline": "MAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 163,
+      "event_name": "Northern European Championships",
+      "start_date": "2026-11-12",
+      "end_date": "2026-11-15",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "Continental Championships",
+      "status": "created"
+    },
+    {
+      "calendar_row": 165,
+      "event_name": "6th Bundesliga (MAG)",
+      "start_date": "2026-11-14",
+      "end_date": "2026-11-14",
+      "discipline": "MAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 166,
+      "event_name": "Barborka Cup",
+      "start_date": "2026-11-20",
+      "end_date": "2026-11-22",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 167,
+      "event_name": "7th Bundesliga (MAG)",
+      "start_date": "2026-11-21",
+      "end_date": "2026-11-21",
+      "discipline": "MAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 168,
+      "event_name": "Voronin Cup",
+      "start_date": "2026-11-22",
+      "end_date": "2026-11-26",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 169,
+      "event_name": "Olympic Hopes Cup",
+      "start_date": "2026-11-26",
+      "end_date": "2026-11-29",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "Olympic Games",
+      "status": "created"
+    },
+    {
+      "calendar_row": 170,
+      "event_name": "Sokol Grand Prix",
+      "start_date": "2026-11-28",
+      "end_date": "2026-11-28",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "International Event",
+      "status": "created"
+    },
+    {
+      "calendar_row": 171,
+      "event_name": "All-Japan Team & Event Championships (Aiko Arena, Yokkaichi City)",
+      "start_date": "2026-12-03",
+      "end_date": "2026-12-06",
+      "discipline": "MAG and WAG",
+      "category": "junior and senior",
+      "level": "National Event",
+      "status": "created"
+    }
+  ],
+  "existing_event_details": [
+    {
+      "calendar_row": 152,
+      "event_name": "British Team Championships",
+      "start_date": "2026-10-10",
+      "end_date": "2026-10-11",
+      "event_id": 1654,
+      "status": "already_present"
+    }
+  ],
+  "calendar_entry_details": [
+    {
+      "calendar_row": 145,
+      "event_name": "3rd Bundesliga",
+      "start_date": "2026-09-26",
+      "end_date": "2026-09-26",
+      "event_id": 1683,
+      "matched_event_name": "3rd Bundesliga",
+      "matched_event_start_date": "2026-04-18",
+      "matched_event_end_date": "2026-04-18",
+      "discipline": "MAG and WAG",
+      "source_note": "future calendar row preserved as EventCalendarEntry; existing Event dates/results kept",
+      "status": "created"
+    },
+    {
+      "calendar_row": 164,
+      "event_name": "4th Bundesliga",
+      "start_date": "2026-11-14",
+      "end_date": "2026-11-14",
+      "event_id": 1625,
+      "matched_event_name": "4th Bundesliga",
+      "matched_event_start_date": "2026-04-25",
+      "matched_event_end_date": "2026-04-25",
+      "discipline": "MAG and WAG",
+      "source_note": "future calendar row preserved as EventCalendarEntry; existing Event dates/results kept",
+      "status": "created"
+    }
+  ],
+  "ambiguous_row_details": []
+}
