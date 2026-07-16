@@ -6850,6 +6850,57 @@ def test_gymternet_xlsx_accepts_standard_sheet_names_and_country_aliases():
     assert not any("Unknown country mapping" in issue["message"] for issue in parsed.issues)
 
 
+def test_gymternet_parser_corrects_clear_score_outliers():
+    from app.gymternet_import import merge_final_and_dscore, parse_pivot_rows
+
+    issues = []
+    final_records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Ada Lovelace",
+                "Country": "United States",
+                "Event": "Outlier Cup 2024 QF",
+                "FX": 142.33,
+                "PB": 1205,
+            }
+        ],
+        "MAG",
+        models.DisciplineEnum.MAG,
+        "final",
+        2024,
+        issues,
+    )
+    dscore_records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Ada Lovelace",
+                "Country": "United States",
+                "Event": "Outlier Cup 2024 QF",
+                "PB": 22,
+            }
+        ],
+        "MAG D",
+        models.DisciplineEnum.MAG,
+        "dscore",
+        2024,
+        issues,
+    )
+
+    records, _ = merge_final_and_dscore(final_records, dscore_records, issues)
+    fx = next(record for record in records if record.apparatus == "FX")
+    pb = next(record for record in records if record.apparatus == "PB")
+
+    assert fx.score == 14.233
+    assert pb.score == 12.05
+    assert pb.D_score == 2.2
+    corrected_scores = {
+        issue["corrected_score"]
+        for issue in issues
+        if "Corrected outlier" in issue["message"]
+    }
+    assert corrected_scores == {14.233, 12.05, 2.2}
+
+
 def test_gymternet_country_aliases_cover_results_files():
     from app.gymternet_import import parse_gymternet_file
 

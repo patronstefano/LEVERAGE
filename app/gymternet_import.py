@@ -409,6 +409,22 @@ def parse_flat_csv(filename: str, rows: list[dict], year_hint: Optional[int]) ->
             if apparatus == "VT" and vt_attempt is None and should_label_vault_as_attempt_one(year, discipline):
                 vt_attempt = 1
                 vault_attempt_order_uncertain = True
+            score = normalize_gymternet_score_value(
+                normalized.get("score"),
+                "final",
+                apparatus,
+                issues,
+                filename,
+                row_number,
+            )
+            d_score = normalize_gymternet_score_value(
+                normalized.get("d score"),
+                "dscore",
+                apparatus,
+                issues,
+                filename,
+                row_number,
+            )
             records.append(ParsedGymternetResult(
                 source_sheet=filename,
                 source_row=row_number,
@@ -424,11 +440,9 @@ def parse_flat_csv(filename: str, rows: list[dict], year_hint: Optional[int]) ->
                 vt_attempt=vt_attempt,
                 format=format_value,
                 round=round_value,
-                score=normalize_score(normalized.get("score")),
+                score=normalize_score(score),
                 day=explicit_day if explicit_day is not None else event_day,
-                D_score=normalize_optional_score(
-                    normalized.get("d score")
-                ),
+                D_score=d_score,
                 vault_attempt_order_uncertain=vault_attempt_order_uncertain,
             ))
         except Exception as exc:
@@ -553,6 +567,17 @@ def parse_pivot_rows(
         )
 
         score_columns = extract_score_columns(normalized, discipline)
+        score_columns = {
+            apparatus: normalize_gymternet_score_value(
+                value,
+                score_kind,
+                apparatus,
+                issues,
+                sheet_name,
+                row_number,
+            )
+            for apparatus, value in score_columns.items()
+        }
         vt_score = score_columns.get("VT")
         vt_avg = score_columns.get("VT AVG")
         vt_sum = score_columns.get("VT SUM")
@@ -580,6 +605,7 @@ def parse_pivot_rows(
                 round_value,
                 score_columns.get(apparatus),
                 score_kind,
+                issues,
                 day=record_day,
             )
 
@@ -601,6 +627,7 @@ def parse_pivot_rows(
             round_value,
             vt_score,
             score_kind,
+            issues,
             day=record_day,
             vault_attempt_order_uncertain=label_vault_attempts,
         )
@@ -623,6 +650,7 @@ def parse_pivot_rows(
                 round_value,
                 vt_avg,
                 score_kind,
+                issues,
                 day=record_day,
             )
             if derive_vt2_final_score and vt_score is not None and score_kind == "final":
@@ -644,6 +672,7 @@ def parse_pivot_rows(
                     round_value,
                     round(vt_avg * 2 - vt_score, 3),
                     score_kind,
+                    issues,
                     day=record_day,
                     vault_attempt_order_uncertain=True,
                 )
@@ -688,6 +717,7 @@ def parse_pivot_rows(
                 round_value,
                 round(vt_sum - vt_score, 3),
                 score_kind,
+                issues,
                 day=record_day,
                 vault_attempt_order_uncertain=True,
             )
@@ -712,6 +742,7 @@ def parse_pivot_rows(
                 round_value,
                 aa_value,
                 score_kind,
+                issues,
                 day=record_day,
             )
     return records
@@ -735,10 +766,18 @@ def add_record_if_score(
     round_value: models.RoundEnum,
     raw_score,
     score_kind: str,
+    issues: list[dict],
     day: Optional[int] = None,
     vault_attempt_order_uncertain: bool = False,
 ) -> None:
-    score = normalize_optional_score(raw_score)
+    score = normalize_gymternet_score_value(
+        raw_score,
+        score_kind,
+        apparatus,
+        issues,
+        sheet_name,
+        row_number,
+    )
     if score is None:
         return
     final_score = score if score_kind == "final" else None
@@ -1012,6 +1051,58 @@ def normalize_optional_score(value) -> Optional[float]:
     if score < 0:
         return None
     return round(score, 3)
+
+
+def gymternet_score_upper_bound(score_kind: str, apparatus: str) -> Optional[float]:
+    if score_kind == "final":
+        return 100.0 if apparatus == "AA" else 20.0
+    if score_kind == "dscore":
+        return 20.0
+    return None
+
+
+def normalize_gymternet_score_value(
+    value,
+    score_kind: str,
+    apparatus: str,
+    issues: list[dict],
+    source: str,
+    row_number: int,
+) -> Optional[float]:
+    score = normalize_optional_score(value)
+    if score is None:
+        return None
+    upper_bound = gymternet_score_upper_bound(score_kind, apparatus)
+    if upper_bound is None or score <= upper_bound:
+        return score
+
+    for divisor in (10, 100, 1000):
+        candidate = round(score / divisor, 3)
+        if 0 <= candidate <= upper_bound:
+            issues.append({
+                "severity": "warning",
+                "sheet": source,
+                "row": row_number,
+                "message": (
+                    f"Corrected outlier {score_kind} score for {apparatus}: "
+                    f"{score} -> {candidate}"
+                ),
+                "original_score": score,
+                "corrected_score": candidate,
+                "apparatus": apparatus,
+                "score_kind": score_kind,
+            })
+            return candidate
+    issues.append({
+        "severity": "error",
+        "sheet": source,
+        "row": row_number,
+        "message": f"Outlier {score_kind} score for {apparatus}: {score}",
+        "original_score": score,
+        "apparatus": apparatus,
+        "score_kind": score_kind,
+    })
+    return score
 
 
 def parse_int(value) -> Optional[int]:
