@@ -621,6 +621,11 @@ button {
   line-height: 1.34;
 }
 
+.search-suggestion-status {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .search-input {
   width: 100%;
   min-width: 0;

@@ -752,10 +752,12 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
       suggestions.innerHTML = "";
       return;
     }
+    suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${t("loading")}</div>`;
+    suggestions.hidden = false;
     debounceTimer = window.setTimeout(async () => {
       const requestId = ++searchAutocompleteRequestId;
       try {
-        const data = await getJson("/search", { q: query, limit: 5 });
+        const data = await getJson("/search/", { q: query, limit: 5 });
         if (requestId !== searchAutocompleteRequestId) return;
         renderSearchSuggestions(suggestions, buildSuggestionItems(data));
       } catch (_error) {
@@ -869,7 +871,7 @@ async function renderGlobalSearch() {
   if (!query) return;
   try {
     trackSiteSearch(query);
-    const results = await getJson("/search", { q: query, limit: 8 });
+    const results = await getJson("/search/", { q: query, limit: 8 });
     $("#globalSearchResults").innerHTML = renderGlobalSearchResults(results);
   } catch (error) {
     $("#globalSearchResults").innerHTML = errorState(error);
