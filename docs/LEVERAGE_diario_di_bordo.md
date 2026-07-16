@@ -1823,6 +1823,7 @@ Funzionalita frontend iniziali implementate:
 - rifinitura dei bordi dei componenti dati: card, pannelli, suggerimenti di ricerca e pill dei risultati sono stati allineati a raggi piu controllati, evitando l'effetto eccessivamente "a pillola" nei calendari, nelle classifiche e nelle schede risultato;
 - separazione semantica delle classifiche globali: le ranking complessive richiedono una disciplina esplicita `MAG` o `WAG` e applicano un contesto di ciclo di punteggio, evitando confronti impliciti tra GAM/GAF o tra codici di punteggio diversi;
 - trasformazione dell'anteprima calendario della home in una vera griglia mensile interattiva: gli eventi datati vengono visualizzati come barre multi-day sulle settimane, con corsie separate per gestire sovrapposizioni e indicatore del giorno corrente;
+- aggiunta della navigazione mese precedente/successivo direttamente nell'anteprima calendario della home, con frecce accanto al nome del mese e ricarica mirata del range calendario selezionato;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -2033,11 +2034,15 @@ Scelta progettuale adottata:
 - gli eventi sovrapposti vengono distribuiti su corsie separate, fino a quattro corsie visibili per settimana;
 - se una settimana contiene piu eventi di quelli mostrabili, viene visualizzato un indicatore compatto `+N`;
 - il giorno corrente viene evidenziato direttamente nel numero del giorno;
-- gli eventi senza date precise non vengono posizionati nella griglia della home, per evitare una rappresentazione giornaliera falsa.
+- gli eventi senza date precise non vengono posizionati nella griglia della home, per evitare una rappresentazione giornaliera falsa;
+- il mese visualizzato puo essere cambiato dalla home con frecce precedente/successivo collocate accanto al nome del mese;
+- il cambio mese aggiorna lo stato locale della home e ricarica da `/events/calendar` solo il range del nuovo mese, mantenendo indipendente la preview ranking.
 
 Motivazione UI:
 
 Il calendario e una delle viste centrali di LEVERAGE: non deve sembrare una lista secondaria, ma un vero strumento di orientamento nella stagione. La home mantiene comunque una versione compatta, mentre una futura pagina `Events/Calendar` potra espandere la stessa logica con navigazione mese/anno, filtri piu ricchi e viste admin.
+
+La navigazione mese-per-mese anticipa il comportamento della futura pagina calendario completa senza appesantire la home: l'utente puo esplorare rapidamente eventi passati e futuri, mentre la UI resta minimal e coerente con i controlli arrotondati in stile app scelti per LEVERAGE.
 
 Verifiche:
 
@@ -2046,6 +2051,8 @@ Verifiche:
 - controllo `git diff --check` pulito;
 - runtime JavaScript locale non disponibile (`node`, `deno` e `bun` assenti), quindi la validazione sintattica JS e stata sostituita da ispezione del diff e verifica via preview servita;
 - modifica salvata nel commit `30817a3`.
+- navigazione mese calendario salvata nel commit `2abbea1`;
+- endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
 
