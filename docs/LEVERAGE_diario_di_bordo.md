@@ -1818,6 +1818,7 @@ Funzionalita frontend iniziali implementate:
 - potenziamento semantico della ricerca globale con parsing degli anni e alias dei paesi: query come `Serie A 2026` filtrano correttamente gli eventi/risultati del 2026, mentre ricerche come `Italy` o `ITA` restituiscono atleti di quel country ed eventi svolti in quel paese;
 - ulteriore normalizzazione semantica della ricerca globale per query numeriche/ordinali, ad esempio `Bundesliga 2` riconduce anche a eventi denominati `2nd Bundesliga`;
 - aggiunta dei suggerimenti live nella barra di ricerca globale, visibili sia mentre l'utente digita sia mentre cancella, con risultati provenienti dallo stesso endpoint `/search` e raggruppabili in atleti, eventi, nazioni, attrezzi e risultati;
+- correzione della visibilita dei suggerimenti live: chiamata frontend indirizzata direttamente a `/search/` per evitare redirect, stato `Loading...` immediato durante l'attesa del backend e cache-buster su CSS/JS per forzare il caricamento della versione aggiornata in anteprima locale;
 - aggiunta della pagina frontend `Search`, con risultati raggruppati per atleti, eventi, nazioni, attrezzi e risultati, mantenendo layout minimale e coerente con la home;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
@@ -1854,6 +1855,7 @@ Commit principali della fase UI iniziale:
 | `51dafe1` | Aggiunta ricerca globale backend/frontend |
 | `c280ef4` | Potenziamento ricerca globale con anni e alias paese |
 | `d1a186f` | Autocomplete ricerca globale e matching ordinale |
+| `c908dcc` | Correzione visibilita autocomplete ricerca |
 | `e71f08c` | Introduzione splash iniziale e home centrata |
 | `2a4dc9f` | Rifinitura intro home con topbar a tendina e wordmark ufficiale |
 | `4e89b71` | Rifinitura styling dei controlli frontend |
