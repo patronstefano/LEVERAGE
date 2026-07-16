@@ -1821,6 +1821,7 @@ Funzionalita frontend iniziali implementate:
 - correzione della visibilita dei suggerimenti live: chiamata frontend indirizzata direttamente a `/search/` per evitare redirect, stato `Loading...` immediato durante l'attesa del backend e cache-buster su CSS/JS per forzare il caricamento della versione aggiornata in anteprima locale;
 - aggiunta della pagina frontend `Search`, con risultati raggruppati per atleti, eventi, nazioni, attrezzi e risultati, mantenendo layout minimale e coerente con la home;
 - rifinitura dei bordi dei componenti dati: card, pannelli, suggerimenti di ricerca e pill dei risultati sono stati allineati a raggi piu controllati, evitando l'effetto eccessivamente "a pillola" nei calendari, nelle classifiche e nelle schede risultato;
+- separazione semantica delle classifiche globali: le ranking complessive richiedono una disciplina esplicita `MAG` o `WAG` e applicano un contesto di ciclo di punteggio, evitando confronti impliciti tra GAM/GAF o tra codici di punteggio diversi;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -1882,6 +1883,7 @@ Commit principali della fase UI iniziale:
 | `d2dff49` | Aggregazione reale dei filtri nella pagina risultati |
 | `a66858e` | Correzione outlier punteggi e protezione import Gymternet |
 | `9ef341b` | Rifinitura raggi visivi di card e pill dati frontend |
+| `fb88ea7` | Separazione ranking globali per disciplina e ciclo di punteggio |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -1969,6 +1971,48 @@ Verifiche:
 - server frontend locale verificato con risposta HTTP `200`;
 - controllo `git diff --check` pulito;
 - modifica salvata nel commit `9ef341b`.
+
+Aggiornamento del 16 luglio 2026: classifiche globali, disciplina e cicli di punteggio
+
+Problema emerso:
+
+Le classifiche globali non devono mescolare automaticamente risultati MAG e WAG. Anche quando alcuni attrezzi hanno lo stesso nome, le regole e le scale di punteggio possono essere diverse. Inoltre, confrontare punteggi appartenenti a quadrienni/cicli di punteggio diversi puo essere utile come analisi storica, ma non deve avvenire senza avviso metodologico.
+
+Cicli di punteggio definiti:
+
+- `2017-2021`, esteso di un anno a causa dello slittamento olimpico legato al Covid;
+- `2022-2024`;
+- `2025-2028`;
+- `2029-2032` e successivi, calcolati automaticamente con la stessa logica quadriennale.
+
+Scelta progettuale adottata:
+
+- aggiunto il modulo `app/scoring_cycles.py`, che ricava il ciclo di punteggio dall'anno dell'evento senza aggiungere campi al database;
+- aggiunto il modulo `app/ranking_context.py`, condiviso dagli endpoint ranking;
+- gli endpoint globali `/analytics/rankings` e `/results/analytics/rankings` richiedono ora `discipline=MAG` o `discipline=WAG`, salvo uso esplicito di `allow_mixed_disciplines=true`;
+- se l'utente non imposta un periodo o un ciclo specifico, il backend applica di default il ciclo di punteggio piu recente disponibile nel set filtrato;
+- l'opzione `include_all_scoring_cycles=true` permette analisi trasversali, ma il payload restituisce warning espliciti;
+- il payload ranking include ora `discipline`, `scoring_cycle`, `available_scoring_cycles` e `warnings`.
+
+Impatto UI:
+
+- la pagina `Rankings` mostra MAG come default semantico quando l'utente non ha ancora scelto una disciplina;
+- WAG resta selezionabile in modo esplicito;
+- sono stati aggiunti controlli per `2017-2021`, `2022-2024`, `2025-2028` e `All cycles`;
+- sopra le liste ranking viene mostrata una nota compatta con disciplina e ciclo applicato;
+- in caso di confronto tra cicli o discipline diverse, la UI mostra i warning ricevuti dal backend.
+
+Motivazione semantica:
+
+La classifica deve essere un confronto sportivo coerente, non solo un ordinamento numerico. Separare disciplina e ciclo di punteggio riduce il rischio di confronti fuorvianti e prepara la futura UI a spiegare chiaramente quando una comparazione e interna allo stesso codice o quando serve solo come lettura storica/metodologica.
+
+Verifiche:
+
+- aggiunto test automatico `test_global_rankings_require_discipline_and_expose_scoring_cycle_context`;
+- aggiornati i test esistenti per richiedere disciplina nelle ranking globali;
+- suite completa verificata con `116 passed`;
+- frontend locale verificato con risposta HTTP `200`;
+- modifica salvata nel commit `fb88ea7`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
 
