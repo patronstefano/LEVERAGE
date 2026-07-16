@@ -1827,6 +1827,9 @@ Funzionalita frontend iniziali implementate:
 - ribilanciamento della sezione home `Calendar preview` / `Ranking preview`: il calendario riceve piu spazio orizzontale, mentre la classifica resta una preview piu compatta;
 - trasformazione della pagina `Events` in calendario mensile completo: la vista non e piu una lista di card, ma una griglia piu ampia con barre multi-day, legenda completa e navigazione mese precedente/successivo;
 - estensione dell'endpoint pubblico `/events/calendar` alle voci `EventCalendarEntry`, incluse righe `calendar_only` senza scheda evento collegata, cosi il calendario puo mostrare anche eventi schedulati senza risultati;
+- supporto a filtri calendario multi-selezione: l'utente puo selezionare contemporaneamente `MAG` e `WAG`, oppure `junior` e `senior`;
+- correzione semantica dei filtri evento: gli eventi `MAG and WAG` compaiono anche filtrando solo `MAG` o solo `WAG`; gli eventi `junior and senior` compaiono anche filtrando solo `junior` o solo `senior`;
+- aggiunta del pulsante `Today` / `Oggi` vicino al mese, sia nella preview home sia nel calendario completo, per tornare rapidamente al mese corrente;
 - integrazione leggera con le site analytics: ogni ricerca globale invia un evento `search` non bloccante a `/site-analytics/events`, cosi la dashboard admin potra conteggiare le ricerche piu frequenti;
 - introduzione iniziale della home con logo LEVERAGE mostrato brevemente, dissolvenza/dispersione leggera e comparsa della scritta `LEVERAGE` centrata in alto con sottotitolo minimale `Artistic Gymnastics Analytics`;
 - rifinitura dell'introduzione iniziale: dopo la dissolvenza del logo, la topbar scende dall'alto con effetto tendina e la scritta centrale `LEVERAGE` usa il wordmark PNG ufficiale fornito;
@@ -2061,6 +2064,9 @@ Aggiornamento successivo:
 - le righe `calendar_only` vengono restituite con `id = null`, `calendar_entry_id` valorizzato e `is_calendar_only = true`, cosi la UI puo mostrarle nel calendario senza rimandare a una scheda evento inesistente;
 - gli `Event` senza date precise non vengono piu inseriti nei range mensili come se durassero tutto l'anno: nel calendario mensile compaiono solo eventi con date reali o voci `EventCalendarEntry`;
 - la verifica sul database locale al 16 luglio 2026 ha confermato che, dopo tale data, risultava presente un solo evento futuro datato (`British Team Championships`) e nessuna riga futura `calendar_only`; quindi l'assenza di altri futuri senza risultati dipendeva dai dati effettivamente materializzati nel DB, non solo dalla UI.
+- i filtri calendario `MAG`/`WAG` e `junior`/`senior` sono diventati multi-selezione;
+- il backend tratta i valori aggregati in modo inclusivo: `MAG and WAG` e compatibile con il filtro `MAG` e con il filtro `WAG`, mentre `junior and senior` e compatibile con il filtro `junior` e con il filtro `senior`;
+- il pulsante localizzato `Today` / `Oggi` riporta il calendario visualizzato al mese corrente, sia nella preview home sia nella vista completa `Events`.
 
 Verifiche:
 
@@ -2074,6 +2080,7 @@ Verifiche:
 - tooltip localizzato del giorno corrente salvato nel commit `f1166ce`;
 - ribilanciamento layout calendario/ranking salvato nel commit `d7d603e`;
 - calendario completo e supporto `EventCalendarEntry` salvati nel commit `2f9127e`;
+- filtri calendario multi-selezione e pulsante ritorno a oggi salvati nel commit `2b9bd88`;
 - endpoint calendario verificato anche su un mese diverso con risposta HTTP `200`.
 
 Aggiornamento del 16 luglio 2026: correzione outlier nella ranking preview
