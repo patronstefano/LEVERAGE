@@ -233,6 +233,30 @@ def parse_search_query(query: str) -> SearchParts:
     )
 
 
+def clause_has_search_signal(clause: SearchClause) -> bool:
+    return bool(
+        clause.text_terms
+        or clause.years
+        or clause.country_terms
+        or clause.apparatus_codes
+    )
+
+
+def clause_has_filter_signal(clause: SearchClause) -> bool:
+    return bool(clause.years or clause.country_terms or clause.apparatus_codes)
+
+
+def is_structured_result_search(db: Session, parts: SearchParts) -> bool:
+    meaningful_clauses = [clause for clause in parts.clauses if clause_has_search_signal(clause)]
+    if len(meaningful_clauses) < 2:
+        return False
+    if any(clause_has_filter_signal(clause) for clause in meaningful_clauses):
+        return True
+    has_athlete_clause = any(has_matching_athlete(db, clause) for clause in meaningful_clauses)
+    has_event_clause = any(has_matching_event(db, clause) for clause in meaningful_clauses)
+    return has_athlete_clause and has_event_clause
+
+
 def country_like_conditions(column, country_terms: set[str]):
     return [column.ilike(normalized_like(term)) for term in country_terms]
 
@@ -577,6 +601,7 @@ def global_search(
         return schemas.GlobalSearchResponse(query="", total_count=0)
     parts = parse_search_query(query)
     apparatus_codes = parts.apparatus_codes
+    structured_result_search = is_structured_result_search(db, parts)
 
     athlete_conditions = athlete_search_conditions(parts)
     athletes = []
@@ -645,6 +670,7 @@ def global_search(
     return schemas.GlobalSearchResponse(
         query=query,
         total_count=total_count,
+        structured_result_search=structured_result_search,
         athletes=athlete_items,
         events=event_items,
         countries=countries,

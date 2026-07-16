@@ -60,8 +60,10 @@ const translations = {
     matchingCountries: "Countries",
     matchingApparatuses: "Apparatus",
     matchingResults: "Results",
+    filteredResults: "Filtered results",
     noGlobalSearchQuery: "Type a search term to explore all LEVERAGE data.",
     noGlobalSearchResults: "No global results found.",
+    noStructuredSearchResults: "No results match all the search filters together.",
     systemStatus: "API status",
     online: "Online",
     offline: "Offline",
@@ -153,8 +155,10 @@ const translations = {
     matchingCountries: "Nazioni",
     matchingApparatuses: "Attrezzi",
     matchingResults: "Risultati",
+    filteredResults: "Risultati filtrati",
     noGlobalSearchQuery: "Scrivi un termine per cercare in tutti i dati di LEVERAGE.",
     noGlobalSearchResults: "Nessun risultato globale trovato.",
+    noStructuredSearchResults: "Nessun risultato corrisponde a tutti i filtri della ricerca.",
     systemStatus: "Stato API",
     online: "Online",
     offline: "Offline",
@@ -246,8 +250,10 @@ const translations = {
     matchingCountries: "Paises",
     matchingApparatuses: "Aparatos",
     matchingResults: "Resultados",
+    filteredResults: "Resultados filtrados",
     noGlobalSearchQuery: "Escribe un termino para explorar todos los datos de LEVERAGE.",
     noGlobalSearchResults: "No se encontraron resultados globales.",
+    noStructuredSearchResults: "Ningun resultado coincide con todos los filtros de busqueda.",
     systemStatus: "Estado API",
     online: "Online",
     offline: "Offline",
@@ -339,8 +345,10 @@ const translations = {
     matchingCountries: "Pays",
     matchingApparatuses: "Appareils",
     matchingResults: "Resultats",
+    filteredResults: "Resultats filtres",
     noGlobalSearchQuery: "Saisissez un terme pour explorer toutes les donnees LEVERAGE.",
     noGlobalSearchResults: "Aucun resultat global trouve.",
+    noStructuredSearchResults: "Aucun resultat ne correspond a tous les filtres de recherche.",
     systemStatus: "Statut API",
     online: "Online",
     offline: "Offline",
@@ -856,6 +864,10 @@ function scoreLabel(value) {
 }
 
 function renderGlobalSearchResults(data) {
+  const structuredResultSearch = Boolean(data.structured_result_search);
+  if (structuredResultSearch && !data.results.length) {
+    return messageState(t("noStructuredSearchResults"));
+  }
   if (!data.total_count) {
     return messageState(t("noGlobalSearchResults"));
   }
@@ -892,6 +904,13 @@ function renderGlobalSearchResults(data) {
     const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
     return entityCard(result.athlete_name, meta, pills, `#/events/${result.event_id}`);
   });
+  if (structuredResultSearch) {
+    return `
+      <div class="search-results">
+        ${searchSection(t("filteredResults"), resultItems)}
+      </div>
+    `;
+  }
   return `
     <div class="search-results">
       ${searchSection(t("matchingAthletes"), athleteItems)}

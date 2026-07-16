@@ -896,6 +896,7 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
 
     athlete_search = client.get("/search", params={"q": "Simone", "limit": 5})
     assert athlete_search.status_code == 200
+    assert athlete_search.json()["structured_result_search"] is False
     assert athlete_search.json()["athletes"][0]["id"] == athlete["id"]
 
     event_search = client.get("/search", params={"q": "Pacific", "limit": 5})
@@ -1066,6 +1067,7 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     )
     assert structured_search.status_code == 200
     structured_payload = structured_search.json()
+    assert structured_payload["structured_result_search"] is True
     assert structured_payload["athletes"][0]["id"] == stefano_athlete["id"]
     assert any(event["id"] == serie_a_event["id"] for event in structured_payload["events"])
     assert [item["result_id"] for item in structured_payload["results"]] == [stefano_serie_a_vt["id"]]
