@@ -1878,6 +1878,7 @@ Commit principali della fase UI iniziale:
 | `ee3f42e` | Ritorno a selettore lingua compatto con popover |
 | `69cdee4` | Riduzione del selettore lingua a pill minimale |
 | `2d512ad` | Ricerca globale strutturata per intento e autocomplete ordinato |
+| `d2dff49` | Aggregazione reale dei filtri nella pagina risultati |
 
 Aggiornamento del 16 luglio 2026: ricerca globale strutturata
 
@@ -1921,6 +1922,27 @@ Verifiche:
 - aggiunto test automatico sull'esempio `Stefano Patron, Serie A 2026, volteggio`;
 - il test verifica che venga restituito solo il risultato `VT` dell'atleta corretto nell'evento corretto, escludendo risultati dello stesso atleta su altri attrezzi, risultati di altri atleti nello stesso evento e risultati dello stesso atleta in altri eventi;
 - suite API verificata con `114 passed`.
+
+Correzione successiva della stessa milestone:
+
+E emersa una distinzione importante tra autocomplete e pagina dei risultati. I suggerimenti possono continuare a mostrare scorciatoie utili, come scheda atleta, scheda evento o facet attrezzo. Tuttavia, quando l'utente conferma una query composta, la pagina risultati non deve mostrare quelle entita come blocchi separati principali: deve mostrare i `Result` che soddisfano simultaneamente tutti i filtri riconosciuti.
+
+Esempio:
+
+`Stefano Patron, Serie A 2026, volteggio`
+
+Comportamento corretto:
+
+- autocomplete: puo aiutare l'utente mostrando atleta, evento e attrezzo riconosciuti;
+- pagina risultati: mostra solo i risultati compatibili con `Stefano Patron` + `Serie A 2026` + `VT`;
+- se non esistono risultati compatibili con tutti i filtri, la pagina mostra un messaggio dedicato invece di ripiegare su schede o facet generici.
+
+Implementazione:
+
+- aggiunto al payload globale il flag `structured_result_search`;
+- la UI usa questo flag per renderizzare la pagina in modalita `Filtered results`;
+- le sezioni separate `Athletes`, `Events`, `Countries`, `Apparatus` restano disponibili per ricerche semplici, ma non dominano piu le ricerche strutturate sui risultati;
+- aggiunta verifica automatica che distingue ricerca semplice da ricerca composta.
 
 Decisione metodologica per la tesi:
 
