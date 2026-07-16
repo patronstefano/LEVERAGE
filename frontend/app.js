@@ -1249,8 +1249,11 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
                 ${week.days.map((day) => {
                   const isCurrentMonth = sameMonth(day, monthDate);
                   const isToday = sameDay(day, TODAY);
+                  const todayAttributes = isToday
+                    ? `data-today-label="${escapeHtml(t("today"))}" title="${escapeHtml(t("today"))}" tabindex="0"`
+                    : "";
                   return `
-                    <div class="calendar-day ${isCurrentMonth ? "" : "outside"} ${isToday ? "today" : ""}">
+                    <div class="calendar-day ${isCurrentMonth ? "" : "outside"} ${isToday ? "today" : ""}" ${todayAttributes}>
                       <span class="calendar-day-number">${day.getDate()}</span>
                       ${isToday ? `<span class="sr-only">${t("today")}</span>` : ""}
                     </div>

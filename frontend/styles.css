@@ -1022,6 +1022,7 @@ button {
 }
 
 .calendar-day {
+  position: relative;
   min-height: 34px;
   padding: 6px 7px;
   border-right: 1px solid rgba(231, 231, 236, 0.72);
@@ -1051,6 +1052,37 @@ button {
   background: var(--brand-blue);
   color: #fff;
   font-weight: 700;
+}
+
+.calendar-day.today::after {
+  position: absolute;
+  top: 7px;
+  left: 38px;
+  z-index: 3;
+  max-width: calc(100% - 44px);
+  padding: 4px 8px;
+  border: 1px solid rgba(25, 23, 71, 0.08);
+  border-radius: var(--data-chip-radius);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(17, 17, 20, 0.09);
+  content: attr(data-today-label);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  text-overflow: ellipsis;
+  transform: translateX(-3px);
+  transition: opacity 150ms ease, transform 150ms ease;
+  white-space: nowrap;
+}
+
+.calendar-day.today:hover::after,
+.calendar-day.today:focus-visible::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .calendar-bars {
