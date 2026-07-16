@@ -990,6 +990,15 @@ button {
   background: var(--warning);
 }
 
+.legend-dot.ongoing {
+  background: var(--success);
+}
+
+.legend-dot.upcoming {
+  background: rgba(25, 23, 71, 0.18);
+  border: 1px solid rgba(25, 23, 71, 0.22);
+}
+
 .calendar-weekdays,
 .calendar-days,
 .calendar-bars {
@@ -1132,6 +1141,12 @@ button {
   border-color: rgba(22, 101, 52, 0.16);
 }
 
+.calendar-event-bar.upcoming {
+  color: var(--brand-blue);
+  background: rgba(25, 23, 71, 0.08);
+  border-color: rgba(25, 23, 71, 0.14);
+}
+
 .calendar-event-label {
   min-width: 0;
   overflow: hidden;
@@ -1143,6 +1158,40 @@ button {
   color: var(--muted);
   background: rgba(245, 245, 247, 0.86);
   text-align: center;
+}
+
+.calendar-page-panel {
+  padding: 18px;
+}
+
+.full-calendar .calendar-toolbar,
+.full-calendar .calendar-weekdays,
+.full-calendar .calendar-month-grid {
+  min-width: 760px;
+}
+
+.full-calendar .calendar-toolbar {
+  align-items: center;
+}
+
+.full-calendar .calendar-day {
+  min-height: 46px;
+  padding: 8px;
+}
+
+.full-calendar .calendar-bars {
+  grid-auto-rows: 25px;
+  gap: 4px;
+  min-height: calc((var(--calendar-lanes) * 25px) + ((var(--calendar-lanes) - 1) * 4px) + 16px);
+  padding: 8px;
+}
+
+.full-calendar .calendar-event-bar,
+.full-calendar .calendar-more {
+  height: 25px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 23px;
 }
 
 .entity-card {

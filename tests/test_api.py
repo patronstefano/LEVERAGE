@@ -4277,6 +4277,44 @@ def test_event_calendar_exposes_future_events_and_computed_statuses():
     assert [reminder["event"]["name"] for reminder in admin_calendar["reminders"]] == ["Completed Without Results"]
 
 
+def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_in_month_ranges():
+    undated_event = models.Event(
+        name="Undated Season Event",
+        year=2026,
+        discipline=models.EventDisciplineEnum.MAG,
+        category=models.EventCategoryEnum.SENIOR,
+        level=models.LevelEnum.INTERNATIONAL_EVENT,
+    )
+    calendar_only_entry = models.EventCalendarEntry(
+        name="Future Calendar Only Cup",
+        year=2026,
+        start_date=date(2026, 11, 14),
+        end_date=date(2026, 11, 15),
+        discipline=models.EventDisciplineEnum.WAG,
+        source="gymternet_calendar",
+        source_row=99,
+    )
+    db = SessionLocal()
+    try:
+        db.add_all([undated_event, calendar_only_entry])
+        db.commit()
+    finally:
+        db.close()
+
+    response = client.get(
+        "/events/calendar?start_date=2026-11-01&end_date=2026-11-30&as_of=2026-07-16"
+    )
+    assert response.status_code == 200
+    calendar = {event["name"]: event for event in response.json()}
+    assert "Undated Season Event" not in calendar
+    assert calendar["Future Calendar Only Cup"]["id"] is None
+    assert calendar["Future Calendar Only Cup"]["calendar_entry_id"] is not None
+    assert calendar["Future Calendar Only Cup"]["is_calendar_only"] is True
+    assert calendar["Future Calendar Only Cup"]["discipline"] == "WAG"
+    assert calendar["Future Calendar Only Cup"]["has_results"] is False
+    assert calendar["Future Calendar Only Cup"]["calendar_status"] == "upcoming"
+
+
 def test_admin_event_result_reminders_are_admin_only_and_create_notifications_once():
     client.post("/auth/register", json={"email": "event_reminder_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("event_reminder_admin@example.com")

@@ -652,7 +652,19 @@ class EventUpdate(BaseModel):
         return self
 
 
-class EventCalendarItem(EventRead):
+class EventCalendarItem(EventBase):
+    id: Optional[int] = None
+    calendar_entry_id: Optional[int] = None
+    calendar_source: Optional[str] = None
+    is_calendar_only: bool = False
+    world_gymnastics_event_id: Optional[str] = None
+    world_gymnastics_event_url: Optional[str] = None
+    world_gymnastics_status: Optional[str] = None
+    world_gymnastics_verified_at: Optional[datetime] = None
+    world_gymnastics_verified_by_admin_id: Optional[int] = None
+    is_deleted: bool = False
+    deleted_at: Optional[datetime] = None
+    deleted_by_admin_id: Optional[int] = None
     result_count: int
     has_results: bool
     calendar_status: EventCalendarStatusEnum

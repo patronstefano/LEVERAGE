@@ -6,6 +6,7 @@ const state = {
   language: localStorage.getItem(LANGUAGE_KEY) || "en",
   apiBase: localStorage.getItem(API_BASE_KEY) || "http://localhost:8000",
   homeCalendarMonthOffset: 0,
+  eventsCalendarMonthOffset: 0,
   filters: {
     discipline: "",
     category: "",
@@ -90,6 +91,9 @@ const translations = {
     today: "Today",
     resultsAvailable: "Results available",
     resultsMissing: "Results missing",
+    ongoing: "Ongoing",
+    upcoming: "Upcoming",
+    calendarOnly: "Calendar only",
     rankingPreview: "Ranking preview",
     viewAll: "View all",
     athletesHeading: "Athletes",
@@ -194,6 +198,9 @@ const translations = {
     today: "Oggi",
     resultsAvailable: "Risultati disponibili",
     resultsMissing: "Risultati mancanti",
+    ongoing: "In corso",
+    upcoming: "In programma",
+    calendarOnly: "Solo calendario",
     rankingPreview: "Anteprima classifica",
     viewAll: "Vedi tutto",
     athletesHeading: "Atleti",
@@ -298,6 +305,9 @@ const translations = {
     today: "Hoy",
     resultsAvailable: "Resultados disponibles",
     resultsMissing: "Resultados pendientes",
+    ongoing: "En curso",
+    upcoming: "Programado",
+    calendarOnly: "Solo calendario",
     rankingPreview: "Vista rankings",
     viewAll: "Ver todo",
     athletesHeading: "Atletas",
@@ -402,6 +412,9 @@ const translations = {
     today: "Aujourd'hui",
     resultsAvailable: "Resultats disponibles",
     resultsMissing: "Resultats manquants",
+    ongoing: "En cours",
+    upcoming: "A venir",
+    calendarOnly: "Calendrier seul",
     rankingPreview: "Apercu classement",
     viewAll: "Tout voir",
     athletesHeading: "Athletes",
@@ -1069,8 +1082,16 @@ function rankingQueryParams(limit) {
   return params;
 }
 
+function calendarDateFromOffset(offset) {
+  return new Date(TODAY.getFullYear(), TODAY.getMonth() + offset, 1);
+}
+
 function homeCalendarDate() {
-  return new Date(TODAY.getFullYear(), TODAY.getMonth() + state.homeCalendarMonthOffset, 1);
+  return calendarDateFromOffset(state.homeCalendarMonthOffset);
+}
+
+function eventsCalendarDate() {
+  return calendarDateFromOffset(state.eventsCalendarMonthOffset);
 }
 
 function filterButton(label, type, value, activeValue = state.filters[type]) {
@@ -1132,6 +1153,34 @@ async function changeHomeCalendarMonth(delta) {
     $("#statusDot").className = "status-dot offline";
     $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
+  }
+}
+
+async function hydrateEventsCalendar() {
+  const calendarDate = eventsCalendarDate();
+  const monthStart = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+  const monthEnd = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
+  const events = await getJson("/events/calendar", {
+    start_date: formatLocalIso(monthStart),
+    end_date: formatLocalIso(monthEnd),
+    as_of: formatLocalIso(TODAY),
+    limit: 1000,
+    discipline: state.filters.discipline,
+    category: state.filters.category,
+  });
+  renderHomeCalendar("#eventResults", events, calendarDate, {
+    navScope: "events",
+    wrapperClass: "home-calendar full-calendar",
+    maxVisibleLanes: 6,
+  });
+}
+
+async function changeEventsCalendarMonth(delta) {
+  state.eventsCalendarMonthOffset += delta;
+  try {
+    await hydrateEventsCalendar();
+  } catch (error) {
+    $("#eventResults").innerHTML = errorState(error);
   }
 }
 
@@ -1211,27 +1260,32 @@ function buildWeekEventSegments(events, week) {
   return segments;
 }
 
-function renderHomeCalendar(selector, events, monthDate = TODAY) {
+function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
   const node = $(selector);
   const weeks = buildCalendarWeeks(monthDate);
   const labels = weekdayLabels();
   const sortedEvents = sortCalendarItems(events).filter((event) => event.start_date || event.end_date);
   const monthName = monthLabel(monthDate);
+  const navScope = options.navScope || "home";
+  const wrapperClass = options.wrapperClass || "home-calendar";
+  const maxVisibleLanes = options.maxVisibleLanes || 4;
 
   node.innerHTML = `
-    <div class="home-calendar" aria-label="${escapeHtml(`${t("calendarMonth")} ${monthName}`)}">
+    <div class="${wrapperClass}" aria-label="${escapeHtml(`${t("calendarMonth")} ${monthName}`)}">
       <div class="calendar-toolbar">
         <div class="calendar-title-row">
-          <button class="calendar-nav-button" type="button" data-calendar-nav="-1" aria-label="${t("previousMonth")}" title="${t("previousMonth")}">&#8249;</button>
+          <button class="calendar-nav-button" type="button" data-calendar-nav="-1" data-calendar-nav-scope="${navScope}" aria-label="${t("previousMonth")}" title="${t("previousMonth")}">&#8249;</button>
           <div>
             <span class="calendar-kicker">${t("calendarMonth")}</span>
             <strong>${escapeHtml(monthName)}</strong>
           </div>
-          <button class="calendar-nav-button" type="button" data-calendar-nav="1" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
+          <button class="calendar-nav-button" type="button" data-calendar-nav="1" data-calendar-nav-scope="${navScope}" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
         </div>
         <div class="calendar-legend" aria-label="${t("status")}">
           <span><i class="legend-dot has-results"></i>${t("resultsAvailable")}</span>
           <span><i class="legend-dot missing-results"></i>${t("resultsMissing")}</span>
+          <span><i class="legend-dot ongoing"></i>${t("ongoing")}</span>
+          <span><i class="legend-dot upcoming"></i>${t("upcoming")}</span>
         </div>
       </div>
       <div class="calendar-weekdays">
@@ -1240,9 +1294,9 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
       <div class="calendar-month-grid">
         ${weeks.map((week) => {
           const segments = buildWeekEventSegments(sortedEvents, week);
-          const visibleSegments = segments.filter((segment) => segment.lane < 4);
+          const visibleSegments = segments.filter((segment) => segment.lane < maxVisibleLanes);
           const hiddenCount = segments.length - visibleSegments.length;
-          const lanes = Math.max(1, Math.min(4, segments.length));
+          const lanes = Math.max(1, Math.min(maxVisibleLanes, segments.length));
           return `
             <div class="calendar-week" style="--calendar-lanes: ${lanes};">
               <div class="calendar-days">
@@ -1264,16 +1318,22 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
                 ${visibleSegments.map((segment) => {
                   const event = segment.event;
                   const href = event.id ? `#/events/${event.id}` : "";
+                  const title = [
+                    event.name,
+                    formatDateRange(event),
+                    event.calendar_status,
+                    event.is_calendar_only ? t("calendarOnly") : "",
+                  ].filter(Boolean).join(" · ");
                   const element = `
                     <span class="calendar-event-label">${escapeHtml(event.name)}</span>
                   `;
                   const style = `grid-column: ${segment.startColumn} / ${segment.endColumn + 1}; grid-row: ${segment.lane + 1};`;
                   const className = `calendar-event-bar ${calendarStatusClass(event)}`;
                   return href
-                    ? `<a class="${className}" href="${href}" style="${style}" title="${escapeHtml(event.name)}">${element}</a>`
-                    : `<span class="${className}" style="${style}" title="${escapeHtml(event.name)}">${element}</span>`;
+                    ? `<a class="${className}" href="${href}" style="${style}" title="${escapeHtml(title)}">${element}</a>`
+                    : `<span class="${className}" style="${style}" title="${escapeHtml(title)}">${element}</span>`;
                 }).join("")}
-                ${hiddenCount > 0 ? `<span class="calendar-more" style="grid-column: 1 / 8; grid-row: 5;">+${hiddenCount}</span>` : ""}
+                ${hiddenCount > 0 ? `<span class="calendar-more" style="grid-column: 1 / 8; grid-row: ${maxVisibleLanes + 1};">+${hiddenCount}</span>` : ""}
               </div>
             </div>
           `;
@@ -1282,7 +1342,14 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
     </div>
   `;
   node.querySelectorAll("[data-calendar-nav]").forEach((button) => {
-    button.addEventListener("click", () => changeHomeCalendarMonth(Number(button.dataset.calendarNav || 0)));
+    button.addEventListener("click", () => {
+      const delta = Number(button.dataset.calendarNav || 0);
+      if (button.dataset.calendarNavScope === "events") {
+        changeEventsCalendarMonth(delta);
+        return;
+      }
+      changeHomeCalendarMonth(delta);
+    });
   });
 }
 
@@ -1376,17 +1443,13 @@ async function renderEvents() {
       ${filterButton(t("senior"), "category", "senior")}
       ${filterButton(t("junior"), "category", "junior")}
     </div>
-    <div id="eventResults">${loadingState()}</div>
+    <section class="panel calendar-page-panel">
+      <div id="eventResults">${loadingState()}</div>
+    </section>
   `);
   bindFilterButtons();
   try {
-    const events = await getJson("/events/calendar", {
-      year: CURRENT_YEAR,
-      limit: 80,
-      discipline: state.filters.discipline,
-      category: state.filters.category,
-    });
-    renderEventList("#eventResults", sortCalendarItems(events));
+    await hydrateEventsCalendar();
   } catch (error) {
     $("#eventResults").innerHTML = errorState(error);
   }

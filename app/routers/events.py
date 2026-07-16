@@ -6,12 +6,13 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.database import get_db
 from app.event_calendar import (
+    build_calendar_entry_item,
     build_event_calendar_item,
     event_end_for_calendar,
     event_start_for_calendar,
@@ -101,6 +102,26 @@ def get_event_result_categories(event: models.Event) -> list[models.ResultCatego
     if event.category == models.EventCategoryEnum.JUNIOR_AND_SENIOR:
         return [models.ResultCategoryEnum.JUNIOR, models.ResultCategoryEnum.SENIOR]
     return [models.ResultCategoryEnum(event.category.value)]
+
+
+def calendar_entry_discipline(entry: models.EventCalendarEntry) -> models.EventDisciplineEnum:
+    if entry.discipline:
+        return entry.discipline
+    if entry.event:
+        return entry.event.discipline
+    return models.EventDisciplineEnum.MAG_AND_WAG
+
+
+def calendar_entry_category(entry: models.EventCalendarEntry) -> models.EventCategoryEnum:
+    if entry.event:
+        return entry.event.category
+    return models.EventCategoryEnum.JUNIOR_AND_SENIOR
+
+
+def calendar_entry_level(entry: models.EventCalendarEntry) -> models.LevelEnum:
+    if entry.event:
+        return entry.event.level
+    return models.LevelEnum.INTERNATIONAL_EVENT
 
 
 def get_apparatus_by_discipline(
@@ -415,7 +436,45 @@ def get_events_calendar(
         query = query.filter(models.Event.level == level)
 
     events = query.order_by(models.Event.start_date, models.Event.year, models.Event.name).all()
-    event_ids = [event.id for event in events]
+
+    entry_query = db.query(models.EventCalendarEntry).options(
+        joinedload(models.EventCalendarEntry.event)
+    ).filter(models.EventCalendarEntry.is_deleted.is_(False))
+    if year is not None:
+        entry_query = entry_query.filter(models.EventCalendarEntry.year == year)
+    if start_date:
+        entry_query = entry_query.filter(models.EventCalendarEntry.end_date >= start_date)
+    if end_date:
+        entry_query = entry_query.filter(models.EventCalendarEntry.start_date <= end_date)
+
+    calendar_entries = entry_query.order_by(
+        models.EventCalendarEntry.start_date,
+        models.EventCalendarEntry.name,
+        models.EventCalendarEntry.id,
+    ).all()
+    calendar_entries = [
+        entry for entry in calendar_entries
+        if not entry.event or not entry.event.is_deleted
+    ]
+
+    if discipline_filters:
+        calendar_entries = [
+            entry for entry in calendar_entries
+            if calendar_entry_discipline(entry) in discipline_filters
+        ]
+    if category_filters:
+        calendar_entries = [
+            entry for entry in calendar_entries
+            if calendar_entry_category(entry) in category_filters
+        ]
+    if level:
+        calendar_entries = [
+            entry for entry in calendar_entries
+            if calendar_entry_level(entry) == level
+        ]
+
+    event_ids = {event.id for event in events}
+    event_ids.update(entry.event_id for entry in calendar_entries if entry.event_id)
     result_counts = {
         event_id: count
         for event_id, count in db.query(models.Result.event_id, func.count(models.Result.id))
@@ -423,21 +482,61 @@ def get_events_calendar(
         .group_by(models.Result.event_id)
         .all()
     } if event_ids else {}
+    entry_event_ids = {entry.event_id for entry in calendar_entries if entry.event_id}
 
     calendar_items = []
+    direct_event_keys = set()
     for event in events:
-        effective_start = event_start_for_calendar(event)
-        effective_end = event_end_for_calendar(event)
-        if start_date and effective_end < start_date:
+        has_precise_dates = bool(event.start_date or event.end_date)
+        if not has_precise_dates and (start_date or end_date or event.id in entry_event_ids):
             continue
-        if end_date and effective_start > end_date:
-            continue
+
+        if has_precise_dates:
+            effective_start = event_start_for_calendar(event)
+            effective_end = event_end_for_calendar(event)
+            if start_date and effective_end < start_date:
+                continue
+            if end_date and effective_start > end_date:
+                continue
 
         result_count = result_counts.get(event.id, 0)
         calendar_status = get_event_calendar_status(event, result_count, as_of)
         if status and calendar_status != status:
             continue
-        calendar_items.append(build_event_calendar_item(event, result_count, as_of))
+        item = build_event_calendar_item(event, result_count, as_of)
+        calendar_items.append(item)
+        if has_precise_dates:
+            direct_event_keys.add((
+                event.id,
+                event.name,
+                item["start_date"],
+                item["end_date"],
+                item["discipline"],
+            ))
+
+    for entry in calendar_entries:
+        result_count = result_counts.get(entry.event_id, 0) if entry.event_id else 0
+        item = build_calendar_entry_item(entry, result_count, as_of)
+        if status and item["calendar_status"] != status.value:
+            continue
+        entry_key = (
+            item["id"],
+            item["name"],
+            item["start_date"],
+            item["end_date"],
+            item["discipline"],
+        )
+        if item["id"] and entry_key in direct_event_keys:
+            continue
+        calendar_items.append(item)
+
+    calendar_items.sort(key=lambda item: (
+        item["start_date"] or date(item["year"], 1, 1),
+        item["end_date"] or date(item["year"], 12, 31),
+        item["name"],
+        item["calendar_entry_id"] or 0,
+        item["id"] or 0,
+    ))
     return calendar_items[offset:offset + limit]
 
 
