@@ -5,6 +5,7 @@ const state = {
   route: "/",
   language: localStorage.getItem(LANGUAGE_KEY) || "en",
   apiBase: localStorage.getItem(API_BASE_KEY) || "http://localhost:8000",
+  homeCalendarMonthOffset: 0,
   filters: {
     discipline: "",
     category: "",
@@ -82,7 +83,10 @@ const translations = {
     compareText: "Prepare athlete comparisons and long-term trends.",
     open: "Open",
     recentEvents: "Calendar preview",
+    calendarMonth: "Calendar month",
     currentMonth: "Current month",
+    previousMonth: "Previous month",
+    nextMonth: "Next month",
     today: "Today",
     resultsAvailable: "Results available",
     resultsMissing: "Results missing",
@@ -183,7 +187,10 @@ const translations = {
     compareText: "Prepara confronti atleta e trend nel tempo.",
     open: "Apri",
     recentEvents: "Anteprima calendario",
+    calendarMonth: "Mese calendario",
     currentMonth: "Mese corrente",
+    previousMonth: "Mese precedente",
+    nextMonth: "Mese successivo",
     today: "Oggi",
     resultsAvailable: "Risultati disponibili",
     resultsMissing: "Risultati mancanti",
@@ -284,7 +291,10 @@ const translations = {
     compareText: "Prepara comparaciones y tendencias a largo plazo.",
     open: "Abrir",
     recentEvents: "Vista calendario",
+    calendarMonth: "Mes calendario",
     currentMonth: "Mes actual",
+    previousMonth: "Mes anterior",
+    nextMonth: "Mes siguiente",
     today: "Hoy",
     resultsAvailable: "Resultados disponibles",
     resultsMissing: "Resultados pendientes",
@@ -385,7 +395,10 @@ const translations = {
     compareText: "Preparez comparaisons et tendances dans le temps.",
     open: "Ouvrir",
     recentEvents: "Apercu calendrier",
+    calendarMonth: "Mois calendrier",
     currentMonth: "Mois courant",
+    previousMonth: "Mois precedent",
+    nextMonth: "Mois suivant",
     today: "Aujourd'hui",
     resultsAvailable: "Resultats disponibles",
     resultsMissing: "Resultats manquants",
@@ -1056,6 +1069,10 @@ function rankingQueryParams(limit) {
   return params;
 }
 
+function homeCalendarDate() {
+  return new Date(TODAY.getFullYear(), TODAY.getMonth() + state.homeCalendarMonthOffset, 1);
+}
+
 function filterButton(label, type, value, activeValue = state.filters[type]) {
   return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${activeValue === value}">${label}</button>`;
 }
@@ -1073,30 +1090,48 @@ function bindFilterButtons() {
 
 async function hydrateHome() {
   try {
-    const monthStart = new Date(TODAY.getFullYear(), TODAY.getMonth(), 1);
-    const monthEnd = new Date(TODAY.getFullYear(), TODAY.getMonth() + 1, 0);
-    const [events, rankings] = await Promise.all([
-      getJson("/events/calendar", {
-        start_date: formatLocalIso(monthStart),
-        end_date: formatLocalIso(monthEnd),
-        as_of: formatLocalIso(TODAY),
-        limit: 1000,
-        discipline: state.filters.discipline,
-        category: state.filters.category,
-      }),
+    const [rankings] = await Promise.all([
       getJson("/analytics/rankings", {
         ...rankingQueryParams(6),
       }),
+      hydrateHomeCalendar(),
     ]);
     $("#statusDot").className = "status-dot online";
     $("#statusText").textContent = t("online");
-    renderHomeCalendar("#homeEvents", events, TODAY);
     renderRankingList("#homeRankings", rankings);
   } catch (error) {
     $("#statusDot").className = "status-dot offline";
     $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
     $("#homeRankings").innerHTML = errorState(error);
+  }
+}
+
+async function hydrateHomeCalendar() {
+  const calendarDate = homeCalendarDate();
+  const monthStart = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
+  const monthEnd = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
+  const events = await getJson("/events/calendar", {
+    start_date: formatLocalIso(monthStart),
+    end_date: formatLocalIso(monthEnd),
+    as_of: formatLocalIso(TODAY),
+    limit: 1000,
+    discipline: state.filters.discipline,
+    category: state.filters.category,
+  });
+  renderHomeCalendar("#homeEvents", events, calendarDate);
+}
+
+async function changeHomeCalendarMonth(delta) {
+  state.homeCalendarMonthOffset += delta;
+  try {
+    await hydrateHomeCalendar();
+    $("#statusDot").className = "status-dot online";
+    $("#statusText").textContent = t("online");
+  } catch (error) {
+    $("#statusDot").className = "status-dot offline";
+    $("#statusText").textContent = t("offline");
+    $("#homeEvents").innerHTML = errorState(error);
   }
 }
 
@@ -1184,11 +1219,15 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
   const monthName = monthLabel(monthDate);
 
   node.innerHTML = `
-    <div class="home-calendar" aria-label="${escapeHtml(`${t("currentMonth")} ${monthName}`)}">
+    <div class="home-calendar" aria-label="${escapeHtml(`${t("calendarMonth")} ${monthName}`)}">
       <div class="calendar-toolbar">
-        <div>
-          <span class="calendar-kicker">${t("currentMonth")}</span>
-          <strong>${escapeHtml(monthName)}</strong>
+        <div class="calendar-title-row">
+          <button class="calendar-nav-button" type="button" data-calendar-nav="-1" aria-label="${t("previousMonth")}" title="${t("previousMonth")}">&#8249;</button>
+          <div>
+            <span class="calendar-kicker">${t("calendarMonth")}</span>
+            <strong>${escapeHtml(monthName)}</strong>
+          </div>
+          <button class="calendar-nav-button" type="button" data-calendar-nav="1" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
         </div>
         <div class="calendar-legend" aria-label="${t("status")}">
           <span><i class="legend-dot has-results"></i>${t("resultsAvailable")}</span>
@@ -1239,6 +1278,9 @@ function renderHomeCalendar(selector, events, monthDate = TODAY) {
       </div>
     </div>
   `;
+  node.querySelectorAll("[data-calendar-nav]").forEach((button) => {
+    button.addEventListener("click", () => changeHomeCalendarMonth(Number(button.dataset.calendarNav || 0)));
+  });
 }
 
 function renderRankingContext(payload) {

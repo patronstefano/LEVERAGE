@@ -909,6 +909,12 @@ button {
   margin-bottom: 12px;
 }
 
+.calendar-title-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .calendar-toolbar strong {
   display: block;
   margin-top: 2px;
@@ -921,6 +927,32 @@ button {
   color: var(--muted);
   font-size: 12px;
   line-height: 1;
+}
+
+.calendar-nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 22px;
+  line-height: 1;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.calendar-nav-button:hover,
+.calendar-nav-button:focus-visible {
+  border-color: rgba(25, 23, 71, 0.24);
+  color: #fff;
+  background: var(--brand-blue);
+}
+
+.calendar-nav-button:active {
+  transform: scale(0.96);
 }
 
 .calendar-legend {
