@@ -731,18 +731,6 @@ async function renderHome() {
         <p class="home-subtitle">${t("heroSubtitle")}</p>
         <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
-          <div class="filter-row">
-            ${filterButton("MAG", "discipline", "MAG")}
-            ${filterButton("WAG", "discipline", "WAG")}
-            ${filterButton(t("senior"), "category", "senior")}
-            ${filterButton(t("junior"), "category", "junior")}
-          </div>
-          <div class="filter-row calendar-status-filters">
-            ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results")}
-            ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results")}
-            ${filterButton(t("ongoing"), "calendarStatus", "ongoing")}
-            ${filterButton(t("upcoming"), "calendarStatus", "upcoming")}
-          </div>
           <form class="search-form" id="globalSearchForm">
             <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
             <button class="primary-button" type="submit">${t("search")}</button>
@@ -799,7 +787,6 @@ async function renderHome() {
   });
   setupSearchAutocomplete("#globalSearchInput", "#globalSearchSuggestions");
 
-  bindFilterButtons();
   await hydrateHome();
 }
 
@@ -1214,7 +1201,8 @@ async function hydrateHome() {
   try {
     const [rankings] = await Promise.all([
       getJson("/analytics/rankings", {
-        ...rankingQueryParams(60),
+        limit: 60,
+        discipline: "MAG",
       }),
       hydrateHomeCalendar(),
     ]);
@@ -1239,9 +1227,6 @@ async function hydrateHomeCalendar() {
     end_date: formatLocalIso(monthEnd),
     as_of: formatLocalIso(TODAY),
     limit: 1000,
-    discipline: multiFilterParam("discipline"),
-    category: multiFilterParam("category"),
-    status: calendarStatusParam(),
   });
   renderHomeCalendar("#homeEvents", events, calendarDate);
   requestAnimationFrame(syncHomePreviewHeights);

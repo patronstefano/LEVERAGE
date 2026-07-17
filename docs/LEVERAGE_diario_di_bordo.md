@@ -2202,6 +2202,7 @@ Aggiornamento ricerca globale:
 - aggiunta copertura di test sul caso `Bundesliga 2025` e sul fallback di ricerca strutturata senza risultati esatti.
 - raffinata la home search: i filtri principali sono stati spostati sopra la barra di ricerca, cosi restano sempre visibili anche quando si apre il riquadro autocomplete; il riquadro dei suggerimenti e stato allargato fino ai bordi esterni della search form, includendo visivamente anche l'area del pulsante `Search`.
 - rifinita la sequenza iniziale della home: il tempo di presenza del logo LEVERAGE e stato mantenuto sostanzialmente invariato, ma topbar e contenuto principale vengono anticipati durante la chiusura dello splash, riducendo il tempo percepito di pagina bianca prima della comparsa della home.
+- semplificata la ricerca globale della home: rimane una barra unica, pulita e non filtrata, mentre i pulsanti filtro sono riservati alle sezioni dedicate (`Athletes`, `Events`, `Rankings`, `Analytics`). Le preview della home non ereditano piu filtri invisibili dallo stato delle altre pagine.
 
 ## 19. Conclusione
 

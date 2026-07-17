@@ -670,32 +670,12 @@ button {
   white-space: nowrap;
 }
 
-.filter-row,
 .toolbar,
 .metric-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-}
-
-.filter-row {
-  margin-top: 14px;
-}
-
-.home-hero .filter-row {
-  justify-content: center;
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-
-.home-hero .calendar-status-filters {
-  margin-top: 0;
-  margin-bottom: 14px;
-}
-
-.calendar-status-filters {
-  margin-top: 10px;
 }
 
 .filter-button,
