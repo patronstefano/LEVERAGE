@@ -575,11 +575,11 @@ button {
 .search-suggestions {
   position: absolute;
   top: calc(100% + 8px);
-  right: 8px;
-  left: 8px;
+  left: var(--search-suggestions-left, 8px);
   z-index: 42;
   display: grid;
   gap: 3px;
+  width: var(--search-suggestions-width, calc(100% - 16px));
   padding: 8px;
   border: 1px solid rgba(25, 23, 71, 0.1);
   border-radius: var(--surface-radius);
