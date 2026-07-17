@@ -2200,6 +2200,7 @@ Aggiornamento ricerca globale:
 - introdotta la distinzione tra `results` e `related_results` nella ricerca globale: `results` contiene solo i risultati che rispettano tutti i filtri della query, mentre `related_results` mostra risultati collegati alla parte evento/anno/attrezzo quando la combinazione completa e vuota;
 - aggiornata la UI affinche, in caso di ricerca composta senza risultati esatti, non nasconda i match parziali utili: vengono mostrati atleta, eventi, attrezzi e risultati collegati, evitando che l'utente interpreti erroneamente la risposta come assenza totale di dati;
 - aggiunta copertura di test sul caso `Bundesliga 2025` e sul fallback di ricerca strutturata senza risultati esatti.
+- raffinata la home search: i filtri principali sono stati spostati sopra la barra di ricerca, cosi restano sempre visibili anche quando si apre il riquadro autocomplete; il riquadro dei suggerimenti e stato allargato fino ai bordi esterni della search form, includendo visivamente anche l'area del pulsante `Search`.
 
 ## 19. Conclusione
 

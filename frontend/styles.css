@@ -578,14 +578,14 @@ button {
 .search-suggestions {
   position: absolute;
   top: calc(100% + 8px);
-  right: 8px;
-  left: 8px;
+  right: 0;
+  left: 0;
   z-index: 42;
   display: grid;
   gap: 3px;
   padding: 8px;
   border: 1px solid rgba(25, 23, 71, 0.1);
-  border-radius: var(--surface-radius);
+  border-radius: var(--large-control-radius);
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 22px 60px rgba(16, 16, 20, 0.13);
   backdrop-filter: blur(22px);
@@ -685,6 +685,13 @@ button {
 
 .home-hero .filter-row {
   justify-content: center;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.home-hero .calendar-status-filters {
+  margin-top: 0;
+  margin-bottom: 14px;
 }
 
 .calendar-status-filters {

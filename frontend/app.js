@@ -731,11 +731,6 @@ async function renderHome() {
         <p class="home-subtitle">${t("heroSubtitle")}</p>
         <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
-          <form class="search-form" id="globalSearchForm">
-            <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
-            <button class="primary-button" type="submit">${t("search")}</button>
-            <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
-          </form>
           <div class="filter-row">
             ${filterButton("MAG", "discipline", "MAG")}
             ${filterButton("WAG", "discipline", "WAG")}
@@ -748,6 +743,11 @@ async function renderHome() {
             ${filterButton(t("ongoing"), "calendarStatus", "ongoing")}
             ${filterButton(t("upcoming"), "calendarStatus", "upcoming")}
           </div>
+          <form class="search-form" id="globalSearchForm">
+            <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
+            <button class="primary-button" type="submit">${t("search")}</button>
+            <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
+          </form>
         </div>
         <div class="home-status" id="apiSnapshot">
           <span><span class="status-dot" id="statusDot"></span>${t("systemStatus")}</span>
