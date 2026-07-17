@@ -66,9 +66,10 @@ const translations = {
     matchingApparatuses: "Apparatus",
     matchingResults: "Results",
     filteredResults: "Filtered results",
+    relatedResults: "Related results",
     noGlobalSearchQuery: "Type a search term to explore all LEVERAGE data.",
     noGlobalSearchResults: "No global results found.",
-    noStructuredSearchResults: "No results match all the search filters together.",
+    noStructuredSearchResults: "No results match all the search filters together. Related matches are shown below.",
     systemStatus: "API status",
     online: "Online",
     offline: "Offline",
@@ -175,9 +176,10 @@ const translations = {
     matchingApparatuses: "Attrezzi",
     matchingResults: "Risultati",
     filteredResults: "Risultati filtrati",
+    relatedResults: "Risultati collegati",
     noGlobalSearchQuery: "Scrivi un termine per cercare in tutti i dati di LEVERAGE.",
     noGlobalSearchResults: "Nessun risultato globale trovato.",
-    noStructuredSearchResults: "Nessun risultato corrisponde a tutti i filtri della ricerca.",
+    noStructuredSearchResults: "Nessun risultato corrisponde a tutti i filtri della ricerca. Sotto trovi i match collegati.",
     systemStatus: "Stato API",
     online: "Online",
     offline: "Offline",
@@ -284,9 +286,10 @@ const translations = {
     matchingApparatuses: "Aparatos",
     matchingResults: "Resultados",
     filteredResults: "Resultados filtrados",
+    relatedResults: "Resultados relacionados",
     noGlobalSearchQuery: "Escribe un termino para explorar todos los datos de LEVERAGE.",
     noGlobalSearchResults: "No se encontraron resultados globales.",
-    noStructuredSearchResults: "Ningun resultado coincide con todos los filtros de busqueda.",
+    noStructuredSearchResults: "Ningun resultado coincide con todos los filtros de busqueda. Abajo se muestran coincidencias relacionadas.",
     systemStatus: "Estado API",
     online: "Online",
     offline: "Offline",
@@ -393,9 +396,10 @@ const translations = {
     matchingApparatuses: "Appareils",
     matchingResults: "Resultats",
     filteredResults: "Resultats filtres",
+    relatedResults: "Resultats lies",
     noGlobalSearchQuery: "Saisissez un terme pour explorer toutes les donnees LEVERAGE.",
     noGlobalSearchResults: "Aucun resultat global trouve.",
-    noStructuredSearchResults: "Aucun resultat ne correspond a tous les filtres de recherche.",
+    noStructuredSearchResults: "Aucun resultat ne correspond a tous les filtres de recherche. Les correspondances liees sont affichees ci-dessous.",
     systemStatus: "Statut API",
     online: "Online",
     offline: "Offline",
@@ -987,11 +991,19 @@ function scoreLabel(value) {
   return value === null || value === undefined ? "not available" : Number(value).toFixed(3);
 }
 
+function searchResultCard(result) {
+  const pills = [
+    { label: `${t("score")} ${scoreLabel(result.score)}`, variant: "brand" },
+    ...(result.apparatus ? [{ label: result.apparatus }] : []),
+    { label: result.discipline },
+    ...(result.country ? [{ label: result.country }] : []),
+  ];
+  const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
+  return entityCard(result.athlete_name, meta, pills, `#/events/${result.event_id}`);
+}
+
 function renderGlobalSearchResults(data) {
   const structuredResultSearch = Boolean(data.structured_result_search);
-  if (structuredResultSearch && !data.results.length) {
-    return messageState(t("noStructuredSearchResults"));
-  }
   if (!data.total_count) {
     return messageState(t("noGlobalSearchResults"));
   }
@@ -1018,17 +1030,21 @@ function renderGlobalSearchResults(data) {
   const apparatusItems = data.apparatuses.map((apparatus) => (
     entityCard(apparatus.label, resultLabel(apparatus.result_count), [{ label: t("matchingApparatuses"), variant: "brand" }], `#/search?q=${encodeURIComponent(apparatus.value)}`)
   ));
-  const resultItems = data.results.map((result) => {
-    const pills = [
-      { label: `${t("score")} ${scoreLabel(result.score)}`, variant: "brand" },
-      ...(result.apparatus ? [{ label: result.apparatus }] : []),
-      { label: result.discipline },
-      ...(result.country ? [{ label: result.country }] : []),
-    ];
-    const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
-    return entityCard(result.athlete_name, meta, pills, `#/events/${result.event_id}`);
-  });
+  const resultItems = data.results.map(searchResultCard);
+  const relatedResultItems = (data.related_results || []).map(searchResultCard);
   if (structuredResultSearch) {
+    if (!data.results.length) {
+      return `
+        <div class="search-results">
+          ${messageState(t("noStructuredSearchResults"))}
+          ${searchSection(t("relatedResults"), relatedResultItems)}
+          ${searchSection(t("matchingAthletes"), athleteItems)}
+          ${searchSection(t("matchingEvents"), eventItems)}
+          ${searchSection(t("matchingCountries"), countryItems)}
+          ${searchSection(t("matchingApparatuses"), apparatusItems)}
+        </div>
+      `;
+    }
     return `
       <div class="search-results">
         ${searchSection(t("filteredResults"), resultItems)}

@@ -2193,6 +2193,14 @@ Valutazione di avanzamento aggiornata al 15 luglio 2026:
 | Deploy online produzione | 0% |
 | MVP online complessivo | 76% |
 
+Aggiornamento ricerca globale:
+
+- verificato il caso reale `Stefano Patron, FX, Bundesliga 2025`: nel database locale l'atleta Stefano Patron non ha risultati associati a eventi Bundesliga 2025, quindi la combinazione completa non produce risultati esatti;
+- confermata la regola semantica che `Bundesliga 2025` deve trovare eventi e risultati di tutte le gare il cui nome contiene `Bundesliga` nell'anno 2025, anche se il nome ufficiale e piu specifico (`1st Bundesliga`, `2nd Bundesliga`, `Bundesliga Finals`, ecc.);
+- introdotta la distinzione tra `results` e `related_results` nella ricerca globale: `results` contiene solo i risultati che rispettano tutti i filtri della query, mentre `related_results` mostra risultati collegati alla parte evento/anno/attrezzo quando la combinazione completa e vuota;
+- aggiornata la UI affinche, in caso di ricerca composta senza risultati esatti, non nasconda i match parziali utili: vengono mostrati atleta, eventi, attrezzi e risultati collegati, evitando che l'utente interpreti erroneamente la risposta come assenza totale di dati;
+- aggiunta copertura di test sul caso `Bundesliga 2025` e sul fallback di ricerca strutturata senza risultati esatti.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.

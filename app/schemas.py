@@ -1397,6 +1397,7 @@ class GlobalSearchResponse(BaseModel):
     countries: list[GlobalSearchFacet] = Field(default_factory=list)
     apparatuses: list[GlobalSearchFacet] = Field(default_factory=list)
     results: list[GlobalSearchResult] = Field(default_factory=list)
+    related_results: list[GlobalSearchResult] = Field(default_factory=list)
 
 
 class AnalyticsAggregationEnum(str, Enum):

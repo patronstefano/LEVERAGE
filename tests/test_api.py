@@ -963,7 +963,7 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         json={
             "name": "2nd Bundesliga",
             "location": "Germany",
-            "year": 2026,
+            "year": 2025,
             "discipline": "MAG and WAG",
             "category": "senior",
             "level": "National Event",
@@ -1038,10 +1038,33 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    mario_bundesliga_fx = client.post(
+        "/results/",
+        json={
+            "athlete_id": italian_athlete["id"],
+            "event_id": bundesliga_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.0,
+            "E_score": 8.1,
+            "score": 13.1,
+        },
+        headers=headers,
+    ).json()
 
     event_year_search = client.get("/search", params={"q": "Serie A 2026", "limit": 5})
     assert event_year_search.status_code == 200
     assert any(event["id"] == serie_a_event["id"] for event in event_year_search.json()["events"])
+
+    bundesliga_year_search = client.get("/search", params={"q": "Bundesliga 2025", "limit": 5})
+    assert bundesliga_year_search.status_code == 200
+    bundesliga_year_payload = bundesliga_year_search.json()
+    assert any(event["id"] == bundesliga_event["id"] for event in bundesliga_year_payload["events"])
+    assert any(result["result_id"] == mario_bundesliga_fx["id"] for result in bundesliga_year_payload["results"])
 
     ordinal_search = client.get("/search", params={"q": "Bundesliga 2", "limit": 5})
     assert ordinal_search.status_code == 200
@@ -1074,6 +1097,19 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert stefano_serie_a_fx["id"] not in [item["result_id"] for item in structured_payload["results"]]
     assert mario_serie_a_vt["id"] not in [item["result_id"] for item in structured_payload["results"]]
     assert stefano_classic_vt["id"] not in [item["result_id"] for item in structured_payload["results"]]
+
+    no_exact_structured_search = client.get(
+        "/search",
+        params={"q": "Stefano Patron, FX, Bundesliga 2025", "limit": 10},
+    )
+    assert no_exact_structured_search.status_code == 200
+    no_exact_payload = no_exact_structured_search.json()
+    assert no_exact_payload["structured_result_search"] is True
+    assert any(athlete["id"] == stefano_athlete["id"] for athlete in no_exact_payload["athletes"])
+    assert any(event["id"] == bundesliga_event["id"] for event in no_exact_payload["events"])
+    assert any(apparatus["value"] == "FX" for apparatus in no_exact_payload["apparatuses"])
+    assert no_exact_payload["results"] == []
+    assert any(result["result_id"] == mario_bundesliga_fx["id"] for result in no_exact_payload["related_results"])
 
 
 def test_admin_can_audit_existing_result_duplicate_groups():

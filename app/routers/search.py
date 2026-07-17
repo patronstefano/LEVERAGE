@@ -446,6 +446,25 @@ def build_structured_result_filter_groups(db: Session, parts: SearchParts, repre
     return groups
 
 
+def build_related_result_filter_groups(db: Session, parts: SearchParts, represented_country):
+    groups = []
+    for clause in parts.clauses:
+        if clause.apparatus_codes and not clause.text_terms and not clause.country_terms and not clause.years:
+            continue
+
+        athlete_match = has_matching_athlete(db, clause)
+        event_match = has_matching_event(db, clause)
+        if athlete_match and not event_match:
+            continue
+
+        event_conditions_for_clause = clause_event_conditions(clause)
+        context_conditions = clause_result_context_conditions(clause, represented_country)
+        related_conditions = event_conditions_for_clause + context_conditions
+        if related_conditions:
+            groups.append(related_conditions)
+    return groups
+
+
 def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
     if not parts.text_terms and not parts.country_terms:
         return []
@@ -543,6 +562,7 @@ def build_global_results(
     parts: SearchParts,
     apparatus_codes: set[str],
     limit: int,
+    filter_groups: Optional[list] = None,
 ) -> list[schemas.GlobalSearchResult]:
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
     query = (
@@ -559,7 +579,9 @@ def build_global_results(
     query = add_year_filter(query, parts.years)
     if apparatus_codes:
         query = query.filter(models.Result.apparatus.in_(apparatus_codes))
-    for filter_group in build_structured_result_filter_groups(db, parts, represented_country):
+    if filter_groups is None:
+        filter_groups = build_structured_result_filter_groups(db, parts, represented_country)
+    for filter_group in filter_groups:
         query = query.filter(or_(*filter_group))
     results = query.order_by(
         models.Event.year.desc(),
@@ -635,6 +657,18 @@ def global_search(
     countries = build_country_facets(db, parts, limit)
     apparatuses = build_apparatus_facets(db, parts, limit)
     results = build_global_results(db, parts, apparatus_codes, limit)
+    related_results = []
+    if structured_result_search and not results:
+        represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
+        related_filter_groups = build_related_result_filter_groups(db, parts, represented_country)
+        if related_filter_groups:
+            related_results = build_global_results(
+                db,
+                parts,
+                apparatus_codes,
+                limit,
+                filter_groups=related_filter_groups,
+            )
 
     athlete_items = [
         schemas.GlobalSearchAthlete(
@@ -666,6 +700,7 @@ def global_search(
         + len(countries)
         + len(apparatuses)
         + len(results)
+        + len(related_results)
     )
     return schemas.GlobalSearchResponse(
         query=query,
@@ -676,4 +711,5 @@ def global_search(
         countries=countries,
         apparatuses=apparatuses,
         results=results,
+        related_results=related_results,
     )
