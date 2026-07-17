@@ -62,12 +62,12 @@ body {
 }
 
 .intro-active .topbar {
-  animation: topbarCurtainDrop 760ms cubic-bezier(0.22, 1, 0.36, 1) 1760ms both;
+  animation: topbarCurtainDrop 720ms cubic-bezier(0.22, 1, 0.36, 1) 1560ms both;
 }
 
 .intro-active .main-view,
 .intro-active .footer {
-  animation: contentReveal 680ms ease 2100ms both;
+  animation: contentReveal 540ms ease 1740ms both;
 }
 
 @keyframes introSplash {

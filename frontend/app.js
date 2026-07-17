@@ -536,7 +536,7 @@ function setupIntroSplash() {
     if (event.target === splash) finishSplash();
   });
   window.setTimeout(finishSplash, 1900);
-  window.setTimeout(finishIntro, 2900);
+  window.setTimeout(finishIntro, 2350);
 }
 
 function apiUrl(path, params = {}) {
