@@ -8,10 +8,19 @@ const state = {
   homeCalendarMonthOffset: 0,
   eventsCalendarMonthOffset: 0,
   filters: {
-    discipline: [],
-    category: [],
-    calendarStatus: "",
-    scoringCycle: "",
+    athletes: {
+      discipline: [],
+    },
+    events: {
+      discipline: [],
+      category: [],
+      calendarStatus: "",
+    },
+    rankings: {
+      discipline: [],
+      category: [],
+      scoringCycle: "",
+    },
   },
 };
 const CURRENT_YEAR = new Date().getFullYear();
@@ -1091,35 +1100,49 @@ function featureCard(title, text, href) {
   `;
 }
 
-function filterValues(type) {
-  const value = state.filters[type];
+function currentFilterScope() {
+  if (state.route.startsWith("/athletes")) return "athletes";
+  if (state.route.startsWith("/events")) return "events";
+  if (state.route.startsWith("/rankings")) return "rankings";
+  return "global";
+}
+
+function scopedFilters(scope = currentFilterScope()) {
+  if (!state.filters[scope]) {
+    state.filters[scope] = {};
+  }
+  return state.filters[scope];
+}
+
+function filterValues(type, scope = currentFilterScope()) {
+  const value = scopedFilters(scope)[type];
   if (Array.isArray(value)) return value;
   return value ? [value] : [];
 }
 
-function multiFilterParam(type) {
-  return filterValues(type).join(",");
+function multiFilterParam(type, scope = currentFilterScope()) {
+  return filterValues(type, scope).join(",");
 }
 
-function singleFilterParam(type) {
-  const values = filterValues(type);
+function singleFilterParam(type, scope = currentFilterScope()) {
+  const values = filterValues(type, scope);
   return values.length === 1 ? values[0] : "";
 }
 
-function filterIsActive(type, value, activeValue = state.filters[type]) {
+function filterIsActive(type, value, scope = currentFilterScope(), activeValue = scopedFilters(scope)[type]) {
   return Array.isArray(activeValue) ? activeValue.includes(value) : activeValue === value;
 }
 
 function rankingDiscipline() {
-  return singleFilterParam("discipline") || "MAG";
+  return singleFilterParam("discipline", "rankings") || "MAG";
 }
 
 function calendarStatusParam() {
-  return state.filters.calendarStatus || "";
+  return scopedFilters("events").calendarStatus || "";
 }
 
 function rankingCategory() {
-  return singleFilterParam("category");
+  return singleFilterParam("category", "rankings");
 }
 
 function rankingQueryParams(limit) {
@@ -1128,10 +1151,11 @@ function rankingQueryParams(limit) {
     discipline: rankingDiscipline(),
     category: rankingCategory(),
   };
-  if (state.filters.scoringCycle === "all") {
+  const scoringCycle = scopedFilters("rankings").scoringCycle;
+  if (scoringCycle === "all") {
     params.include_all_scoring_cycles = true;
-  } else if (state.filters.scoringCycle) {
-    params.scoring_cycle = state.filters.scoringCycle;
+  } else if (scoringCycle) {
+    params.scoring_cycle = scoringCycle;
   }
   return params;
 }
@@ -1148,8 +1172,8 @@ function eventsCalendarDate() {
   return calendarDateFromOffset(state.eventsCalendarMonthOffset);
 }
 
-function filterButton(label, type, value, activeValue = state.filters[type]) {
-  return `<button class="filter-button" type="button" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, activeValue)}">${label}</button>`;
+function filterButton(label, type, value, scope = currentFilterScope()) {
+  return `<button class="filter-button" type="button" data-filter-scope="${scope}" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, scope)}">${label}</button>`;
 }
 
 function disciplineSegmentedControl() {
@@ -1173,15 +1197,17 @@ function disciplineSegmentedControl() {
 function bindFilterButtons() {
   document.querySelectorAll("[data-filter-type]").forEach((button) => {
     button.addEventListener("click", () => {
+      const scope = button.dataset.filterScope || currentFilterScope();
       const type = button.dataset.filterType;
       const value = button.dataset.filterValue;
-      if (Array.isArray(state.filters[type])) {
-        const values = filterValues(type);
-        state.filters[type] = values.includes(value)
+      const filters = scopedFilters(scope);
+      if (Array.isArray(filters[type])) {
+        const values = filterValues(type, scope);
+        filters[type] = values.includes(value)
           ? values.filter((item) => item !== value)
           : [...values, value];
       } else {
-        state.filters[type] = state.filters[type] === value ? "" : value;
+        filters[type] = filters[type] === value ? "" : value;
       }
       render();
     });
@@ -1191,7 +1217,7 @@ function bindFilterButtons() {
 function bindRankingDisciplineControl() {
   document.querySelectorAll("[data-ranking-discipline]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.filters.discipline = [button.dataset.rankingDiscipline];
+      scopedFilters("rankings").discipline = [button.dataset.rankingDiscipline];
       render();
     });
   });
@@ -1290,8 +1316,8 @@ async function hydrateEventsCalendar() {
     end_date: formatLocalIso(monthEnd),
     as_of: formatLocalIso(TODAY),
     limit: 1000,
-    discipline: multiFilterParam("discipline"),
-    category: multiFilterParam("category"),
+    discipline: multiFilterParam("discipline", "events"),
+    category: multiFilterParam("category", "events"),
     status: calendarStatusParam(),
   });
   renderHomeCalendar("#eventResults", events, calendarDate, {
@@ -1547,8 +1573,8 @@ async function renderAthletes() {
     <form class="toolbar" id="athleteSearchForm">
       <input class="search-input" id="athleteSearchInput" type="search" value="${search}" placeholder="${t("searchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
-      ${filterButton("MAG", "discipline", "MAG")}
-      ${filterButton("WAG", "discipline", "WAG")}
+      ${filterButton("MAG", "discipline", "MAG", "athletes")}
+      ${filterButton("WAG", "discipline", "WAG", "athletes")}
     </form>
     <div id="athleteResults">${loadingState()}</div>
   `);
@@ -1561,7 +1587,7 @@ async function renderAthletes() {
   try {
     const athletes = await getJson("/athletes", {
       search,
-      discipline: singleFilterParam("discipline"),
+      discipline: singleFilterParam("discipline", "athletes"),
       limit: 40,
     });
     if (!athletes.length) {
@@ -1585,14 +1611,14 @@ async function renderEvents() {
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
     <div class="toolbar">
-      ${filterButton("MAG", "discipline", "MAG")}
-      ${filterButton("WAG", "discipline", "WAG")}
-      ${filterButton(t("senior"), "category", "senior")}
-      ${filterButton(t("junior"), "category", "junior")}
-      ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results")}
-      ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results")}
-      ${filterButton(t("ongoing"), "calendarStatus", "ongoing")}
-      ${filterButton(t("upcoming"), "calendarStatus", "upcoming")}
+      ${filterButton("MAG", "discipline", "MAG", "events")}
+      ${filterButton("WAG", "discipline", "WAG", "events")}
+      ${filterButton(t("senior"), "category", "senior", "events")}
+      ${filterButton(t("junior"), "category", "junior", "events")}
+      ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
+      ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
+      ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
+      ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
     </div>
     <section class="panel calendar-page-panel">
       <div id="eventResults">${loadingState()}</div>
@@ -1611,14 +1637,14 @@ async function renderRankings() {
     ${pageHeading("rankingsHeading", "rankingsIntro")}
     <div class="toolbar">
       ${disciplineSegmentedControl()}
-      ${filterButton(t("senior"), "category", "senior")}
-      ${filterButton(t("junior"), "category", "junior")}
+      ${filterButton(t("senior"), "category", "senior", "rankings")}
+      ${filterButton(t("junior"), "category", "junior", "rankings")}
     </div>
     <div class="toolbar secondary-toolbar">
-      ${filterButton("2017-2021", "scoringCycle", "2017-2021")}
-      ${filterButton("2022-2024", "scoringCycle", "2022-2024")}
-      ${filterButton("2025-2028", "scoringCycle", "2025-2028")}
-      ${filterButton(t("allCycles"), "scoringCycle", "all")}
+      ${filterButton("2017-2021", "scoringCycle", "2017-2021", "rankings")}
+      ${filterButton("2022-2024", "scoringCycle", "2022-2024", "rankings")}
+      ${filterButton("2025-2028", "scoringCycle", "2025-2028", "rankings")}
+      ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
     </div>
     <div id="rankingResults">${loadingState()}</div>
   `);
