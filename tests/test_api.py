@@ -970,6 +970,54 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    european_championships_event = client.post(
+        "/events/",
+        json={
+            "name": "European Championships",
+            "location": "Basel, Switzerland",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "Continental Championships",
+        },
+        headers=headers,
+    ).json()
+    northern_european_championships_event = client.post(
+        "/events/",
+        json={
+            "name": "Northern European Championships",
+            "location": "Oslo, Norway",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    ).json()
+    world_championships_event = client.post(
+        "/events/",
+        json={
+            "name": "World Championships",
+            "location": "Jakarta, Indonesia",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "World Championships",
+        },
+        headers=headers,
+    ).json()
+    worlds_preparation_event = client.post(
+        "/events/",
+        json={
+            "name": "Worlds Preparation Event",
+            "location": "Berlin, Germany",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    ).json()
     stefano_serie_a_vt = client.post(
         "/results/",
         json={
@@ -1065,6 +1113,18 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     bundesliga_year_payload = bundesliga_year_search.json()
     assert any(event["id"] == bundesliga_event["id"] for event in bundesliga_year_payload["events"])
     assert any(result["result_id"] == mario_bundesliga_fx["id"] for result in bundesliga_year_payload["results"])
+
+    europeans_search = client.get("/search", params={"q": "europeans 2025", "limit": 5})
+    assert europeans_search.status_code == 200
+    europeans_events = europeans_search.json()["events"]
+    assert europeans_events[0]["id"] == european_championships_event["id"]
+    assert any(event["id"] == northern_european_championships_event["id"] for event in europeans_events)
+
+    worlds_search = client.get("/search", params={"q": "worlds 2025", "limit": 5})
+    assert worlds_search.status_code == 200
+    worlds_events = worlds_search.json()["events"]
+    assert worlds_events[0]["id"] == world_championships_event["id"]
+    assert all(event["id"] != worlds_preparation_event["id"] for event in worlds_events)
 
     ordinal_search = client.get("/search", params={"q": "Bundesliga 2", "limit": 5})
     assert ordinal_search.status_code == 200

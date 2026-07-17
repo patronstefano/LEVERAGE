@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func, or_
+from sqlalchemy import case, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
@@ -67,6 +67,17 @@ APPARATUS_ALIASES = {
     "beam": {"BB"},
     "trave": {"BB"},
     "bb": {"BB"},
+}
+SEARCH_TEXT_ALIASES = {
+    "europeans": {"european championships", "european championship"},
+    "euros": {"european championships", "european championship"},
+    "european champs": {"european championships", "european championship"},
+    "worlds": {"world championships", "world championship"},
+    "world champs": {"world championships", "world championship"},
+}
+CANONICAL_EVENT_NAMES = {
+    "european championships",
+    "world championships",
 }
 YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
 
@@ -133,8 +144,60 @@ def numeric_search_variants(query: str) -> set[str]:
     return {compact_whitespace(variant) for variant in variants if compact_whitespace(variant)}
 
 
+def semantic_search_variants(query: str) -> set[str]:
+    variants = numeric_search_variants(query)
+    expanded = set()
+    for variant in variants:
+        normalized_variant = variant.lower()
+        expanded.add(variant)
+        for alias, replacements in SEARCH_TEXT_ALIASES.items():
+            if not re.search(rf"\b{re.escape(alias)}\b", normalized_variant):
+                continue
+            if normalized_variant == alias:
+                expanded.discard(variant)
+            for replacement in replacements:
+                expanded.add(compact_whitespace(re.sub(
+                    rf"\b{re.escape(alias)}\b",
+                    replacement,
+                    normalized_variant,
+                    flags=re.IGNORECASE,
+                )))
+    return {variant for variant in expanded if variant}
+
+
 def search_text_terms(query: str) -> set[str]:
-    return {normalized_like(variant) for variant in numeric_search_variants(query)}
+    return {normalized_like(variant) for variant in semantic_search_variants(query)}
+
+
+def canonical_event_priority_names(parts: SearchParts) -> set[str]:
+    names = set()
+    texts = [parts.query, parts.text_query]
+    texts.extend(clause.raw for clause in parts.clauses)
+    texts.extend(clause.text_query for clause in parts.clauses)
+    for text in texts:
+        normalized_text = compact_whitespace(text.lower())
+        if not normalized_text:
+            continue
+        for canonical_name in CANONICAL_EVENT_NAMES:
+            if re.search(rf"\b{re.escape(canonical_name)}\b", normalized_text):
+                names.add(canonical_name)
+        for alias, replacements in SEARCH_TEXT_ALIASES.items():
+            if re.search(rf"\b{re.escape(alias)}\b", normalized_text):
+                names.update(name for name in replacements if name in CANONICAL_EVENT_NAMES)
+    return names
+
+
+def event_name_priority_expression(parts: SearchParts):
+    priority_names = canonical_event_priority_names(parts)
+    if not priority_names:
+        return None
+    exact_conditions = [func.lower(models.Event.name) == name for name in priority_names]
+    contained_conditions = [models.Event.name.ilike(normalized_like(name)) for name in priority_names]
+    return case(
+        (or_(*exact_conditions), 0),
+        (or_(*contained_conditions), 1),
+        else_=2,
+    )
 
 
 def strip_apparatus_aliases(query: str, apparatus_codes: set[str]) -> str:
@@ -583,7 +646,12 @@ def build_global_results(
         filter_groups = build_structured_result_filter_groups(db, parts, represented_country)
     for filter_group in filter_groups:
         query = query.filter(or_(*filter_group))
+    event_priority = event_name_priority_expression(parts)
+    order_by_items = []
+    if event_priority is not None:
+        order_by_items.append(event_priority)
     results = query.order_by(
+        *order_by_items,
         models.Event.year.desc(),
         models.Event.start_date.desc(),
         models.Result.score.desc(),
@@ -645,8 +713,18 @@ def global_search(
     events_query = add_year_filter(events_query, parts.years)
     if event_conditions_for_query:
         events_query = events_query.filter(or_(*event_conditions_for_query))
+    event_priority = event_name_priority_expression(parts)
+    event_order_by_items = []
+    if event_priority is not None:
+        event_order_by_items.append(event_priority)
     events = (
-        events_query.order_by(models.Event.year.desc(), models.Event.start_date.desc(), models.Event.name, models.Event.id)
+        events_query.order_by(
+            *event_order_by_items,
+            models.Event.year.desc(),
+            models.Event.start_date.desc(),
+            models.Event.name,
+            models.Event.id,
+        )
         .limit(limit)
         .all()
         if event_conditions_for_query or parts.years

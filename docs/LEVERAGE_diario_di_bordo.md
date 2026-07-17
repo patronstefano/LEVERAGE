@@ -2204,6 +2204,7 @@ Aggiornamento ricerca globale:
 - rifinita la sequenza iniziale della home: il tempo di presenza del logo LEVERAGE e stato mantenuto sostanzialmente invariato, ma topbar e contenuto principale vengono anticipati durante la chiusura dello splash, riducendo il tempo percepito di pagina bianca prima della comparsa della home.
 - semplificata la ricerca globale della home: rimane una barra unica, pulita e non filtrata, mentre i pulsanti filtro sono riservati alle sezioni dedicate (`Athletes`, `Events`, `Rankings`, `Analytics`). Le preview della home non ereditano piu filtri invisibili dallo stato delle altre pagine.
 - separato lo stato dei filtri per sezione: i filtri selezionati in `Athletes`, `Events` e `Rankings` sono indipendenti e non influenzano automaticamente le altre sezioni. Esempio: selezionare `WAG` in `Athletes` non attiva `WAG` in `Events`.
+- resa piu intelligente la ricerca globale sugli eventi: abbreviazioni e nomi d'uso comune come `europeans`/`euros` vengono ricondotti a `European Championships`, mentre `worlds`/`world champs` vengono ricondotti a `World Championships`, cosi l'utente non deve conoscere il nome ufficiale esatto della gara. Il backend assegna inoltre priorita ai nomi ufficiali esatti rispetto a eventi correlati ma meno pertinenti.
 
 ## 19. Conclusione
 
