@@ -2079,6 +2079,7 @@ Aggiornamento UI successivo:
 - il CORS di sviluppo accetta ora anche `http://localhost:5174` e `http://127.0.0.1:5174`, cosi la preview frontend puo usare una porta alternativa quando `5173` e occupata senza generare errori `Load failed`.
 - il riquadro dei suggerimenti della ricerca globale viene ora allineato dinamicamente alla larghezza dell'input di ricerca, invece che alla larghezza complessiva della form con pulsante.
 - il riquadro autocomplete della ricerca e stato alleggerito: padding, ombra, raggio e altezza delle righe suggerimento sono stati ridotti per restare visivamente coerenti con il pulsante `Search`.
+- l'input interno della barra di ricerca e stato reso trasparente e senza focus ring proprio: quando l'utente scrive, l'evidenza visiva resta sulla barra esterna e non compare piu un riquadro grigio interno piu alto del pulsante `Search`.
 - nel calendario, il titolo del mese e stato separato in mese e anno su due righe dentro un contenitore a larghezza stabile, evitando che le frecce di navigazione si spostino quando cambia la lunghezza del nome del mese.
 
 Correzione dati successiva:

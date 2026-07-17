@@ -441,7 +441,6 @@ button {
 .signin-link:focus-visible,
 .api-config input:focus-visible,
 .api-config button:focus-visible,
-.search-input:focus-visible,
 .filter-button:focus-visible,
 .primary-button:focus-visible,
 .quiet-button:focus-visible {
@@ -572,6 +571,10 @@ button {
   box-shadow: var(--shadow);
 }
 
+.search-form:focus-within {
+  border-color: rgba(25, 23, 71, 0.24);
+}
+
 .search-suggestions {
   position: absolute;
   top: calc(100% + 6px);
@@ -630,14 +633,32 @@ button {
 }
 
 .search-input {
+  appearance: none;
+  -webkit-appearance: none;
   width: 100%;
   min-width: 0;
   height: 50px;
   padding: 0 18px;
-  border-color: transparent;
+  border: 0;
+  border-radius: calc(var(--large-control-radius) - 8px);
   background: transparent;
+  box-shadow: none;
   outline: none;
   font-size: 16px;
+}
+
+.search-input:focus,
+.search-input:focus-visible {
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+.search-input::-webkit-search-decoration,
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-results-button,
+.search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
 }
 
 .primary-button {
