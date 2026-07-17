@@ -2210,6 +2210,7 @@ Aggiornamento ricerca globale:
 - regolata l'altezza del riquadro autocomplete affinche mostri quattro suggerimenti completi senza tagliare visivamente il record successivo; ulteriori suggerimenti restano disponibili tramite scroll interno.
 - corretto il comportamento del riquadro autocomplete nella home: quando i suggerimenti sono aperti, la sezione successiva viene spinta verso il basso con spazio riservato dinamicamente, evitando che il pannello si sovrapponga alla sezione `Start with the data`.
 - rifinita la responsivita della home: logo LEVERAGE, sottotitolo, testo descrittivo e barra di ricerca seguono ora breakpoint coerenti su desktop stretto, tablet e mobile, evitando che un elemento si riduca mentre gli altri mantengono proporzioni da desktop.
+- resa piu interattiva la ricerca dedicata della sezione Athletes: la digitazione filtra direttamente la griglia delle schede atleta, senza pannello suggerimenti separato, mantenendo solo gli atleti coerenti con nome, cognome o ID e rispettando i filtri di disciplina della sezione.
 
 ## 19. Conclusione
 

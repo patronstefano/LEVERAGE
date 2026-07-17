@@ -4,7 +4,7 @@ from uuid import uuid4
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from sqlalchemy import or_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -330,20 +330,28 @@ def create_athlete(
 @router.get("/", response_model=list[schemas.AthleteRead])
 def list_athletes(
     db: Session = Depends(get_db),
-    search: Optional[str] = Query(None, description="Search in first name, last name, country"),
+    search: Optional[str] = Query(None, description="Search in first name, last name, country, or athlete id"),
     discipline: Optional[models.DisciplineEnum] = Query(None),
     country: Optional[str] = Query(None),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
 ):
     query = db.query(models.Athlete).filter(models.Athlete.is_deleted.is_(False))
-    if search:
-        term = f"%{search}%"
+    if search and search.strip():
+        search_terms = [part for part in search.strip().split() if part]
+        term_conditions = []
+        for term in search_terms:
+            conditions = [
+                models.Athlete.first_name.ilike(f"%{term}%"),
+                models.Athlete.last_name.ilike(f"%{term}%"),
+                models.Athlete.country.ilike(f"%{term}%"),
+            ]
+            if term.isdigit():
+                conditions.append(models.Athlete.id == int(term))
+            term_conditions.append(or_(*conditions))
         query = query.filter(
-            or_(
-                models.Athlete.first_name.ilike(term),
-                models.Athlete.last_name.ilike(term),
-                models.Athlete.country.ilike(term),
+            and_(
+                *term_conditions
             )
         )
     if discipline:

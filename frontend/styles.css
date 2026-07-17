@@ -1414,6 +1414,14 @@ button {
   background: #fff;
 }
 
+.athlete-results {
+  transition: opacity 160ms ease;
+}
+
+.athlete-results.is-updating {
+  opacity: 0.72;
+}
+
 .footer {
   width: min(1180px, calc(100% - 36px));
   margin: 0 auto;

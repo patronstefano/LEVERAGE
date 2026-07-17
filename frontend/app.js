@@ -26,6 +26,7 @@ const state = {
 const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
 let searchAutocompleteRequestId = 0;
+let athleteSearchRequestId = 0;
 
 const translations = {
   en: {
@@ -1554,6 +1555,30 @@ function renderRankingList(selector, payloadOrRankings) {
   }).join("")}</div>`;
 }
 
+function athleteSearchRoute(query) {
+  return query ? `/athletes?search=${encodeURIComponent(query)}` : "/athletes";
+}
+
+function syncAthleteSearchRoute(query) {
+  const route = athleteSearchRoute(query);
+  state.route = route;
+  window.history.replaceState(null, "", `#${route}`);
+  setActiveNav();
+}
+
+function renderAthleteCards(athletes) {
+  if (!athletes.length) return emptyState();
+  return `<div class="grid-3">${athletes.map((athlete) => {
+    const pills = [
+      { label: athlete.discipline, variant: "brand" },
+      { label: athlete.country || t("country") },
+      { label: `ID ${athlete.id}` },
+      ...(athlete.birth_year ? [{ label: String(athlete.birth_year) }] : []),
+    ];
+    return entityCard(`${athlete.first_name} ${athlete.last_name}`, athlete.world_gymnastics_status || "Official profile pending", pills, `#/athletes/${athlete.id}`);
+  }).join("")}</div>`;
+}
+
 function currentParams() {
   const [, query = ""] = state.route.split("?");
   return new URLSearchParams(query);
@@ -1565,40 +1590,59 @@ async function renderAthletes() {
   setApp(`
     ${pageHeading("athletesHeading", "athletesIntro")}
     <form class="toolbar" id="athleteSearchForm">
-      <input class="search-input" id="athleteSearchInput" type="search" value="${search}" placeholder="${t("searchPlaceholder")}">
+      <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("searchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
     </form>
-    <div id="athleteResults">${loadingState()}</div>
+    <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
   bindFilterButtons();
-  $("#athleteSearchForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-    const query = $("#athleteSearchInput").value.trim();
-    window.location.hash = query ? `#/athletes?search=${encodeURIComponent(query)}` : "#/athletes";
-  });
-  try {
-    const athletes = await getJson("/athletes", {
-      search,
-      discipline: singleFilterParam("discipline", "athletes"),
-      limit: 40,
-    });
-    if (!athletes.length) {
-      $("#athleteResults").innerHTML = emptyState();
-      return;
+  const form = $("#athleteSearchForm");
+  const input = $("#athleteSearchInput");
+  const resultsNode = $("#athleteResults");
+  let searchTimer;
+  const loadAthletes = async (query, options = {}) => {
+    const { showLoading = false, updateRoute = false } = options;
+    const requestId = ++athleteSearchRequestId;
+    if (updateRoute) syncAthleteSearchRoute(query);
+    if (showLoading) resultsNode.innerHTML = loadingState();
+    resultsNode.classList.add("is-updating");
+    resultsNode.setAttribute("aria-busy", "true");
+    try {
+      const athletes = await getJson("/athletes", {
+        search: query,
+        discipline: singleFilterParam("discipline", "athletes"),
+        limit: 40,
+      });
+      if (requestId !== athleteSearchRequestId) return;
+      resultsNode.innerHTML = renderAthleteCards(athletes);
+    } catch (error) {
+      if (requestId !== athleteSearchRequestId) return;
+      resultsNode.innerHTML = errorState(error);
+    } finally {
+      if (requestId === athleteSearchRequestId) {
+        resultsNode.classList.remove("is-updating");
+        resultsNode.setAttribute("aria-busy", "false");
+      }
     }
-    $("#athleteResults").innerHTML = `<div class="grid-3">${athletes.map((athlete) => {
-      const pills = [
-        { label: athlete.discipline, variant: "brand" },
-        { label: athlete.country || t("country") },
-        ...(athlete.birth_year ? [{ label: String(athlete.birth_year) }] : []),
-      ];
-      return entityCard(`${athlete.first_name} ${athlete.last_name}`, athlete.world_gymnastics_status || "Official profile pending", pills, `#/athletes/${athlete.id}`);
-    }).join("")}</div>`;
-  } catch (error) {
-    $("#athleteResults").innerHTML = errorState(error);
-  }
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = input.value.trim();
+    window.clearTimeout(searchTimer);
+    loadAthletes(query, { showLoading: true, updateRoute: true });
+  });
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
+    syncAthleteSearchRoute(query);
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      loadAthletes(query);
+    }, 140);
+  });
+  await loadAthletes(search, { showLoading: true });
 }
 
 async function renderEvents() {

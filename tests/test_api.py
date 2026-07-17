@@ -1554,7 +1554,7 @@ def test_search_filter_athletes():
     token = login_as_admin("coach@example.com")
     headers = {"Authorization": f"Bearer {token}"}
 
-    client.post(
+    luca_response = client.post(
         "/athletes/",
         json={
             "first_name": "Luca",
@@ -1578,6 +1578,18 @@ def test_search_filter_athletes():
     search_response = client.get("/athletes/?search=Luca")
     assert search_response.status_code == 200
     assert len(search_response.json()) == 1
+
+    full_name_response = client.get("/athletes/?search=Luca%20Rossi")
+    assert full_name_response.status_code == 200
+    assert len(full_name_response.json()) == 1
+
+    reversed_name_response = client.get("/athletes/?search=Rossi%20Luca")
+    assert reversed_name_response.status_code == 200
+    assert len(reversed_name_response.json()) == 1
+
+    id_response = client.get(f"/athletes/?search={luca_response.json()['id']}")
+    assert id_response.status_code == 200
+    assert len(id_response.json()) == 1
 
     filter_response = client.get("/athletes/?discipline=MAG")
     assert filter_response.status_code == 200
