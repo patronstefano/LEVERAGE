@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
+from app.country_aliases import resolve_country_codes, resolve_country_terms, resolve_exact_country_codes
 from app.database import get_db
 from app.gymternet_import import record_athlete_country_change
 from app.result_identity import result_identity_key
@@ -29,6 +30,16 @@ def save_upload_file(file: UploadFile, target_dir: Path) -> str:
     with path.open("wb") as buffer:
         buffer.write(file.file.read())
     return f"/uploads/{target_dir.name}/{filename}"
+
+
+def athlete_country_conditions(value: str):
+    country_codes = resolve_exact_country_codes(value) or resolve_country_codes(value)
+    country_terms = resolve_country_terms(country_codes) if country_codes else {value}
+    return [
+        models.Athlete.country.ilike(f"%{term}%")
+        for term in country_terms
+        if term
+    ]
 
 
 def event_allows_discipline(
@@ -339,22 +350,23 @@ def list_athletes(
 ):
     query = db.query(models.Athlete).filter(models.Athlete.is_deleted.is_(False))
     if search and search.strip():
-        search_terms = [part for part in search.strip().split() if part]
-        term_conditions = []
-        for term in search_terms:
-            conditions = [
-                models.Athlete.first_name.ilike(f"%{term}%"),
-                models.Athlete.last_name.ilike(f"%{term}%"),
-                models.Athlete.country.ilike(f"%{term}%"),
-            ]
-            if term.isdigit():
-                conditions.append(models.Athlete.id == int(term))
-            term_conditions.append(or_(*conditions))
-        query = query.filter(
-            and_(
-                *term_conditions
-            )
-        )
+        cleaned_search = search.strip()
+        exact_country_codes = resolve_exact_country_codes(cleaned_search)
+        if exact_country_codes:
+            query = query.filter(or_(*athlete_country_conditions(cleaned_search)))
+        else:
+            search_terms = [part for part in cleaned_search.split() if part]
+            term_conditions = []
+            for term in search_terms:
+                conditions = [
+                    models.Athlete.first_name.ilike(f"%{term}%"),
+                    models.Athlete.last_name.ilike(f"%{term}%"),
+                    *athlete_country_conditions(term),
+                ]
+                if term.isdigit():
+                    conditions.append(models.Athlete.id == int(term))
+                term_conditions.append(or_(*conditions))
+            query = query.filter(and_(*term_conditions))
     if discipline:
         query = query.filter(models.Athlete.discipline == discipline)
     if category:
@@ -363,7 +375,7 @@ def list_athletes(
             models.Result.is_deleted.is_(False),
         ).distinct()
     if country:
-        query = query.filter(models.Athlete.country.ilike(f"%{country}%"))
+        query = query.filter(or_(*athlete_country_conditions(country)))
     return query.order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id).offset(offset).limit(limit).all()
 
 

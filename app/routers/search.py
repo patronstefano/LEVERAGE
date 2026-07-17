@@ -8,8 +8,8 @@ from sqlalchemy import case, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
+from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
-from app.gymternet_import import COUNTRY_CODES, normalize_country_lookup_key
 from app.result_ranking import result_represented_country
 
 router = APIRouter()
@@ -220,41 +220,6 @@ def is_apparatus_only_query(query: str, apparatus_codes: set[str]) -> bool:
         if apparatus_codes.intersection(codes) and normalized_query == alias:
             return True
     return False
-
-
-def country_aliases_by_code() -> dict[str, set[str]]:
-    aliases: dict[str, set[str]] = defaultdict(set)
-    for alias, code in COUNTRY_CODES.items():
-        aliases[code].add(alias)
-    return aliases
-
-
-COUNTRY_ALIASES_BY_CODE = country_aliases_by_code()
-
-
-def resolve_country_codes(query: str) -> set[str]:
-    lookup_values = {
-        query.strip().lower(),
-        normalize_country_lookup_key(query),
-    }
-    normalized_query = f" {normalize_country_lookup_key(query)} "
-    codes = {
-        COUNTRY_CODES[value]
-        for value in lookup_values
-        if value and value in COUNTRY_CODES
-    }
-    for alias, code in COUNTRY_CODES.items():
-        normalized_alias = normalize_country_lookup_key(alias)
-        if normalized_alias and f" {normalized_alias} " in normalized_query:
-            codes.add(code)
-    return codes
-
-
-def resolve_country_terms(country_codes: set[str]) -> set[str]:
-    terms = set(country_codes)
-    for code in country_codes:
-        terms.update(COUNTRY_ALIASES_BY_CODE.get(code, set()))
-    return {term for term in terms if term}
 
 
 def parse_search_clause(query: str) -> SearchClause:

@@ -1139,6 +1139,11 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert any(athlete["id"] == italian_athlete["id"] for athlete in country_name_search.json()["athletes"])
     assert any(event["id"] == serie_a_event["id"] for event in country_name_search.json()["events"])
 
+    localized_country_search = client.get("/search", params={"q": "Italia", "limit": 5})
+    assert localized_country_search.status_code == 200
+    assert any(athlete["id"] == italian_athlete["id"] for athlete in localized_country_search.json()["athletes"])
+    assert any(event["id"] == serie_a_event["id"] for event in localized_country_search.json()["events"])
+
     country_code_search = client.get("/search", params={"q": "ITA", "limit": 5})
     assert country_code_search.status_code == 200
     assert any(athlete["id"] == italian_athlete["id"] for athlete in country_code_search.json()["athletes"])
@@ -1574,6 +1579,26 @@ def test_search_filter_athletes():
         },
         headers=headers,
     )
+    client.post(
+        "/athletes/",
+        json={
+            "first_name": "Giulia",
+            "last_name": "Bianchi",
+            "discipline": "WAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    )
+    client.post(
+        "/athletes/",
+        json={
+            "first_name": "Klara",
+            "last_name": "Mueller",
+            "discipline": "WAG",
+            "country": "GER",
+        },
+        headers=headers,
+    )
     event = client.post(
         "/events/",
         json={
@@ -1629,6 +1654,26 @@ def test_search_filter_athletes():
     id_response = client.get(f"/athletes/?search={luca_response.json()['id']}")
     assert id_response.status_code == 200
     assert len(id_response.json()) == 1
+
+    italy_response = client.get("/athletes/?search=Italy")
+    assert italy_response.status_code == 200
+    assert {"Rossi", "Bianchi"}.issubset({athlete["last_name"] for athlete in italy_response.json()})
+
+    italia_response = client.get("/athletes/?search=Italia")
+    assert italia_response.status_code == 200
+    assert {"Rossi", "Bianchi"}.issubset({athlete["last_name"] for athlete in italia_response.json()})
+
+    country_param_response = client.get("/athletes/?country=Italia")
+    assert country_param_response.status_code == 200
+    assert {"Rossi", "Bianchi"}.issubset({athlete["last_name"] for athlete in country_param_response.json()})
+
+    united_states_response = client.get("/athletes/?search=United%20States")
+    assert united_states_response.status_code == 200
+    assert [athlete["last_name"] for athlete in united_states_response.json()] == ["Verdi"]
+
+    germania_response = client.get("/athletes/?search=Germania")
+    assert germania_response.status_code == 200
+    assert [athlete["last_name"] for athlete in germania_response.json()] == ["Mueller"]
 
     filter_response = client.get("/athletes/?discipline=MAG")
     assert filter_response.status_code == 200
