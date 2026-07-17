@@ -2206,6 +2206,7 @@ Aggiornamento ricerca globale:
 - separato lo stato dei filtri per sezione: i filtri selezionati in `Athletes`, `Events` e `Rankings` sono indipendenti e non influenzano automaticamente le altre sezioni. Esempio: selezionare `WAG` in `Athletes` non attiva `WAG` in `Events`.
 - resa piu intelligente la ricerca globale sugli eventi: abbreviazioni e nomi d'uso comune come `europeans`/`euros` vengono ricondotti a `European Championships`, mentre `worlds`/`world champs` vengono ricondotti a `World Championships`, cosi l'utente non deve conoscere il nome ufficiale esatto della gara. Il backend assegna inoltre priorita ai nomi ufficiali esatti rispetto a eventi correlati ma meno pertinenti.
 - rimossi dalla UI pubblica gli indicatori tecnici di sviluppo come `API status`, stato online/offline del backend e messaggi che invitavano ad avviare FastAPI. Gli errori di caricamento dati vengono ora mostrati con un messaggio neutro e contestuale, senza esporre dettagli tecnici all'utente finale.
+- rifinito il riquadro autocomplete della ricerca globale: caratteri di `Loading` e suggerimenti resi piu coerenti con la dimensione del testo digitato, pannello reso meno invasivo in altezza e scrollabile quando sono disponibili piu suggerimenti.
 
 ## 19. Conclusione
 
