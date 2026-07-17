@@ -10,6 +10,7 @@ const state = {
   filters: {
     athletes: {
       discipline: [],
+      category: [],
     },
     events: {
       discipline: [],
@@ -557,7 +558,11 @@ function setupIntroSplash() {
 function apiUrl(path, params = {}) {
   const url = new URL(path, state.apiBase);
   Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
+    if (Array.isArray(value)) {
+      value.filter((item) => item !== undefined && item !== null && item !== "").forEach((item) => {
+        url.searchParams.append(key, item);
+      });
+    } else if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, value);
     }
   });
@@ -1594,6 +1599,8 @@ async function renderAthletes() {
       <button class="primary-button" type="submit">${t("search")}</button>
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
+      ${filterButton(t("junior"), "category", "junior", "athletes")}
+      ${filterButton(t("senior"), "category", "senior", "athletes")}
     </form>
     <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
@@ -1613,6 +1620,7 @@ async function renderAthletes() {
       const athletes = await getJson("/athletes/", {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
+        category: filterValues("category", "athletes"),
         limit: 40,
       });
       if (requestId !== athleteSearchRequestId) return;

@@ -1564,13 +1564,52 @@ def test_search_filter_athletes():
         },
         headers=headers,
     )
-    client.post(
+    anna_response = client.post(
         "/athletes/",
         json={
             "first_name": "Anna",
             "last_name": "Verdi",
             "discipline": "WAG",
             "country": "USA",
+        },
+        headers=headers,
+    )
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Athlete Category Filter Event",
+            "year": 2024,
+            "discipline": "MAG and WAG",
+            "category": "junior and senior",
+            "level": "National Event",
+        },
+        headers=headers,
+    ).json()
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": luca_response.json()["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "junior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "score": 13.5,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": anna_response.json()["id"],
+            "event_id": event["id"],
+            "discipline": "WAG",
+            "category": "senior",
+            "apparatus": "BB",
+            "format": "individual",
+            "round": "final",
+            "score": 13.7,
         },
         headers=headers,
     )
@@ -1594,6 +1633,18 @@ def test_search_filter_athletes():
     filter_response = client.get("/athletes/?discipline=MAG")
     assert filter_response.status_code == 200
     assert len(filter_response.json()) == 1
+
+    junior_response = client.get("/athletes/?category=junior")
+    assert junior_response.status_code == 200
+    assert [athlete["last_name"] for athlete in junior_response.json()] == ["Rossi"]
+
+    senior_response = client.get("/athletes/?category=senior")
+    assert senior_response.status_code == 200
+    assert [athlete["last_name"] for athlete in senior_response.json()] == ["Verdi"]
+
+    both_categories_response = client.get("/athletes/?category=junior&category=senior")
+    assert both_categories_response.status_code == 200
+    assert {athlete["last_name"] for athlete in both_categories_response.json()} == {"Rossi", "Verdi"}
 
 
 def test_upload_athlete_image():

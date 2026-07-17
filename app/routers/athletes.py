@@ -332,6 +332,7 @@ def list_athletes(
     db: Session = Depends(get_db),
     search: Optional[str] = Query(None, description="Search in first name, last name, country, or athlete id"),
     discipline: Optional[models.DisciplineEnum] = Query(None),
+    category: Optional[list[models.ResultCategoryEnum]] = Query(None, description="Filter athletes with at least one result in the selected category"),
     country: Optional[str] = Query(None),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
@@ -356,6 +357,11 @@ def list_athletes(
         )
     if discipline:
         query = query.filter(models.Athlete.discipline == discipline)
+    if category:
+        query = query.join(models.Result).filter(
+            models.Result.category.in_(category),
+            models.Result.is_deleted.is_(False),
+        ).distinct()
     if country:
         query = query.filter(models.Athlete.country.ilike(f"%{country}%"))
     return query.order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id).offset(offset).limit(limit).all()

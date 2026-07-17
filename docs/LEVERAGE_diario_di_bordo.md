@@ -2212,6 +2212,7 @@ Aggiornamento ricerca globale:
 - rifinita la responsivita della home: logo LEVERAGE, sottotitolo, testo descrittivo e barra di ricerca seguono ora breakpoint coerenti su desktop stretto, tablet e mobile, evitando che un elemento si riduca mentre gli altri mantengono proporzioni da desktop.
 - resa piu interattiva la ricerca dedicata della sezione Athletes: la digitazione filtra direttamente la griglia delle schede atleta, senza pannello suggerimenti separato, mantenendo solo gli atleti coerenti con nome, cognome o ID e rispettando i filtri di disciplina della sezione.
 - verificata e stabilizzata la ricerca composta nella sezione Athletes: query come `Stefano Patron`, `Patron Stefano` o l'ID atleta mantengono la scheda corretta anche al termine della digitazione; il frontend usa inoltre l'endpoint con slash finale per evitare redirect intermedi durante il filtro live.
+- aggiunti i filtri `Junior` e `Senior` nella sezione Athletes: la categoria resta semanticamente derivata dai Result dell'atleta, non da un campo fisso dell'entita Athlete, cosi un ginnasta puo essere trovato in base alle categorie in cui ha effettivamente gareggiato.
 
 ## 19. Conclusione
 
