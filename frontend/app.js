@@ -1610,7 +1610,7 @@ async function renderAthletes() {
     resultsNode.classList.add("is-updating");
     resultsNode.setAttribute("aria-busy", "true");
     try {
-      const athletes = await getJson("/athletes", {
+      const athletes = await getJson("/athletes/", {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         limit: 40,
