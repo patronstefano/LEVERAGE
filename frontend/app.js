@@ -79,10 +79,7 @@ const translations = {
     noGlobalSearchQuery: "Type a search term to explore all LEVERAGE data.",
     noGlobalSearchResults: "No global results found.",
     noStructuredSearchResults: "No results match all the search filters together. Related matches are shown below.",
-    systemStatus: "API status",
-    online: "Online",
-    offline: "Offline",
-    startApi: "Start the FastAPI backend to load live data.",
+    dataLoadError: "Unable to load live data. Please try again in a moment.",
     exploreTitle: "Start with the data",
     exploreSubtitle: "Four clear paths into the platform.",
     athletesTitle: "Explore athletes",
@@ -189,10 +186,7 @@ const translations = {
     noGlobalSearchQuery: "Scrivi un termine per cercare in tutti i dati di LEVERAGE.",
     noGlobalSearchResults: "Nessun risultato globale trovato.",
     noStructuredSearchResults: "Nessun risultato corrisponde a tutti i filtri della ricerca. Sotto trovi i match collegati.",
-    systemStatus: "Stato API",
-    online: "Online",
-    offline: "Offline",
-    startApi: "Avvia il backend FastAPI per caricare i dati live.",
+    dataLoadError: "Impossibile caricare i dati live. Riprova tra poco.",
     exploreTitle: "Parti dai dati",
     exploreSubtitle: "Quattro percorsi chiari nella piattaforma.",
     athletesTitle: "Esplora atleti",
@@ -299,10 +293,7 @@ const translations = {
     noGlobalSearchQuery: "Escribe un termino para explorar todos los datos de LEVERAGE.",
     noGlobalSearchResults: "No se encontraron resultados globales.",
     noStructuredSearchResults: "Ningun resultado coincide con todos los filtros de busqueda. Abajo se muestran coincidencias relacionadas.",
-    systemStatus: "Estado API",
-    online: "Online",
-    offline: "Offline",
-    startApi: "Inicia el backend FastAPI para cargar datos reales.",
+    dataLoadError: "No se pueden cargar los datos en vivo. Intentalo de nuevo en un momento.",
     exploreTitle: "Empieza por los datos",
     exploreSubtitle: "Cuatro caminos claros dentro de la plataforma.",
     athletesTitle: "Explorar atletas",
@@ -409,10 +400,7 @@ const translations = {
     noGlobalSearchQuery: "Saisissez un terme pour explorer toutes les donnees LEVERAGE.",
     noGlobalSearchResults: "Aucun resultat global trouve.",
     noStructuredSearchResults: "Aucun resultat ne correspond a tous les filtres de recherche. Les correspondances liees sont affichees ci-dessous.",
-    systemStatus: "Statut API",
-    online: "Online",
-    offline: "Offline",
-    startApi: "Lancez le backend FastAPI pour charger les donnees.",
+    dataLoadError: "Impossible de charger les donnees en direct. Reessayez dans un instant.",
     exploreTitle: "Commencer par les donnees",
     exploreSubtitle: "Quatre entrees simples dans la plateforme.",
     athletesTitle: "Explorer les athletes",
@@ -714,8 +702,8 @@ function entityCard(title, meta, pills = [], href = "") {
   return href ? `<a href="${href}">${content}</a>` : content;
 }
 
-function errorState(error) {
-  return `<div class="error-state">${t("startApi")} ${error ? `<br>${error.message}` : ""}</div>`;
+function errorState() {
+  return `<div class="error-state">${t("dataLoadError")}</div>`;
 }
 
 function loadingState() {
@@ -745,10 +733,6 @@ async function renderHome() {
             <button class="primary-button" type="submit">${t("search")}</button>
             <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
           </form>
-        </div>
-        <div class="home-status" id="apiSnapshot">
-          <span><span class="status-dot" id="statusDot"></span>${t("systemStatus")}</span>
-          <strong id="statusText">${t("loading")}</strong>
         </div>
       </div>
     </section>
@@ -1232,13 +1216,9 @@ async function hydrateHome() {
       }),
       hydrateHomeCalendar(),
     ]);
-    $("#statusDot").className = "status-dot online";
-    $("#statusText").textContent = t("online");
     renderRankingList("#homeRankings", rankings);
     syncHomePreviewHeights();
   } catch (error) {
-    $("#statusDot").className = "status-dot offline";
-    $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
     $("#homeRankings").innerHTML = errorState(error);
   }
@@ -1262,11 +1242,7 @@ async function changeHomeCalendarMonth(delta) {
   state.homeCalendarMonthOffset += delta;
   try {
     await hydrateHomeCalendar();
-    $("#statusDot").className = "status-dot online";
-    $("#statusText").textContent = t("online");
   } catch (error) {
-    $("#statusDot").className = "status-dot offline";
-    $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
   }
 }
@@ -1298,11 +1274,7 @@ async function resetHomeCalendarMonth() {
   state.homeCalendarMonthOffset = 0;
   try {
     await hydrateHomeCalendar();
-    $("#statusDot").className = "status-dot online";
-    $("#statusText").textContent = t("online");
   } catch (error) {
-    $("#statusDot").className = "status-dot offline";
-    $("#statusText").textContent = t("offline");
     $("#homeEvents").innerHTML = errorState(error);
   }
 }

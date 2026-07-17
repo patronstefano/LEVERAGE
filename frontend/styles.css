@@ -780,54 +780,6 @@ button {
   line-height: 1.5;
 }
 
-.status-line {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 18px;
-  margin-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 13px;
-}
-
-.home-status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 30px;
-  margin-top: 18px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: var(--control-radius);
-  background: rgba(255, 255, 255, 0.78);
-  color: rgba(17, 17, 20, 0.64);
-  font-size: 13px;
-}
-
-.home-status strong {
-  color: var(--ink);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--warning);
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.status-dot.online {
-  background: #30d158;
-}
-
-.status-dot.offline {
-  background: #ff453a;
-}
-
 .section {
   margin-top: clamp(38px, 6vw, 72px);
 }
