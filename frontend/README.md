@@ -18,10 +18,22 @@ Start the frontend from this folder:
 python3 -m http.server 5173
 ```
 
+If port 5173 is already busy, use the local fallback port:
+
+```bash
+python3 -m http.server 5174
+```
+
 Open:
 
 ```text
 http://localhost:5173
+```
+
+or, when using the fallback port:
+
+```text
+http://localhost:5174
 ```
 
 Default API base URL:

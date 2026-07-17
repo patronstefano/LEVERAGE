@@ -35,7 +35,13 @@ cd frontend
 python3 -m http.server 5173
 ```
 
-Poi aprire `http://localhost:5173`. Il frontend usa di default l'API su `http://localhost:8000`.
+Poi aprire `http://localhost:5173`. Se la porta `5173` e gia occupata, si puo usare il fallback locale:
+
+```bash
+python3 -m http.server 5174
+```
+
+e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://localhost:8000`.
 
 ## API principali
 - `POST /auth/register`

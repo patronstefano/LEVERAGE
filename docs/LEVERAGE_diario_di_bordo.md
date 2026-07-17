@@ -2076,6 +2076,7 @@ Aggiornamento UI successivo:
 - nella pagina `Rankings`, MAG/WAG non sono piu due bottoni apparentemente multi-selezionabili: sono un controllo segmentato esclusivo, coerente con la scelta semantica di non mischiare classifiche MAG e WAG.
 - la `Ranking preview` della home e stata riallineata all'altezza dell'anteprima calendario: il riquadro segue la lunghezza del calendario e contiene la ranking completa in uno scroll interno, senza allungare la sezione home.
 - i filtri categoria del calendario ora usano una categoria effettiva calcolata anche dal nome della voce calendario: una riga come `Chinese Junior Championships`, anche se collegata a un Event piu ampio `junior and senior`, viene filtrata e restituita come `junior` e non compare piu con filtro `senior`.
+- il CORS di sviluppo accetta ora anche `http://localhost:5174` e `http://127.0.0.1:5174`, cosi la preview frontend puo usare una porta alternativa quando `5173` e occupata senza generare errori `Load failed`.
 
 Correzione dati successiva:
 
