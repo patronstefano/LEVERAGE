@@ -68,6 +68,7 @@ const translations = {
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Search athletes, events and rankings from a curated gymnastics database built for comparison, context and clarity.",
     searchPlaceholder: "Search athletes, events, countries, apparatus...",
+    athleteSearchPlaceholder: "Search athletes by name, ID or country...",
     search: "Search",
     globalSearchHeading: "Search",
     globalSearchIntro: "Search across athletes, events, countries, apparatus and results.",
@@ -175,6 +176,7 @@ const translations = {
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Cerca atleti, eventi e classifiche in un database di ginnastica progettato per confronto, contesto e chiarezza.",
     searchPlaceholder: "Cerca atleti, eventi, nazioni, attrezzi...",
+    athleteSearchPlaceholder: "Cerca atleti per nome, ID o nazione...",
     search: "Cerca",
     globalSearchHeading: "Ricerca",
     globalSearchIntro: "Cerca in atleti, eventi, nazioni, attrezzi e risultati.",
@@ -282,6 +284,7 @@ const translations = {
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Busca atletas, eventos y rankings en una base de datos de gimnasia creada para comparar con claridad.",
     searchPlaceholder: "Buscar atletas, eventos, paises, aparatos...",
+    athleteSearchPlaceholder: "Buscar atletas por nombre, ID o pais...",
     search: "Buscar",
     globalSearchHeading: "Buscar",
     globalSearchIntro: "Busca en atletas, eventos, paises, aparatos y resultados.",
@@ -389,6 +392,7 @@ const translations = {
     heroSubtitle: "Artistic Gymnastics Analytics",
     heroBody: "Recherchez athletes, evenements et classements dans une base de donnees concue pour comparer clairement.",
     searchPlaceholder: "Rechercher athletes, evenements, pays, appareils...",
+    athleteSearchPlaceholder: "Rechercher athletes par nom, ID ou pays...",
     search: "Rechercher",
     globalSearchHeading: "Recherche",
     globalSearchIntro: "Recherchez athletes, evenements, pays, appareils et resultats.",
@@ -1595,7 +1599,7 @@ async function renderAthletes() {
   setApp(`
     ${pageHeading("athletesHeading", "athletesIntro")}
     <form class="toolbar" id="athleteSearchForm">
-      <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("searchPlaceholder")}">
+      <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
