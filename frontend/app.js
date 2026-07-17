@@ -640,6 +640,13 @@ function monthLabel(date) {
   return new Intl.DateTimeFormat(state.language, { month: "long", year: "numeric" }).format(date);
 }
 
+function monthTitleParts(date) {
+  return {
+    month: new Intl.DateTimeFormat(state.language, { month: "long" }).format(date),
+    year: new Intl.DateTimeFormat(state.language, { year: "numeric" }).format(date),
+  };
+}
+
 function weekdayLabels() {
   const monday = new Date(2026, 0, 5);
   return Array.from({ length: 7 }, (_, index) => (
@@ -1413,6 +1420,7 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
   const labels = weekdayLabels();
   const sortedEvents = sortCalendarItems(events).filter((event) => event.start_date || event.end_date);
   const monthName = monthLabel(monthDate);
+  const monthTitle = monthTitleParts(monthDate);
   const navScope = options.navScope || "home";
   const wrapperClass = options.wrapperClass || "home-calendar";
   const maxVisibleLanes = options.maxVisibleLanes || 4;
@@ -1422,9 +1430,10 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
       <div class="calendar-toolbar">
         <div class="calendar-title-row">
           <button class="calendar-nav-button" type="button" data-calendar-nav="-1" data-calendar-nav-scope="${navScope}" aria-label="${t("previousMonth")}" title="${t("previousMonth")}">&#8249;</button>
-          <div>
+          <div class="calendar-title-label">
             <span class="calendar-kicker">${t("calendarMonth")}</span>
-            <strong>${escapeHtml(monthName)}</strong>
+            <strong>${escapeHtml(monthTitle.month)}</strong>
+            <span class="calendar-year">${escapeHtml(monthTitle.year)}</span>
           </div>
           <button class="calendar-nav-button" type="button" data-calendar-nav="1" data-calendar-nav-scope="${navScope}" aria-label="${t("nextMonth")}" title="${t("nextMonth")}">&#8250;</button>
           <button class="calendar-today-button" type="button" data-calendar-today-scope="${navScope}" aria-label="${t("today")}" title="${t("today")}">${t("today")}</button>

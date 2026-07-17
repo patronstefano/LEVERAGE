@@ -1036,6 +1036,13 @@ button {
   gap: 8px;
 }
 
+.calendar-title-label {
+  display: grid;
+  justify-items: center;
+  min-width: 122px;
+  text-align: center;
+}
+
 .calendar-toolbar strong {
   display: block;
   margin-top: 2px;
@@ -1048,6 +1055,13 @@ button {
   color: var(--muted);
   font-size: 12px;
   line-height: 1;
+}
+
+.calendar-year {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.15;
 }
 
 .calendar-nav-button {
