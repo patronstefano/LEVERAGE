@@ -509,25 +509,6 @@ function closeSearchSuggestions() {
   });
 }
 
-function syncSearchSuggestionsGeometry(input, suggestions) {
-  const form = input?.closest(".search-form");
-  if (!form || !input || !suggestions) return;
-  const formRect = form.getBoundingClientRect();
-  const inputRect = input.getBoundingClientRect();
-  suggestions.style.setProperty("--search-suggestions-left", `${Math.max(0, inputRect.left - formRect.left)}px`);
-  suggestions.style.setProperty("--search-suggestions-width", `${Math.round(inputRect.width)}px`);
-}
-
-function syncAllSearchSuggestionsGeometry() {
-  document.querySelectorAll(".search-form").forEach((form) => {
-    const input = form.querySelector(".search-input");
-    const suggestions = form.querySelector(".search-suggestions");
-    if (input && suggestions) {
-      syncSearchSuggestionsGeometry(input, suggestions);
-    }
-  });
-}
-
 function setupIntroSplash() {
   const splash = $("#introSplash");
   if (!splash) return;
@@ -953,7 +934,6 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
   const updateSuggestions = () => {
     window.clearTimeout(debounceTimer);
     const query = input.value.trim();
-    syncSearchSuggestionsGeometry(input, suggestions);
     if (query.length < 2) {
       suggestions.hidden = true;
       suggestions.innerHTML = "";
@@ -1725,7 +1705,6 @@ function init() {
   window.addEventListener("hashchange", render);
   window.addEventListener("resize", () => {
     syncHomePreviewHeights();
-    syncAllSearchSuggestionsGeometry();
   });
   render();
 }
