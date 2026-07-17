@@ -507,7 +507,24 @@ function closeSearchSuggestions() {
   document.querySelectorAll(".search-suggestions").forEach((node) => {
     node.hidden = true;
     node.innerHTML = "";
+    setSearchSuggestionsOpen(node, false);
   });
+}
+
+function setSearchSuggestionsOpen(suggestions, isOpen, itemCount = 4) {
+  const form = suggestions.closest(".search-form");
+  if (!form) return;
+  form.classList.toggle("search-suggestions-open", isOpen);
+  if (!isOpen) {
+    form.style.removeProperty("--search-suggestions-visible-height");
+    return;
+  }
+  const visibleRows = Math.min(Math.max(itemCount, 1), 4);
+  const rowHeight = 66;
+  const rowGap = 3;
+  const panelPadding = 16;
+  const height = panelPadding + (visibleRows * rowHeight) + (Math.max(0, visibleRows - 1) * rowGap);
+  form.style.setProperty("--search-suggestions-visible-height", `${height}px`);
 }
 
 function setupIntroSplash() {
@@ -886,6 +903,7 @@ function renderSearchSuggestions(container, items) {
   if (!items.length) {
     container.hidden = true;
     container.innerHTML = "";
+    setSearchSuggestionsOpen(container, false);
     return;
   }
   container.innerHTML = items.map((item) => `
@@ -895,6 +913,7 @@ function renderSearchSuggestions(container, items) {
     </button>
   `).join("");
   container.hidden = false;
+  setSearchSuggestionsOpen(container, true, items.length);
   container.querySelectorAll(".search-suggestion").forEach((button) => {
     button.addEventListener("click", () => {
       closeSearchSuggestions();
@@ -921,10 +940,12 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
     if (query.length < 2) {
       suggestions.hidden = true;
       suggestions.innerHTML = "";
+      setSearchSuggestionsOpen(suggestions, false);
       return;
     }
     suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${t("loading")}</div>`;
     suggestions.hidden = false;
+    setSearchSuggestionsOpen(suggestions, true, 1);
     debounceTimer = window.setTimeout(async () => {
       const requestId = ++searchAutocompleteRequestId;
       try {
@@ -935,6 +956,7 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
         if (requestId !== searchAutocompleteRequestId) return;
         suggestions.hidden = true;
         suggestions.innerHTML = "";
+        setSearchSuggestionsOpen(suggestions, false);
       }
     }, 170);
   };

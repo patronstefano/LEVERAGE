@@ -2208,6 +2208,7 @@ Aggiornamento ricerca globale:
 - rimossi dalla UI pubblica gli indicatori tecnici di sviluppo come `API status`, stato online/offline del backend e messaggi che invitavano ad avviare FastAPI. Gli errori di caricamento dati vengono ora mostrati con un messaggio neutro e contestuale, senza esporre dettagli tecnici all'utente finale.
 - rifinito il riquadro autocomplete della ricerca globale: caratteri di `Loading` e suggerimenti resi piu coerenti con la dimensione del testo digitato, pannello reso meno invasivo in altezza e scrollabile quando sono disponibili piu suggerimenti.
 - regolata l'altezza del riquadro autocomplete affinche mostri quattro suggerimenti completi senza tagliare visivamente il record successivo; ulteriori suggerimenti restano disponibili tramite scroll interno.
+- corretto il comportamento del riquadro autocomplete nella home: quando i suggerimenti sono aperti, la sezione successiva viene spinta verso il basso con spazio riservato dinamicamente, evitando che il pannello si sovrapponga alla sezione `Start with the data`.
 
 ## 19. Conclusione
 

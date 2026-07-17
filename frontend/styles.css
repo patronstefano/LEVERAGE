@@ -569,10 +569,15 @@ button {
   border: 1px solid rgba(231, 231, 236, 0.86);
   border-radius: var(--large-control-radius);
   box-shadow: var(--shadow);
+  transition: border-color var(--control-fade-motion), margin-bottom var(--control-expand-motion);
 }
 
 .search-form:focus-within {
   border-color: rgba(25, 23, 71, 0.24);
+}
+
+.home-hero .search-form.search-suggestions-open {
+  margin-bottom: calc(var(--search-suggestions-visible-height, 291px) + 18px);
 }
 
 .search-suggestions {
