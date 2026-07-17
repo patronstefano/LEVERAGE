@@ -583,8 +583,9 @@ button {
   z-index: 42;
   display: grid;
   gap: 3px;
-  max-height: min(318px, 42vh);
+  max-height: min(291px, 42vh);
   overflow-y: auto;
+  scrollbar-gutter: stable;
   padding: 8px;
   border: 1px solid rgba(25, 23, 71, 0.1);
   border-radius: var(--large-control-radius);
@@ -617,6 +618,7 @@ button {
   display: grid;
   gap: 4px;
   width: 100%;
+  height: 66px;
   padding: 12px 14px;
   border: 0;
   border-radius: 12px;
@@ -632,15 +634,21 @@ button {
 }
 
 .search-suggestion strong {
+  overflow: hidden;
   font-size: 16px;
   font-weight: 650;
   line-height: 1.22;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .search-suggestion span {
+  overflow: hidden;
   color: var(--muted);
   font-size: 13px;
   line-height: 1.32;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .search-suggestion-status {
