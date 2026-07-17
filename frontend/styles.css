@@ -522,7 +522,7 @@ button {
 .home-subtitle {
   margin: 12px 0 0;
   color: var(--muted);
-  font-size: clamp(17px, 2vw, 22px);
+  font-size: 21px;
   font-weight: 500;
   line-height: 1.25;
 }
@@ -533,6 +533,7 @@ button {
   color: var(--muted);
   font-size: 17px;
   line-height: 1.48;
+  text-wrap: balance;
 }
 
 .hero-subtitle,
@@ -1528,6 +1529,35 @@ button {
     min-height: auto;
   }
 
+  .home-hero {
+    min-height: auto;
+    padding-top: 46px;
+  }
+
+  .home-hero-copy {
+    width: min(720px, 100%);
+  }
+
+  .home-wordmark {
+    width: min(470px, 82vw);
+  }
+
+  .home-subtitle {
+    margin-top: 10px;
+    font-size: 19px;
+  }
+
+  .home-body {
+    max-width: 560px;
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.46;
+  }
+
+  .home-hero .search-panel {
+    margin-top: 26px;
+  }
+
   .grid-4,
   .grid-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1540,19 +1570,67 @@ button {
     width: min(100% - 28px, 1180px);
   }
 
+  .main-view {
+    padding-top: 34px;
+  }
+
+  .home-hero {
+    padding-top: 26px;
+  }
+
   .hero h1 {
     font-size: clamp(48px, 17vw, 70px);
+  }
+
+  .home-wordmark {
+    width: min(360px, 86vw);
+  }
+
+  .home-subtitle {
+    margin-top: 8px;
+    font-size: 16px;
+  }
+
+  .home-body {
+    max-width: 34rem;
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.44;
+  }
+
+  .home-hero .search-panel {
+    margin-top: 22px;
   }
 
   .search-form {
     border-radius: var(--large-control-radius);
     align-items: stretch;
     flex-direction: column;
+    gap: 8px;
+    padding: 7px;
   }
 
   .primary-button,
   .search-input {
     width: 100%;
+  }
+
+  .primary-button,
+  .search-input {
+    height: 46px;
+  }
+
+  .search-input {
+    padding: 0 14px;
+    font-size: 15px;
+  }
+
+  .search-suggestion strong {
+    font-size: 15px;
+  }
+
+  .search-suggestion span {
+    font-size: 12px;
   }
 
   .grid-4,
@@ -1570,5 +1648,33 @@ button {
   .api-config,
   .api-config input {
     width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .main-view,
+  .footer {
+    width: min(100% - 22px, 1180px);
+  }
+
+  .home-wordmark {
+    width: min(310px, 88vw);
+  }
+
+  .home-subtitle {
+    font-size: 15px;
+  }
+
+  .home-body {
+    font-size: 14px;
+  }
+
+  .search-form {
+    padding: 6px;
+  }
+
+  .primary-button,
+  .search-input {
+    height: 44px;
   }
 }
