@@ -352,6 +352,23 @@ class ScoreComponentStatusEnum(str, Enum):
     NOT_APPLICABLE = "not_applicable"
 
 
+class ResultRankingScoreComponent(BaseModel):
+    result_id: int
+    apparatus: str
+    vt_attempt: Optional[int] = None
+    score: Optional[float] = None
+    D_score: Optional[float] = None
+    execution_estimate: Optional[float] = None
+    E_score: Optional[float] = None
+    Penalty: Optional[float] = None
+    e_score_status: ScoreComponentStatusEnum = ScoreComponentStatusEnum.NOT_AVAILABLE
+    penalty_status: ScoreComponentStatusEnum = ScoreComponentStatusEnum.NOT_AVAILABLE
+    Bonus: Optional[float] = None
+    bonus_status: ScoreComponentStatusEnum = ScoreComponentStatusEnum.NOT_APPLICABLE
+    vault_attempt_order_uncertain: bool = False
+    data_warnings: list[str] = Field(default_factory=list)
+
+
 class RoleEnum(str, Enum):
     SUPER_ADMIN = "super_admin"
     ADMIN = "admin"
@@ -1326,6 +1343,7 @@ class ResultRankingEntry(BaseModel):
     missing_fields: list[str] = Field(default_factory=list)
     vault_attempt_order_uncertain: bool = False
     data_warnings: list[str] = Field(default_factory=list)
+    apparatus_scores: list[ResultRankingScoreComponent] = Field(default_factory=list)
 
 
 class ScoringCycleRead(BaseModel):

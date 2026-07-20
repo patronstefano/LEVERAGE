@@ -13,6 +13,11 @@ RANKING_METRIC_COLUMNS = {
     schemas.ResultRankingMetricEnum.BONUS: models.Result.Bonus,
 }
 
+RANKING_APPARATUS_BREAKDOWN_ORDER = {
+    models.DisciplineEnum.MAG: ["FX", "PH", "SR", "VT", "PB", "HB"],
+    models.DisciplineEnum.WAG: ["VT", "UB", "BB", "FX"],
+}
+
 
 def result_represented_country(result: models.Result) -> Optional[str]:
     return result.represented_country or (result.athlete.country if result.athlete else None)
@@ -175,6 +180,83 @@ def get_result_metric_value(result: models.Result, sort_by: schemas.ResultRankin
     return getattr(result, RANKING_METRIC_COLUMNS[sort_by].key)
 
 
+def build_ranking_score_component(result: models.Result) -> schemas.ResultRankingScoreComponent:
+    e_score_status = schemas.result_nullable_execution_component_status(
+        result.event.year if result.event else None,
+        result.E_score,
+    )
+    penalty_status = schemas.result_nullable_execution_component_status(
+        result.event.year if result.event else None,
+        result.Penalty,
+    )
+    bonus_status = schemas.result_bonus_status(
+        result.event.year if result.event else None,
+        result.discipline,
+        result.apparatus,
+        result.Bonus,
+    )
+    return schemas.ResultRankingScoreComponent(
+        result_id=result.id,
+        apparatus=result.apparatus or "not specified",
+        vt_attempt=result.vt_attempt,
+        score=result.score,
+        D_score=result.D_score,
+        execution_estimate=schemas.calculate_execution_estimate(result.score, result.D_score),
+        E_score=result.E_score,
+        Penalty=result.Penalty,
+        e_score_status=e_score_status,
+        penalty_status=penalty_status,
+        Bonus=result.Bonus,
+        bonus_status=bonus_status,
+        vault_attempt_order_uncertain=result.vault_attempt_order_uncertain,
+        data_warnings=schemas.result_data_warnings(
+            result.vault_attempt_order_uncertain,
+            schemas.has_execution_estimate(result.score, result.D_score),
+            penalty_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
+            bonus_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
+        ),
+    )
+
+
+def aa_component_matches(component: models.Result, aa_result: models.Result) -> bool:
+    return (
+        component.id != aa_result.id
+        and not component.is_deleted
+        and component.athlete_id == aa_result.athlete_id
+        and component.event_id == aa_result.event_id
+        and component.discipline == aa_result.discipline
+        and component.category == aa_result.category
+        and component.format == aa_result.format
+        and component.round == aa_result.round
+        and component.day == aa_result.day
+        and component.apparatus not in (None, "AA", "VT AVG")
+        and component.score is not None
+    )
+
+
+def aa_component_sort_key(component: models.Result):
+    apparatus_order = RANKING_APPARATUS_BREAKDOWN_ORDER.get(component.discipline, [])
+    apparatus_index = (
+        apparatus_order.index(component.apparatus)
+        if component.apparatus in apparatus_order
+        else len(apparatus_order)
+    )
+    return apparatus_index, component.vt_attempt or 0, component.id
+
+
+def build_aa_apparatus_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
+    if result.apparatus != "AA" or not result.event:
+        return []
+    components = sorted(
+        (
+            component for component in result.event.results
+            if aa_component_matches(component, result)
+        ),
+        key=aa_component_sort_key,
+    )
+    return [build_ranking_score_component(component) for component in components]
+
+
 def build_ranking_entries(
     results: list[models.Result],
     sort_by: schemas.ResultRankingMetricEnum,
@@ -236,6 +318,7 @@ def build_ranking_entries(
                     penalty_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                     bonus_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                 ),
+                apparatus_scores=build_aa_apparatus_scores(result),
             )
         )
     return ranking

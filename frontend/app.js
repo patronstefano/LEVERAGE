@@ -1064,6 +1064,54 @@ function scoreLabel(value) {
   return value === null || value === undefined ? "not available" : Number(value).toFixed(3);
 }
 
+function componentValueLabel(value, status) {
+  if (value !== null && value !== undefined) return Number(value).toFixed(3);
+  if (status === "not_applicable") return "not applicable";
+  return "not available";
+}
+
+function rankingScoreComposition(entry) {
+  if ((entry.apparatus || "AA") === "AA") {
+    const apparatusScores = entry.apparatus_scores || [];
+    if (!apparatusScores.length) {
+      return `<div class="score-composition muted-composition">Apparatus scores not available</div>`;
+    }
+    return `
+      <div class="score-composition aa-composition" aria-label="AA apparatus scores">
+        ${apparatusScores.map((component) => {
+          const attempt = component.vt_attempt ? ` ${component.vt_attempt}` : "";
+          return `
+            <span class="score-component">
+              <strong>${escapeHtml(`${component.apparatus}${attempt}`)}</strong>
+              <span>${scoreLabel(component.score)}</span>
+            </span>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  const eLabel = entry.execution_estimate === null || entry.execution_estimate === undefined
+    ? componentValueLabel(entry.E_score, entry.e_score_status)
+    : scoreLabel(entry.execution_estimate);
+  const components = [
+    ["D", componentValueLabel(entry.D_score)],
+    ["E est.", eLabel],
+    ["P", componentValueLabel(entry.Penalty, entry.penalty_status)],
+    ["B", componentValueLabel(entry.Bonus, entry.bonus_status)],
+  ];
+  return `
+    <div class="score-composition" aria-label="Score composition">
+      ${components.map(([label, value]) => `
+        <span class="score-component">
+          <strong>${label}</strong>
+          <span>${value}</span>
+        </span>
+      `).join("")}
+    </div>
+  `;
+}
+
 function searchResultCard(result) {
   const pills = [
     { label: `${t("score")} ${scoreLabel(result.score)}`, variant: "brand" },
@@ -1667,13 +1715,24 @@ function renderRankingList(selector, payloadOrRankings) {
     return;
   }
   node.innerHTML = `${context}<div class="entity-list">${rankings.map((entry) => {
-    const score = entry.score === null || entry.score === undefined ? "not available" : Number(entry.score).toFixed(3);
     const pills = [
-      { label: `${t("score")} ${score}`, variant: "brand" },
+      { label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" },
       { label: entry.apparatus || "AA" },
       { label: entry.discipline },
     ];
-    return entityCard(`#${entry.computed_rank} ${entry.athlete_name}`, `${entry.event_name} · ${entry.country || ""}`, pills, `#/athletes/${entry.athlete_id}`);
+    const content = `
+      <article class="entity-card ranking-card">
+        <div class="entity-row">
+          <h3>#${entry.computed_rank} ${escapeHtml(entry.athlete_name)}</h3>
+        </div>
+        <p class="meta">${escapeHtml([entry.event_name, entry.country].filter(Boolean).join(" · "))}</p>
+        <div class="pill-row">
+          ${pills.map((pill) => `<span class="pill ${pill.variant || ""}">${escapeHtml(pill.label)}</span>`).join("")}
+        </div>
+        ${rankingScoreComposition(entry)}
+      </article>
+    `;
+    return `<a href="#/athletes/${entry.athlete_id}">${content}</a>`;
   }).join("")}</div>`;
 }
 

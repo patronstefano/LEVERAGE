@@ -2243,6 +2243,8 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - il filtro `All cycles` mantiene il significato di confronto trasversale intenzionale: quando e attivo, la UI mostra tutti i pulsanti ciclo come selezionati e il backend riceve `include_all_scoring_cycles=true`;
 - il backend `/analytics/rankings` e l'endpoint parallelo `/results/analytics/rankings` accettano ora piu valori `apparatus` e piu valori `scoring_cycle`, sia come parametri ripetuti sia come valori separati da virgola;
 - aggiunti test automatici per ranking su piu cicli e su piu attrezzi.
+- le card della sezione `Rankings` mostrano ora la composizione del punteggio per i risultati non-AA: `D`, `E est.`, `P`, `B`, con valori `not available` o `not applicable` quando coerente con lo stato del dato;
+- per i ranking `AA`, il backend espone `apparatus_scores`, cioe i punteggi sui singoli attrezzi collegati allo stesso atleta/evento/format/round/categoria/giorno che compongono il totale all-around, e la UI li mostra direttamente nella card.
 
 ## 19. Conclusione
 

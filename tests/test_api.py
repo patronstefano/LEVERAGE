@@ -6679,7 +6679,15 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
 
     mag_aa = client.get("/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028&apparatus=AA")
     assert mag_aa.status_code == 200
-    assert [entry["apparatus"] for entry in mag_aa.json()["ranking"]] == ["AA"]
+    aa_entry = mag_aa.json()["ranking"][0]
+    assert aa_entry["apparatus"] == "AA"
+    assert aa_entry["score"] == 82.5
+    assert aa_entry["execution_estimate"] == pytest.approx(48.5)
+    assert [(component["apparatus"], component["score"]) for component in aa_entry["apparatus_scores"]] == [
+        ("FX", 14.2),
+        ("PH", 13.8),
+    ]
+    assert all(component["apparatus"] != "AA" for component in aa_entry["apparatus_scores"])
 
     mixed_disciplines = client.get(
         "/analytics/rankings?allow_mixed_disciplines=true&include_all_scoring_cycles=true"

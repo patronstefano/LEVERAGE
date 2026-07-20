@@ -1367,6 +1367,10 @@ button {
   padding: 16px;
 }
 
+.ranking-card {
+  gap: 10px;
+}
+
 .entity-row {
   display: flex;
   align-items: center;
@@ -1409,6 +1413,42 @@ button {
   color: var(--warning);
   background: rgba(154, 103, 0, 0.1);
   border-color: rgba(154, 103, 0, 0.16);
+}
+
+.score-composition {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.score-component {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(25, 23, 71, 0.08);
+  border-radius: var(--data-chip-radius);
+  background: rgba(245, 245, 247, 0.76);
+  color: rgba(17, 17, 20, 0.72);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.score-component strong {
+  color: var(--ink);
+  font-weight: 680;
+}
+
+.aa-composition {
+  grid-template-columns: repeat(auto-fit, minmax(76px, 1fr));
+}
+
+.muted-composition {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .page-heading {
