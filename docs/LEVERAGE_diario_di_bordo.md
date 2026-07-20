@@ -2215,6 +2215,7 @@ Aggiornamento ricerca globale:
 - aggiunti i filtri `Junior` e `Senior` nella sezione Athletes: la categoria resta semanticamente derivata dai Result dell'atleta, non da un campo fisso dell'entita Athlete, cosi un ginnasta puo essere trovato in base alle categorie in cui ha effettivamente gareggiato.
 - distinto il placeholder della ricerca Athletes dalla ricerca globale: la barra dedicata agli atleti comunica ora esclusivamente ricerca per nome, ID o nazione, evitando riferimenti fuorvianti a eventi, classifiche o attrezzi.
 - resa piu intelligente la ricerca per nazione nella sezione Athletes: i nomi paese e gli alias multilingua vengono normalizzati verso i codici country salvati nel database, cosi ricerche come `Italy`, `Italia`, `United States` o `Germania` restituiscono gli atleti collegati ai codici `ITA`, `USA` o `GER`.
+- rifinita la home page rinominando le anteprime in `Calendar` e `Ranking` e stabilizzando il pulsante `View all`, ora centrato e contenuto correttamente nel controllo senza sbordature.
 
 ## 19. Conclusione
 

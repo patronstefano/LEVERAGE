@@ -713,10 +713,16 @@ button {
 
 .filter-button,
 .quiet-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 36px;
   padding: 0 14px;
   color: rgba(17, 17, 20, 0.76);
   border-color: rgba(25, 23, 71, 0.14);
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .filter-button[aria-pressed="true"],
@@ -724,6 +730,12 @@ button {
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
+}
+
+.quiet-button {
+  flex: 0 0 auto;
+  height: 36px;
+  max-width: 100%;
 }
 
 .segmented-control {
@@ -820,10 +832,14 @@ button {
 .section-header,
 .page-heading {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
   margin-bottom: 18px;
+}
+
+.page-heading {
+  align-items: end;
 }
 
 .section-header h2,
