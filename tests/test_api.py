@@ -1120,6 +1120,10 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert europeans_events[0]["id"] == european_championships_event["id"]
     assert any(event["id"] == northern_european_championships_event["id"] for event in europeans_events)
 
+    europei_search = client.get("/search", params={"q": "Europei 2025", "limit": 5})
+    assert europei_search.status_code == 200
+    assert europei_search.json()["events"][0]["id"] == european_championships_event["id"]
+
     worlds_search = client.get("/search", params={"q": "worlds 2025", "limit": 5})
     assert worlds_search.status_code == 200
     worlds_events = worlds_search.json()["events"]
@@ -4507,6 +4511,15 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
         source="gymternet_calendar",
         source_row=99,
     )
+    european_calendar_only_entry = models.EventCalendarEntry(
+        name="European Championships",
+        year=2025,
+        start_date=date(2025, 5, 26),
+        end_date=date(2025, 6, 1),
+        discipline=models.EventDisciplineEnum.MAG_AND_WAG,
+        source="gymternet_calendar",
+        source_row=98,
+    )
     broad_event = models.Event(
         name="Chinese Championships MT",
         year=2026,
@@ -4528,7 +4541,13 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
     )
     db = SessionLocal()
     try:
-        db.add_all([undated_event, calendar_only_entry, broad_event, linked_junior_entry])
+        db.add_all([
+            undated_event,
+            calendar_only_entry,
+            european_calendar_only_entry,
+            broad_event,
+            linked_junior_entry,
+        ])
         db.commit()
     finally:
         db.close()
@@ -4559,6 +4578,12 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
     assert senior_response.status_code == 200
     senior_names = {event["name"] for event in senior_response.json()}
     assert "Chinese Junior Championships" not in senior_names
+
+    search_response = client.get("/events/calendar?search=Europei%202025&as_of=2025-01-01")
+    assert search_response.status_code == 200
+    search_calendar = {event["name"]: event for event in search_response.json()}
+    assert search_calendar["European Championships"]["year"] == 2025
+    assert search_calendar["European Championships"]["is_calendar_only"] is True
 
 
 def test_admin_event_result_reminders_are_admin_only_and_create_notifications_once():
@@ -6955,6 +6980,47 @@ def test_event_filters_treat_combined_values_as_dual_selection():
         "WAG Event",
         "Combined Event",
     }
+
+
+def test_event_search_understands_years_semantic_aliases_and_localized_countries():
+    client.post("/auth/register", json={"email": "event_search_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("event_search_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    for name, year, location in [
+        ("European Championships", 2025, "Leipzig, Germany"),
+        ("European Championships", 2024, "Rimini, Italy"),
+        ("World Championships", 2025, "Jakarta, Indonesia"),
+        ("Serie A", 2025, "Naples, Italy"),
+    ]:
+        response = client.post(
+            "/events/",
+            json={
+                "name": name,
+                "year": year,
+                "location": location,
+                "start_date": f"{year}-05-01",
+                "end_date": f"{year}-05-05",
+                "discipline": "MAG and WAG",
+                "category": "senior",
+                "level": "International Event",
+            },
+            headers=headers,
+        )
+        assert response.status_code == 200
+
+    europei_response = client.get("/events/?search=Europei%202025")
+    assert europei_response.status_code == 200
+    assert {event["year"] for event in europei_response.json()} == {2025}
+    assert {event["name"] for event in europei_response.json()} == {"European Championships"}
+
+    mondiali_response = client.get("/events/?search=Mondiali%202025")
+    assert mondiali_response.status_code == 200
+    assert {event["name"] for event in mondiali_response.json()} == {"World Championships"}
+
+    italy_response = client.get("/events/?search=Italia")
+    assert italy_response.status_code == 200
+    assert {"European Championships", "Serie A"}.issubset({event["name"] for event in italy_response.json()})
 
 
 def test_result_validation_accepts_aa_and_vt_avg_for_mag_and_wag():

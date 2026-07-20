@@ -560,6 +560,11 @@ button {
   margin-bottom: 22px;
 }
 
+.section-search-form {
+  width: min(780px, 100%);
+  margin-bottom: 18px;
+}
+
 .search-form {
   position: relative;
   display: flex;
@@ -1434,8 +1439,13 @@ button {
   transition: opacity 160ms ease;
 }
 
-.athlete-results.is-updating {
+.athlete-results.is-updating,
+.event-live-results.is-updating {
   opacity: 0.72;
+}
+
+.event-list-panel {
+  margin-top: 18px;
 }
 
 .footer {

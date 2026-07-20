@@ -72,8 +72,18 @@ SEARCH_TEXT_ALIASES = {
     "europeans": {"european championships", "european championship"},
     "euros": {"european championships", "european championship"},
     "european champs": {"european championships", "european championship"},
+    "europei": {"european championships", "european championship"},
+    "europeos": {"european championships", "european championship"},
+    "europeens": {"european championships", "european championship"},
+    "campionati europei": {"european championships", "european championship"},
+    "campeonatos europeos": {"european championships", "european championship"},
+    "championnats europeens": {"european championships", "european championship"},
     "worlds": {"world championships", "world championship"},
     "world champs": {"world championships", "world championship"},
+    "mondiali": {"world championships", "world championship"},
+    "mundiales": {"world championships", "world championship"},
+    "campionati mondiali": {"world championships", "world championship"},
+    "championnats du monde": {"world championships", "world championship"},
 }
 CANONICAL_EVENT_NAMES = {
     "european championships",

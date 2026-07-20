@@ -2217,6 +2217,17 @@ Aggiornamento ricerca globale:
 - resa piu intelligente la ricerca per nazione nella sezione Athletes: i nomi paese e gli alias multilingua vengono normalizzati verso i codici country salvati nel database, cosi ricerche come `Italy`, `Italia`, `United States` o `Germania` restituiscono gli atleti collegati ai codici `ITA`, `USA` o `GER`.
 - rifinita la home page rinominando le anteprime in `Calendar` e `Ranking` e stabilizzando il pulsante `View all`, ora centrato e contenuto correttamente nel controllo senza sbordature.
 
+Aggiornamento UI sezione Events del 20 luglio 2026:
+
+- aggiunta una barra di ricerca dedicata nella sezione `Events`, separata dalla ricerca globale della home e dai filtri delle altre sezioni;
+- la ricerca Eventi aggiorna in tempo reale la lista delle competizioni durante la digitazione, in modo analogo alla griglia live della sezione `Athletes`;
+- la lista Eventi usa l'endpoint calendario `/events/calendar`, non solo `/events/`, cosi puo mostrare sia gare collegate a una scheda evento sia righe calendar-only senza risultati o senza entita evento cliccabile;
+- le gare nella lista sono visualizzate con periodo leggibile, sede/venue quando disponibili, disciplina, categoria, livello e indicazione `Calendar only` quando non esiste una scheda evento collegata;
+- esteso il backend del calendario con parametro `search`, capace di leggere anno, nome competizione, sede/venue, alias paese e alias semantici di competizioni;
+- introdotta la comprensione di query localizzate come `Europei 2025`, `Mondiali 2025`, `europeans`, `worlds`, ecc., ricondotte rispettivamente a `European Championships` e `World Championships`;
+- i filtri `MAG`, `WAG`, `Junior`, `Senior` e stato calendario restano coerenti tra calendario visuale e lista live, senza influenzare le ricerche di `Athletes`, `Rankings` o della home;
+- aggiunti test automatici per verificare che la ricerca eventi capisca alias localizzati e anni, e che la ricerca calendario trovi anche competizioni calendar-only.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.

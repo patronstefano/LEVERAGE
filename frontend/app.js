@@ -28,6 +28,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
 let searchAutocompleteRequestId = 0;
 let athleteSearchRequestId = 0;
+let eventSearchRequestId = 0;
 
 const translations = {
   en: {
@@ -113,6 +114,9 @@ const translations = {
     athletesIntro: "Search the athlete database with discipline and country-aware filters.",
     eventsHeading: "Events",
     eventsIntro: "Calendar entries, completed competitions and upcoming events in one view.",
+    eventSearchPlaceholder: "Search events by competition, year or place...",
+    eventListHeading: "Competitions",
+    eventListIntro: "Live event results from the current search and filters.",
     rankingsHeading: "Rankings",
     rankingsIntro: "Rankings stay separated by discipline and scoring cycle to keep comparisons meaningful.",
     analyticsHeading: "Analytics",
@@ -221,6 +225,9 @@ const translations = {
     athletesIntro: "Cerca nel database atleti con filtri per disciplina e nazione.",
     eventsHeading: "Eventi",
     eventsIntro: "Calendario, competizioni concluse ed eventi futuri in una sola vista.",
+    eventSearchPlaceholder: "Cerca eventi per competizione, anno o luogo...",
+    eventListHeading: "Competizioni",
+    eventListIntro: "Lista eventi aggiornata in tempo reale da ricerca e filtri.",
     rankingsHeading: "Classifiche",
     rankingsIntro: "Le classifiche restano separate per disciplina e ciclo di punteggio, cosi i confronti restano significativi.",
     analyticsHeading: "Analytics",
@@ -329,6 +336,9 @@ const translations = {
     athletesIntro: "Busca atletas con filtros por disciplina y pais.",
     eventsHeading: "Eventos",
     eventsIntro: "Calendario, competiciones completadas y eventos futuros.",
+    eventSearchPlaceholder: "Buscar eventos por competicion, ano o lugar...",
+    eventListHeading: "Competiciones",
+    eventListIntro: "Lista de eventos actualizada con busqueda y filtros.",
     rankingsHeading: "Rankings",
     rankingsIntro: "Los rankings se separan por disciplina y ciclo de puntuacion para mantener comparaciones coherentes.",
     analyticsHeading: "Analitica",
@@ -437,6 +447,9 @@ const translations = {
     athletesIntro: "Recherchez dans la base avec filtres discipline et pays.",
     eventsHeading: "Evenements",
     eventsIntro: "Calendrier, competitions terminees et evenements futurs.",
+    eventSearchPlaceholder: "Rechercher evenements par competition, annee ou lieu...",
+    eventListHeading: "Competitions",
+    eventListIntro: "Liste d'evenements mise a jour par recherche et filtres.",
     rankingsHeading: "Classements",
     rankingsIntro: "Les classements restent separes par discipline et cycle de notation pour garder des comparaisons coherentes.",
     analyticsHeading: "Analytique",
@@ -606,6 +619,34 @@ function formatDateRange(item) {
   if (!start && !end) return "";
   if (start === end || !end) return start;
   return `${start} - ${end}`;
+}
+
+function formatReadableDate(value, includeYear = true) {
+  const date = parseLocalDate(value);
+  if (!date) return "";
+  return new Intl.DateTimeFormat(state.language, {
+    month: "short",
+    day: "numeric",
+    ...(includeYear ? { year: "numeric" } : {}),
+  }).format(date);
+}
+
+function formatReadableDateRange(item) {
+  const start = parseLocalDate(item.start_date);
+  const end = parseLocalDate(item.end_date);
+  if (!start && !end) return String(item.year || "");
+  if (!start) return formatReadableDate(item.end_date);
+  if (!end || sameDay(start, end)) return formatReadableDate(item.start_date || item.end_date);
+  const sameYearValue = start.getFullYear() === end.getFullYear();
+  const sameMonthValue = sameYearValue && start.getMonth() === end.getMonth();
+  if (sameMonthValue) {
+    const month = new Intl.DateTimeFormat(state.language, { month: "short" }).format(start);
+    return `${month} ${start.getDate()}-${end.getDate()}, ${start.getFullYear()}`;
+  }
+  if (sameYearValue) {
+    return `${formatReadableDate(item.start_date, false)}-${formatReadableDate(item.end_date, false)}, ${start.getFullYear()}`;
+  }
+  return `${formatReadableDate(item.start_date)}-${formatReadableDate(item.end_date)}`;
 }
 
 function parseLocalDate(value) {
@@ -1355,14 +1396,34 @@ function renderEventList(selector, events) {
     node.innerHTML = emptyState();
     return;
   }
-  node.innerHTML = `<div class="entity-list">${events.map((event) => {
+  const displayEvents = events.filter((event) => (
+    !event.id ||
+    event.calendar_entry_id ||
+    !events.some((other) => (
+      other !== event &&
+      other.id === event.id &&
+      other.calendar_entry_id &&
+      other.start_date === event.start_date &&
+      other.end_date === event.end_date
+    ))
+  ));
+  node.innerHTML = `<div class="entity-list">${displayEvents.map((event) => {
+    const period = formatReadableDateRange(event);
+    const meta = [
+      period,
+      event.location,
+      event.venue,
+    ].filter(Boolean).join(" · ");
     const pills = [
+      { label: period, variant: "brand" },
       { label: event.discipline },
       { label: event.category },
-      { label: event.calendar_status, variant: event.has_results ? "success" : "warning" },
-      { label: resultLabel(event.result_count) },
+      { label: event.level },
     ];
-    return entityCard(event.name, [event.location, formatDateRange(event)].filter(Boolean).join(" · "), pills, `#/events/${event.id}`);
+    if (event.is_calendar_only) {
+      pills.push({ label: t("calendarOnly") });
+    }
+    return entityCard(event.name, meta, pills, event.id ? `#/events/${event.id}` : "");
   }).join("")}</div>`;
 }
 
@@ -1588,6 +1649,17 @@ function renderAthleteCards(athletes) {
   }).join("")}</div>`;
 }
 
+function eventSearchRoute(query) {
+  return query ? `/events?search=${encodeURIComponent(query)}` : "/events";
+}
+
+function syncEventSearchRoute(query) {
+  const route = eventSearchRoute(query);
+  state.route = route;
+  window.history.replaceState(null, "", `#${route}`);
+  setActiveNav();
+}
+
 function currentParams() {
   const [, query = ""] = state.route.split("?");
   return new URLSearchParams(query);
@@ -1658,6 +1730,8 @@ async function renderAthletes() {
 }
 
 async function renderEvents() {
+  const params = currentParams();
+  const search = params.get("search") || "";
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
     <div class="toolbar">
@@ -1670,15 +1744,79 @@ async function renderEvents() {
       ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
       ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
     </div>
+    <form class="search-form section-search-form" id="eventSearchForm">
+      <input class="search-input" id="eventSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("eventSearchPlaceholder")}">
+      <button class="primary-button" type="submit">${t("search")}</button>
+    </form>
     <section class="panel calendar-page-panel">
       <div id="eventResults">${loadingState()}</div>
     </section>
+    <section class="panel event-list-panel">
+      <div class="section-header">
+        <div>
+          <h2>${t("eventListHeading")}</h2>
+          <p>${t("eventListIntro")}</p>
+        </div>
+      </div>
+      <div class="event-live-results" id="eventLiveResults" aria-live="polite">${loadingState()}</div>
+    </section>
   `);
   bindFilterButtons();
+  const form = $("#eventSearchForm");
+  const input = $("#eventSearchInput");
+  const resultsNode = $("#eventLiveResults");
+  let searchTimer;
+  const loadEvents = async (query, options = {}) => {
+    const { showLoading = false, updateRoute = false } = options;
+    const requestId = ++eventSearchRequestId;
+    if (updateRoute) syncEventSearchRoute(query);
+    if (showLoading) resultsNode.innerHTML = loadingState();
+    resultsNode.classList.add("is-updating");
+    resultsNode.setAttribute("aria-busy", "true");
+    try {
+      const events = await getJson("/events/calendar", {
+        search: query,
+        discipline: filterValues("discipline", "events"),
+        category: filterValues("category", "events"),
+        status: calendarStatusParam(),
+        as_of: formatLocalIso(TODAY),
+        limit: 80,
+      });
+      if (requestId !== eventSearchRequestId) return;
+      renderEventList("#eventLiveResults", events);
+    } catch (error) {
+      if (requestId !== eventSearchRequestId) return;
+      resultsNode.innerHTML = errorState(error);
+    } finally {
+      if (requestId === eventSearchRequestId) {
+        resultsNode.classList.remove("is-updating");
+        resultsNode.setAttribute("aria-busy", "false");
+      }
+    }
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = input.value.trim();
+    window.clearTimeout(searchTimer);
+    loadEvents(query, { showLoading: true, updateRoute: true });
+  });
+  input.addEventListener("input", () => {
+    const query = input.value.trim();
+    syncEventSearchRoute(query);
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      loadEvents(query);
+    }, 140);
+  });
   try {
-    await hydrateEventsCalendar();
+    await Promise.all([
+      hydrateEventsCalendar(),
+      loadEvents(search, { showLoading: true }),
+    ]);
   } catch (error) {
     $("#eventResults").innerHTML = errorState(error);
+    $("#eventLiveResults").innerHTML = errorState(error);
   }
 }
 

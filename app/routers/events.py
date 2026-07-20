@@ -1,3 +1,4 @@
+import re
 from datetime import date, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -10,6 +11,7 @@ from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
+from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
 from app.event_calendar import (
     build_calendar_entry_item,
@@ -42,6 +44,121 @@ router = APIRouter()
 UPLOAD_DIR = Path("uploads")
 EVENT_IMAGE_DIR = UPLOAD_DIR / "events"
 EVENT_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+EVENT_YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
+EVENT_SEARCH_ALIASES = {
+    "european champs": {"european championships", "european championship"},
+    "europeans": {"european championships", "european championship"},
+    "euros": {"european championships", "european championship"},
+    "europei": {"european championships", "european championship"},
+    "europeos": {"european championships", "european championship"},
+    "europeens": {"european championships", "european championship"},
+    "championnats europeens": {"european championships", "european championship"},
+    "campionati europei": {"european championships", "european championship"},
+    "campeonatos europeos": {"european championships", "european championship"},
+    "world champs": {"world championships", "world championship"},
+    "worlds": {"world championships", "world championship"},
+    "mondiali": {"world championships", "world championship"},
+    "mundiales": {"world championships", "world championship"},
+    "championnats du monde": {"world championships", "world championship"},
+    "campionati mondiali": {"world championships", "world championship"},
+}
+
+
+def compact_event_search_text(value: str) -> str:
+    return " ".join(value.split())
+
+
+def parse_event_search(value: str) -> tuple[set[int], set[str]]:
+    years = {int(match) for match in EVENT_YEAR_PATTERN.findall(value)}
+    text = compact_event_search_text(EVENT_YEAR_PATTERN.sub(" ", value).strip().lower())
+    if not text:
+        return years, set()
+    terms = {text}
+    for alias, replacements in EVENT_SEARCH_ALIASES.items():
+        if not re.search(rf"\b{re.escape(alias)}\b", text):
+            continue
+        if text == alias:
+            terms.discard(text)
+        for replacement in replacements:
+            terms.add(compact_event_search_text(re.sub(
+                rf"\b{re.escape(alias)}\b",
+                replacement,
+                text,
+                flags=re.IGNORECASE,
+            )))
+    return years, {term for term in terms if term}
+
+
+def event_text_conditions(search_terms: set[str]):
+    conditions = []
+    for search_term in search_terms:
+        term = f"%{search_term}%"
+        conditions.extend((
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+    return conditions
+
+
+def event_country_conditions(value: str):
+    country_codes = resolve_country_codes(value)
+    country_terms = resolve_country_terms(country_codes) if country_codes else set()
+    conditions = []
+    for country_term in country_terms:
+        term = f"%{country_term}%"
+        conditions.extend((
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+    return conditions
+
+
+def calendar_entry_text_conditions(search_terms: set[str]):
+    conditions = []
+    for search_term in search_terms:
+        term = f"%{search_term}%"
+        linked_event_match = models.EventCalendarEntry.event.has(or_(
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+        conditions.extend((
+            models.EventCalendarEntry.name.ilike(term),
+            linked_event_match,
+        ))
+    return conditions
+
+
+def calendar_entry_country_conditions(value: str):
+    country_codes = resolve_country_codes(value)
+    country_terms = resolve_country_terms(country_codes) if country_codes else set()
+    conditions = []
+    for country_term in country_terms:
+        term = f"%{country_term}%"
+        linked_event_match = models.EventCalendarEntry.event.has(or_(
+            models.Event.name.ilike(term),
+            models.Event.location.ilike(term),
+            models.Event.venue.ilike(term),
+        ))
+        conditions.extend((
+            models.EventCalendarEntry.name.ilike(term),
+            linked_event_match,
+        ))
+    return conditions
+
+
+def event_result_counts(db: Session, event_ids: set[int]) -> dict[int, int]:
+    if not event_ids:
+        return {}
+    return {
+        event_id: count
+        for event_id, count in db.query(models.Result.event_id, func.count(models.Result.id))
+        .filter(models.Result.event_id.in_(event_ids), models.Result.is_deleted.is_(False))
+        .group_by(models.Result.event_id)
+        .all()
+    }
 
 
 def save_upload_file(file: UploadFile, target_dir: Path) -> str:
@@ -378,24 +495,27 @@ def create_event(
 @router.get("/", response_model=list[schemas.EventRead])
 def list_events(
     db: Session = Depends(get_db),
-    search: Optional[str] = Query(None, description="Search event name, location or venue"),
+    search: Optional[str] = Query(None, description="Search event name, location, venue or semantic competition alias"),
     year: Optional[int] = Query(None),
     discipline: Optional[list[str]] = Query(None, description="Repeat or comma-separate MAG/WAG filters"),
     category: Optional[list[str]] = Query(None, description="Repeat or comma-separate junior/senior filters"),
     level: Optional[models.LevelEnum] = Query(None),
+    status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
+    as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
 ):
     query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
-    if search:
-        term = f"%{search}%"
-        query = query.filter(
-            or_(
-                models.Event.name.ilike(term),
-                models.Event.location.ilike(term),
-                models.Event.venue.ilike(term),
-            )
-        )
+    if search and search.strip():
+        search_years, search_terms = parse_event_search(search.strip())
+        if search_years:
+            query = query.filter(models.Event.year.in_(search_years))
+        search_conditions = [
+            *event_text_conditions(search_terms),
+            *event_country_conditions(search.strip()),
+        ]
+        if search_conditions:
+            query = query.filter(or_(*search_conditions))
     if year is not None:
         query = query.filter(models.Event.year == year)
     discipline_filters = build_event_discipline_filters(discipline)
@@ -406,12 +526,22 @@ def list_events(
         query = query.filter(models.Event.category.in_(category_filters))
     if level:
         query = query.filter(models.Event.level == level)
-    return query.order_by(models.Event.start_date, models.Event.year, models.Event.name, models.Event.id).offset(offset).limit(limit).all()
+    ordered_query = query.order_by(models.Event.start_date, models.Event.year, models.Event.name, models.Event.id)
+    if status:
+        events = ordered_query.all()
+        result_counts = event_result_counts(db, {event.id for event in events})
+        filtered_events = [
+            event for event in events
+            if get_event_calendar_status(event, result_counts.get(event.id, 0), as_of) == status
+        ]
+        return filtered_events[offset:offset + limit]
+    return ordered_query.offset(offset).limit(limit).all()
 
 
 @router.get("/calendar", response_model=list[schemas.EventCalendarItem])
 def get_events_calendar(
     db: Session = Depends(get_db),
+    search: Optional[str] = Query(None, description="Search calendar competition name, year, location or semantic alias"),
     start_date: Optional[date] = Query(None, description="Include events ending on or after this date"),
     end_date: Optional[date] = Query(None, description="Include events starting on or before this date"),
     year: Optional[int] = Query(None),
@@ -424,6 +554,18 @@ def get_events_calendar(
     offset: int = Query(0, ge=0),
 ):
     query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
+    search_years: set[int] = set()
+    search_terms: set[str] = set()
+    if search and search.strip():
+        search_years, search_terms = parse_event_search(search.strip())
+        if search_years:
+            query = query.filter(models.Event.year.in_(search_years))
+        search_conditions = [
+            *event_text_conditions(search_terms),
+            *event_country_conditions(search.strip()),
+        ]
+        if search_conditions:
+            query = query.filter(or_(*search_conditions))
     if year is not None:
         query = query.filter(models.Event.year == year)
     discipline_filters = build_event_discipline_filters(discipline)
@@ -440,6 +582,15 @@ def get_events_calendar(
     entry_query = db.query(models.EventCalendarEntry).options(
         joinedload(models.EventCalendarEntry.event)
     ).filter(models.EventCalendarEntry.is_deleted.is_(False))
+    if search and search.strip():
+        if search_years:
+            entry_query = entry_query.filter(models.EventCalendarEntry.year.in_(search_years))
+        entry_search_conditions = [
+            *calendar_entry_text_conditions(search_terms),
+            *calendar_entry_country_conditions(search.strip()),
+        ]
+        if entry_search_conditions:
+            entry_query = entry_query.filter(or_(*entry_search_conditions))
     if year is not None:
         entry_query = entry_query.filter(models.EventCalendarEntry.year == year)
     if start_date:
@@ -475,13 +626,7 @@ def get_events_calendar(
 
     event_ids = {event.id for event in events}
     event_ids.update(entry.event_id for entry in calendar_entries if entry.event_id)
-    result_counts = {
-        event_id: count
-        for event_id, count in db.query(models.Result.event_id, func.count(models.Result.id))
-        .filter(models.Result.event_id.in_(event_ids), models.Result.is_deleted.is_(False))
-        .group_by(models.Result.event_id)
-        .all()
-    } if event_ids else {}
+    result_counts = event_result_counts(db, event_ids)
     entry_event_ids = {entry.event_id for entry in calendar_entries if entry.event_id}
 
     calendar_items = []
