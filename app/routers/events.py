@@ -211,6 +211,22 @@ def build_event_category_filters(
     return filters
 
 
+def build_event_level_filters(
+    raw_values: Optional[list[str]],
+) -> list[models.LevelEnum]:
+    filters = []
+    seen = set()
+    for raw_value in parse_multi_value_query(raw_values):
+        try:
+            level = models.LevelEnum(raw_value)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"Invalid event level: {raw_value}") from exc
+        if level not in seen:
+            filters.append(level)
+            seen.add(level)
+    return filters
+
+
 def get_event_result_disciplines(event: models.Event) -> list[models.DisciplineEnum]:
     if event.discipline == models.EventDisciplineEnum.MAG_AND_WAG:
         return [models.DisciplineEnum.MAG, models.DisciplineEnum.WAG]
@@ -499,7 +515,7 @@ def list_events(
     year: Optional[int] = Query(None),
     discipline: Optional[list[str]] = Query(None, description="Repeat or comma-separate MAG/WAG filters"),
     category: Optional[list[str]] = Query(None, description="Repeat or comma-separate junior/senior filters"),
-    level: Optional[models.LevelEnum] = Query(None),
+    level: Optional[list[str]] = Query(None, description="Repeat or comma-separate event level filters"),
     status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
     as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
     limit: int = Query(100, ge=1, le=500),
@@ -524,8 +540,9 @@ def list_events(
     category_filters = build_event_category_filters(category)
     if category_filters:
         query = query.filter(models.Event.category.in_(category_filters))
-    if level:
-        query = query.filter(models.Event.level == level)
+    level_filters = build_event_level_filters(level)
+    if level_filters:
+        query = query.filter(models.Event.level.in_(level_filters))
     ordered_query = query.order_by(models.Event.start_date, models.Event.year, models.Event.name, models.Event.id)
     if status:
         events = ordered_query.all()
@@ -547,7 +564,7 @@ def get_events_calendar(
     year: Optional[int] = Query(None),
     discipline: Optional[list[str]] = Query(None, description="Repeat or comma-separate MAG/WAG filters"),
     category: Optional[list[str]] = Query(None, description="Repeat or comma-separate junior/senior filters"),
-    level: Optional[models.LevelEnum] = Query(None),
+    level: Optional[list[str]] = Query(None, description="Repeat or comma-separate event level filters"),
     status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
     as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
     limit: int = Query(200, ge=1, le=1000),
@@ -574,8 +591,9 @@ def get_events_calendar(
     category_filters = build_event_category_filters(category)
     if category_filters:
         query = query.filter(models.Event.category.in_(category_filters))
-    if level:
-        query = query.filter(models.Event.level == level)
+    level_filters = build_event_level_filters(level)
+    if level_filters:
+        query = query.filter(models.Event.level.in_(level_filters))
 
     events = query.order_by(models.Event.start_date, models.Event.year, models.Event.name).all()
 
@@ -618,10 +636,10 @@ def get_events_calendar(
             entry for entry in calendar_entries
             if calendar_entry_category(entry) in category_filters
         ]
-    if level:
+    if level_filters:
         calendar_entries = [
             entry for entry in calendar_entries
-            if calendar_entry_level(entry) == level
+            if calendar_entry_level(entry) in level_filters
         ]
 
     event_ids = {event.id for event in events}

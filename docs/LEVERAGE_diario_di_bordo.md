@@ -2227,6 +2227,11 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - introdotta la comprensione di query localizzate come `Europei 2025`, `Mondiali 2025`, `europeans`, `worlds`, ecc., ricondotte rispettivamente a `European Championships` e `World Championships`;
 - i filtri `MAG`, `WAG`, `Junior`, `Senior` e stato calendario restano coerenti tra calendario visuale e lista live, senza influenzare le ricerche di `Athletes`, `Rankings` o della home;
 - aggiunti test automatici per verificare che la ricerca eventi capisca alias localizzati e anni, e che la ricerca calendario trovi anche competizioni calendar-only.
+- rifinita la gerarchia della pagina `Events`: i risultati della barra di ricerca sono stati spostati sopra il calendario, rendendo la ricerca competizioni il primo output visibile dopo la digitazione;
+- aggiunti filtri per livello competizione nella sezione `Events`, mappati ai valori dell'entita `Event`: `Olympic Games`, `World Championships`, `Continental Championships`, `World Cup`, `World Challenge Cup`, `International Event`, `National Event`;
+- in UI i livelli `World Cup` e `World Challenge Cup` sono presentati come `FIG World Cups` e `FIG Challenge`, mantenendo nel backend i valori ufficiali del modello dati;
+- il backend `/events/` e `/events/calendar` accetta ora piu livelli selezionati insieme, sia come parametri ripetuti sia come valori separati da virgola;
+- aggiunta copertura test per filtri livello su lista eventi e calendario, incluse le righe calendar-only.
 
 Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 

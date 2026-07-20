@@ -4579,6 +4579,22 @@ def test_event_calendar_includes_calendar_only_entries_and_skips_undated_events_
     senior_names = {event["name"] for event in senior_response.json()}
     assert "Chinese Junior Championships" not in senior_names
 
+    international_level_response = client.get(
+        "/events/calendar?start_date=2026-11-01&end_date=2026-11-30&as_of=2026-07-16&level=International%20Event"
+    )
+    assert international_level_response.status_code == 200
+    international_names = {event["name"] for event in international_level_response.json()}
+    assert "Future Calendar Only Cup" in international_names
+    assert "Chinese Junior Championships" not in international_names
+
+    mixed_level_response = client.get(
+        "/events/calendar?start_date=2026-11-01&end_date=2026-11-30&as_of=2026-07-16"
+        "&level=International%20Event&level=National%20Event"
+    )
+    assert mixed_level_response.status_code == 200
+    mixed_level_names = {event["name"] for event in mixed_level_response.json()}
+    assert {"Future Calendar Only Cup", "Chinese Junior Championships"}.issubset(mixed_level_names)
+
     search_response = client.get("/events/calendar?search=Europei%202025&as_of=2025-01-01")
     assert search_response.status_code == 200
     search_calendar = {event["name"]: event for event in search_response.json()}
@@ -7019,6 +7035,39 @@ def test_event_filters_treat_combined_values_as_dual_selection():
         "WAG Event",
         "Combined Event",
     }
+
+    for name, level in [
+        ("World Cup Event", "World Cup"),
+        ("Challenge Event", "World Challenge Cup"),
+    ]:
+        response = client.post(
+            "/events/",
+            json={
+                "name": name,
+                "year": 2023,
+                "discipline": "MAG",
+                "category": "senior",
+                "level": level,
+            },
+            headers=headers,
+        )
+        assert response.status_code == 200
+
+    national_level = client.get("/events/?level=National%20Event")
+    assert national_level.status_code == 200
+    assert {event["name"] for event in national_level.json()} == {
+        "MAG Event",
+        "WAG Event",
+        "Combined Event",
+    }
+
+    fig_levels = client.get("/events/?level=World%20Cup&level=World%20Challenge%20Cup")
+    assert fig_levels.status_code == 200
+    assert {event["name"] for event in fig_levels.json()} == {"World Cup Event", "Challenge Event"}
+
+    comma_levels = client.get("/events/?level=World%20Cup,World%20Challenge%20Cup")
+    assert comma_levels.status_code == 200
+    assert {event["name"] for event in comma_levels.json()} == {"World Cup Event", "Challenge Event"}
 
 
 def test_event_search_understands_years_semantic_aliases_and_localized_countries():

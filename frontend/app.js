@@ -15,6 +15,7 @@ const state = {
     events: {
       discipline: [],
       category: [],
+      level: [],
       calendarStatus: "",
     },
     rankings: {
@@ -32,6 +33,15 @@ const RANKING_APPARATUS_BY_DISCIPLINE = {
   WAG: ["VT", "UB", "BB", "FX"],
 };
 const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
+const EVENT_LEVEL_FILTERS = [
+  { label: "Olympic Games", value: "Olympic Games" },
+  { label: "World Championships", value: "World Championships" },
+  { label: "Continental Championships", value: "Continental Championships" },
+  { label: "FIG World Cups", value: "World Cup" },
+  { label: "FIG Challenge", value: "World Challenge Cup" },
+  { label: "International Events", value: "International Event" },
+  { label: "National Events", value: "National Event" },
+];
 let searchAutocompleteRequestId = 0;
 let athleteSearchRequestId = 0;
 let eventSearchRequestId = 0;
@@ -1400,6 +1410,7 @@ async function hydrateEventsCalendar() {
     limit: 1000,
     discipline: multiFilterParam("discipline", "events"),
     category: multiFilterParam("category", "events"),
+    level: filterValues("level", "events"),
     status: calendarStatusParam(),
   });
   renderHomeCalendar("#eventResults", events, calendarDate, {
@@ -1785,13 +1796,13 @@ async function renderEvents() {
       ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
       ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
     </div>
+    <div class="toolbar secondary-toolbar">
+      ${EVENT_LEVEL_FILTERS.map((level) => filterButton(level.label, "level", level.value, "events")).join("")}
+    </div>
     <form class="search-form section-search-form" id="eventSearchForm">
       <input class="search-input" id="eventSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("eventSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
     </form>
-    <section class="panel calendar-page-panel">
-      <div id="eventResults">${loadingState()}</div>
-    </section>
     <section class="panel event-list-panel">
       <div class="section-header">
         <div>
@@ -1800,6 +1811,9 @@ async function renderEvents() {
         </div>
       </div>
       <div class="event-live-results" id="eventLiveResults" aria-live="polite">${loadingState()}</div>
+    </section>
+    <section class="panel calendar-page-panel">
+      <div id="eventResults">${loadingState()}</div>
     </section>
   `);
   bindFilterButtons();
@@ -1819,6 +1833,7 @@ async function renderEvents() {
         search: query,
         discipline: filterValues("discipline", "events"),
         category: filterValues("category", "events"),
+        level: filterValues("level", "events"),
         status: calendarStatusParam(),
         as_of: formatLocalIso(TODAY),
         limit: 80,
