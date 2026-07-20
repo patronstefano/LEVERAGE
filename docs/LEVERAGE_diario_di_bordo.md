@@ -2253,6 +2253,11 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - quando viene selezionato un intervallo temporale specifico, la UI svuota il filtro ciclo olimpico per evitare sovrapposizioni implicite tra filtri; il backend continua comunque a segnalare quando il ranking include piu scoring cycles;
 - l'endpoint `/analytics/rankings` valida ora gli intervalli temporali incoerenti, rifiutando `end_year < start_year` o `end_date < start_date`.
 
+Aggiornamento navigazione pubblica del 20 luglio 2026:
+
+- aggiunta la voce `Home` nella topbar principale, prima di `Athletes`, `Events`, `Rankings` e `Analytics`;
+- la voce `Home` risulta attiva sia nella homepage sia nella pagina di ricerca globale `#/search`, rendendo piu chiaro all'utente che la ricerca globale appartiene all'area generale di ingresso alla piattaforma.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.

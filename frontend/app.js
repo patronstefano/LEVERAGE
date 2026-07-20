@@ -56,6 +56,7 @@ let eventSearchRequestId = 0;
 
 const translations = {
   en: {
+    navHome: "Home",
     navAthletes: "Athletes",
     navEvents: "Events",
     navRankings: "Rankings",
@@ -176,6 +177,7 @@ const translations = {
     comingSoon: "Coming soon",
   },
   it: {
+    navHome: "Home",
     navAthletes: "Atleti",
     navEvents: "Eventi",
     navRankings: "Classifiche",
@@ -296,6 +298,7 @@ const translations = {
     comingSoon: "In arrivo",
   },
   es: {
+    navHome: "Home",
     navAthletes: "Atletas",
     navEvents: "Eventos",
     navRankings: "Rankings",
@@ -416,6 +419,7 @@ const translations = {
     comingSoon: "Proximamente",
   },
   fr: {
+    navHome: "Accueil",
     navAthletes: "Athletes",
     navEvents: "Evenements",
     navRankings: "Classements",
@@ -785,11 +789,13 @@ function normalizeRoute() {
 function setActiveNav() {
   document.querySelectorAll(".nav-trigger").forEach((link) => {
     const route = link.getAttribute("href")?.replace("#", "");
-    const active = route !== "/" && (
-      state.route === route ||
-      state.route.startsWith(`${route}/`) ||
-      state.route.startsWith(`${route}?`)
-    );
+    const active = route === "/"
+      ? state.route === "/" || state.route.startsWith("/search")
+      : (
+          state.route === route ||
+          state.route.startsWith(`${route}/`) ||
+          state.route.startsWith(`${route}?`)
+        );
     if (active) {
       link.setAttribute("aria-current", "page");
     } else {
