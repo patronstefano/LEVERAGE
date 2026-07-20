@@ -29,8 +29,8 @@ const state = {
 const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
 const RANKING_APPARATUS_BY_DISCIPLINE = {
-  MAG: ["FX", "PH", "SR", "VT", "PB", "HB"],
-  WAG: ["VT", "UB", "BB", "FX"],
+  MAG: ["AA", "FX", "PH", "SR", "VT", "PB", "HB"],
+  WAG: ["AA", "VT", "UB", "BB", "FX"],
 };
 const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
 const EVENT_LEVEL_FILTERS = [

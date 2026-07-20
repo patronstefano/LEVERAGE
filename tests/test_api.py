@@ -6602,6 +6602,21 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     client.post(
         "/results/",
         json={
+            "athlete_id": mag_athlete["id"],
+            "event_id": mag_2025_event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "AA",
+            "format": "individual",
+            "round": "final",
+            "D_score": 34.0,
+            "score": 82.5,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
             "athlete_id": wag_athlete["id"],
             "event_id": wag_2025_event["id"],
             "discipline": "WAG",
@@ -6661,6 +6676,10 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     )
     assert mag_multi_apparatus.status_code == 200
     assert [entry["apparatus"] for entry in mag_multi_apparatus.json()["ranking"][:2]] == ["PH", "FX"]
+
+    mag_aa = client.get("/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028&apparatus=AA")
+    assert mag_aa.status_code == 200
+    assert [entry["apparatus"] for entry in mag_aa.json()["ranking"]] == ["AA"]
 
     mixed_disciplines = client.get(
         "/analytics/rankings?allow_mixed_disciplines=true&include_all_scoring_cycles=true"

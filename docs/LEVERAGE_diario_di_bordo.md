@@ -2236,8 +2236,8 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 
 - aggiunti filtri attrezzo nella sezione `Rankings`, dinamici in base alla disciplina selezionata;
-- con disciplina `MAG` vengono mostrati solo `FX`, `PH`, `SR`, `VT`, `PB`, `HB`;
-- con disciplina `WAG` vengono mostrati solo `VT`, `UB`, `BB`, `FX`;
+- con disciplina `MAG` vengono mostrati `AA`, `FX`, `PH`, `SR`, `VT`, `PB`, `HB`;
+- con disciplina `WAG` vengono mostrati `AA`, `VT`, `UB`, `BB`, `FX`;
 - i filtri attrezzo possono essere combinati tra loro, cosi l'utente puo confrontare ranking limitati a uno o piu apparatus senza mischiare attrezzi non desiderati;
 - i cicli olimpici/scoring cycles sono ora selezionabili in combinazione multipla, mantenendo il warning quando la classifica include punteggi appartenenti a codici di punteggio diversi;
 - il filtro `All cycles` mantiene il significato di confronto trasversale intenzionale: quando e attivo, la UI mostra tutti i pulsanti ciclo come selezionati e il backend riceve `include_all_scoring_cycles=true`;
