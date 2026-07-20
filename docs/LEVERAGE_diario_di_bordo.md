@@ -2228,6 +2228,17 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - i filtri `MAG`, `WAG`, `Junior`, `Senior` e stato calendario restano coerenti tra calendario visuale e lista live, senza influenzare le ricerche di `Athletes`, `Rankings` o della home;
 - aggiunti test automatici per verificare che la ricerca eventi capisca alias localizzati e anni, e che la ricerca calendario trovi anche competizioni calendar-only.
 
+Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
+
+- aggiunti filtri attrezzo nella sezione `Rankings`, dinamici in base alla disciplina selezionata;
+- con disciplina `MAG` vengono mostrati solo `FX`, `PH`, `SR`, `VT`, `PB`, `HB`;
+- con disciplina `WAG` vengono mostrati solo `VT`, `UB`, `BB`, `FX`;
+- i filtri attrezzo possono essere combinati tra loro, cosi l'utente puo confrontare ranking limitati a uno o piu apparatus senza mischiare attrezzi non desiderati;
+- i cicli olimpici/scoring cycles sono ora selezionabili in combinazione multipla, mantenendo il warning quando la classifica include punteggi appartenenti a codici di punteggio diversi;
+- il filtro `All cycles` mantiene il significato di confronto trasversale intenzionale: quando e attivo, la UI mostra tutti i pulsanti ciclo come selezionati e il backend riceve `include_all_scoring_cycles=true`;
+- il backend `/analytics/rankings` e l'endpoint parallelo `/results/analytics/rankings` accettano ora piu valori `apparatus` e piu valori `scoring_cycle`, sia come parametri ripetuti sia come valori separati da virgola;
+- aggiunti test automatici per ranking su piu cicli e su piu attrezzi.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.

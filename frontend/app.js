@@ -20,12 +20,18 @@ const state = {
     rankings: {
       discipline: [],
       category: [],
-      scoringCycle: "",
+      apparatus: [],
+      scoringCycle: [],
     },
   },
 };
 const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
+const RANKING_APPARATUS_BY_DISCIPLINE = {
+  MAG: ["FX", "PH", "SR", "VT", "PB", "HB"],
+  WAG: ["VT", "UB", "BB", "FX"],
+};
+const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
 let searchAutocompleteRequestId = 0;
 let athleteSearchRequestId = 0;
 let eventSearchRequestId = 0;
@@ -127,6 +133,7 @@ const translations = {
     loading: "Loading...",
     discipline: "Discipline",
     category: "Category",
+    apparatus: "Apparatus",
     all: "All",
     senior: "Senior",
     junior: "Junior",
@@ -238,6 +245,7 @@ const translations = {
     loading: "Caricamento...",
     discipline: "Disciplina",
     category: "Categoria",
+    apparatus: "Attrezzo",
     all: "Tutto",
     senior: "Senior",
     junior: "Junior",
@@ -349,6 +357,7 @@ const translations = {
     loading: "Cargando...",
     discipline: "Disciplina",
     category: "Categoria",
+    apparatus: "Aparato",
     all: "Todo",
     senior: "Senior",
     junior: "Junior",
@@ -460,6 +469,7 @@ const translations = {
     loading: "Chargement...",
     discipline: "Discipline",
     category: "Categorie",
+    apparatus: "Appareil",
     all: "Tout",
     senior: "Senior",
     junior: "Junior",
@@ -1187,11 +1197,20 @@ function singleFilterParam(type, scope = currentFilterScope()) {
 }
 
 function filterIsActive(type, value, scope = currentFilterScope(), activeValue = scopedFilters(scope)[type]) {
+  if (scope === "rankings" && type === "scoringCycle") {
+    const values = Array.isArray(activeValue) ? activeValue : (activeValue ? [activeValue] : []);
+    if (values.includes("all")) return true;
+    if (value === "all") return SCORING_CYCLE_FILTERS.every((cycle) => values.includes(cycle));
+  }
   return Array.isArray(activeValue) ? activeValue.includes(value) : activeValue === value;
 }
 
 function rankingDiscipline() {
   return singleFilterParam("discipline", "rankings") || "MAG";
+}
+
+function rankingApparatusFilters() {
+  return RANKING_APPARATUS_BY_DISCIPLINE[rankingDiscipline()] || [];
 }
 
 function calendarStatusParam() {
@@ -1203,16 +1222,17 @@ function rankingCategory() {
 }
 
 function rankingQueryParams(limit) {
+  const scoringCycles = filterValues("scoringCycle", "rankings");
   const params = {
     limit,
     discipline: rankingDiscipline(),
     category: rankingCategory(),
+    apparatus: filterValues("apparatus", "rankings"),
   };
-  const scoringCycle = scopedFilters("rankings").scoringCycle;
-  if (scoringCycle === "all") {
+  if (scoringCycles.includes("all") || SCORING_CYCLE_FILTERS.every((cycle) => scoringCycles.includes(cycle))) {
     params.include_all_scoring_cycles = true;
-  } else if (scoringCycle) {
-    params.scoring_cycle = scoringCycle;
+  } else if (scoringCycles.length) {
+    params.scoring_cycle = scoringCycles;
   }
   return params;
 }
@@ -1258,6 +1278,19 @@ function bindFilterButtons() {
       const type = button.dataset.filterType;
       const value = button.dataset.filterValue;
       const filters = scopedFilters(scope);
+      if (scope === "rankings" && type === "scoringCycle") {
+        const values = filterValues(type, scope);
+        if (value === "all") {
+          filters[type] = values.includes("all") ? [] : ["all"];
+        } else {
+          const cycleValues = values.filter((item) => item !== "all");
+          filters[type] = cycleValues.includes(value)
+            ? cycleValues.filter((item) => item !== value)
+            : [...cycleValues, value];
+        }
+        render();
+        return;
+      }
       if (Array.isArray(filters[type])) {
         const values = filterValues(type, scope);
         filters[type] = values.includes(value)
@@ -1275,6 +1308,10 @@ function bindRankingDisciplineControl() {
   document.querySelectorAll("[data-ranking-discipline]").forEach((button) => {
     button.addEventListener("click", () => {
       scopedFilters("rankings").discipline = [button.dataset.rankingDiscipline];
+      const allowedApparatuses = RANKING_APPARATUS_BY_DISCIPLINE[button.dataset.rankingDiscipline] || [];
+      scopedFilters("rankings").apparatus = filterValues("apparatus", "rankings").filter((value) => (
+        allowedApparatuses.includes(value)
+      ));
       render();
     });
   });
@@ -1594,7 +1631,11 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
 function renderRankingContext(payload) {
   const parts = [];
   if (payload?.discipline) parts.push(payload.discipline);
-  if (payload?.scoring_cycle?.label) parts.push(`${t("scoringCycle")} ${payload.scoring_cycle.label}`);
+  if (payload?.scoring_cycle?.label) {
+    parts.push(`${t("scoringCycle")} ${payload.scoring_cycle.label}`);
+  } else if (payload?.available_scoring_cycles?.length) {
+    parts.push(`${t("scoringCycle")} ${payload.available_scoring_cycles.map((cycle) => cycle.label).join(", ")}`);
+  }
   const warnings = payload?.warnings || [];
   if (!parts.length && !warnings.length) return "";
   return `
@@ -1821,12 +1862,16 @@ async function renderEvents() {
 }
 
 async function renderRankings() {
+  const apparatusFilters = rankingApparatusFilters();
   setApp(`
     ${pageHeading("rankingsHeading", "rankingsIntro")}
     <div class="toolbar">
       ${disciplineSegmentedControl()}
       ${filterButton(t("senior"), "category", "senior", "rankings")}
       ${filterButton(t("junior"), "category", "junior", "rankings")}
+    </div>
+    <div class="toolbar secondary-toolbar" aria-label="${t("apparatus")}">
+      ${apparatusFilters.map((apparatus) => filterButton(apparatus, "apparatus", apparatus, "rankings")).join("")}
     </div>
     <div class="toolbar secondary-toolbar">
       ${filterButton("2017-2021", "scoringCycle", "2017-2021", "rankings")}

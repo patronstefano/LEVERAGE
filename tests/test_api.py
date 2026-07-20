@@ -6571,6 +6571,21 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     client.post(
         "/results/",
         json={
+            "athlete_id": mag_athlete["id"],
+            "event_id": mag_2025_event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "PH",
+            "format": "individual",
+            "round": "final",
+            "D_score": 6.1,
+            "score": 13.8,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
             "athlete_id": wag_athlete["id"],
             "event_id": wag_2025_event["id"],
             "discipline": "WAG",
@@ -6606,6 +6621,30 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
         "2025-2028",
     ]
     assert "multiple gymnastics scoring cycles" in all_cycle_payload["warnings"][0]
+
+    mag_two_cycles = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX"
+        "&scoring_cycle=2022-2024&scoring_cycle=2025-2028"
+    )
+    assert mag_two_cycles.status_code == 200
+    two_cycle_payload = mag_two_cycles.json()
+    assert two_cycle_payload["scoring_cycle"] is None
+    assert [cycle["label"] for cycle in two_cycle_payload["available_scoring_cycles"]] == [
+        "2022-2024",
+        "2025-2028",
+    ]
+    assert {entry["event_id"] for entry in two_cycle_payload["ranking"]} == {
+        mag_2024_event["id"],
+        mag_2025_event["id"],
+    }
+    assert "multiple gymnastics scoring cycles" in two_cycle_payload["warnings"][0]
+
+    mag_multi_apparatus = client.get(
+        "/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028"
+        "&apparatus=FX&apparatus=PH&sort_by=D_score"
+    )
+    assert mag_multi_apparatus.status_code == 200
+    assert [entry["apparatus"] for entry in mag_multi_apparatus.json()["ranking"][:2]] == ["PH", "FX"]
 
     mixed_disciplines = client.get(
         "/analytics/rankings?allow_mixed_disciplines=true&include_all_scoring_cycles=true"

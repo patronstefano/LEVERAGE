@@ -20,6 +20,7 @@ from app.ranking_context import (
     apply_ranking_scoring_cycle_scope,
     build_ranking_response,
     has_explicit_period_filter,
+    parse_multi_value_query,
     validate_global_ranking_scope,
 )
 from app.scoring_cycles import (
@@ -706,7 +707,7 @@ def get_analytics_rankings(
     category: Optional[models.ResultCategoryEnum] = Query(None),
     format: Optional[models.FormatEnum] = Query(None),
     round: Optional[models.RoundEnum] = Query(None),
-    apparatus: Optional[str] = Query(None),
+    apparatus: Optional[list[str]] = Query(None, description="Repeat or comma-separate apparatus filters"),
     day: Optional[int] = Query(None, ge=1),
     country: Optional[str] = Query(None),
     level: Optional[models.LevelEnum] = Query(None),
@@ -714,9 +715,9 @@ def get_analytics_rankings(
     end_year: Optional[int] = Query(None, ge=1900, le=2100),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    scoring_cycle: Optional[str] = Query(
+    scoring_cycle: Optional[list[str]] = Query(
         None,
-        description="Gymnastics scoring cycle, for example 2017-2021, 2022-2024, 2025-2028",
+        description="Repeat or comma-separate gymnastics scoring cycles, for example 2017-2021, 2022-2024, 2025-2028",
     ),
     include_all_scoring_cycles: bool = Query(
         False,
@@ -742,6 +743,7 @@ def get_analytics_rankings(
         if not event:
             raise HTTPException(status_code=404, detail="Event not found")
     validate_global_ranking_scope(event, discipline, allow_mixed_disciplines)
+    apparatus_filters = parse_multi_value_query(apparatus)
 
     query = (
         db.query(models.Result)
@@ -755,7 +757,7 @@ def get_analytics_rankings(
         category=category,
         format=format,
         round=round,
-        apparatus=apparatus,
+        apparatus=None,
         day=day,
         country=country,
         level=level,
@@ -765,6 +767,8 @@ def get_analytics_rankings(
         end_date=end_date,
         data_quality=data_quality,
     )
+    if apparatus_filters:
+        query = query.filter(models.Result.apparatus.in_(apparatus_filters))
     query, selected_cycle = apply_ranking_scoring_cycle_scope(
         query,
         scoring_cycle,

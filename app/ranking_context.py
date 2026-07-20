@@ -1,8 +1,8 @@
 from datetime import date
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import HTTPException
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from app import models, schemas
 from app.result_ranking import build_ranking_entries
@@ -39,24 +39,42 @@ def validate_global_ranking_scope(
     raise HTTPException(status_code=400, detail=detail)
 
 
+def parse_multi_value_query(raw_values: Optional[Union[list[str], str]]) -> list[str]:
+    if raw_values is None:
+        return []
+    values = raw_values if isinstance(raw_values, list) else [raw_values]
+    parsed: list[str] = []
+    for raw_value in values:
+        parsed.extend(part.strip() for part in raw_value.split(",") if part.strip())
+    return parsed
+
+
 def apply_ranking_scoring_cycle_scope(
     query,
-    scoring_cycle: Optional[str],
+    scoring_cycle: Optional[Union[list[str], str]],
     include_all_scoring_cycles: bool,
     explicit_period_filter: bool,
 ):
-    if scoring_cycle and include_all_scoring_cycles:
+    scoring_cycle_values = parse_multi_value_query(scoring_cycle)
+    if scoring_cycle_values and include_all_scoring_cycles:
         raise HTTPException(
             status_code=400,
             detail="Use either scoring_cycle or include_all_scoring_cycles, not both",
         )
 
     selected_cycle = None
-    if scoring_cycle:
-        try:
-            selected_cycle = parse_scoring_cycle(scoring_cycle)
-        except ValueError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
+    selected_cycles = []
+    if scoring_cycle_values:
+        cycles_by_label = {}
+        for scoring_cycle_value in scoring_cycle_values:
+            try:
+                cycle = parse_scoring_cycle(scoring_cycle_value)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            cycles_by_label[cycle.label] = cycle
+        selected_cycles = sorted(cycles_by_label.values(), key=lambda cycle: cycle.start_year)
+        if len(selected_cycles) == 1:
+            selected_cycle = selected_cycles[0]
     elif not include_all_scoring_cycles and not explicit_period_filter:
         latest_year = query.with_entities(func.max(models.Event.year)).scalar()
         if latest_year is not None:
@@ -67,6 +85,11 @@ def apply_ranking_scoring_cycle_scope(
             models.Event.year >= selected_cycle.start_year,
             models.Event.year <= selected_cycle.end_year,
         )
+    elif selected_cycles:
+        query = query.filter(or_(*(
+            (models.Event.year >= cycle.start_year) & (models.Event.year <= cycle.end_year)
+            for cycle in selected_cycles
+        )))
     return query, selected_cycle
 
 

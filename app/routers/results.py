@@ -18,6 +18,7 @@ from app.ranking_context import (
     apply_ranking_scoring_cycle_scope,
     build_ranking_response,
     has_explicit_period_filter,
+    parse_multi_value_query,
     validate_global_ranking_scope,
 )
 from app.security import get_current_admin_user, get_current_super_admin_user
@@ -422,7 +423,7 @@ def get_result_rankings(
     event_id: Optional[int] = Query(None),
     discipline: Optional[models.DisciplineEnum] = Query(None),
     category: Optional[models.ResultCategoryEnum] = Query(None),
-    apparatus: Optional[str] = Query(None),
+    apparatus: Optional[list[str]] = Query(None, description="Repeat or comma-separate apparatus filters"),
     format: Optional[models.FormatEnum] = Query(None),
     round: Optional[models.RoundEnum] = Query(None),
     day: Optional[int] = Query(None, ge=1),
@@ -431,9 +432,9 @@ def get_result_rankings(
     end_year: Optional[int] = Query(None, ge=1900, le=2100),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
-    scoring_cycle: Optional[str] = Query(
+    scoring_cycle: Optional[list[str]] = Query(
         None,
-        description="Gymnastics scoring cycle, for example 2017-2021, 2022-2024, 2025-2028",
+        description="Repeat or comma-separate gymnastics scoring cycles, for example 2017-2021, 2022-2024, 2025-2028",
     ),
     include_all_scoring_cycles: bool = Query(
         False,
@@ -471,12 +472,13 @@ def get_result_rankings(
     else:
         event = None
     validate_global_ranking_scope(event, discipline, allow_mixed_disciplines)
+    apparatus_filters = parse_multi_value_query(apparatus)
     if discipline:
         query = query.filter(models.Result.discipline == discipline)
     if category:
         query = query.filter(models.Result.category == category)
-    if apparatus:
-        query = query.filter(models.Result.apparatus == apparatus)
+    if apparatus_filters:
+        query = query.filter(models.Result.apparatus.in_(apparatus_filters))
     if format:
         query = query.filter(models.Result.format == format)
     if round:
