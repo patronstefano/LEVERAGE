@@ -1018,6 +1018,30 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    cottbus_world_cup_event = client.post(
+        "/events/",
+        json={
+            "name": "Cottbus World Cup",
+            "location": "Cottbus, Germany",
+            "year": 2025,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "World Cup",
+        },
+        headers=headers,
+    ).json()
+    paris_world_cup_event = client.post(
+        "/events/",
+        json={
+            "name": "Paris World Cup",
+            "location": "Paris, France",
+            "year": 2026,
+            "discipline": "MAG and WAG",
+            "category": "senior",
+            "level": "World Cup",
+        },
+        headers=headers,
+    ).json()
     stefano_serie_a_vt = client.post(
         "/results/",
         json={
@@ -1103,6 +1127,23 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
         },
         headers=headers,
     ).json()
+    mario_cottbus_fx = client.post(
+        "/results/",
+        json={
+            "athlete_id": italian_athlete["id"],
+            "event_id": cottbus_world_cup_event["id"],
+            "represented_country": "ITA",
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.4,
+            "E_score": 8.4,
+            "score": 13.8,
+        },
+        headers=headers,
+    ).json()
 
     event_year_search = client.get("/search", params={"q": "Serie A 2026", "limit": 5})
     assert event_year_search.status_code == 200
@@ -1129,6 +1170,16 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     worlds_events = worlds_search.json()["events"]
     assert worlds_events[0]["id"] == world_championships_event["id"]
     assert all(event["id"] != worlds_preparation_event["id"] for event in worlds_events)
+
+    reordered_world_cup_search = client.get("/search", params={"q": "World Cup Cottbus 2025", "limit": 5})
+    assert reordered_world_cup_search.status_code == 200
+    reordered_payload = reordered_world_cup_search.json()
+    assert reordered_payload["events"][0]["id"] == cottbus_world_cup_event["id"]
+    assert any(result["result_id"] == mario_cottbus_fx["id"] for result in reordered_payload["results"])
+
+    fig_cup_search = client.get("/search", params={"q": "FIG Cup Paris 2026", "limit": 5})
+    assert fig_cup_search.status_code == 200
+    assert fig_cup_search.json()["events"][0]["id"] == paris_world_cup_event["id"]
 
     ordinal_search = client.get("/search", params={"q": "Bundesliga 2", "limit": 5})
     assert ordinal_search.status_code == 200
@@ -7102,11 +7153,13 @@ def test_event_search_understands_years_semantic_aliases_and_localized_countries
     token = login_as_admin("event_search_admin@example.com")
     headers = {"Authorization": f"Bearer {token}"}
 
-    for name, year, location in [
-        ("European Championships", 2025, "Leipzig, Germany"),
-        ("European Championships", 2024, "Rimini, Italy"),
-        ("World Championships", 2025, "Jakarta, Indonesia"),
-        ("Serie A", 2025, "Naples, Italy"),
+    for name, year, location, level in [
+        ("European Championships", 2025, "Leipzig, Germany", "Continental Championships"),
+        ("European Championships", 2024, "Rimini, Italy", "Continental Championships"),
+        ("World Championships", 2025, "Jakarta, Indonesia", "World Championships"),
+        ("Serie A", 2025, "Naples, Italy", "National Event"),
+        ("Cottbus World Cup", 2025, "Cottbus, Germany", "World Cup"),
+        ("Paris World Cup", 2026, "Paris, France", "World Cup"),
     ]:
         response = client.post(
             "/events/",
@@ -7118,7 +7171,7 @@ def test_event_search_understands_years_semantic_aliases_and_localized_countries
                 "end_date": f"{year}-05-05",
                 "discipline": "MAG and WAG",
                 "category": "senior",
-                "level": "International Event",
+                "level": level,
             },
             headers=headers,
         )
@@ -7136,6 +7189,14 @@ def test_event_search_understands_years_semantic_aliases_and_localized_countries
     italy_response = client.get("/events/?search=Italia")
     assert italy_response.status_code == 200
     assert {"European Championships", "Serie A"}.issubset({event["name"] for event in italy_response.json()})
+
+    cottbus_response = client.get("/events/?search=World%20Cup%20Cottbus%202025")
+    assert cottbus_response.status_code == 200
+    assert [event["name"] for event in cottbus_response.json()] == ["Cottbus World Cup"]
+
+    fig_cup_response = client.get("/events/calendar?search=FIG%20Cup%20Paris%202026")
+    assert fig_cup_response.status_code == 200
+    assert [event["name"] for event in fig_cup_response.json()] == ["Paris World Cup"]
 
 
 def test_result_validation_accepts_aa_and_vt_avg_for_mag_and_wag():

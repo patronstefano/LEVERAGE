@@ -1,4 +1,3 @@
-import re
 from datetime import date, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -6,13 +5,19 @@ from uuid import uuid4
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from sqlalchemy import func, or_
+from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
+from app.event_search import (
+    EVENT_YEAR_PATTERN,
+    compact_event_search_text,
+    event_search_tokens,
+    semantic_event_search_variants,
+)
 from app.event_calendar import (
     build_calendar_entry_item,
     build_event_calendar_item,
@@ -44,28 +49,6 @@ router = APIRouter()
 UPLOAD_DIR = Path("uploads")
 EVENT_IMAGE_DIR = UPLOAD_DIR / "events"
 EVENT_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-EVENT_YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
-EVENT_SEARCH_ALIASES = {
-    "european champs": {"european championships", "european championship"},
-    "europeans": {"european championships", "european championship"},
-    "euros": {"european championships", "european championship"},
-    "europei": {"european championships", "european championship"},
-    "europeos": {"european championships", "european championship"},
-    "europeens": {"european championships", "european championship"},
-    "championnats europeens": {"european championships", "european championship"},
-    "campionati europei": {"european championships", "european championship"},
-    "campeonatos europeos": {"european championships", "european championship"},
-    "world champs": {"world championships", "world championship"},
-    "worlds": {"world championships", "world championship"},
-    "mondiali": {"world championships", "world championship"},
-    "mundiales": {"world championships", "world championship"},
-    "championnats du monde": {"world championships", "world championship"},
-    "campionati mondiali": {"world championships", "world championship"},
-}
-
-
-def compact_event_search_text(value: str) -> str:
-    return " ".join(value.split())
 
 
 def parse_event_search(value: str) -> tuple[set[int], set[str]]:
@@ -73,31 +56,38 @@ def parse_event_search(value: str) -> tuple[set[int], set[str]]:
     text = compact_event_search_text(EVENT_YEAR_PATTERN.sub(" ", value).strip().lower())
     if not text:
         return years, set()
-    terms = {text}
-    for alias, replacements in EVENT_SEARCH_ALIASES.items():
-        if not re.search(rf"\b{re.escape(alias)}\b", text):
-            continue
-        if text == alias:
-            terms.discard(text)
-        for replacement in replacements:
-            terms.add(compact_event_search_text(re.sub(
-                rf"\b{re.escape(alias)}\b",
-                replacement,
-                text,
-                flags=re.IGNORECASE,
-            )))
-    return years, {term for term in terms if term}
+    return years, semantic_event_search_variants(text)
+
+
+def event_searchable_columns_like(term: str):
+    return (
+        models.Event.name.ilike(term),
+        models.Event.location.ilike(term),
+        models.Event.venue.ilike(term),
+        models.Event.discipline.ilike(term),
+        models.Event.category.ilike(term),
+        models.Event.level.ilike(term),
+    )
+
+
+def event_order_insensitive_condition(search_term: str):
+    tokens = event_search_tokens(search_term)
+    if len(tokens) < 2:
+        return None
+    return and_(*(
+        or_(*event_searchable_columns_like(f"%{token}%"))
+        for token in tokens
+    ))
 
 
 def event_text_conditions(search_terms: set[str]):
     conditions = []
     for search_term in search_terms:
         term = f"%{search_term}%"
-        conditions.extend((
-            models.Event.name.ilike(term),
-            models.Event.location.ilike(term),
-            models.Event.venue.ilike(term),
-        ))
+        conditions.extend(event_searchable_columns_like(term))
+        order_insensitive_condition = event_order_insensitive_condition(search_term)
+        if order_insensitive_condition is not None:
+            conditions.append(order_insensitive_condition)
     return conditions
 
 
@@ -120,14 +110,21 @@ def calendar_entry_text_conditions(search_terms: set[str]):
     for search_term in search_terms:
         term = f"%{search_term}%"
         linked_event_match = models.EventCalendarEntry.event.has(or_(
-            models.Event.name.ilike(term),
-            models.Event.location.ilike(term),
-            models.Event.venue.ilike(term),
+            *event_searchable_columns_like(term),
         ))
         conditions.extend((
             models.EventCalendarEntry.name.ilike(term),
             linked_event_match,
         ))
+        tokens = event_search_tokens(search_term)
+        if len(tokens) >= 2:
+            conditions.append(and_(*(
+                or_(
+                    models.EventCalendarEntry.name.ilike(f"%{token}%"),
+                    models.EventCalendarEntry.event.has(or_(*event_searchable_columns_like(f"%{token}%"))),
+                )
+                for token in tokens
+            )))
     return conditions
 
 

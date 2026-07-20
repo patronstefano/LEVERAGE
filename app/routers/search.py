@@ -4,12 +4,18 @@ from dataclasses import dataclass
 from typing import Optional
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import case, func, or_
+from sqlalchemy import and_, case, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
+from app.event_search import (
+    EVENT_SEARCH_ALIASES,
+    EVENT_YEAR_PATTERN,
+    event_search_tokens,
+    semantic_event_search_variants,
+)
 from app.result_ranking import result_represented_country
 
 router = APIRouter()
@@ -68,28 +74,12 @@ APPARATUS_ALIASES = {
     "trave": {"BB"},
     "bb": {"BB"},
 }
-SEARCH_TEXT_ALIASES = {
-    "europeans": {"european championships", "european championship"},
-    "euros": {"european championships", "european championship"},
-    "european champs": {"european championships", "european championship"},
-    "europei": {"european championships", "european championship"},
-    "europeos": {"european championships", "european championship"},
-    "europeens": {"european championships", "european championship"},
-    "campionati europei": {"european championships", "european championship"},
-    "campeonatos europeos": {"european championships", "european championship"},
-    "championnats europeens": {"european championships", "european championship"},
-    "worlds": {"world championships", "world championship"},
-    "world champs": {"world championships", "world championship"},
-    "mondiali": {"world championships", "world championship"},
-    "mundiales": {"world championships", "world championship"},
-    "campionati mondiali": {"world championships", "world championship"},
-    "championnats du monde": {"world championships", "world championship"},
-}
+SEARCH_TEXT_ALIASES = EVENT_SEARCH_ALIASES
 CANONICAL_EVENT_NAMES = {
     "european championships",
     "world championships",
 }
-YEAR_PATTERN = re.compile(r"\b(19\d{2}|20\d{2}|2100)\b")
+YEAR_PATTERN = EVENT_YEAR_PATTERN
 
 
 @dataclass(frozen=True)
@@ -123,56 +113,8 @@ def compact_whitespace(value: str) -> str:
     return " ".join(value.split())
 
 
-def ordinal_suffix(number: int) -> str:
-    if 10 <= number % 100 <= 20:
-        return "th"
-    return {1: "st", 2: "nd", 3: "rd"}.get(number % 10, "th")
-
-
-def ordinal_label(number: int) -> str:
-    return f"{number}{ordinal_suffix(number)}"
-
-
-def numeric_search_variants(query: str) -> set[str]:
-    variants = {query} if query else set()
-    trailing_number = re.match(r"^(?P<name>.+?)\s+(?P<number>\d{1,2})$", query)
-    if trailing_number:
-        name = trailing_number.group("name").strip()
-        number = int(trailing_number.group("number"))
-        variants.add(f"{ordinal_label(number)} {name}")
-        variants.add(f"{number} {name}")
-    leading_number = re.match(r"^(?P<number>\d{1,2})\s+(?P<name>.+)$", query)
-    if leading_number:
-        number = int(leading_number.group("number"))
-        name = leading_number.group("name").strip()
-        variants.add(f"{ordinal_label(number)} {name}")
-    ordinal = re.match(r"^(?P<number>\d{1,2})(st|nd|rd|th)\s+(?P<name>.+)$", query, flags=re.IGNORECASE)
-    if ordinal:
-        number = int(ordinal.group("number"))
-        name = ordinal.group("name").strip()
-        variants.add(f"{name} {number}")
-    return {compact_whitespace(variant) for variant in variants if compact_whitespace(variant)}
-
-
 def semantic_search_variants(query: str) -> set[str]:
-    variants = numeric_search_variants(query)
-    expanded = set()
-    for variant in variants:
-        normalized_variant = variant.lower()
-        expanded.add(variant)
-        for alias, replacements in SEARCH_TEXT_ALIASES.items():
-            if not re.search(rf"\b{re.escape(alias)}\b", normalized_variant):
-                continue
-            if normalized_variant == alias:
-                expanded.discard(variant)
-            for replacement in replacements:
-                expanded.add(compact_whitespace(re.sub(
-                    rf"\b{re.escape(alias)}\b",
-                    replacement,
-                    normalized_variant,
-                    flags=re.IGNORECASE,
-                )))
-    return {variant for variant in expanded if variant}
+    return semantic_event_search_variants(query)
 
 
 def search_text_terms(query: str) -> set[str]:
@@ -323,6 +265,20 @@ def event_conditions(term: str):
     )
 
 
+def event_token_condition(token: str):
+    term = normalized_like(token)
+    return or_(*event_conditions(term))
+
+
+def event_order_insensitive_conditions(query: str):
+    conditions = []
+    for variant in semantic_search_variants(query):
+        tokens = event_search_tokens(variant)
+        if len(tokens) >= 2:
+            conditions.append(and_(*(event_token_condition(token) for token in tokens)))
+    return conditions
+
+
 def matching_apparatus_codes(query: str) -> set[str]:
     normalized_query = query.strip().lower()
     direct_matches = {
@@ -380,6 +336,7 @@ def event_search_conditions(parts: SearchParts):
     conditions = []
     for term in parts.text_terms:
         conditions.extend(event_conditions(term))
+    conditions.extend(event_order_insensitive_conditions(parts.text_query))
     for country_term in parts.country_terms:
         term = normalized_like(country_term)
         conditions.extend((
@@ -408,6 +365,7 @@ def clause_event_conditions(clause: SearchClause):
     conditions = []
     for term in clause.text_terms:
         conditions.extend(event_conditions(term))
+    conditions.extend(event_order_insensitive_conditions(clause.text_query))
     for country_term in clause.country_terms:
         term = normalized_like(country_term)
         conditions.extend((

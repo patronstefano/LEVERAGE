@@ -2232,6 +2232,9 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - in UI i livelli `World Cup` e `World Challenge Cup` sono presentati come `FIG World Cups` e `FIG Challenge`, mantenendo nel backend i valori ufficiali del modello dati;
 - il backend `/events/` e `/events/calendar` accetta ora piu livelli selezionati insieme, sia come parametri ripetuti sia come valori separati da virgola;
 - aggiunta copertura test per filtri livello su lista eventi e calendario, incluse le righe calendar-only.
+- resa piu smart la ricerca gare in `Events` e nella ricerca globale: il matching degli eventi non dipende piu solo dall'ordine esatto delle parole salvate nel database;
+- introdotto token matching order-insensitive per i nomi gara, sede, venue e livello evento: query come `World Cup Cottbus` trovano correttamente eventi salvati come `Cottbus World Cup`, anche con anno esplicito;
+- aggiunti alias semantici per query utente come `FIG Cup Paris`, ricondotte al contesto `World Cup`, cosi l'utente non deve conoscere la nomenclatura esatta con cui l'evento e registrato in LEVERAGE.
 
 Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 
