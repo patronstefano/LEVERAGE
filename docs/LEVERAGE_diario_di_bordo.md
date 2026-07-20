@@ -2263,6 +2263,7 @@ Aggiornamento navigazione pubblica del 20 luglio 2026:
 
 - aggiunta la voce `Home` nella topbar principale, prima di `Athletes`, `Events`, `Rankings` e `Analytics`;
 - la voce `Home` risulta attiva sia nella homepage sia nella pagina di ricerca globale `#/search`, rendendo piu chiaro all'utente che la ricerca globale appartiene all'area generale di ingresso alla piattaforma.
+- nella topbar principale la voce `Rankings` resta invariata in tutte le lingue, analogamente ad `Analytics`, per mantenere coerenza terminologica nella navigazione principale.
 
 ## 19. Conclusione
 
