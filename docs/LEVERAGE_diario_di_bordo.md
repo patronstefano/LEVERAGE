@@ -2252,6 +2252,9 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - introdotto nella UI un filtro `Time interval`/`Intervallo di tempo` per le classifiche: l'utente puo selezionare un anno intero, un intervallo di anni o un intervallo preciso tra due date;
 - quando viene selezionato un intervallo temporale specifico, la UI svuota il filtro ciclo olimpico per evitare sovrapposizioni implicite tra filtri; il backend continua comunque a segnalare quando il ranking include piu scoring cycles;
 - l'endpoint `/analytics/rankings` valida ora gli intervalli temporali incoerenti, rifiutando `end_year < start_year` o `end_date < start_date`.
+- aggiunta gestione semantica specifica per Vault nei ranking: `VT` e `VT AVG` sono filtri distinti, cosi il salto singolo non viene mescolato con la media dei due salti;
+- il backend espone ora `vt_attempt` anche nei record di ranking; nella UI `VT 1` resta visualizzato come semplice `VT` fuori dal contesto Vault, mentre `VT 1` e `VT 2` vengono mostrati quando l'utente filtra esclusivamente il ranking su `VT`;
+- nella composizione dei punteggi `AA`, un componente Vault attempt 1 viene mostrato come `VT`, mentre un eventuale attempt 2 resta distinguibile come `VT 2`.
 
 Aggiornamento navigazione pubblica del 20 luglio 2026:
 

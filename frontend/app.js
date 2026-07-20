@@ -33,8 +33,8 @@ const state = {
 const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
 const RANKING_APPARATUS_BY_DISCIPLINE = {
-  MAG: ["AA", "FX", "PH", "SR", "VT", "PB", "HB"],
-  WAG: ["AA", "VT", "UB", "BB", "FX"],
+  MAG: ["AA", "FX", "PH", "SR", "VT", "VT AVG", "PB", "HB"],
+  WAG: ["AA", "VT", "VT AVG", "UB", "BB", "FX"],
 };
 const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
 const RANKING_YEAR_FILTERS = Array.from(
@@ -1116,6 +1116,22 @@ function componentValueLabel(value, status) {
   return "not available";
 }
 
+function vaultAwareApparatusLabel(apparatus, vtAttempt, showVaultAttempts = false) {
+  const value = apparatus || "AA";
+  if (value !== "VT") return value;
+  if (!showVaultAttempts) return "VT";
+  if (Number(vtAttempt) === 1) return "VT 1";
+  if (Number(vtAttempt) === 2) return "VT 2";
+  return "VT";
+}
+
+function aaScoreComponentLabel(component) {
+  if (component.apparatus === "VT") {
+    return Number(component.vt_attempt) === 2 ? "VT 2" : "VT";
+  }
+  return component.apparatus || "not specified";
+}
+
 function rankingScoreComposition(entry) {
   if ((entry.apparatus || "AA") === "AA") {
     const apparatusScores = entry.apparatus_scores || [];
@@ -1125,10 +1141,9 @@ function rankingScoreComposition(entry) {
     return `
       <div class="score-composition aa-composition" aria-label="AA apparatus scores">
         ${apparatusScores.map((component) => {
-          const attempt = component.vt_attempt ? ` ${component.vt_attempt}` : "";
           return `
             <span class="score-component">
-              <strong>${escapeHtml(`${component.apparatus}${attempt}`)}</strong>
+              <strong>${escapeHtml(aaScoreComponentLabel(component))}</strong>
               <span>${scoreLabel(component.score)}</span>
             </span>
           `;
@@ -1885,6 +1900,10 @@ function renderRankingList(selector, payloadOrRankings) {
   const payload = Array.isArray(payloadOrRankings) ? { ranking: payloadOrRankings } : (payloadOrRankings || {});
   const rankings = payload.ranking || [];
   const context = renderRankingContext(payload);
+  const selectedApparatuses = filterValues("apparatus", "rankings");
+  const showVaultAttempts = selector === "#rankingResults" &&
+    selectedApparatuses.length === 1 &&
+    selectedApparatuses[0] === "VT";
   if (!rankings.length) {
     node.innerHTML = `${context}${emptyState()}`;
     return;
@@ -1899,7 +1918,7 @@ function renderRankingList(selector, payloadOrRankings) {
     ].filter(Boolean).join(" · ");
     const pills = [
       { label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" },
-      { label: entry.apparatus || "AA" },
+      { label: vaultAwareApparatusLabel(entry.apparatus, entry.vt_attempt, showVaultAttempts) },
       { label: entry.discipline },
       ...(entry.year ? [{ label: String(entry.year) }] : []),
     ];

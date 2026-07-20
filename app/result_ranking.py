@@ -298,6 +298,7 @@ def build_ranking_entries(
                 discipline=result.discipline,
                 category=result.category,
                 apparatus=result.apparatus,
+                vt_attempt=result.vt_attempt,
                 day=result.day,
                 format=result.format,
                 round=result.round,

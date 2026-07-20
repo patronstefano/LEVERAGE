@@ -6352,6 +6352,17 @@ def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
     result_ranking = client.get(f"/results/analytics/rankings?event_id={event['id']}&apparatus=VT")
     assert result_ranking.status_code == 200
     assert [row["apparatus"] for row in result_ranking.json()["ranking"]] == ["VT"]
+    assert [row["vt_attempt"] for row in result_ranking.json()["ranking"]] == [1]
+
+    global_vt_ranking = client.get("/analytics/rankings?discipline=WAG&apparatus=VT")
+    assert global_vt_ranking.status_code == 200
+    assert [row["apparatus"] for row in global_vt_ranking.json()["ranking"]] == ["VT"]
+    assert [row["vt_attempt"] for row in global_vt_ranking.json()["ranking"]] == [1]
+
+    global_vt_avg_ranking = client.get("/analytics/rankings?discipline=WAG&apparatus=VT%20AVG")
+    assert global_vt_avg_ranking.status_code == 200
+    assert [row["apparatus"] for row in global_vt_avg_ranking.json()["ranking"]] == ["VT AVG"]
+    assert [row["vt_attempt"] for row in global_vt_avg_ranking.json()["ranking"]] == [None]
 
     result_trend = client.get(f"/results/analytics/trends?athlete_id={athlete['id']}&apparatus=VT")
     assert result_trend.status_code == 200

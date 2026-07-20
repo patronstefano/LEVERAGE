@@ -1328,6 +1328,7 @@ class ResultRankingEntry(BaseModel):
     discipline: DisciplineEnum
     category: ResultCategoryEnum
     apparatus: Optional[str] = None
+    vt_attempt: Optional[int] = None
     day: Optional[int] = None
     format: FormatEnum
     round: RoundEnum
