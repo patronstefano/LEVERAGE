@@ -1371,6 +1371,11 @@ button {
   gap: 10px;
 }
 
+.ranking-card-preview {
+  gap: 7px;
+  padding: 14px;
+}
+
 .ranking-time-filter {
   margin: -4px 0 18px;
 }

@@ -92,7 +92,7 @@ const translations = {
     heroEyebrow: "Elite gymnastics, structured.",
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
-    heroBody: "Search athletes, events and rankings from a curated gymnastics database built for comparison, context and clarity.",
+    heroBody: "Search athletes, events and results in a structured gymnastics database designed for analysis, comparison and context.",
     searchPlaceholder: "Search athletes, events, countries, apparatus...",
     athleteSearchPlaceholder: "Search athletes by name, ID or country...",
     search: "Search",
@@ -213,7 +213,7 @@ const translations = {
     heroEyebrow: "Ginnastica elite, strutturata.",
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
-    heroBody: "Cerca atleti, eventi e classifiche in un database di ginnastica progettato per confronto, contesto e chiarezza.",
+    heroBody: "Cerca atleti, eventi e risultati in un database di ginnastica strutturato per analisi, confronto e contesto.",
     searchPlaceholder: "Cerca atleti, eventi, nazioni, attrezzi...",
     athleteSearchPlaceholder: "Cerca atleti per nome, ID o nazione...",
     search: "Cerca",
@@ -334,7 +334,7 @@ const translations = {
     heroEyebrow: "Gimnasia elite, estructurada.",
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
-    heroBody: "Busca atletas, eventos y rankings en una base de datos de gimnasia creada para comparar con claridad.",
+    heroBody: "Busca atletas, eventos y resultados en una base de datos de gimnasia estructurada para analisis, comparacion y contexto.",
     searchPlaceholder: "Buscar atletas, eventos, paises, aparatos...",
     athleteSearchPlaceholder: "Buscar atletas por nombre, ID o pais...",
     search: "Buscar",
@@ -455,7 +455,7 @@ const translations = {
     heroEyebrow: "Gymnastique elite, structuree.",
     heroTitle: "LEVERAGE",
     heroSubtitle: "Artistic Gymnastics Analytics",
-    heroBody: "Recherchez athletes, evenements et classements dans une base de donnees concue pour comparer clairement.",
+    heroBody: "Recherchez athletes, evenements et resultats dans une base de donnees de gymnastique structuree pour analyse, comparaison et contexte.",
     searchPlaceholder: "Rechercher athletes, evenements, pays, appareils...",
     athleteSearchPlaceholder: "Rechercher athletes par nom, ID ou pays...",
     search: "Rechercher",
@@ -1934,7 +1934,8 @@ function renderRankingList(selector, payloadOrRankings) {
   const node = $(selector);
   const payload = Array.isArray(payloadOrRankings) ? { ranking: payloadOrRankings } : (payloadOrRankings || {});
   const rankings = payload.ranking || [];
-  const context = renderRankingContext(payload);
+  const isHomePreview = selector === "#homeRankings";
+  const context = isHomePreview ? "" : renderRankingContext(payload);
   const selectedApparatuses = filterValues("apparatus", "rankings");
   const showVaultAttempts = selector === "#rankingResults" &&
     selectedApparatuses.length === 1 &&
@@ -1951,14 +1952,16 @@ function renderRankingList(selector, payloadOrRankings) {
       eventDate || eventYear,
       entry.country,
     ].filter(Boolean).join(" · ");
-    const pills = [
-      { label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" },
-      { label: vaultAwareApparatusLabel(entry.apparatus, entry.vt_attempt, showVaultAttempts) },
-      { label: entry.discipline },
-      ...(entry.year ? [{ label: String(entry.year) }] : []),
-    ];
+    const pills = isHomePreview
+      ? [{ label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" }]
+      : [
+          { label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" },
+          { label: vaultAwareApparatusLabel(entry.apparatus, entry.vt_attempt, showVaultAttempts) },
+          { label: entry.discipline },
+          ...(entry.year ? [{ label: String(entry.year) }] : []),
+        ];
     const content = `
-      <article class="entity-card ranking-card">
+      <article class="entity-card ranking-card ${isHomePreview ? "ranking-card-preview" : ""}">
         <div class="entity-row">
           <h3>#${entry.computed_rank} ${escapeHtml(entry.athlete_name)}</h3>
         </div>
@@ -1966,7 +1969,7 @@ function renderRankingList(selector, payloadOrRankings) {
         <div class="pill-row">
           ${pills.map((pill) => `<span class="pill ${pill.variant || ""}">${escapeHtml(pill.label)}</span>`).join("")}
         </div>
-        ${rankingScoreComposition(entry)}
+        ${isHomePreview ? "" : rankingScoreComposition(entry)}
       </article>
     `;
     return `<a href="#/athletes/${entry.athlete_id}">${content}</a>`;
