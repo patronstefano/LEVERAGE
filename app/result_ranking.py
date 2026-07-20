@@ -257,6 +257,47 @@ def build_aa_apparatus_scores(result: models.Result) -> list[schemas.ResultRanki
     return [build_ranking_score_component(component) for component in components]
 
 
+def vt_avg_component_matches(component: models.Result, vt_avg_result: models.Result) -> bool:
+    return (
+        component.id != vt_avg_result.id
+        and not component.is_deleted
+        and component.athlete_id == vt_avg_result.athlete_id
+        and component.event_id == vt_avg_result.event_id
+        and component.discipline == vt_avg_result.discipline
+        and component.category == vt_avg_result.category
+        and component.format == vt_avg_result.format
+        and component.round == vt_avg_result.round
+        and component.day == vt_avg_result.day
+        and component.apparatus == "VT"
+        and component.vt_attempt in (1, 2)
+    )
+
+
+def vt_avg_component_sort_key(component: models.Result):
+    return component.vt_attempt or 0, component.id
+
+
+def build_vt_avg_apparatus_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
+    if result.apparatus != "VT AVG" or not result.event:
+        return []
+    components = sorted(
+        (
+            component for component in result.event.results
+            if vt_avg_component_matches(component, result)
+        ),
+        key=vt_avg_component_sort_key,
+    )
+    return [build_ranking_score_component(component) for component in components]
+
+
+def build_ranking_detail_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
+    if result.apparatus == "AA":
+        return build_aa_apparatus_scores(result)
+    if result.apparatus == "VT AVG":
+        return build_vt_avg_apparatus_scores(result)
+    return []
+
+
 def build_ranking_entries(
     results: list[models.Result],
     sort_by: schemas.ResultRankingMetricEnum,
@@ -320,7 +361,7 @@ def build_ranking_entries(
                     penalty_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                     bonus_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                 ),
-                apparatus_scores=build_aa_apparatus_scores(result),
+                apparatus_scores=build_ranking_detail_scores(result),
             )
         )
     return ranking

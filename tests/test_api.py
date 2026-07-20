@@ -6320,6 +6320,26 @@ def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
         headers=headers,
     )
     assert vt_result.status_code == 200
+    vt_second_result = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "WAG",
+            "category": "senior",
+            "apparatus": "VT",
+            "vt_attempt": 2,
+            "format": "apparatus",
+            "round": "final",
+            "D_score": 4.8,
+            "E_score": 8.5,
+            "Penalty": 0.0,
+            "score": 13.3,
+            "rank": 2,
+        },
+        headers=headers,
+    )
+    assert vt_second_result.status_code == 200
     vt_avg_result = client.post(
         "/results/",
         json={
@@ -6331,7 +6351,7 @@ def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
             "format": "apparatus",
             "round": "final",
             "score": 13.7,
-            "rank": 2,
+            "rank": 3,
         },
         headers=headers,
     )
@@ -6339,64 +6359,70 @@ def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
 
     event_results = client.get(f"/events/{event['id']}/results?apparatus=VT")
     assert event_results.status_code == 200
-    assert [row["apparatus"] for row in event_results.json()] == ["VT"]
+    assert [row["apparatus"] for row in event_results.json()] == ["VT", "VT"]
 
     event_ranking = client.get(f"/events/{event['id']}/ranking-view?apparatus=VT")
     assert event_ranking.status_code == 200
-    assert [row["apparatus"] for row in event_ranking.json()["results"]] == ["VT"]
+    assert [row["apparatus"] for row in event_ranking.json()["results"]] == ["VT", "VT"]
 
     result_list = client.get("/results/?apparatus=VT")
     assert result_list.status_code == 200
-    assert [row["apparatus"] for row in result_list.json()] == ["VT"]
+    assert [row["apparatus"] for row in result_list.json()] == ["VT", "VT"]
 
     result_ranking = client.get(f"/results/analytics/rankings?event_id={event['id']}&apparatus=VT")
     assert result_ranking.status_code == 200
-    assert [row["apparatus"] for row in result_ranking.json()["ranking"]] == ["VT"]
-    assert [row["vt_attempt"] for row in result_ranking.json()["ranking"]] == [1]
+    assert [row["apparatus"] for row in result_ranking.json()["ranking"]] == ["VT", "VT"]
+    assert [row["vt_attempt"] for row in result_ranking.json()["ranking"]] == [1, 2]
 
     global_vt_ranking = client.get("/analytics/rankings?discipline=WAG&apparatus=VT")
     assert global_vt_ranking.status_code == 200
-    assert [row["apparatus"] for row in global_vt_ranking.json()["ranking"]] == ["VT"]
-    assert [row["vt_attempt"] for row in global_vt_ranking.json()["ranking"]] == [1]
+    assert [row["apparatus"] for row in global_vt_ranking.json()["ranking"]] == ["VT", "VT"]
+    assert [row["vt_attempt"] for row in global_vt_ranking.json()["ranking"]] == [1, 2]
 
     global_vt_avg_ranking = client.get("/analytics/rankings?discipline=WAG&apparatus=VT%20AVG")
     assert global_vt_avg_ranking.status_code == 200
-    assert [row["apparatus"] for row in global_vt_avg_ranking.json()["ranking"]] == ["VT AVG"]
-    assert [row["vt_attempt"] for row in global_vt_avg_ranking.json()["ranking"]] == [None]
+    vt_avg_ranking_row = global_vt_avg_ranking.json()["ranking"][0]
+    assert vt_avg_ranking_row["apparatus"] == "VT AVG"
+    assert vt_avg_ranking_row["vt_attempt"] is None
+    assert [component["vt_attempt"] for component in vt_avg_ranking_row["apparatus_scores"]] == [1, 2]
+    assert [(component["D_score"], component["E_score"], component["Penalty"], component["Bonus"]) for component in vt_avg_ranking_row["apparatus_scores"]] == [
+        (5.0, None, None, None),
+        (4.8, 8.5, 0.0, None),
+    ]
 
     result_trend = client.get(f"/results/analytics/trends?athlete_id={athlete['id']}&apparatus=VT")
     assert result_trend.status_code == 200
-    assert [point["apparatus"] for point in result_trend.json()["points"]] == ["VT"]
+    assert [point["apparatus"] for point in result_trend.json()["points"]] == ["VT", "VT"]
 
     athlete_results = client.get(f"/athletes/{athlete['id']}/results?apparatus=VT")
     assert athlete_results.status_code == 200
-    assert [row["apparatus"] for row in athlete_results.json()] == ["VT"]
+    assert [row["apparatus"] for row in athlete_results.json()] == ["VT", "VT"]
 
     athlete_event_results = client.get(f"/athletes/{athlete['id']}/events/{event['id']}/results?apparatus=VT")
     assert athlete_event_results.status_code == 200
-    assert [row["apparatus"] for row in athlete_event_results.json()] == ["VT"]
+    assert [row["apparatus"] for row in athlete_event_results.json()] == ["VT", "VT"]
 
     athlete_scores = client.get(f"/athletes/{athlete['id']}/scores-over-time?apparatus=VT")
     assert athlete_scores.status_code == 200
-    assert [point["apparatus"] for point in athlete_scores.json()["scores"]] == ["VT"]
+    assert [point["apparatus"] for point in athlete_scores.json()["scores"]] == ["VT", "VT"]
 
     athlete_stats = client.get(f"/athletes/{athlete['id']}/stats?apparatus=VT")
     assert athlete_stats.status_code == 200
     stats = athlete_stats.json()
-    assert stats["total_results"] == 1
+    assert stats["total_results"] == 2
     assert list(stats["apparatus_stats"].keys()) == ["VT"]
 
     athlete_comparison = client.get(f"/athletes/compare/scores?ids={athlete['id']}&apparatus=VT")
     assert athlete_comparison.status_code == 200
-    assert [point["apparatus"] for point in athlete_comparison.json()["comparison"]] == ["VT"]
+    assert [point["apparatus"] for point in athlete_comparison.json()["comparison"]] == ["VT", "VT"]
 
     dashboard = client.get(f"/analytics/athletes/{athlete['id']}/dashboard?apparatus=VT")
     assert dashboard.status_code == 200
-    assert [point["apparatus"] for point in dashboard.json()["trend"]] == ["VT"]
+    assert [point["apparatus"] for point in dashboard.json()["trend"]] == ["VT", "VT"]
 
     comparison = client.get(f"/analytics/athletes/compare?ids={athlete['id']}&apparatus=VT")
     assert comparison.status_code == 200
-    assert [point["apparatus"] for point in comparison.json()["series"][0]["points"]] == ["VT"]
+    assert [point["apparatus"] for point in comparison.json()["series"][0]["points"]] == ["VT", "VT"]
 
 
 def test_public_dashboard_analytics_filter_options_compare_and_dashboard():

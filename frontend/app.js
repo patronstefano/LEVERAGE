@@ -1132,6 +1132,33 @@ function aaScoreComponentLabel(component) {
   return component.apparatus || "not specified";
 }
 
+function vaultScoreComponentLabel(component) {
+  if (Number(component.vt_attempt) === 1) return "VT 1";
+  if (Number(component.vt_attempt) === 2) return "VT 2";
+  return "VT";
+}
+
+function scoreCompositionValues(item) {
+  const eLabel = item.execution_estimate === null || item.execution_estimate === undefined
+    ? componentValueLabel(item.E_score, item.e_score_status)
+    : scoreLabel(item.execution_estimate);
+  return [
+    ["D", componentValueLabel(item.D_score)],
+    ["E est.", eLabel],
+    ["P", componentValueLabel(item.Penalty, item.penalty_status)],
+    ["B", componentValueLabel(item.Bonus, item.bonus_status)],
+  ];
+}
+
+function scoreCompositionGrid(item) {
+  return scoreCompositionValues(item).map(([label, value]) => `
+    <span class="score-component">
+      <strong>${label}</strong>
+      <span>${value}</span>
+    </span>
+  `).join("");
+}
+
 function rankingScoreComposition(entry) {
   if ((entry.apparatus || "AA") === "AA") {
     const apparatusScores = entry.apparatus_scores || [];
@@ -1152,23 +1179,31 @@ function rankingScoreComposition(entry) {
     `;
   }
 
-  const eLabel = entry.execution_estimate === null || entry.execution_estimate === undefined
-    ? componentValueLabel(entry.E_score, entry.e_score_status)
-    : scoreLabel(entry.execution_estimate);
-  const components = [
-    ["D", componentValueLabel(entry.D_score)],
-    ["E est.", eLabel],
-    ["P", componentValueLabel(entry.Penalty, entry.penalty_status)],
-    ["B", componentValueLabel(entry.Bonus, entry.bonus_status)],
-  ];
+  if (entry.apparatus === "VT AVG") {
+    const vaultScores = entry.apparatus_scores || [];
+    if (!vaultScores.length) {
+      return `<div class="score-composition">${scoreCompositionGrid(entry)}</div>`;
+    }
+    return `
+      <div class="vault-average-composition" aria-label="VT AVG vault attempts">
+        ${vaultScores.map((component) => `
+          <div class="vault-attempt-detail">
+            <div class="vault-attempt-header">
+              <strong>${escapeHtml(vaultScoreComponentLabel(component))}</strong>
+              <span>${t("score")} ${scoreLabel(component.score)}</span>
+            </div>
+            <div class="score-composition vault-attempt-values">
+              ${scoreCompositionGrid(component)}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+  }
+
   return `
     <div class="score-composition" aria-label="Score composition">
-      ${components.map(([label, value]) => `
-        <span class="score-component">
-          <strong>${label}</strong>
-          <span>${value}</span>
-        </span>
-      `).join("")}
+      ${scoreCompositionGrid(entry)}
     </div>
   `;
 }

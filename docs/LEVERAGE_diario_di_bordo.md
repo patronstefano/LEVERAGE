@@ -2255,6 +2255,7 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - aggiunta gestione semantica specifica per Vault nei ranking: `VT` e `VT AVG` sono filtri distinti, cosi il salto singolo non viene mescolato con la media dei due salti;
 - il backend espone ora `vt_attempt` anche nei record di ranking; nella UI `VT 1` resta visualizzato come semplice `VT` fuori dal contesto Vault, mentre `VT 1` e `VT 2` vengono mostrati quando l'utente filtra esclusivamente il ranking su `VT`;
 - nella composizione dei punteggi `AA`, un componente Vault attempt 1 viene mostrato come `VT`, mentre un eventuale attempt 2 resta distinguibile come `VT 2`.
+- quando l'utente visualizza un ranking `VT AVG`, la scheda punteggio mostra ora anche i dettagli dei due salti collegati (`VT 1` e `VT 2`), includendo per ciascuno score e componenti `D`, `E est.`, `P`, `B` quando disponibili.
 
 Aggiornamento navigazione pubblica del 20 luglio 2026:
 
