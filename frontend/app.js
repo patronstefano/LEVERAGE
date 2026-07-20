@@ -23,6 +23,10 @@ const state = {
       category: [],
       apparatus: [],
       scoringCycle: [],
+      startYear: "",
+      endYear: "",
+      startDate: "",
+      endDate: "",
     },
   },
 };
@@ -33,6 +37,10 @@ const RANKING_APPARATUS_BY_DISCIPLINE = {
   WAG: ["AA", "VT", "UB", "BB", "FX"],
 };
 const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
+const RANKING_YEAR_FILTERS = Array.from(
+  { length: Math.max(0, CURRENT_YEAR - 2018 + 1) },
+  (_, index) => String(2018 + index),
+);
 const EVENT_LEVEL_FILTERS = [
   { label: "Olympic Games", value: "Olympic Games" },
   { label: "World Championships", value: "World Championships" },
@@ -152,6 +160,14 @@ const translations = {
     score: "Score",
     scoringCycle: "Scoring cycle",
     allCycles: "All cycles",
+    timeInterval: "Time interval",
+    wholeYear: "Whole year",
+    fromYear: "From year",
+    toYear: "To year",
+    fromDate: "From date",
+    toDate: "To date",
+    clearPeriod: "Clear period",
+    eventYear: "Event year",
     country: "Country",
     date: "Date",
     status: "Status",
@@ -264,6 +280,14 @@ const translations = {
     score: "Score",
     scoringCycle: "Ciclo punteggio",
     allCycles: "Tutti i cicli",
+    timeInterval: "Intervallo di tempo",
+    wholeYear: "Anno intero",
+    fromYear: "Da anno",
+    toYear: "A anno",
+    fromDate: "Da data",
+    toDate: "A data",
+    clearPeriod: "Cancella periodo",
+    eventYear: "Anno gara",
     country: "Nazione",
     date: "Data",
     status: "Stato",
@@ -376,6 +400,14 @@ const translations = {
     score: "Score",
     scoringCycle: "Ciclo de puntuacion",
     allCycles: "Todos los ciclos",
+    timeInterval: "Intervalo de tiempo",
+    wholeYear: "Ano completo",
+    fromYear: "Desde ano",
+    toYear: "Hasta ano",
+    fromDate: "Desde fecha",
+    toDate: "Hasta fecha",
+    clearPeriod: "Borrar periodo",
+    eventYear: "Ano del evento",
     country: "Pais",
     date: "Fecha",
     status: "Estado",
@@ -488,6 +520,14 @@ const translations = {
     score: "Score",
     scoringCycle: "Cycle de notation",
     allCycles: "Tous les cycles",
+    timeInterval: "Intervalle",
+    wholeYear: "Annee complete",
+    fromYear: "Depuis annee",
+    toYear: "Jusqu'a annee",
+    fromDate: "Depuis date",
+    toDate: "Jusqu'a date",
+    clearPeriod: "Effacer periode",
+    eventYear: "Annee competition",
     country: "Pays",
     date: "Date",
     status: "Statut",
@@ -1279,14 +1319,42 @@ function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
 
+function rankingTimeFilters() {
+  const filters = scopedFilters("rankings");
+  return {
+    startYear: filters.startYear || "",
+    endYear: filters.endYear || "",
+    startDate: filters.startDate || "",
+    endDate: filters.endDate || "",
+  };
+}
+
+function rankingHasTimeFilter() {
+  const filters = rankingTimeFilters();
+  return Boolean(filters.startYear || filters.endYear || filters.startDate || filters.endDate);
+}
+
+function rankingWholeYearIsActive(year) {
+  const filters = rankingTimeFilters();
+  return filters.startYear === year && filters.endYear === year && !filters.startDate && !filters.endDate;
+}
+
 function rankingQueryParams(limit) {
   const scoringCycles = filterValues("scoringCycle", "rankings");
+  const timeFilters = rankingTimeFilters();
   const params = {
     limit,
     discipline: rankingDiscipline(),
     category: rankingCategory(),
     apparatus: filterValues("apparatus", "rankings"),
   };
+  if (timeFilters.startYear) params.start_year = timeFilters.startYear;
+  if (timeFilters.endYear) params.end_year = timeFilters.endYear;
+  if (timeFilters.startDate) params.start_date = timeFilters.startDate;
+  if (timeFilters.endDate) params.end_date = timeFilters.endDate;
+  if (rankingHasTimeFilter()) {
+    return params;
+  }
   if (scoringCycles.includes("all") || SCORING_CYCLE_FILTERS.every((cycle) => scoringCycles.includes(cycle))) {
     params.include_all_scoring_cycles = true;
   } else if (scoringCycles.length) {
@@ -1337,6 +1405,7 @@ function bindFilterButtons() {
       const value = button.dataset.filterValue;
       const filters = scopedFilters(scope);
       if (scope === "rankings" && type === "scoringCycle") {
+        clearRankingTimeFilters();
         const values = filterValues(type, scope);
         if (value === "all") {
           filters[type] = values.includes("all") ? [] : ["all"];
@@ -1373,6 +1442,75 @@ function bindRankingDisciplineControl() {
       render();
     });
   });
+}
+
+function clearRankingTimeFilters() {
+  Object.assign(scopedFilters("rankings"), {
+    startYear: "",
+    endYear: "",
+    startDate: "",
+    endDate: "",
+  });
+}
+
+function setRankingYearFilter(year) {
+  const filters = scopedFilters("rankings");
+  if (rankingWholeYearIsActive(year)) {
+    clearRankingTimeFilters();
+  } else {
+    Object.assign(filters, {
+      startYear: year,
+      endYear: year,
+      startDate: "",
+      endDate: "",
+      scoringCycle: [],
+    });
+  }
+  render();
+}
+
+function setRankingYearRange(startYear, endYear) {
+  Object.assign(scopedFilters("rankings"), {
+    startYear,
+    endYear,
+    startDate: "",
+    endDate: "",
+    scoringCycle: [],
+  });
+  render();
+}
+
+function setRankingDateRange(startDate, endDate) {
+  Object.assign(scopedFilters("rankings"), {
+    startYear: "",
+    endYear: "",
+    startDate,
+    endDate,
+    scoringCycle: [],
+  });
+  render();
+}
+
+function bindRankingTimeFilters() {
+  document.querySelectorAll("[data-ranking-year]").forEach((button) => {
+    button.addEventListener("click", () => setRankingYearFilter(button.dataset.rankingYear));
+  });
+  document.querySelectorAll("[data-ranking-clear-period]").forEach((button) => {
+    button.addEventListener("click", () => {
+      clearRankingTimeFilters();
+      render();
+    });
+  });
+  const startYear = $("#rankingStartYear");
+  const endYear = $("#rankingEndYear");
+  const startDate = $("#rankingStartDate");
+  const endDate = $("#rankingEndDate");
+  const applyYearRange = () => setRankingYearRange(startYear?.value.trim() || "", endYear?.value.trim() || "");
+  const applyDateRange = () => setRankingDateRange(startDate?.value || "", endDate?.value || "");
+  startYear?.addEventListener("change", applyYearRange);
+  endYear?.addEventListener("change", applyYearRange);
+  startDate?.addEventListener("change", applyDateRange);
+  endDate?.addEventListener("change", applyDateRange);
 }
 
 async function hydrateHome() {
@@ -1705,6 +1843,37 @@ function renderRankingContext(payload) {
   `;
 }
 
+function renderRankingTimeFilter() {
+  const filters = rankingTimeFilters();
+  return `
+    <details class="ranking-time-filter" ${rankingHasTimeFilter() ? "open" : ""}>
+      <summary class="filter-button ranking-time-summary" aria-pressed="${rankingHasTimeFilter()}">${t("timeInterval")}</summary>
+      <div class="ranking-time-panel">
+        <div class="ranking-time-group">
+          <span class="ranking-time-label">${t("wholeYear")}</span>
+          <div class="ranking-year-grid">
+            ${RANKING_YEAR_FILTERS.map((year) => `
+              <button
+                class="filter-button year-filter-button"
+                type="button"
+                data-ranking-year="${year}"
+                aria-pressed="${rankingWholeYearIsActive(year)}"
+              >${year}</button>
+            `).join("")}
+          </div>
+        </div>
+        <div class="ranking-time-inputs">
+          <label>${t("fromYear")}<input id="rankingStartYear" type="number" inputmode="numeric" min="1900" max="2100" value="${escapeHtml(filters.startYear)}"></label>
+          <label>${t("toYear")}<input id="rankingEndYear" type="number" inputmode="numeric" min="1900" max="2100" value="${escapeHtml(filters.endYear)}"></label>
+          <label>${t("fromDate")}<input id="rankingStartDate" type="date" value="${escapeHtml(filters.startDate)}"></label>
+          <label>${t("toDate")}<input id="rankingEndDate" type="date" value="${escapeHtml(filters.endDate)}"></label>
+          <button class="quiet-button" type="button" data-ranking-clear-period>${t("clearPeriod")}</button>
+        </div>
+      </div>
+    </details>
+  `;
+}
+
 function renderRankingList(selector, payloadOrRankings) {
   const node = $(selector);
   const payload = Array.isArray(payloadOrRankings) ? { ranking: payloadOrRankings } : (payloadOrRankings || {});
@@ -1715,17 +1884,25 @@ function renderRankingList(selector, payloadOrRankings) {
     return;
   }
   node.innerHTML = `${context}<div class="entity-list">${rankings.map((entry) => {
+    const eventDate = entry.date ? formatReadableDate(entry.date) : "";
+    const eventYear = entry.year ? `${t("eventYear")} ${entry.year}` : "";
+    const meta = [
+      entry.event_name,
+      eventDate || eventYear,
+      entry.country,
+    ].filter(Boolean).join(" · ");
     const pills = [
       { label: `${t("score")} ${scoreLabel(entry.score)}`, variant: "brand" },
       { label: entry.apparatus || "AA" },
       { label: entry.discipline },
+      ...(entry.year ? [{ label: String(entry.year) }] : []),
     ];
     const content = `
       <article class="entity-card ranking-card">
         <div class="entity-row">
           <h3>#${entry.computed_rank} ${escapeHtml(entry.athlete_name)}</h3>
         </div>
-        <p class="meta">${escapeHtml([entry.event_name, entry.country].filter(Boolean).join(" · "))}</p>
+        <p class="meta">${escapeHtml(meta)}</p>
         <div class="pill-row">
           ${pills.map((pill) => `<span class="pill ${pill.variant || ""}">${escapeHtml(pill.label)}</span>`).join("")}
         </div>
@@ -1953,10 +2130,12 @@ async function renderRankings() {
       ${filterButton("2025-2028", "scoringCycle", "2025-2028", "rankings")}
       ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
     </div>
+    ${renderRankingTimeFilter()}
     <div id="rankingResults">${loadingState()}</div>
   `);
   bindFilterButtons();
   bindRankingDisciplineControl();
+  bindRankingTimeFilters();
   try {
     const rankings = await getJson("/analytics/rankings", {
       ...rankingQueryParams(60),

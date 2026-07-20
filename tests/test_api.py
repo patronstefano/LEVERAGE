@@ -6690,7 +6690,35 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     assert default_payload["discipline"] == "MAG"
     assert default_payload["scoring_cycle"]["label"] == "2025-2028"
     assert [entry["event_id"] for entry in default_payload["ranking"]] == [mag_2025_event["id"]]
+    assert default_payload["ranking"][0]["year"] == 2025
+    assert default_payload["ranking"][0]["date"] == "2025-05-01"
     assert default_payload["warnings"] == []
+
+    mag_2024_year = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&start_year=2024&end_year=2024"
+    )
+    assert mag_2024_year.status_code == 200
+    year_payload = mag_2024_year.json()
+    assert year_payload["scoring_cycle"] is None
+    assert [entry["event_id"] for entry in year_payload["ranking"]] == [mag_2024_event["id"]]
+    assert year_payload["ranking"][0]["year"] == 2024
+
+    mag_2025_dates = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX"
+        "&start_date=2025-01-01&end_date=2025-12-31"
+    )
+    assert mag_2025_dates.status_code == 200
+    assert [entry["event_id"] for entry in mag_2025_dates.json()["ranking"]] == [mag_2025_event["id"]]
+
+    invalid_year_period = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&start_year=2025&end_year=2024"
+    )
+    assert invalid_year_period.status_code == 422
+
+    invalid_date_period = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&start_date=2025-12-31&end_date=2025-01-01"
+    )
+    assert invalid_date_period.status_code == 422
 
     mag_all_cycles = client.get(
         "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true&limit=1"

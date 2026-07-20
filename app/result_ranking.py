@@ -293,6 +293,7 @@ def build_ranking_entries(
                 country=result_represented_country(result),
                 event_id=result.event_id,
                 event_name=result.event.name,
+                year=result.event.year,
                 date=result.event.start_date,
                 discipline=result.discipline,
                 category=result.category,

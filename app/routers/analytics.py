@@ -126,6 +126,18 @@ def build_filters(
     )
 
 
+def validate_period_bounds(
+    start_year: Optional[int],
+    end_year: Optional[int],
+    start_date: Optional[date],
+    end_date: Optional[date],
+) -> None:
+    if start_year is not None and end_year is not None and end_year < start_year:
+        raise HTTPException(status_code=422, detail="end_year must be greater than or equal to start_year")
+    if start_date is not None and end_date is not None and end_date < start_date:
+        raise HTTPException(status_code=422, detail="end_date must be on or after start_date")
+
+
 def build_athlete_results_query(
     db: Session,
     athlete_id: int,
@@ -742,6 +754,7 @@ def get_analytics_rankings(
         ).first()
         if not event:
             raise HTTPException(status_code=404, detail="Event not found")
+    validate_period_bounds(start_year, end_year, start_date, end_date)
     validate_global_ranking_scope(event, discipline, allow_mixed_disciplines)
     apparatus_filters = parse_multi_value_query(apparatus)
 

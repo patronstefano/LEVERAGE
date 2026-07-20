@@ -2248,6 +2248,10 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - aggiunti test automatici per ranking su piu cicli e su piu attrezzi.
 - le card della sezione `Rankings` mostrano ora la composizione del punteggio per i risultati non-AA: `D`, `E est.`, `P`, `B`, con valori `not available` o `not applicable` quando coerente con lo stato del dato;
 - per i ranking `AA`, il backend espone `apparatus_scores`, cioe i punteggi sui singoli attrezzi collegati allo stesso atleta/evento/format/round/categoria/giorno che compongono il totale all-around, e la UI li mostra direttamente nella card.
+- ogni record visualizzato nella sezione `Rankings` espone ora anche l'anno della gara e, quando disponibile, la data dell'evento, cosi l'utente puo contestualizzare immediatamente il punteggio;
+- introdotto nella UI un filtro `Time interval`/`Intervallo di tempo` per le classifiche: l'utente puo selezionare un anno intero, un intervallo di anni o un intervallo preciso tra due date;
+- quando viene selezionato un intervallo temporale specifico, la UI svuota il filtro ciclo olimpico per evitare sovrapposizioni implicite tra filtri; il backend continua comunque a segnalare quando il ranking include piu scoring cycles;
+- l'endpoint `/analytics/rankings` valida ora gli intervalli temporali incoerenti, rifiutando `end_year < start_year` o `end_date < start_date`.
 
 ## 19. Conclusione
 

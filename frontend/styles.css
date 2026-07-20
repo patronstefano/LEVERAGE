@@ -1371,6 +1371,76 @@ button {
   gap: 10px;
 }
 
+.ranking-time-filter {
+  margin: -4px 0 18px;
+}
+
+.ranking-time-filter > summary {
+  width: max-content;
+  list-style: none;
+  cursor: pointer;
+}
+
+.ranking-time-filter > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ranking-time-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid rgba(25, 23, 71, 0.08);
+  border-radius: var(--surface-radius);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.ranking-time-group {
+  display: grid;
+  gap: 8px;
+}
+
+.ranking-time-label,
+.ranking-time-inputs label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.ranking-year-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.year-filter-button {
+  min-height: 32px;
+  padding: 0 11px;
+}
+
+.ranking-time-inputs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.ranking-time-inputs label {
+  display: grid;
+  gap: 6px;
+}
+
+.ranking-time-inputs input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
 .entity-row {
   display: flex;
   align-items: center;
@@ -1637,6 +1707,10 @@ button {
   .grid-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .ranking-time-inputs {
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+  }
 }
 
 @media (max-width: 640px) {
@@ -1710,6 +1784,10 @@ button {
 
   .grid-4,
   .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .ranking-time-inputs {
     grid-template-columns: 1fr;
   }
 

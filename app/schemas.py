@@ -1323,6 +1323,7 @@ class ResultRankingEntry(BaseModel):
     country: Optional[str] = None
     event_id: int
     event_name: str
+    year: int
     date: Optional[Date] = None
     discipline: DisciplineEnum
     category: ResultCategoryEnum
