@@ -17,12 +17,14 @@ const state = {
     athletes: {
       discipline: [],
       category: [],
+      favoritesOnly: "",
     },
     events: {
       discipline: [],
       category: [],
       level: [],
       calendarStatus: "",
+      favoritesOnly: "",
     },
     rankings: {
       discipline: [],
@@ -106,18 +108,19 @@ const translations = {
     demoUser: "DEMO USER",
     demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
-    accountIntro: "Your private area for favorite athletes, saved events and personal shortcuts.",
+    accountIntro: "Your private area for favorite athletes, favorite events and personal shortcuts.",
     favoriteAthletes: "Favorite athletes",
-    favoriteEvents: "Saved events",
+    favoriteEvents: "Favorite events",
     myFavoriteAthletes: "My favorite athletes",
-    myFavoriteEvents: "My saved events",
+    myFavoriteEvents: "My favorite events",
+    favoritesFilter: "Favorites",
     addFavoriteAthlete: "Save athlete",
     removeFavoriteAthlete: "Remove athlete",
     addFavoriteEvent: "Save event",
     removeFavoriteEvent: "Remove event",
     loginRequiredFavorites: "Sign in to save favorites.",
     noFavoriteAthletes: "No favorite athletes yet.",
-    noFavoriteEvents: "No saved events yet.",
+    noFavoriteEvents: "No favorite events yet.",
     latestResult: "Latest result",
     savedOn: "Saved on",
     savedRankingViews: "Saved Rankings",
@@ -267,18 +270,19 @@ const translations = {
     demoUser: "DEMO USER",
     demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
-    accountIntro: "La tua area privata per atleti preferiti, eventi salvati e scorciatoie personali.",
+    accountIntro: "La tua area privata per atleti preferiti, eventi preferiti e scorciatoie personali.",
     favoriteAthletes: "Atleti preferiti",
-    favoriteEvents: "Eventi salvati",
+    favoriteEvents: "Eventi preferiti",
     myFavoriteAthletes: "I miei atleti preferiti",
-    myFavoriteEvents: "I miei eventi salvati",
+    myFavoriteEvents: "I miei eventi preferiti",
+    favoritesFilter: "Preferiti",
     addFavoriteAthlete: "Salva atleta",
     removeFavoriteAthlete: "Rimuovi atleta",
     addFavoriteEvent: "Salva evento",
     removeFavoriteEvent: "Rimuovi evento",
     loginRequiredFavorites: "Accedi per salvare preferiti.",
     noFavoriteAthletes: "Nessun atleta preferito.",
-    noFavoriteEvents: "Nessun evento salvato.",
+    noFavoriteEvents: "Nessun evento preferito.",
     latestResult: "Ultimo risultato",
     savedOn: "Salvato il",
     savedRankingViews: "Rankings salvati",
@@ -428,18 +432,19 @@ const translations = {
     demoUser: "DEMO USER",
     demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
-    accountIntro: "Tu area privada para atletas favoritos, eventos guardados y accesos personales.",
+    accountIntro: "Tu area privada para atletas favoritos, eventos favoritos y accesos personales.",
     favoriteAthletes: "Atletas favoritos",
-    favoriteEvents: "Eventos guardados",
+    favoriteEvents: "Eventos favoritos",
     myFavoriteAthletes: "Mis atletas favoritos",
-    myFavoriteEvents: "Mis eventos guardados",
+    myFavoriteEvents: "Mis eventos favoritos",
+    favoritesFilter: "Favoritos",
     addFavoriteAthlete: "Guardar atleta",
     removeFavoriteAthlete: "Quitar atleta",
     addFavoriteEvent: "Guardar evento",
     removeFavoriteEvent: "Quitar evento",
     loginRequiredFavorites: "Inicia sesion para guardar favoritos.",
     noFavoriteAthletes: "Aun no hay atletas favoritos.",
-    noFavoriteEvents: "Aun no hay eventos guardados.",
+    noFavoriteEvents: "Aun no hay eventos favoritos.",
     latestResult: "Ultimo resultado",
     savedOn: "Guardado el",
     savedRankingViews: "Rankings guardados",
@@ -589,18 +594,19 @@ const translations = {
     demoUser: "DEMO USER",
     demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
-    accountIntro: "Votre espace prive pour athletes favoris, evenements enregistres et raccourcis personnels.",
+    accountIntro: "Votre espace prive pour athletes favoris, evenements favoris et raccourcis personnels.",
     favoriteAthletes: "Athletes favoris",
-    favoriteEvents: "Evenements enregistres",
+    favoriteEvents: "Evenements favoris",
     myFavoriteAthletes: "Mes athletes favoris",
-    myFavoriteEvents: "Mes evenements enregistres",
+    myFavoriteEvents: "Mes evenements favoris",
+    favoritesFilter: "Favoris",
     addFavoriteAthlete: "Enregistrer athlete",
     removeFavoriteAthlete: "Retirer athlete",
     addFavoriteEvent: "Enregistrer evenement",
     removeFavoriteEvent: "Retirer evenement",
     loginRequiredFavorites: "Connectez-vous pour enregistrer des favoris.",
     noFavoriteAthletes: "Aucun athlete favori.",
-    noFavoriteEvents: "Aucun evenement enregistre.",
+    noFavoriteEvents: "Aucun evenement favori.",
     latestResult: "Dernier resultat",
     savedOn: "Enregistre le",
     savedRankingViews: "Rankings enregistres",
@@ -844,6 +850,8 @@ function clearAuth() {
   state.favoriteAthleteIds = new Set();
   state.favoriteEventIds = new Set();
   state.favoritesLoaded = false;
+  state.filters.athletes.favoritesOnly = "";
+  state.filters.events.favoritesOnly = "";
   localStorage.removeItem(AUTH_TOKEN_KEY);
   updateAuthUi();
 }
@@ -1154,6 +1162,13 @@ async function toggleFavorite(kind, id, button) {
       idSet.add(numericId);
     }
     setFavoriteButtonState(button, !isActive);
+    if (
+      isActive &&
+      ((kind === "athlete" && favoritesOnly("athletes") && routeIsListSection("athletes")) ||
+        (kind === "event" && favoritesOnly("events") && routeIsListSection("events")))
+    ) {
+      render();
+    }
   } catch (_error) {
     await ensureFavoritesLoaded({ force: true }).catch(() => {});
     setFavoriteButtonState(button, kind === "athlete"
@@ -1753,6 +1768,16 @@ function calendarStatusParam() {
   return scopedFilters("events").calendarStatus || "";
 }
 
+function favoritesOnly(scope) {
+  return Boolean(state.currentUser && singleFilterParam("favoritesOnly", scope) === "true");
+}
+
+function routeIsListSection(scope) {
+  if (scope === "athletes") return state.route === "/athletes" || state.route.startsWith("/athletes?");
+  if (scope === "events") return state.route === "/events" || state.route.startsWith("/events?");
+  return false;
+}
+
 function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
@@ -2171,7 +2196,8 @@ async function hydrateEventsCalendar() {
     category: multiFilterParam("category", "events"),
     level: filterValues("level", "events"),
     status: calendarStatusParam(),
-  });
+    favorite_only: favoritesOnly("events"),
+  }, { auth: favoritesOnly("events") });
   renderHomeCalendar("#eventResults", events, calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
@@ -2577,7 +2603,7 @@ async function renderAthletes() {
     <form class="toolbar" id="athleteSearchForm">
       <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
-      ${state.currentUser ? `<a class="quiet-button" href="#/account">${t("myFavoriteAthletes")}</a>` : ""}
+      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes") : ""}
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
       ${filterButton(t("junior"), "category", "junior", "athletes")}
@@ -2602,8 +2628,9 @@ async function renderAthletes() {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         category: filterValues("category", "athletes"),
+        favorite_only: favoritesOnly("athletes"),
         limit: 40,
-      });
+      }, { auth: favoritesOnly("athletes") });
       if (requestId !== athleteSearchRequestId) return;
       resultsNode.innerHTML = renderAthleteCards(athletes);
       bindFavoriteButtons();
@@ -2642,7 +2669,7 @@ async function renderEvents() {
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
     <div class="toolbar">
-      ${state.currentUser ? `<a class="quiet-button" href="#/account">${t("myFavoriteEvents")}</a>` : ""}
+      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events") : ""}
       ${filterButton("MAG", "discipline", "MAG", "events")}
       ${filterButton("WAG", "discipline", "WAG", "events")}
       ${filterButton(t("senior"), "category", "senior", "events")}
@@ -2692,8 +2719,9 @@ async function renderEvents() {
         level: filterValues("level", "events"),
         status: calendarStatusParam(),
         as_of: formatLocalIso(TODAY),
+        favorite_only: favoritesOnly("events"),
         limit: 80,
-      });
+      }, { auth: favoritesOnly("events") });
       if (requestId !== eventSearchRequestId) return;
       renderEventList("#eventLiveResults", events);
     } catch (error) {

@@ -42,7 +42,7 @@ from app.routers.results import (
     validate_result_relationships,
     validate_result_scoring_state,
 )
-from app.security import get_current_user, get_current_admin_user, get_current_super_admin_user
+from app.security import get_current_user, get_current_admin_user, get_current_super_admin_user, get_optional_current_user
 
 router = APIRouter()
 
@@ -515,10 +515,24 @@ def list_events(
     level: Optional[list[str]] = Query(None, description="Repeat or comma-separate event level filters"),
     status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
     as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
+    favorite_only: bool = Query(False, description="Return only events saved by the authenticated user"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
+    current_user: Optional[models.User] = Depends(get_optional_current_user),
 ):
     query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
+    saved_event_ids: set[int] | None = None
+    if favorite_only:
+        if current_user is None:
+            raise HTTPException(status_code=401, detail="Authentication required for favorite filters")
+        saved_event_ids = {
+            event_id for (event_id,) in db.query(models.SavedEvent.event_id).filter(
+                models.SavedEvent.user_id == current_user.id,
+            ).all()
+        }
+        if not saved_event_ids:
+            return []
+        query = query.filter(models.Event.id.in_(saved_event_ids))
     if search and search.strip():
         search_years, search_terms = parse_event_search(search.strip())
         if search_years:
@@ -564,10 +578,24 @@ def get_events_calendar(
     level: Optional[list[str]] = Query(None, description="Repeat or comma-separate event level filters"),
     status: Optional[schemas.EventCalendarStatusEnum] = Query(None),
     as_of: Optional[date] = Query(None, description="Reference date used to calculate calendar status"),
+    favorite_only: bool = Query(False, description="Return only events saved by the authenticated user"),
     limit: int = Query(200, ge=1, le=1000),
     offset: int = Query(0, ge=0),
+    current_user: Optional[models.User] = Depends(get_optional_current_user),
 ):
     query = db.query(models.Event).filter(models.Event.is_deleted.is_(False))
+    saved_event_ids: set[int] | None = None
+    if favorite_only:
+        if current_user is None:
+            raise HTTPException(status_code=401, detail="Authentication required for favorite filters")
+        saved_event_ids = {
+            event_id for (event_id,) in db.query(models.SavedEvent.event_id).filter(
+                models.SavedEvent.user_id == current_user.id,
+            ).all()
+        }
+        if not saved_event_ids:
+            return []
+        query = query.filter(models.Event.id.in_(saved_event_ids))
     search_years: set[int] = set()
     search_terms: set[str] = set()
     if search and search.strip():
@@ -597,6 +625,8 @@ def get_events_calendar(
     entry_query = db.query(models.EventCalendarEntry).options(
         joinedload(models.EventCalendarEntry.event)
     ).filter(models.EventCalendarEntry.is_deleted.is_(False))
+    if saved_event_ids is not None:
+        entry_query = entry_query.filter(models.EventCalendarEntry.event_id.in_(saved_event_ids))
     if search and search.strip():
         if search_years:
             entry_query = entry_query.filter(models.EventCalendarEntry.year.in_(search_years))

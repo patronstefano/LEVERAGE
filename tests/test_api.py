@@ -2647,6 +2647,90 @@ def test_user_preference_details_include_followed_athletes_and_saved_future_even
     assert saved_details[0]["event"]["has_results"] is False
 
 
+def test_public_lists_support_authenticated_favorites_filter():
+    client.post("/auth/register", json={"email": "favorites_filter_admin@example.com", "password": TEST_PASSWORD})
+    admin_token = login_as_admin("favorites_filter_admin@example.com")
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    client.post("/auth/register", json={"email": "favorites_filter_user@example.com", "password": TEST_PASSWORD})
+    user_token = login_as_user("favorites_filter_user@example.com")
+    user_headers = {"Authorization": f"Bearer {user_token}"}
+
+    favorite_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Favorite",
+            "last_name": "Gymnast",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=admin_headers,
+    ).json()
+    other_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Other",
+            "last_name": "Gymnast",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=admin_headers,
+    ).json()
+    favorite_event = client.post(
+        "/events/",
+        json={
+            "name": "Favorite Cup",
+            "year": 2026,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "World Cup",
+            "start_date": "2026-04-01",
+            "end_date": "2026-04-03",
+        },
+        headers=admin_headers,
+    ).json()
+    other_event = client.post(
+        "/events/",
+        json={
+            "name": "Other Cup",
+            "year": 2026,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "World Cup",
+            "start_date": "2026-04-04",
+            "end_date": "2026-04-06",
+        },
+        headers=admin_headers,
+    ).json()
+
+    assert other_athlete["id"] != favorite_athlete["id"]
+    assert other_event["id"] != favorite_event["id"]
+    assert client.post(
+        "/preferences/athletes/follow",
+        json={"athlete_id": favorite_athlete["id"]},
+        headers=user_headers,
+    ).status_code == 200
+    assert client.post(
+        "/preferences/events/save",
+        json={"event_id": favorite_event["id"]},
+        headers=user_headers,
+    ).status_code == 200
+
+    anonymous_athletes_response = client.get("/athletes/?favorite_only=true")
+    assert anonymous_athletes_response.status_code == 401
+    favorite_athletes_response = client.get("/athletes/?favorite_only=true", headers=user_headers)
+    assert favorite_athletes_response.status_code == 200
+    favorite_athletes = favorite_athletes_response.json()
+    assert [athlete["id"] for athlete in favorite_athletes] == [favorite_athlete["id"]]
+
+    anonymous_events_response = client.get("/events/calendar?favorite_only=true")
+    assert anonymous_events_response.status_code == 401
+    favorite_events_response = client.get("/events/calendar?favorite_only=true", headers=user_headers)
+    assert favorite_events_response.status_code == 200
+    favorite_events = favorite_events_response.json()
+    assert [event["id"] for event in favorite_events] == [favorite_event["id"]]
+
+
 def test_athlete_profile_view_and_apparatus_profile_support_future_ui_cards():
     client.post("/auth/register", json={"email": "athlete_profile_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("athlete_profile_admin@example.com")

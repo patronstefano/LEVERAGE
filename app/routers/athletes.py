@@ -14,7 +14,7 @@ from app.database import get_db
 from app.gymternet_import import record_athlete_country_change
 from app.result_identity import result_identity_key
 from app.result_ranking import apply_data_quality_filter, result_represented_country
-from app.security import get_current_admin_user, get_current_super_admin_user
+from app.security import get_current_admin_user, get_current_super_admin_user, get_optional_current_user
 
 router = APIRouter()
 
@@ -345,10 +345,19 @@ def list_athletes(
     discipline: Optional[models.DisciplineEnum] = Query(None),
     category: Optional[list[models.ResultCategoryEnum]] = Query(None, description="Filter athletes with at least one result in the selected category"),
     country: Optional[str] = Query(None),
+    favorite_only: bool = Query(False, description="Return only athletes followed by the authenticated user"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
+    current_user: Optional[models.User] = Depends(get_optional_current_user),
 ):
     query = db.query(models.Athlete).filter(models.Athlete.is_deleted.is_(False))
+    if favorite_only:
+        if current_user is None:
+            raise HTTPException(status_code=401, detail="Authentication required for favorite filters")
+        query = query.join(
+            models.FollowedAthlete,
+            models.FollowedAthlete.athlete_id == models.Athlete.id,
+        ).filter(models.FollowedAthlete.user_id == current_user.id)
     if search and search.strip():
         cleaned_search = search.strip()
         exact_country_codes = resolve_exact_country_codes(cleaned_search)

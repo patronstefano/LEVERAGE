@@ -301,10 +301,10 @@ E stato introdotto un livello di personalizzazione per utenti registrati.
 Un `USER` registrato puo:
 
 - seguire atleti;
-- salvare eventi;
+- salvare eventi come preferiti;
 - salvare anche eventi futuri;
 - vedere dettagli degli atleti seguiti;
-- vedere dettagli degli eventi salvati;
+- vedere dettagli degli eventi preferiti;
 - salvare viste dashboard personali con filtri e configurazioni.
 
 Entita introdotte:
@@ -317,7 +317,7 @@ La dashboard personale futura potra usare questi dati per mostrare:
 
 - atleti seguiti;
 - ultimi risultati;
-- eventi salvati;
+- eventi preferiti;
 - eventi futuri;
 - dashboard views preferite;
 - filtri ricorrenti.
@@ -794,7 +794,7 @@ Audit tecnico finale:
 - `results.py`: CRUD result, ranking e trend storici.
 - `analytics.py`: filtri globali, ranking, confronti, dashboard atleta, apparatus profile, eta per country.
 - `imports.py`: preview, review e commit import Gymternet.
-- `preferences.py`: lingua, atleti seguiti, eventi salvati, dashboard views.
+- `preferences.py`: lingua, atleti seguiti, eventi preferiti, dashboard views.
 - `notifications.py`: lettura e gestione notifiche.
 - `data_suggestions.py`: suggerimenti admin.
 - `world_gymnastics.py`: candidati e suggerimenti World Gymnastics.
@@ -839,7 +839,7 @@ Ruoli:
 Relazioni:
 
 - atleti seguiti;
-- eventi salvati;
+- eventi preferiti;
 - dashboard views salvate.
 
 `preferred_language` accetta `en`, `it`, `es`, `fr` e ha default `en`. Serve per la lingua personale dell'utente loggato e per localizzare le notifiche generate dal backend.
@@ -1126,10 +1126,10 @@ Non puo:
 Un user registrato puo fare tutto cio che fa un visitatore, in piu puo:
 
 - seguire atleti;
-- salvare eventi;
+- salvare eventi come preferiti;
 - salvare eventi futuri;
 - consultare dettagli degli atleti seguiti;
-- consultare dettagli degli eventi salvati;
+- consultare dettagli degli eventi preferiti;
 - salvare dashboard views;
 - impostare una dashboard view di default;
 - salvare la lingua preferita sul profilo;
@@ -2271,10 +2271,9 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - collegato il frontend al sistema di autenticazione gia implementato nel backend tramite login email/password, eventuale secondo step MFA per account admin gia configurati e salvataggio locale del token JWT;
 - la topbar distingue ora utente non loggato e utente loggato: `Sign in` rimanda al login, mentre un utente autenticato vede `My LEVERAGE`;
 - creata una prima area privata `My LEVERAGE`, dedicata a preferenze personali e scorciatoie utente;
-- l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi salvati derivati dalla tabella `SavedEvent`, senza introdurre duplicazioni nel modello dati;
+- l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi preferiti derivati dalla tabella tecnica `SavedEvent`, senza introdurre duplicazioni nel modello dati;
 - aggiunto logout frontend con pulizia token, utente corrente e cache dei preferiti;
-- nella sezione `Athletes`, se l'utente e loggato, compare un pulsante rapido verso la lista dei propri atleti preferiti;
-- nella sezione `Events`, se l'utente e loggato, compare un pulsante rapido verso la lista dei propri eventi salvati;
+- nelle sezioni `Athletes` ed `Events`, se l'utente e loggato, compare ora il filtro locale `Favorites`/`Preferiti`, che mostra direttamente nella sezione corrente solo atleti o eventi preferiti senza rimandare all'area personale;
 - aggiunto pulsante a stellina sulle card atleta e sulle card evento: stellina vuota per salvare, stellina piena per rimuovere dai preferiti;
 - create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
 - mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;
