@@ -1,10 +1,16 @@
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
+const AUTH_TOKEN_KEY = "leverage.authToken";
 
 const state = {
   route: "/",
   language: localStorage.getItem(LANGUAGE_KEY) || "en",
   apiBase: localStorage.getItem(API_BASE_KEY) || "http://localhost:8000",
+  authToken: localStorage.getItem(AUTH_TOKEN_KEY) || "",
+  currentUser: null,
+  favoriteAthleteIds: new Set(),
+  favoriteEventIds: new Set(),
+  favoritesLoaded: false,
   homeCalendarMonthOffset: 0,
   eventsCalendarMonthOffset: 0,
   filters: {
@@ -86,6 +92,28 @@ const translations = {
     analyticsMenuApparatus: "Apparatus profiles",
     analyticsMenuApparatusText: "Prepare MAG and WAG apparatus diagrams.",
     signIn: "Sign in",
+    account: "My LEVERAGE",
+    signOut: "Sign out",
+    email: "Email",
+    password: "Password",
+    loginAction: "Sign in",
+    loginHelp: "Access your private area to save athletes and events.",
+    loginError: "Unable to sign in. Check your credentials and email verification.",
+    accountHeading: "My LEVERAGE",
+    accountIntro: "Your private area for favorite athletes, saved events and personal shortcuts.",
+    favoriteAthletes: "Favorite athletes",
+    favoriteEvents: "Saved events",
+    myFavoriteAthletes: "My favorite athletes",
+    myFavoriteEvents: "My saved events",
+    addFavoriteAthlete: "Save athlete",
+    removeFavoriteAthlete: "Remove athlete",
+    addFavoriteEvent: "Save event",
+    removeFavoriteEvent: "Remove event",
+    loginRequiredFavorites: "Sign in to save favorites.",
+    noFavoriteAthletes: "No favorite athletes yet.",
+    noFavoriteEvents: "No saved events yet.",
+    latestResult: "Latest result",
+    savedOn: "Saved on",
     language: "Language",
     save: "Save",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -207,6 +235,28 @@ const translations = {
     analyticsMenuApparatus: "Profili attrezzo",
     analyticsMenuApparatusText: "Prepara diagrammi MAG e WAG per attrezzo.",
     signIn: "Accedi",
+    account: "My LEVERAGE",
+    signOut: "Esci",
+    email: "Email",
+    password: "Password",
+    loginAction: "Accedi",
+    loginHelp: "Accedi alla tua area privata per salvare atleti ed eventi.",
+    loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
+    accountHeading: "My LEVERAGE",
+    accountIntro: "La tua area privata per atleti preferiti, eventi salvati e scorciatoie personali.",
+    favoriteAthletes: "Atleti preferiti",
+    favoriteEvents: "Eventi salvati",
+    myFavoriteAthletes: "I miei atleti preferiti",
+    myFavoriteEvents: "I miei eventi salvati",
+    addFavoriteAthlete: "Salva atleta",
+    removeFavoriteAthlete: "Rimuovi atleta",
+    addFavoriteEvent: "Salva evento",
+    removeFavoriteEvent: "Rimuovi evento",
+    loginRequiredFavorites: "Accedi per salvare preferiti.",
+    noFavoriteAthletes: "Nessun atleta preferito.",
+    noFavoriteEvents: "Nessun evento salvato.",
+    latestResult: "Ultimo risultato",
+    savedOn: "Salvato il",
     language: "Lingua",
     save: "Salva",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -328,6 +378,28 @@ const translations = {
     analyticsMenuApparatus: "Perfiles por aparato",
     analyticsMenuApparatusText: "Prepara diagramas MAG y WAG por aparato.",
     signIn: "Entrar",
+    account: "My LEVERAGE",
+    signOut: "Salir",
+    email: "Email",
+    password: "Password",
+    loginAction: "Entrar",
+    loginHelp: "Accede a tu area privada para guardar atletas y eventos.",
+    loginError: "No se pudo iniciar sesion. Revisa credenciales y verificacion email.",
+    accountHeading: "My LEVERAGE",
+    accountIntro: "Tu area privada para atletas favoritos, eventos guardados y accesos personales.",
+    favoriteAthletes: "Atletas favoritos",
+    favoriteEvents: "Eventos guardados",
+    myFavoriteAthletes: "Mis atletas favoritos",
+    myFavoriteEvents: "Mis eventos guardados",
+    addFavoriteAthlete: "Guardar atleta",
+    removeFavoriteAthlete: "Quitar atleta",
+    addFavoriteEvent: "Guardar evento",
+    removeFavoriteEvent: "Quitar evento",
+    loginRequiredFavorites: "Inicia sesion para guardar favoritos.",
+    noFavoriteAthletes: "Aun no hay atletas favoritos.",
+    noFavoriteEvents: "Aun no hay eventos guardados.",
+    latestResult: "Ultimo resultado",
+    savedOn: "Guardado el",
     language: "Idioma",
     save: "Guardar",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -449,6 +521,28 @@ const translations = {
     analyticsMenuApparatus: "Profils par appareil",
     analyticsMenuApparatusText: "Preparez des diagrammes MAG et WAG.",
     signIn: "Connexion",
+    account: "My LEVERAGE",
+    signOut: "Deconnexion",
+    email: "Email",
+    password: "Password",
+    loginAction: "Connexion",
+    loginHelp: "Accedez a votre espace prive pour enregistrer athletes et evenements.",
+    loginError: "Connexion impossible. Verifiez identifiants et verification email.",
+    accountHeading: "My LEVERAGE",
+    accountIntro: "Votre espace prive pour athletes favoris, evenements enregistres et raccourcis personnels.",
+    favoriteAthletes: "Athletes favoris",
+    favoriteEvents: "Evenements enregistres",
+    myFavoriteAthletes: "Mes athletes favoris",
+    myFavoriteEvents: "Mes evenements enregistres",
+    addFavoriteAthlete: "Enregistrer athlete",
+    removeFavoriteAthlete: "Retirer athlete",
+    addFavoriteEvent: "Enregistrer evenement",
+    removeFavoriteEvent: "Retirer evenement",
+    loginRequiredFavorites: "Connectez-vous pour enregistrer des favoris.",
+    noFavoriteAthletes: "Aucun athlete favori.",
+    noFavoriteEvents: "Aucun evenement enregistre.",
+    latestResult: "Dernier resultat",
+    savedOn: "Enregistre le",
     language: "Langue",
     save: "Enregistrer",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -564,6 +658,7 @@ function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((node) => {
     node.textContent = t(node.dataset.i18n);
   });
+  updateAuthUi();
 }
 
 function syncLanguageControl() {
@@ -576,6 +671,20 @@ function syncLanguageControl() {
     button.hidden = isSelected;
     button.setAttribute("aria-selected", String(isSelected));
   });
+}
+
+function updateAuthUi() {
+  const authLink = $("#authLink");
+  if (!authLink) return;
+  if (state.currentUser) {
+    authLink.href = "#/account";
+    authLink.textContent = t("account");
+    authLink.removeAttribute("data-i18n");
+  } else {
+    authLink.href = "#/login";
+    authLink.dataset.i18n = "signIn";
+    authLink.textContent = t("signIn");
+  }
 }
 
 function closeLanguageMenu() {
@@ -650,12 +759,76 @@ function apiUrl(path, params = {}) {
   return url.toString();
 }
 
-async function getJson(path, params = {}) {
-  const response = await fetch(apiUrl(path, params), { headers: { Accept: "application/json" } });
+function authHeaders(includeJson = false) {
+  const headers = { Accept: "application/json" };
+  if (includeJson) headers["Content-Type"] = "application/json";
+  if (state.authToken) headers.Authorization = `Bearer ${state.authToken}`;
+  return headers;
+}
+
+function clearAuth() {
+  state.authToken = "";
+  state.currentUser = null;
+  state.favoriteAthleteIds = new Set();
+  state.favoriteEventIds = new Set();
+  state.favoritesLoaded = false;
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  updateAuthUi();
+}
+
+async function getJson(path, params = {}, options = {}) {
+  const response = await fetch(apiUrl(path, params), {
+    headers: options.auth ? authHeaders() : { Accept: "application/json" },
+  });
   if (!response.ok) {
+    if (options.auth && response.status === 401) clearAuth();
     throw new Error(`${response.status} ${response.statusText}`);
   }
   return response.json();
+}
+
+async function sendJson(path, { method = "POST", body = null, auth = true } = {}) {
+  const response = await fetch(apiUrl(path), {
+    method,
+    headers: auth ? authHeaders(Boolean(body)) : {
+      Accept: "application/json",
+      ...(body ? { "Content-Type": "application/json" } : {}),
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!response.ok) {
+    if (auth && response.status === 401) clearAuth();
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+  if (response.status === 204) return null;
+  return response.json();
+}
+
+async function hydrateCurrentUser() {
+  if (!state.authToken) {
+    clearAuth();
+    return null;
+  }
+  try {
+    state.currentUser = await getJson("/auth/me", {}, { auth: true });
+    updateAuthUi();
+    return state.currentUser;
+  } catch (_error) {
+    clearAuth();
+    return null;
+  }
+}
+
+async function ensureFavoritesLoaded({ force = false } = {}) {
+  if (!state.currentUser) return;
+  if (state.favoritesLoaded && !force) return;
+  const [athletes, events] = await Promise.all([
+    getJson("/preferences/athletes/followed", {}, { auth: true }),
+    getJson("/preferences/events/saved", {}, { auth: true }),
+  ]);
+  state.favoriteAthleteIds = new Set(athletes.map((item) => Number(item.athlete_id)));
+  state.favoriteEventIds = new Set(events.map((item) => Number(item.event_id)));
+  state.favoritesLoaded = true;
 }
 
 async function trackSiteSearch(query) {
@@ -821,11 +994,15 @@ function pageHeading(titleKey, introKey) {
   `;
 }
 
-function entityCard(title, meta, pills = [], href = "") {
+function entityCard(title, meta, pills = [], href = "", actionHtml = "") {
+  const titleContent = href && actionHtml
+    ? `<a class="entity-title-link" href="${href}">${title}</a>`
+    : title;
   const content = `
     <article class="entity-card">
       <div class="entity-row">
-        <h3>${title}</h3>
+        <h3>${titleContent}</h3>
+        ${actionHtml}
       </div>
       <p class="meta">${meta}</p>
       <div class="pill-row">
@@ -833,7 +1010,87 @@ function entityCard(title, meta, pills = [], href = "") {
       </div>
     </article>
   `;
-  return href ? `<a href="${href}">${content}</a>` : content;
+  return href && !actionHtml ? `<a href="${href}">${content}</a>` : content;
+}
+
+function favoriteButton(kind, id, isActive) {
+  if (!state.currentUser || !id) return "";
+  const active = Boolean(isActive);
+  const labelKey = kind === "athlete"
+    ? (active ? "removeFavoriteAthlete" : "addFavoriteAthlete")
+    : (active ? "removeFavoriteEvent" : "addFavoriteEvent");
+  return `
+    <button
+      class="favorite-button ${active ? "is-active" : ""}"
+      type="button"
+      data-favorite-kind="${kind}"
+      data-favorite-id="${Number(id)}"
+      aria-pressed="${active}"
+      aria-label="${t(labelKey)}"
+      title="${t(labelKey)}"
+    >
+      <span aria-hidden="true">${active ? "★" : "☆"}</span>
+    </button>
+  `;
+}
+
+function setFavoriteButtonState(button, isActive) {
+  const kind = button.dataset.favoriteKind;
+  const labelKey = kind === "athlete"
+    ? (isActive ? "removeFavoriteAthlete" : "addFavoriteAthlete")
+    : (isActive ? "removeFavoriteEvent" : "addFavoriteEvent");
+  button.classList.toggle("is-active", isActive);
+  button.setAttribute("aria-pressed", String(isActive));
+  button.setAttribute("aria-label", t(labelKey));
+  button.setAttribute("title", t(labelKey));
+  const icon = button.querySelector("span");
+  if (icon) icon.textContent = isActive ? "★" : "☆";
+}
+
+async function toggleFavorite(kind, id, button) {
+  if (!state.currentUser) {
+    window.location.hash = "#/login";
+    return;
+  }
+  const numericId = Number(id);
+  const idSet = kind === "athlete" ? state.favoriteAthleteIds : state.favoriteEventIds;
+  const isActive = idSet.has(numericId);
+  button.disabled = true;
+  try {
+    if (kind === "athlete") {
+      if (isActive) {
+        await sendJson(`/preferences/athletes/follow/${numericId}`, { method: "DELETE" });
+        idSet.delete(numericId);
+      } else {
+        await sendJson("/preferences/athletes/follow", { body: { athlete_id: numericId } });
+        idSet.add(numericId);
+      }
+    } else if (isActive) {
+      await sendJson(`/preferences/events/save/${numericId}`, { method: "DELETE" });
+      idSet.delete(numericId);
+    } else {
+      await sendJson("/preferences/events/save", { body: { event_id: numericId } });
+      idSet.add(numericId);
+    }
+    setFavoriteButtonState(button, !isActive);
+  } catch (_error) {
+    await ensureFavoritesLoaded({ force: true }).catch(() => {});
+    setFavoriteButtonState(button, kind === "athlete"
+      ? state.favoriteAthleteIds.has(numericId)
+      : state.favoriteEventIds.has(numericId));
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function bindFavoriteButtons() {
+  document.querySelectorAll("[data-favorite-kind]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleFavorite(button.dataset.favoriteKind, button.dataset.favoriteId, button);
+    });
+  });
 }
 
 function errorState() {
@@ -846,6 +1103,10 @@ function loadingState() {
 
 function emptyState() {
   return `<div class="empty-state">${t("noResults")}</div>`;
+}
+
+function emptyMessage(message) {
+  return `<div class="empty-state">${message}</div>`;
 }
 
 function messageState(message) {
@@ -1713,8 +1974,15 @@ function renderEventList(selector, events) {
     if (event.is_calendar_only) {
       pills.push({ label: t("calendarOnly") });
     }
-    return entityCard(event.name, meta, pills, event.id ? `#/events/${event.id}` : "");
+    return entityCard(
+      event.name,
+      meta,
+      pills,
+      event.id ? `#/events/${event.id}` : "",
+      favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
+    );
   }).join("")}</div>`;
+  bindFavoriteButtons();
 }
 
 function buildCalendarWeeks(monthDate) {
@@ -1996,7 +2264,13 @@ function renderAthleteCards(athletes) {
       { label: `ID ${athlete.id}` },
       ...(athlete.birth_year ? [{ label: String(athlete.birth_year) }] : []),
     ];
-    return entityCard(`${athlete.first_name} ${athlete.last_name}`, athlete.world_gymnastics_status || "Official profile pending", pills, `#/athletes/${athlete.id}`);
+    return entityCard(
+      `${athlete.first_name} ${athlete.last_name}`,
+      athlete.world_gymnastics_status || "Official profile pending",
+      pills,
+      `#/athletes/${athlete.id}`,
+      favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
+    );
   }).join("")}</div>`;
 }
 
@@ -2019,11 +2293,13 @@ function currentParams() {
 async function renderAthletes() {
   const params = currentParams();
   const search = params.get("search") || "";
+  await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("athletesHeading", "athletesIntro")}
     <form class="toolbar" id="athleteSearchForm">
       <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
+      ${state.currentUser ? `<a class="quiet-button" href="#/account">${t("myFavoriteAthletes")}</a>` : ""}
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
       ${filterButton(t("junior"), "category", "junior", "athletes")}
@@ -2052,6 +2328,7 @@ async function renderAthletes() {
       });
       if (requestId !== athleteSearchRequestId) return;
       resultsNode.innerHTML = renderAthleteCards(athletes);
+      bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);
@@ -2083,9 +2360,11 @@ async function renderAthletes() {
 async function renderEvents() {
   const params = currentParams();
   const search = params.get("search") || "";
+  await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
     <div class="toolbar">
+      ${state.currentUser ? `<a class="quiet-button" href="#/account">${t("myFavoriteEvents")}</a>` : ""}
       ${filterButton("MAG", "discipline", "MAG", "events")}
       ${filterButton("WAG", "discipline", "WAG", "events")}
       ${filterButton(t("senior"), "category", "senior", "events")}
@@ -2209,6 +2488,251 @@ async function renderRankings() {
   }
 }
 
+function authRequiredPage() {
+  setApp(`
+    ${pageHeading("loginHeading", "loginIntro")}
+    <section class="panel auth-panel">
+      <p>${t("loginRequiredFavorites")}</p>
+      <a class="primary-button auth-primary-link" href="#/login">${t("signIn")}</a>
+    </section>
+  `);
+}
+
+function renderLogin() {
+  if (state.currentUser) {
+    renderAccount();
+    return;
+  }
+  setApp(`
+    ${pageHeading("loginHeading", "loginIntro")}
+    <section class="panel auth-panel">
+      <form class="auth-form" id="loginForm">
+        <p>${t("loginHelp")}</p>
+        <label>
+          <span>${t("email")}</span>
+          <input id="loginEmail" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          <span>${t("password")}</span>
+          <input id="loginPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="primary-button" type="submit">${t("loginAction")}</button>
+        <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  `);
+
+  $("#loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const message = $("#loginMessage");
+    const submit = event.currentTarget.querySelector("button[type='submit']");
+    message.textContent = "";
+    submit.disabled = true;
+    try {
+      const payload = await sendJson("/auth/login", {
+        auth: false,
+        body: {
+          email: $("#loginEmail").value.trim(),
+          password: $("#loginPassword").value,
+        },
+      });
+      if (!payload.access_token) {
+        message.textContent = t("loginError");
+        return;
+      }
+      state.authToken = payload.access_token;
+      localStorage.setItem(AUTH_TOKEN_KEY, state.authToken);
+      state.favoritesLoaded = false;
+      await hydrateCurrentUser();
+      await ensureFavoritesLoaded({ force: true }).catch(() => {});
+      window.location.hash = "#/account";
+    } catch (_error) {
+      message.textContent = t("loginError");
+    } finally {
+      submit.disabled = false;
+    }
+  });
+}
+
+function renderFavoriteAthletes(details) {
+  if (!details.length) return emptyMessage(t("noFavoriteAthletes"));
+  return `<div class="entity-list">${details.map((item) => {
+    const athlete = item.athlete || {};
+    const name = `${athlete.first_name || ""} ${athlete.last_name || ""}`.trim() || `${t("athlete")} ${item.athlete_id}`;
+    const meta = [
+      athlete.world_gymnastics_status,
+      `${Number(item.result_count || 0).toLocaleString()} ${t("results")}`,
+      `${t("savedOn")} ${formatReadableDate(String(item.created_at || "").slice(0, 10))}`,
+    ].filter(Boolean).join(" · ");
+    const pills = [
+      { label: athlete.discipline || t("discipline"), variant: "brand" },
+      { label: athlete.country || t("country") },
+      { label: `ID ${item.athlete_id}` },
+    ];
+    return entityCard(
+      escapeHtml(name),
+      escapeHtml(meta),
+      pills.map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
+      `#/athletes/${item.athlete_id}`,
+      favoriteButton("athlete", item.athlete_id, true),
+    );
+  }).join("")}</div>`;
+}
+
+function renderFavoriteEvents(details) {
+  if (!details.length) return emptyMessage(t("noFavoriteEvents"));
+  return `<div class="entity-list">${details.map((item) => {
+    const event = item.event || {};
+    const period = formatReadableDateRange(event);
+    const meta = [
+      period,
+      event.location,
+      event.venue,
+      `${Number(event.result_count || 0).toLocaleString()} ${t("results")}`,
+      `${t("savedOn")} ${formatReadableDate(String(item.created_at || "").slice(0, 10))}`,
+    ].filter(Boolean).join(" · ");
+    const pills = [
+      { label: period || String(event.year || ""), variant: "brand" },
+      { label: event.discipline || t("discipline") },
+      { label: event.category || t("category") },
+      { label: event.level || t("event") },
+    ];
+    return entityCard(
+      escapeHtml(event.name || `${t("event")} ${item.event_id}`),
+      escapeHtml(meta),
+      pills.filter((pill) => pill.label).map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
+      item.event_id ? `#/events/${item.event_id}` : "",
+      favoriteButton("event", item.event_id, true),
+    );
+  }).join("")}</div>`;
+}
+
+async function renderAccount() {
+  if (!state.currentUser) {
+    authRequiredPage();
+    return;
+  }
+  setApp(`
+    ${pageHeading("accountHeading", "accountIntro")}
+    <section class="panel account-summary">
+      <div>
+        <strong>${escapeHtml(state.currentUser.email)}</strong>
+        <span>${escapeHtml(state.currentUser.role)}</span>
+      </div>
+      <button class="quiet-button" type="button" id="signOutButton">${t("signOut")}</button>
+    </section>
+    <section class="content-grid account-grid">
+      <div class="panel">
+        <div class="section-header">
+          <div>
+            <h2>${t("favoriteAthletes")}</h2>
+          </div>
+          <a class="quiet-button" href="#/athletes">${t("navAthletes")}</a>
+        </div>
+        <div id="accountAthletes">${loadingState()}</div>
+      </div>
+      <div class="panel">
+        <div class="section-header">
+          <div>
+            <h2>${t("favoriteEvents")}</h2>
+          </div>
+          <a class="quiet-button" href="#/events">${t("navEvents")}</a>
+        </div>
+        <div id="accountEvents">${loadingState()}</div>
+      </div>
+    </section>
+  `);
+  $("#signOutButton").addEventListener("click", () => {
+    clearAuth();
+    window.location.hash = "#/";
+  });
+  try {
+    const [athletes, events] = await Promise.all([
+      getJson("/preferences/athletes/followed/details", {}, { auth: true }),
+      getJson("/preferences/events/saved/details", {}, { auth: true }),
+    ]);
+    state.favoriteAthleteIds = new Set(athletes.map((item) => Number(item.athlete_id)));
+    state.favoriteEventIds = new Set(events.map((item) => Number(item.event_id)));
+    state.favoritesLoaded = true;
+    $("#accountAthletes").innerHTML = renderFavoriteAthletes(athletes);
+    $("#accountEvents").innerHTML = renderFavoriteEvents(events);
+    bindFavoriteButtons();
+  } catch (error) {
+    $("#accountAthletes").innerHTML = errorState(error);
+    $("#accountEvents").innerHTML = errorState(error);
+  }
+}
+
+async function renderAthleteDetail(athleteId) {
+  await ensureFavoritesLoaded().catch(() => {});
+  setApp(`${pageHeading("athletesHeading", "athletesIntro")}<section class="panel">${loadingState()}</section>`);
+  try {
+    const athlete = await getJson(`/athletes/${athleteId}`);
+    const name = `${athlete.first_name} ${athlete.last_name}`;
+    const pills = [
+      { label: athlete.discipline, variant: "brand" },
+      { label: athlete.country || t("country") },
+      ...(athlete.birth_year ? [{ label: String(athlete.birth_year) }] : []),
+      ...(athlete.world_gymnastics_status ? [{ label: athlete.world_gymnastics_status }] : []),
+    ];
+    setApp(`
+      ${pageHeading("athletesHeading", "athletesIntro")}
+      <section class="panel profile-panel">
+        <div class="profile-heading">
+          <div>
+            <p class="eyebrow">${t("athlete")}</p>
+            <h2>${escapeHtml(name)}</h2>
+          </div>
+          ${favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id)))}
+        </div>
+        <div class="pill-row">
+          ${pills.map((pill) => `<span class="pill ${pill.variant || ""}">${escapeHtml(pill.label)}</span>`).join("")}
+        </div>
+        ${athlete.world_gymnastics_profile_url ? `<a class="feature-link" href="${escapeHtml(athlete.world_gymnastics_profile_url)}" target="_blank" rel="noreferrer">World Gymnastics</a>` : ""}
+      </section>
+    `);
+    bindFavoriteButtons();
+  } catch (error) {
+    setApp(`${pageHeading("athletesHeading", "athletesIntro")}${errorState(error)}`);
+  }
+}
+
+async function renderEventDetail(eventId) {
+  await ensureFavoritesLoaded().catch(() => {});
+  setApp(`${pageHeading("eventsHeading", "eventsIntro")}<section class="panel">${loadingState()}</section>`);
+  try {
+    const event = await getJson(`/events/${eventId}`);
+    const period = formatReadableDateRange(event);
+    const meta = [period, event.location, event.venue].filter(Boolean).join(" · ");
+    const pills = [
+      { label: event.discipline, variant: "brand" },
+      { label: event.category },
+      { label: event.level },
+      ...(event.year ? [{ label: String(event.year) }] : []),
+    ];
+    setApp(`
+      ${pageHeading("eventsHeading", "eventsIntro")}
+      <section class="panel profile-panel">
+        <div class="profile-heading">
+          <div>
+            <p class="eyebrow">${t("event")}</p>
+            <h2>${escapeHtml(event.name)}</h2>
+            <p class="meta">${escapeHtml(meta)}</p>
+          </div>
+          ${favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id)))}
+        </div>
+        <div class="pill-row">
+          ${pills.map((pill) => `<span class="pill ${pill.variant || ""}">${escapeHtml(pill.label)}</span>`).join("")}
+        </div>
+        ${event.world_gymnastics_event_url ? `<a class="feature-link" href="${escapeHtml(event.world_gymnastics_event_url)}" target="_blank" rel="noreferrer">World Gymnastics</a>` : ""}
+      </section>
+    `);
+    bindFavoriteButtons();
+  } catch (error) {
+    setApp(`${pageHeading("eventsHeading", "eventsIntro")}${errorState(error)}`);
+  }
+}
+
 function renderStaticPage(titleKey, introKey) {
   setApp(`
     ${pageHeading(titleKey, introKey)}
@@ -2224,10 +2748,14 @@ function render() {
   normalizeRoute();
   setActiveNav();
   applyTranslations();
-  if (state.route.startsWith("/athletes/")) {
-    renderStaticPage("athletesHeading", "analyticsIntro");
-  } else if (state.route.startsWith("/events/")) {
-    renderStaticPage("eventsHeading", "eventsIntro");
+  const athleteDetailMatch = state.route.match(/^\/athletes\/(\d+)/);
+  const eventDetailMatch = state.route.match(/^\/events\/(\d+)/);
+  if (state.route.startsWith("/account")) {
+    renderAccount();
+  } else if (athleteDetailMatch) {
+    renderAthleteDetail(athleteDetailMatch[1]);
+  } else if (eventDetailMatch) {
+    renderEventDetail(eventDetailMatch[1]);
   } else if (state.route.startsWith("/athletes")) {
     renderAthletes();
   } else if (state.route.startsWith("/events")) {
@@ -2239,13 +2767,13 @@ function render() {
   } else if (state.route.startsWith("/analytics")) {
     renderStaticPage("analyticsHeading", "analyticsIntro");
   } else if (state.route.startsWith("/login")) {
-    renderStaticPage("loginHeading", "loginIntro");
+    renderLogin();
   } else {
     renderHome();
   }
 }
 
-function init() {
+async function init() {
   setupIntroSplash();
   $("#apiBaseInput").value = state.apiBase;
   syncLanguageControl();
@@ -2282,6 +2810,9 @@ function init() {
   window.addEventListener("resize", () => {
     syncHomePreviewHeights();
   });
+  if (state.authToken) {
+    await hydrateCurrentUser();
+  }
   render();
 }
 

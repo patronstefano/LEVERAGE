@@ -1453,6 +1453,53 @@ button {
   gap: 14px;
 }
 
+.entity-title-link {
+  color: inherit;
+}
+
+.favorite-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(25, 23, 71, 0.14);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(25, 23, 71, 0.68);
+  cursor: pointer;
+  font-size: 19px;
+  line-height: 1;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.favorite-button:hover {
+  border-color: rgba(25, 23, 71, 0.34);
+  transform: translateY(-1px);
+}
+
+.favorite-button.is-active {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
+
+.favorite-button:disabled {
+  cursor: wait;
+  opacity: 0.64;
+  transform: none;
+}
+
+.favorite-button:focus-visible {
+  outline: 3px solid rgba(25, 23, 71, 0.16);
+  outline-offset: 2px;
+}
+
 .pill-row {
   display: flex;
   flex-wrap: wrap;
@@ -1594,6 +1641,99 @@ button {
 
 .event-list-panel {
   margin-top: 18px;
+}
+
+.auth-panel,
+.account-summary,
+.profile-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.auth-panel {
+  max-width: 520px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-form p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.46;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.auth-form input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.auth-message {
+  min-height: 20px;
+  color: var(--warning);
+  font-size: 13px;
+}
+
+.auth-primary-link {
+  width: max-content;
+  text-decoration: none;
+}
+
+.account-summary {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.account-summary div {
+  display: grid;
+  gap: 4px;
+}
+
+.account-summary strong {
+  font-size: 18px;
+}
+
+.account-summary span {
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.account-grid {
+  align-items: start;
+}
+
+.profile-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.profile-heading h2 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 46px);
+}
+
+.profile-heading .meta {
+  margin: 8px 0 0;
 }
 
 .footer {
@@ -1830,9 +1970,15 @@ button {
 
   .section-header,
   .page-heading,
+  .account-summary,
+  .profile-heading,
   .footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .account-summary {
+    grid-template-columns: 1fr;
   }
 
   .api-config,

@@ -2266,6 +2266,20 @@ Aggiornamento navigazione pubblica del 20 luglio 2026:
 - nella topbar principale la voce `Rankings` resta invariata in tutte le lingue, analogamente ad `Analytics`, per mantenere coerenza terminologica nella navigazione principale.
 - estesa la stessa scelta terminologica anche alla sezione `Rankings`: il nome della sezione non viene tradotto in `Classifiche`/`Classements`, mentre il termine classifica resta riservato alle classifiche evento.
 
+Aggiornamento area utente e preferenze del 21 luglio 2026:
+
+- collegato il frontend al sistema di autenticazione gia implementato nel backend tramite login email/password e salvataggio locale del token JWT;
+- la topbar distingue ora utente non loggato e utente loggato: `Sign in` rimanda al login, mentre un utente autenticato vede `My LEVERAGE`;
+- creata una prima area privata `My LEVERAGE`, dedicata a preferenze personali e scorciatoie utente;
+- l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi salvati derivati dalla tabella `SavedEvent`, senza introdurre duplicazioni nel modello dati;
+- aggiunto logout frontend con pulizia token, utente corrente e cache dei preferiti;
+- nella sezione `Athletes`, se l'utente e loggato, compare un pulsante rapido verso la lista dei propri atleti preferiti;
+- nella sezione `Events`, se l'utente e loggato, compare un pulsante rapido verso la lista dei propri eventi salvati;
+- aggiunto pulsante a stellina sulle card atleta e sulle card evento: stellina vuota per salvare, stellina piena per rimuovere dai preferiti;
+- create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
+- mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;
+- la UI dei preferiti usa lo stesso linguaggio visuale minimal gia adottato per topbar, card e controlli principali.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
