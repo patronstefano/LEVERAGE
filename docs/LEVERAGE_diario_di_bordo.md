@@ -2279,6 +2279,9 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
 - mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;
 - la UI dei preferiti usa lo stesso linguaggio visuale minimal gia adottato per topbar, card e controlli principali.
+- aggiunta la possibilita per l'utente loggato di salvare configurazioni personalizzate della sezione `Rankings`: dopo aver selezionato disciplina, categoria, attrezzi, scoring cycle o intervallo temporale, l'utente puo nominare e salvare quella configurazione;
+- le configurazioni `Rankings` salvate vengono archiviate nel modello esistente `SavedDashboardView` con `view_type = "ranking"` e contengono solo il JSON dei filtri attivi, senza duplicare risultati o dati sportivi;
+- nell'area privata `My LEVERAGE` compare ora una sezione `Saved Rankings`, da cui l'utente puo riaprire una configurazione salvata; il frontend torna automaticamente a `Rankings` e riapplica i filtri memorizzati.
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
 

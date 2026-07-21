@@ -3084,6 +3084,41 @@ def test_user_can_save_dashboard_views_and_default_view_is_private():
     assert admin_headers["Authorization"].startswith("Bearer ")
 
 
+def test_user_can_save_ranking_filter_configuration():
+    client.post("/auth/register", json={"email": "ranking_view_user@example.com", "password": TEST_PASSWORD})
+    token = login_as_user("ranking_view_user@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    create_response = client.post(
+        "/preferences/dashboard-views",
+        json={
+            "name": "MAG VT 2025 cycle",
+            "view_type": "ranking",
+            "chart_type": "ranking_table",
+            "filters": {
+                "discipline": ["MAG"],
+                "category": ["senior"],
+                "apparatus": ["VT", "VT AVG"],
+                "scoringCycle": ["2025-2028"],
+                "startYear": "",
+                "endYear": "",
+                "startDate": "",
+                "endDate": "",
+            },
+        },
+        headers=headers,
+    )
+    assert create_response.status_code == 200
+    saved_view = create_response.json()
+    assert saved_view["view_type"] == "ranking"
+    assert saved_view["chart_type"] == "ranking_table"
+    assert saved_view["filters"]["apparatus"] == ["VT", "VT AVG"]
+
+    list_response = client.get("/preferences/dashboard-views", headers=headers)
+    assert list_response.status_code == 200
+    assert list_response.json()[0]["filters"]["scoringCycle"] == ["2025-2028"]
+
+
 def test_lightweight_site_analytics_are_admin_only_and_aggregate_usage():
     client.post("/auth/register", json={"email": "site_analytics_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("site_analytics_admin@example.com")

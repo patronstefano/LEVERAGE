@@ -1446,6 +1446,52 @@ button {
   font: inherit;
 }
 
+.saved-ranking-panel {
+  display: grid;
+  gap: 10px;
+  margin: -4px 0 18px;
+}
+
+.saved-ranking-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.46;
+}
+
+.saved-ranking-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+}
+
+.saved-ranking-form label {
+  display: grid;
+  flex: 1 1 260px;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.saved-ranking-form input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.saved-ranking-message {
+  min-height: 20px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .entity-row {
   display: flex;
   align-items: center;
@@ -1741,6 +1787,10 @@ button {
 
 .account-grid {
   align-items: start;
+}
+
+.account-ranking-views {
+  margin-top: 18px;
 }
 
 .profile-heading {

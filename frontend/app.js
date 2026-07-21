@@ -120,6 +120,16 @@ const translations = {
     noFavoriteEvents: "No saved events yet.",
     latestResult: "Latest result",
     savedOn: "Saved on",
+    savedRankingViews: "Saved Rankings",
+    noSavedRankingViews: "No saved Ranking configurations yet.",
+    saveRankingView: "Save this Ranking",
+    rankingViewName: "Ranking name",
+    rankingViewNamePlaceholder: "Example: MAG FX 2025 cycle",
+    rankingViewSaved: "Ranking configuration saved.",
+    rankingViewError: "Unable to save this Ranking configuration.",
+    signInToSaveRanking: "Sign in to save Ranking configurations.",
+    openSavedRanking: "Open saved Ranking",
+    filters: "Filters",
     language: "Language",
     save: "Save",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -269,6 +279,16 @@ const translations = {
     noFavoriteEvents: "Nessun evento salvato.",
     latestResult: "Ultimo risultato",
     savedOn: "Salvato il",
+    savedRankingViews: "Rankings salvati",
+    noSavedRankingViews: "Nessuna configurazione Ranking salvata.",
+    saveRankingView: "Salva questo Ranking",
+    rankingViewName: "Nome Ranking",
+    rankingViewNamePlaceholder: "Esempio: MAG FX ciclo 2025",
+    rankingViewSaved: "Configurazione Ranking salvata.",
+    rankingViewError: "Impossibile salvare questa configurazione Ranking.",
+    signInToSaveRanking: "Accedi per salvare configurazioni Ranking.",
+    openSavedRanking: "Apri Ranking salvato",
+    filters: "Filtri",
     language: "Lingua",
     save: "Salva",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -418,6 +438,16 @@ const translations = {
     noFavoriteEvents: "Aun no hay eventos guardados.",
     latestResult: "Ultimo resultado",
     savedOn: "Guardado el",
+    savedRankingViews: "Rankings guardados",
+    noSavedRankingViews: "Aun no hay configuraciones Ranking guardadas.",
+    saveRankingView: "Guardar este Ranking",
+    rankingViewName: "Nombre Ranking",
+    rankingViewNamePlaceholder: "Ejemplo: MAG FX ciclo 2025",
+    rankingViewSaved: "Configuracion Ranking guardada.",
+    rankingViewError: "No se pudo guardar esta configuracion Ranking.",
+    signInToSaveRanking: "Inicia sesion para guardar configuraciones Ranking.",
+    openSavedRanking: "Abrir Ranking guardado",
+    filters: "Filtros",
     language: "Idioma",
     save: "Guardar",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -567,6 +597,16 @@ const translations = {
     noFavoriteEvents: "Aucun evenement enregistre.",
     latestResult: "Dernier resultat",
     savedOn: "Enregistre le",
+    savedRankingViews: "Rankings enregistres",
+    noSavedRankingViews: "Aucune configuration Ranking enregistree.",
+    saveRankingView: "Enregistrer ce Ranking",
+    rankingViewName: "Nom Ranking",
+    rankingViewNamePlaceholder: "Exemple : MAG FX cycle 2025",
+    rankingViewSaved: "Configuration Ranking enregistree.",
+    rankingViewError: "Impossible d'enregistrer cette configuration Ranking.",
+    signInToSaveRanking: "Connectez-vous pour enregistrer des configurations Ranking.",
+    openSavedRanking: "Ouvrir Ranking enregistre",
+    filters: "Filtres",
     language: "Langue",
     save: "Enregistrer",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -1713,6 +1753,78 @@ function rankingQueryParams(limit) {
   return params;
 }
 
+function savedRankingFiltersPayload() {
+  const timeFilters = rankingTimeFilters();
+  return {
+    discipline: [rankingDiscipline()],
+    category: filterValues("category", "rankings"),
+    apparatus: filterValues("apparatus", "rankings"),
+    scoringCycle: filterValues("scoringCycle", "rankings"),
+    startYear: timeFilters.startYear,
+    endYear: timeFilters.endYear,
+    startDate: timeFilters.startDate,
+    endDate: timeFilters.endDate,
+  };
+}
+
+function normalizeSavedFilterArray(value) {
+  if (Array.isArray(value)) return value.filter((item) => item !== undefined && item !== null && item !== "");
+  return value ? [value] : [];
+}
+
+function applySavedRankingFilters(filters = {}) {
+  const discipline = normalizeSavedFilterArray(filters.discipline);
+  const selectedDiscipline = discipline.includes("WAG") ? "WAG" : "MAG";
+  const allowedApparatuses = RANKING_APPARATUS_BY_DISCIPLINE[selectedDiscipline] || [];
+  Object.assign(scopedFilters("rankings"), {
+    discipline: [selectedDiscipline],
+    category: normalizeSavedFilterArray(filters.category).filter((value) => ["junior", "senior"].includes(value)),
+    apparatus: normalizeSavedFilterArray(filters.apparatus).filter((value) => allowedApparatuses.includes(value)),
+    scoringCycle: normalizeSavedFilterArray(filters.scoringCycle),
+    startYear: filters.startYear ? String(filters.startYear) : "",
+    endYear: filters.endYear ? String(filters.endYear) : "",
+    startDate: filters.startDate || "",
+    endDate: filters.endDate || "",
+  });
+}
+
+function rankingFilterSummary(filters = savedRankingFiltersPayload()) {
+  const parts = [];
+  const discipline = normalizeSavedFilterArray(filters.discipline);
+  parts.push(discipline[0] || "MAG");
+  parts.push(...normalizeSavedFilterArray(filters.category).map((value) => (
+    value === "junior" ? t("junior") : t("senior")
+  )));
+  parts.push(...normalizeSavedFilterArray(filters.apparatus));
+  const scoringCycles = normalizeSavedFilterArray(filters.scoringCycle);
+  if (filters.startDate || filters.endDate) {
+    parts.push([filters.startDate, filters.endDate].filter(Boolean).join(" - "));
+  } else if (filters.startYear || filters.endYear) {
+    parts.push([filters.startYear, filters.endYear].filter(Boolean).join(" - "));
+  } else if (scoringCycles.includes("all")) {
+    parts.push(t("allCycles"));
+  } else {
+    parts.push(...scoringCycles);
+  }
+  return parts.filter(Boolean).join(" · ");
+}
+
+async function applySavedRankingViewFromRoute(viewId) {
+  if (!state.currentUser || !viewId) return;
+  try {
+    const view = await getJson(`/preferences/dashboard-views/${viewId}`, {}, { auth: true });
+    if (view.view_type === "ranking") {
+      applySavedRankingFilters(view.filters || {});
+    }
+  } catch (_error) {
+    // If a saved view cannot be loaded, keep the current Ranking filters.
+  } finally {
+    window.history.replaceState(null, "", "#/rankings");
+    state.route = "/rankings";
+    setActiveNav();
+  }
+}
+
 function calendarDateFromOffset(offset) {
   return new Date(TODAY.getFullYear(), TODAY.getMonth() + offset, 1);
 }
@@ -1861,6 +1973,39 @@ function bindRankingTimeFilters() {
   endYear?.addEventListener("change", applyYearRange);
   startDate?.addEventListener("change", applyDateRange);
   endDate?.addEventListener("change", applyDateRange);
+}
+
+function bindRankingSaveForm() {
+  const form = $("#rankingSaveForm");
+  if (!form || !state.currentUser) return;
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const input = $("#rankingViewNameInput");
+    const message = $("#rankingSaveMessage");
+    const submit = form.querySelector("button[type='submit']");
+    const name = input.value.trim();
+    if (!name) return;
+    message.textContent = "";
+    submit.disabled = true;
+    try {
+      await sendJson("/preferences/dashboard-views", {
+        body: {
+          name,
+          view_type: "ranking",
+          chart_type: "ranking_table",
+          filters: savedRankingFiltersPayload(),
+          is_default: false,
+          position: 0,
+        },
+      });
+      input.value = "";
+      message.textContent = t("rankingViewSaved");
+    } catch (_error) {
+      message.textContent = t("rankingViewError");
+    } finally {
+      submit.disabled = false;
+    }
+  });
 }
 
 async function hydrateHome() {
@@ -2231,6 +2376,30 @@ function renderRankingTimeFilter() {
   `;
 }
 
+function renderRankingSavePanel() {
+  if (!state.currentUser) {
+    return `
+      <section class="panel saved-ranking-panel">
+        <p>${t("signInToSaveRanking")}</p>
+        <a class="quiet-button" href="#/login">${t("signIn")}</a>
+      </section>
+    `;
+  }
+  return `
+    <section class="panel saved-ranking-panel">
+      <form class="saved-ranking-form" id="rankingSaveForm">
+        <label>
+          <span>${t("rankingViewName")}</span>
+          <input id="rankingViewNameInput" type="text" maxlength="120" required placeholder="${t("rankingViewNamePlaceholder")}">
+        </label>
+        <button class="quiet-button" type="submit">${t("saveRankingView")}</button>
+        <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
+      </form>
+      <p>${t("filters")}: ${escapeHtml(rankingFilterSummary())}</p>
+    </section>
+  `;
+}
+
 function renderRankingList(selector, payloadOrRankings) {
   const node = $(selector);
   const payload = Array.isArray(payloadOrRankings) ? { ranking: payloadOrRankings } : (payloadOrRankings || {});
@@ -2488,6 +2657,10 @@ async function renderEvents() {
 }
 
 async function renderRankings() {
+  const savedViewId = currentParams().get("savedView");
+  if (savedViewId) {
+    await applySavedRankingViewFromRoute(savedViewId);
+  }
   const apparatusFilters = rankingApparatusFilters();
   setApp(`
     ${pageHeading("rankingsHeading", "rankingsIntro")}
@@ -2506,11 +2679,13 @@ async function renderRankings() {
       ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
     </div>
     ${renderRankingTimeFilter()}
+    ${renderRankingSavePanel()}
     <div id="rankingResults">${loadingState()}</div>
   `);
   bindFilterButtons();
   bindRankingDisciplineControl();
   bindRankingTimeFilters();
+  bindRankingSaveForm();
   try {
     const rankings = await getJson("/analytics/rankings", {
       ...rankingQueryParams(60),
@@ -2681,6 +2856,25 @@ function renderFavoriteEvents(details) {
   }).join("")}</div>`;
 }
 
+function renderSavedRankingViews(views) {
+  const rankingViews = views.filter((view) => view.view_type === "ranking");
+  if (!rankingViews.length) return emptyMessage(t("noSavedRankingViews"));
+  return `<div class="entity-list">${rankingViews.map((view) => {
+    const summary = rankingFilterSummary(view.filters || {});
+    const meta = `${t("filters")}: ${summary}`;
+    const pills = [
+      { label: t("openSavedRanking"), variant: "brand" },
+      ...(view.created_at ? [{ label: `${t("savedOn")} ${formatReadableDate(String(view.created_at).slice(0, 10))}` }] : []),
+    ];
+    return entityCard(
+      escapeHtml(view.name),
+      escapeHtml(meta),
+      pills.map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
+      `#/rankings?savedView=${view.id}`,
+    );
+  }).join("")}</div>`;
+}
+
 async function renderAccount() {
   if (!state.currentUser) {
     authRequiredPage();
@@ -2715,25 +2909,37 @@ async function renderAccount() {
         <div id="accountEvents">${loadingState()}</div>
       </div>
     </section>
+    <section class="panel account-ranking-views">
+      <div class="section-header">
+        <div>
+          <h2>${t("savedRankingViews")}</h2>
+        </div>
+        <a class="quiet-button" href="#/rankings">${t("navRankings")}</a>
+      </div>
+      <div id="accountRankingViews">${loadingState()}</div>
+    </section>
   `);
   $("#signOutButton").addEventListener("click", () => {
     clearAuth();
     window.location.hash = "#/";
   });
   try {
-    const [athletes, events] = await Promise.all([
+    const [athletes, events, dashboardViews] = await Promise.all([
       getJson("/preferences/athletes/followed/details", {}, { auth: true }),
       getJson("/preferences/events/saved/details", {}, { auth: true }),
+      getJson("/preferences/dashboard-views", {}, { auth: true }),
     ]);
     state.favoriteAthleteIds = new Set(athletes.map((item) => Number(item.athlete_id)));
     state.favoriteEventIds = new Set(events.map((item) => Number(item.event_id)));
     state.favoritesLoaded = true;
     $("#accountAthletes").innerHTML = renderFavoriteAthletes(athletes);
     $("#accountEvents").innerHTML = renderFavoriteEvents(events);
+    $("#accountRankingViews").innerHTML = renderSavedRankingViews(dashboardViews);
     bindFavoriteButtons();
   } catch (error) {
     $("#accountAthletes").innerHTML = errorState(error);
     $("#accountEvents").innerHTML = errorState(error);
+    $("#accountRankingViews").innerHTML = errorState(error);
   }
 }
 
