@@ -114,6 +114,7 @@ const translations = {
     myFavoriteAthletes: "My favorite athletes",
     myFavoriteEvents: "My favorite events",
     favoritesFilter: "Favorites",
+    levelFilter: "Level",
     addFavoriteAthlete: "Save athlete",
     removeFavoriteAthlete: "Remove athlete",
     addFavoriteEvent: "Save event",
@@ -276,6 +277,7 @@ const translations = {
     myFavoriteAthletes: "I miei atleti preferiti",
     myFavoriteEvents: "I miei eventi preferiti",
     favoritesFilter: "Preferiti",
+    levelFilter: "Level",
     addFavoriteAthlete: "Salva atleta",
     removeFavoriteAthlete: "Rimuovi atleta",
     addFavoriteEvent: "Salva evento",
@@ -438,6 +440,7 @@ const translations = {
     myFavoriteAthletes: "Mis atletas favoritos",
     myFavoriteEvents: "Mis eventos favoritos",
     favoritesFilter: "Favoritos",
+    levelFilter: "Level",
     addFavoriteAthlete: "Guardar atleta",
     removeFavoriteAthlete: "Quitar atleta",
     addFavoriteEvent: "Guardar evento",
@@ -600,6 +603,7 @@ const translations = {
     myFavoriteAthletes: "Mes athletes favoris",
     myFavoriteEvents: "Mes evenements favoris",
     favoritesFilter: "Favoris",
+    levelFilter: "Level",
     addFavoriteAthlete: "Enregistrer athlete",
     removeFavoriteAthlete: "Retirer athlete",
     addFavoriteEvent: "Enregistrer evenement",
@@ -1910,8 +1914,25 @@ function eventsCalendarDate() {
   return calendarDateFromOffset(state.eventsCalendarMonthOffset);
 }
 
-function filterButton(label, type, value, scope = currentFilterScope()) {
-  return `<button class="filter-button" type="button" data-filter-scope="${scope}" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, scope)}">${label}</button>`;
+function filterButton(label, type, value, scope = currentFilterScope(), className = "") {
+  return `<button class="filter-button ${className}" type="button" data-filter-scope="${scope}" data-filter-type="${type}" data-filter-value="${value}" aria-pressed="${filterIsActive(type, value, scope)}">${label}</button>`;
+}
+
+function eventLevelLabel(value) {
+  return EVENT_LEVEL_FILTERS.find((level) => level.value === value)?.label || value;
+}
+
+function renderEventLevelFilter() {
+  const selectedLevel = singleFilterParam("level", "events");
+  const label = selectedLevel ? `${t("levelFilter")}: ${eventLevelLabel(selectedLevel)}` : t("levelFilter");
+  return `
+    <details class="filter-menu event-level-filter">
+      <summary class="filter-button filter-menu-summary" aria-pressed="${Boolean(selectedLevel)}">${escapeHtml(label)}</summary>
+      <div class="filter-menu-panel">
+        ${EVENT_LEVEL_FILTERS.map((level) => filterButton(level.label, "level", level.value, "events", "filter-menu-option")).join("")}
+      </div>
+    </details>
+  `;
 }
 
 function disciplineSegmentedControl() {
@@ -1950,6 +1971,12 @@ function bindFilterButtons() {
             ? cycleValues.filter((item) => item !== value)
             : [...cycleValues, value];
         }
+        render();
+        return;
+      }
+      if (scope === "events" && type === "level") {
+        const values = filterValues(type, scope);
+        filters[type] = values.includes(value) ? [] : [value];
         render();
         return;
       }
@@ -2603,11 +2630,11 @@ async function renderAthletes() {
     <form class="toolbar" id="athleteSearchForm">
       <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
-      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes") : ""}
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
       ${filterButton(t("junior"), "category", "junior", "athletes")}
       ${filterButton(t("senior"), "category", "senior", "athletes")}
+      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
     </form>
     <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
@@ -2668,19 +2695,21 @@ async function renderEvents() {
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
-    <div class="toolbar">
-      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events") : ""}
+    <div class="event-filter-stack">
+      <div class="toolbar event-filter-row">
       ${filterButton("MAG", "discipline", "MAG", "events")}
       ${filterButton("WAG", "discipline", "WAG", "events")}
       ${filterButton(t("senior"), "category", "senior", "events")}
       ${filterButton(t("junior"), "category", "junior", "events")}
+        ${renderEventLevelFilter()}
+        ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
+      </div>
+      <div class="toolbar secondary-toolbar event-filter-row">
       ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
       ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
       ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
       ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
-    </div>
-    <div class="toolbar secondary-toolbar">
-      ${EVENT_LEVEL_FILTERS.map((level) => filterButton(level.label, "level", level.value, "events")).join("")}
+      </div>
     </div>
     <form class="search-form section-search-form" id="eventSearchForm">
       <input class="search-input" id="eventSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("eventSearchPlaceholder")}">

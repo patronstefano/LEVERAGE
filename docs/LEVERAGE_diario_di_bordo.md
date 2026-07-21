@@ -2231,6 +2231,7 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - aggiunti filtri per livello competizione nella sezione `Events`, mappati ai valori dell'entita `Event`: `Olympic Games`, `World Championships`, `Continental Championships`, `World Cup`, `World Challenge Cup`, `International Event`, `National Event`;
 - in UI i livelli `World Cup` e `World Challenge Cup` sono presentati come `FIG World Cups` e `FIG Challenge`, mantenendo nel backend i valori ufficiali del modello dati;
 - il backend `/events/` e `/events/calendar` accetta ora piu livelli selezionati insieme, sia come parametri ripetuti sia come valori separati da virgola;
+- nella UI `Events`, i filtri per livello competizione sono stati raccolti in un menu compatto `Level` a selezione singola, per ridurre rumore visivo e rendere piu ordinata la fascia filtri;
 - aggiunta copertura test per filtri livello su lista eventi e calendario, incluse le righe calendar-only.
 - resa piu smart la ricerca gare in `Events` e nella ricerca globale: il matching degli eventi non dipende piu solo dall'ordine esatto delle parole salvate nel database;
 - introdotto token matching order-insensitive per i nomi gara, sede, venue e livello evento: query come `World Cup Cottbus` trovano correttamente eventi salvati come `Cottbus World Cup`, anche con anno esplicito;
@@ -2274,6 +2275,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi preferiti derivati dalla tabella tecnica `SavedEvent`, senza introdurre duplicazioni nel modello dati;
 - aggiunto logout frontend con pulizia token, utente corrente e cache dei preferiti;
 - nelle sezioni `Athletes` ed `Events`, se l'utente e loggato, compare ora il filtro locale `Favorites`/`Preferiti`, che mostra direttamente nella sezione corrente solo atleti o eventi preferiti senza rimandare all'area personale;
+- il filtro `Favorites`/`Preferiti` e posizionato come ultimo controllo a destra nelle sezioni `Athletes` ed `Events`, separandolo visivamente dai filtri sportivi;
 - aggiunto pulsante a stellina sulle card atleta e sulle card evento: stellina vuota per salvare, stellina piena per rimuovere dai preferiti;
 - create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
 - mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;

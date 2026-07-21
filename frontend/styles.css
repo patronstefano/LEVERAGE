@@ -716,6 +716,20 @@ button {
   align-items: center;
 }
 
+.event-filter-stack {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.event-filter-stack .toolbar {
+  margin-bottom: 0;
+}
+
+.event-filter-stack .secondary-toolbar {
+  margin-top: 0;
+}
+
 .filter-button,
 .quiet-button {
   display: inline-flex;
@@ -728,6 +742,69 @@ button {
   line-height: 1;
   text-align: center;
   white-space: nowrap;
+}
+
+.section-favorite-filter {
+  margin-left: auto;
+}
+
+.filter-menu {
+  position: relative;
+  display: inline-flex;
+  min-height: 36px;
+}
+
+.filter-menu-summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.filter-menu-summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 22;
+  display: grid;
+  gap: 6px;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(320px, calc(100vw - 36px));
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 38px rgba(16, 16, 20, 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px) scale(0.98);
+  transform-origin: top left;
+  transition:
+    opacity var(--control-fade-motion),
+    transform var(--control-expand-motion),
+    visibility var(--control-fade-motion);
+  visibility: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.filter-menu[open] {
+  z-index: 24;
+}
+
+.filter-menu[open] .filter-menu-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+}
+
+.filter-menu-option {
+  justify-content: flex-start;
+  width: 100%;
 }
 
 .filter-button[aria-pressed="true"],
