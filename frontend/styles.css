@@ -562,7 +562,43 @@ button {
 }
 
 .section-search-form {
+  flex: 0 1 520px;
   margin-bottom: 14px;
+}
+
+.section-search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.section-search-row .section-search-form {
+  margin-bottom: 0;
+}
+
+.section-filter-row {
+  flex: 1 1 360px;
+  justify-content: flex-end;
+  margin-bottom: 0;
+}
+
+.athlete-filter-row {
+  align-self: center;
+}
+
+.section-filter-stack {
+  display: grid;
+  flex: 1 1 420px;
+  gap: 10px;
+}
+
+.section-filter-stack .toolbar {
+  margin-bottom: 0;
+}
+
+.section-filter-stack .secondary-toolbar {
+  margin-top: 0;
 }
 
 .search-form {
@@ -576,6 +612,12 @@ button {
   border-radius: var(--large-control-radius);
   box-shadow: var(--shadow);
   transition: border-color var(--control-fade-motion), margin-bottom var(--control-expand-motion);
+}
+
+.search-input-shell {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .search-form:focus-within {
@@ -675,13 +717,49 @@ button {
   width: 100%;
   min-width: 0;
   height: 50px;
-  padding: 0 18px;
+  padding: 0 42px 0 18px;
   border: 0;
   border-radius: calc(var(--large-control-radius) - 8px);
   background: transparent;
   box-shadow: none;
   outline: none;
   font-size: 16px;
+}
+
+.search-clear-button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(25, 23, 71, 0.08);
+  color: rgba(17, 17, 20, 0.56);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transform: translateY(-50%);
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.search-clear-button span {
+  display: block;
+  transform: translateY(-1px);
+}
+
+.search-clear-button:hover,
+.search-clear-button:focus-visible {
+  background: rgba(25, 23, 71, 0.14);
+  color: var(--ink);
+  outline: none;
+}
+
+.search-clear-button[hidden] {
+  display: none;
 }
 
 .search-input:focus,
@@ -2151,6 +2229,20 @@ button {
     padding: 7px;
   }
 
+  .section-search-row {
+    display: grid;
+    gap: 12px;
+  }
+
+  .section-filter-row,
+  .section-filter-stack {
+    justify-content: flex-start;
+  }
+
+  .search-input-shell {
+    width: 100%;
+  }
+
   .primary-button,
   .search-input {
     width: 100%;
@@ -2162,7 +2254,7 @@ button {
   }
 
   .search-input {
-    padding: 0 14px;
+    padding: 0 40px 0 14px;
     font-size: 15px;
   }
 

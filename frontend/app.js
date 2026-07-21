@@ -135,6 +135,7 @@ const translations = {
     openSavedRanking: "Open saved Ranking",
     deleteSavedRanking: "Delete saved Ranking",
     clearRankingFilters: "Clear filters",
+    clearSearch: "Clear search",
     filters: "Filters",
     language: "Language",
     save: "Save",
@@ -298,6 +299,7 @@ const translations = {
     openSavedRanking: "Apri Ranking salvato",
     deleteSavedRanking: "Elimina Ranking salvato",
     clearRankingFilters: "Pulisci filtri",
+    clearSearch: "Cancella ricerca",
     filters: "Filtri",
     language: "Lingua",
     save: "Salva",
@@ -461,6 +463,7 @@ const translations = {
     openSavedRanking: "Abrir Ranking guardado",
     deleteSavedRanking: "Eliminar Ranking guardado",
     clearRankingFilters: "Limpiar filtros",
+    clearSearch: "Borrar busqueda",
     filters: "Filtros",
     language: "Idioma",
     save: "Guardar",
@@ -624,6 +627,7 @@ const translations = {
     openSavedRanking: "Ouvrir Ranking enregistre",
     deleteSavedRanking: "Supprimer Ranking enregistre",
     clearRankingFilters: "Effacer filtres",
+    clearSearch: "Effacer recherche",
     filters: "Filtres",
     language: "Langue",
     save: "Enregistrer",
@@ -1253,6 +1257,33 @@ function messageState(message) {
   return `<div class="empty-state">${message}</div>`;
 }
 
+function searchInputControl(id, value, placeholder) {
+  return `
+    <div class="search-input-shell">
+      <input class="search-input" id="${id}" type="search" autocomplete="off" value="${escapeHtml(value || "")}" placeholder="${escapeHtml(placeholder)}">
+      <button class="search-clear-button" type="button" data-search-clear-for="${id}" aria-label="${t("clearSearch")}" title="${t("clearSearch")}" ${value ? "" : "hidden"}><span aria-hidden="true">&times;</span></button>
+    </div>
+  `;
+}
+
+function bindSearchClearButtons() {
+  document.querySelectorAll("[data-search-clear-for]").forEach((button) => {
+    const input = document.getElementById(button.dataset.searchClearFor);
+    if (!input) return;
+    const syncVisibility = () => {
+      button.hidden = !input.value;
+    };
+    button.addEventListener("click", () => {
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.focus();
+      syncVisibility();
+    });
+    input.addEventListener("input", syncVisibility);
+    syncVisibility();
+  });
+}
+
 async function renderHome() {
   setApp(`
     <section class="hero home-hero">
@@ -1264,7 +1295,7 @@ async function renderHome() {
         <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
           <form class="search-form" id="globalSearchForm">
-            <input class="search-input" id="globalSearchInput" type="search" autocomplete="off" placeholder="${t("searchPlaceholder")}">
+            ${searchInputControl("globalSearchInput", "", t("searchPlaceholder"))}
             <button class="primary-button" type="submit">${t("search")}</button>
             <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
           </form>
@@ -1313,6 +1344,7 @@ async function renderHome() {
     const query = $("#globalSearchInput").value.trim();
     window.location.hash = query ? `#/search?q=${encodeURIComponent(query)}` : "#/search";
   });
+  bindSearchClearButtons();
   setupSearchAutocomplete("#globalSearchInput", "#globalSearchSuggestions");
 
   await hydrateHome();
@@ -1683,11 +1715,10 @@ function renderGlobalSearchResults(data) {
 async function renderGlobalSearch() {
   const params = currentParams();
   const query = params.get("q") || "";
-  const escapedQuery = escapeHtml(query);
   setApp(`
     ${pageHeading("globalSearchHeading", "globalSearchIntro")}
     <form class="search-form search-page-form" id="globalSearchPageForm">
-      <input class="search-input" id="globalSearchPageInput" type="search" autocomplete="off" value="${escapedQuery}" placeholder="${t("searchPlaceholder")}">
+      ${searchInputControl("globalSearchPageInput", query, t("searchPlaceholder"))}
       <button class="primary-button" type="submit">${t("search")}</button>
       <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>
     </form>
@@ -1699,6 +1730,7 @@ async function renderGlobalSearch() {
     const nextQuery = $("#globalSearchPageInput").value.trim();
     window.location.hash = nextQuery ? `#/search?q=${encodeURIComponent(nextQuery)}` : "#/search";
   });
+  bindSearchClearButtons();
   setupSearchAutocomplete("#globalSearchPageInput", "#globalSearchPageSuggestions");
   if (!query) return;
   try {
@@ -2668,16 +2700,18 @@ async function renderAthletes() {
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("athletesHeading", "athletesIntro")}
-    <form class="search-form section-search-form" id="athleteSearchForm">
-      <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
-      <button class="primary-button" type="submit">${t("search")}</button>
-    </form>
-    <div class="toolbar athlete-filter-row">
-      ${filterButton("MAG", "discipline", "MAG", "athletes")}
-      ${filterButton("WAG", "discipline", "WAG", "athletes")}
-      ${filterButton(t("senior"), "category", "senior", "athletes")}
-      ${filterButton(t("junior"), "category", "junior", "athletes")}
-      ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
+    <div class="section-search-row">
+      <form class="search-form section-search-form" id="athleteSearchForm">
+        ${searchInputControl("athleteSearchInput", search, t("athleteSearchPlaceholder"))}
+        <button class="primary-button" type="submit">${t("search")}</button>
+      </form>
+      <div class="toolbar section-filter-row athlete-filter-row">
+        ${filterButton("MAG", "discipline", "MAG", "athletes")}
+        ${filterButton("WAG", "discipline", "WAG", "athletes")}
+        ${filterButton(t("senior"), "category", "senior", "athletes")}
+        ${filterButton(t("junior"), "category", "junior", "athletes")}
+        ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
+      </div>
     </div>
     <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
@@ -2721,6 +2755,7 @@ async function renderAthletes() {
     }
     render();
   });
+  bindSearchClearButtons();
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -2745,26 +2780,28 @@ async function renderEvents() {
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("eventsHeading", "eventsIntro")}
-    <div class="event-filter-stack">
-      <div class="toolbar event-filter-row">
-        ${filterButton("MAG", "discipline", "MAG", "events")}
-        ${filterButton("WAG", "discipline", "WAG", "events")}
-        ${filterButton(t("senior"), "category", "senior", "events")}
-        ${filterButton(t("junior"), "category", "junior", "events")}
-        ${renderEventLevelFilter()}
-        ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
-      </div>
-      <div class="toolbar secondary-toolbar event-filter-row">
-        ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
-        ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
-        ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
-        ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
+    <div class="section-search-row">
+      <form class="search-form section-search-form" id="eventSearchForm">
+        ${searchInputControl("eventSearchInput", search, t("eventSearchPlaceholder"))}
+        <button class="primary-button" type="submit">${t("search")}</button>
+      </form>
+      <div class="section-filter-stack">
+        <div class="toolbar section-filter-row event-filter-row">
+          ${filterButton("MAG", "discipline", "MAG", "events")}
+          ${filterButton("WAG", "discipline", "WAG", "events")}
+          ${filterButton(t("senior"), "category", "senior", "events")}
+          ${filterButton(t("junior"), "category", "junior", "events")}
+          ${renderEventLevelFilter()}
+          ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
+        </div>
+        <div class="toolbar secondary-toolbar section-filter-row event-filter-row">
+          ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
+          ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
+          ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
+          ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
+        </div>
       </div>
     </div>
-    <form class="search-form section-search-form" id="eventSearchForm">
-      <input class="search-input" id="eventSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("eventSearchPlaceholder")}">
-      <button class="primary-button" type="submit">${t("search")}</button>
-    </form>
     <section class="panel event-list-panel">
       <div class="section-header">
         <div>
@@ -2826,6 +2863,7 @@ async function renderEvents() {
     }
     render();
   });
+  bindSearchClearButtons();
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

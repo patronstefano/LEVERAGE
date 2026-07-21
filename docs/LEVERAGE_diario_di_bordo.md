@@ -2297,6 +2297,14 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
 
+Aggiornamento UX search bar del 21 luglio 2026:
+
+- nelle sezioni dedicate `Athletes` ed `Events`, i filtri sono stati riallineati a destra della rispettiva barra di ricerca su desktop, lasciando la ricerca a sinistra e i controlli contestuali a destra;
+- nella sezione `Events`, i filtri sportivi/semantici e quelli di stato calendario restano raccolti in una colonna compatta a destra della search bar, cosi la pagina conserva ordine anche con molti controlli attivi;
+- su viewport stretti e mobile, la struttura torna automaticamente verticale per evitare compressione o sovrapposizione tra input, pulsante Search e filtri;
+- tutte le search bar principali ora includono una piccola crocetta interna al campo di testo per cancellare l'intera query in un click: ricerca globale home, pagina ricerca globale, ricerca Athletes e ricerca Events;
+- la crocetta resta nascosta quando il campo e vuoto, compare solo durante la digitazione e scatena lo stesso flusso live della ricerca manuale, cosi i risultati si aggiornano immediatamente nelle sezioni dedicate.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
