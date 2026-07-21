@@ -1551,6 +1551,74 @@ button {
   outline-offset: 2px;
 }
 
+.delete-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(25, 23, 71, 0.14);
+  border-radius: var(--control-radius);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(17, 17, 20, 0.62);
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.delete-button:hover {
+  border-color: rgba(154, 103, 0, 0.3);
+  color: var(--warning);
+  transform: translateY(-1px);
+}
+
+.delete-button:disabled {
+  cursor: wait;
+  opacity: 0.64;
+  transform: none;
+}
+
+.delete-button:focus-visible {
+  outline: 3px solid rgba(25, 23, 71, 0.16);
+  outline-offset: 2px;
+}
+
+.trash-icon {
+  position: relative;
+  width: 13px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.trash-icon::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -3px;
+  width: 17px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.trash-icon::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 3px;
+  width: 7px;
+  height: 4px;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+}
+
 .pill-row {
   display: flex;
   flex-wrap: wrap;

@@ -2283,6 +2283,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - le configurazioni `Rankings` salvate vengono archiviate nel modello esistente `SavedDashboardView` con `view_type = "ranking"` e contengono solo il JSON dei filtri attivi, senza duplicare risultati o dati sportivi;
 - nell'area privata `My LEVERAGE` compare ora una sezione `Saved Rankings`, da cui l'utente puo riaprire una configurazione salvata; il frontend torna automaticamente a `Rankings` e riapplica i filtri memorizzati.
 - rifinita la UX del salvataggio Ranking: nella sezione `Rankings` il comando compare solo per utenti loggati e inizialmente viene mostrato solo il pulsante `Save this Ranking`; il riquadro con nome configurazione e riepilogo filtri appare soltanto dopo il click dell'utente.
+- aggiunto nella sezione privata `Saved Rankings` un pulsante cestino per ogni configurazione salvata, collegato all'endpoint `DELETE /preferences/dashboard-views/{id}`, cosi l'utente puo rimuovere autonomamente configurazioni non piu utili.
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
 

@@ -129,6 +129,7 @@ const translations = {
     rankingViewError: "Unable to save this Ranking configuration.",
     signInToSaveRanking: "Sign in to save Ranking configurations.",
     openSavedRanking: "Open saved Ranking",
+    deleteSavedRanking: "Delete saved Ranking",
     filters: "Filters",
     language: "Language",
     save: "Save",
@@ -288,6 +289,7 @@ const translations = {
     rankingViewError: "Impossibile salvare questa configurazione Ranking.",
     signInToSaveRanking: "Accedi per salvare configurazioni Ranking.",
     openSavedRanking: "Apri Ranking salvato",
+    deleteSavedRanking: "Elimina Ranking salvato",
     filters: "Filtri",
     language: "Lingua",
     save: "Salva",
@@ -447,6 +449,7 @@ const translations = {
     rankingViewError: "No se pudo guardar esta configuracion Ranking.",
     signInToSaveRanking: "Inicia sesion para guardar configuraciones Ranking.",
     openSavedRanking: "Abrir Ranking guardado",
+    deleteSavedRanking: "Eliminar Ranking guardado",
     filters: "Filtros",
     language: "Idioma",
     save: "Guardar",
@@ -606,6 +609,7 @@ const translations = {
     rankingViewError: "Impossible d'enregistrer cette configuration Ranking.",
     signInToSaveRanking: "Connectez-vous pour enregistrer des configurations Ranking.",
     openSavedRanking: "Ouvrir Ranking enregistre",
+    deleteSavedRanking: "Supprimer Ranking enregistre",
     filters: "Filtres",
     language: "Langue",
     save: "Enregistrer",
@@ -1162,6 +1166,40 @@ function bindFavoriteButtons() {
       event.preventDefault();
       event.stopPropagation();
       toggleFavorite(button.dataset.favoriteKind, button.dataset.favoriteId, button);
+    });
+  });
+}
+
+function deleteSavedRankingButton(viewId) {
+  return `
+    <button
+      class="delete-button"
+      type="button"
+      data-delete-ranking-view-id="${Number(viewId)}"
+      aria-label="${t("deleteSavedRanking")}"
+      title="${t("deleteSavedRanking")}"
+    >
+      <span class="trash-icon" aria-hidden="true"></span>
+    </button>
+  `;
+}
+
+async function deleteSavedRankingView(viewId, button) {
+  button.disabled = true;
+  try {
+    await sendJson(`/preferences/dashboard-views/${Number(viewId)}`, { method: "DELETE" });
+    await renderAccount();
+  } catch (_error) {
+    button.disabled = false;
+  }
+}
+
+function bindSavedRankingDeleteButtons() {
+  document.querySelectorAll("[data-delete-ranking-view-id]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteSavedRankingView(button.dataset.deleteRankingViewId, button);
     });
   });
 }
@@ -2878,6 +2916,7 @@ function renderSavedRankingViews(views) {
       escapeHtml(meta),
       pills.map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
       `#/rankings?savedView=${view.id}`,
+      deleteSavedRankingButton(view.id),
     );
   }).join("")}</div>`;
 }
@@ -2943,6 +2982,7 @@ async function renderAccount() {
     $("#accountEvents").innerHTML = renderFavoriteEvents(events);
     $("#accountRankingViews").innerHTML = renderSavedRankingViews(dashboardViews);
     bindFavoriteButtons();
+    bindSavedRankingDeleteButtons();
   } catch (error) {
     $("#accountAthletes").innerHTML = errorState(error);
     $("#accountEvents").innerHTML = errorState(error);
