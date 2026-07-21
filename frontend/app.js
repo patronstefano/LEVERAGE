@@ -1824,6 +1824,75 @@ function filterFavoriteEvents(events) {
   return events.filter((event) => event.id && state.favoriteEventIds.has(Number(event.id)));
 }
 
+function normalizedText(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function textMatchesQuery(value, query) {
+  const terms = normalizedText(query).split(/\s+/).filter(Boolean);
+  if (!terms.length) return true;
+  const haystack = normalizedText(value);
+  return terms.every((term) => haystack.includes(term));
+}
+
+function eventValueIncludesFilter(value, filters) {
+  if (!filters.length) return true;
+  const text = String(value || "");
+  return filters.some((filter) => text === filter || text.includes(filter));
+}
+
+function favoriteAthleteDetailMatches(detail, query) {
+  const athlete = detail.athlete || {};
+  const disciplineFilters = filterValues("discipline", "athletes");
+  if (disciplineFilters.length && !disciplineFilters.includes(athlete.discipline)) {
+    return false;
+  }
+  return textMatchesQuery([
+    athlete.first_name,
+    athlete.last_name,
+    `${athlete.first_name || ""} ${athlete.last_name || ""}`,
+    `${athlete.last_name || ""} ${athlete.first_name || ""}`,
+    athlete.country,
+    athlete.discipline,
+    detail.athlete_id,
+  ].join(" "), query);
+}
+
+function favoriteEventDetailMatches(detail, query) {
+  const event = detail.event || {};
+  if (!eventValueIncludesFilter(event.discipline, filterValues("discipline", "events"))) return false;
+  if (!eventValueIncludesFilter(event.category, filterValues("category", "events"))) return false;
+  if (filterValues("level", "events").length && !filterValues("level", "events").includes(event.level)) return false;
+  if (calendarStatusParam() && event.calendar_status !== calendarStatusParam()) return false;
+  return textMatchesQuery([
+    event.name,
+    event.year,
+    event.location,
+    event.venue,
+    event.discipline,
+    event.category,
+    event.level,
+    detail.event_id,
+  ].join(" "), query);
+}
+
+async function getFavoriteAthleteDetailsForSection(query = "") {
+  const details = await getJson("/preferences/athletes/followed/details", {}, { auth: true });
+  state.favoriteAthleteIds = new Set(details.map((item) => Number(item.athlete_id)));
+  state.favoritesLoaded = true;
+  return details.filter((detail) => favoriteAthleteDetailMatches(detail, query));
+}
+
+async function getFavoriteEventDetailsForSection(query = "") {
+  const details = await getJson("/preferences/events/saved/details", {}, { auth: true });
+  state.favoriteEventIds = new Set(details.map((item) => Number(item.event_id)));
+  state.favoritesLoaded = true;
+  return details.filter((detail) => favoriteEventDetailMatches(detail, query));
+}
+
 function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
@@ -2280,7 +2349,13 @@ async function hydrateEventsCalendar() {
   const monthEnd = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
   const favoriteFilterActive = favoritesOnly("events");
   if (favoriteFilterActive) {
-    await ensureFavoritesLoaded({ force: true });
+    const favoriteDetails = await getFavoriteEventDetailsForSection($("#eventSearchInput")?.value.trim() || "");
+    renderHomeCalendar("#eventResults", favoriteDetails.map((detail) => detail.event).filter(Boolean), calendarDate, {
+      navScope: "events",
+      wrapperClass: "home-calendar full-calendar",
+      maxVisibleLanes: 6,
+    });
+    return;
   }
   const events = await getJson("/events/calendar", {
     start_date: formatLocalIso(monthStart),
@@ -2291,8 +2366,7 @@ async function hydrateEventsCalendar() {
     category: multiFilterParam("category", "events"),
     level: filterValues("level", "events"),
     status: calendarStatusParam(),
-    favorite_only: favoriteFilterActive,
-  }, { auth: favoriteFilterActive });
+  });
   renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
@@ -2734,15 +2808,18 @@ async function renderAthletes() {
     resultsNode.setAttribute("aria-busy", "true");
     try {
       if (favoriteFilterActive) {
-        await ensureFavoritesLoaded({ force: true });
+        const favoriteDetails = await getFavoriteAthleteDetailsForSection(query);
+        if (requestId !== athleteSearchRequestId) return;
+        resultsNode.innerHTML = renderFavoriteAthletes(favoriteDetails);
+        bindFavoriteButtons();
+        return;
       }
       const athletes = await getJson("/athletes/", {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         category: filterValues("category", "athletes"),
-        favorite_only: favoriteFilterActive,
-        limit: favoriteFilterActive ? 500 : 40,
-      }, { auth: favoriteFilterActive });
+        limit: 40,
+      });
       if (requestId !== athleteSearchRequestId) return;
       resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
       bindFavoriteButtons();
@@ -2839,7 +2916,11 @@ async function renderEvents() {
     resultsNode.setAttribute("aria-busy", "true");
     try {
       if (favoriteFilterActive) {
-        await ensureFavoritesLoaded({ force: true });
+        const favoriteDetails = await getFavoriteEventDetailsForSection(query);
+        if (requestId !== eventSearchRequestId) return;
+        resultsNode.innerHTML = renderFavoriteEvents(favoriteDetails);
+        bindFavoriteButtons();
+        return;
       }
       const events = await getJson("/events/calendar", {
         search: query,
@@ -2848,9 +2929,8 @@ async function renderEvents() {
         level: filterValues("level", "events"),
         status: calendarStatusParam(),
         as_of: formatLocalIso(TODAY),
-        favorite_only: favoriteFilterActive,
-        limit: favoriteFilterActive ? 1000 : 80,
-      }, { auth: favoriteFilterActive });
+        limit: 80,
+      });
       if (requestId !== eventSearchRequestId) return;
       renderEventList("#eventLiveResults", filterFavoriteEvents(events));
     } catch (error) {
