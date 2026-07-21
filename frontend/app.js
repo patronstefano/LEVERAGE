@@ -96,9 +96,12 @@ const translations = {
     signOut: "Sign out",
     email: "Email",
     password: "Password",
+    mfaCode: "MFA code",
     loginAction: "Sign in",
     loginHelp: "Access your private area to save athletes and events.",
     loginError: "Unable to sign in. Check your credentials and email verification.",
+    mfaRequired: "Enter your MFA code to complete sign in.",
+    mfaSetupRequired: "Admin MFA setup is required before this account can sign in here.",
     accountHeading: "My LEVERAGE",
     accountIntro: "Your private area for favorite athletes, saved events and personal shortcuts.",
     favoriteAthletes: "Favorite athletes",
@@ -239,9 +242,12 @@ const translations = {
     signOut: "Esci",
     email: "Email",
     password: "Password",
+    mfaCode: "Codice MFA",
     loginAction: "Accedi",
     loginHelp: "Accedi alla tua area privata per salvare atleti ed eventi.",
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
+    mfaRequired: "Inserisci il codice MFA per completare l'accesso.",
+    mfaSetupRequired: "Prima di accedere qui, questo account admin deve completare la configurazione MFA.",
     accountHeading: "My LEVERAGE",
     accountIntro: "La tua area privata per atleti preferiti, eventi salvati e scorciatoie personali.",
     favoriteAthletes: "Atleti preferiti",
@@ -382,9 +388,12 @@ const translations = {
     signOut: "Salir",
     email: "Email",
     password: "Password",
+    mfaCode: "Codigo MFA",
     loginAction: "Entrar",
     loginHelp: "Accede a tu area privada para guardar atletas y eventos.",
     loginError: "No se pudo iniciar sesion. Revisa credenciales y verificacion email.",
+    mfaRequired: "Introduce el codigo MFA para completar el acceso.",
+    mfaSetupRequired: "Esta cuenta admin debe configurar MFA antes de acceder aqui.",
     accountHeading: "My LEVERAGE",
     accountIntro: "Tu area privada para atletas favoritos, eventos guardados y accesos personales.",
     favoriteAthletes: "Atletas favoritos",
@@ -525,9 +534,12 @@ const translations = {
     signOut: "Deconnexion",
     email: "Email",
     password: "Password",
+    mfaCode: "Code MFA",
     loginAction: "Connexion",
     loginHelp: "Accedez a votre espace prive pour enregistrer athletes et evenements.",
     loginError: "Connexion impossible. Verifiez identifiants et verification email.",
+    mfaRequired: "Saisissez le code MFA pour terminer la connexion.",
+    mfaSetupRequired: "Ce compte admin doit configurer MFA avant de se connecter ici.",
     accountHeading: "My LEVERAGE",
     accountIntro: "Votre espace prive pour athletes favoris, evenements enregistres et raccourcis personnels.",
     favoriteAthletes: "Athletes favoris",
@@ -2516,6 +2528,10 @@ function renderLogin() {
           <span>${t("password")}</span>
           <input id="loginPassword" type="password" autocomplete="current-password" required>
         </label>
+        <label class="auth-mfa-field" id="mfaField" hidden>
+          <span>${t("mfaCode")}</span>
+          <input id="loginMfaCode" type="text" inputmode="numeric" autocomplete="one-time-code">
+        </label>
         <button class="primary-button" type="submit">${t("loginAction")}</button>
         <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
       </form>
@@ -2534,8 +2550,20 @@ function renderLogin() {
         body: {
           email: $("#loginEmail").value.trim(),
           password: $("#loginPassword").value,
+          mfa_code: $("#loginMfaCode")?.value.trim() || undefined,
         },
       });
+      if (payload.mfa_required) {
+        $("#mfaField").hidden = false;
+        $("#loginMfaCode").required = true;
+        $("#loginMfaCode").focus();
+        message.textContent = t("mfaRequired");
+        return;
+      }
+      if (payload.mfa_setup_required) {
+        message.textContent = t("mfaSetupRequired");
+        return;
+      }
       if (!payload.access_token) {
         message.textContent = t("loginError");
         return;

@@ -2268,7 +2268,7 @@ Aggiornamento navigazione pubblica del 20 luglio 2026:
 
 Aggiornamento area utente e preferenze del 21 luglio 2026:
 
-- collegato il frontend al sistema di autenticazione gia implementato nel backend tramite login email/password e salvataggio locale del token JWT;
+- collegato il frontend al sistema di autenticazione gia implementato nel backend tramite login email/password, eventuale secondo step MFA per account admin gia configurati e salvataggio locale del token JWT;
 - la topbar distingue ora utente non loggato e utente loggato: `Sign in` rimanda al login, mentre un utente autenticato vede `My LEVERAGE`;
 - creata una prima area privata `My LEVERAGE`, dedicata a preferenze personali e scorciatoie utente;
 - l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi salvati derivati dalla tabella `SavedEvent`, senza introdurre duplicazioni nel modello dati;
