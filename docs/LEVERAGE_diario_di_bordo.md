@@ -2305,6 +2305,13 @@ Aggiornamento UX search bar del 21 luglio 2026:
 - tutte le search bar principali ora includono una piccola crocetta interna al campo di testo per cancellare l'intera query in un click: ricerca globale home, pagina ricerca globale, ricerca Athletes e ricerca Events;
 - la crocetta resta nascosta quando il campo e vuoto, compare solo durante la digitazione e scatena lo stesso flusso live della ricerca manuale, cosi i risultati si aggiornano immediatamente nelle sezioni dedicate.
 
+Correzione preferiti del 21 luglio 2026:
+
+- corretto un problema UX per cui, dopo aver cambiato schermata e rientrando in `Athletes` o `Events`, il filtro `Favorites`/`Preferiti` poteva mostrare `No results` anche in presenza di preferiti salvati;
+- causa individuata: il frontend scaricava una lista pubblica limitata e poi applicava il filtro preferiti localmente; se il preferito non rientrava nella finestra caricata, il risultato veniva escluso;
+- soluzione adottata: quando il filtro `Preferiti` e attivo, la UI passa `favorite_only=true` agli endpoint pubblici autenticati gia esistenti (`/athletes/` e `/events/calendar`) e invia il token JWT;
+- la cache locale dei preferiti viene aggiornata dagli elementi restituiti dal backend, mantenendo coerente lo stato delle stelline e rendendo stabile il filtro anche dopo navigazione tra sezioni.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.

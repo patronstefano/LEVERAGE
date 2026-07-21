@@ -1824,6 +1824,18 @@ function filterFavoriteEvents(events) {
   return events.filter((event) => event.id && state.favoriteEventIds.has(Number(event.id)));
 }
 
+function rememberFavoriteAthletes(athletes) {
+  athletes.forEach((athlete) => {
+    if (athlete.id) state.favoriteAthleteIds.add(Number(athlete.id));
+  });
+}
+
+function rememberFavoriteEvents(events) {
+  events.forEach((event) => {
+    if (event.id) state.favoriteEventIds.add(Number(event.id));
+  });
+}
+
 function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
@@ -2278,6 +2290,7 @@ async function hydrateEventsCalendar() {
   const calendarDate = eventsCalendarDate();
   const monthStart = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
   const monthEnd = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
+  const favoriteFilterActive = favoritesOnly("events");
   const events = await getJson("/events/calendar", {
     start_date: formatLocalIso(monthStart),
     end_date: formatLocalIso(monthEnd),
@@ -2287,8 +2300,10 @@ async function hydrateEventsCalendar() {
     category: multiFilterParam("category", "events"),
     level: filterValues("level", "events"),
     status: calendarStatusParam(),
-  });
-  renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
+    favorite_only: favoriteFilterActive,
+  }, { auth: favoriteFilterActive });
+  if (favoriteFilterActive) rememberFavoriteEvents(events);
+  renderHomeCalendar("#eventResults", favoriteFilterActive ? events : filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
     maxVisibleLanes: 6,
@@ -2722,6 +2737,7 @@ async function renderAthletes() {
   const loadAthletes = async (query, options = {}) => {
     const { showLoading = false, updateRoute = false } = options;
     const requestId = ++athleteSearchRequestId;
+    const favoriteFilterActive = favoritesOnly("athletes");
     if (updateRoute) syncAthleteSearchRoute(query);
     if (showLoading) resultsNode.innerHTML = loadingState();
     resultsNode.classList.add("is-updating");
@@ -2731,10 +2747,12 @@ async function renderAthletes() {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         category: filterValues("category", "athletes"),
-        limit: favoritesOnly("athletes") ? 500 : 40,
-      });
+        favorite_only: favoriteFilterActive,
+        limit: favoriteFilterActive ? 500 : 40,
+      }, { auth: favoriteFilterActive });
       if (requestId !== athleteSearchRequestId) return;
-      resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
+      if (favoriteFilterActive) rememberFavoriteAthletes(athletes);
+      resultsNode.innerHTML = renderAthleteCards(favoriteFilterActive ? athletes : filterFavoriteAthletes(athletes));
       bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
@@ -2822,6 +2840,7 @@ async function renderEvents() {
   const loadEvents = async (query, options = {}) => {
     const { showLoading = false, updateRoute = false } = options;
     const requestId = ++eventSearchRequestId;
+    const favoriteFilterActive = favoritesOnly("events");
     if (updateRoute) syncEventSearchRoute(query);
     if (showLoading) resultsNode.innerHTML = loadingState();
     resultsNode.classList.add("is-updating");
@@ -2834,10 +2853,12 @@ async function renderEvents() {
         level: filterValues("level", "events"),
         status: calendarStatusParam(),
         as_of: formatLocalIso(TODAY),
-        limit: favoritesOnly("events") ? 1000 : 80,
-      });
+        favorite_only: favoriteFilterActive,
+        limit: favoriteFilterActive ? 1000 : 80,
+      }, { auth: favoriteFilterActive });
       if (requestId !== eventSearchRequestId) return;
-      renderEventList("#eventLiveResults", filterFavoriteEvents(events));
+      if (favoriteFilterActive) rememberFavoriteEvents(events);
+      renderEventList("#eventLiveResults", favoriteFilterActive ? events : filterFavoriteEvents(events));
     } catch (error) {
       if (requestId !== eventSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);
