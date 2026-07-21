@@ -2279,6 +2279,9 @@ async function hydrateEventsCalendar() {
   const monthStart = new Date(calendarDate.getFullYear(), calendarDate.getMonth(), 1);
   const monthEnd = new Date(calendarDate.getFullYear(), calendarDate.getMonth() + 1, 0);
   const favoriteFilterActive = favoritesOnly("events");
+  if (favoriteFilterActive) {
+    await ensureFavoritesLoaded({ force: true });
+  }
   const events = await getJson("/events/calendar", {
     start_date: formatLocalIso(monthStart),
     end_date: formatLocalIso(monthEnd),
@@ -2290,7 +2293,7 @@ async function hydrateEventsCalendar() {
     status: calendarStatusParam(),
     favorite_only: favoriteFilterActive,
   }, { auth: favoriteFilterActive });
-  renderHomeCalendar("#eventResults", favoriteFilterActive ? events : filterFavoriteEvents(events), calendarDate, {
+  renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
     maxVisibleLanes: 6,
@@ -2315,9 +2318,8 @@ async function resetEventsCalendarMonth() {
   }
 }
 
-function renderEventList(selector, events, options = {}) {
+function renderEventList(selector, events) {
   const node = $(selector);
-  const forceFavoriteActive = Boolean(options.forceFavoriteActive);
   if (!events.length) {
     node.innerHTML = emptyState();
     return;
@@ -2354,7 +2356,7 @@ function renderEventList(selector, events, options = {}) {
       meta,
       pills,
       event.id ? `#/events/${event.id}` : "",
-      favoriteButton("event", event.id, forceFavoriteActive || state.favoriteEventIds.has(Number(event.id))),
+      favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
     );
   }).join("")}</div>`;
   bindFavoriteButtons();
@@ -2652,8 +2654,7 @@ function syncAthleteSearchRoute(query) {
   setActiveNav();
 }
 
-function renderAthleteCards(athletes, options = {}) {
-  const forceFavoriteActive = Boolean(options.forceFavoriteActive);
+function renderAthleteCards(athletes) {
   if (!athletes.length) return emptyState();
   return `<div class="grid-3">${athletes.map((athlete) => {
     const pills = [
@@ -2667,7 +2668,7 @@ function renderAthleteCards(athletes, options = {}) {
       athlete.world_gymnastics_status || "Official profile pending",
       pills,
       `#/athletes/${athlete.id}`,
-      favoriteButton("athlete", athlete.id, forceFavoriteActive || state.favoriteAthleteIds.has(Number(athlete.id))),
+      favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
     );
   }).join("")}</div>`;
 }
@@ -2732,6 +2733,9 @@ async function renderAthletes() {
     resultsNode.classList.add("is-updating");
     resultsNode.setAttribute("aria-busy", "true");
     try {
+      if (favoriteFilterActive) {
+        await ensureFavoritesLoaded({ force: true });
+      }
       const athletes = await getJson("/athletes/", {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
@@ -2740,10 +2744,7 @@ async function renderAthletes() {
         limit: favoriteFilterActive ? 500 : 40,
       }, { auth: favoriteFilterActive });
       if (requestId !== athleteSearchRequestId) return;
-      resultsNode.innerHTML = renderAthleteCards(
-        favoriteFilterActive ? athletes : filterFavoriteAthletes(athletes),
-        { forceFavoriteActive: favoriteFilterActive },
-      );
+      resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
       bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
@@ -2837,6 +2838,9 @@ async function renderEvents() {
     resultsNode.classList.add("is-updating");
     resultsNode.setAttribute("aria-busy", "true");
     try {
+      if (favoriteFilterActive) {
+        await ensureFavoritesLoaded({ force: true });
+      }
       const events = await getJson("/events/calendar", {
         search: query,
         discipline: filterValues("discipline", "events"),
@@ -2848,11 +2852,7 @@ async function renderEvents() {
         limit: favoriteFilterActive ? 1000 : 80,
       }, { auth: favoriteFilterActive });
       if (requestId !== eventSearchRequestId) return;
-      renderEventList(
-        "#eventLiveResults",
-        favoriteFilterActive ? events : filterFavoriteEvents(events),
-        { forceFavoriteActive: favoriteFilterActive },
-      );
+      renderEventList("#eventLiveResults", filterFavoriteEvents(events));
     } catch (error) {
       if (requestId !== eventSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);
