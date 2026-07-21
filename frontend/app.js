@@ -1179,7 +1179,13 @@ function deleteSavedRankingButton(viewId) {
       aria-label="${t("deleteSavedRanking")}"
       title="${t("deleteSavedRanking")}"
     >
-      <span class="trash-icon" aria-hidden="true"></span>
+      <svg class="trash-icon" aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+        <path d="M4 7h16"></path>
+        <path d="M10 11v6"></path>
+        <path d="M14 11v6"></path>
+        <path d="M9 7V5h6v2"></path>
+        <path d="M6 7l1 14h10l1-14"></path>
+      </svg>
     </button>
   `;
 }
