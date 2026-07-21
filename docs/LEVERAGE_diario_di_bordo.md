@@ -2288,6 +2288,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - uniformata la UI del cestino alla stellina dei preferiti: stesso componente base, stessa dimensione, stesso hover/focus/disabled e stessa micro-interazione al click, cambiando soltanto l'icona interna.
 - aggiunto nella sezione `Rankings` il pulsante `Clear filters`/`Pulisci filtri`, che rimuove in un solo click categoria, attrezzi, scoring cycle e intervalli temporali, riportando la classifica al default tecnico MAG.
 - riorganizzata la sezione `Rankings` separando visivamente i filtri che modificano la classifica dalle azioni personali: disciplina/categoria, apparatus, cicli e periodo restano in un blocco filtri compatto, mentre `Save this Ranking` e `Clear filters` sono raccolti in una riga azioni distinta.
+- reso `Save this Ranking` un comando toggle: il primo click apre il riquadro di salvataggio, il secondo click lo richiude, mantenendo il pulsante sempre visibile e accessibile.
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
 

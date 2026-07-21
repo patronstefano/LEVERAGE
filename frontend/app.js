@@ -2046,9 +2046,12 @@ function bindRankingSaveForm() {
   const shell = $("#rankingSaveFormShell");
   revealButton?.addEventListener("click", () => {
     if (!shell) return;
-    shell.hidden = false;
-    revealButton.hidden = true;
-    $("#rankingViewNameInput")?.focus();
+    const shouldShow = shell.hidden;
+    shell.hidden = !shouldShow;
+    revealButton.setAttribute("aria-expanded", String(shouldShow));
+    if (shouldShow) {
+      $("#rankingViewNameInput")?.focus();
+    }
   });
 
   const form = $("#rankingSaveForm");
@@ -2457,7 +2460,7 @@ function renderRankingSavePanel() {
   }
   return `
     <div class="saved-ranking-panel">
-      <button class="quiet-button" type="button" id="showRankingSaveFormButton">${t("saveRankingView")}</button>
+      <button class="quiet-button" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
       <section class="panel saved-ranking-form-shell" id="rankingSaveFormShell" hidden>
         <form class="saved-ranking-form" id="rankingSaveForm">
           <label>
