@@ -1782,6 +1782,16 @@ function routeIsListSection(scope) {
   return false;
 }
 
+function filterFavoriteAthletes(athletes) {
+  if (!favoritesOnly("athletes")) return athletes;
+  return athletes.filter((athlete) => state.favoriteAthleteIds.has(Number(athlete.id)));
+}
+
+function filterFavoriteEvents(events) {
+  if (!favoritesOnly("events")) return events;
+  return events.filter((event) => event.id && state.favoriteEventIds.has(Number(event.id)));
+}
+
 function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
@@ -2245,9 +2255,8 @@ async function hydrateEventsCalendar() {
     category: multiFilterParam("category", "events"),
     level: filterValues("level", "events"),
     status: calendarStatusParam(),
-    favorite_only: favoritesOnly("events"),
-  }, { auth: favoritesOnly("events") });
-  renderHomeCalendar("#eventResults", events, calendarDate, {
+  });
+  renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
     maxVisibleLanes: 6,
@@ -2659,15 +2668,17 @@ async function renderAthletes() {
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`
     ${pageHeading("athletesHeading", "athletesIntro")}
-    <form class="toolbar" id="athleteSearchForm">
+    <form class="search-form section-search-form" id="athleteSearchForm">
       <input class="search-input" id="athleteSearchInput" type="search" value="${escapeHtml(search)}" placeholder="${t("athleteSearchPlaceholder")}">
       <button class="primary-button" type="submit">${t("search")}</button>
+    </form>
+    <div class="toolbar athlete-filter-row">
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
       ${filterButton(t("senior"), "category", "senior", "athletes")}
       ${filterButton(t("junior"), "category", "junior", "athletes")}
       ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
-    </form>
+    </div>
     <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
   const form = $("#athleteSearchForm");
@@ -2686,11 +2697,10 @@ async function renderAthletes() {
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         category: filterValues("category", "athletes"),
-        favorite_only: favoritesOnly("athletes"),
-        limit: 40,
-      }, { auth: favoritesOnly("athletes") });
+        limit: favoritesOnly("athletes") ? 500 : 40,
+      });
       if (requestId !== athleteSearchRequestId) return;
-      resultsNode.innerHTML = renderAthleteCards(athletes);
+      resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
       bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
@@ -2787,11 +2797,10 @@ async function renderEvents() {
         level: filterValues("level", "events"),
         status: calendarStatusParam(),
         as_of: formatLocalIso(TODAY),
-        favorite_only: favoritesOnly("events"),
-        limit: 80,
-      }, { auth: favoritesOnly("events") });
+        limit: favoritesOnly("events") ? 1000 : 80,
+      });
       if (requestId !== eventSearchRequestId) return;
-      renderEventList("#eventLiveResults", events);
+      renderEventList("#eventLiveResults", filterFavoriteEvents(events));
     } catch (error) {
       if (requestId !== eventSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);

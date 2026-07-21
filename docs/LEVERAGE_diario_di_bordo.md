@@ -2214,6 +2214,7 @@ Aggiornamento ricerca globale:
 - verificata e stabilizzata la ricerca composta nella sezione Athletes: query come `Stefano Patron`, `Patron Stefano` o l'ID atleta mantengono la scheda corretta anche al termine della digitazione; il frontend usa inoltre l'endpoint con slash finale per evitare redirect intermedi durante il filtro live.
 - aggiunti i filtri `Junior` e `Senior` nella sezione Athletes: la categoria resta semanticamente derivata dai Result dell'atleta, non da un campo fisso dell'entita Athlete, cosi un ginnasta puo essere trovato in base alle categorie in cui ha effettivamente gareggiato.
 - distinto il placeholder della ricerca Athletes dalla ricerca globale: la barra dedicata agli atleti comunica ora esclusivamente ricerca per nome, ID o nazione, evitando riferimenti fuorvianti a eventi, classifiche o attrezzi.
+- uniformata la barra di ricerca della sezione `Athletes` allo stile delle altre sezioni, separando la search bar dai filtri e rendendo stabile il campo durante la digitazione live;
 - resa piu intelligente la ricerca per nazione nella sezione Athletes: i nomi paese e gli alias multilingua vengono normalizzati verso i codici country salvati nel database, cosi ricerche come `Italy`, `Italia`, `United States` o `Germania` restituiscono gli atleti collegati ai codici `ITA`, `USA` o `GER`.
 - rifinita la home page rinominando le anteprime in `Calendar` e `Ranking` e stabilizzando il pulsante `View all`, ora centrato e contenuto correttamente nel controllo senza sbordature.
 
@@ -2278,6 +2279,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - nelle sezioni `Athletes` ed `Events`, se l'utente e loggato, compare ora il filtro locale `Favorites`/`Preferiti`, che mostra direttamente nella sezione corrente solo atleti o eventi preferiti senza rimandare all'area personale;
 - il filtro `Favorites`/`Preferiti` e posizionato come ultimo controllo nelle sezioni `Athletes` ed `Events`, separandolo visivamente dai filtri sportivi; in `Events` resta vicino agli altri controlli per evitare un allineamento eccessivamente distante;
 - il filtro `Favorites`/`Preferiti` aggiorna direttamente la lista della sezione corrente; in `Events` aggiorna insieme lista e calendario, senza forzare il ritorno all'area personale;
+- per maggiore robustezza in anteprima locale, il filtro `Favorites`/`Preferiti` restringe lato frontend i risultati agli ID preferiti gia caricati, evitando di dipendere dal riavvio immediato del backend per il parametro `favorite_only`;
 - aggiunto pulsante a stellina sulle card atleta e sulle card evento: stellina vuota per salvare, stellina piena per rimuovere dai preferiti;
 - create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
 - mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;
