@@ -130,6 +130,7 @@ const translations = {
     signInToSaveRanking: "Sign in to save Ranking configurations.",
     openSavedRanking: "Open saved Ranking",
     deleteSavedRanking: "Delete saved Ranking",
+    clearRankingFilters: "Clear filters",
     filters: "Filters",
     language: "Language",
     save: "Save",
@@ -290,6 +291,7 @@ const translations = {
     signInToSaveRanking: "Accedi per salvare configurazioni Ranking.",
     openSavedRanking: "Apri Ranking salvato",
     deleteSavedRanking: "Elimina Ranking salvato",
+    clearRankingFilters: "Pulisci filtri",
     filters: "Filtri",
     language: "Lingua",
     save: "Salva",
@@ -450,6 +452,7 @@ const translations = {
     signInToSaveRanking: "Inicia sesion para guardar configuraciones Ranking.",
     openSavedRanking: "Abrir Ranking guardado",
     deleteSavedRanking: "Eliminar Ranking guardado",
+    clearRankingFilters: "Limpiar filtros",
     filters: "Filtros",
     language: "Idioma",
     save: "Guardar",
@@ -610,6 +613,7 @@ const translations = {
     signInToSaveRanking: "Connectez-vous pour enregistrer des configurations Ranking.",
     openSavedRanking: "Ouvrir Ranking enregistre",
     deleteSavedRanking: "Supprimer Ranking enregistre",
+    clearRankingFilters: "Effacer filtres",
     filters: "Filtres",
     language: "Langue",
     save: "Enregistrer",
@@ -1959,6 +1963,20 @@ function clearRankingTimeFilters() {
   });
 }
 
+function clearRankingFilters() {
+  Object.assign(scopedFilters("rankings"), {
+    discipline: [],
+    category: [],
+    apparatus: [],
+    scoringCycle: [],
+    startYear: "",
+    endYear: "",
+    startDate: "",
+    endDate: "",
+  });
+  render();
+}
+
 function setRankingYearFilter(year) {
   const filters = scopedFilters("rankings");
   if (rankingWholeYearIsActive(year)) {
@@ -2017,6 +2035,10 @@ function bindRankingTimeFilters() {
   endYear?.addEventListener("change", applyYearRange);
   startDate?.addEventListener("change", applyDateRange);
   endDate?.addEventListener("change", applyDateRange);
+}
+
+function bindRankingClearFilters() {
+  $("#clearRankingFiltersButton")?.addEventListener("click", clearRankingFilters);
 }
 
 function bindRankingSaveForm() {
@@ -2719,6 +2741,7 @@ async function renderRankings() {
       ${disciplineSegmentedControl()}
       ${filterButton(t("senior"), "category", "senior", "rankings")}
       ${filterButton(t("junior"), "category", "junior", "rankings")}
+      <button class="quiet-button" type="button" id="clearRankingFiltersButton">${t("clearRankingFilters")}</button>
     </div>
     <div class="toolbar secondary-toolbar" aria-label="${t("apparatus")}">
       ${apparatusFilters.map((apparatus) => filterButton(apparatus, "apparatus", apparatus, "rankings")).join("")}
@@ -2736,6 +2759,7 @@ async function renderRankings() {
   bindFilterButtons();
   bindRankingDisciplineControl();
   bindRankingTimeFilters();
+  bindRankingClearFilters();
   bindRankingSaveForm();
   try {
     const rankings = await getJson("/analytics/rankings", {
