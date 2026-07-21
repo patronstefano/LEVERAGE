@@ -2231,7 +2231,7 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - aggiunti filtri per livello competizione nella sezione `Events`, mappati ai valori dell'entita `Event`: `Olympic Games`, `World Championships`, `Continental Championships`, `World Cup`, `World Challenge Cup`, `International Event`, `National Event`;
 - in UI i livelli competizione restano presentati con le stesse etichette del backend, senza rinominare `World Cup` o `World Challenge Cup`;
 - il backend `/events/` e `/events/calendar` accetta ora piu livelli selezionati insieme, sia come parametri ripetuti sia come valori separati da virgola;
-- nella UI `Events`, i filtri per livello competizione sono stati raccolti in un menu compatto `Level` a selezione singola, per ridurre rumore visivo e rendere piu ordinata la fascia filtri;
+- nella UI `Events`, i filtri per livello competizione sono stati raccolti in un menu compatto `Level` a selezione multipla, per ridurre rumore visivo e rendere piu ordinata la fascia filtri senza perdere la possibilita di combinare piu livelli;
 - aggiunta copertura test per filtri livello su lista eventi e calendario, incluse le righe calendar-only.
 - resa piu smart la ricerca gare in `Events` e nella ricerca globale: il matching degli eventi non dipende piu solo dall'ordine esatto delle parole salvate nel database;
 - introdotto token matching order-insensitive per i nomi gara, sede, venue e livello evento: query come `World Cup Cottbus` trovano correttamente eventi salvati come `Cottbus World Cup`, anche con anno esplicito;
@@ -2245,7 +2245,7 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - i filtri attrezzo possono essere combinati tra loro, cosi l'utente puo confrontare ranking limitati a uno o piu apparatus senza mischiare attrezzi non desiderati;
 - i cicli olimpici/scoring cycles sono ora selezionabili in combinazione multipla, mantenendo il warning quando la classifica include punteggi appartenenti a codici di punteggio diversi;
 - il filtro `All cycles` mantiene il significato di confronto trasversale intenzionale: quando e attivo, la UI mostra tutti i pulsanti ciclo come selezionati e il backend riceve `include_all_scoring_cycles=true`;
-- nella UI `Rankings`, i cicli olimpici/scoring cycles sono stati raccolti in un menu compatto analogo al filtro `Level` della sezione `Events`, mantenendo pero la selezione multipla e la logica speciale di `All cycles`;
+- nella UI `Rankings`, i cicli olimpici/scoring cycles sono stati raccolti in un menu compatto analogo al filtro `Level` della sezione `Events`, rinominato user-facing in `Olympic cycle`/`Ciclo olimpico` e mantenendo la selezione multipla con la logica speciale di `All cycles`;
 - il backend `/analytics/rankings` e l'endpoint parallelo `/results/analytics/rankings` accettano ora piu valori `apparatus` e piu valori `scoring_cycle`, sia come parametri ripetuti sia come valori separati da virgola;
 - aggiunti test automatici per ranking su piu cicli e su piu attrezzi.
 - le card della sezione `Rankings` mostrano ora la composizione del punteggio per i risultati non-AA: `D`, `E est.`, `P`, `B`, con valori `not available` o `not applicable` quando coerente con lo stato del dato;

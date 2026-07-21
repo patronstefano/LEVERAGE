@@ -209,7 +209,7 @@ const translations = {
     results: "results",
     result: "result",
     score: "Score",
-    scoringCycle: "Scoring cycle",
+    scoringCycle: "Olympic cycle",
     allCycles: "All cycles",
     timeInterval: "Period",
     wholeYear: "Whole year",
@@ -372,7 +372,7 @@ const translations = {
     results: "risultati",
     result: "risultato",
     score: "Score",
-    scoringCycle: "Ciclo punteggio",
+    scoringCycle: "Ciclo olimpico",
     allCycles: "Tutti i cicli",
     timeInterval: "Periodo",
     wholeYear: "Anno intero",
@@ -535,7 +535,7 @@ const translations = {
     results: "resultados",
     result: "resultado",
     score: "Score",
-    scoringCycle: "Ciclo de puntuacion",
+    scoringCycle: "Ciclo olimpico",
     allCycles: "Todos los ciclos",
     timeInterval: "Periodo",
     wholeYear: "Ano completo",
@@ -698,7 +698,7 @@ const translations = {
     results: "resultats",
     result: "resultat",
     score: "Score",
-    scoringCycle: "Cycle de notation",
+    scoringCycle: "Cycle olympique",
     allCycles: "Tous les cycles",
     timeInterval: "Periode",
     wholeYear: "Annee complete",
@@ -1923,11 +1923,13 @@ function eventLevelLabel(value) {
 }
 
 function renderEventLevelFilter() {
-  const selectedLevel = singleFilterParam("level", "events");
-  const label = selectedLevel ? `${t("levelFilter")}: ${eventLevelLabel(selectedLevel)}` : t("levelFilter");
+  const selectedLevels = filterValues("level", "events");
+  const label = selectedLevels.length
+    ? `${t("levelFilter")}: ${selectedLevels.map(eventLevelLabel).join(", ")}`
+    : t("levelFilter");
   return `
     <details class="filter-menu event-level-filter">
-      <summary class="filter-button filter-menu-summary" aria-pressed="${Boolean(selectedLevel)}">${escapeHtml(label)}</summary>
+      <summary class="filter-button filter-menu-summary" aria-pressed="${Boolean(selectedLevels.length)}">${escapeHtml(label)}</summary>
       <div class="filter-menu-panel">
         ${EVENT_LEVEL_FILTERS.map((level) => filterButton(level.label, "level", level.value, "events", "filter-menu-option")).join("")}
       </div>
@@ -1997,12 +1999,6 @@ function bindFilterButtons(onChange = null) {
             ? cycleValues.filter((item) => item !== value)
             : [...cycleValues, value];
         }
-        notifyChange({ scope, type, value, button });
-        return;
-      }
-      if (scope === "events" && type === "level") {
-        const values = filterValues(type, scope);
-        filters[type] = values.includes(value) ? [] : [value];
         notifyChange({ scope, type, value, button });
         return;
       }

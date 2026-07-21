@@ -811,6 +811,7 @@ button {
   width: 100%;
 }
 
+.event-level-filter .filter-menu-summary,
 .ranking-cycle-filter .filter-menu-summary {
   max-width: min(320px, calc(100vw - 36px));
   overflow: hidden;
