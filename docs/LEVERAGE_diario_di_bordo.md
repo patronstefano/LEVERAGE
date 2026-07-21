@@ -2310,7 +2310,7 @@ Correzione preferiti del 21 luglio 2026:
 - corretto un problema UX per cui, dopo aver cambiato schermata e rientrando in `Athletes` o `Events`, il filtro `Favorites`/`Preferiti` poteva mostrare `No results` anche in presenza di preferiti salvati;
 - causa individuata: il frontend scaricava una lista pubblica limitata e poi applicava il filtro preferiti localmente; se il preferito non rientrava nella finestra caricata, il risultato veniva escluso;
 - soluzione adottata: quando il filtro `Preferiti` e attivo, la UI passa `favorite_only=true` agli endpoint pubblici autenticati gia esistenti (`/athletes/` e `/events/calendar`) e invia il token JWT;
-- regola definitiva: il filtro `Preferiti` non modifica mai la cache dei preferiti. La cache viene popolata solo dagli endpoint di preferenza utente e dalle azioni esplicite sulle stelline; le liste filtrate dal backend vengono ulteriormente controllate lato frontend sugli ID gia presenti nella cache, evitando che un eventuale risultato non filtrato venga interpretato come nuovo preferito.
+- regola definitiva: il filtro `Preferiti` non modifica mai la cache dei preferiti. Quando il filtro e attivo, la fonte di verita della lista visualizzata e la risposta autenticata del backend con `favorite_only=true`; la cache locale serve soltanto per lo stato ordinario delle stelline e viene popolata dagli endpoint di preferenza utente o dalle azioni esplicite dell'utente sulle stelline.
 
 ## 19. Conclusione
 

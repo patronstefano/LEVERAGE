@@ -1151,7 +1151,7 @@ async function toggleFavorite(kind, id, button) {
   }
   const numericId = Number(id);
   const idSet = kind === "athlete" ? state.favoriteAthleteIds : state.favoriteEventIds;
-  const isActive = idSet.has(numericId);
+  const isActive = idSet.has(numericId) || button.getAttribute("aria-pressed") === "true";
   button.disabled = true;
   try {
     if (kind === "athlete") {
@@ -2290,7 +2290,7 @@ async function hydrateEventsCalendar() {
     status: calendarStatusParam(),
     favorite_only: favoriteFilterActive,
   }, { auth: favoriteFilterActive });
-  renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
+  renderHomeCalendar("#eventResults", favoriteFilterActive ? events : filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
     maxVisibleLanes: 6,
@@ -2315,8 +2315,9 @@ async function resetEventsCalendarMonth() {
   }
 }
 
-function renderEventList(selector, events) {
+function renderEventList(selector, events, options = {}) {
   const node = $(selector);
+  const forceFavoriteActive = Boolean(options.forceFavoriteActive);
   if (!events.length) {
     node.innerHTML = emptyState();
     return;
@@ -2353,7 +2354,7 @@ function renderEventList(selector, events) {
       meta,
       pills,
       event.id ? `#/events/${event.id}` : "",
-      favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
+      favoriteButton("event", event.id, forceFavoriteActive || state.favoriteEventIds.has(Number(event.id))),
     );
   }).join("")}</div>`;
   bindFavoriteButtons();
@@ -2651,7 +2652,8 @@ function syncAthleteSearchRoute(query) {
   setActiveNav();
 }
 
-function renderAthleteCards(athletes) {
+function renderAthleteCards(athletes, options = {}) {
+  const forceFavoriteActive = Boolean(options.forceFavoriteActive);
   if (!athletes.length) return emptyState();
   return `<div class="grid-3">${athletes.map((athlete) => {
     const pills = [
@@ -2665,7 +2667,7 @@ function renderAthleteCards(athletes) {
       athlete.world_gymnastics_status || "Official profile pending",
       pills,
       `#/athletes/${athlete.id}`,
-      favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
+      favoriteButton("athlete", athlete.id, forceFavoriteActive || state.favoriteAthleteIds.has(Number(athlete.id))),
     );
   }).join("")}</div>`;
 }
@@ -2738,7 +2740,10 @@ async function renderAthletes() {
         limit: favoriteFilterActive ? 500 : 40,
       }, { auth: favoriteFilterActive });
       if (requestId !== athleteSearchRequestId) return;
-      resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
+      resultsNode.innerHTML = renderAthleteCards(
+        favoriteFilterActive ? athletes : filterFavoriteAthletes(athletes),
+        { forceFavoriteActive: favoriteFilterActive },
+      );
       bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
@@ -2843,7 +2848,11 @@ async function renderEvents() {
         limit: favoriteFilterActive ? 1000 : 80,
       }, { auth: favoriteFilterActive });
       if (requestId !== eventSearchRequestId) return;
-      renderEventList("#eventLiveResults", filterFavoriteEvents(events));
+      renderEventList(
+        "#eventLiveResults",
+        favoriteFilterActive ? events : filterFavoriteEvents(events),
+        { forceFavoriteActive: favoriteFilterActive },
+      );
     } catch (error) {
       if (requestId !== eventSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);
