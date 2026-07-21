@@ -2239,8 +2239,8 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 
 - aggiunti filtri attrezzo nella sezione `Rankings`, dinamici in base alla disciplina selezionata;
-- con disciplina `MAG` vengono mostrati `AA`, `FX`, `PH`, `SR`, `VT`, `PB`, `HB`;
-- con disciplina `WAG` vengono mostrati `AA`, `VT`, `UB`, `BB`, `FX`;
+- con disciplina `MAG` vengono mostrati `AA`, `FX`, `PH`, `SR`, `VT`, `PB`, `HB`, con `VT AVG` collocato dopo l'ultimo attrezzo specifico;
+- con disciplina `WAG` vengono mostrati `AA`, `VT`, `UB`, `BB`, `FX`, con `VT AVG` collocato dopo l'ultimo attrezzo specifico;
 - i filtri attrezzo possono essere combinati tra loro, cosi l'utente puo confrontare ranking limitati a uno o piu apparatus senza mischiare attrezzi non desiderati;
 - i cicli olimpici/scoring cycles sono ora selezionabili in combinazione multipla, mantenendo il warning quando la classifica include punteggi appartenenti a codici di punteggio diversi;
 - il filtro `All cycles` mantiene il significato di confronto trasversale intenzionale: quando e attivo, la UI mostra tutti i pulsanti ciclo come selezionati e il backend riceve `include_all_scoring_cycles=true`;
@@ -2249,7 +2249,7 @@ Aggiornamento UI/semantica sezione Rankings del 20 luglio 2026:
 - le card della sezione `Rankings` mostrano ora la composizione del punteggio per i risultati non-AA: `D`, `E est.`, `P`, `B`, con valori `not available` o `not applicable` quando coerente con lo stato del dato;
 - per i ranking `AA`, il backend espone `apparatus_scores`, cioe i punteggi sui singoli attrezzi collegati allo stesso atleta/evento/format/round/categoria/giorno che compongono il totale all-around, e la UI li mostra direttamente nella card.
 - ogni record visualizzato nella sezione `Rankings` espone ora anche l'anno della gara e, quando disponibile, la data dell'evento, cosi l'utente puo contestualizzare immediatamente il punteggio;
-- introdotto nella UI un filtro `Time interval`/`Intervallo di tempo` per le classifiche: l'utente puo selezionare un anno intero, un intervallo di anni o un intervallo preciso tra due date;
+- introdotto nella UI un filtro `Period`/`Periodo` per le classifiche: l'utente puo selezionare un anno intero, un intervallo di anni o un intervallo preciso tra due date;
 - quando viene selezionato un intervallo temporale specifico, la UI svuota il filtro ciclo olimpico per evitare sovrapposizioni implicite tra filtri; il backend continua comunque a segnalare quando il ranking include piu scoring cycles;
 - l'endpoint `/analytics/rankings` valida ora gli intervalli temporali incoerenti, rifiutando `end_year < start_year` o `end_date < start_date`.
 - aggiunta gestione semantica specifica per Vault nei ranking: `VT` e `VT AVG` sono filtri distinti, cosi il salto singolo non viene mescolato con la media dei due salti;
@@ -2287,6 +2287,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - corretta la resa grafica del pulsante cestino, sostituendo il disegno CSS con una piccola icona SVG proporzionata e stabile.
 - uniformata la UI del cestino alla stellina dei preferiti: stesso componente base, stessa dimensione, stesso hover/focus/disabled e stessa micro-interazione al click, cambiando soltanto l'icona interna.
 - aggiunto nella sezione `Rankings` il pulsante `Clear filters`/`Pulisci filtri`, che rimuove in un solo click categoria, attrezzi, scoring cycle e intervalli temporali, riportando la classifica al default tecnico MAG.
+- riorganizzata la sezione `Rankings` separando visivamente i filtri che modificano la classifica dalle azioni personali: disciplina/categoria, apparatus, cicli e periodo restano in un blocco filtri compatto, mentre `Save this Ranking` e `Clear filters` sono raccolti in una riga azioni distinta.
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
 

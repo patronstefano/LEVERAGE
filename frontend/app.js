@@ -39,8 +39,8 @@ const state = {
 const CURRENT_YEAR = new Date().getFullYear();
 const TODAY = new Date();
 const RANKING_APPARATUS_BY_DISCIPLINE = {
-  MAG: ["AA", "FX", "PH", "SR", "VT", "VT AVG", "PB", "HB"],
-  WAG: ["AA", "VT", "VT AVG", "UB", "BB", "FX"],
+  MAG: ["AA", "FX", "PH", "SR", "VT", "PB", "HB", "VT AVG"],
+  WAG: ["AA", "VT", "UB", "BB", "FX", "VT AVG"],
 };
 const SCORING_CYCLE_FILTERS = ["2017-2021", "2022-2024", "2025-2028"];
 const RANKING_YEAR_FILTERS = Array.from(
@@ -207,7 +207,7 @@ const translations = {
     score: "Score",
     scoringCycle: "Scoring cycle",
     allCycles: "All cycles",
-    timeInterval: "Time interval",
+    timeInterval: "Period",
     wholeYear: "Whole year",
     fromYear: "From year",
     toYear: "To year",
@@ -368,7 +368,7 @@ const translations = {
     score: "Score",
     scoringCycle: "Ciclo punteggio",
     allCycles: "Tutti i cicli",
-    timeInterval: "Intervallo di tempo",
+    timeInterval: "Periodo",
     wholeYear: "Anno intero",
     fromYear: "Da anno",
     toYear: "A anno",
@@ -529,7 +529,7 @@ const translations = {
     score: "Score",
     scoringCycle: "Ciclo de puntuacion",
     allCycles: "Todos los ciclos",
-    timeInterval: "Intervalo de tiempo",
+    timeInterval: "Periodo",
     wholeYear: "Ano completo",
     fromYear: "Desde ano",
     toYear: "Hasta ano",
@@ -690,7 +690,7 @@ const translations = {
     score: "Score",
     scoringCycle: "Cycle de notation",
     allCycles: "Tous les cycles",
-    timeInterval: "Intervalle",
+    timeInterval: "Periode",
     wholeYear: "Annee complete",
     fromYear: "Depuis annee",
     toYear: "Jusqu'a annee",
@@ -2737,23 +2737,27 @@ async function renderRankings() {
   const apparatusFilters = rankingApparatusFilters();
   setApp(`
     ${pageHeading("rankingsHeading", "rankingsIntro")}
-    <div class="toolbar">
-      ${disciplineSegmentedControl()}
-      ${filterButton(t("senior"), "category", "senior", "rankings")}
-      ${filterButton(t("junior"), "category", "junior", "rankings")}
+    <div class="ranking-filter-stack">
+      <div class="toolbar ranking-filter-row">
+        ${disciplineSegmentedControl()}
+        ${filterButton(t("senior"), "category", "senior", "rankings")}
+        ${filterButton(t("junior"), "category", "junior", "rankings")}
+      </div>
+      <div class="toolbar secondary-toolbar ranking-filter-row" aria-label="${t("apparatus")}">
+        ${apparatusFilters.map((apparatus) => filterButton(apparatus, "apparatus", apparatus, "rankings")).join("")}
+      </div>
+      <div class="toolbar secondary-toolbar ranking-filter-row">
+        ${filterButton("2017-2021", "scoringCycle", "2017-2021", "rankings")}
+        ${filterButton("2022-2024", "scoringCycle", "2022-2024", "rankings")}
+        ${filterButton("2025-2028", "scoringCycle", "2025-2028", "rankings")}
+        ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
+      </div>
+      ${renderRankingTimeFilter()}
+    </div>
+    <div class="ranking-actions-row">
+      ${renderRankingSavePanel()}
       <button class="quiet-button" type="button" id="clearRankingFiltersButton">${t("clearRankingFilters")}</button>
     </div>
-    <div class="toolbar secondary-toolbar" aria-label="${t("apparatus")}">
-      ${apparatusFilters.map((apparatus) => filterButton(apparatus, "apparatus", apparatus, "rankings")).join("")}
-    </div>
-    <div class="toolbar secondary-toolbar">
-      ${filterButton("2017-2021", "scoringCycle", "2017-2021", "rankings")}
-      ${filterButton("2022-2024", "scoringCycle", "2022-2024", "rankings")}
-      ${filterButton("2025-2028", "scoringCycle", "2025-2028", "rankings")}
-      ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
-    </div>
-    ${renderRankingTimeFilter()}
-    ${renderRankingSavePanel()}
     <div id="rankingResults">${loadingState()}</div>
   `);
   bindFilterButtons();

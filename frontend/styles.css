@@ -1377,7 +1377,7 @@ button {
 }
 
 .ranking-time-filter {
-  margin: -4px 0 18px;
+  margin: 0;
 }
 
 .ranking-time-filter > summary {
@@ -1449,7 +1449,7 @@ button {
 .saved-ranking-panel {
   display: grid;
   gap: 10px;
-  margin: -4px 0 18px;
+  margin: 0;
   justify-items: start;
 }
 
@@ -1495,6 +1495,18 @@ button {
   min-height: 20px;
   color: var(--muted);
   font-size: 13px;
+}
+
+.ranking-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 18px;
+}
+
+.ranking-actions-row .saved-ranking-form-shell {
+  min-width: min(100%, 420px);
 }
 
 .entity-row {
@@ -1690,6 +1702,24 @@ button {
 
 .secondary-toolbar {
   margin-top: -8px;
+}
+
+.ranking-filter-stack {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ranking-filter-stack .toolbar {
+  margin-bottom: 0;
+}
+
+.ranking-filter-stack .secondary-toolbar {
+  margin-top: 0;
+}
+
+.ranking-filter-row {
+  padding-bottom: 2px;
 }
 
 .toolbar .search-input {
