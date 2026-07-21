@@ -102,6 +102,9 @@ const translations = {
     loginError: "Unable to sign in. Check your credentials and email verification.",
     mfaRequired: "Enter your MFA code to complete sign in.",
     mfaSetupRequired: "Admin MFA setup is required before this account can sign in here.",
+    demoLoginNote: "Temporary frontend development shortcuts.",
+    demoUser: "DEMO USER",
+    demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Your private area for favorite athletes, saved events and personal shortcuts.",
     favoriteAthletes: "Favorite athletes",
@@ -248,6 +251,9 @@ const translations = {
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
     mfaRequired: "Inserisci il codice MFA per completare l'accesso.",
     mfaSetupRequired: "Prima di accedere qui, questo account admin deve completare la configurazione MFA.",
+    demoLoginNote: "Scorciatoie temporanee per lo sviluppo frontend.",
+    demoUser: "DEMO USER",
+    demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "La tua area privata per atleti preferiti, eventi salvati e scorciatoie personali.",
     favoriteAthletes: "Atleti preferiti",
@@ -394,6 +400,9 @@ const translations = {
     loginError: "No se pudo iniciar sesion. Revisa credenciales y verificacion email.",
     mfaRequired: "Introduce el codigo MFA para completar el acceso.",
     mfaSetupRequired: "Esta cuenta admin debe configurar MFA antes de acceder aqui.",
+    demoLoginNote: "Accesos temporales para desarrollo frontend.",
+    demoUser: "DEMO USER",
+    demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Tu area privada para atletas favoritos, eventos guardados y accesos personales.",
     favoriteAthletes: "Atletas favoritos",
@@ -540,6 +549,9 @@ const translations = {
     loginError: "Connexion impossible. Verifiez identifiants et verification email.",
     mfaRequired: "Saisissez le code MFA pour terminer la connexion.",
     mfaSetupRequired: "Ce compte admin doit configurer MFA avant de se connecter ici.",
+    demoLoginNote: "Raccourcis temporaires pour le developpement frontend.",
+    demoUser: "DEMO USER",
+    demoAdmin: "DEMO ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Votre espace prive pour athletes favoris, evenements enregistres et raccourcis personnels.",
     favoriteAthletes: "Athletes favoris",
@@ -829,6 +841,15 @@ async function hydrateCurrentUser() {
     clearAuth();
     return null;
   }
+}
+
+async function completeLoginWithToken(accessToken) {
+  state.authToken = accessToken;
+  localStorage.setItem(AUTH_TOKEN_KEY, state.authToken);
+  state.favoritesLoaded = false;
+  await hydrateCurrentUser();
+  await ensureFavoritesLoaded({ force: true }).catch(() => {});
+  window.location.hash = "#/account";
 }
 
 async function ensureFavoritesLoaded({ force = false } = {}) {
@@ -2535,6 +2556,13 @@ function renderLogin() {
         <button class="primary-button" type="submit">${t("loginAction")}</button>
         <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
       </form>
+      <div class="demo-login-block">
+        <p>${t("demoLoginNote")}</p>
+        <div class="demo-login-actions">
+          <button class="quiet-button demo-login-button" type="button" data-demo-role="user">${t("demoUser")}</button>
+          <button class="quiet-button demo-login-button" type="button" data-demo-role="admin">${t("demoAdmin")}</button>
+        </div>
+      </div>
     </section>
   `);
 
@@ -2568,17 +2596,35 @@ function renderLogin() {
         message.textContent = t("loginError");
         return;
       }
-      state.authToken = payload.access_token;
-      localStorage.setItem(AUTH_TOKEN_KEY, state.authToken);
-      state.favoritesLoaded = false;
-      await hydrateCurrentUser();
-      await ensureFavoritesLoaded({ force: true }).catch(() => {});
-      window.location.hash = "#/account";
+      await completeLoginWithToken(payload.access_token);
     } catch (_error) {
       message.textContent = t("loginError");
     } finally {
       submit.disabled = false;
     }
+  });
+
+  document.querySelectorAll("[data-demo-role]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const message = $("#loginMessage");
+      message.textContent = "";
+      button.disabled = true;
+      try {
+        const payload = await sendJson("/auth/demo-login", {
+          auth: false,
+          body: { role: button.dataset.demoRole },
+        });
+        if (!payload.access_token) {
+          message.textContent = t("loginError");
+          return;
+        }
+        await completeLoginWithToken(payload.access_token);
+      } catch (_error) {
+        message.textContent = t("loginError");
+      } finally {
+        button.disabled = false;
+      }
+    });
   });
 }
 

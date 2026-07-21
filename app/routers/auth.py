@@ -33,6 +33,9 @@ router = APIRouter()
 GENERIC_REGISTRATION_MESSAGE = "If the address can be registered, a verification email will be sent."
 GENERIC_RESET_MESSAGE = "If the address exists, password reset instructions will be sent."
 DUMMY_PASSWORD_HASH = hash_password("LEVERAGE-dummy-password-not-used")
+DEMO_USER_EMAIL = "demo.user@leverage-demo.com"
+DEMO_ADMIN_EMAIL = "demo.admin@leverage-demo.com"
+DEMO_PASSWORD_HASH = hash_password("LEVERAGE-demo-login-disabled-password")
 
 
 def email_cooldown_active(last_sent_at: Optional[datetime]) -> bool:
@@ -98,6 +101,40 @@ def reset_failed_login(user: models.User, db: Session) -> None:
     db.commit()
 
 
+def demo_login_allowed() -> bool:
+    return settings.app_env.lower() == "development"
+
+
+def get_or_create_demo_user(db: Session, role: models.RoleEnum) -> models.User:
+    email = DEMO_ADMIN_EMAIL if role == models.RoleEnum.ADMIN else DEMO_USER_EMAIL
+    user = get_user_by_email(db, email)
+    if not user:
+        user = models.User(
+            email=email,
+            password_hash=DEMO_PASSWORD_HASH,
+            role=role,
+            preferred_language=models.LanguageEnum.EN,
+            is_verified=True,
+            is_active=True,
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    user.role = role
+    user.is_verified = True
+    user.is_active = True
+    user.login_locked_until = None
+    user.failed_login_attempts = 0
+    if role == models.RoleEnum.ADMIN:
+        user.mfa_secret = user.mfa_secret or generate_mfa_secret()
+        user.mfa_enabled = True
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
 @router.post("/register", response_model=schemas.AuthMessage, status_code=202)
 def register(
     payload: schemas.UserRegister,
@@ -124,6 +161,26 @@ def register(
     db.refresh(user)
     send_verification_email(user, db)
     return schemas.AuthMessage(message=GENERIC_REGISTRATION_MESSAGE)
+
+
+@router.post("/demo-login", response_model=schemas.LoginResponse)
+def demo_login(
+    payload: schemas.DemoLoginRequest,
+    db: Session = Depends(get_db),
+):
+    if not demo_login_allowed():
+        raise HTTPException(status_code=404, detail="Not found")
+    if payload.role not in {schemas.RoleEnum.USER, schemas.RoleEnum.ADMIN}:
+        raise HTTPException(status_code=400, detail="Demo login supports user or admin only")
+
+    role = models.RoleEnum.ADMIN if payload.role == schemas.RoleEnum.ADMIN else models.RoleEnum.USER
+    user = get_or_create_demo_user(db, role)
+    return schemas.LoginResponse(
+        access_token=create_token(
+            user,
+            mfa_verified=role == models.RoleEnum.ADMIN,
+        ),
+    )
 
 
 @router.post("/verify-email", response_model=schemas.AuthMessage)

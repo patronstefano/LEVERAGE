@@ -1690,6 +1690,29 @@ button {
   font-size: 13px;
 }
 
+.demo-login-block {
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(25, 23, 71, 0.08);
+}
+
+.demo-login-block p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-login-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.demo-login-button {
+  border-style: dashed;
+}
+
 .auth-primary-link {
   width: max-content;
   text-decoration: none;

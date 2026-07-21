@@ -154,6 +154,27 @@ def test_password_login_and_me_support_public_to_personal_area_flow():
     assert anonymous_me_response.status_code == 401
 
 
+def test_development_demo_login_shortcuts_return_real_tokens():
+    user_response = client.post("/auth/demo-login", json={"role": "user"})
+    assert user_response.status_code == 200
+    user_token = user_response.json()["access_token"]
+    user_me = client.get("/auth/me", headers={"Authorization": f"Bearer {user_token}"})
+    assert user_me.status_code == 200
+    assert user_me.json()["email"] == "demo.user@leverage-demo.com"
+    assert user_me.json()["role"] == "user"
+
+    admin_response = client.post("/auth/demo-login", json={"role": "admin"})
+    assert admin_response.status_code == 200
+    admin_token = admin_response.json()["access_token"]
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+    admin_me = client.get("/auth/me", headers=admin_headers)
+    assert admin_me.status_code == 200
+    assert admin_me.json()["email"] == "demo.admin@leverage-demo.com"
+    assert admin_me.json()["role"] == "admin"
+    assert admin_me.json()["mfa_enabled"] is True
+    assert client.get("/admin/entities-to-complete", headers=admin_headers).status_code == 200
+
+
 def test_admin_login_requires_totp_enrollment_and_verification():
     client.post(
         "/auth/register",

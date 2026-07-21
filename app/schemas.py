@@ -425,6 +425,10 @@ class LoginRequest(BaseModel):
     mfa_code: Optional[str] = Field(default=None, min_length=6, max_length=64)
 
 
+class DemoLoginRequest(BaseModel):
+    role: RoleEnum = RoleEnum.USER
+
+
 class PasswordResetConfirm(BaseModel):
     token: str = Field(min_length=20, max_length=512)
     new_password: str = Field(min_length=12, max_length=128)
