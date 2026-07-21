@@ -1972,7 +1972,14 @@ function disciplineSegmentedControl() {
   `;
 }
 
-function bindFilterButtons() {
+function bindFilterButtons(onChange = null) {
+  const notifyChange = (change) => {
+    if (typeof onChange === "function") {
+      onChange(change);
+      return;
+    }
+    render();
+  };
   document.querySelectorAll("[data-filter-type]").forEach((button) => {
     button.addEventListener("click", () => {
       const scope = button.dataset.filterScope || currentFilterScope();
@@ -1990,13 +1997,13 @@ function bindFilterButtons() {
             ? cycleValues.filter((item) => item !== value)
             : [...cycleValues, value];
         }
-        render();
+        notifyChange({ scope, type, value, button });
         return;
       }
       if (scope === "events" && type === "level") {
         const values = filterValues(type, scope);
         filters[type] = values.includes(value) ? [] : [value];
-        render();
+        notifyChange({ scope, type, value, button });
         return;
       }
       if (Array.isArray(filters[type])) {
@@ -2007,7 +2014,7 @@ function bindFilterButtons() {
       } else {
         filters[type] = filters[type] === value ? "" : value;
       }
-      render();
+      notifyChange({ scope, type, value, button });
     });
   });
 }
@@ -2640,6 +2647,16 @@ function currentParams() {
   return new URLSearchParams(query);
 }
 
+function syncFilterButtonState(button) {
+  if (!button) return;
+  const scope = button.dataset.filterScope || currentFilterScope();
+  button.setAttribute("aria-pressed", String(filterIsActive(
+    button.dataset.filterType,
+    button.dataset.filterValue,
+    scope,
+  )));
+}
+
 async function renderAthletes() {
   const params = currentParams();
   const search = params.get("search") || "";
@@ -2651,13 +2668,12 @@ async function renderAthletes() {
       <button class="primary-button" type="submit">${t("search")}</button>
       ${filterButton("MAG", "discipline", "MAG", "athletes")}
       ${filterButton("WAG", "discipline", "WAG", "athletes")}
-      ${filterButton(t("junior"), "category", "junior", "athletes")}
       ${filterButton(t("senior"), "category", "senior", "athletes")}
+      ${filterButton(t("junior"), "category", "junior", "athletes")}
       ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
     </form>
     <div class="athlete-results" id="athleteResults" aria-live="polite">${loadingState()}</div>
   `);
-  bindFilterButtons();
   const form = $("#athleteSearchForm");
   const input = $("#athleteSearchInput");
   const resultsNode = $("#athleteResults");
@@ -2690,6 +2706,15 @@ async function renderAthletes() {
       }
     }
   };
+  bindFilterButtons((change) => {
+    if (change.scope === "athletes" && change.type === "favoritesOnly") {
+      syncFilterButtonState(change.button);
+      window.clearTimeout(searchTimer);
+      loadAthletes(input.value.trim(), { showLoading: true });
+      return;
+    }
+    render();
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -2716,18 +2741,18 @@ async function renderEvents() {
     ${pageHeading("eventsHeading", "eventsIntro")}
     <div class="event-filter-stack">
       <div class="toolbar event-filter-row">
-      ${filterButton("MAG", "discipline", "MAG", "events")}
-      ${filterButton("WAG", "discipline", "WAG", "events")}
-      ${filterButton(t("senior"), "category", "senior", "events")}
-      ${filterButton(t("junior"), "category", "junior", "events")}
+        ${filterButton("MAG", "discipline", "MAG", "events")}
+        ${filterButton("WAG", "discipline", "WAG", "events")}
+        ${filterButton(t("senior"), "category", "senior", "events")}
+        ${filterButton(t("junior"), "category", "junior", "events")}
         ${renderEventLevelFilter()}
         ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
       </div>
       <div class="toolbar secondary-toolbar event-filter-row">
-      ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
-      ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
-      ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
-      ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
+        ${filterButton(t("completedWithResults"), "calendarStatus", "completed_with_results", "events")}
+        ${filterButton(t("completedNoResults"), "calendarStatus", "completed_no_results", "events")}
+        ${filterButton(t("ongoing"), "calendarStatus", "ongoing", "events")}
+        ${filterButton(t("upcoming"), "calendarStatus", "upcoming", "events")}
       </div>
     </div>
     <form class="search-form section-search-form" id="eventSearchForm">
@@ -2747,7 +2772,6 @@ async function renderEvents() {
       <div id="eventResults">${loadingState()}</div>
     </section>
   `);
-  bindFilterButtons();
   const form = $("#eventSearchForm");
   const input = $("#eventSearchInput");
   const resultsNode = $("#eventLiveResults");
@@ -2782,6 +2806,21 @@ async function renderEvents() {
       }
     }
   };
+  bindFilterButtons((change) => {
+    if (change.scope === "events" && change.type === "favoritesOnly") {
+      syncFilterButtonState(change.button);
+      window.clearTimeout(searchTimer);
+      Promise.all([
+        hydrateEventsCalendar(),
+        loadEvents(input.value.trim(), { showLoading: true }),
+      ]).catch((error) => {
+        $("#eventResults").innerHTML = errorState(error);
+        $("#eventLiveResults").innerHTML = errorState(error);
+      });
+      return;
+    }
+    render();
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

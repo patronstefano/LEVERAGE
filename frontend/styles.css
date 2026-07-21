@@ -748,6 +748,10 @@ button {
   margin-left: auto;
 }
 
+.event-filter-row .section-favorite-filter {
+  margin-left: 0;
+}
+
 .filter-menu {
   position: relative;
   display: inline-flex;

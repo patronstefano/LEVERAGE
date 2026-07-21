@@ -2276,7 +2276,8 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - l'area privata mostra gli atleti preferiti derivati dalla tabella `FollowedAthlete` e gli eventi preferiti derivati dalla tabella tecnica `SavedEvent`, senza introdurre duplicazioni nel modello dati;
 - aggiunto logout frontend con pulizia token, utente corrente e cache dei preferiti;
 - nelle sezioni `Athletes` ed `Events`, se l'utente e loggato, compare ora il filtro locale `Favorites`/`Preferiti`, che mostra direttamente nella sezione corrente solo atleti o eventi preferiti senza rimandare all'area personale;
-- il filtro `Favorites`/`Preferiti` e posizionato come ultimo controllo a destra nelle sezioni `Athletes` ed `Events`, separandolo visivamente dai filtri sportivi;
+- il filtro `Favorites`/`Preferiti` e posizionato come ultimo controllo nelle sezioni `Athletes` ed `Events`, separandolo visivamente dai filtri sportivi; in `Events` resta vicino agli altri controlli per evitare un allineamento eccessivamente distante;
+- il filtro `Favorites`/`Preferiti` aggiorna direttamente la lista della sezione corrente; in `Events` aggiorna insieme lista e calendario, senza forzare il ritorno all'area personale;
 - aggiunto pulsante a stellina sulle card atleta e sulle card evento: stellina vuota per salvare, stellina piena per rimuovere dai preferiti;
 - create schede minime reali per atleta ed evento (`#/athletes/:id`, `#/events/:id`) collegate agli endpoint pubblici esistenti, con stellina visibile nella scheda quando l'utente e autenticato;
 - mantenuta la semantica corretta del backend: i risultati continuano a salvare solo `athlete_id` ed `event_id`, mentre le preferenze personali restano relazioni utente-entita separate;
