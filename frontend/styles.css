@@ -1450,6 +1450,11 @@ button {
   display: grid;
   gap: 10px;
   margin: -4px 0 18px;
+  justify-items: start;
+}
+
+.saved-ranking-form-shell {
+  width: 100%;
 }
 
 .saved-ranking-panel p {

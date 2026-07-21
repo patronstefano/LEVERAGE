@@ -1976,6 +1976,15 @@ function bindRankingTimeFilters() {
 }
 
 function bindRankingSaveForm() {
+  const revealButton = $("#showRankingSaveFormButton");
+  const shell = $("#rankingSaveFormShell");
+  revealButton?.addEventListener("click", () => {
+    if (!shell) return;
+    shell.hidden = false;
+    revealButton.hidden = true;
+    $("#rankingViewNameInput")?.focus();
+  });
+
   const form = $("#rankingSaveForm");
   if (!form || !state.currentUser) return;
   form.addEventListener("submit", async (event) => {
@@ -2378,25 +2387,23 @@ function renderRankingTimeFilter() {
 
 function renderRankingSavePanel() {
   if (!state.currentUser) {
-    return `
-      <section class="panel saved-ranking-panel">
-        <p>${t("signInToSaveRanking")}</p>
-        <a class="quiet-button" href="#/login">${t("signIn")}</a>
-      </section>
-    `;
+    return "";
   }
   return `
-    <section class="panel saved-ranking-panel">
-      <form class="saved-ranking-form" id="rankingSaveForm">
-        <label>
-          <span>${t("rankingViewName")}</span>
-          <input id="rankingViewNameInput" type="text" maxlength="120" required placeholder="${t("rankingViewNamePlaceholder")}">
-        </label>
-        <button class="quiet-button" type="submit">${t("saveRankingView")}</button>
-        <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
-      </form>
-      <p>${t("filters")}: ${escapeHtml(rankingFilterSummary())}</p>
-    </section>
+    <div class="saved-ranking-panel">
+      <button class="quiet-button" type="button" id="showRankingSaveFormButton">${t("saveRankingView")}</button>
+      <section class="panel saved-ranking-form-shell" id="rankingSaveFormShell" hidden>
+        <form class="saved-ranking-form" id="rankingSaveForm">
+          <label>
+            <span>${t("rankingViewName")}</span>
+            <input id="rankingViewNameInput" type="text" maxlength="120" required placeholder="${t("rankingViewNamePlaceholder")}">
+          </label>
+          <button class="quiet-button" type="submit">${t("saveRankingView")}</button>
+          <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
+        </form>
+        <p>${t("filters")}: ${escapeHtml(rankingFilterSummary())}</p>
+      </section>
+    </div>
   `;
 }
 
