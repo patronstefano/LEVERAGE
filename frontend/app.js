@@ -53,8 +53,8 @@ const EVENT_LEVEL_FILTERS = [
   { label: "Olympic Games", value: "Olympic Games" },
   { label: "World Championships", value: "World Championships" },
   { label: "Continental Championships", value: "Continental Championships" },
-  { label: "FIG World Cups", value: "World Cup" },
-  { label: "FIG Challenge", value: "World Challenge Cup" },
+  { label: "World Cup", value: "World Cup" },
+  { label: "World Challenge Cup", value: "World Challenge Cup" },
   { label: "International Events", value: "International Event" },
   { label: "National Events", value: "National Event" },
 ];

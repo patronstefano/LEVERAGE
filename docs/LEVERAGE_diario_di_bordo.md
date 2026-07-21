@@ -2229,7 +2229,7 @@ Aggiornamento UI sezione Events del 20 luglio 2026:
 - aggiunti test automatici per verificare che la ricerca eventi capisca alias localizzati e anni, e che la ricerca calendario trovi anche competizioni calendar-only.
 - rifinita la gerarchia della pagina `Events`: i risultati della barra di ricerca sono stati spostati sopra il calendario, rendendo la ricerca competizioni il primo output visibile dopo la digitazione;
 - aggiunti filtri per livello competizione nella sezione `Events`, mappati ai valori dell'entita `Event`: `Olympic Games`, `World Championships`, `Continental Championships`, `World Cup`, `World Challenge Cup`, `International Event`, `National Event`;
-- in UI i livelli `World Cup` e `World Challenge Cup` sono presentati come `FIG World Cups` e `FIG Challenge`, mantenendo nel backend i valori ufficiali del modello dati;
+- in UI i livelli competizione restano presentati con le stesse etichette del backend, senza rinominare `World Cup` o `World Challenge Cup`;
 - il backend `/events/` e `/events/calendar` accetta ora piu livelli selezionati insieme, sia come parametri ripetuti sia come valori separati da virgola;
 - nella UI `Events`, i filtri per livello competizione sono stati raccolti in un menu compatto `Level` a selezione singola, per ridurre rumore visivo e rendere piu ordinata la fascia filtri;
 - aggiunta copertura test per filtri livello su lista eventi e calendario, incluse le righe calendar-only.
