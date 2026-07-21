@@ -1824,18 +1824,6 @@ function filterFavoriteEvents(events) {
   return events.filter((event) => event.id && state.favoriteEventIds.has(Number(event.id)));
 }
 
-function rememberFavoriteAthletes(athletes) {
-  athletes.forEach((athlete) => {
-    if (athlete.id) state.favoriteAthleteIds.add(Number(athlete.id));
-  });
-}
-
-function rememberFavoriteEvents(events) {
-  events.forEach((event) => {
-    if (event.id) state.favoriteEventIds.add(Number(event.id));
-  });
-}
-
 function rankingCategory() {
   return singleFilterParam("category", "rankings");
 }
@@ -2302,8 +2290,7 @@ async function hydrateEventsCalendar() {
     status: calendarStatusParam(),
     favorite_only: favoriteFilterActive,
   }, { auth: favoriteFilterActive });
-  if (favoriteFilterActive) rememberFavoriteEvents(events);
-  renderHomeCalendar("#eventResults", favoriteFilterActive ? events : filterFavoriteEvents(events), calendarDate, {
+  renderHomeCalendar("#eventResults", filterFavoriteEvents(events), calendarDate, {
     navScope: "events",
     wrapperClass: "home-calendar full-calendar",
     maxVisibleLanes: 6,
@@ -2751,8 +2738,7 @@ async function renderAthletes() {
         limit: favoriteFilterActive ? 500 : 40,
       }, { auth: favoriteFilterActive });
       if (requestId !== athleteSearchRequestId) return;
-      if (favoriteFilterActive) rememberFavoriteAthletes(athletes);
-      resultsNode.innerHTML = renderAthleteCards(favoriteFilterActive ? athletes : filterFavoriteAthletes(athletes));
+      resultsNode.innerHTML = renderAthleteCards(filterFavoriteAthletes(athletes));
       bindFavoriteButtons();
     } catch (error) {
       if (requestId !== athleteSearchRequestId) return;
@@ -2857,8 +2843,7 @@ async function renderEvents() {
         limit: favoriteFilterActive ? 1000 : 80,
       }, { auth: favoriteFilterActive });
       if (requestId !== eventSearchRequestId) return;
-      if (favoriteFilterActive) rememberFavoriteEvents(events);
-      renderEventList("#eventLiveResults", favoriteFilterActive ? events : filterFavoriteEvents(events));
+      renderEventList("#eventLiveResults", filterFavoriteEvents(events));
     } catch (error) {
       if (requestId !== eventSearchRequestId) return;
       resultsNode.innerHTML = errorState(error);
