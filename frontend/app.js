@@ -1935,6 +1935,25 @@ function renderEventLevelFilter() {
   `;
 }
 
+function renderRankingScoringCycleFilter() {
+  const selectedCycles = filterValues("scoringCycle", "rankings");
+  const allCyclesSelected = selectedCycles.includes("all") || SCORING_CYCLE_FILTERS.every((cycle) => selectedCycles.includes(cycle));
+  const label = allCyclesSelected
+    ? `${t("scoringCycle")}: ${t("allCycles")}`
+    : selectedCycles.length
+      ? `${t("scoringCycle")}: ${selectedCycles.join(", ")}`
+      : t("scoringCycle");
+  return `
+    <details class="filter-menu ranking-cycle-filter">
+      <summary class="filter-button filter-menu-summary" aria-pressed="${Boolean(selectedCycles.length)}">${escapeHtml(label)}</summary>
+      <div class="filter-menu-panel">
+        ${SCORING_CYCLE_FILTERS.map((cycle) => filterButton(cycle, "scoringCycle", cycle, "rankings", "filter-menu-option")).join("")}
+        ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings", "filter-menu-option")}
+      </div>
+    </details>
+  `;
+}
+
 function disciplineSegmentedControl() {
   const selected = rankingDiscipline();
   return `
@@ -2807,10 +2826,7 @@ async function renderRankings() {
         ${apparatusFilters.map((apparatus) => filterButton(apparatus, "apparatus", apparatus, "rankings")).join("")}
       </div>
       <div class="toolbar secondary-toolbar ranking-filter-row">
-        ${filterButton("2017-2021", "scoringCycle", "2017-2021", "rankings")}
-        ${filterButton("2022-2024", "scoringCycle", "2022-2024", "rankings")}
-        ${filterButton("2025-2028", "scoringCycle", "2025-2028", "rankings")}
-        ${filterButton(t("allCycles"), "scoringCycle", "all", "rankings")}
+        ${renderRankingScoringCycleFilter()}
       </div>
       ${renderRankingTimeFilter()}
     </div>

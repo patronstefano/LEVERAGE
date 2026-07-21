@@ -807,6 +807,12 @@ button {
   width: 100%;
 }
 
+.ranking-cycle-filter .filter-menu-summary {
+  max-width: min(320px, calc(100vw - 36px));
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .filter-button[aria-pressed="true"],
 .quiet-button:hover {
   color: #fff;
