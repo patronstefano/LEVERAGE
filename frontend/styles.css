@@ -1534,6 +1534,10 @@ button {
   transform: translateY(-1px);
 }
 
+.favorite-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
 .favorite-button.is-active {
   border-color: var(--brand-blue);
   background: var(--brand-blue);
@@ -1552,47 +1556,16 @@ button {
 }
 
 .delete-button {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid rgba(25, 23, 71, 0.14);
-  border-radius: var(--control-radius);
-  background: rgba(255, 255, 255, 0.9);
-  color: rgba(17, 17, 20, 0.62);
-  cursor: pointer;
-  transition:
-    background 160ms ease,
-    border-color 160ms ease,
-    color 160ms ease,
-    transform 160ms ease;
-}
-
-.delete-button:hover {
-  border-color: rgba(154, 103, 0, 0.3);
-  color: var(--warning);
-  transform: translateY(-1px);
-}
-
-.delete-button:disabled {
-  cursor: wait;
-  opacity: 0.64;
-  transform: none;
-}
-
-.delete-button:focus-visible {
-  outline: 3px solid rgba(25, 23, 71, 0.16);
-  outline-offset: 2px;
+  color: rgba(25, 23, 71, 0.68);
 }
 
 .trash-icon {
-  width: 17px;
-  height: 17px;
+  display: block;
+  width: 18px;
+  height: 18px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.9;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }

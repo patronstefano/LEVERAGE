@@ -1177,7 +1177,7 @@ function bindFavoriteButtons() {
 function deleteSavedRankingButton(viewId) {
   return `
     <button
-      class="delete-button"
+      class="favorite-button delete-button"
       type="button"
       data-delete-ranking-view-id="${Number(viewId)}"
       aria-label="${t("deleteSavedRanking")}"

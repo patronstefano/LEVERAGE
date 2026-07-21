@@ -2285,6 +2285,7 @@ Aggiornamento area utente e preferenze del 21 luglio 2026:
 - rifinita la UX del salvataggio Ranking: nella sezione `Rankings` il comando compare solo per utenti loggati e inizialmente viene mostrato solo il pulsante `Save this Ranking`; il riquadro con nome configurazione e riepilogo filtri appare soltanto dopo il click dell'utente.
 - aggiunto nella sezione privata `Saved Rankings` un pulsante cestino per ogni configurazione salvata, collegato all'endpoint `DELETE /preferences/dashboard-views/{id}`, cosi l'utente puo rimuovere autonomamente configurazioni non piu utili.
 - corretta la resa grafica del pulsante cestino, sostituendo il disegno CSS con una piccola icona SVG proporzionata e stabile.
+- uniformata la UI del cestino alla stellina dei preferiti: stesso componente base, stessa dimensione, stesso hover/focus/disabled e stessa micro-interazione al click, cambiando soltanto l'icona interna.
 - aggiunto nella sezione `Rankings` il pulsante `Clear filters`/`Pulisci filtri`, che rimuove in un solo click categoria, attrezzi, scoring cycle e intervalli temporali, riportando la classifica al default tecnico MAG.
 - aggiunti temporaneamente nella pagina `Sign in` due pulsanti di sviluppo `DEMO USER` e `DEMO ADMIN`, collegati a un endpoint backend abilitato solo in ambiente `development`; servono per testare rapidamente area privata, preferiti e funzioni admin durante la costruzione frontend.
 - decisione da ricordare: i pulsanti `DEMO USER` e `DEMO ADMIN`, insieme all'endpoint demo, dovranno essere rimossi prima della pubblicazione dell'MVP online.
