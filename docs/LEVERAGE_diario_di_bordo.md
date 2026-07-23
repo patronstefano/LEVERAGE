@@ -2316,6 +2316,7 @@ Aggiornamento UI search/filter del 23 luglio 2026:
 
 - ridotta esclusivamente l'altezza di input e pulsante `Search` nelle barre di ricerca delle sezioni `Athletes` ed `Events`, mantenendo invariati i pulsanti filtro;
 - il tasto `Search` delle sezioni dedicate usa ora la stessa altezza dei filter button esistenti, cosi i controlli associati risultano piu coerenti senza modificare la ricerca globale della home.
+- mantenuta la dimensione ridotta ma corretto il raggio dei bordi della search bar e del pulsante `Search` delle sezioni dedicate, evitando l'effetto pillola e riportando i controlli allo stile app con radius coerente ai filtri.
 
 ## 19. Conclusione
 

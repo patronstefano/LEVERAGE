@@ -824,6 +824,7 @@ button {
 
 .search-form.section-search-form {
   padding: 5px 6px;
+  border-radius: var(--control-radius);
 }
 
 .section-search-form .search-input,
@@ -834,10 +835,12 @@ button {
 
 .section-search-form .search-input {
   padding: 0 36px 0 14px;
+  border-radius: calc(var(--control-radius) - 4px);
 }
 
 .section-search-form .primary-button {
   padding: 0 18px;
+  border-radius: var(--control-radius);
 }
 
 .section-search-form .search-clear-button {
