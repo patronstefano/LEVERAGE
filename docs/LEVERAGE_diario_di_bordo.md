@@ -2312,6 +2312,11 @@ Correzione preferiti del 21 luglio 2026:
 - soluzione adottata: quando il filtro `Preferiti` e attivo, la UI passa `favorite_only=true` agli endpoint pubblici autenticati gia esistenti (`/athletes/` e `/events/calendar`) e invia il token JWT;
 - regola definitiva: il filtro `Preferiti` non usa piu le liste pubbliche per costruire la vista filtrata. Quando l'utente attiva `Preferiti` in `Athletes` o `Events`, il frontend legge direttamente gli stessi endpoint dell'area personale (`/preferences/athletes/followed/details` e `/preferences/events/saved/details`) e mostra quelle schede nella sezione corrente, facendo sparire temporaneamente tutte le altre. Quando il filtro viene tolto, la sezione torna alla lista pubblica normale.
 
+Aggiornamento UI search/filter del 23 luglio 2026:
+
+- ridotta esclusivamente l'altezza di input e pulsante `Search` nelle barre di ricerca delle sezioni `Athletes` ed `Events`, mantenendo invariati i pulsanti filtro;
+- il tasto `Search` delle sezioni dedicate usa ora la stessa altezza dei filter button esistenti, cosi i controlli associati risultano piu coerenti senza modificare la ricerca globale della home.
+
 ## 19. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
