@@ -822,6 +822,34 @@ button {
   white-space: nowrap;
 }
 
+.search-form.section-search-form {
+  gap: 6px;
+  padding: 4px;
+}
+
+.section-search-form .search-input,
+.section-search-form .primary-button,
+.section-search-row .filter-button {
+  height: 38px;
+  min-height: 38px;
+  font-size: 14px;
+}
+
+.section-search-form .search-input {
+  padding: 0 36px 0 14px;
+}
+
+.section-search-form .primary-button {
+  padding: 0 16px;
+}
+
+.section-search-form .search-clear-button {
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+}
+
 .section-favorite-filter {
   margin-left: auto;
 }
