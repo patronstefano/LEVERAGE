@@ -8658,8 +8658,8 @@ function renderAnalyticsComparisonSelection() {
         <div class="search-input-shell analytics-comparison-search-shell">
           <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t("athleteSearchPlaceholder"))}" aria-label="${escapeHtml(t("athleteSearchPlaceholder"))}" ${selectionFull ? `disabled title="${escapeHtml(t("analyticsCompareSearchFull"))}"` : ""}>
           <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
-          <div class="analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
         </div>
+        <div class="search-suggestions analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
       </form>
       </div>
       ${athletes.length ? `<div class="analytics-comparison-selected-list">${athletes.map(renderAnalyticsComparisonSelectedAthlete).join("")}</div>` : ""}
@@ -9047,7 +9047,7 @@ function renderAnalyticsComparisonSuggestions(athletes) {
   const container = $("#analyticsAthleteSuggestions");
   if (!container) return;
   if (!athletes.length) {
-    container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
+    container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
   } else {
     container.innerHTML = athletes.map((athlete) => `
       <button type="button" class="analytics-comparison-suggestion search-suggestion" role="option" data-analytics-athlete-choice data-athlete-id="${athlete.id}">
@@ -9057,6 +9057,7 @@ function renderAnalyticsComparisonSuggestions(athletes) {
     `).join("");
   }
   container.hidden = false;
+  setSearchSuggestionsOpen(container, true, Math.max(1, athletes.length));
   container.querySelectorAll("[data-analytics-athlete-choice]").forEach((button) => {
     button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.athleteId)));
   });
@@ -9068,11 +9069,13 @@ async function searchAnalyticsComparisonAthletes(query) {
   if (!query.trim()) {
     container.hidden = true;
     container.innerHTML = "";
+    setSearchSuggestionsOpen(container, false);
     return;
   }
   const requestId = ++analyticsComparisonSearchRequestId;
   container.hidden = false;
-  container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
+  container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
+  setSearchSuggestionsOpen(container, true, 1);
   try {
     const discipline = state.analyticsComparison.athletes.find(Boolean)?.discipline || "";
     const athletes = await getJson("/athletes/", { search: query.trim(), discipline, limit: 9, offset: 0 });
@@ -9081,7 +9084,8 @@ async function searchAnalyticsComparisonAthletes(query) {
     renderAnalyticsComparisonSuggestions(athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
   } catch (error) {
     if (requestId !== analyticsComparisonSearchRequestId) return;
-    container.innerHTML = errorState(error);
+    container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(error.message || t("loadFailed"))}</div>`;
+    setSearchSuggestionsOpen(container, true, 1);
   }
 }
 
@@ -9120,7 +9124,9 @@ async function selectAnalyticsComparisonAthlete(athleteId) {
 
 function bindAnalyticsComparisonPickers() {
   bindSearchClearButtons();
-  $("#analyticsAthleteForm")?.addEventListener("submit", (event) => {
+  const form = $("#analyticsAthleteForm");
+  form?.addEventListener("click", (event) => event.stopPropagation());
+  form?.addEventListener("submit", (event) => {
     event.preventDefault();
     $("#analyticsAthleteSuggestions")?.querySelector("[data-analytics-athlete-choice]")?.click();
   });
@@ -9132,8 +9138,7 @@ function bindAnalyticsComparisonPickers() {
     });
     input.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
-        const suggestions = $("#analyticsAthleteSuggestions");
-        if (suggestions) suggestions.hidden = true;
+        closeSearchSuggestions();
         input.blur();
       }
     });
@@ -9141,7 +9146,10 @@ function bindAnalyticsComparisonPickers() {
     input.addEventListener("blur", () => {
       window.setTimeout(() => {
         const suggestions = $("#analyticsAthleteSuggestions");
-        if (suggestions) suggestions.hidden = true;
+        if (suggestions) {
+          suggestions.hidden = true;
+          setSearchSuggestionsOpen(suggestions, false);
+        }
       }, 160);
     });
   });

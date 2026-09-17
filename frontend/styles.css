@@ -3372,50 +3372,7 @@ button {
 }
 
 .analytics-comparison-suggestions {
-  position: absolute;
-  top: calc(100% + 7px);
-  right: 0;
-  left: 0;
   z-index: 70;
-  display: grid;
-  gap: 3px;
-  max-height: min(291px, 42vh);
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  padding: 8px;
-  border: 1px solid rgba(25, 23, 71, 0.1);
-  border-radius: var(--large-control-radius);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 22px 60px rgba(16, 16, 20, 0.13);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-}
-
-.analytics-comparison-suggestions[hidden] {
-  display: none;
-}
-
-.analytics-comparison-suggestion {
-  height: 66px;
-}
-
-.analytics-comparison-suggestion:hover,
-.analytics-comparison-suggestion:focus-visible {
-  background: rgba(25, 23, 71, 0.06);
-}
-
-.analytics-comparison-suggestion strong {
-  font-size: 16px;
-}
-
-.analytics-comparison-suggestion span,
-.analytics-comparison-suggestion-empty {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.analytics-comparison-suggestion-empty {
-  padding: 12px 14px;
 }
 
 .analytics-comparison-selected-athlete {
