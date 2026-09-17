@@ -3558,7 +3558,7 @@ button {
   min-height: 58px;
   padding: 9px 10px;
   border: 1px solid var(--athlete-color);
-  border-radius: 6px;
+  border-radius: var(--surface-radius);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: none;
 }
