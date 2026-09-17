@@ -2251,9 +2251,14 @@ function rememberCurrentSectionRoute() {
 }
 
 function syncSectionNavLinks() {
+  const contextualSource = contextualAthleteSourceSection(state.route);
   document.querySelectorAll(".nav-trigger[data-section-nav]").forEach((link) => {
     const section = link.dataset.sectionNav;
     if (!section || !SECTION_BASE_ROUTES[section]) return;
+    if (contextualSource && section === "athletes") {
+      link.setAttribute("href", `#${SECTION_BASE_ROUTES.athletes}`);
+      return;
+    }
     const route = routeBelongsToSection(state.sectionRoutes[section], section)
       ? state.sectionRoutes[section]
       : SECTION_BASE_ROUTES[section];
