@@ -8608,15 +8608,6 @@ function analyticsComparisonPreparedData() {
       range.endDate,
       comparison.mode,
     );
-    const backgroundSeries = athleteAnalyticsBackgroundSeries(
-      points,
-      selectedApparatuses,
-      discipline,
-      comparison.metric,
-      range.startDate,
-      range.endDate,
-      comparison.mode,
-    );
     return {
       athlete: payload.athlete,
       color: ANALYTICS_COMPARISON_COLORS[index],
@@ -8626,7 +8617,6 @@ function analyticsComparisonPreparedData() {
       vertices,
       trend,
       contextTrend,
-      backgroundSeries,
       summary: athleteAnalyticsSummary(includedPoints, comparison.metric),
       warnings: localizedBackendWarnings(includedPoints.flatMap((point) => point.data_warnings || [])),
     };
@@ -8637,10 +8627,7 @@ function analyticsComparisonPreparedData() {
     ? timeline
     : timeline.filter((date) => date >= range.startDate && date <= range.endDate);
   const trendValues = athleteData.flatMap((item) => (
-    [
-      ...(comparison.mode === "snapshot" ? item.contextTrend : item.trend),
-      ...item.backgroundSeries.flatMap((series) => series.trend),
-    ]
+    comparison.mode === "snapshot" ? item.contextTrend : item.trend
   ).map((point) => point.value));
   const trendValueDomain = athleteAnalyticsTrendValueDomain(comparison.metric, trendValues);
   return {
@@ -8784,29 +8771,6 @@ function renderAnalyticsComparisonTrendFigure(series, data) {
             ? athleteAnalyticsSvgCoordinates(item.trend, item.trend.map((point) => point.date), padding, width, height, minValue, valueRange, data.dateDomain)
             : coordinates;
           return `
-            ${item.backgroundSeries.map((background) => {
-              const backgroundCoordinates = athleteAnalyticsSvgCoordinates(
-                background.trend,
-                background.referenceDates,
-                padding,
-                width,
-                height,
-                minValue,
-                valueRange,
-                data.dateDomain,
-              );
-              const backgroundStyle = `style="--series-color: ${athleteAnalyticsComponentColor(background)};"`;
-              return `
-                ${renderAthleteTrendPaths(backgroundCoordinates, background.referenceDates, "athlete-trend-line is-background", backgroundStyle)}
-                ${backgroundCoordinates.map((point) => renderAthleteTrendDot(
-                  analyticsComparisonSeriesPoint(point, athleteCardDisplayName(item.athlete)),
-                  background.metric || state.analyticsComparison.metric,
-                  "athlete-trend-dot is-background",
-                  3.1,
-                  backgroundStyle,
-                )).join("")}
-              `;
-            }).join("")}
             ${renderAthleteTrendPaths(coordinates, referenceDates, lineClass, style)}
             ${focusCoordinates.map((point) => renderAthleteTrendDot(
               analyticsComparisonSeriesPoint(point, athleteCardDisplayName(item.athlete)),
@@ -8821,7 +8785,6 @@ function renderAnalyticsComparisonTrendFigure(series, data) {
       <div class="athlete-trend-tooltip" role="status" hidden></div>
       <div class="athlete-trend-legend analytics-comparison-legend">
         ${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${athleteAnalyticsApparatusSelectionLabel(data.selectedApparatuses)} · ${athleteAnalyticsMetricLabel(state.analyticsComparison.metric)}`)}</span>`).join("")}
-        ${series.flatMap((item) => item.backgroundSeries.map((background) => `<span style="--series-color: ${athleteAnalyticsComponentColor(background)};">${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${background.label}`)}</span>`)).join("")}
       </div>
     </div>
   `;
