@@ -97,6 +97,17 @@ const state = {
     snapshotIndex: -1,
     payload: null,
   },
+  analyticsComparison: {
+    athletes: [null, null],
+    payloads: [null, null],
+    metric: "score",
+    mode: "period",
+    apparatuses: ["AA"],
+    layout: "side-by-side",
+    startIndex: -1,
+    endIndex: -1,
+    snapshotIndex: -1,
+  },
   eventDetail: {
     eventId: null,
     profile: null,
@@ -195,6 +206,7 @@ const ATHLETE_TREND_COMPONENT_COLORS = {
   VT1: "#d8649c",
   VT2: "#52a9c8",
 };
+const ANALYTICS_COMPARISON_COLORS = ["#191747", "#d8649c"];
 let searchAutocompleteRequestId = 0;
 let athleteSearchRequestId = 0;
 let eventSearchRequestId = 0;
@@ -375,7 +387,19 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Build score Rankings from the results database. Filter by apparatus, level, period and Olympic cycle, then sort by Final Score or score components.",
     analyticsHeading: "Analytics",
-    analyticsIntro: "Explore performance comparisons, trends, apparatus profiles and age/country insights built from LEVERAGE results.",
+    analyticsIntro: "Compare two athletes through synchronized apparatus profiles and performance trends.",
+    analyticsCompareAthleteA: "First athlete",
+    analyticsCompareAthleteB: "Second athlete",
+    analyticsCompareSearch: "Search athlete by surname, name or ID...",
+    analyticsCompareSelectBoth: "Select two athletes from the same discipline to start the comparison.",
+    analyticsCompareSameDiscipline: "Choose an athlete from the same discipline.",
+    analyticsCompareSameAthlete: "Choose two different athletes.",
+    analyticsCompareSideBySide: "Side by side",
+    analyticsCompareOverlay: "Overlay",
+    analyticsCompareRemove: "Remove athlete",
+    analyticsCompareNoSuggestions: "No compatible athletes found.",
+    analyticsCompareProfile: "Apparatus profile",
+    analyticsCompareTrend: "Performance trend",
     loginHeading: "Sign in",
     loginIntro: "User and admin areas will use the authentication system already implemented in the backend.",
     noResults: "No results found.",
@@ -688,7 +712,19 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Costruisci Rankings dai risultati: filtra per attrezzo, level, periodo e ciclo olimpico, poi ordina per Final Score o componenti del punteggio.",
     analyticsHeading: "Analytics",
-    analyticsIntro: "Area dedicata a confronti, trend, profili attrezzo e analisi età/nazione costruite sui risultati LEVERAGE.",
+    analyticsIntro: "Confronta due atleti attraverso profili attrezzo e trend di performance sincronizzati.",
+    analyticsCompareAthleteA: "Primo atleta",
+    analyticsCompareAthleteB: "Secondo atleta",
+    analyticsCompareSearch: "Cerca atleta per cognome, nome o ID...",
+    analyticsCompareSelectBoth: "Seleziona due atleti della stessa disciplina per iniziare il confronto.",
+    analyticsCompareSameDiscipline: "Scegli un atleta della stessa disciplina.",
+    analyticsCompareSameAthlete: "Scegli due atleti differenti.",
+    analyticsCompareSideBySide: "Affiancati",
+    analyticsCompareOverlay: "Sovrapposti",
+    analyticsCompareRemove: "Rimuovi atleta",
+    analyticsCompareNoSuggestions: "Nessun atleta compatibile trovato.",
+    analyticsCompareProfile: "Profilo attrezzi",
+    analyticsCompareTrend: "Trend performance",
     loginHeading: "Accedi",
     loginIntro: "Le aree utente e admin useranno il sistema di autenticazione già implementato.",
     noResults: "Nessun risultato trovato.",
@@ -1001,7 +1037,19 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Construye Rankings desde los resultados: filtra por aparato, level, periodo y ciclo olimpico, y ordena por Final Score o componentes.",
     analyticsHeading: "Analitica",
-    analyticsIntro: "Area para comparaciones, tendencias, perfiles por aparato y analisis de edad/pais basados en resultados LEVERAGE.",
+    analyticsIntro: "Compara dos atletas mediante perfiles por aparato y tendencias de rendimiento sincronizadas.",
+    analyticsCompareAthleteA: "Primer atleta",
+    analyticsCompareAthleteB: "Segundo atleta",
+    analyticsCompareSearch: "Buscar atleta por apellido, nombre o ID...",
+    analyticsCompareSelectBoth: "Selecciona dos atletas de la misma disciplina para iniciar la comparacion.",
+    analyticsCompareSameDiscipline: "Elige un atleta de la misma disciplina.",
+    analyticsCompareSameAthlete: "Elige dos atletas diferentes.",
+    analyticsCompareSideBySide: "En paralelo",
+    analyticsCompareOverlay: "Superpuestos",
+    analyticsCompareRemove: "Eliminar atleta",
+    analyticsCompareNoSuggestions: "No se encontraron atletas compatibles.",
+    analyticsCompareProfile: "Perfil por aparato",
+    analyticsCompareTrend: "Tendencia de rendimiento",
     loginHeading: "Entrar",
     loginIntro: "Las areas de usuario y admin usaran el sistema de autenticacion ya implementado.",
     noResults: "No se encontraron resultados.",
@@ -1314,7 +1362,19 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Construisez des Rankings depuis les resultats: filtrez par appareil, level, periode et cycle olympique, puis triez par Final Score ou composants.",
     analyticsHeading: "Analytique",
-    analyticsIntro: "Espace pour comparaisons, tendances, profils par appareil et analyses age/pays construites sur les resultats LEVERAGE.",
+    analyticsIntro: "Comparez deux athletes avec des profils par appareil et des tendances de performance synchronises.",
+    analyticsCompareAthleteA: "Premier athlete",
+    analyticsCompareAthleteB: "Deuxieme athlete",
+    analyticsCompareSearch: "Rechercher par nom, prenom ou ID...",
+    analyticsCompareSelectBoth: "Selectionnez deux athletes de la meme discipline pour commencer la comparaison.",
+    analyticsCompareSameDiscipline: "Choisissez un athlete de la meme discipline.",
+    analyticsCompareSameAthlete: "Choisissez deux athletes differents.",
+    analyticsCompareSideBySide: "Cote a cote",
+    analyticsCompareOverlay: "Superposes",
+    analyticsCompareRemove: "Retirer l'athlete",
+    analyticsCompareNoSuggestions: "Aucun athlete compatible trouve.",
+    analyticsCompareProfile: "Profil par appareil",
+    analyticsCompareTrend: "Tendance de performance",
     loginHeading: "Connexion",
     loginIntro: "Les espaces utilisateur et admin utiliseront l'authentification deja implementee.",
     noResults: "Aucun resultat.",
@@ -6971,9 +7031,9 @@ function athleteAnalyticsRadarScaleLabel(value) {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
-function renderAthleteAnalyticsShape(vertices, metric, selectedApparatuses, discipline) {
+function renderAthleteAnalyticsShape(vertices, metric, selectedApparatuses, discipline, options = {}) {
   const values = vertices.map((vertex) => vertex.value).filter((value) => value !== null && value !== undefined);
-  const maxValue = athleteAnalyticsScaleMax(metric, values);
+  const maxValue = options.maxValue || athleteAnalyticsScaleMax(metric, values);
   const radius = 106;
   const center = 150;
   const total = vertices.length;
@@ -7027,7 +7087,7 @@ function renderAthleteAnalyticsShape(vertices, metric, selectedApparatuses, disc
         cy="${point.y.toFixed(1)}"
         r="${active ? 4.6 : 3.5}"
         data-athlete-radar-point="true"
-        data-radar-apparatus="${escapeHtml(apparatusLabel)}"
+        data-radar-apparatus="${escapeHtml([options.labelPrefix, apparatusLabel].filter(Boolean).join(" · "))}"
         data-radar-value="${escapeHtml(valueLabel)}"
         tabindex="0"
         aria-label="${escapeHtml(`${apparatusLabel}: ${valueLabel}`)}"
@@ -7044,7 +7104,7 @@ function renderAthleteAnalyticsShape(vertices, metric, selectedApparatuses, disc
       <svg class="athlete-radar-svg" viewBox="0 0 300 300" role="img" aria-label="${escapeHtml(t("analyticsShapeTitle"))}">
         ${rings}
         ${axes}
-        <polygon class="athlete-radar-area ${hasApparatusFocus ? "is-muted" : ""}" points="${athleteAnalyticsSvgPolygon(valuePoints)}"></polygon>
+        <polygon class="athlete-radar-area ${options.seriesColor ? "is-comparison" : ""} ${hasApparatusFocus ? "is-muted" : ""}" ${options.seriesColor ? `style="--comparison-color: ${options.seriesColor};"` : ""} points="${athleteAnalyticsSvgPolygon(valuePoints)}"></polygon>
         ${activeLines}
         <g class="athlete-radar-scale" aria-hidden="true">
           ${centerScaleLabel}
@@ -7489,7 +7549,7 @@ function moveAthleteAnalyticsSnapshotFromWheel(event, preparedData = null) {
 function bindAthleteTrendZoomEvents() {
   document.addEventListener("wheel", (event) => {
     const figure = event.target.closest?.(".athlete-trend-figure");
-    if (!figure) return;
+    if (!figure || figure.dataset.comparisonTrend === "true") return;
     const payload = state.athleteAnalytics.payload;
     const data = payload ? athleteAnalyticsPreparedData(payload) : null;
     if (data?.mode === "snapshot") {
@@ -7516,7 +7576,7 @@ function bindAthleteTrendZoomEvents() {
 
   document.addEventListener("gesturestart", (event) => {
     const figure = event.target.closest?.(".athlete-trend-figure");
-    if (!figure || !state.athleteAnalytics.payload) return;
+    if (!figure || figure.dataset.comparisonTrend === "true" || !state.athleteAnalytics.payload) return;
     const data = athleteAnalyticsPreparedData(state.athleteAnalytics.payload);
     if (data.mode === "snapshot" || data.timeline.length < 2) return;
     athleteTrendGestureZoomBase = {
@@ -7529,7 +7589,7 @@ function bindAthleteTrendZoomEvents() {
 
   document.addEventListener("gesturechange", (event) => {
     const figure = event.target.closest?.(".athlete-trend-figure");
-    if (!figure || !athleteTrendGestureZoomBase) return;
+    if (!figure || figure.dataset.comparisonTrend === "true" || !athleteTrendGestureZoomBase) return;
     const scale = Number(event.scale);
     if (!Number.isFinite(scale) || scale <= 0) return;
     const zoomed = athleteAnalyticsZoomRangeFromBase(
@@ -8436,6 +8496,597 @@ async function loadAthleteAnalytics(athleteId, { preserveControls = false } = {}
       container.innerHTML = errorState(error);
     }
   }
+}
+
+let analyticsComparisonSearchRequestId = 0;
+let analyticsComparisonProfileRequestId = 0;
+
+function analyticsComparisonDiscipline() {
+  return state.analyticsComparison.athletes.find(Boolean)?.discipline || "MAG";
+}
+
+function analyticsComparisonSelectedApparatuses() {
+  const options = athleteAnalyticsApparatusOptions(analyticsComparisonDiscipline());
+  const selected = normalizeExclusiveApparatusSelection(
+    [...new Set(state.analyticsComparison.apparatuses || [])].filter((apparatus) => options.includes(apparatus)),
+  );
+  const resolved = selected.length ? selected : ["AA"];
+  state.analyticsComparison.apparatuses = resolved;
+  return options.filter((apparatus) => resolved.includes(apparatus));
+}
+
+function analyticsComparisonTimeline() {
+  return [...new Set(state.analyticsComparison.payloads
+    .filter(Boolean)
+    .flatMap((payload) => (payload.dashboard?.trend || []).map(athleteAnalyticsPointDate))
+    .filter(Boolean))]
+    .sort();
+}
+
+function analyticsComparisonCurrentRange(timeline) {
+  const comparison = state.analyticsComparison;
+  if (!timeline.length) {
+    comparison.startIndex = -1;
+    comparison.endIndex = -1;
+    comparison.snapshotIndex = -1;
+    return { startIndex: -1, endIndex: -1, startDate: "", endDate: "" };
+  }
+  const maxIndex = timeline.length - 1;
+  if (comparison.mode === "snapshot") {
+    let snapshotIndex = Number(comparison.snapshotIndex);
+    if (!Number.isInteger(snapshotIndex) || snapshotIndex < 0 || snapshotIndex > maxIndex) snapshotIndex = maxIndex;
+    comparison.snapshotIndex = snapshotIndex;
+    return {
+      startIndex: snapshotIndex,
+      endIndex: snapshotIndex,
+      startDate: timeline[snapshotIndex],
+      endDate: timeline[snapshotIndex],
+    };
+  }
+  let startIndex = Number(comparison.startIndex);
+  let endIndex = Number(comparison.endIndex);
+  if (
+    !Number.isInteger(startIndex) || startIndex < 0 || startIndex > maxIndex ||
+    !Number.isInteger(endIndex) || endIndex < 0 || endIndex > maxIndex
+  ) {
+    ({ startIndex, endIndex } = athleteAnalyticsDefaultCycleRange(timeline));
+  }
+  startIndex = Math.min(startIndex, endIndex);
+  comparison.startIndex = startIndex;
+  comparison.endIndex = endIndex;
+  return {
+    startIndex,
+    endIndex,
+    startDate: timeline[startIndex],
+    endDate: timeline[endIndex],
+  };
+}
+
+function analyticsComparisonPreparedData() {
+  const comparison = state.analyticsComparison;
+  const discipline = analyticsComparisonDiscipline();
+  const selectedApparatuses = analyticsComparisonSelectedApparatuses();
+  const timeline = analyticsComparisonTimeline();
+  const range = analyticsComparisonCurrentRange(timeline);
+  const athleteData = comparison.payloads.filter(Boolean).map((payload, index) => {
+    const basePoints = [...(payload.dashboard?.trend || [])]
+      .sort((left, right) => athleteAnalyticsSortKey(left).localeCompare(athleteAnalyticsSortKey(right)));
+    const points = athleteAnalyticsPointsForMetric(basePoints, comparison.metric, discipline)
+      .sort((left, right) => athleteAnalyticsSortKey(left).localeCompare(athleteAnalyticsSortKey(right)));
+    const selectedPoints = athleteAnalyticsPointsForSelection(points, selectedApparatuses);
+    const includedPoints = athleteAnalyticsIncludedPoints(
+      selectedPoints,
+      range.startDate,
+      range.endDate,
+      comparison.mode,
+    );
+    const vertices = athleteAnalyticsBuildVertices(
+      points,
+      discipline,
+      comparison.metric,
+      comparison.mode,
+      range.startDate,
+      range.endDate,
+    );
+    const trendScope = comparison.mode === "snapshot"
+      ? { startDate: "", endDate: timeline.at(-1) || range.endDate, mode: "period" }
+      : { startDate: range.startDate, endDate: range.endDate, mode: "period" };
+    const contextTrend = athleteAnalyticsTrendPoints(
+      selectedPoints,
+      trendScope.startDate,
+      trendScope.endDate,
+      trendScope.mode,
+    );
+    const trend = athleteAnalyticsTrendPoints(
+      selectedPoints,
+      range.startDate,
+      range.endDate,
+      comparison.mode,
+    );
+    return {
+      athlete: payload.athlete,
+      color: ANALYTICS_COMPARISON_COLORS[index],
+      points,
+      selectedPoints,
+      includedPoints,
+      vertices,
+      trend,
+      contextTrend,
+      summary: athleteAnalyticsSummary(includedPoints, comparison.metric),
+      warnings: localizedBackendWarnings(includedPoints.flatMap((point) => point.data_warnings || [])),
+    };
+  });
+  const radarValues = athleteData.flatMap((item) => item.vertices.map((vertex) => vertex.value));
+  const radarMax = athleteAnalyticsScaleMax(comparison.metric, radarValues);
+  const domainDates = comparison.mode === "snapshot"
+    ? timeline
+    : timeline.filter((date) => date >= range.startDate && date <= range.endDate);
+  const trendValues = athleteData.flatMap((item) => (
+    comparison.mode === "snapshot" ? item.contextTrend : item.trend
+  ).map((point) => point.value));
+  const trendValueDomain = athleteAnalyticsTrendValueDomain(comparison.metric, trendValues);
+  return {
+    discipline,
+    selectedApparatuses,
+    timeline,
+    range,
+    athleteData,
+    radarMax,
+    dateDomain: athleteAnalyticsTrendDateDomain(domainDates),
+    trendValueDomain,
+    cycles: athleteAnalyticsScoringCycles(athleteData.flatMap((item) => item.includedPoints)),
+  };
+}
+
+function renderAnalyticsComparisonPicker(slot) {
+  const athlete = state.analyticsComparison.athletes[slot];
+  const label = t(slot === 0 ? "analyticsCompareAthleteA" : "analyticsCompareAthleteB");
+  if (athlete) {
+    const name = athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`);
+    return `
+      <article class="analytics-comparison-picker is-selected" style="--athlete-color: ${ANALYTICS_COMPARISON_COLORS[slot]};">
+        <span class="analytics-comparison-picker-label">${escapeHtml(label)}</span>
+        <div class="analytics-comparison-selected-athlete">
+          <span class="analytics-comparison-color-dot" aria-hidden="true"></span>
+          <div>
+            <strong>${escapeHtml(name)}</strong>
+            <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
+          </div>
+          <button class="icon-button analytics-comparison-remove" type="button" data-analytics-remove-athlete="${slot}" aria-label="${escapeHtml(t("analyticsCompareRemove"))}" title="${escapeHtml(t("analyticsCompareRemove"))}">&times;</button>
+        </div>
+      </article>
+    `;
+  }
+  return `
+    <article class="analytics-comparison-picker">
+      <label class="analytics-comparison-picker-label" for="analyticsAthleteSearch${slot}">${escapeHtml(label)}</label>
+      <div class="analytics-comparison-search-shell">
+        <input id="analyticsAthleteSearch${slot}" data-analytics-athlete-search="${slot}" autocomplete="off" placeholder="${escapeHtml(t("analyticsCompareSearch"))}">
+        <div class="analytics-comparison-suggestions" data-analytics-athlete-suggestions="${slot}" hidden></div>
+      </div>
+    </article>
+  `;
+}
+
+function renderAnalyticsComparisonSelection() {
+  return `
+    <section class="analytics-comparison-selection">
+      ${renderAnalyticsComparisonPicker(0)}
+      ${renderAnalyticsComparisonPicker(1)}
+    </section>
+    <div id="analyticsComparisonMessage" class="auth-message analytics-comparison-message" role="status" aria-live="polite"></div>
+  `;
+}
+
+function renderAnalyticsComparisonLayoutControl() {
+  const overlay = state.analyticsComparison.layout === "overlay";
+  return `
+    <div class="segmented-control analytics-comparison-layout-control" role="radiogroup" aria-label="Analytics view" style="--segment-count: 2; --selected-index: ${overlay ? 1 : 0};">
+      <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="side-by-side" aria-checked="${String(!overlay)}">${escapeHtml(t("analyticsCompareSideBySide"))}</button>
+      <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="overlay" aria-checked="${String(overlay)}">${escapeHtml(t("analyticsCompareOverlay"))}</button>
+      <span class="segmented-thumb" aria-hidden="true"></span>
+    </div>
+  `;
+}
+
+function renderAnalyticsComparisonControls(data) {
+  const comparison = state.analyticsComparison;
+  const metricIndex = Math.max(0, ATHLETE_ANALYTICS_METRICS.findIndex((item) => item.value === comparison.metric));
+  const modeIndex = comparison.mode === "snapshot" ? 1 : 0;
+  const maxIndex = Math.max(0, data.timeline.length - 1);
+  const startPercent = maxIndex ? (Math.max(0, data.range.startIndex) / maxIndex) * 100 : 0;
+  const endPercent = maxIndex ? (Math.max(0, data.range.endIndex) / maxIndex) * 100 : 100;
+  return `
+    <div class="athlete-analytics-controls analytics-comparison-controls">
+      <div class="athlete-analytics-filter-cluster">
+        <div class="athlete-analytics-control-group athlete-analytics-apparatus-group">
+          <div class="athlete-analytics-apparatus-buttons" role="group" aria-label="${escapeHtml(t("apparatus"))}">
+            ${athleteAnalyticsApparatusOptions(data.discipline).map((apparatus) => `
+              <button class="quiet-button athlete-analytics-apparatus-button ${data.selectedApparatuses.includes(apparatus) ? "is-active" : ""}" type="button" data-analytics-comparison-apparatus="${escapeHtml(apparatus)}" aria-pressed="${String(data.selectedApparatuses.includes(apparatus))}">${escapeHtml(apparatus)}</button>
+            `).join("")}
+          </div>
+        </div>
+        <div class="athlete-analytics-control-group athlete-analytics-score-group analytics-comparison-score-row">
+          <div class="segmented-control athlete-analytics-metric-control" role="radiogroup" aria-label="${escapeHtml(t("analyticsMetric"))}" style="--segment-count: ${ATHLETE_ANALYTICS_METRICS.length}; --selected-index: ${metricIndex};">
+            ${ATHLETE_ANALYTICS_METRICS.map((item) => `<button class="segmented-option athlete-analytics-metric-option" type="button" role="radio" data-analytics-comparison-metric="${escapeHtml(item.value)}" aria-checked="${String(comparison.metric === item.value)}">${escapeHtml(item.label)}</button>`).join("")}
+            <span class="segmented-thumb athlete-analytics-metric-thumb" aria-hidden="true"></span>
+          </div>
+          ${renderAnalyticsComparisonLayoutControl()}
+        </div>
+        <div class="athlete-analytics-time-cluster">
+          <div class="athlete-analytics-control-group athlete-analytics-mode-group">
+            <div class="segmented-control athlete-analytics-mode-control" role="radiogroup" aria-label="${escapeHtml(t("analyticsMode"))}" style="--segment-count: 2; --selected-index: ${modeIndex};">
+              <button class="segmented-option" type="button" role="radio" data-analytics-comparison-mode="period" aria-checked="${String(comparison.mode === "period")}">${escapeHtml(t("analyticsModePeriod"))}</button>
+              <button class="segmented-option" type="button" role="radio" data-analytics-comparison-mode="snapshot" aria-checked="${String(comparison.mode === "snapshot")}">${escapeHtml(t("analyticsModeSnapshot"))}</button>
+              <span class="segmented-thumb athlete-analytics-mode-thumb" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="athlete-analytics-timeline">
+            <div class="athlete-analytics-range-shell ${comparison.mode === "snapshot" ? "is-snapshot" : ""}" style="--range-start: ${(comparison.mode === "snapshot" ? endPercent : startPercent).toFixed(2)}%; --range-end: ${endPercent.toFixed(2)}%;">
+              <div class="athlete-analytics-range-track" aria-hidden="true"><span class="athlete-analytics-range-selected"></span></div>
+              <div class="athlete-analytics-cycle-markers" aria-hidden="true">${renderAthleteAnalyticsTimelineCycleMarkers(data.timeline)}</div>
+              <input id="analyticsComparisonStartTimeline" class="athlete-analytics-range-input athlete-analytics-range-start" type="range" min="0" max="${maxIndex}" step="1" value="${Math.max(0, data.range.startIndex)}" ${comparison.mode === "snapshot" || !data.timeline.length ? "disabled" : ""} aria-label="${escapeHtml(t("fromDate"))}">
+              <input id="analyticsComparisonEndTimeline" class="athlete-analytics-range-input athlete-analytics-range-end" type="range" min="0" max="${maxIndex}" step="1" value="${Math.max(0, data.range.endIndex)}" ${!data.timeline.length ? "disabled" : ""} aria-label="${escapeHtml(comparison.mode === "snapshot" ? t("date") : t("toDate"))}">
+            </div>
+            <div class="athlete-analytics-range-values ${comparison.mode === "snapshot" ? "is-snapshot" : ""}" id="analyticsComparisonRangeValues">
+              ${renderAthleteAnalyticsRangeValues(comparison.mode, data.range.startDate, data.range.endDate, data.athleteData.flatMap((item) => item.includedPoints))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function analyticsComparisonSeriesPoint(point, athleteName) {
+  const events = (point.event_names || []).map((eventName) => `${athleteName} · ${eventName}`);
+  return { ...point, event_names: events.length ? events : [athleteName] };
+}
+
+function renderAnalyticsComparisonTrendFigure(series, data) {
+  const width = ATHLETE_TREND_SVG_WIDTH;
+  const height = ATHLETE_TREND_SVG_HEIGHT;
+  const padding = ATHLETE_TREND_SVG_PADDING;
+  const { minValue, maxValue, valueRange } = data.trendValueDomain;
+  const hasTrendData = series.some((item) => (
+    state.analyticsComparison.mode === "snapshot" ? item.contextTrend : item.trend
+  ).length);
+  if (!hasTrendData || !data.dateDomain.maxTime) {
+    return `<div class="empty-state compact-empty">${escapeHtml(t("analyticsNoData"))}</div>`;
+  }
+  return `
+    <div class="athlete-trend-figure analytics-comparison-trend-figure ${state.analyticsComparison.mode === "snapshot" ? "is-snapshot" : ""}" data-comparison-trend="true">
+      <svg class="athlete-trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("analyticsCompareTrend"))}">
+        ${renderAthleteTrendAxes(data.dateDomain, padding, width, height, minValue, maxValue, state.analyticsComparison.metric)}
+        ${series.map((item) => {
+          const sourceTrend = state.analyticsComparison.mode === "snapshot" ? item.contextTrend : item.trend;
+          const referenceDates = sourceTrend.map((point) => point.date);
+          const coordinates = athleteAnalyticsSvgCoordinates(sourceTrend, referenceDates, padding, width, height, minValue, valueRange, data.dateDomain);
+          const style = `style="--series-color: ${item.color};"`;
+          const lineClass = `athlete-trend-line analytics-comparison-line ${state.analyticsComparison.mode === "snapshot" ? "is-context" : ""}`;
+          const focusCoordinates = state.analyticsComparison.mode === "snapshot"
+            ? athleteAnalyticsSvgCoordinates(item.trend, item.trend.map((point) => point.date), padding, width, height, minValue, valueRange, data.dateDomain)
+            : coordinates;
+          return `
+            ${renderAthleteTrendPaths(coordinates, referenceDates, lineClass, style)}
+            ${focusCoordinates.map((point) => renderAthleteTrendDot(
+              analyticsComparisonSeriesPoint(point, athleteCardDisplayName(item.athlete)),
+              state.analyticsComparison.metric,
+              "athlete-trend-dot analytics-comparison-dot",
+              state.analyticsComparison.mode === "snapshot" ? 5.2 : 4,
+              style,
+            )).join("")}
+          `;
+        }).join("")}
+      </svg>
+      <div class="athlete-trend-tooltip" role="status" hidden></div>
+      <div class="athlete-trend-legend analytics-comparison-legend">
+        ${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(athleteCardDisplayName(item.athlete))}</span>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderAnalyticsComparisonRadarFigure(series, data) {
+  const first = series[0];
+  if (!first) return emptyState();
+  const vertices = first.vertices;
+  const radius = 106;
+  const center = 150;
+  const total = vertices.length;
+  const scaleRatios = [0.25, 0.5, 0.75, 1];
+  const rings = scaleRatios.map((ratio) => `<polygon class="athlete-radar-ring" points="${athleteAnalyticsSvgPolygon(vertices.map((_, index) => athleteAnalyticsPolarPoint(index, total, radius * ratio, center)))}"></polygon>`).join("");
+  const axes = vertices.map((vertex, index) => {
+    const end = athleteAnalyticsPolarPoint(index, total, radius, center);
+    const label = athleteAnalyticsPolarPoint(index, total, radius + 24, center);
+    const active = athleteAnalyticsVertexIsActive(vertex.apparatus, data.selectedApparatuses, data.discipline);
+    return `<line class="athlete-radar-axis ${active ? "is-active" : "is-muted"}" x1="${center}" y1="${center}" x2="${end.x.toFixed(1)}" y2="${end.y.toFixed(1)}"></line><text class="athlete-radar-label ${active ? "is-active" : "is-muted"}" x="${label.x.toFixed(1)}" y="${label.y.toFixed(1)}">${escapeHtml(vertex.apparatus)}</text>`;
+  }).join("");
+  const scale = scaleRatios.map((ratio) => {
+    const value = athleteAnalyticsLowerIsBetter(state.analyticsComparison.metric) ? data.radarMax * (1 - ratio) : data.radarMax * ratio;
+    const y = center - (radius * ratio);
+    return `<text class="athlete-radar-scale-label" x="${center + 10}" y="${(y + 3).toFixed(1)}">${escapeHtml(athleteAnalyticsRadarScaleLabel(value))}</text>`;
+  }).join("");
+  return `
+    <div class="athlete-radar-figure analytics-comparison-radar-figure">
+      <svg class="athlete-radar-svg" viewBox="0 0 300 300" role="img" aria-label="${escapeHtml(t("analyticsCompareProfile"))}">
+        ${rings}${axes}<text class="athlete-radar-scale-label is-center" x="${center + 9}" y="${center + 3}">${escapeHtml(athleteAnalyticsRadarScaleLabel(athleteAnalyticsLowerIsBetter(state.analyticsComparison.metric) ? data.radarMax : 0))}</text>${scale}
+        ${series.map((item) => {
+          const points = item.vertices.map((vertex, index) => {
+            const value = athleteAnalyticsNumber(vertex.value) || 0;
+            const normalized = data.radarMax
+              ? athleteAnalyticsLowerIsBetter(state.analyticsComparison.metric)
+                ? Math.max(0, Math.min(1, 1 - (value / data.radarMax)))
+                : Math.max(0, Math.min(1, value / data.radarMax))
+              : 0;
+            return athleteAnalyticsPolarPoint(index, total, radius * normalized, center);
+          });
+          return `<polygon class="athlete-radar-area is-comparison" style="--comparison-color: ${item.color};" points="${athleteAnalyticsSvgPolygon(points)}"></polygon>${points.map((point, index) => {
+            const vertex = item.vertices[index];
+            return `<circle class="athlete-radar-dot analytics-comparison-radar-dot" style="--series-color: ${item.color};" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4" data-athlete-radar-point="true" data-radar-apparatus="${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${vertex.apparatus}`)}" data-radar-value="${escapeHtml(athleteAnalyticsFormatValue(vertex.value, state.analyticsComparison.metric))}" tabindex="0"></circle>`;
+          }).join("")}`;
+        }).join("")}
+      </svg>
+      <div class="athlete-radar-tooltip" role="status" hidden></div>
+      <div class="athlete-trend-legend analytics-comparison-legend">${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(athleteCardDisplayName(item.athlete))}</span>`).join("")}</div>
+    </div>
+  `;
+}
+
+function renderAnalyticsComparisonSummary(item) {
+  return `
+    <div class="analytics-comparison-summary" style="--athlete-color: ${item.color};">
+      <strong>${escapeHtml(athleteCardDisplayName(item.athlete))}</strong>
+      <span>${escapeHtml(item.athlete.country || t("notAvailable"))}</span>
+      ${renderAthleteAnalyticsSummaryGrid({ metric: state.analyticsComparison.metric, summary: item.summary })}
+    </div>
+  `;
+}
+
+function renderAnalyticsComparisonContent(data) {
+  const overlay = state.analyticsComparison.layout === "overlay";
+  const cycleContext = renderAthleteAnalyticsScoringCycleContext(data.cycles, data.discipline);
+  const warningMessages = [
+    state.analyticsComparison.metric === "execution_estimate" ? t("analyticsEEstimateNotice") : "",
+    ...data.athleteData.flatMap((item) => item.warnings),
+  ];
+  const warningStack = renderDataWarningStack(warningMessages, "athlete-analytics-warning-stack");
+  if (overlay) {
+    return `
+      ${cycleContext}
+      <div class="athlete-analytics-visual-grid analytics-comparison-overlay-grid">
+        <div class="athlete-analytics-chart-block athlete-shape-chart-block"><h2>${escapeHtml(t("analyticsCompareProfile"))}</h2>${renderAnalyticsComparisonRadarFigure(data.athleteData, data)}</div>
+        <div class="athlete-analytics-chart-block athlete-trend-chart-block"><h2>${escapeHtml(t("analyticsCompareTrend"))}</h2>${renderAnalyticsComparisonTrendFigure(data.athleteData, data)}</div>
+      </div>
+      <div class="analytics-comparison-summary-grid">${data.athleteData.map(renderAnalyticsComparisonSummary).join("")}</div>
+      ${warningStack}
+    `;
+  }
+  return `
+    ${cycleContext}
+    <div class="analytics-comparison-chart-row">
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareProfile"))}</small></div>${renderAnalyticsComparisonRadarFigure([item], data)}</div>`).join("")}
+    </div>
+    <div class="analytics-comparison-chart-row">
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareTrend"))}</small></div>${renderAnalyticsComparisonTrendFigure([item], data)}</div>`).join("")}
+    </div>
+    <div class="analytics-comparison-summary-grid">${data.athleteData.map(renderAnalyticsComparisonSummary).join("")}</div>
+    ${warningStack}
+  `;
+}
+
+function updateAnalyticsComparisonContent({ animate = false } = {}) {
+  const content = $("#analyticsComparisonContent");
+  if (!content || state.analyticsComparison.payloads.some((payload) => !payload)) return;
+  const data = analyticsComparisonPreparedData();
+  content.innerHTML = renderAnalyticsComparisonContent(data);
+  if (animate && !window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
+    content.classList.remove("is-metric-transition");
+    void content.offsetWidth;
+    content.classList.add("is-metric-transition");
+  }
+}
+
+function syncAnalyticsComparisonTimeline() {
+  const data = analyticsComparisonPreparedData();
+  const maxIndex = Math.max(0, data.timeline.length - 1);
+  const startInput = $("#analyticsComparisonStartTimeline");
+  const endInput = $("#analyticsComparisonEndTimeline");
+  const shell = document.querySelector(".analytics-comparison-controls .athlete-analytics-range-shell");
+  if (startInput) startInput.value = String(Math.max(0, data.range.startIndex));
+  if (endInput) endInput.value = String(Math.max(0, data.range.endIndex));
+  if (shell) {
+    const startPercent = maxIndex ? (Math.max(0, data.range.startIndex) / maxIndex) * 100 : 0;
+    const endPercent = maxIndex ? (Math.max(0, data.range.endIndex) / maxIndex) * 100 : 100;
+    shell.style.setProperty("--range-start", `${(state.analyticsComparison.mode === "snapshot" ? endPercent : startPercent).toFixed(2)}%`);
+    shell.style.setProperty("--range-end", `${endPercent.toFixed(2)}%`);
+  }
+  const rangeValues = $("#analyticsComparisonRangeValues");
+  if (rangeValues) {
+    rangeValues.innerHTML = renderAthleteAnalyticsRangeValues(state.analyticsComparison.mode, data.range.startDate, data.range.endDate, data.athleteData.flatMap((item) => item.includedPoints));
+  }
+  updateAnalyticsComparisonContent();
+}
+
+function bindAnalyticsComparisonControls() {
+  document.querySelectorAll("[data-analytics-comparison-apparatus]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.analyticsComparison.apparatuses = toggleExclusiveApparatusSelection(
+        analyticsComparisonSelectedApparatuses(),
+        button.dataset.analyticsComparisonApparatus,
+      );
+      renderAnalyticsComparisonWorkspace({ animate: true });
+    });
+  });
+  document.querySelectorAll("[data-analytics-comparison-metric]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.analyticsComparison.metric === button.dataset.analyticsComparisonMetric) return;
+      state.analyticsComparison.metric = button.dataset.analyticsComparisonMetric;
+      renderAnalyticsComparisonWorkspace({ animate: true });
+    });
+  });
+  document.querySelectorAll("[data-analytics-comparison-mode]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const mode = button.dataset.analyticsComparisonMode === "snapshot" ? "snapshot" : "period";
+      if (state.analyticsComparison.mode === mode) return;
+      state.analyticsComparison.mode = mode;
+      renderAnalyticsComparisonWorkspace({ animate: true });
+    });
+  });
+  document.querySelectorAll("[data-analytics-comparison-layout]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.analyticsComparison.layout = button.dataset.analyticsComparisonLayout === "overlay" ? "overlay" : "side-by-side";
+      renderAnalyticsComparisonWorkspace({ animate: true });
+    });
+  });
+  const bindRange = (input, field) => {
+    input?.addEventListener("input", () => {
+      const value = Number(input.value);
+      if (state.analyticsComparison.mode === "snapshot") {
+        state.analyticsComparison.snapshotIndex = value;
+      } else if (field === "start") {
+        state.analyticsComparison.startIndex = Math.min(value, Number(state.analyticsComparison.endIndex));
+      } else {
+        state.analyticsComparison.endIndex = Math.max(value, Number(state.analyticsComparison.startIndex));
+      }
+      syncAnalyticsComparisonTimeline();
+    });
+  };
+  bindRange($("#analyticsComparisonStartTimeline"), "start");
+  bindRange($("#analyticsComparisonEndTimeline"), "end");
+}
+
+function renderAnalyticsComparisonWorkspace({ animate = false } = {}) {
+  const workspace = $("#analyticsComparisonWorkspace");
+  if (!workspace) return;
+  if (state.analyticsComparison.payloads.some((payload) => !payload)) {
+    workspace.innerHTML = `<div class="empty-state analytics-comparison-empty">${escapeHtml(t("analyticsCompareSelectBoth"))}</div>`;
+    return;
+  }
+  const data = analyticsComparisonPreparedData();
+  workspace.innerHTML = `
+    <section class="athlete-analytics-panel analytics-comparison-panel">
+      <div class="athlete-analytics-sticky-menu">${renderAnalyticsComparisonControls(data)}</div>
+      <div id="analyticsComparisonContent" class="athlete-analytics-dynamic-content">${renderAnalyticsComparisonContent(data)}</div>
+    </section>
+  `;
+  bindAnalyticsComparisonControls();
+  if (animate) updateAnalyticsComparisonContent({ animate: true });
+}
+
+function analyticsComparisonSuggestionName(athlete) {
+  return athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`);
+}
+
+function renderAnalyticsComparisonSuggestions(slot, athletes) {
+  const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
+  if (!container) return;
+  if (!athletes.length) {
+    container.innerHTML = `<div class="analytics-comparison-suggestion-empty">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
+  } else {
+    container.innerHTML = athletes.map((athlete) => `
+      <button type="button" class="analytics-comparison-suggestion" data-analytics-athlete-choice="${slot}" data-athlete-id="${athlete.id}">
+        <strong>${escapeHtml(analyticsComparisonSuggestionName(athlete))}</strong>
+        <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
+      </button>
+    `).join("");
+  }
+  container.hidden = false;
+  container.querySelectorAll("[data-analytics-athlete-choice]").forEach((button) => {
+    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(slot, Number(button.dataset.athleteId)));
+  });
+}
+
+async function searchAnalyticsComparisonAthletes(slot, query) {
+  const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
+  if (!container) return;
+  if (query.trim().length < 2) {
+    container.hidden = true;
+    container.innerHTML = "";
+    return;
+  }
+  const requestId = ++analyticsComparisonSearchRequestId;
+  container.hidden = false;
+  container.innerHTML = `<div class="analytics-comparison-suggestion-empty">${escapeHtml(t("loading"))}</div>`;
+  try {
+    const discipline = state.analyticsComparison.athletes.find(Boolean)?.discipline || "";
+    const athletes = await getJson("/athletes/", { search: query.trim(), discipline, limit: 9, offset: 0 });
+    if (requestId !== analyticsComparisonSearchRequestId) return;
+    const selectedIds = new Set(state.analyticsComparison.athletes.filter(Boolean).map((athlete) => Number(athlete.id)));
+    renderAnalyticsComparisonSuggestions(slot, athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
+  } catch (error) {
+    if (requestId !== analyticsComparisonSearchRequestId) return;
+    container.innerHTML = errorState(error);
+  }
+}
+
+async function selectAnalyticsComparisonAthlete(slot, athleteId) {
+  const message = $("#analyticsComparisonMessage");
+  const otherSlot = slot === 0 ? 1 : 0;
+  if (state.analyticsComparison.athletes[otherSlot]?.id === athleteId) {
+    if (message) message.textContent = t("analyticsCompareSameAthlete");
+    return;
+  }
+  const requestId = ++analyticsComparisonProfileRequestId;
+  if (message) message.textContent = t("loading");
+  try {
+    const payload = await getJson(`/analytics/athletes/${athleteId}/profile-view`, { metric: "score", criterion: "average" });
+    if (requestId !== analyticsComparisonProfileRequestId) return;
+    const athlete = payload.athlete;
+    const otherAthlete = state.analyticsComparison.athletes[otherSlot];
+    if (otherAthlete && otherAthlete.discipline !== athlete.discipline) {
+      if (message) message.textContent = t("analyticsCompareSameDiscipline");
+      return;
+    }
+    state.analyticsComparison.athletes[slot] = athlete;
+    state.analyticsComparison.payloads[slot] = payload;
+    state.analyticsComparison.startIndex = -1;
+    state.analyticsComparison.endIndex = -1;
+    state.analyticsComparison.snapshotIndex = -1;
+    state.analyticsComparison.apparatuses = ["AA"];
+    renderAnalyticsComparison();
+  } catch (error) {
+    if (requestId !== analyticsComparisonProfileRequestId) return;
+    if (message) message.textContent = error.message || t("loadFailed");
+  }
+}
+
+function bindAnalyticsComparisonPickers() {
+  document.querySelectorAll("[data-analytics-athlete-search]").forEach((input) => {
+    let timer;
+    input.addEventListener("input", () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value), 140);
+    });
+    input.addEventListener("focus", () => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value));
+    input.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        const suggestions = document.querySelector(`[data-analytics-athlete-suggestions="${input.dataset.analyticsAthleteSearch}"]`);
+        if (suggestions) suggestions.hidden = true;
+      }, 160);
+    });
+  });
+  document.querySelectorAll("[data-analytics-remove-athlete]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const slot = Number(button.dataset.analyticsRemoveAthlete);
+      state.analyticsComparison.athletes[slot] = null;
+      state.analyticsComparison.payloads[slot] = null;
+      state.analyticsComparison.startIndex = -1;
+      state.analyticsComparison.endIndex = -1;
+      state.analyticsComparison.snapshotIndex = -1;
+      renderAnalyticsComparison();
+    });
+  });
+}
+
+function renderAnalyticsComparison() {
+  setApp(`
+    ${pageHeading("analyticsHeading", "analyticsIntro")}
+    ${renderAnalyticsComparisonSelection()}
+    <div id="analyticsComparisonWorkspace"></div>
+  `);
+  bindAnalyticsComparisonPickers();
+  renderAnalyticsComparisonWorkspace();
 }
 
 function renderAthleteAdminForm(athlete) {
@@ -9925,7 +10576,7 @@ function render() {
   } else if (state.route.startsWith("/search")) {
     return renderGlobalSearch();
   } else if (state.route.startsWith("/analytics")) {
-    return renderStaticPage("analyticsHeading", "analyticsIntro");
+    return renderAnalyticsComparison();
   } else if (state.route.startsWith("/login")) {
     return renderLogin();
   } else {

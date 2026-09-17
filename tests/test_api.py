@@ -6906,6 +6906,25 @@ def test_public_dashboard_analytics_filter_options_compare_and_dashboard():
         },
         headers=headers,
     ).json()
+    wag_athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Anna",
+            "last_name": "Bianchi",
+            "birth_year": 2002,
+            "discipline": "WAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+
+    mixed_discipline_comparison = client.get(
+        f"/analytics/athletes/compare?ids={athlete1['id']},{wag_athlete['id']}"
+    )
+    assert mixed_discipline_comparison.status_code == 422
+    assert mixed_discipline_comparison.json()["detail"] == (
+        "Athlete comparisons require athletes from the same discipline"
+    )
 
     event1 = client.post(
         "/events/",

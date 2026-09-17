@@ -921,6 +921,11 @@ def compare_athletes_for_dashboard(
     athletes_by_id = {athlete.id: athlete for athlete in athletes}
     if len(athletes_by_id) != len(set(athlete_ids)):
         raise HTTPException(status_code=404, detail="One or more athletes not found")
+    if len({athlete.discipline for athlete in athletes}) > 1:
+        raise HTTPException(
+            status_code=422,
+            detail="Athlete comparisons require athletes from the same discipline",
+        )
 
     query = (
         db.query(models.Result)

@@ -50,7 +50,10 @@ You can change it from the UI footer during local testing.
 - Minimal routing
 - Athlete search
 - Event calendar browser
-- Rankings preview
+- Rankings and official event classifications
+- Interactive athlete profile analytics
+- Two-athlete MAG/WAG comparison with synchronized radar and trend charts
+- Side-by-side and overlaid comparison layouts
 - EN/IT/ES/FR language selector
 - LEVERAGE brand assets
 

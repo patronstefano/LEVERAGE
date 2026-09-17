@@ -3303,6 +3303,279 @@ button {
   margin-top: 14px;
 }
 
+.analytics-comparison-selection {
+  position: relative;
+  z-index: 46;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.analytics-comparison-picker {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--surface-radius);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 44px rgba(16, 16, 20, 0.04);
+}
+
+.analytics-comparison-picker.is-selected {
+  border-color: color-mix(in srgb, var(--athlete-color) 28%, var(--line));
+}
+
+.analytics-comparison-picker-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.analytics-comparison-search-shell {
+  position: relative;
+}
+
+.analytics-comparison-search-shell input {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(25, 23, 71, 0.12);
+  border-radius: var(--control-radius);
+  background: rgba(245, 245, 247, 0.72);
+}
+
+.analytics-comparison-suggestions {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  left: 0;
+  z-index: 70;
+  max-height: 260px;
+  overflow: auto;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--surface-radius);
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(16, 16, 20, 0.13);
+}
+
+.analytics-comparison-suggestion {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: var(--data-chip-radius);
+  color: var(--ink);
+  background: transparent;
+  text-align: left;
+}
+
+.analytics-comparison-suggestion:hover,
+.analytics-comparison-suggestion:focus-visible {
+  background: rgba(25, 23, 71, 0.06);
+}
+
+.analytics-comparison-suggestion strong {
+  font-size: 13px;
+}
+
+.analytics-comparison-suggestion span,
+.analytics-comparison-suggestion-empty {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.analytics-comparison-suggestion-empty {
+  padding: 10px;
+}
+
+.analytics-comparison-selected-athlete {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+  min-height: 38px;
+}
+
+.analytics-comparison-selected-athlete > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.analytics-comparison-selected-athlete strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-comparison-selected-athlete span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.analytics-comparison-color-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--athlete-color, var(--series-color, var(--brand-blue)));
+}
+
+.analytics-comparison-remove {
+  width: 30px;
+  height: 30px;
+  color: var(--muted);
+  font-size: 20px;
+  font-weight: 350;
+}
+
+.analytics-comparison-message {
+  min-height: 18px;
+  margin-top: 5px;
+}
+
+.analytics-comparison-empty {
+  margin-top: 12px;
+}
+
+.analytics-comparison-panel {
+  margin-top: 0;
+}
+
+.analytics-comparison-score-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.analytics-comparison-score-row .athlete-analytics-metric-control {
+  flex: 1 1 auto;
+}
+
+.analytics-comparison-layout-control {
+  flex: 0 0 auto;
+  width: 220px;
+  min-height: 36px;
+  padding: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.analytics-comparison-layout-control .segmented-option {
+  height: 34px;
+  padding: 0 10px;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+.analytics-comparison-layout-control .segmented-thumb {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  transform: translateX(calc(var(--selected-index) * 100%));
+}
+
+.analytics-comparison-chart-row,
+.analytics-comparison-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.analytics-comparison-chart-heading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.analytics-comparison-chart-heading h2 {
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-comparison-chart-heading small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.analytics-comparison-radar-figure {
+  min-height: 300px;
+}
+
+.athlete-radar-area.is-comparison {
+  fill: color-mix(in srgb, var(--comparison-color) 15%, transparent);
+  stroke: var(--comparison-color);
+}
+
+.analytics-comparison-radar-dot {
+  fill: var(--series-color);
+  stroke: #fff;
+}
+
+.analytics-comparison-line,
+.analytics-comparison-dot {
+  stroke: var(--series-color);
+}
+
+.analytics-comparison-dot {
+  fill: var(--series-color);
+}
+
+.analytics-comparison-legend {
+  justify-content: center;
+}
+
+.analytics-comparison-summary {
+  display: grid;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.analytics-comparison-summary > strong {
+  padding-left: 10px;
+  border-left: 3px solid var(--athlete-color);
+  font-size: 14px;
+}
+
+.analytics-comparison-summary > span {
+  padding-left: 13px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.analytics-comparison-summary .athlete-analytics-summary-grid {
+  margin-top: 2px;
+}
+
+.analytics-comparison-overlay-grid {
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .analytics-comparison-selection,
+  .analytics-comparison-chart-row,
+  .analytics-comparison-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-comparison-score-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .analytics-comparison-layout-control {
+    width: min(100%, 300px);
+  }
+}
+
 .athlete-analytics-sticky-menu {
   position: sticky;
   top: var(--topbar-height);
