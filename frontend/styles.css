@@ -3531,7 +3531,7 @@ button {
   gap: 8px;
   min-width: 0;
   padding: 14px;
-  border: 1px solid var(--athlete-color);
+  border: 1px solid var(--line);
   border-radius: var(--surface-radius);
   background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 12px 34px rgba(16, 16, 20, 0.035);
@@ -3557,7 +3557,7 @@ button {
 .analytics-comparison-summary .athlete-analytics-stat {
   min-height: 58px;
   padding: 9px 10px;
-  border: 0;
+  border: 1px solid var(--athlete-color);
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.72);
   box-shadow: none;
