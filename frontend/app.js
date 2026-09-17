@@ -7112,6 +7112,35 @@ function athleteAnalyticsSvgPath(coordinates) {
   return coordinates.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
 }
 
+function athleteAnalyticsSvgPathSegments(coordinates, referenceDates = []) {
+  if (!coordinates.length) return [];
+  const referenceIndexes = new Map(referenceDates.map((date, index) => [date, index]));
+  const segments = [];
+  let currentSegment = [];
+  let previousIndex = null;
+  coordinates.forEach((point) => {
+    const currentIndex = referenceIndexes.get(point.date);
+    const continuesSeries = currentSegment.length > 0 && (
+      previousIndex === null || currentIndex === undefined || currentIndex === previousIndex + 1
+    );
+    if (!continuesSeries && currentSegment.length) {
+      segments.push(currentSegment);
+      currentSegment = [];
+    }
+    currentSegment.push(point);
+    previousIndex = currentIndex ?? null;
+  });
+  if (currentSegment.length) segments.push(currentSegment);
+  return segments;
+}
+
+function renderAthleteTrendPaths(coordinates, referenceDates, className, extraAttrs = "") {
+  return athleteAnalyticsSvgPathSegments(coordinates, referenceDates)
+    .filter((segment) => segment.length >= 2)
+    .map((segment) => `<path class="${className}" ${extraAttrs} d="${athleteAnalyticsSvgPath(segment)}"></path>`)
+    .join("");
+}
+
 function athleteAnalyticsAxisValueLabel(value, metric) {
   if (metric === "Penalty" || metric === "Bonus") return Number(value).toFixed(1);
   return Number(value).toFixed(1);
@@ -7143,11 +7172,10 @@ function athleteAnalyticsTrendValueDomain(metric, values) {
     const maxValue = Math.max(0.25, observedMax + upperPadding);
     return { minValue: 0, maxValue, valueRange: Math.max(0.25, maxValue) };
   }
-  const semanticMax = athleteAnalyticsScaleMax(metric, numericValues);
   const observedRange = observedMax - observedMin;
   const padding = observedRange > 0
-    ? Math.max(observedRange * 0.16, semanticMax * 0.012)
-    : Math.max(0.45, semanticMax * 0.035);
+    ? Math.max(observedRange * 0.16, observedMax * 0.012, 0.05)
+    : Math.max(0.45, observedMax * 0.035);
   let minValue = Math.max(0, observedMin - padding);
   let maxValue = observedMax + padding;
   if (maxValue - minValue < 1) {
@@ -7525,6 +7553,17 @@ function athleteAnalyticsTrendScope(points, startDate, endDate, mode, forceFullP
   };
 }
 
+function athleteAnalyticsTrendReferenceDates(points, startDate, endDate, mode) {
+  const dates = athleteAnalyticsTimeline(points);
+  if (mode === "snapshot") return dates;
+  return dates.filter((date) => (!startDate || date >= startDate) && (!endDate || date <= endDate));
+}
+
+function athleteAnalyticsTrendDomainDates(referenceDates, startDate, endDate, mode) {
+  if (mode === "snapshot") return referenceDates;
+  return [...new Set([startDate, ...referenceDates, endDate].filter(Boolean))].sort();
+}
+
 function athleteAnalyticsDerivedSeriesPoints(points, definition) {
   return points
     .filter(definition.filter)
@@ -7541,6 +7580,7 @@ function athleteAnalyticsDerivedSeriesPoints(points, definition) {
 function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selectedApparatuses, discipline) {
   const isSnapshot = mode === "snapshot";
   const mainPoints = athleteAnalyticsPointsForSelection(points, selectedApparatuses);
+  const mainReferenceDates = athleteAnalyticsTrendReferenceDates(mainPoints, startDate, endDate, mode);
   const trend = athleteAnalyticsTrendPoints(mainPoints, startDate, endDate, mode);
   const contextScope = athleteAnalyticsTrendScope(mainPoints, startDate, endDate, mode, isSnapshot);
   const contextTrend = isSnapshot
@@ -7548,10 +7588,17 @@ function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selecte
     : [];
   const backgroundSeries = athleteAnalyticsComponentDefinitions(selectedApparatuses, discipline, metric)
     .map((definition) => {
+      const sourcePoints = points.filter(definition.filter);
       const componentPoints = athleteAnalyticsDerivedSeriesPoints(points, definition);
       const componentScope = athleteAnalyticsTrendScope(componentPoints, startDate, endDate, mode, isSnapshot);
       return {
         ...definition,
+        referenceDates: athleteAnalyticsTrendReferenceDates(
+          sourcePoints,
+          componentScope.startDate,
+          componentScope.endDate,
+          componentScope.mode,
+        ),
         trend: athleteAnalyticsTrendPoints(
           componentPoints,
           componentScope.startDate,
@@ -7569,36 +7616,35 @@ function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selecte
   const height = ATHLETE_TREND_SVG_HEIGHT;
   const padding = ATHLETE_TREND_SVG_PADDING;
   const allSeries = [trend, contextTrend, ...backgroundSeries.map((series) => series.trend)].filter((series) => series.length);
-  const allDates = [...new Set(allSeries.flatMap((series) => series.map((point) => point.date)))].sort();
+  const domainDates = athleteAnalyticsTrendDomainDates(mainReferenceDates, startDate, endDate, mode);
   const values = allSeries.flatMap((series) => series.map((point) => point.value));
   const { minValue, maxValue, valueRange } = athleteAnalyticsTrendValueDomain(metric, values);
-  const dateDomain = athleteAnalyticsTrendDateDomain(allDates);
-  const contextCoordinates = athleteAnalyticsSvgCoordinates(contextTrend, allDates, padding, width, height, minValue, valueRange, dateDomain);
-  const coordinates = athleteAnalyticsSvgCoordinates(trend, allDates, padding, width, height, minValue, valueRange, dateDomain);
-  const path = athleteAnalyticsSvgPath(coordinates);
+  const dateDomain = athleteAnalyticsTrendDateDomain(domainDates);
+  const contextCoordinates = athleteAnalyticsSvgCoordinates(contextTrend, domainDates, padding, width, height, minValue, valueRange, dateDomain);
+  const coordinates = athleteAnalyticsSvgCoordinates(trend, domainDates, padding, width, height, minValue, valueRange, dateDomain);
   return `
     <div class="athlete-trend-figure ${isSnapshot ? "is-snapshot" : ""}">
       <svg class="athlete-trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("analyticsTrendTitle"))}">
         ${renderAthleteTrendAxes(dateDomain, padding, width, height, minValue, maxValue, metric)}
-        ${isSnapshot && contextCoordinates.length >= 2 ? `<path class="athlete-trend-line is-context" d="${athleteAnalyticsSvgPath(contextCoordinates)}"></path>` : ""}
+        ${isSnapshot ? renderAthleteTrendPaths(contextCoordinates, mainReferenceDates, "athlete-trend-line is-context") : ""}
         ${backgroundSeries.map((series) => {
-          const seriesCoordinates = athleteAnalyticsSvgCoordinates(series.trend, allDates, padding, width, height, minValue, valueRange, dateDomain);
+          const seriesCoordinates = athleteAnalyticsSvgCoordinates(series.trend, domainDates, padding, width, height, minValue, valueRange, dateDomain);
           const seriesStyle = `style="--series-color: ${athleteAnalyticsComponentColor(series)};"`;
           const backgroundDots = seriesCoordinates
             .map((point) => renderAthleteTrendDot(point, series.metric || metric, "athlete-trend-dot is-background", 3.1, seriesStyle))
             .join("");
           return `
-            <path class="athlete-trend-line is-background" ${seriesStyle} d="${athleteAnalyticsSvgPath(seriesCoordinates)}"></path>
+            ${renderAthleteTrendPaths(seriesCoordinates, series.referenceDates, "athlete-trend-line is-background", seriesStyle)}
             ${backgroundDots}
           `;
         }).join("")}
-        ${isSnapshot ? "" : `<path class="athlete-trend-line" d="${path}"></path>`}
+        ${isSnapshot ? "" : renderAthleteTrendPaths(coordinates, mainReferenceDates, "athlete-trend-line")}
         ${coordinates.map((point) => renderAthleteTrendDot(point, metric, `athlete-trend-dot ${isSnapshot ? "is-snapshot-focus" : ""}`, isSnapshot ? 5.4 : 4)).join("")}
       </svg>
       <div class="athlete-trend-tooltip" role="status" hidden></div>
       ${backgroundSeries.length ? `
         <div class="athlete-trend-legend">
-          <span class="is-primary">${escapeHtml(athleteAnalyticsApparatusSelectionLabel(selectedApparatuses))}</span>
+          <span class="is-primary">${escapeHtml(`${athleteAnalyticsApparatusSelectionLabel(selectedApparatuses)} · ${athleteAnalyticsMetricLabel(metric)}`)}</span>
           ${backgroundSeries.map((series) => `<span style="--series-color: ${athleteAnalyticsComponentColor(series)};">${escapeHtml(series.label)}</span>`).join("")}
         </div>
       ` : ""}
