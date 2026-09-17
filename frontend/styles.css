@@ -3308,6 +3308,10 @@ button {
   gap: 12px;
 }
 
+.analytics-comparison-search-row::before {
+  border-bottom: 0;
+}
+
 .analytics-comparison-selected-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
