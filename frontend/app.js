@@ -502,6 +502,8 @@ const translations = {
     notApplicable: "Not applicable",
     apparatusScoresUnavailable: "Apparatus scores not available",
     backToAthletes: "Back to Athletes",
+    backToRanking: "Back to Ranking",
+    backToClassification: "Back to Standings",
     backToEvents: "Back to Events",
     backToHome: "Back to Home",
     comingSoon: "Coming soon",
@@ -813,6 +815,8 @@ const translations = {
     notApplicable: "Non applicabile",
     apparatusScoresUnavailable: "Punteggi attrezzi non disponibili",
     backToAthletes: "Torna agli Atleti",
+    backToRanking: "Torna al Ranking",
+    backToClassification: "Torna alla Classifica",
     backToEvents: "Torna agli Eventi",
     backToHome: "Torna alla Home",
     comingSoon: "In arrivo",
@@ -1124,6 +1128,8 @@ const translations = {
     notApplicable: "No aplicable",
     apparatusScoresUnavailable: "Scores por aparato no disponibles",
     backToAthletes: "Volver a Atletas",
+    backToRanking: "Volver al Ranking",
+    backToClassification: "Volver a la clasificación",
     backToEvents: "Volver a Eventos",
     backToHome: "Volver a Home",
     comingSoon: "Proximamente",
@@ -1435,6 +1441,8 @@ const translations = {
     notApplicable: "Non applicable",
     apparatusScoresUnavailable: "Scores par appareil non disponibles",
     backToAthletes: "Retour aux Athletes",
+    backToRanking: "Retour au Ranking",
+    backToClassification: "Retour au classement",
     backToEvents: "Retour aux Evenements",
     backToHome: "Retour a l'accueil",
     comingSoon: "Bientot",
@@ -3392,6 +3400,18 @@ function rankingLeaderboardTags(entry, options = {}) {
     : "";
 }
 
+function leaderboardAthleteHref(href, options = {}) {
+  const returnContext = options.returnContext || "";
+  if (!returnContext) return href;
+  const [path, query = ""] = String(href).split("?");
+  const params = new URLSearchParams(query);
+  params.set("from", returnContext);
+  if (returnContext === "classification" && options.returnEventId) {
+    params.set("event_id", String(options.returnEventId));
+  }
+  return `${path}?${params.toString()}`;
+}
+
 function renderLeaderboardList(entries = [], options = {}) {
   const selectedMetric = options.selectedMetric || rankingSortBy();
   return `
@@ -3402,7 +3422,8 @@ function renderLeaderboardList(entries = [], options = {}) {
         const meta = (options.metaForEntry ? options.metaForEntry(entry) : [])
           .filter(Boolean)
           .join(" · ");
-        const href = options.hrefForEntry ? options.hrefForEntry(entry) : `#/athletes/${entry.athlete_id}`;
+        const baseHref = options.hrefForEntry ? options.hrefForEntry(entry) : `#/athletes/${entry.athlete_id}`;
+        const href = leaderboardAthleteHref(baseHref, options);
         const secondaryScores = leaderboardPrimarySecondaryChips(entry, selectedMetric);
         const primaryDetailRows = leaderboardPrimaryDetailRows(entry, selectedMetric);
         const scoreCells = leaderboardScoreCells(entry, selectedMetric);
@@ -5513,6 +5534,7 @@ function renderRankingList(selector, payloadOrRankings) {
     ${renderLeaderboardList(rankings, {
       className: "ranking-results-list",
       selectedMetric,
+      returnContext: "ranking",
       showVaultAttempts,
       showTags: false,
       metaForEntry: (entry) => {
@@ -9026,6 +9048,8 @@ function renderEventRankingList(payload = {}) {
     ${renderLeaderboardList(results, {
       className: "ranking-results-list event-detail-ranking-list",
       selectedMetric,
+      returnContext: "classification",
+      returnEventId: state.eventDetail.eventId,
       showVaultAttempts,
       showApparatus: false,
       showTags: false,
@@ -9529,6 +9553,25 @@ async function renderAccount() {
   }
 }
 
+function athleteDetailBackDestination() {
+  const [, query = ""] = state.route.split("?");
+  const params = new URLSearchParams(query);
+  const source = params.get("from") || "";
+  if (source === "ranking") {
+    const rankingRoute = routeBelongsToSection(state.sectionRoutes.rankings, "rankings")
+      ? state.sectionRoutes.rankings
+      : SECTION_BASE_ROUTES.rankings;
+    return { href: `#${rankingRoute}`, label: t("backToRanking") };
+  }
+  if (source === "classification") {
+    const eventId = Number(params.get("event_id"));
+    if (Number.isInteger(eventId) && eventId > 0) {
+      return { href: `#/events/${eventId}`, label: t("backToClassification") };
+    }
+  }
+  return { href: "#/athletes", label: t("backToAthletes") };
+}
+
 async function renderAthleteDetail(athleteId) {
   await ensureFavoritesLoaded().catch(() => {});
   state.athleteAnalytics.metric = "score";
@@ -9552,9 +9595,10 @@ async function renderAthleteDetail(athleteId) {
       }
     }
     const name = athleteProfileDisplayName(athlete);
+    const backDestination = athleteDetailBackDestination();
     setApp(`
       <div class="detail-topbar">
-        <a class="quiet-button detail-back-button" href="#/athletes">${escapeHtml(t("backToAthletes"))}</a>
+        <a class="quiet-button detail-back-button" href="${escapeHtml(backDestination.href)}">${escapeHtml(backDestination.label)}</a>
       </div>
       <section class="panel profile-panel athlete-profile-summary-panel">
         <div class="athlete-profile-title-row">
