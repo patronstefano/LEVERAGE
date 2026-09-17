@@ -206,7 +206,7 @@ const ATHLETE_TREND_COMPONENT_COLORS = {
   VT1: "#d8649c",
   VT2: "#52a9c8",
 };
-const ANALYTICS_COMPARISON_COLORS = ["#191747", "#d8649c"];
+const ANALYTICS_COMPARISON_COLORS = ["#191747", "#9f3047"];
 let searchAutocompleteRequestId = 0;
 let athleteSearchRequestId = 0;
 let eventSearchRequestId = 0;

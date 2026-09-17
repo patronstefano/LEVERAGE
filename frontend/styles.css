@@ -4633,6 +4633,10 @@ button {
   background: var(--brand-blue);
 }
 
+.athlete-trend-legend.analytics-comparison-legend .is-primary::before {
+  background: var(--series-color);
+}
+
 .athlete-radar-legend {
   align-self: end;
   justify-content: center;
