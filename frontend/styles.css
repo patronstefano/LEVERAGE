@@ -4496,6 +4496,18 @@ button {
   stroke-width: 2;
 }
 
+.athlete-trend-line.analytics-comparison-line {
+  stroke: var(--series-color);
+}
+
+.athlete-trend-line.analytics-comparison-line.is-context {
+  stroke: color-mix(in srgb, var(--series-color) 24%, transparent);
+}
+
+.athlete-trend-dot.analytics-comparison-dot {
+  fill: var(--series-color);
+}
+
 .athlete-trend-dot.is-snapshot-focus {
   filter: drop-shadow(0 4px 8px rgba(25, 23, 71, 0.2));
   stroke-width: 2.4;
@@ -4622,6 +4634,10 @@ button {
 
 .athlete-trend-legend .is-primary {
   color: var(--brand-blue);
+}
+
+.analytics-comparison-legend .is-primary {
+  color: var(--series-color);
 }
 
 .athlete-trend-legend .is-primary::before {
