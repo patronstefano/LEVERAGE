@@ -8874,8 +8874,8 @@ function renderAnalyticsComparisonContent(data) {
     return `
       ${cycleContext}
       <div class="athlete-analytics-visual-grid analytics-comparison-single-grid">
-        <div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>
-        <div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>
+        <div class="athlete-analytics-chart-block athlete-shape-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>
+        <div class="athlete-analytics-chart-block athlete-trend-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>
       </div>
       <div class="analytics-comparison-summary-grid is-single">${renderAnalyticsComparisonSummary(item)}</div>
       ${warningStack}
@@ -8895,10 +8895,10 @@ function renderAnalyticsComparisonContent(data) {
   return `
     ${cycleContext}
     <div class="analytics-comparison-chart-row">
-      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>`).join("")}
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-shape-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>`).join("")}
     </div>
     <div class="analytics-comparison-chart-row">
-      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>`).join("")}
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-trend-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>`).join("")}
     </div>
     <div class="analytics-comparison-summary-grid">${data.athleteData.map(renderAnalyticsComparisonSummary).join("")}</div>
     ${warningStack}

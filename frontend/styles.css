@@ -3567,6 +3567,10 @@ button {
   align-items: stretch;
 }
 
+.analytics-comparison-athlete-chart {
+  border-color: var(--athlete-color);
+}
+
 @media (max-width: 900px) {
   .analytics-comparison-selected-list,
   .analytics-comparison-chart-row,
