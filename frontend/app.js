@@ -8698,7 +8698,7 @@ function renderAnalyticsComparisonControls(data) {
   const endPercent = maxIndex ? (Math.max(0, data.range.endIndex) / maxIndex) * 100 : 100;
   return `
     <div class="athlete-analytics-controls analytics-comparison-controls">
-      <div class="athlete-analytics-filter-cluster">
+      <div class="athlete-analytics-filter-cluster analytics-comparison-filter-cluster ${data.athleteData.length > 1 ? "has-layout-control" : ""}">
         <div class="athlete-analytics-control-group athlete-analytics-apparatus-group">
           <div class="athlete-analytics-apparatus-buttons" role="group" aria-label="${escapeHtml(t("apparatus"))}">
             ${athleteAnalyticsApparatusOptions(data.discipline).map((apparatus) => `
