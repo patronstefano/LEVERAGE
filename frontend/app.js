@@ -8661,18 +8661,16 @@ function renderAnalyticsComparisonSelection() {
   const athletes = state.analyticsComparison.athletes.filter(Boolean);
   const selectionFull = athletes.length >= 2;
   return `
-    <section class="analytics-comparison-selection">
-      <div class="analytics-comparison-search-stage">
-        <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
-        <div class="search-input-shell analytics-comparison-search-shell">
+    <div class="section-search-row analytics-comparison-search-row">
+      <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
+        <div class="search-input-shell">
           <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t("athleteSearchPlaceholder"))}" aria-label="${escapeHtml(t("athleteSearchPlaceholder"))}" ${selectionFull ? `disabled title="${escapeHtml(t("analyticsCompareSearchFull"))}"` : ""}>
           <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
         </div>
         <div class="search-suggestions analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
       </form>
-      </div>
-      ${athletes.length ? `<div class="analytics-comparison-selected-list">${athletes.map(renderAnalyticsComparisonSelectedAthlete).join("")}</div>` : ""}
-    </section>
+    </div>
+    ${athletes.length ? `<section class="analytics-comparison-selection"><div class="analytics-comparison-selected-list">${athletes.map(renderAnalyticsComparisonSelectedAthlete).join("")}</div></section>` : ""}
     <div id="analyticsComparisonMessage" class="auth-message analytics-comparison-message" role="status" aria-live="polite"></div>
   `;
 }

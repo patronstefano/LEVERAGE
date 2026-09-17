@@ -3304,17 +3304,8 @@ button {
 }
 
 .analytics-comparison-selection {
-  position: relative;
-  z-index: 46;
   display: grid;
   gap: 12px;
-  margin-top: 14px;
-}
-
-.analytics-comparison-search-stage {
-  display: grid;
-  width: min(620px, 100%);
-  gap: 7px;
 }
 
 .analytics-comparison-selected-list {
@@ -3343,26 +3334,6 @@ button {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-}
-
-.analytics-comparison-search-shell {
-  position: relative;
-  width: 100%;
-}
-
-.analytics-comparison-search-form {
-  width: 100%;
-  min-height: 48px;
-  margin: 0;
-  padding: 5px;
-  border-radius: var(--control-radius);
-}
-
-.analytics-comparison-search-form .search-input {
-  height: 36px;
-  min-height: 36px;
-  padding: 0 36px 0 14px;
-  border-radius: calc(var(--control-radius) - 4px);
 }
 
 .analytics-comparison-search-form .search-input:disabled {
