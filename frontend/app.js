@@ -8679,10 +8679,12 @@ function renderAnalyticsComparisonSelection() {
 function renderAnalyticsComparisonLayoutControl() {
   const overlay = state.analyticsComparison.layout === "overlay";
   return `
-    <div class="segmented-control analytics-comparison-layout-control" role="radiogroup" aria-label="Analytics view" style="--segment-count: 2; --selected-index: ${overlay ? 1 : 0};">
-      <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="side-by-side" aria-checked="${String(!overlay)}">${escapeHtml(t("analyticsCompareSideBySide"))}</button>
-      <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="overlay" aria-checked="${String(overlay)}">${escapeHtml(t("analyticsCompareOverlay"))}</button>
-      <span class="segmented-thumb" aria-hidden="true"></span>
+    <div class="athlete-analytics-control-group analytics-comparison-layout-group">
+      <div class="segmented-control analytics-comparison-layout-control" role="radiogroup" aria-label="Analytics view" style="--segment-count: 2; --selected-index: ${overlay ? 1 : 0};">
+        <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="side-by-side" aria-checked="${String(!overlay)}">${escapeHtml(t("analyticsCompareSideBySide"))}</button>
+        <button class="segmented-option" type="button" role="radio" data-analytics-comparison-layout="overlay" aria-checked="${String(overlay)}">${escapeHtml(t("analyticsCompareOverlay"))}</button>
+        <span class="segmented-thumb analytics-comparison-layout-thumb" aria-hidden="true"></span>
+      </div>
     </div>
   `;
 }
@@ -8709,9 +8711,9 @@ function renderAnalyticsComparisonControls(data) {
             ${ATHLETE_ANALYTICS_METRICS.map((item) => `<button class="segmented-option athlete-analytics-metric-option" type="button" role="radio" data-analytics-comparison-metric="${escapeHtml(item.value)}" aria-checked="${String(comparison.metric === item.value)}">${escapeHtml(item.label)}</button>`).join("")}
             <span class="segmented-thumb athlete-analytics-metric-thumb" aria-hidden="true"></span>
           </div>
-          ${data.athleteData.length > 1 ? renderAnalyticsComparisonLayoutControl() : ""}
         </div>
-        <div class="athlete-analytics-time-cluster">
+        <div class="athlete-analytics-time-cluster analytics-comparison-time-cluster ${data.athleteData.length > 1 ? "has-layout-control" : ""}">
+          ${data.athleteData.length > 1 ? renderAnalyticsComparisonLayoutControl() : ""}
           <div class="athlete-analytics-control-group athlete-analytics-mode-group">
             <div class="segmented-control athlete-analytics-mode-control" role="radiogroup" aria-label="${escapeHtml(t("analyticsMode"))}" style="--segment-count: 2; --selected-index: ${modeIndex};">
               <button class="segmented-option" type="button" role="radio" data-analytics-comparison-mode="period" aria-checked="${String(comparison.mode === "period")}">${escapeHtml(t("analyticsModePeriod"))}</button>

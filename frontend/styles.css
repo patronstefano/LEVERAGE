@@ -3415,26 +3415,64 @@ button {
 }
 
 .analytics-comparison-layout-control {
-  flex: 0 0 auto;
-  width: 220px;
-  min-height: 36px;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  width: 118px;
+  min-width: 0;
+  height: 80px;
+  min-height: 80px;
   padding: 0;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-color: rgba(25, 23, 71, 0.14);
 }
 
 .analytics-comparison-layout-control .segmented-option {
-  height: 34px;
-  padding: 0 10px;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  padding: 0 7px;
+  color: rgba(17, 17, 20, 0.76);
   font-size: inherit;
   font-weight: 400;
+  letter-spacing: 0;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.analytics-comparison-layout-control .segmented-thumb {
+.analytics-comparison-layout-control .segmented-option[aria-checked="true"] {
+  color: #fff;
+}
+
+.analytics-comparison-layout-thumb {
   top: 0;
-  bottom: 0;
+  right: 0;
+  bottom: auto;
   left: 0;
-  width: 50%;
-  transform: translateX(calc(var(--selected-index) * 100%));
+  width: auto;
+  height: 50%;
+  border-radius: calc(var(--control-radius) - 1px);
+  transform: translateY(calc(var(--selected-index) * 100%));
+  transition: transform var(--control-expand-motion);
+}
+
+.analytics-comparison-time-cluster.has-layout-control {
+  grid-template-columns: 118px 88px minmax(190px, 1fr);
+}
+
+.analytics-comparison-layout-group {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: start;
+  justify-self: stretch;
+  width: 100%;
+}
+
+.analytics-comparison-time-cluster.has-layout-control .athlete-analytics-mode-group {
+  grid-column: 2;
+}
+
+.analytics-comparison-time-cluster.has-layout-control .athlete-analytics-range-shell,
+.analytics-comparison-time-cluster.has-layout-control .athlete-analytics-range-values {
+  grid-column: 3;
 }
 
 .analytics-comparison-chart-row,
@@ -3517,9 +3555,6 @@ button {
     flex-direction: column;
   }
 
-  .analytics-comparison-layout-control {
-    width: min(100%, 300px);
-  }
 }
 
 .athlete-analytics-sticky-menu {
@@ -5221,6 +5256,31 @@ button {
     grid-column: 1;
     grid-row: auto;
     justify-self: start;
+  }
+
+  .analytics-comparison-time-cluster.has-layout-control {
+    grid-template-columns: 118px 88px;
+    justify-content: start;
+  }
+
+  .analytics-comparison-time-cluster.has-layout-control .analytics-comparison-layout-group {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .analytics-comparison-time-cluster.has-layout-control .athlete-analytics-mode-group {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .analytics-comparison-time-cluster.has-layout-control .athlete-analytics-range-shell {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  .analytics-comparison-time-cluster.has-layout-control .athlete-analytics-range-values {
+    grid-column: 1 / -1;
+    grid-row: 4;
   }
 
   .athlete-trend-chart-block .athlete-trend-figure,
