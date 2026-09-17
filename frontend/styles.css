@@ -3336,15 +3336,22 @@ button {
 
 .analytics-comparison-search-shell {
   position: relative;
+  width: 100%;
 }
 
-.analytics-comparison-search-shell input {
+.analytics-comparison-search-form {
   width: 100%;
-  min-height: 38px;
-  padding: 0 12px;
-  border: 1px solid rgba(25, 23, 71, 0.12);
+  min-height: 48px;
+  margin: 0;
+  padding: 5px;
   border-radius: var(--control-radius);
-  background: rgba(245, 245, 247, 0.72);
+}
+
+.analytics-comparison-search-form .search-input {
+  height: 36px;
+  min-height: 36px;
+  padding: 0 36px 0 14px;
+  border-radius: calc(var(--control-radius) - 4px);
 }
 
 .analytics-comparison-suggestions {
@@ -3353,25 +3360,26 @@ button {
   right: 0;
   left: 0;
   z-index: 70;
-  max-height: 260px;
-  overflow: auto;
-  padding: 5px;
-  border: 1px solid var(--line);
-  border-radius: var(--surface-radius);
-  background: #fff;
-  box-shadow: 0 20px 48px rgba(16, 16, 20, 0.13);
+  display: grid;
+  gap: 3px;
+  max-height: min(291px, 42vh);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: 8px;
+  border: 1px solid rgba(25, 23, 71, 0.1);
+  border-radius: var(--large-control-radius);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 22px 60px rgba(16, 16, 20, 0.13);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+
+.analytics-comparison-suggestions[hidden] {
+  display: none;
 }
 
 .analytics-comparison-suggestion {
-  display: grid;
-  gap: 2px;
-  width: 100%;
-  padding: 9px 10px;
-  border: 0;
-  border-radius: var(--data-chip-radius);
-  color: var(--ink);
-  background: transparent;
-  text-align: left;
+  height: 66px;
 }
 
 .analytics-comparison-suggestion:hover,
@@ -3380,17 +3388,17 @@ button {
 }
 
 .analytics-comparison-suggestion strong {
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .analytics-comparison-suggestion span,
 .analytics-comparison-suggestion-empty {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .analytics-comparison-suggestion-empty {
-  padding: 10px;
+  padding: 12px 14px;
 }
 
 .analytics-comparison-selected-athlete {

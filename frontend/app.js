@@ -8498,7 +8498,7 @@ async function loadAthleteAnalytics(athleteId, { preserveControls = false } = {}
   }
 }
 
-let analyticsComparisonSearchRequestId = 0;
+const analyticsComparisonSearchRequestIds = [0, 0];
 let analyticsComparisonProfileRequestId = 0;
 
 function analyticsComparisonDiscipline() {
@@ -8660,10 +8660,13 @@ function renderAnalyticsComparisonPicker(slot) {
   return `
     <article class="analytics-comparison-picker">
       <label class="analytics-comparison-picker-label" for="analyticsAthleteSearch${slot}">${escapeHtml(label)}</label>
-      <div class="analytics-comparison-search-shell">
-        <input id="analyticsAthleteSearch${slot}" data-analytics-athlete-search="${slot}" autocomplete="off" placeholder="${escapeHtml(t("analyticsCompareSearch"))}">
-        <div class="analytics-comparison-suggestions" data-analytics-athlete-suggestions="${slot}" hidden></div>
-      </div>
+      <form class="search-form section-search-form analytics-comparison-search-form" data-analytics-athlete-form="${slot}">
+        <div class="search-input-shell analytics-comparison-search-shell">
+          <input class="search-input" id="analyticsAthleteSearch${slot}" type="search" data-analytics-athlete-search="${slot}" autocomplete="off" placeholder="${escapeHtml(t("analyticsCompareSearch"))}">
+          <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch${slot}" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
+          <div class="analytics-comparison-suggestions" data-analytics-athlete-suggestions="${slot}" role="listbox" hidden></div>
+        </div>
+      </form>
     </article>
   `;
 }
@@ -9034,10 +9037,10 @@ function renderAnalyticsComparisonSuggestions(slot, athletes) {
   const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
   if (!container) return;
   if (!athletes.length) {
-    container.innerHTML = `<div class="analytics-comparison-suggestion-empty">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
+    container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
   } else {
     container.innerHTML = athletes.map((athlete) => `
-      <button type="button" class="analytics-comparison-suggestion" data-analytics-athlete-choice="${slot}" data-athlete-id="${athlete.id}">
+      <button type="button" class="analytics-comparison-suggestion search-suggestion" role="option" data-analytics-athlete-choice="${slot}" data-athlete-id="${athlete.id}">
         <strong>${escapeHtml(analyticsComparisonSuggestionName(athlete))}</strong>
         <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
       </button>
@@ -9052,22 +9055,22 @@ function renderAnalyticsComparisonSuggestions(slot, athletes) {
 async function searchAnalyticsComparisonAthletes(slot, query) {
   const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
   if (!container) return;
-  if (query.trim().length < 2) {
+  if (!query.trim()) {
     container.hidden = true;
     container.innerHTML = "";
     return;
   }
-  const requestId = ++analyticsComparisonSearchRequestId;
+  const requestId = ++analyticsComparisonSearchRequestIds[slot];
   container.hidden = false;
-  container.innerHTML = `<div class="analytics-comparison-suggestion-empty">${escapeHtml(t("loading"))}</div>`;
+  container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
   try {
     const discipline = state.analyticsComparison.athletes.find(Boolean)?.discipline || "";
     const athletes = await getJson("/athletes/", { search: query.trim(), discipline, limit: 9, offset: 0 });
-    if (requestId !== analyticsComparisonSearchRequestId) return;
+    if (requestId !== analyticsComparisonSearchRequestIds[slot]) return;
     const selectedIds = new Set(state.analyticsComparison.athletes.filter(Boolean).map((athlete) => Number(athlete.id)));
     renderAnalyticsComparisonSuggestions(slot, athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
   } catch (error) {
-    if (requestId !== analyticsComparisonSearchRequestId) return;
+    if (requestId !== analyticsComparisonSearchRequestIds[slot]) return;
     container.innerHTML = errorState(error);
   }
 }
@@ -9104,11 +9107,25 @@ async function selectAnalyticsComparisonAthlete(slot, athleteId) {
 }
 
 function bindAnalyticsComparisonPickers() {
+  bindSearchClearButtons();
+  document.querySelectorAll("[data-analytics-athlete-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      form.querySelector("[data-analytics-athlete-choice]")?.click();
+    });
+  });
   document.querySelectorAll("[data-analytics-athlete-search]").forEach((input) => {
     let timer;
     input.addEventListener("input", () => {
       window.clearTimeout(timer);
       timer = window.setTimeout(() => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value), 140);
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        const suggestions = document.querySelector(`[data-analytics-athlete-suggestions="${input.dataset.analyticsAthleteSearch}"]`);
+        if (suggestions) suggestions.hidden = true;
+        input.blur();
+      }
     });
     input.addEventListener("focus", () => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value));
     input.addEventListener("blur", () => {
