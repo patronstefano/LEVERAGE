@@ -8887,25 +8887,73 @@ function updateAnalyticsComparisonContent({ animate = false } = {}) {
   }
 }
 
-function syncAnalyticsComparisonTimeline() {
+function syncAnalyticsComparisonTimeline({ animate = false } = {}) {
   const data = analyticsComparisonPreparedData();
   const maxIndex = Math.max(0, data.timeline.length - 1);
   const startInput = $("#analyticsComparisonStartTimeline");
   const endInput = $("#analyticsComparisonEndTimeline");
   const shell = document.querySelector(".analytics-comparison-controls .athlete-analytics-range-shell");
-  if (startInput) startInput.value = String(Math.max(0, data.range.startIndex));
-  if (endInput) endInput.value = String(Math.max(0, data.range.endIndex));
+  const snapshotMode = state.analyticsComparison.mode === "snapshot";
+  if (startInput) {
+    startInput.max = String(maxIndex);
+    startInput.value = String(Math.max(0, data.range.startIndex));
+    startInput.disabled = snapshotMode || !data.timeline.length;
+  }
+  if (endInput) {
+    endInput.max = String(maxIndex);
+    endInput.value = String(Math.max(0, data.range.endIndex));
+    endInput.disabled = !data.timeline.length;
+  }
   if (shell) {
     const startPercent = maxIndex ? (Math.max(0, data.range.startIndex) / maxIndex) * 100 : 0;
     const endPercent = maxIndex ? (Math.max(0, data.range.endIndex) / maxIndex) * 100 : 100;
-    shell.style.setProperty("--range-start", `${(state.analyticsComparison.mode === "snapshot" ? endPercent : startPercent).toFixed(2)}%`);
+    shell.style.setProperty("--range-start", `${(snapshotMode ? endPercent : startPercent).toFixed(2)}%`);
     shell.style.setProperty("--range-end", `${endPercent.toFixed(2)}%`);
+    shell.classList.toggle("is-snapshot", snapshotMode);
   }
   const rangeValues = $("#analyticsComparisonRangeValues");
   if (rangeValues) {
+    rangeValues.classList.toggle("is-snapshot", snapshotMode);
     rangeValues.innerHTML = renderAthleteAnalyticsRangeValues(state.analyticsComparison.mode, data.range.startDate, data.range.endDate, data.athleteData.flatMap((item) => item.includedPoints));
   }
-  updateAnalyticsComparisonContent();
+  updateAnalyticsComparisonContent({ animate });
+}
+
+function syncAnalyticsComparisonApparatusControl() {
+  const selected = new Set(analyticsComparisonSelectedApparatuses());
+  document.querySelectorAll("[data-analytics-comparison-apparatus]").forEach((button) => {
+    const active = selected.has(button.dataset.analyticsComparisonApparatus);
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function syncAnalyticsComparisonMetricControl() {
+  const metric = state.analyticsComparison.metric;
+  const selectedIndex = Math.max(0, ATHLETE_ANALYTICS_METRICS.findIndex((item) => item.value === metric));
+  document.querySelectorAll("[data-analytics-comparison-metric]").forEach((button) => {
+    button.setAttribute("aria-checked", String(button.dataset.analyticsComparisonMetric === metric));
+  });
+  document.querySelector(".analytics-comparison-controls .athlete-analytics-metric-control")
+    ?.style.setProperty("--selected-index", selectedIndex);
+}
+
+function syncAnalyticsComparisonModeControl() {
+  const mode = state.analyticsComparison.mode;
+  document.querySelectorAll("[data-analytics-comparison-mode]").forEach((button) => {
+    button.setAttribute("aria-checked", String(button.dataset.analyticsComparisonMode === mode));
+  });
+  document.querySelector(".analytics-comparison-controls .athlete-analytics-mode-control")
+    ?.style.setProperty("--selected-index", mode === "snapshot" ? 1 : 0);
+}
+
+function syncAnalyticsComparisonLayoutControl() {
+  const layout = state.analyticsComparison.layout;
+  document.querySelectorAll("[data-analytics-comparison-layout]").forEach((button) => {
+    button.setAttribute("aria-checked", String(button.dataset.analyticsComparisonLayout === layout));
+  });
+  document.querySelector(".analytics-comparison-layout-control")
+    ?.style.setProperty("--selected-index", layout === "overlay" ? 1 : 0);
 }
 
 function bindAnalyticsComparisonControls() {
@@ -8915,14 +8963,16 @@ function bindAnalyticsComparisonControls() {
         analyticsComparisonSelectedApparatuses(),
         button.dataset.analyticsComparisonApparatus,
       );
-      renderAnalyticsComparisonWorkspace({ animate: true });
+      syncAnalyticsComparisonApparatusControl();
+      updateAnalyticsComparisonContent({ animate: true });
     });
   });
   document.querySelectorAll("[data-analytics-comparison-metric]").forEach((button) => {
     button.addEventListener("click", () => {
       if (state.analyticsComparison.metric === button.dataset.analyticsComparisonMetric) return;
       state.analyticsComparison.metric = button.dataset.analyticsComparisonMetric;
-      renderAnalyticsComparisonWorkspace({ animate: true });
+      syncAnalyticsComparisonMetricControl();
+      updateAnalyticsComparisonContent({ animate: true });
     });
   });
   document.querySelectorAll("[data-analytics-comparison-mode]").forEach((button) => {
@@ -8930,13 +8980,15 @@ function bindAnalyticsComparisonControls() {
       const mode = button.dataset.analyticsComparisonMode === "snapshot" ? "snapshot" : "period";
       if (state.analyticsComparison.mode === mode) return;
       state.analyticsComparison.mode = mode;
-      renderAnalyticsComparisonWorkspace({ animate: true });
+      syncAnalyticsComparisonModeControl();
+      syncAnalyticsComparisonTimeline({ animate: true });
     });
   });
   document.querySelectorAll("[data-analytics-comparison-layout]").forEach((button) => {
     button.addEventListener("click", () => {
       state.analyticsComparison.layout = button.dataset.analyticsComparisonLayout === "overlay" ? "overlay" : "side-by-side";
-      renderAnalyticsComparisonWorkspace({ animate: true });
+      syncAnalyticsComparisonLayoutControl();
+      updateAnalyticsComparisonContent({ animate: true });
     });
   });
   const bindRange = (input, field) => {
