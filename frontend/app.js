@@ -3113,8 +3113,14 @@ function componentValueLabel(value, status) {
   return t("notAvailable");
 }
 
+function dScoreLabel(value, status) {
+  if (value !== null && value !== undefined) return Number(value).toFixed(1);
+  if (status === "not_applicable") return t("notApplicable");
+  return t("notAvailable");
+}
+
 function rankingMetricValueLabel(entry, metric = rankingSortBy()) {
-  if (metric === "D_score") return componentValueLabel(entry.D_score);
+  if (metric === "D_score") return dScoreLabel(entry.D_score);
   if (metric === "execution_estimate") return scoreLabel(entry.execution_estimate);
   if (metric === "Penalty") return componentValueLabel(entry.Penalty, entry.penalty_status);
   if (metric === "Bonus") return componentValueLabel(entry.Bonus, entry.bonus_status);
@@ -3165,7 +3171,7 @@ function scoreCompositionValues(item, excludedMetric = "") {
     ? componentValueLabel(item.E_score, item.e_score_status)
     : scoreLabel(item.execution_estimate);
   const values = [
-    { metric: "D_score", label: "D", value: componentValueLabel(item.D_score) },
+    { metric: "D_score", label: "D", value: dScoreLabel(item.D_score) },
     { metric: "execution_estimate", label: "E est.", value: eLabel },
     { metric: "Penalty", label: "P", value: componentValueLabel(item.Penalty, item.penalty_status) },
     { metric: "Bonus", label: "B", value: componentValueLabel(item.Bonus, item.bonus_status) },
@@ -3215,7 +3221,7 @@ function leaderboardPrimaryPopoverRows(entry, selectedMetric = rankingSortBy()) 
   if (!rankingIsAaEntry(entry)) return [];
   if (selectedMetric === "score") {
     if (entry.D_score === null || entry.D_score === undefined) return [];
-    return [{ label: "D Score AA", value: componentValueLabel(entry.D_score) }];
+    return [{ label: "D Score AA", value: dScoreLabel(entry.D_score) }];
   }
   const finalScore = scoreLabel(entry.score);
   if (leaderboardValueIsUnavailable(finalScore)) return [];
@@ -3228,7 +3234,7 @@ function componentScoreDataIsVisible(value, status) {
 
 function aaLeaderboardComponentValue(component, selectedMetric = rankingSortBy()) {
   if (!component) return t("notAvailable");
-  if (selectedMetric === "D_score") return componentValueLabel(component.D_score);
+  if (selectedMetric === "D_score") return dScoreLabel(component.D_score);
   if (selectedMetric === "execution_estimate") {
     return component.execution_estimate === null || component.execution_estimate === undefined
       ? componentValueLabel(component.E_score, component.e_score_status)
@@ -3246,7 +3252,7 @@ function aaLeaderboardComponentDetails(component, selectedMetric = rankingSortBy
     : scoreLabel(component.execution_estimate);
   const rows = [
     { metric: "score", label: "Final Score", value: scoreLabel(component.score) },
-    { metric: "D_score", label: "D Score", value: componentValueLabel(component.D_score) },
+    { metric: "D_score", label: "D Score", value: dScoreLabel(component.D_score) },
     { metric: "execution_estimate", label: "E Score", value: eValue },
   ];
   if (componentScoreDataIsVisible(component.Penalty, component.penalty_status)) {
@@ -6756,6 +6762,7 @@ function athleteAnalyticsLowerIsBetter(metric) {
 
 function athleteAnalyticsFormatValue(value, metric = state.athleteAnalytics.metric) {
   if (value === null || value === undefined || Number.isNaN(Number(value))) return t("notAvailable");
+  if (metric === "D_score") return dScoreLabel(value);
   if (metric === "Penalty" || metric === "Bonus") return componentValueLabel(value);
   return scoreLabel(value);
 }
