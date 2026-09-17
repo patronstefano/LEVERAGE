@@ -30,6 +30,8 @@ uvicorn app.main:app --reload
 
 La prima interfaccia pubblica minimal si trova in `frontend/`. Al momento e dependency-free perche l'ambiente locale non ha Node/npm installati.
 
+La scheda atleta include una prima sezione analytics interattiva: profilo attrezzi MAG a esagono, profilo WAG a rombo, metrica selezionabile (`Final Score`, `D Score`, `E Score`, `Penalty`, `Bonus`), filtro multi-selezione apparatus (`FX`, `PH`, `SR`, `VT`, `PB`, `HB`, `UB`, `BB`, `AA`, `VT AVG` in base alla disciplina), cursore temporale a intervallo, statistiche riepilogative, trend e medie per anno in SVG/CSS senza librerie esterne. La vista iniziale mostra il profilo completo senza un pulsante `All/Tutto`; nelle statistiche totali non include `AA`, per evitare di sommare una seconda volta un punteggio gia derivato dagli attrezzi. Quando l'utente seleziona uno o piu attrezzi il poligono evidenzia i vertici pertinenti e i grafici si aggiornano live. `AA` entra nell'analisi solo quando selezionato esplicitamente, mantiene evidenziata l'intera area e mostra le curve componenti sullo sfondo, mentre `VT AVG` usa la curva principale del vault average e curve secondarie per `VT 1`/`VT 2` quando disponibili. Le analytics indicano anche i cicli olimpici/scoring cycles coinvolti nella selezione, mostrano un warning quando il periodo attraversa codici di punteggio diversi e il trend visualizza assi temporali/punteggio con linee verticali di separazione tra i cicli. Per gli eventi multigiorno senza data sessione nelle fonti Gymternet/Calendar, i punti analytics sono ordinati usando l'inizio evento ma vengono presentati come appartenenti al `Periodo evento`, evitando una falsa precisione temporale.
+
 ```bash
 cd frontend
 python3 -m http.server 5173

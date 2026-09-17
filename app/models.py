@@ -79,6 +79,7 @@ class FormatEnum(str, enum.Enum):
     TEAM = "team"
     INDIVIDUAL = "individual"
     APPARATUS = "apparatus"
+    MIXED_TEAM = "mixed team"
 
 
 class RoundEnum(str, enum.Enum):
@@ -106,6 +107,12 @@ class SiteAnalyticsEventTypeEnum(str, enum.Enum):
     EVENT_VIEW = "event_view"
     DASHBOARD_VIEW = "dashboard_view"
     SESSION_END = "session_end"
+
+
+class AuditReviewStatusEnum(str, enum.Enum):
+    PENDING = "pending"
+    APPROVED = "approved"
+    REVERTED = "reverted"
 
 
 class User(Base):
@@ -272,8 +279,11 @@ class Result(Base):
     __tablename__ = "results"
     __table_args__ = (
         CheckConstraint("score IS NULL OR score >= 0", name="ck_results_score_non_negative"),
+        CheckConstraint("score IS NULL OR apparatus = 'AA' OR score <= 20", name="ck_results_non_aa_score_upper_bound"),
         CheckConstraint("D_score IS NULL OR D_score >= 0", name="ck_results_d_score_non_negative"),
+        CheckConstraint("D_score IS NULL OR D_score <= 10", name="ck_results_d_score_upper_bound"),
         CheckConstraint("E_score IS NULL OR E_score >= 0", name="ck_results_e_score_non_negative"),
+        CheckConstraint("E_score IS NULL OR E_score <= 10", name="ck_results_e_score_upper_bound"),
         CheckConstraint("Penalty IS NULL OR Penalty >= 0", name="ck_results_penalty_non_negative"),
         CheckConstraint("Bonus IS NULL OR Bonus >= 0", name="ck_results_bonus_non_negative"),
         CheckConstraint("vt_attempt IS NULL OR vt_attempt IN (1, 2)", name="ck_results_vt_attempt_valid"),
@@ -284,6 +294,7 @@ class Result(Base):
         Index("ix_results_athlete_timeline", "athlete_id", "is_deleted", "apparatus", "format", "round", "day"),
         Index("ix_results_duplicate_lookup", "athlete_id", "event_id", "apparatus", "vt_attempt", "day", "format", "round", "discipline", "category", "is_deleted"),
         Index("ix_results_country_scope", "represented_country", "is_deleted"),
+        Index("ix_results_apparatus_metric_scope", "is_deleted", "apparatus", "discipline", "event_id", "athlete_id", "category", "format", "round", "day", "D_score", "score"),
     )
 
     id = Column(Integer, primary_key=True, index=True)
@@ -508,6 +519,11 @@ class AuditLog(Base):
     entity_id = Column(Integer, nullable=True, index=True)
     before_json = Column(Text, nullable=True)
     after_json = Column(Text, nullable=True)
+    review_status = Column(SQLEnum(AuditReviewStatusEnum), default=AuditReviewStatusEnum.PENDING, nullable=False, index=True)
+    reviewed_by_super_admin_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    reviewed_at = Column(DateTime, nullable=True)
+    review_note = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
 
-    admin = relationship("User")
+    admin = relationship("User", foreign_keys=[admin_id])
+    reviewed_by_super_admin = relationship("User", foreign_keys=[reviewed_by_super_admin_id])

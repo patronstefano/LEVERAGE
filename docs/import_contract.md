@@ -37,10 +37,47 @@ Ogni importer deve rispettare:
 - validazione `day >= 1`;
 - validazione regole `Bonus`;
 - validazione formula `score = D_score + E_score - Penalty + Bonus` quando le componenti sono esplicite;
+- validazione upper bound del final score: i result non-AA non possono superare `20.0`, mentre `AA` puo superare `20.0` perche rappresenta la somma di piu apparati;
+- validazione upper bound del `D_score`: il valore salvato non puo superare `10.0`; valori sorgente Gymternet tra `10.0` e `20.0` vengono trattati come errori non affidabili e non importati come D-score;
+- validazione upper bound dell'`E_score`: il valore ufficiale salvato deve essere compreso tra `0.0` e `10.0`;
+- validazione della `execution_estimate`: quando `E_score` non e disponibile e il sistema usa `score - D_score` come stima, la stima deve essere compresa tra `0.0` e `10.0`; in caso contrario il `D_score` non e considerato affidabile e deve essere marcato `NULL` / `not available`;
 - blocco duplicati sulla chiave `Result`: `athlete_id`, `event_id`, `discipline`, `category`, `apparatus`, `vt_attempt`, `day`, `format`, `round`;
 - conflitto admin quando la stessa chiave `Result` ha `represented_country` diversa;
 - preservazione di `represented_country` sul singolo `Result`.
 - correzione esplicita di `represented_country` solo quando l'admin stabilisce che una country sorgente e un errore di data entry. Nei casi di reale cambio nazionalita/rappresentanza, i Result devono preservare la country storica.
+
+## Inferenza `Event.level`
+
+Ogni importer che crea o aggiorna eventi deve applicare le stesse regole semantiche per `Event.level`:
+
+- `Olympic Games` viene assegnato solo a eventi contenenti `Olympic Games` o denominati esattamente `Olympics`;
+- `World Championships`, `Continental Championships`, `World Cup` e `World Challenge Cup` restano associati ai rispettivi nomi ufficiali;
+- `Trial`/`Trials`, `Bundesliga`, `Serie A`, `Top 12`, `NCAA`, `Spanish League` e `South African Championships` hanno precedenza nazionale e devono essere classificati come `National Event`;
+- anche `National Games`, `National Sports Festival`, `National Team`, `National Qualifier`, `National League`, `National Cup`, `National Selection`, `National Review`, `National Camp` e `National Test` sono `National Event`;
+- i campionati domestici con prefisso nazionale riconoscibile, ad esempio `Chinese Championships`, `All-Japan Championships`, `British Championships`, `French Championships`, `U.S. Championships`, `Australian Championships`, ecc., sono `National Event`;
+- i refusi sorgente evidenti `Bundlesiga` e `National Spots Festival` devono essere trattati come `Bundesliga` e `National Sports Festival`, producendo correzione/normalizzazione del nome evento quando possibile;
+- `Asian Junior Championships`, `Junior Pan Am Championships`, `Junior Pan American Championships` e `Oceania Championships` sono `Continental Championships`;
+- `Olympic Hopes Cup`, `Worlds Preparation Event`, `Northern European Championships`, `COMEGYM Championships`, `Klaverblad Championships`, `Liepaja Championships` e `Platinum League Online` sono `International Event`;
+- gli override espliciti hanno precedenza sulle regole generali basate su parole come `Worlds`, `European` o `African`.
+
+## Suffissi Gymternet nel nome gara
+
+Nei file Gymternet legacy, alcuni suffissi finali nel campo `Event` non fanno parte del nome reale della gara, ma indicano il contesto del result. Il parser deve rimuoverli dal nome evento e salvarli come `Result.round` / `Result.format`:
+
+- `QF` -> `round=qualification`, `format=individual`;
+- `TF` -> `round=final`, `format=team`;
+- `AA` -> `round=final`, `format=individual`;
+- `EF` -> `round=final`, `format=apparatus`;
+- `MT` -> `round=final`, `format=mixed team`.
+
+Esempio: `European Championships MT` deve essere aggregato all'evento `European Championships`, salvando i relativi result come `mixed team final`.
+
+Per i result `MT`, il profilo attrezzi atteso e:
+
+- MAG: `FX`, `PB`, `HB`;
+- WAG: `BB`, `UB`, `FX`.
+
+Se un import `MT` contiene attrezzi diversi da questo profilo, il parser deve generare un warning di review admin nella preview. Il warning non blocca automaticamente l'import, ma segnala che il suffisso `MT` deve essere verificato prima di procedere.
 
 ## Regola Gymternet legacy dopo il 2025
 

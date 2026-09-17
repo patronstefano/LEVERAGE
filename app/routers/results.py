@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.database import get_db
+from app.display_names import athlete_display_name
 from app.i18n import result_context_label, translate
 from app.result_ranking import (
     apply_data_quality_filter,
@@ -85,6 +86,7 @@ def validate_result_scoring_state(
             Penalty,
             Bonus,
         )
+        schemas.validate_result_score_upper_bound(apparatus, score)
         schemas.validate_result_bonus_policy(event_year, discipline, apparatus, Bonus)
         schemas.validate_modern_required_score_components(
             event_year,
@@ -197,7 +199,7 @@ def build_new_result_notification_message(
     result_count: int,
     language: models.LanguageEnum = models.LanguageEnum.EN,
 ) -> str:
-    athlete_name = f"{athlete.first_name} {athlete.last_name}"
+    athlete_name = athlete_display_name(athlete)
     context_label = format_result_context_label(result.round, result.format, language)
     if result_count == 1:
         return translate(
@@ -453,6 +455,7 @@ def get_result_rankings(
         description="Data quality filter: all, complete, missing_d_score, missing_score",
     ),
     limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
 ):
     query = (
         db.query(models.Result)
@@ -510,7 +513,12 @@ def get_result_rankings(
         for (result_discipline,) in query.with_entities(models.Result.discipline).distinct().all()
     ]
 
-    results = order_ranking_query(query, sort_by, use_official_rank=event_id is not None).limit(limit).all()
+    results = (
+        order_ranking_query(query, sort_by, use_official_rank=event_id is not None)
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
     return build_ranking_response(
         results,
         sort_by,
@@ -519,6 +527,7 @@ def get_result_rankings(
         allow_mixed_disciplines,
         context_years=context_years,
         context_disciplines=context_disciplines,
+        rank_offset=offset,
     )
 
 

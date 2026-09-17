@@ -1,0 +1,297 @@
+event_id,year,event_name,old_level,new_level,discipline,category,reason
+96,2018,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+81,2018,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+99,2018,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+80,2018,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+112,2018,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+79,2018,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+111,2018,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+98,2018,5th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+113,2018,6th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+70,2018,7th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+94,2018,Austrian Men's Euros Trial,International Event,National Event,MAG,junior and senior,Trial/Trials
+116,2018,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+194,2018,Bundesliga Regional Finals,International Event,National Event,WAG,junior and senior,Bundesliga
+189,2018,Chilean Trial Meet,International Event,National Event,WAG,senior,Trial/Trials
+173,2018,German Euros Trial,International Event,National Event,WAG,junior and senior,Trial/Trials
+97,2018,German Worlds Trial,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+206,2018,Japanese World Cup Trials,World Cup,National Event,WAG,junior and senior,Trial/Trials
+178,2018,Mexican Trial Meet,International Event,National Event,WAG,senior,Trial/Trials
+119,2018,Top 12 Final,International Event,National Event,MAG and WAG,junior and senior,Top 12
+104,2018,Top 12 Semi-Final 1,International Event,National Event,MAG,senior,Top 12
+106,2018,Top 12 Semi-Final 2,International Event,National Event,MAG,senior,Top 12
+102,2018,Top 12 Series 1,International Event,National Event,MAG and WAG,junior and senior,Top 12
+107,2018,Top 12 Series 2,International Event,National Event,MAG and WAG,junior and senior,Top 12
+69,2018,Top 12 Series 3,International Event,National Event,MAG and WAG,junior and senior,Top 12
+8,2018,Top 12 Series 4,International Event,National Event,MAG and WAG,junior and senior,Top 12
+105,2018,Top 12 Series 5,International Event,National Event,MAG,senior,Top 12
+103,2018,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+191,2018,U.S. Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+311,2019,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+295,2019,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+313,2019,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+445,2019,2nd Finnish Worlds Trials,World Championships,National Event,WAG,junior and senior,Trial/Trials
+294,2019,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+312,2019,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+293,2019,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+310,2019,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+283,2019,5th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+309,2019,6th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+281,2019,7th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+279,2019,Bundesliga Final,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+442,2019,Chinese Taipei Worlds Trial,World Championships,National Event,WAG,senior,Trial/Trials
+389,2019,Finnish Worlds Trials,World Championships,National Event,WAG,junior and senior,Trial/Trials
+329,2019,German Men's Worlds Trials,World Championships,National Event,MAG,senior,Trial/Trials
+443,2019,German Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+401,2019,Japanese International Trials,International Event,National Event,WAG,senior,Trial/Trials
+317,2019,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+319,2019,Top 12 Semi-Final I,International Event,National Event,MAG,junior and senior,Top 12
+320,2019,Top 12 Semi-Final II,International Event,National Event,MAG,senior,Top 12
+383,2019,Top 12 Semi-Finals,International Event,National Event,WAG,junior and senior,Top 12
+248,2019,Top 12 Series 1,International Event,National Event,MAG and WAG,junior and senior,Top 12
+318,2019,Top 12 Series 2,International Event,National Event,MAG and WAG,junior and senior,Top 12
+316,2019,Top 12 Series 3,International Event,National Event,MAG and WAG,junior and senior,Top 12
+232,2019,Top 12 Series 4,International Event,National Event,MAG,junior and senior,Top 12
+282,2019,Top 12 Series 5,International Event,National Event,MAG,senior,Top 12
+231,2019,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+428,2019,U.S. Junior Worlds Trials,World Championships,National Event,WAG,junior,Trial/Trials
+415,2019,U.S. Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+478,2020,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+467,2020,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+480,2020,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+449,2020,2nd Finnish Euros Trials,International Event,National Event,MAG and WAG,junior and senior,Trial/Trials
+466,2020,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+479,2020,3rd Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+447,2020,3rd Finnish Euros Trials,International Event,National Event,MAG,junior and senior,Trial/Trials
+468,2020,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+504,2020,Czech Euros Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+448,2020,Finnish Euros Trials,International Event,National Event,MAG and WAG,junior and senior,Trial/Trials
+471,2020,Italian Serie A Final Six,International Event,National Event,MAG and WAG,junior and senior,Serie A
+483,2020,Top 12 Semi-Final I,International Event,National Event,MAG,senior,Top 12
+506,2020,Top 12 Series 3,International Event,National Event,WAG,junior and senior,Top 12
+481,2020,Top 12 Series 5,International Event,National Event,MAG,senior,Top 12
+453,2020,Top 12 Series 6,International Event,National Event,MAG,senior,Top 12
+536,2021,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+715,2021,1st Chinese Olympic Trials,International Event,National Event,WAG,senior,Trial/Trials
+696,2021,1st Dutch Olympic Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+635,2021,1st Dutch Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+592,2021,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+616,2021,1st Swiss Men's Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+667,2021,1st Swiss Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+535,2021,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+716,2021,2nd Chinese Olympic Trials,International Event,National Event,WAG,senior,Trial/Trials
+697,2021,2nd Dutch Olympic Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+633,2021,2nd Dutch Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+587,2021,2nd Finnish Euros Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+717,2021,2nd Finnish Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+709,2021,2nd German Euros Trials,International Event,National Event,WAG,senior,Trial/Trials
+591,2021,2nd Itailan Serie A,International Event,National Event,MAG,junior and senior,Serie A
+665,2021,2nd Italian Serie A,International Event,National Event,WAG,junior and senior,Serie A
+617,2021,2nd Swiss Men's Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+534,2021,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+524,2021,3rd Finnish Euros Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+590,2021,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+618,2021,3rd Swiss Men's Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+531,2021,4th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+533,2021,5th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+537,2021,6th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+538,2021,7th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+685,2021,British Olympic Trial 1,International Event,National Event,WAG,senior,Trial/Trials
+683,2021,British Olympic Trial 2,International Event,National Event,WAG,senior,Trial/Trials
+682,2021,British Olympic Trial 3,International Event,National Event,WAG,senior,Trial/Trials
+684,2021,British Olympic Trial 4,International Event,National Event,WAG,senior,Trial/Trials
+686,2021,British Olympic Trial 5,International Event,National Event,WAG,senior,Trial/Trials
+687,2021,British Olympic Trial 6,International Event,National Event,WAG,senior,Trial/Trials
+705,2021,British Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+624,2021,Bundesliga Final Relegation Match,International Event,National Event,MAG,senior,Bundesliga
+571,2021,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+532,2021,Bundesliga Promotion Match,International Event,National Event,MAG,senior,Bundesliga
+634,2021,Bundesliga Promotion Sudden Death Match,International Event,National Event,MAG,senior,Bundesliga
+606,2021,Bundesliga Relegation Match,International Event,National Event,MAG,senior,Bundesliga
+610,2021,Bundesliga Semifinal,International Event,National Event,MAG,senior,Bundesliga
+553,2021,Canadian Technical Trial,International Event,National Event,MAG,junior and senior,Trial/Trials
+679,2021,Canadian Technical Trial 1,International Event,National Event,WAG,junior and senior,Trial/Trials
+698,2021,Canadian Technical Trial 2,International Event,National Event,WAG,junior and senior,Trial/Trials
+640,2021,Chinese Men's Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+712,2021,Croatian Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+583,2021,Finnish Euros Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+649,2021,Finnish Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+710,2021,German Euros Trials,International Event,National Event,WAG,senior,Trial/Trials
+612,2021,German Olympic Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+605,2021,German Worlds Trials,World Championships,National Event,MAG,senior,Trial/Trials
+589,2021,Italian Serie A Final Six,International Event,National Event,MAG and WAG,junior and senior,Serie A
+699,2021,South African National Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+626,2021,South Korean Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+527,2021,Top 12 Championships,International Event,National Event,MAG and WAG,junior and senior,Top 12
+702,2021,U.S. Junior Pan Am Games Trials,International Event,National Event,WAG,junior,Trial/Trials
+574,2021,U.S. Olympic Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+576,2021,U.S. Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+828,2022,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+756,2022,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+778,2022,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+755,2022,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+781,2022,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+736,2022,3rd Bundesliga League 2,International Event,National Event,MAG,junior and senior,Bundesliga
+810,2022,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+785,2022,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+738,2022,4th Bundesliga League 2,International Event,National Event,MAG,junior and senior,Bundesliga
+776,2022,5th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+737,2022,5th Bundesliga League 2,International Event,National Event,MAG,junior and senior,Bundesliga
+777,2022,6th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+734,2022,6th Bundesliga League 2,International Event,National Event,MAG,junior and senior,Bundesliga
+798,2022,7th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+735,2022,7th Bundesliga League 2,International Event,National Event,MAG,junior and senior,Bundesliga
+842,2022,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+829,2022,Bundesliga Promotion Final,International Event,National Event,MAG,senior,Bundesliga
+837,2022,Dutch Worlds Trials,World Championships,National Event,MAG and WAG,junior and senior,Trial/Trials
+806,2022,Finnish Men's Euros Trials 1,International Event,National Event,MAG,senior,Trial/Trials
+808,2022,Finnish Men's Euros Trials 2,International Event,National Event,MAG,senior,Trial/Trials
+807,2022,Finnish Men's Euros Trials 3,International Event,National Event,MAG,senior,Trial/Trials
+805,2022,Finnish Men's Euros Trials 4,International Event,National Event,MAG,senior,Trial/Trials
+846,2022,German Worlds Trials,World Championships,National Event,MAG and WAG,junior and senior,Trial/Trials
+811,2022,Italian Serie A Final Six,International Event,National Event,MAG and WAG,junior and senior,Serie A
+804,2022,Japanese Junior Worlds Trials,World Championships,National Event,MAG and WAG,junior,Trial/Trials
+848,2022,Swiss Euros Trials,International Event,National Event,MAG,senior,Trial/Trials
+850,2022,Swiss Men's Euros Trials 2,International Event,National Event,MAG,senior,Trial/Trials
+849,2022,Swiss Men's Worlds Trials 1,World Championships,National Event,MAG,senior,Trial/Trials
+847,2022,Swiss Men's Worlds Trials 2,World Championships,National Event,MAG,senior,Trial/Trials
+834,2022,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+763,2022,Top 12 Series 1,International Event,National Event,MAG and WAG,junior and senior,Top 12
+766,2022,Top 12 Series 2,International Event,National Event,MAG and WAG,junior and senior,Top 12
+762,2022,Top 12 Series 3,International Event,National Event,MAG and WAG,junior and senior,Top 12
+759,2022,Top 12 Series 4,International Event,National Event,MAG,junior and senior,Top 12
+780,2022,Top 12 Series 5,International Event,National Event,MAG,junior and senior,Top 12
+761,2022,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+760,2022,Top 12 Series 7,International Event,National Event,MAG,junior and senior,Top 12
+857,2022,U.S. Men's Worlds Trials,World Championships,National Event,MAG,senior,Trial/Trials
+894,2022,U.S. Pan Ams Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+895,2022,U.S. Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+997,2023,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+973,2023,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+998,2023,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+974,2023,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+999,2023,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+972,2023,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1026,2023,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1060,2023,5th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+1024,2023,6th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+1023,2023,7th Bundesliga,International Event,National Event,MAG,senior,Bundesliga
+992,2023,British Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1027,2023,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1170,2023,Canadian Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+1110,2023,Chinese Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+950,2023,Dutch EYOF Trials,International Event,National Event,MAG and WAG,junior,Trial/Trials
+1176,2023,Dutch Euros Trials,International Event,National Event,WAG,senior,Trial/Trials
+1177,2023,Dutch Euros Trials 2,International Event,National Event,WAG,senior,Trial/Trials
+1175,2023,Dutch Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+1006,2023,Dutch Worlds Trials 1,World Championships,National Event,MAG,senior,Trial/Trials
+1094,2023,Dutch Worlds Trials 2,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1159,2023,German EYOF Trials,International Event,National Event,WAG,junior,Trial/Trials
+1062,2023,German Worlds Trials 1,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1063,2023,German Worlds Trials 2,World Championships,National Event,MAG,senior,Trial/Trials
+971,2023,Italian Serie A Final Six,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1098,2023,Swiss Euros Trials 1,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1100,2023,Swiss Euros Trials 2,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1099,2023,Swiss Euros Trials 3,International Event,National Event,MAG,senior,Trial/Trials
+1096,2023,Swiss Worlds Trials,World Championships,National Event,MAG,senior,Trial/Trials
+1069,2023,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1141,2023,Top 12 Series 1,International Event,National Event,WAG,junior and senior,Top 12
+727,2023,Top 12 Series 1 (2023),International Event,National Event,MAG,senior,Top 12
+1140,2023,Top 12 Series 2,International Event,National Event,WAG,junior and senior,Top 12
+728,2023,Top 12 Series 2 (2023),International Event,National Event,MAG,senior,Top 12
+1070,2023,Top 12 Series 3,International Event,National Event,MAG and WAG,junior and senior,Top 12
+765,2023,Top 12 Series 3 (2023),International Event,National Event,MAG,senior,Top 12
+982,2023,Top 12 Series 4,International Event,National Event,MAG and WAG,junior and senior,Top 12
+947,2023,Top 12 Series 5,International Event,National Event,MAG,junior and senior,Top 12
+985,2023,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+981,2023,Top 12 Series 7,International Event,National Event,MAG,junior and senior,Top 12
+1133,2023,U.S. Pan American Trials,International Event,National Event,WAG,senior,Trial/Trials
+1134,2023,U.S. Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+1296,2024,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1209,2024,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1238,2024,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1207,2024,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1241,2024,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1208,2024,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1239,2024,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1297,2024,5th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1237,2024,6th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1240,2024,7th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1261,2024,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1374,2024,Dutch Euros Trials,International Event,National Event,WAG,junior and senior,Trial/Trials
+1382,2024,Dutch Olympic Trials,International Event,National Event,WAG,senior,Trial/Trials
+1299,2024,German Olympic Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1246,2024,Italian Serie A Final Six,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1377,2024,Romanian Euros Trials,International Event,National Event,WAG,senior,Trial/Trials
+1314,2024,Swiss Euros Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1312,2024,Swiss Euros Trials 2,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1331,2024,Swiss Junior Euros Trials,International Event,National Event,MAG and WAG,junior,Trial/Trials
+1383,2024,Swiss Junior Euros Trials 2,International Event,National Event,WAG,junior,Trial/Trials
+1313,2024,Swiss Olympic Trials,International Event,National Event,MAG,senior,Trial/Trials
+1311,2024,Swiss Olympic Trials 2,International Event,National Event,MAG,senior,Trial/Trials
+1222,2024,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1010,2024,Top 12 Series 1 (2024 Season),International Event,National Event,MAG and WAG,junior and senior,Top 12
+983,2024,Top 12 Series 2 (2024 Season),International Event,National Event,MAG and WAG,junior and senior,Top 12
+1142,2024,Top 12 Series 3 (2024 Season),International Event,National Event,WAG,junior and senior,Top 12
+1224,2024,Top 12 Series 4,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1225,2024,Top 12 Series 5,International Event,National Event,MAG,junior and senior,Top 12
+1303,2024,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+1226,2024,Top 12 Series 7,International Event,National Event,MAG,junior and senior,Top 12
+1288,2024,U.S. Olympic Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1454,2025,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1420,2025,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1508,2025,2nd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1418,2025,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1445,2025,3rd Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1419,2025,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1455,2025,4th Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1456,2025,5th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1506,2025,6th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1457,2025,7th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1440,2025,British Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1507,2025,Bundesliga Finals,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1548,2025,Chinese Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1519,2025,Dutch Euros Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1397,2025,Dutch Euros Trials 2,International Event,National Event,MAG and WAG,junior and senior,Trial/Trials
+1540,2025,Dutch Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1539,2025,Dutch Worlds Trials 2,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1538,2025,Dutch Worlds Trials 3,World Championships,National Event,MAG,senior,Trial/Trials
+1534,2025,German Worlds Trials,World Championships,National Event,MAG and WAG,senior,Trial/Trials
+1421,2025,Italian Serie A Final,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1595,2025,Romanian Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+1580,2025,South African Worlds Trials,World Championships,National Event,WAG,junior and senior,Trial/Trials
+1543,2025,Swiss Euros Trials,International Event,National Event,MAG and WAG,junior and senior,Trial/Trials
+1481,2025,Swiss Worlds Trials,World Championships,National Event,MAG,senior,Trial/Trials
+1605,2025,Taiwan Trial Meet,International Event,National Event,WAG,senior,Trial/Trials
+1432,2025,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1431,2025,Top 12 Semifinals,International Event,National Event,MAG,junior and senior,Top 12
+1585,2025,Top 12 Series 1,International Event,National Event,WAG,junior and senior,Top 12
+1231,2025,Top 12 Series 1 (2025),International Event,National Event,MAG and WAG,junior and senior,Top 12
+1564,2025,Top 12 Series 2,International Event,National Event,WAG,junior and senior,Top 12
+1220,2025,Top 12 Series 2 (2025),International Event,National Event,MAG and WAG,junior and senior,Top 12
+1582,2025,Top 12 Series 3,International Event,National Event,WAG,junior and senior,Top 12
+1219,2025,Top 12 Series 3 (2025),International Event,National Event,MAG,junior and senior,Top 12
+1391,2025,Top 12 Series 4,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1430,2025,Top 12 Series 5,International Event,National Event,MAG,junior and senior,Top 12
+1392,2025,Top 12 Series 6,International Event,National Event,MAG,junior and senior,Top 12
+1601,2025,U.S. Worlds Trials,World Championships,National Event,WAG,senior,Trial/Trials
+1659,2026,1st Bundesliga,International Event,National Event,MAG and WAG,junior and senior,Bundesliga
+1642,2026,1st Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1626,2026,2nd Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1643,2026,2nd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1683,2026,3rd Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1644,2026,3rd Italian Serie A,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1625,2026,4th Bundesliga,International Event,National Event,MAG,junior and senior,Bundesliga
+1753,2026,5th Bundesliga (MAG),International Event,National Event,MAG,junior and senior,Bundesliga
+1755,2026,6th Bundesliga (MAG),International Event,National Event,MAG,junior and senior,Bundesliga
+1757,2026,7th Bundesliga (MAG),International Event,National Event,MAG,junior and senior,Bundesliga
+1669,2026,Australian Commonwealth Games Trials,International Event,National Event,MAG and WAG,senior,Trial/Trials
+1645,2026,Italian Serie A Final,International Event,National Event,MAG and WAG,junior and senior,Serie A
+1708,2026,Romanian Euros Trials,International Event,National Event,WAG,senior,Trial/Trials
+1661,2026,Top 12 Finals,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1655,2026,Top 12 Series 1,International Event,National Event,MAG,junior and senior,Top 12
+1649,2026,Top 12 Series 2,International Event,National Event,MAG,junior and senior,Top 12
+1650,2026,Top 12 Series 3,International Event,National Event,MAG,junior and senior,Top 12
+1584,2026,Top 12 Series 3 (2026),International Event,National Event,WAG,junior and senior,Top 12
+1608,2026,Top 12 Series 4,International Event,National Event,MAG and WAG,junior and senior,Top 12
+1702,2026,U.S. Pan Ams Trials,International Event,National Event,WAG,junior and senior,Trial/Trials

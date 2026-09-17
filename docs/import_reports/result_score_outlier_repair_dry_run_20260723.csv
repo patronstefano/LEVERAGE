@@ -1,0 +1,5 @@
+result_id,status,field,old_value,new_value,current_value,athlete_name,event_name,event_year,apparatus,format,round,discipline,category,source_file,source_sheet,source_row,reason
+416930,already_corrected,score,1205.0,12.05,12.05,Daniel Serban,German Junior Championships,2023,PB,INDIVIDUAL,QUALIFICATION,MAG,JUNIOR,Results 2023.xlsx,MAG,2352,Missing decimal in Gymternet source cell: PB 1205 -> 12.05
+246431,already_corrected,score,142.33,14.233,14.233,Keisuke Komori,All-Japan Team Championships,2021,FX,INDIVIDUAL,FINAL,MAG,SENIOR,Results 2021.xlsx,MAG,3639,Missing decimal in Gymternet source cell: FX 142.33 -> 14.233
+260503,already_corrected,score,110.65,11.065,11.065,Silas Bortt,4th Bundesliga,2021,PB,INDIVIDUAL,FINAL,MAG,SENIOR,Results 2021.xlsx,MAG,6784,Missing decimal in Gymternet source cell: PB 110.65 -> 11.065
+278214,already_corrected,D_score,22.0,2.2,2.2,Elene Sanna,Italian Gold Championships,2021,UB,INDIVIDUAL,FINAL,WAG,JUNIOR,Results 2021.xlsx,WAG D,1908,Missing decimal in Gymternet source cell: UB D score 22 -> 2.2

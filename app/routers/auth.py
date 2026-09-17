@@ -35,6 +35,7 @@ GENERIC_RESET_MESSAGE = "If the address exists, password reset instructions will
 DUMMY_PASSWORD_HASH = hash_password("LEVERAGE-dummy-password-not-used")
 DEMO_USER_EMAIL = "demo.user@leverage-demo.com"
 DEMO_ADMIN_EMAIL = "demo.admin@leverage-demo.com"
+DEMO_SUPER_ADMIN_EMAIL = "demo.superadmin@leverage-demo.com"
 DEMO_PASSWORD_HASH = hash_password("LEVERAGE-demo-login-disabled-password")
 
 
@@ -106,7 +107,12 @@ def demo_login_allowed() -> bool:
 
 
 def get_or_create_demo_user(db: Session, role: models.RoleEnum) -> models.User:
-    email = DEMO_ADMIN_EMAIL if role == models.RoleEnum.ADMIN else DEMO_USER_EMAIL
+    demo_emails = {
+        models.RoleEnum.USER: DEMO_USER_EMAIL,
+        models.RoleEnum.ADMIN: DEMO_ADMIN_EMAIL,
+        models.RoleEnum.SUPER_ADMIN: DEMO_SUPER_ADMIN_EMAIL,
+    }
+    email = demo_emails[role]
     user = get_user_by_email(db, email)
     if not user:
         user = models.User(
@@ -126,7 +132,7 @@ def get_or_create_demo_user(db: Session, role: models.RoleEnum) -> models.User:
     user.is_active = True
     user.login_locked_until = None
     user.failed_login_attempts = 0
-    if role == models.RoleEnum.ADMIN:
+    if role in {models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN}:
         user.mfa_secret = user.mfa_secret or generate_mfa_secret()
         user.mfa_enabled = True
     db.add(user)
@@ -170,15 +176,15 @@ def demo_login(
 ):
     if not demo_login_allowed():
         raise HTTPException(status_code=404, detail="Not found")
-    if payload.role not in {schemas.RoleEnum.USER, schemas.RoleEnum.ADMIN}:
-        raise HTTPException(status_code=400, detail="Demo login supports user or admin only")
+    if payload.role not in {schemas.RoleEnum.USER, schemas.RoleEnum.ADMIN, schemas.RoleEnum.SUPER_ADMIN}:
+        raise HTTPException(status_code=400, detail="Demo login supports user, admin or super_admin only")
 
-    role = models.RoleEnum.ADMIN if payload.role == schemas.RoleEnum.ADMIN else models.RoleEnum.USER
+    role = models.RoleEnum(payload.role.value)
     user = get_or_create_demo_user(db, role)
     return schemas.LoginResponse(
         access_token=create_token(
             user,
-            mfa_verified=role == models.RoleEnum.ADMIN,
+            mfa_verified=role in {models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN},
         ),
     )
 

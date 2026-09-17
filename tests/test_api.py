@@ -15,6 +15,8 @@ os.environ["DATABASE_URL"] = "sqlite:///./test_leverage.db"
 
 from app import ai_suggestions, models, world_gymnastics
 from app.auth_security import hash_email_token
+from app.calendar_import import infer_event_level as infer_calendar_event_level
+from app.gymternet_import import infer_event_level as infer_gymternet_event_level
 from app.main import app
 from app.database import Base, SessionLocal, engine
 from app.models import RoleEnum, User
@@ -173,6 +175,17 @@ def test_development_demo_login_shortcuts_return_real_tokens():
     assert admin_me.json()["role"] == "admin"
     assert admin_me.json()["mfa_enabled"] is True
     assert client.get("/admin/entities-to-complete", headers=admin_headers).status_code == 200
+
+    super_admin_response = client.post("/auth/demo-login", json={"role": "super_admin"})
+    assert super_admin_response.status_code == 200
+    super_admin_token = super_admin_response.json()["access_token"]
+    super_admin_headers = {"Authorization": f"Bearer {super_admin_token}"}
+    super_admin_me = client.get("/auth/me", headers=super_admin_headers)
+    assert super_admin_me.status_code == 200
+    assert super_admin_me.json()["email"] == "demo.superadmin@leverage-demo.com"
+    assert super_admin_me.json()["role"] == "super_admin"
+    assert super_admin_me.json()["mfa_enabled"] is True
+    assert client.get("/admin/users", headers=super_admin_headers).status_code == 200
 
 
 def test_admin_login_requires_totp_enrollment_and_verification():
@@ -459,6 +472,42 @@ def test_crud_athlete_flow():
     list_response = client.get("/athletes/")
     assert list_response.status_code == 200
     assert len(list_response.json()) == 1
+
+
+def test_list_athletes_can_sort_by_name_or_country():
+    client.post("/auth/register", json={"email": "athlete_sort_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("athlete_sort_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    for payload in [
+        {"first_name": "Berta", "last_name": "Sortzulu", "discipline": "MAG", "country": "ITA"},
+        {"first_name": "Anna", "last_name": "Sortalpha", "discipline": "WAG", "country": "USA"},
+        {"first_name": "Carla", "last_name": "Sortbeta", "discipline": "WAG", "country": "BRA"},
+        {"first_name": "Sortparen", "last_name": "(Region)", "discipline": "WAG", "country": "BRA"},
+        {"first_name": "Sortsingle", "last_name": "", "discipline": "MAG", "country": "BRA"},
+    ]:
+        response = client.post("/athletes/", json=payload, headers=headers)
+        assert response.status_code == 200
+
+    name_response = client.get("/athletes/?search=Sort&sort_by=name&limit=10")
+    assert name_response.status_code == 200
+    assert [athlete["last_name"] for athlete in name_response.json()] == [
+        "Sortalpha",
+        "Sortbeta",
+        "Sortzulu",
+        "(Region)",
+        "",
+    ]
+
+    country_response = client.get("/athletes/?search=Sort&sort_by=country&limit=10")
+    assert country_response.status_code == 200
+    assert [(athlete["country"], athlete["last_name"]) for athlete in country_response.json()] == [
+        ("BRA", "Sortbeta"),
+        ("BRA", "(Region)"),
+        ("BRA", ""),
+        ("ITA", "Sortzulu"),
+        ("USA", "Sortalpha"),
+    ]
 
 
 def test_update_and_delete_athlete():
@@ -869,7 +918,7 @@ def test_result_duplicate_context_is_blocked_for_direct_and_bulk_entry():
     assert bulk_response.json()["detail"]["duplicates"][0]["reason"] == "duplicate_in_request"
 
 
-def test_global_search_covers_athletes_events_countries_apparatus_and_results():
+def test_global_search_outputs_only_athletes_events_and_results():
     client.post("/auth/register", json={"email": "global_search_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("global_search_admin@example.com")
     headers = {"Authorization": f"Bearer {token}"}
@@ -927,13 +976,18 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
 
     country_search = client.get("/search", params={"q": "USA", "limit": 5})
     assert country_search.status_code == 200
-    assert country_search.json()["countries"][0]["value"] == "USA"
-    assert country_search.json()["countries"][0]["result_count"] == 1
+    country_payload = country_search.json()
+    assert "countries" not in country_payload
+    assert "apparatuses" not in country_payload
+    assert any(item["id"] == athlete["id"] for item in country_payload["athletes"])
+    assert any(item["result_id"] == result["id"] for item in country_payload["results"])
 
     apparatus_search = client.get("/search", params={"q": "balance", "limit": 5})
     assert apparatus_search.status_code == 200
-    assert apparatus_search.json()["apparatuses"][0]["value"] == "BB"
-    assert apparatus_search.json()["results"][0]["apparatus"] == "BB"
+    apparatus_payload = apparatus_search.json()
+    assert "countries" not in apparatus_payload
+    assert "apparatuses" not in apparatus_payload
+    assert apparatus_payload["results"][0]["apparatus"] == "BB"
 
     italian_athlete = client.post(
         "/athletes/",
@@ -1248,7 +1302,8 @@ def test_global_search_covers_athletes_events_countries_apparatus_and_results():
     assert no_exact_payload["structured_result_search"] is True
     assert any(athlete["id"] == stefano_athlete["id"] for athlete in no_exact_payload["athletes"])
     assert any(event["id"] == bundesliga_event["id"] for event in no_exact_payload["events"])
-    assert any(apparatus["value"] == "FX" for apparatus in no_exact_payload["apparatuses"])
+    assert "countries" not in no_exact_payload
+    assert "apparatuses" not in no_exact_payload
     assert no_exact_payload["results"] == []
     assert any(result["result_id"] == mario_bundesliga_fx["id"] for result in no_exact_payload["related_results"])
 
@@ -1417,6 +1472,106 @@ def test_super_admin_soft_delete_restore_and_audit_log_for_core_entities():
 
     admin_audit_response = client.get("/admin/audit-logs", headers=admin_headers)
     assert admin_audit_response.status_code == 403
+
+
+def test_super_admin_can_review_and_revert_admin_update_audit_logs():
+    client.post("/auth/register", json={"email": "audit_review_super@example.com", "password": TEST_PASSWORD})
+    super_token = login_as_admin("audit_review_super@example.com")
+    super_headers = {"Authorization": f"Bearer {super_token}"}
+
+    client.post("/auth/register", json={"email": "audit_review_admin@example.com", "password": TEST_PASSWORD})
+    login_as_user("audit_review_admin@example.com")
+    promote_response = client.put(
+        "/admin/users/role-by-email",
+        json={"email": "audit_review_admin@example.com", "role": "admin"},
+        headers=super_headers,
+    )
+    assert promote_response.status_code == 200
+    admin_token = login_as_admin("audit_review_admin@example.com")
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+
+    athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Review",
+            "last_name": "Target",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=admin_headers,
+    ).json()
+
+    first_update_response = client.put(
+        f"/athletes/{athlete['id']}",
+        json={"last_name": "Checked"},
+        headers=admin_headers,
+    )
+    assert first_update_response.status_code == 200
+
+    pending_response = client.get(
+        f"/admin/audit-logs?action=update&entity_type=Athlete&entity_id={athlete['id']}&review_status=pending",
+        headers=super_headers,
+    )
+    assert pending_response.status_code == 200
+    pending_logs = pending_response.json()
+    first_update_log = pending_logs[0]
+    assert first_update_log["review_status"] == "pending"
+
+    admin_approve_response = client.post(
+        f"/admin/audit-logs/{first_update_log['id']}/approve",
+        json={"note": "Admin users cannot review audit logs"},
+        headers=admin_headers,
+    )
+    assert admin_approve_response.status_code == 403
+
+    approve_response = client.post(
+        f"/admin/audit-logs/{first_update_log['id']}/approve",
+        json={"note": "Verified correction"},
+        headers=super_headers,
+    )
+    assert approve_response.status_code == 200
+    approved_log = approve_response.json()
+    assert approved_log["review_status"] == "approved"
+    assert approved_log["reviewed_by_super_admin_id"] is not None
+    assert approved_log["review_note"] == "Verified correction"
+
+    second_update_response = client.put(
+        f"/athletes/{athlete['id']}",
+        json={"country": "TYPO"},
+        headers=admin_headers,
+    )
+    assert second_update_response.status_code == 200
+    assert second_update_response.json()["country"] == "TYPO"
+
+    second_pending_response = client.get(
+        f"/admin/audit-logs?action=update&entity_type=Athlete&entity_id={athlete['id']}&review_status=pending",
+        headers=super_headers,
+    )
+    assert second_pending_response.status_code == 200
+    second_update_log = second_pending_response.json()[0]
+
+    revert_response = client.post(
+        f"/admin/audit-logs/{second_update_log['id']}/revert",
+        json={"note": "Rejected country typo"},
+        headers=super_headers,
+    )
+    assert revert_response.status_code == 200
+    reverted_log = revert_response.json()
+    assert reverted_log["review_status"] == "reverted"
+    assert reverted_log["review_note"] == "Rejected country typo"
+
+    athlete_after_revert = client.get(f"/athletes/{athlete['id']}").json()
+    assert athlete_after_revert["last_name"] == "Checked"
+    assert athlete_after_revert["country"] == "ITA"
+
+    revert_log_response = client.get(
+        f"/admin/audit-logs?action=revert_update&entity_type=Athlete&entity_id={athlete['id']}",
+        headers=super_headers,
+    )
+    assert revert_log_response.status_code == 200
+    revert_logs = revert_log_response.json()
+    assert len(revert_logs) == 1
+    assert revert_logs[0]["review_status"] == "approved"
 
 
 def test_entity_updates_cannot_break_existing_result_semantics():
@@ -2297,7 +2452,7 @@ def test_notifications():
     assert len(notifications) == 2  # 1 event + 1 result
     result_notifications = [n for n in notifications if n["type"] == "new_result"]
     assert len(result_notifications) == 1
-    assert "New scores for Luca Rossi" in result_notifications[0]["message"]
+    assert "New scores for Rossi Luca" in result_notifications[0]["message"]
     assert "individual final" in result_notifications[0]["message"]
     assert "Test Event" in result_notifications[0]["message"]
     assert "2 results available" in result_notifications[0]["message"]
@@ -2396,7 +2551,7 @@ def test_notifications_ignore_soft_deleted_result_counts_and_saved_event_sources
     ]
     assert len(result_notifications) == 1
     assert result_notifications[0]["related_result_id"] == second_result["id"]
-    assert "New score for Soft Delete" in result_notifications[0]["message"]
+    assert "New score for Delete Soft" in result_notifications[0]["message"]
     assert "2 results available" not in result_notifications[0]["message"]
 
     saved_source_event = client.post(
@@ -2549,7 +2704,7 @@ def test_user_language_preference_supports_supported_languages_and_localized_not
     )
     notifications = client.get("/notifications", headers=user_headers).json()
     result_notification = next(notification for notification in notifications if notification["type"] == "new_result")
-    assert "Nuovo punteggio di Lingua Utente" in result_notification["message"]
+    assert "Nuovo punteggio di Utente Lingua" in result_notification["message"]
     assert "finale individuale" in result_notification["message"]
 
 
@@ -2928,6 +3083,9 @@ def test_event_profile_view_supports_ranking_and_future_empty_state():
     assert profile["default_ranking"][0]["score"] == 13.8
     assert profile["filter_options"]["apparatuses"] == ["BB", "FX"]
     assert {group["apparatus"] for group in profile["result_groups"]} == {"BB", "FX"}
+    assert {group["discipline"] for group in profile["result_groups"]} == {"WAG"}
+    assert {group["category"] for group in profile["result_groups"]} == {"senior"}
+    assert {group["format"] for group in profile["result_groups"]} == {"individual"}
     assert profile["empty_state"] is None
 
     future_response = client.get(f"/events/{future_event['id']}/profile-view?as_of=2027-01-01")
@@ -3015,7 +3173,7 @@ def test_new_result_notifications_are_cumulative_by_athlete_event_round_and_form
         if notification["type"] == "new_result"
     ]
     assert len(result_notifications) == 1
-    assert "New scores for Bruno Rossi" in result_notifications[0]["message"]
+    assert "New scores for Rossi Bruno" in result_notifications[0]["message"]
     assert "individual qualification" in result_notifications[0]["message"]
     assert "World Cup 2026" in result_notifications[0]["message"]
     assert "2 results available" in result_notifications[0]["message"]
@@ -3338,7 +3496,7 @@ def test_lightweight_site_analytics_are_admin_only_and_aggregate_usage():
     assert payload["users"]["active_users"] == 1
     assert payload["users"]["inactive_users"] == 1
     assert payload["top_searches"] == [{"id": None, "label": "rossi", "count": 2}]
-    assert payload["top_athletes"] == [{"id": athlete["id"], "label": "Luca Rossi", "count": 1}]
+    assert payload["top_athletes"] == [{"id": athlete["id"], "label": "Rossi Luca", "count": 1}]
     assert payload["top_events"] == [{"id": event["id"], "label": "Analytics Cup", "count": 1}]
 
 
@@ -4281,7 +4439,7 @@ def test_event_manual_entry_options_are_admin_only_and_event_aware():
     assert payload["event"]["id"] == event["id"]
     assert payload["disciplines"] == ["MAG"]
     assert payload["categories"] == ["junior", "senior"]
-    assert payload["formats"] == ["team", "individual", "apparatus"]
+    assert payload["formats"] == ["team", "individual", "apparatus", "mixed team"]
     assert payload["rounds"] == ["qualification", "final"]
     assert payload["current_context"]["apparatus"] == "FX"
     assert payload["current_context"]["format"] == "individual"
@@ -4436,7 +4594,7 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
     assert len(data_entry_notifications) == 1
     assert "Manual data entry report for Resolve Athlete Event" in data_entry_notifications[0]["message"]
     assert "1 new athlete(s) created" in data_entry_notifications[0]["message"]
-    assert "Marco Neri" in data_entry_notifications[0]["message"]
+    assert "Neri Marco" in data_entry_notifications[0]["message"]
     assert data_entry_notifications[0]["related_athlete_id"] == create_payload["athlete"]["id"]
     assert data_entry_notifications[0]["related_event_id"] == event["id"]
 
@@ -4519,7 +4677,7 @@ def test_event_bulk_results_can_create_missing_athlete_from_result_row():
     ]
     assert len(data_entry_notifications) == 1
     assert "Manual data entry report for Bulk Missing Athlete Event" in data_entry_notifications[0]["message"]
-    assert "Sara Blu" in data_entry_notifications[0]["message"]
+    assert "Blu Sara" in data_entry_notifications[0]["message"]
     assert data_entry_notifications[0]["related_athlete_id"] == athletes[0]["id"]
     assert data_entry_notifications[0]["related_event_id"] == event["id"]
 
@@ -4958,6 +5116,80 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     assert "Calendar import report" in import_notifications[0]["message"]
 
 
+def test_calendar_import_level_inference_distinguishes_olympic_hopes_cup():
+    assert infer_calendar_event_level("Olympic Games") == models.LevelEnum.OLYMPIC_GAMES
+    assert infer_calendar_event_level("Youth Olympic Games") == models.LevelEnum.OLYMPIC_GAMES
+    assert infer_calendar_event_level("Olympic Hopes Cup") == models.LevelEnum.INTERNATIONAL_EVENT
+
+
+def test_event_level_inference_marks_trials_leagues_and_top_12_as_national():
+    national_event_names = [
+        "U.S. Olympic Trials",
+        "U.S. Worlds Trials",
+        "Japanese World Cup Trials",
+        "German Olympic Trial",
+        "1st Bundesliga",
+        "Bundesliga Finals",
+        "1st Italian Serie A",
+        "Italian Serie A Final Six",
+        "Top 12 Series 3",
+        "Top-12 Finals",
+    ]
+    for event_name in national_event_names:
+        assert infer_calendar_event_level(event_name) == models.LevelEnum.NATIONAL_EVENT
+        assert infer_gymternet_event_level(event_name) == models.LevelEnum.NATIONAL_EVENT
+
+
+def test_event_level_inference_marks_domestic_championships_and_qualifiers_as_national():
+    national_event_names = [
+        "Chinese Championships",
+        "All-Japan Championships",
+        "2nd Colombian Championships",
+        "French National Team Review",
+        "Parkettes National Qualifier",
+        "NCAA Week 1",
+        "Chinese National Games",
+        "Japanese National Spots Festival",
+        "Spanish League Final",
+        "1st Bundlesiga League 2",
+        "Hopes Championships",
+        "GK Championships",
+    ]
+    for event_name in national_event_names:
+        assert infer_calendar_event_level(event_name) == models.LevelEnum.NATIONAL_EVENT
+        assert infer_gymternet_event_level(event_name) == models.LevelEnum.NATIONAL_EVENT
+
+
+def test_event_level_inference_marks_residual_continental_championships_as_continental():
+    continental_event_names = [
+        "Asian Junior Championships",
+        "Junior Pan Am Championships",
+        "Junior Pan American Championships",
+        "Oceania Championships",
+    ]
+    for event_name in continental_event_names:
+        assert infer_calendar_event_level(event_name) == models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
+        assert infer_gymternet_event_level(event_name) == models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
+
+
+def test_event_level_inference_respects_manual_event_level_overrides():
+    expected_levels = {
+        "Worlds Preparation Event": models.LevelEnum.INTERNATIONAL_EVENT,
+        "South African Championships": models.LevelEnum.NATIONAL_EVENT,
+        "Northern European Championships": models.LevelEnum.INTERNATIONAL_EVENT,
+        "COMEGYM Championships": models.LevelEnum.INTERNATIONAL_EVENT,
+        "Klaverblad Championships": models.LevelEnum.INTERNATIONAL_EVENT,
+        "Liepaja Championships": models.LevelEnum.INTERNATIONAL_EVENT,
+        "Platinum League Online": models.LevelEnum.INTERNATIONAL_EVENT,
+    }
+    for event_name, expected_level in expected_levels.items():
+        assert infer_calendar_event_level(event_name) == expected_level
+        assert infer_gymternet_event_level(event_name) == expected_level
+
+    assert infer_calendar_event_level("African Championships") == models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
+    assert infer_gymternet_event_level("European Championships") == models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
+
+
 def test_calendar_import_commit_blocks_duplicate_source_rows():
     client.post("/auth/register", json={"email": "calendar_duplicate_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("calendar_duplicate_admin@example.com")
@@ -5189,7 +5421,11 @@ def test_event_result_groups():
         ("PH", "qualification"),
         ("FX", "final"),
     }
-    assert next(g for g in groups if g["apparatus"] == "FX" and g["round"] == "qualification")["count"] == 2
+    qualification_fx_group = next(g for g in groups if g["apparatus"] == "FX" and g["round"] == "qualification")
+    assert qualification_fx_group["discipline"] == "MAG"
+    assert qualification_fx_group["category"] == "senior"
+    assert qualification_fx_group["format"] == "individual"
+    assert qualification_fx_group["count"] == 2
 
 
 def test_event_results():
@@ -6395,7 +6631,7 @@ def test_result_analytics_rankings_and_trends():
     ranking = ranking_response.json()["ranking"]
     assert [entry["score"] for entry in ranking] == [14.0, 13.5]
     assert ranking[0]["computed_rank"] == 1
-    assert ranking[0]["athlete_name"] == "Luca Rossi"
+    assert ranking[0]["athlete_name"] == "Rossi Luca"
 
     d_score_ranking_response = client.get(
         f"/results/analytics/rankings?event_id={event2_id}&apparatus=FX&round=final&sort_by=D_score"
@@ -6412,6 +6648,82 @@ def test_result_analytics_rankings_and_trends():
     assert trend["points"][0]["delta_from_previous"] is None
     assert trend["points"][1]["delta_from_previous"] == 1.0
     assert trend["points"][1]["rolling_average"] == 13.5
+
+
+def test_athlete_dashboard_exposes_event_period_date_precision_for_multiday_events():
+    client.post("/auth/register", json={"email": "analytics_period_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("analytics_period_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Period",
+            "last_name": "Tester",
+            "discipline": "MAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Multi Day Cup",
+            "year": 2024,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+            "start_date": "2024-07-10",
+            "end_date": "2024-07-13",
+        },
+        headers=headers,
+    ).json()
+
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "qualification",
+            "score": 13.2,
+        },
+        headers=headers,
+    )
+    client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "PH",
+            "format": "individual",
+            "round": "final",
+            "day": 2,
+            "score": 13.8,
+        },
+        headers=headers,
+    )
+
+    response = client.get(f"/analytics/athletes/{athlete['id']}/dashboard")
+    assert response.status_code == 200
+    points = response.json()["trend"]
+
+    assert points[0]["apparatus"] == "FX"
+    assert points[0]["date"] == "2024-07-10"
+    assert points[0]["event_start_date"] == "2024-07-10"
+    assert points[0]["event_end_date"] == "2024-07-13"
+    assert points[0]["date_precision"] == "event_period"
+
+    assert points[1]["apparatus"] == "PH"
+    assert points[1]["date"] == "2024-07-11"
+    assert points[1]["event_start_date"] == "2024-07-10"
+    assert points[1]["event_end_date"] == "2024-07-13"
+    assert points[1]["date_precision"] == "derived_from_day"
 
 
 def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
@@ -6559,10 +6871,12 @@ def test_apparatus_filters_do_not_mix_vt_with_vt_avg_for_analytics_views():
     dashboard = client.get(f"/analytics/athletes/{athlete['id']}/dashboard?apparatus=VT")
     assert dashboard.status_code == 200
     assert [point["apparatus"] for point in dashboard.json()["trend"]] == ["VT", "VT"]
+    assert [point["vt_attempt"] for point in dashboard.json()["trend"]] == [1, 2]
 
     comparison = client.get(f"/analytics/athletes/compare?ids={athlete['id']}&apparatus=VT")
     assert comparison.status_code == 200
     assert [point["apparatus"] for point in comparison.json()["series"][0]["points"]] == ["VT", "VT"]
+    assert [point["vt_attempt"] for point in comparison.json()["series"][0]["points"]] == [1, 2]
 
 
 def test_public_dashboard_analytics_filter_options_compare_and_dashboard():
@@ -6752,7 +7066,7 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
             "year": 2024,
             "discipline": "MAG",
             "category": "senior",
-            "level": "International Event",
+            "level": "National Event",
             "start_date": "2024-05-01",
         },
         headers=headers,
@@ -6764,7 +7078,7 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
             "year": 2025,
             "discipline": "MAG",
             "category": "senior",
-            "level": "International Event",
+            "level": "World Cup",
             "start_date": "2025-05-01",
         },
         headers=headers,
@@ -6812,6 +7126,27 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
         },
         headers=headers,
     )
+    for apparatus, d_score, score in [
+        ("SR", 5.0, 13.6),
+        ("VT", 5.2, 14.4),
+        ("PB", 5.4, 13.9),
+        ("HB", 5.8, 12.8),
+    ]:
+        client.post(
+            "/results/",
+            json={
+                "athlete_id": mag_athlete["id"],
+                "event_id": mag_2025_event["id"],
+                "discipline": "MAG",
+                "category": "senior",
+                "apparatus": apparatus,
+                "format": "individual",
+                "round": "final",
+                "D_score": d_score,
+                "score": score,
+            },
+            headers=headers,
+        )
     client.post(
         "/results/",
         json={
@@ -6837,7 +7172,6 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
             "apparatus": "AA",
             "format": "individual",
             "round": "final",
-            "D_score": 34.0,
             "score": 82.5,
         },
         headers=headers,
@@ -6887,6 +7221,19 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     assert mag_2025_dates.status_code == 200
     assert [entry["event_id"] for entry in mag_2025_dates.json()["ranking"]] == [mag_2025_event["id"]]
 
+    invalid_cycle_and_year_period = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&scoring_cycle=2025-2028&start_year=2025"
+    )
+    assert invalid_cycle_and_year_period.status_code == 400
+    assert "explicit period filters" in invalid_cycle_and_year_period.json()["detail"]
+
+    invalid_all_cycles_and_date_period = client.get(
+        "/results/analytics/rankings?discipline=MAG&apparatus=FX"
+        "&include_all_scoring_cycles=true&start_date=2025-01-01"
+    )
+    assert invalid_all_cycles_and_date_period.status_code == 400
+    assert "explicit period filters" in invalid_all_cycles_and_date_period.json()["detail"]
+
     invalid_year_period = client.get(
         "/analytics/rankings?discipline=MAG&apparatus=FX&start_year=2025&end_year=2024"
     )
@@ -6926,6 +7273,33 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     }
     assert "multiple gymnastics scoring cycles" in two_cycle_payload["warnings"][0]
 
+    mag_multi_levels = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true"
+        "&level=National%20Event&level=World%20Cup"
+    )
+    assert mag_multi_levels.status_code == 200
+    assert {entry["event_id"] for entry in mag_multi_levels.json()["ranking"]} == {
+        mag_2024_event["id"],
+        mag_2025_event["id"],
+    }
+
+    mag_multi_levels_comma = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true"
+        "&level=National%20Event,World%20Cup"
+    )
+    assert mag_multi_levels_comma.status_code == 200
+    assert {entry["event_id"] for entry in mag_multi_levels_comma.json()["ranking"]} == {
+        mag_2024_event["id"],
+        mag_2025_event["id"],
+    }
+
+    mag_single_level = client.get(
+        "/analytics/rankings?discipline=MAG&apparatus=FX&include_all_scoring_cycles=true"
+        "&level=World%20Cup"
+    )
+    assert mag_single_level.status_code == 200
+    assert [entry["event_id"] for entry in mag_single_level.json()["ranking"]] == [mag_2025_event["id"]]
+
     mag_multi_apparatus = client.get(
         "/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028"
         "&apparatus=FX&apparatus=PH&sort_by=D_score"
@@ -6938,12 +7312,33 @@ def test_global_rankings_require_discipline_and_expose_scoring_cycle_context():
     aa_entry = mag_aa.json()["ranking"][0]
     assert aa_entry["apparatus"] == "AA"
     assert aa_entry["score"] == 82.5
-    assert aa_entry["execution_estimate"] == pytest.approx(48.5)
+    assert aa_entry["D_score"] == pytest.approx(33.2)
+    assert aa_entry["execution_estimate"] == pytest.approx(49.3)
     assert [(component["apparatus"], component["score"]) for component in aa_entry["apparatus_scores"]] == [
         ("FX", 14.2),
         ("PH", 13.8),
+        ("SR", 13.6),
+        ("VT", 14.4),
+        ("PB", 13.9),
+        ("HB", 12.8),
     ]
     assert all(component["apparatus"] != "AA" for component in aa_entry["apparatus_scores"])
+
+    invalid_aa_mix = client.get(
+        "/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028&apparatus=AA&apparatus=FX"
+    )
+    assert invalid_aa_mix.status_code == 422
+
+    invalid_vt_avg_mix = client.get(
+        "/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028&apparatus=VT%20AVG&apparatus=VT"
+    )
+    assert invalid_vt_avg_mix.status_code == 422
+
+    mag_aa_d_score = client.get(
+        "/analytics/rankings?discipline=MAG&scoring_cycle=2025-2028&apparatus=AA&sort_by=D_score"
+    )
+    assert mag_aa_d_score.status_code == 200
+    assert mag_aa_d_score.json()["ranking"][0]["D_score"] == pytest.approx(33.2)
 
     mixed_disciplines = client.get(
         "/analytics/rankings?allow_mixed_disciplines=true&include_all_scoring_cycles=true"
@@ -7168,6 +7563,143 @@ def test_result_update_validates_final_scoring_state():
     assert valid_response.status_code == 200
     assert valid_response.json()["apparatus"] == "FX"
     assert valid_response.json()["vt_attempt"] is None
+
+
+def test_result_entry_rejects_non_aa_scores_above_twenty_but_allows_aa_totals():
+    client.post("/auth/register", json={"email": "score_upper_bound_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("score_upper_bound_admin@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Score",
+            "last_name": "Bound",
+            "discipline": "MAG",
+            "country": "Italy",
+        },
+        headers=headers,
+    ).json()
+    event = client.post(
+        "/events/",
+        json={
+            "name": "Score Bound Cup",
+            "year": 2023,
+            "discipline": "MAG",
+            "category": "senior",
+            "level": "International Event",
+        },
+        headers=headers,
+    ).json()
+
+    invalid_direct_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "FX",
+            "format": "individual",
+            "round": "final",
+            "score": 20.1,
+        },
+        headers=headers,
+    )
+    assert invalid_direct_response.status_code == 400
+    assert invalid_direct_response.json()["detail"] == "score must be less than or equal to 20 for non-AA results"
+
+    invalid_bulk_response = client.post(
+        f"/events/{event['id']}/results/bulk",
+        json={
+            "results": [
+                {
+                    "athlete_id": athlete["id"],
+                    "discipline": "MAG",
+                    "category": "senior",
+                    "apparatus": "PH",
+                    "format": "individual",
+                    "round": "final",
+                    "score": 20.1,
+                },
+            ]
+        },
+        headers=headers,
+    )
+    assert invalid_bulk_response.status_code == 400
+    assert invalid_bulk_response.json()["detail"] == "score must be less than or equal to 20 for non-AA results"
+
+    invalid_d_score_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "SR",
+            "format": "individual",
+            "round": "final",
+            "D_score": 10.1,
+            "score": 13.0,
+        },
+        headers=headers,
+    )
+    assert invalid_d_score_response.status_code == 422
+    assert "D_score must be less than or equal to 10" in str(invalid_d_score_response.json())
+
+    invalid_e_score_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "PB",
+            "format": "individual",
+            "round": "final",
+            "D_score": 5.0,
+            "E_score": 10.1,
+            "score": 15.1,
+        },
+        headers=headers,
+    )
+    assert invalid_e_score_response.status_code == 422
+    assert "E_score must be less than or equal to 10" in str(invalid_e_score_response.json())
+
+    invalid_execution_estimate_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "HB",
+            "format": "individual",
+            "round": "final",
+            "D_score": 1.0,
+            "score": 14.0,
+        },
+        headers=headers,
+    )
+    assert invalid_execution_estimate_response.status_code == 422
+    assert "execution_estimate must be between 0 and 10" in str(invalid_execution_estimate_response.json())
+
+    aa_response = client.post(
+        "/results/",
+        json={
+            "athlete_id": athlete["id"],
+            "event_id": event["id"],
+            "discipline": "MAG",
+            "category": "senior",
+            "apparatus": "AA",
+            "format": "individual",
+            "round": "final",
+            "score": 84.0,
+        },
+        headers=headers,
+    )
+    assert aa_response.status_code == 200
+    assert aa_response.json()["score"] == 84.0
 
 
 def test_result_validation_requires_alignment_with_athlete_and_event():
@@ -7755,6 +8287,7 @@ def test_gymternet_parser_corrects_clear_score_outliers():
                 "Athlete": "Ada Lovelace",
                 "Country": "United States",
                 "Event": "Outlier Cup 2024 QF",
+                "FX": 12.8,
                 "PB": 22,
             }
         ],
@@ -7770,6 +8303,7 @@ def test_gymternet_parser_corrects_clear_score_outliers():
     pb = next(record for record in records if record.apparatus == "PB")
 
     assert fx.score == 14.233
+    assert fx.D_score is None
     assert pb.score == 12.05
     assert pb.D_score == 2.2
     corrected_scores = {
@@ -7778,6 +8312,51 @@ def test_gymternet_parser_corrects_clear_score_outliers():
         if "Corrected outlier" in issue["message"]
     }
     assert corrected_scores == {14.233, 12.05, 2.2}
+    assert any("Skipped outlier dscore score for FX: 12.8" in issue["message"] for issue in issues)
+
+
+def test_gymternet_parser_skips_dscore_that_creates_invalid_execution_estimate():
+    from app.gymternet_import import merge_final_and_dscore, parse_pivot_rows
+
+    issues = []
+    final_records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Estimate Outlier",
+                "Country": "Italy",
+                "Event": "Execution Guard Cup 2024",
+                "PH": "14.0",
+            }
+        ],
+        "MAG",
+        models.DisciplineEnum.MAG,
+        "final",
+        2024,
+        issues,
+    )
+    dscore_records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Estimate Outlier",
+                "Country": "Italy",
+                "Event": "Execution Guard Cup 2024",
+                "PH": "1.0",
+            }
+        ],
+        "MAG D",
+        models.DisciplineEnum.MAG,
+        "dscore",
+        2024,
+        issues,
+    )
+
+    records, orphan_dscores = merge_final_and_dscore(final_records, dscore_records, issues)
+    ph = next(record for record in records if record.apparatus == "PH")
+
+    assert ph.score == 14.0
+    assert ph.D_score is None
+    assert orphan_dscores == []
+    assert any("invalid estimated E score" in issue["message"] for issue in issues)
 
 
 def test_gymternet_country_aliases_cover_results_files():
@@ -7900,6 +8479,80 @@ def test_gymternet_legacy_after_2025_commit_keeps_2025_missing_component_policy(
     assert result["penalty_status"] == "not_available"
     assert result["Bonus"] is None
     assert result["bonus_status"] == "not_available"
+
+
+def test_gymternet_parser_treats_mt_suffix_as_mixed_team_final():
+    from app.gymternet_import import parse_event, parse_format, parse_pivot_rows, suffix_round_format
+
+    event_name, suffix, day = parse_event("European Championships MT")
+    assert event_name == "European Championships"
+    assert suffix == "MT"
+    assert day is None
+
+    round_value, format_value = suffix_round_format(suffix)
+    assert round_value == models.RoundEnum.FINAL
+    assert format_value == models.FormatEnum.MIXED_TEAM
+    assert parse_format("mixed final") == models.FormatEnum.MIXED_TEAM
+    assert parse_format("mixed team final") == models.FormatEnum.MIXED_TEAM
+
+    issues = []
+    records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Mixed Team",
+                "Country": "Italy",
+                "Event": "European Championships MT",
+                "FX": "13.2",
+            }
+        ],
+        "MAG",
+        models.DisciplineEnum.MAG,
+        "final",
+        2025,
+        issues,
+    )
+
+    fx = next(record for record in records if record.apparatus == "FX")
+    assert fx.event_name == "European Championships"
+    assert fx.round == models.RoundEnum.FINAL
+    assert fx.format == models.FormatEnum.MIXED_TEAM
+    assert fx.score == 13.2
+
+
+def test_gymternet_parser_warns_when_mt_apparatus_profile_is_unexpected():
+    from app.gymternet_import import parse_gymternet_file
+
+    valid_csv = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "MAG,Valid MAG,Italy,Profile Cup MT,FX,13.0,5.0\n"
+        "MAG,Valid MAG,Italy,Profile Cup MT,PB,13.1,5.1\n"
+        "MAG,Valid MAG,Italy,Profile Cup MT,HB,13.2,5.2\n"
+        "WAG,Valid WAG,Italy,Profile Cup MT,BB,13.3,5.3\n"
+        "WAG,Valid WAG,Italy,Profile Cup MT,UB,13.4,5.4\n"
+        "WAG,Valid WAG,Italy,Profile Cup MT,FX,13.5,5.5\n"
+    )
+    valid_output = parse_gymternet_file("valid_mt.csv", valid_csv.encode("utf-8"), year_hint=2024)
+    assert valid_output.records
+    assert all(record.format == models.FormatEnum.MIXED_TEAM for record in valid_output.records)
+    assert not any("Mixed Team apparatus profile review" in issue["message"] for issue in valid_output.issues)
+
+    invalid_csv = (
+        "discipline,athlete,country,event,apparatus,score,d_score\n"
+        "WAG,Unexpected WAG,Italy,Profile Cup MT,VT,13.0,5.0\n"
+    )
+    invalid_output = parse_gymternet_file("invalid_mt.csv", invalid_csv.encode("utf-8"), year_hint=2024)
+    profile_warnings = [
+        issue
+        for issue in invalid_output.issues
+        if "Mixed Team apparatus profile review" in issue["message"]
+    ]
+
+    assert len(profile_warnings) == 1
+    assert profile_warnings[0]["unexpected_apparatus_by_discipline"] == {"WAG": ["VT"]}
+    assert profile_warnings[0]["expected_apparatus_by_discipline"] == {
+        "MAG": ["FX", "HB", "PB"],
+        "WAG": ["BB", "FX", "UB"],
+    }
 
 
 def test_gymternet_import_preview_is_admin_only_and_summarizes_csv():
@@ -8343,6 +8996,34 @@ def test_gymternet_pivot_vault_derives_attempt_two_for_mag_2025():
     assert vt_average.D_score is None
 
 
+def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier():
+    from app import models
+    from app.gymternet_import import parse_pivot_rows
+
+    issues = []
+    records = parse_pivot_rows(
+        [
+            {
+                "Athlete": "Vault Person",
+                "Country": "Italy",
+                "Event": "Champion's Cup 2026 AA",
+                "VT": "1.2",
+                "VT AVG": "12.85",
+            }
+        ],
+        "MAG",
+        models.DisciplineEnum.MAG,
+        "final",
+        2026,
+        issues,
+    )
+
+    assert any(record.apparatus == "VT" and record.vt_attempt == 1 and record.score == 1.2 for record in records)
+    assert any(record.apparatus == "VT AVG" and record.score == 12.85 for record in records)
+    assert not any(record.apparatus == "VT" and record.vt_attempt == 2 for record in records)
+    assert any("Skipped derived outlier final score for VT: 24.5" in issue["message"] for issue in issues)
+
+
 def test_gymternet_pivot_vault_wag_2025_derives_attempt_two_d_score_with_missing_score():
     from app import models
     from app.gymternet_import import merge_final_and_dscore, parse_pivot_rows
@@ -8672,7 +9353,7 @@ def test_gymternet_import_reviews_possible_existing_athlete_match_before_commit(
     suggestion = review_item["suggestions"][0]
     assert suggestion["suggestion_type"] == "existing_athlete_match"
     assert suggestion["target_athlete"]["athlete_id"] == existing_athlete_id
-    assert suggestion["target_athlete"]["athlete_name"] == "Daiki Hashimoto"
+    assert suggestion["target_athlete"]["athlete_name"] == "Hashimoto Daiki"
 
     blocked_commit_response = client.post(
         "/imports/gymternet/commit?year_hint=2024",
@@ -9323,6 +10004,16 @@ def test_gymternet_identity_merge_can_correct_erroneous_result_country():
     ita_ranking = client.get("/results/analytics/rankings?discipline=MAG&country=ITA").json()["ranking"]
     assert usa_ranking == []
     assert len(ita_ranking) == 2
+
+
+def test_gymternet_import_normalizes_known_athlete_name_variant():
+    from app.gymternet_import import normalize_athlete_name
+
+    athlete_name, first_name, last_name, category = normalize_athlete_name("Ilya Kovtun")
+    assert athlete_name == "Illia Kovtun"
+    assert first_name == "Illia"
+    assert last_name == "Kovtun"
+    assert category == models.ResultCategoryEnum.SENIOR
 
 
 def test_gymternet_import_automatically_merges_reversed_name_order():

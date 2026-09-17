@@ -38,6 +38,7 @@ def add_audit_log(
     before: Optional[dict] = None,
     after: Optional[dict] = None,
 ) -> models.AuditLog:
+    is_super_admin_action = admin is not None and admin.role == models.RoleEnum.SUPER_ADMIN
     audit_log = models.AuditLog(
         admin_id=admin.id if admin else None,
         action=action,
@@ -45,6 +46,14 @@ def add_audit_log(
         entity_id=entity_id,
         before_json=dump_snapshot(before),
         after_json=dump_snapshot(after),
+        review_status=(
+            models.AuditReviewStatusEnum.APPROVED
+            if is_super_admin_action
+            else models.AuditReviewStatusEnum.PENDING
+        ),
+        reviewed_by_super_admin_id=admin.id if is_super_admin_action else None,
+        reviewed_at=datetime.utcnow() if is_super_admin_action else None,
+        review_note="Auto-approved super-admin operation." if is_super_admin_action else None,
     )
     db.add(audit_log)
     return audit_log

@@ -12,6 +12,11 @@ from openpyxl import load_workbook
 from sqlalchemy.orm import Session
 
 from app import models
+from app.event_levels import (
+    is_continental_event_level_name,
+    is_international_event_level_name,
+    is_national_event_level_name,
+)
 
 
 MONTHS = {
@@ -298,7 +303,11 @@ def infer_event_category(event_name: str) -> models.EventCategoryEnum:
 
 def infer_event_level(event_name: str) -> models.LevelEnum:
     lower_name = event_name.lower()
-    if "olympic" in lower_name:
+    if is_national_event_level_name(lower_name):
+        return models.LevelEnum.NATIONAL_EVENT
+    if is_international_event_level_name(lower_name):
+        return models.LevelEnum.INTERNATIONAL_EVENT
+    if "olympic games" in lower_name or lower_name.strip() == "olympics":
         return models.LevelEnum.OLYMPIC_GAMES
     if "world challenge cup" in lower_name:
         return models.LevelEnum.WORLD_CHALLENGE_CUP
@@ -306,7 +315,7 @@ def infer_event_level(event_name: str) -> models.LevelEnum:
         return models.LevelEnum.WORLD_CUP
     if "world championships" in lower_name:
         return models.LevelEnum.WORLD_CHAMPIONSHIPS
-    if any(token in lower_name for token in ("european", "asian", "african", "pan american", "continental")):
+    if is_continental_event_level_name(lower_name):
         return models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
     if any(token in lower_name for token in ("national", "championships", "championship")):
         return models.LevelEnum.NATIONAL_EVENT

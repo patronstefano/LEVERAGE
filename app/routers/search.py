@@ -1,5 +1,4 @@
 import re
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import Optional
 
@@ -10,6 +9,7 @@ from sqlalchemy.orm import Session, joinedload
 from app import models, schemas
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
+from app.display_names import athlete_display_name
 from app.event_search import (
     EVENT_SEARCH_ALIASES,
     EVENT_YEAR_PATTERN,
@@ -461,98 +461,6 @@ def build_related_result_filter_groups(db: Session, parts: SearchParts, represen
     return groups
 
 
-def build_country_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
-    if not parts.text_terms and not parts.country_terms:
-        return []
-    countries: dict[str, dict[str, int]] = defaultdict(lambda: {"athlete_count": 0, "result_count": 0})
-    athlete_country_conditions = []
-    for term in parts.text_terms:
-        athlete_country_conditions.append(models.Athlete.country.ilike(term))
-    athlete_country_conditions.extend(country_like_conditions(models.Athlete.country, parts.country_terms))
-    athlete_rows = (
-        db.query(models.Athlete.country, func.count(models.Athlete.id))
-        .filter(
-            models.Athlete.is_deleted.is_(False),
-            models.Athlete.country.is_not(None),
-            or_(*athlete_country_conditions),
-        )
-        .group_by(models.Athlete.country)
-        .all()
-    )
-    for country, count in athlete_rows:
-        if country:
-            countries[country]["athlete_count"] += count
-
-    represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
-    result_country_conditions = []
-    for term in parts.text_terms:
-        result_country_conditions.append(represented_country.ilike(term))
-    result_country_conditions.extend(country_like_conditions(represented_country, parts.country_terms))
-    result_query = (
-        db.query(represented_country.label("country"), func.count(models.Result.id))
-        .join(models.Athlete)
-        .join(models.Event)
-        .filter(
-            models.Result.is_deleted.is_(False),
-            models.Athlete.is_deleted.is_(False),
-            models.Event.is_deleted.is_(False),
-            represented_country.is_not(None),
-            or_(*result_country_conditions),
-        )
-    )
-    result_query = add_year_filter(result_query, parts.years)
-    result_rows = result_query.group_by(represented_country).all()
-    for country, count in result_rows:
-        if country:
-            countries[country]["result_count"] += count
-
-    return [
-        schemas.GlobalSearchFacet(
-            value=country,
-            label=country,
-            athlete_count=counts["athlete_count"],
-            result_count=counts["result_count"],
-        )
-        for country, counts in sorted(
-            countries.items(),
-            key=lambda item: (-(item[1]["athlete_count"] + item[1]["result_count"]), item[0]),
-        )[:limit]
-    ]
-
-
-def build_apparatus_facets(db: Session, parts: SearchParts, limit: int) -> list[schemas.GlobalSearchFacet]:
-    apparatus_query = parts.text_query or parts.query
-    matched_codes = parts.apparatus_codes or matching_apparatus_codes(apparatus_query)
-    if not apparatus_query and not matched_codes:
-        return []
-    query = (
-        db.query(models.Result.apparatus, func.count(models.Result.id))
-        .join(models.Athlete)
-        .join(models.Event)
-        .filter(
-            models.Result.is_deleted.is_(False),
-            models.Athlete.is_deleted.is_(False),
-            models.Event.is_deleted.is_(False),
-            models.Result.apparatus.is_not(None),
-        )
-    )
-    query = add_year_filter(query, parts.years)
-    rows = query.group_by(models.Result.apparatus).all()
-    facets = []
-    normalized_apparatus_query = apparatus_query.strip().lower()
-    for apparatus, count in rows:
-        if not apparatus:
-            continue
-        label = APPARATUS_LABELS.get(apparatus, apparatus)
-        if apparatus in matched_codes or normalized_apparatus_query in apparatus.lower() or normalized_apparatus_query in label.lower():
-            facets.append(schemas.GlobalSearchFacet(
-                value=apparatus,
-                label=f"{apparatus} - {label}" if label != apparatus else apparatus,
-                result_count=count,
-            ))
-    return sorted(facets, key=lambda item: (-item.result_count, item.value))[:limit]
-
-
 def build_global_results(
     db: Session,
     parts: SearchParts,
@@ -595,7 +503,7 @@ def build_global_results(
         schemas.GlobalSearchResult(
             result_id=result.id,
             athlete_id=result.athlete_id,
-            athlete_name=f"{result.athlete.first_name} {result.athlete.last_name}",
+            athlete_name=athlete_display_name(result.athlete),
             country=result_represented_country(result),
             event_id=result.event_id,
             event_name=result.event.name,
@@ -665,8 +573,6 @@ def global_search(
     )
     event_counts = event_result_counts(db, [event.id for event in events])
 
-    countries = build_country_facets(db, parts, limit)
-    apparatuses = build_apparatus_facets(db, parts, limit)
     results = build_global_results(db, parts, apparatus_codes, limit)
     related_results = []
     if structured_result_search and not results:
@@ -684,7 +590,7 @@ def global_search(
     athlete_items = [
         schemas.GlobalSearchAthlete(
             id=athlete.id,
-            name=f"{athlete.first_name} {athlete.last_name}",
+            name=athlete_display_name(athlete),
             country=athlete.country,
             discipline=athlete.discipline,
             result_count=athlete_counts.get(athlete.id, 0),
@@ -708,8 +614,6 @@ def global_search(
     total_count = (
         len(athlete_items)
         + len(event_items)
-        + len(countries)
-        + len(apparatuses)
         + len(results)
         + len(related_results)
     )
@@ -719,8 +623,6 @@ def global_search(
         structured_result_search=structured_result_search,
         athletes=athlete_items,
         events=event_items,
-        countries=countries,
-        apparatuses=apparatuses,
         results=results,
         related_results=related_results,
     )

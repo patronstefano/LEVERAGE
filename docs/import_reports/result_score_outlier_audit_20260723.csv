@@ -1,0 +1,5 @@
+result_id,issue_type,athlete_name,event_name,event_year,start_date,discipline,category,apparatus,vt_attempt,format,round,score,D_score
+186011,d_score_gt_10_non_aa,Ruby van Dijk,2nd Bundesliga,2019,,WAG,SENIOR,VT,1,INDIVIDUAL,FINAL,12.8,12.8
+241232,d_score_gt_10_non_aa,Ham Chaewoo,South Korean Championships,2021,2021-05-01,MAG,SENIOR,VT,1,INDIVIDUAL,FINAL,11.5,11.5
+298429,d_score_gt_10_non_aa,Petra Fanesi,Italian Gold Championships,2021,2021-12-11,WAG,JUNIOR,UB,,INDIVIDUAL,FINAL,9.7,13.0
+260730,d_score_gt_10_non_aa,Son Euidam,South Korean Championships,2021,2021-05-01,MAG,SENIOR,VT,1,INDIVIDUAL,FINAL,11.6,11.6

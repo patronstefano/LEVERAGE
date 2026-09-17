@@ -9,6 +9,9 @@ MAG_APPARATUS = {"FX", "PH", "SR", "VT", "PB", "HB", "AA", "VT AVG"}
 WAG_APPARATUS = {"VT", "UB", "BB", "FX", "AA", "VT AVG"}
 MAG_BONUS_APPARATUS_2025 = {"FX", "SR", "VT", "PB", "HB"}
 SCORE_FORMULA_TOLERANCE = 0.001
+NON_AA_SCORE_UPPER_BOUND = 20.0
+D_SCORE_UPPER_BOUND = 10.0
+E_SCORE_UPPER_BOUND = 10.0
 VAULT_ATTEMPT_ORDER_WARNING = "Please note that Vault 1 may refer to Vault 2 and vice versa."
 EXECUTION_ESTIMATE_WARNING = (
     "Estimated execution from D score and Final score."
@@ -48,6 +51,14 @@ def validate_result_scoring(
     }.items():
         if value is not None and value < 0:
             raise ValueError(f"{field_name} must be greater than or equal to 0")
+    if D_score is not None and D_score > D_SCORE_UPPER_BOUND:
+        raise ValueError("D_score must be less than or equal to 10")
+    if E_score is not None and E_score > E_SCORE_UPPER_BOUND:
+        raise ValueError("E_score must be less than or equal to 10")
+    if score is not None and D_score is not None and E_score is None:
+        execution_estimate = round(score - D_score, 3)
+        if execution_estimate < 0 or execution_estimate > E_SCORE_UPPER_BOUND:
+            raise ValueError("execution_estimate must be between 0 and 10 when E_score is not available")
 
     if discipline and apparatus:
         allowed = MAG_APPARATUS if discipline == DisciplineEnum.MAG else WAG_APPARATUS
@@ -59,6 +70,15 @@ def validate_result_scoring(
             raise ValueError("vt_attempt must be 1 or 2")
         if apparatus and apparatus != "VT":
             raise ValueError("vt_attempt can only be provided for vault results")
+
+
+def validate_result_score_upper_bound(apparatus: Optional[str], score: Optional[float]) -> None:
+    if score is None:
+        return
+    if apparatus == "AA":
+        return
+    if score > NON_AA_SCORE_UPPER_BOUND:
+        raise ValueError("score must be less than or equal to 20 for non-AA results")
 
 
 def validate_result_bonus_policy(
@@ -207,11 +227,14 @@ def validate_birth_year(birth_year: Optional[int]) -> None:
 def calculate_execution_estimate(score: Optional[float], d_score: Optional[float]) -> Optional[float]:
     if score is None or d_score is None:
         return None
-    return round(score - d_score, 3)
+    execution_estimate = round(score - d_score, 3)
+    if execution_estimate < 0 or execution_estimate > E_SCORE_UPPER_BOUND:
+        return None
+    return execution_estimate
 
 
 def has_execution_estimate(score: Optional[float], d_score: Optional[float]) -> bool:
-    return score is not None and d_score is not None
+    return calculate_execution_estimate(score, d_score) is not None
 
 
 def result_missing_fields(score: Optional[float], d_score: Optional[float]) -> list[str]:
@@ -323,6 +346,7 @@ class FormatEnum(str, Enum):
     TEAM = "team"
     INDIVIDUAL = "individual"
     APPARATUS = "apparatus"
+    MIXED_TEAM = "mixed team"
 
 
 class RoundEnum(str, Enum):
@@ -399,6 +423,12 @@ class DataSuggestionStatusEnum(str, Enum):
     ACCEPTED = "accepted"
     EDITED = "edited"
     REJECTED = "rejected"
+
+
+class AuditReviewStatusEnum(str, Enum):
+    PENDING = "pending"
+    APPROVED = "approved"
+    REVERTED = "reverted"
 
 
 class UserBase(BaseModel):
@@ -1298,6 +1328,9 @@ class EventResultBulkCreate(BaseModel):
 
 
 class EventResultGroup(BaseModel):
+    discipline: DisciplineEnum
+    category: ResultCategoryEnum
+    format: FormatEnum
     apparatus: Optional[str] = None
     day: Optional[int] = None
     round: RoundEnum
@@ -1387,13 +1420,6 @@ class GlobalSearchEvent(BaseModel):
     result_count: int = 0
 
 
-class GlobalSearchFacet(BaseModel):
-    value: str
-    label: str
-    result_count: int = 0
-    athlete_count: int = 0
-
-
 class GlobalSearchResult(BaseModel):
     result_id: int
     athlete_id: int
@@ -1418,8 +1444,6 @@ class GlobalSearchResponse(BaseModel):
     structured_result_search: bool = False
     athletes: list[GlobalSearchAthlete] = Field(default_factory=list)
     events: list[GlobalSearchEvent] = Field(default_factory=list)
-    countries: list[GlobalSearchFacet] = Field(default_factory=list)
-    apparatuses: list[GlobalSearchFacet] = Field(default_factory=list)
     results: list[GlobalSearchResult] = Field(default_factory=list)
     related_results: list[GlobalSearchResult] = Field(default_factory=list)
 
@@ -1476,8 +1500,13 @@ class AnalyticsFilters(BaseModel):
 class AnalyticsChartPoint(BaseModel):
     x: str
     value: float
+    score: Optional[float] = None
+    D_score: Optional[float] = None
     year: Optional[int] = None
     date: Optional[Date] = None
+    event_start_date: Optional[Date] = None
+    event_end_date: Optional[Date] = None
+    date_precision: Optional[str] = None
     result_id: Optional[int] = None
     event_id: Optional[int] = None
     event_name: Optional[str] = None
@@ -1487,6 +1516,7 @@ class AnalyticsChartPoint(BaseModel):
     discipline: Optional[DisciplineEnum] = None
     category: Optional[ResultCategoryEnum] = None
     apparatus: Optional[str] = None
+    vt_attempt: Optional[int] = None
     day: Optional[int] = None
     format: Optional[FormatEnum] = None
     round: Optional[RoundEnum] = None
@@ -1896,8 +1926,16 @@ class AuditLogRead(BaseModel):
     entity_id: Optional[int] = None
     before_json: Optional[str] = None
     after_json: Optional[str] = None
+    review_status: AuditReviewStatusEnum = AuditReviewStatusEnum.PENDING
+    reviewed_by_super_admin_id: Optional[int] = None
+    reviewed_at: Optional[datetime] = None
+    review_note: Optional[str] = None
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)
+
+
+class AuditLogReviewDecision(BaseModel):
+    note: Optional[str] = None
 
 
 class SiteAnalyticsEventTypeEnum(str, Enum):

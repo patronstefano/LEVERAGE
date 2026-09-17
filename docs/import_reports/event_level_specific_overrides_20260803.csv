@@ -1,0 +1,14 @@
+event_id,year,name,previous_level,new_level,changed,discipline,category,start_date,end_date
+1461,2025,Worlds Preparation Event,World Championships,International Event,yes,MAG and WAG,senior,2025-10-04,2025-10-04
+199,2018,South African Championships,Continental Championships,National Event,yes,WAG,junior and senior,2018-09-14,2018-09-15
+434,2019,South African Championships,Continental Championships,National Event,yes,WAG,junior and senior,2019-08-16,2019-08-17
+708,2021,South African Championships,Continental Championships,National Event,yes,WAG,junior and senior,2021-10-01,2021-10-10
+1172,2023,South African Championships,Continental Championships,National Event,yes,WAG,junior and senior,2023-03-31,2023-04-01
+1366,2024,South African Championships,Continental Championships,National Event,yes,WAG,junior and senior,2024-03-21,2024-03-22
+338,2019,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2019-09-21,2019-09-22
+582,2021,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2021-11-12,2021-11-14
+791,2022,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2022-11-19,2022-11-20
+946,2023,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2023-11-24,2023-11-26
+1184,2024,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2024-09-21,2024-09-22
+1389,2025,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2025-10-24,2025-10-26
+1754,2026,Northern European Championships,Continental Championships,International Event,yes,MAG and WAG,junior and senior,2026-11-12,2026-11-15

@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.database import get_db
+from app.display_names import athlete_display_name
 from app.security import get_current_admin_user, get_optional_current_user
 
 router = APIRouter()
@@ -189,7 +190,7 @@ def get_site_analytics_summary(
             events,
             models.SiteAnalyticsEventTypeEnum.ATHLETE_VIEW,
             models.Athlete,
-            lambda athlete: f"{athlete.first_name} {athlete.last_name}",
+            athlete_display_name,
             limit,
         ),
         top_events=top_entity_views(

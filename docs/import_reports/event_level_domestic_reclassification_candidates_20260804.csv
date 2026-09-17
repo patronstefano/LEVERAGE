@@ -1,0 +1,660 @@
+event_id,name,year,start_date,end_date,discipline,category,old_level,new_level,result_count
+157,1st Spanish League,2018,2018-02-09,2018-02-11,WAG,junior and senior,International Event,National Event,367
+372,1st Spanish League,2019,2019-02-08,2019-02-10,WAG,junior and senior,International Event,National Event,546
+647,1st Spanish League,2021,2021-06-19,2021-06-20,WAG,junior and senior,International Event,National Event,649
+888,1st Spanish League,2022,2022-03-05,2022-03-07,WAG,junior and senior,International Event,National Event,578
+1555,1st Spanish League,2025,2025-02-15,2025-02-16,WAG,junior and senior,International Event,National Event,612
+1701,1st Spanish League,2026,2026-02-20,2026-02-22,WAG,junior and senior,International Event,National Event,574
+373,1st Spanish League (2020 season),2020,2019-12-07,2019-12-08,WAG,junior and senior,International Event,National Event,549
+1130,1st Spanish League (2024 season),2024,2023-12-02,2023-12-03,WAG,junior and senior,International Event,National Event,586
+887,1st Spanish League 2023,2023,2022-11-18,2022-11-20,WAG,junior and senior,International Event,National Event,571
+1083,2nd Colombian Championships,2023,2023-07-13,2023-07-16,MAG and WAG,junior and senior,International Event,National Event,499
+1163,2nd Hungarian Junior Championships,2023,2023-10-07,2023-10-07,WAG,junior,International Event,National Event,96
+158,2nd Spanish League,2018,2018-04-21,2018-04-22,WAG,junior and senior,International Event,National Event,368
+374,2nd Spanish League,2019,2019-03-23,2019-03-24,WAG,junior and senior,International Event,National Event,540
+502,2nd Spanish League,2020,2020-02-08,2020-02-09,WAG,junior and senior,International Event,National Event,535
+669,2nd Spanish League,2021,2021-10-09,2021-10-10,WAG,junior and senior,International Event,National Event,582
+890,2nd Spanish League,2022,2022-05-07,2022-05-07,WAG,junior and senior,International Event,National Event,589
+1129,2nd Spanish League,2023,2023-02-04,2023-02-05,WAG,junior and senior,International Event,National Event,583
+1345,2nd Spanish League,2024,2024-02-10,2024-02-11,WAG,junior and senior,International Event,National Event,579
+1554,2nd Spanish League,2025,2025-05-16,2025-05-18,WAG,junior and senior,International Event,National Event,621
+1700,2nd Spanish League,2026,2026-05-16,2026-05-17,WAG,junior and senior,International Event,National Event,576
+156,3rd Spanish League,2018,2018-06-16,2018-06-17,WAG,junior and senior,International Event,National Event,558
+371,3rd Spanish League,2019,2019-04-27,2019-04-27,WAG,junior and senior,International Event,National Event,534
+648,3rd Spanish League,2021,2021-11-12,2021-11-14,WAG,junior and senior,International Event,National Event,583
+889,3rd Spanish League,2022,2022-06-18,2022-06-18,WAG,junior and senior,International Event,National Event,468
+1127,3rd Spanish League,2023,2023-04-29,2023-04-30,WAG,junior and senior,International Event,National Event,591
+1346,3rd Spanish League,2024,2024-04-06,2024-04-07,WAG,junior and senior,International Event,National Event,575
+893,All American National Qualifier,2022,2022-01-28,2022-01-29,WAG,junior and senior,International Event,National Event,74
+1728,All-Japan - Team??,2026,2026-08-01,2026-08-01,MAG and WAG,junior and senior,International Event,National Event,0
+132,All-Japan Championships,2018,2018-04-27,2018-04-29,MAG and WAG,junior and senior,International Event,National Event,1148
+289,All-Japan Championships,2019,2019-04-26,2019-04-28,MAG and WAG,junior and senior,International Event,National Event,1580
+491,All-Japan Championships,2020,2020-12-10,2020-12-13,MAG and WAG,junior and senior,International Event,National Event,1267
+577,All-Japan Championships,2021,2021-04-15,2021-04-18,MAG and WAG,senior,International Event,National Event,1482
+801,All-Japan Championships,2022,2022-04-21,2022-04-24,MAG and WAG,junior and senior,International Event,National Event,1405
+1034,All-Japan Championships,2023,2023-04-20,2023-04-23,MAG and WAG,junior and senior,International Event,National Event,1367
+1268,All-Japan Championships,2024,2024-04-11,2024-04-14,MAG and WAG,junior and senior,International Event,National Event,1258
+1473,All-Japan Championships,2025,2025-04-17,2025-04-20,MAG and WAG,junior and senior,International Event,National Event,1266
+1670,All-Japan Championships,2026,2026-04-16,2026-04-19,MAG and WAG,junior and senior,International Event,National Event,1275
+133,All-Japan Event Championships,2018,2018-06-30,2018-07-01,MAG and WAG,junior and senior,International Event,National Event,420
+336,All-Japan Event Championships,2019,2019-06-21,2019-06-23,MAG and WAG,junior and senior,International Event,National Event,421
+579,All-Japan Event Championships,2021,2021-06-05,2021-06-06,MAG and WAG,senior,International Event,National Event,410
+861,All-Japan Event Championships,2022,2022-06-18,2022-06-19,MAG and WAG,junior and senior,International Event,National Event,376
+1038,All-Japan Event Championships,2023,2023-06-10,2023-06-11,MAG and WAG,junior and senior,International Event,National Event,382
+1267,All-Japan Event Championships,2024,2024-11-22,2024-11-24,MAG and WAG,junior and senior,International Event,National Event,472
+1474,All-Japan Event Championships,2025,2025-04-17,2025-04-20,MAG and WAG,junior and senior,International Event,National Event,507
+286,All-Japan Junior Championships,2019,2019-08-12,2019-08-17,MAG and WAG,junior and senior,International Event,National Event,2405
+581,All-Japan Junior Championships,2021,2021-08-12,2021-08-17,MAG and WAG,junior and senior,International Event,National Event,1881
+1039,All-Japan Junior Championships,2023,2023-08-12,2023-08-17,MAG and WAG,junior and senior,International Event,National Event,1994
+1274,All-Japan Junior Championships,2024,2024-08-12,2024-08-17,MAG and WAG,junior and senior,International Event,National Event,1958
+1476,All-Japan Junior Championships,2025,2025-08-12,2025-08-17,MAG and WAG,junior and senior,International Event,National Event,2013
+465,All-Japan Senior Championships,2020,2020-09-20,2020-09-22,MAG and WAG,senior,International Event,National Event,990
+578,All-Japan Senior Championships,2021,2021-09-23,2021-09-26,MAG and WAG,senior,International Event,National Event,715
+803,All-Japan Senior Championships,2022,2022-09-17,2022-09-19,MAG and WAG,senior,International Event,National Event,712
+1036,All-Japan Senior Championships,2023,2023-09-09,2023-09-09,MAG and WAG,senior,International Event,National Event,764
+1272,All-Japan Senior Championships,2024,2024-09-15,2024-09-15,MAG and WAG,senior,International Event,National Event,902
+1477,All-Japan Senior Championships,2025,2025-09-06,2025-09-06,MAG and WAG,senior,International Event,National Event,843
+288,All-Japan Student Championships,2019,2019-08-20,2019-08-22,MAG and WAG,senior,International Event,National Event,2589
+464,All-Japan Student Championships,2020,2020-10-19,2020-10-23,MAG and WAG,senior,International Event,National Event,2466
+580,All-Japan Student Championships,2021,2021-09-01,2021-09-04,MAG and WAG,senior,International Event,National Event,1092
+1032,All-Japan Student Championships,2023,2023-08-19,2023-08-22,MAG and WAG,junior and senior,International Event,National Event,1560
+1266,All-Japan Student Championships,2024,2024-08-23,2024-08-26,MAG and WAG,senior,International Event,National Event,1171
+1472,All-Japan Student Championships,2025,2025-08-19,2025-08-22,MAG and WAG,senior,International Event,National Event,1185
+1037,All-Japan Super Specialist Championships,2023,2023-09-10,2023-09-10,MAG,junior and senior,International Event,National Event,64
+1479,All-Japan Super Specialist Championships,2025,2025-09-07,2025-09-07,MAG,senior,International Event,National Event,46
+76,All-Japan Team Championships,2018,2018-11-24,2018-11-25,MAG and WAG,senior,International Event,National Event,503
+287,All-Japan Team Championships,2019,2019-11-09,2019-11-10,MAG and WAG,junior and senior,International Event,National Event,500
+622,All-Japan Team Championships,2021,2021-12-11,2021-12-12,MAG and WAG,senior,International Event,National Event,502
+802,All-Japan Team Championships,2022,2022-12-10,2022-12-11,MAG and WAG,junior and senior,International Event,National Event,505
+1033,All-Japan Team Championships,2023,2023-11-26,2023-11-26,MAG and WAG,junior and senior,International Event,National Event,493
+1269,All-Japan Team Championships,2024,2024-11-23,2024-11-23,MAG and WAG,junior and senior,International Event,National Event,461
+1475,All-Japan Team Championships,2025,2025-11-13,2025-11-16,MAG and WAG,junior and senior,International Event,National Event,506
+140,Argentinian Championships,2018,2018-11-17,2018-11-17,WAG,junior and senior,International Event,National Event,155
+369,Argentinian Championships,2019,2019-08-20,2019-08-24,WAG,junior and senior,International Event,National Event,145
+885,Argentinian Championships,2022,2022-11-17,2022-11-29,WAG,junior and senior,International Event,National Event,179
+1161,Argentinian Championships,2023,2023-11-06,2023-11-12,WAG,junior and senior,International Event,National Event,175
+1257,Argentinian Championships,2024,2024-12-07,2024-12-07,MAG and WAG,junior and senior,International Event,National Event,337
+1593,Argentinian Championships,2025,2025-08-08,2025-08-09,WAG,junior and senior,International Event,National Event,159
+141,Argentinian Club Championships,2018,2018-06-27,2018-06-30,WAG,junior and senior,International Event,National Event,160
+370,Argentinian Club Championships,2019,2019-05-21,2019-05-25,WAG,junior and senior,International Event,National Event,136
+174,Auburn National Qualifier,2018,2018-05-24,2018-05-26,WAG,junior and senior,International Event,National Event,499
+392,Auburn National Qualifier,2019,2019-06-07,2019-06-09,WAG,junior and senior,International Event,National Event,386
+36,Australian Championships,2018,2018-05-25,2018-05-27,MAG,senior,International Event,National Event,194
+315,Australian Championships,2019,2019-05-20,2019-05-26,MAG and WAG,junior and senior,International Event,National Event,640
+550,Australian Championships,2021,2021-05-21,2021-05-23,MAG and WAG,junior and senior,International Event,National Event,512
+800,Australian Championships,2022,2022-05-20,2022-05-22,MAG and WAG,junior and senior,International Event,National Event,546
+1030,Australian Championships,2023,2023-05-10,2023-05-13,MAG and WAG,junior and senior,International Event,National Event,514
+1326,Australian Championships,2024,2024-05-10,2024-05-12,MAG and WAG,junior and senior,International Event,National Event,591
+1470,Australian Championships,2025,2025-07-03,2025-07-09,MAG and WAG,junior and senior,International Event,National Event,670
+1656,Australian Championships,2026,2026-06-28,2026-07-05,MAG and WAG,junior and senior,International Event,National Event,951
+93,Austrian Championships,2018,2018-06-23,2018-06-24,MAG and WAG,junior and senior,International Event,National Event,464
+306,Austrian Championships,2019,2019-11-09,2019-11-10,MAG and WAG,junior and senior,International Event,National Event,457
+476,Austrian Championships,2020,2020-11-07,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,547
+604,Austrian Championships,2021,2021-06-05,2021-06-06,MAG and WAG,junior and senior,International Event,National Event,682
+826,Austrian Championships,2022,2022-06-17,2022-06-18,MAG and WAG,junior and senior,International Event,National Event,487
+1059,Austrian Championships,2023,2023-05-13,2023-05-14,MAG and WAG,junior and senior,International Event,National Event,544
+1293,Austrian Championships,2024,2024-04-06,2024-04-07,MAG and WAG,junior and senior,International Event,National Event,519
+1505,Austrian Championships,2025,2025-04-26,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,441
+1684,Austrian Championships,2026,2026-06-04,2026-06-07,MAG and WAG,junior and senior,International Event,National Event,397
+420,Austrian Junior Championships,2019,2019-06-01,2019-06-02,WAG,junior,International Event,National Event,67
+700,Austrian Junior Championships,2021,2021-11-06,2021-11-07,WAG,junior,International Event,National Event,90
+925,Austrian Junior Championships,2022,2022-11-12,2022-11-12,WAG,junior,International Event,National Event,50
+1588,Austrian Team Championships,2025,2025-09-20,2025-09-20,WAG,junior and senior,International Event,National Event,149
+181,Belarusian Championships,2018,2018-09-19,2018-09-21,WAG,junior and senior,International Event,National Event,165
+18,Belgian Championships,2018,2018-05-26,2018-05-27,MAG and WAG,junior and senior,International Event,National Event,229
+352,Belgian Championships,2019,2019-06-01,2019-06-02,MAG and WAG,junior and senior,International Event,National Event,234
+821,Belgian Championships,2022,2022-05-26,2022-05-29,MAG and WAG,junior and senior,International Event,National Event,277
+1055,Belgian Championships,2023,2023-05-27,2023-05-29,MAG and WAG,junior and senior,International Event,National Event,271
+1285,Belgian Championships,2024,2024-05-18,2024-05-20,MAG and WAG,junior and senior,International Event,National Event,211
+1498,Belgian Championships,2025,2025-05-24,2025-05-25,MAG and WAG,junior and senior,International Event,National Event,320
+1679,Belgian Championships,2026,2026-05-23,2026-05-25,MAG and WAG,junior and senior,International Event,National Event,217
+1351,Biles Invitational National Qualifier,2024,2024-02-02,2024-02-04,WAG,junior and senior,International Event,National Event,205
+646,Biles National Qualifier,2021,2021-01-21,2021-01-24,WAG,junior and senior,International Event,National Event,170
+1716,Biles National Qualifier,2026,2026-01-23,2026-01-25,WAG,junior and senior,International Event,National Event,68
+121,Brazilian Championships,2018,2018-06-22,2018-06-24,MAG and WAG,junior and senior,International Event,National Event,330
+292,Brazilian Championships,2019,2019-08-13,2019-08-18,MAG and WAG,junior and senior,International Event,National Event,967
+623,Brazilian Championships,2021,2021-09-30,2021-10-03,MAG and WAG,junior and senior,International Event,National Event,519
+853,Brazilian Championships,2022,2022-08-09,2022-08-14,MAG and WAG,junior and senior,International Event,National Event,878
+1087,Brazilian Championships,2023,2023-08-14,2023-08-20,MAG and WAG,junior and senior,International Event,National Event,1166
+1317,Brazilian Championships,2024,2024-09-20,2024-09-22,MAG and WAG,junior and senior,International Event,National Event,586
+1532,Brazilian Championships,2025,2025-09-04,2025-09-07,MAG and WAG,junior and senior,International Event,National Event,555
+85,Brazilian Event Championships,2018,2018-08-16,2018-08-19,MAG and WAG,junior and senior,International Event,National Event,341
+326,Brazilian Event Championships,2019,2019-06-07,2019-06-09,MAG and WAG,junior and senior,International Event,National Event,376
+109,Brazilian Junior Championships,2018,2018-11-14,2018-11-18,MAG and WAG,junior,International Event,National Event,469
+636,Brazilian Junior Championships,2021,2021-08-25,2021-08-29,MAG and WAG,junior,International Event,National Event,330
+855,Brazilian Junior Championships,2022,2022-10-19,2022-10-23,MAG and WAG,junior,International Event,National Event,650
+1088,Brazilian Junior Championships,2023,2023-11-08,2023-11-12,MAG,junior,International Event,National Event,392
+1315,Brazilian Junior Championships,2024,2024-10-11,2024-10-13,MAG and WAG,junior,International Event,National Event,714
+1531,Brazilian Junior Championships,2025,2025-10-09,2025-10-12,MAG and WAG,junior,International Event,National Event,817
+143,Brestyan's National Qualifier,2018,2018-06-23,2018-06-24,WAG,junior and senior,International Event,National Event,395
+496,Brestyan's National Qualifier,2020,2020-02-07,2020-02-09,WAG,junior and senior,International Event,National Event,390
+659,Brestyan's National Qualifier,2021,2021-02-11,2021-02-14,WAG,junior and senior,International Event,National Event,253
+38,British Championships,2018,2018-03-08,2018-03-11,MAG and WAG,junior and senior,International Event,National Event,2910
+223,British Championships,2019,2019-03-14,2019-03-17,MAG and WAG,junior and senior,International Event,National Event,3048
+551,British Championships,2021,2021-11-27,2021-11-28,MAG and WAG,junior and senior,International Event,National Event,1267
+731,British Championships,2022,2022-03-24,2022-03-27,MAG and WAG,junior and senior,International Event,National Event,2381
+949,British Championships,2023,2023-03-23,2023-03-26,MAG and WAG,junior and senior,International Event,National Event,2120
+1186,British Championships,2024,2024-03-14,2024-03-17,MAG and WAG,junior and senior,International Event,National Event,2366
+1395,British Championships,2025,2025-03-20,2025-03-23,MAG and WAG,junior and senior,International Event,National Event,2427
+1609,British Championships,2026,2026-03-19,2026-03-22,MAG and WAG,junior and senior,International Event,National Event,2543
+139,British Team Championships,2018,2018-09-15,2018-09-15,WAG,junior and senior,International Event,National Event,760
+364,British Team Championships,2019,2019-09-14,2019-09-15,WAG,junior and senior,International Event,National Event,699
+878,British Team Championships,2022,2022-10-01,2022-10-01,WAG,junior and senior,International Event,National Event,446
+1111,British Team Championships,2023,2023-10-14,2023-10-15,WAG,junior and senior,International Event,National Event,719
+1228,British Team Championships,2024,2024-10-12,2024-10-13,MAG and WAG,junior and senior,International Event,National Event,879
+1438,British Team Championships,2025,2025-06-07,2025-06-08,MAG and WAG,junior and senior,International Event,National Event,974
+1654,British Team Championships,2026,2026-10-10,2026-10-11,MAG,junior and senior,International Event,National Event,483
+379,Buckeye National Qualifier,2019,2019-01-31,2019-02-03,WAG,junior and senior,International Event,National Event,364
+655,Buckeye National Qualifier,2021,2021-02-05,2021-02-07,WAG,junior and senior,International Event,National Event,256
+881,Buckeye National Qualifier,2022,2022-02-04,2022-02-06,WAG,junior and senior,International Event,National Event,217
+1132,Buckeye National Qualifier,2023,2023-02-03,2023-02-05,WAG,junior and senior,International Event,National Event,244
+1557,Buckeye National Qualifier,2025,2025-01-30,2025-02-02,WAG,junior and senior,International Event,National Event,232
+1046,Bulgarian Championships,2023,2023-07-01,2023-07-02,MAG and WAG,junior and senior,International Event,National Event,897
+1290,Bulgarian Championships,2024,2024-06-21,2024-06-22,MAG and WAG,junior and senior,International Event,National Event,1028
+1489,Bulgarian Championships,2025,2025-06-30,2025-07-01,MAG and WAG,junior and senior,International Event,National Event,905
+5,Canadian Championships,2018,2018-05-22,2018-05-27,MAG and WAG,junior and senior,International Event,National Event,646
+226,Canadian Championships,2019,2019-05-21,2019-05-26,MAG and WAG,junior and senior,International Event,National Event,915
+695,Canadian Championships,2021,2021-05-14,2021-05-23,WAG,junior and senior,International Event,National Event,606
+771,Canadian Championships,2022,2022-05-26,2022-05-30,MAG and WAG,junior and senior,International Event,National Event,1116
+994,Canadian Championships,2023,2023-05-19,2023-05-21,MAG and WAG,junior and senior,International Event,National Event,1621
+1339,Canadian Championships,2024,2024-06-05,2024-06-09,WAG,junior and senior,International Event,National Event,445
+1442,Canadian Championships,2025,2025-05-26,2025-05-30,MAG and WAG,junior and senior,International Event,National Event,1824
+1666,Canadian Championships,2026,2026-05-25,2026-05-29,MAG and WAG,junior and senior,International Event,National Event,1632
+1233,Candadian Championships,2024,2024-06-05,2024-06-09,MAG,junior and senior,International Event,National Event,1115
+1604,China Junior National Games,2025,2025-09-05,2025-09-10,WAG,junior,International Event,National Event,692
+125,Chinese Championships,2018,2018-05-03,2018-05-13,MAG and WAG,junior and senior,International Event,National Event,1360
+345,Chinese Championships,2019,2019-05-08,2019-05-13,MAG and WAG,junior and senior,International Event,National Event,1506
+490,Chinese Championships,2020,2020-09-21,2020-09-28,MAG and WAG,junior and senior,International Event,National Event,1315
+632,Chinese Championships,2021,2021-05-04,2021-05-09,MAG and WAG,junior and senior,International Event,National Event,1633
+868,Chinese Championships,2022,2022-09-04,2022-09-09,MAG and WAG,junior and senior,International Event,National Event,1227
+1105,Chinese Championships,2023,2023-05-21,2023-05-28,MAG and WAG,junior and senior,International Event,National Event,1548
+1332,Chinese Championships,2024,2024-04-24,2024-04-29,MAG and WAG,junior and senior,International Event,National Event,943
+1520,Chinese Championships,2025,2025-05-15,2025-05-22,MAG and WAG,junior and senior,International Event,National Event,1788
+1696,Chinese Championships,2026,2026-05-14,2026-05-20,MAG and WAG,junior and senior,International Event,National Event,1144
+126,Chinese Individual Championships,2018,2018-09-04,2018-09-07,MAG and WAG,junior and senior,International Event,National Event,573
+344,Chinese Individual Championships,2019,2019-09-03,2019-09-07,MAG and WAG,junior and senior,International Event,National Event,874
+519,Chinese Individual Championships,2020,2020-10-17,2020-10-20,WAG,junior and senior,International Event,National Event,1140
+1106,Chinese Individual Championships,2023,2023-10-25,2023-10-29,MAG and WAG,junior and senior,International Event,National Event,60
+1333,Chinese Individual Championships,2024,2024-09-15,2024-09-24,MAG and WAG,junior and senior,International Event,National Event,806
+131,Chinese Individual Junior Championships,2018,2018-09-08,2018-09-10,MAG and WAG,junior,International Event,National Event,359
+210,Chinese Junior Championships,2018,2018-06-03,2018-06-10,WAG,junior,International Event,National Event,482
+436,Chinese Junior Championships,2019,2019-06-12,2019-06-19,WAG,junior,International Event,National Event,918
+1546,Chinese Junior Championships,2025,2025-06-26,2025-07-03,MAG and WAG,junior,International Event,National Event,1429
+1547,Chinese Junior National Games,2025,2025-09-05,2025-09-10,MAG,junior,International Event,National Event,701
+627,Chinese National Games,2021,2021-09-19,2021-09-26,MAG and WAG,junior and senior,International Event,National Event,1405
+1521,Chinese National Games,2025,2025-11-10,2025-11-17,MAG and WAG,junior and senior,International Event,National Event,1471
+1076,Chinese National Student Youth Games,2023,2023-11-06,2023-11-13,MAG and WAG,junior,International Event,National Event,1334
+356,Chinese National Youth Games,2019,2019-07-28,2019-08-06,MAG and WAG,junior,International Event,National Event,2915
+839,Chinese Youth Championships,2022,2022-07-20,2022-07-25,MAG and WAG,junior,International Event,National Event,1941
+1136,City of Lights National Qualifier,2023,2023-02-10,2023-02-12,WAG,junior and senior,International Event,National Event,218
+1341,City of Lights National Qualifier,2024,2024-02-09,2024-02-11,WAG,junior and senior,International Event,National Event,236
+1559,Coastal Realm National Qualifier,2025,2025-05-31,2025-06-01,WAG,junior and senior,International Event,National Event,170
+95,Colombian Championships,2018,2018-04-05,2018-04-08,MAG and WAG,junior and senior,International Event,National Event,546
+308,Colombian Championships,2019,2019-06-07,2019-06-09,MAG and WAG,junior and senior,International Event,National Event,539
+1066,Colombian Championships,2023,2023-04-19,2023-04-23,MAG and WAG,junior and senior,International Event,National Event,501
+1310,Colombian Championships,2024,2024-05-01,2024-05-05,MAG and WAG,junior and senior,International Event,National Event,345
+1524,Colombian Championships,2025,2025-05-15,2025-05-18,MAG and WAG,junior and senior,International Event,National Event,504
+1687,Colombian Championships,2026,,,MAG and WAG,junior and senior,International Event,National Event,559
+197,Croatian Championships,2018,2018-06-10,2018-06-10,WAG,junior and senior,International Event,National Event,82
+341,Croatian Championships,2019,2019-06-08,2019-06-09,MAG and WAG,junior and senior,International Event,National Event,195
+489,Croatian Championships,2020,2020-11-20,2020-11-21,MAG and WAG,junior and senior,International Event,National Event,287
+860,Croatian Championships,2022,2022-06-03,2022-06-05,MAG and WAG,junior and senior,International Event,National Event,209
+1103,Croatian Championships,2023,2023-11-28,2023-11-29,MAG and WAG,junior and senior,International Event,National Event,196
+1335,Croatian Championships,2024,2024-11-09,2024-11-10,MAG and WAG,junior and senior,International Event,National Event,205
+1545,Croatian Championships,2025,2025-11-21,2025-11-22,MAG and WAG,junior and senior,International Event,National Event,217
+1307,Croatian Event Championships,2024,2024-06-21,2024-06-23,MAG and WAG,junior and senior,International Event,National Event,385
+1523,Croatian Event Championships,2025,2025-06-06,2025-06-08,MAG and WAG,junior and senior,International Event,National Event,285
+186,Czech Championships,2018,2018-06-02,2018-06-03,WAG,junior and senior,International Event,National Event,228
+335,Czech Championships,2019,2019-06-01,2019-06-02,MAG and WAG,junior and senior,International Event,National Event,548
+552,Czech Championships,2021,2021-06-25,2021-06-27,MAG and WAG,junior and senior,International Event,National Event,533
+770,Czech Championships,2022,2022-06-03,2022-06-05,MAG and WAG,junior and senior,International Event,National Event,867
+988,Czech Championships,2023,2023-06-02,2023-06-04,MAG and WAG,junior and senior,International Event,National Event,851
+1227,Czech Championships,2024,2024-05-31,2024-06-02,MAG and WAG,junior and senior,International Event,National Event,1071
+1434,Czech Championships,2025,2025-06-13,2025-06-15,MAG and WAG,junior and senior,International Event,National Event,889
+1648,Czech Championships,2026,2026-06-12,2026-06-14,MAG and WAG,junior and senior,International Event,National Event,856
+658,Czech Team Championships,2021,2021-12-04,2021-12-05,WAG,junior and senior,International Event,National Event,233
+92,Danish Championships,2018,2018-05-26,2018-05-27,MAG and WAG,junior and senior,International Event,National Event,574
+305,Danish Championships,2019,2019-03-02,2019-03-03,MAG and WAG,senior,International Event,National Event,190
+475,Danish Championships,2020,2020-11-07,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,460
+611,Danish Championships,2021,2021-06-05,2021-06-06,MAG and WAG,senior,International Event,National Event,271
+845,Danish Championships,2022,2022-06-25,2022-06-26,MAG and WAG,junior and senior,International Event,National Event,391
+1078,Danish Championships,2023,2023-05-13,2023-05-14,MAG and WAG,junior and senior,International Event,National Event,432
+1291,Danish Championships,2024,2024-11-02,2024-11-03,MAG and WAG,junior and senior,International Event,National Event,441
+1501,Danish Championships,2025,2025-11-01,2025-11-02,MAG and WAG,junior and senior,International Event,National Event,486
+425,Danish Junior Championships,2019,2019-04-27,2019-04-28,WAG,junior,International Event,National Event,303
+674,Danish Junior Championships,2021,2021-10-02,2021-10-03,WAG,junior,International Event,National Event,155
+603,Danish Team Championships,2021,2021-11-06,2021-11-06,MAG and WAG,junior and senior,International Event,National Event,129
+1218,Danish Team Championships,2024,2024-03-23,2024-03-23,MAG and WAG,junior and senior,International Event,National Event,266
+1502,Danish Team Championships,2025,2025-06-28,2025-06-29,MAG and WAG,junior and senior,International Event,National Event,206
+602,Danish Team Championships Qualifier,2021,2021-10-02,2021-10-03,MAG and WAG,junior and senior,International Event,National Event,117
+1600,Dragon Invite National Qualifier,2025,2025-02-06,2025-02-09,WAG,junior and senior,International Event,National Event,140
+19,Dutch Championships,2018,2018-06-23,2018-06-24,MAG and WAG,junior and senior,International Event,National Event,697
+346,Dutch Championships,2019,2019-06-22,2019-06-23,MAG and WAG,junior and senior,International Event,National Event,414
+732,Dutch Championships,2022,2022-06-24,2022-06-25,MAG and WAG,junior and senior,International Event,National Event,540
+951,Dutch Championships,2023,2023-06-24,2023-06-25,MAG and WAG,junior and senior,International Event,National Event,862
+1306,Dutch Championships,2024,2024-06-22,2024-06-23,MAG and WAG,junior and senior,International Event,National Event,614
+1396,Dutch Championships,2025,2025-06-28,2025-06-29,MAG and WAG,junior and senior,International Event,National Event,622
+1612,Dutch Championships,2026,2026-06-26,2026-06-27,MAG and WAG,junior and senior,International Event,National Event,803
+187,Dutch Team Championships,2018,2018-11-17,2018-11-17,WAG,junior and senior,International Event,National Event,257
+435,Dutch Team Championships,2019,2019-11-16,2019-11-17,WAG,junior and senior,International Event,National Event,147
+1373,Dutch Team Championships,2024,2024-11-16,2024-11-16,WAG,junior and senior,International Event,National Event,197
+1592,Dutch Team Championships,2025,2025-11-22,2025-11-23,WAG,junior and senior,International Event,National Event,73
+41,English Championships,2018,2018-02-09,2018-02-11,MAG and WAG,junior and senior,International Event,National Event,2336
+254,English Championships,2019,2019-03-01,2019-03-03,MAG and WAG,junior and senior,International Event,National Event,2781
+768,English Championships,2022,2022-03-11,2022-03-13,MAG and WAG,junior and senior,International Event,National Event,1924
+991,English Championships,2023,2023-02-24,2023-02-26,MAG and WAG,junior and senior,International Event,National Event,2400
+1230,English Championships,2024,2024-03-01,2024-03-03,MAG and WAG,junior and senior,International Event,National Event,3074
+1439,English Championships,2025,2025-02-28,2025-03-02,MAG and WAG,junior and senior,International Event,National Event,2486
+1610,English Championships,2026,2026-02-27,2026-03-01,MAG and WAG,junior and senior,International Event,National Event,2732
+499,Everest National Qualifier,2020,2020-02-21,2020-02-23,WAG,junior and senior,International Event,National Event,316
+1350,Excalibur Cup National Qualifier,2024,2024-02-16,2024-02-18,WAG,junior and senior,International Event,National Event,259
+501,Excalibur National Qualifier,2020,2020-02-14,2020-02-16,WAG,junior and senior,International Event,National Event,220
+1,Finnish Championships,2018,2018-05-25,2018-05-27,MAG and WAG,junior and senior,International Event,National Event,801
+213,Finnish Championships,2019,2019-05-24,2019-05-26,MAG and WAG,junior and senior,International Event,National Event,812
+446,Finnish Championships,2020,2020-11-06,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,984
+522,Finnish Championships,2021,2021-09-17,2021-09-19,MAG and WAG,junior and senior,International Event,National Event,992
+722,Finnish Championships,2022,2022-06-08,2022-06-09,MAG and WAG,junior and senior,International Event,National Event,1066
+938,Finnish Championships,2023,2023-05-05,2023-05-06,MAG and WAG,junior and senior,International Event,National Event,912
+1181,Finnish Championships,2024,2024-03-23,2024-03-24,MAG and WAG,junior and senior,International Event,National Event,929
+1387,Finnish Championships,2025,2025-05-03,2025-05-04,MAG and WAG,junior and senior,International Event,National Event,966
+1607,Finnish Championships,2026,2026-05-01,2026-05-02,MAG and WAG,senior,International Event,National Event,399
+1606,Finnish Junior Championships,2026,2026-06-04,2026-06-05,MAG and WAG,junior,International Event,National Event,540
+943,Finnish Men's National Team Test 2,2023,2023-03-10,2023-03-10,MAG,junior and senior,International Event,National Event,109
+1040,Finnish Men's National Team Test 3,2023,2023-03-17,2023-03-17,MAG,junior and senior,International Event,National Event,66
+1041,Finnish Men's National Team Test 4,2023,2023-03-24,2023-03-24,MAG,senior,International Event,National Event,72
+944,Finnish National Team Test,2023,2023-02-12,2023-02-12,MAG and WAG,junior and senior,International Event,National Event,150
+1577,Finnish National Team Test,2025,2025-03-21,2025-03-21,WAG,junior and senior,International Event,National Event,254
+932,Finnish National Team Test 1,2022,2022-02-25,2022-02-25,WAG,senior,International Event,National Event,45
+930,Finnish National Team Test 2,2022,2022-03-13,2022-03-13,WAG,senior,International Event,National Event,94
+1143,Finnish National Team Test 2,2023,2023-02-25,2023-02-25,WAG,junior and senior,International Event,National Event,87
+931,Finnish National Team Test 3,2022,2022-03-26,2022-03-26,WAG,senior,International Event,National Event,80
+1174,Finnish National Team Test 3,2023,2023-03-04,2023-03-04,WAG,junior,International Event,National Event,42
+1144,Finnish National Team Test 4,2023,2023-03-11,2023-03-11,WAG,senior,International Event,National Event,109
+1119,Finnish National Team Test 5,2023,2023-03-31,2023-04-02,WAG,junior and senior,International Event,National Event,310
+1145,Finnish National Team Test 6,2023,2023-04-14,2023-04-16,WAG,junior and senior,International Event,National Event,116
+1120,Finnish National Team Test 7,2023,2023-05-12,2023-05-14,WAG,junior and senior,International Event,National Event,241
+1167,Finnish National Team Test 8,2023,2023-05-26,2023-05-28,WAG,junior and senior,International Event,National Event,138
+497,Finnish Team Championships,2020,2020-10-23,2020-10-25,WAG,junior and senior,International Event,National Event,106
+891,Finnish Team Championships,2022,2022-10-08,2022-10-08,WAG,junior and senior,International Event,National Event,127
+34,French Championships,2018,2018-05-19,2018-05-20,MAG and WAG,junior and senior,International Event,National Event,766
+247,French Championships,2019,2019-06-08,2019-06-09,MAG and WAG,junior and senior,International Event,National Event,664
+545,French Championships,2021,2021-06-05,2021-06-06,MAG and WAG,junior and senior,International Event,National Event,740
+758,French Championships,2022,2022-07-07,2022-07-10,MAG and WAG,junior and senior,International Event,National Event,1111
+980,French Championships,2023,2023-06-15,2023-06-17,MAG and WAG,junior and senior,International Event,National Event,908
+1216,French Championships,2024,2024-06-07,2024-06-09,MAG and WAG,junior and senior,International Event,National Event,961
+1427,French Championships,2025,2025-04-18,2025-04-20,MAG and WAG,junior and senior,International Event,National Event,914
+1634,French Championships,2026,2026-06-05,2026-06-07,MAG and WAG,junior and senior,International Event,National Event,842
+689,French National Team Review,2021,2021-12-18,2021-12-19,WAG,junior and senior,International Event,National Event,210
+1160,French National Team Review,2023,2023-10-27,2023-10-28,WAG,junior and senior,International Event,National Event,319
+1362,French National Team Review,2024,2024-10-25,2024-10-26,WAG,junior and senior,International Event,National Event,283
+1576,French National Team Review,2025,2025-10-17,2025-10-18,WAG,junior and senior,International Event,National Event,359
+1709,French National Test,2026,2026-03-07,2026-03-07,WAG,junior and senior,International Event,National Event,69
+1711,Fuzion National Qualifier,2026,2026-05-29,2026-05-31,WAG,junior and senior,International Event,National Event,157
+882,GAGE National Qualifier,2022,2022-02-11,2022-02-13,WAG,junior and senior,International Event,National Event,125
+1591,GAGE National Qualifier,2025,2025-04-26,2025-04-27,WAG,junior and senior,International Event,National Event,160
+60,GK Championships,2018,2018-05-05,2018-05-05,MAG and WAG,junior and senior,International Event,National Event,310
+274,GK Championships,2019,2019-05-11,2019-05-11,MAG and WAG,junior and senior,International Event,National Event,279
+564,GK Championships,2021,2021-05-22,2021-05-23,MAG and WAG,junior and senior,International Event,National Event,150
+793,GK Championships,2022,2022-04-30,2022-04-30,MAG and WAG,junior and senior,International Event,National Event,231
+1015,GK Championships,2023,2023-05-07,2023-05-07,MAG and WAG,junior and senior,International Event,National Event,250
+1251,GK Championships,2024,2024-05-11,2024-05-11,MAG and WAG,junior and senior,International Event,National Event,294
+100,German Championships,2018,2018-09-29,2018-09-30,MAG and WAG,senior,International Event,National Event,404
+314,German Championships,2019,2019-08-03,2019-08-04,MAG and WAG,senior,International Event,National Event,467
+563,German Championships,2021,2021-06-03,2021-06-06,MAG and WAG,junior and senior,International Event,National Event,405
+830,German Championships,2022,2022-06-23,2022-06-26,MAG and WAG,senior,International Event,National Event,427
+953,German Championships,2023,2023-07-06,2023-07-09,MAG and WAG,junior and senior,International Event,National Event,490
+1295,German Championships,2024,2024-06-08,2024-06-09,MAG and WAG,senior,International Event,National Event,446
+1509,German Championships,2025,2025-07-31,2025-08-03,MAG and WAG,senior,International Event,National Event,360
+172,German Junior Championships,2018,2018-04-28,2018-04-29,WAG,junior,International Event,National Event,530
+421,German Junior Championships,2019,2019-05-25,2019-05-26,WAG,junior,International Event,National Event,261
+513,German Junior Championships,2020,2020-11-28,2020-11-29,WAG,junior,International Event,National Event,244
+676,German Junior Championships,2021,2021-10-23,2021-10-24,WAG,junior,International Event,National Event,522
+916,German Junior Championships,2022,2022-06-18,2022-06-19,WAG,junior,International Event,National Event,557
+1061,German Junior Championships,2023,2023-06-17,2023-06-18,MAG and WAG,junior,International Event,National Event,1136
+1298,German Junior Championships,2024,2024-06-01,2024-06-02,MAG and WAG,junior,International Event,National Event,1030
+1503,German Junior Championships,2025,2025-05-27,2025-05-29,MAG and WAG,junior,International Event,National Event,1189
+1678,German Junior Championships,2026,2026-07-04,2026-07-05,MAG and WAG,junior,International Event,National Event,1302
+361,Gliders National Qualifier,2019,2019-02-10,2019-02-11,WAG,junior and senior,International Event,National Event,229
+47,Greek Championships,2018,2018-05-19,2018-05-20,MAG and WAG,junior and senior,International Event,National Event,627
+259,Greek Championships,2019,2019-07-13,2019-07-14,MAG and WAG,junior and senior,International Event,National Event,487
+607,Greek Championships,2021,2021-07-17,2021-07-18,MAG and WAG,junior and senior,International Event,National Event,536
+836,Greek Championships,2022,2022-05-07,2022-05-08,MAG and WAG,junior and senior,International Event,National Event,758
+1067,Greek Championships,2023,2023-05-13,2023-05-14,MAG and WAG,junior and senior,International Event,National Event,806
+1250,Greek Championships,2024,2024-05-10,2024-05-12,MAG and WAG,junior and senior,International Event,National Event,781
+1512,Greek Championships,2025,2025-04-26,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,744
+184,Hopes Championships,2018,2018-07-27,2018-07-27,WAG,junior,International Event,National Event,175
+432,Hopes Championships,2019,2019-07-19,2019-07-19,WAG,junior,International Event,National Event,165
+656,Hopes Championships,2021,2021-05-21,2021-05-21,WAG,junior,International Event,National Event,125
+873,Hopes Championships,2022,2022-07-28,2022-07-28,WAG,junior,International Event,National Event,160
+1113,Hopes Championships,2023,2023-08-04,2023-08-04,WAG,junior,International Event,National Event,170
+1348,Hopes Championships,2024,2024-05-17,2024-05-17,WAG,junior and senior,International Event,National Event,168
+1572,Hopes Championships,2025,2025-07-18,2025-07-18,WAG,junior,International Event,National Event,188
+27,Hungarian Championships,2018,2018-09-14,2018-09-16,MAG and WAG,junior and senior,International Event,National Event,222
+244,Hungarian Championships,2019,2019-08-30,2019-09-01,MAG and WAG,senior,International Event,National Event,166
+457,Hungarian Championships,2020,2020-10-30,2020-10-31,MAG and WAG,junior and senior,International Event,National Event,493
+546,Hungarian Championships,2021,2021-10-01,2021-10-03,MAG and WAG,senior,International Event,National Event,203
+764,Hungarian Championships,2022,2022-07-08,2022-07-10,MAG and WAG,junior and senior,International Event,National Event,456
+1091,Hungarian Championships,2023,2023-09-16,2023-09-17,MAG and WAG,junior and senior,International Event,National Event,372
+1320,Hungarian Championships,2024,2024-03-23,2024-03-24,MAG and WAG,junior and senior,International Event,National Event,297
+1536,Hungarian Championships,2025,2025-04-26,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,392
+30,Hungarian Event Championships,2018,2018-07-14,2018-07-15,MAG and WAG,junior and senior,International Event,National Event,138
+639,Hungarian Event Championships,2021,2021-03-27,2021-03-28,MAG and WAG,junior and senior,International Event,National Event,135
+863,Hungarian Event Championships,2022,2022-10-08,2022-10-09,MAG and WAG,senior,International Event,National Event,84
+1322,Hungarian Event Championships,2024,2024-09-21,2024-09-22,MAG and WAG,senior,International Event,National Event,82
+706,Hungarian Junior Championships,2021,2021-05-29,2021-05-30,WAG,junior,International Event,National Event,92
+929,Hungarian Junior Championships,2022,2022-05-28,2022-05-29,WAG,junior,International Event,National Event,134
+1162,Hungarian Junior Championships,2023,2023-05-20,2023-05-21,WAG,junior,International Event,National Event,188
+1319,Hungarian Junior Championships,2024,2024-03-29,2024-03-30,MAG and WAG,junior,International Event,National Event,239
+1602,Hungarian Junior Championships,2025,2025-05-31,2025-06-01,WAG,junior,International Event,National Event,112
+1165,Hungarian Junior Event Championships,2023,2023-03-04,2023-03-04,WAG,junior,International Event,National Event,64
+1603,Hungarian Junior Event Championships,2025,2025-03-22,2025-03-22,WAG,junior,International Event,National Event,61
+26,Hungarian Masters Championships,2018,2018-11-16,2018-11-17,MAG and WAG,junior and senior,International Event,National Event,236
+629,Hungarian Masters Championships,2021,2021-11-19,2021-11-21,MAG and WAG,junior and senior,International Event,National Event,340
+862,Hungarian Masters Championships,2022,2022-11-26,2022-11-27,MAG and WAG,junior and senior,International Event,National Event,307
+1092,Hungarian Masters Championships,2023,2023-11-04,2023-11-05,MAG,junior and senior,International Event,National Event,107
+1321,Hungarian Masters Championships,2024,2024-10-12,2024-10-13,MAG and WAG,junior and senior,International Event,National Event,235
+242,Hungarian National League Championships,2019,2019-03-09,2019-03-10,MAG and WAG,senior,International Event,National Event,72
+628,Hungarian Super Team Championships,2021,,,MAG and WAG,junior and senior,International Event,National Event,301
+1598,Hungarian Team & Event Championships,2025,2025-09-20,2025-09-21,WAG,junior and senior,International Event,National Event,166
+1692,Hungarian Team & Event Championships,2026,2026-05-02,2026-05-03,MAG and WAG,junior and senior,International Event,National Event,346
+1093,Hungarian Team Championships,2023,2023-03-18,2023-03-19,MAG and WAG,junior and senior,International Event,National Event,349
+1537,Hungarian Team Championships,2025,2025-04-26,2025-04-27,MAG,junior and senior,International Event,National Event,164
+1380,Hungarian Team Final Championships,2024,2024-09-14,2024-09-14,WAG,junior and senior,International Event,National Event,95
+273,Iceland Team Championships,2019,2019-03-01,2019-03-02,MAG,senior,International Event,National Event,82
+61,Icelandic Championships,2018,2018-04-07,2018-04-08,MAG and WAG,junior and senior,International Event,National Event,448
+275,Icelandic Championships,2019,2019-03-16,2019-03-17,MAG and WAG,junior and senior,International Event,National Event,388
+566,Icelandic Championships,2021,2021-03-20,2021-03-21,MAG and WAG,junior and senior,International Event,National Event,345
+792,Icelandic Championships,2022,2022-06-11,2022-06-12,MAG and WAG,junior and senior,International Event,National Event,479
+975,Icelandic Championships,2023,2023-03-25,2023-03-26,MAG and WAG,junior and senior,International Event,National Event,453
+1254,Icelandic Championships,2024,2024-03-16,2024-03-17,MAG and WAG,junior and senior,International Event,National Event,359
+1527,Icelandic Championships,2025,2025-04-26,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,421
+1646,Icelandic Championships,2026,2026-04-18,2026-04-19,MAG and WAG,junior and senior,International Event,National Event,483
+164,Icelandic Fall Championships,2018,2018-11-03,2018-11-04,WAG,senior,International Event,National Event,51
+438,Icelandic Fall Championships,2019,2019-10-26,2019-10-27,WAG,senior,International Event,National Event,38
+1017,Icelandic Fall Championships,2023,2023-10-14,2023-10-15,MAG and WAG,junior and senior,International Event,National Event,183
+163,Icelandic Team Championships,2018,2018-03-24,2018-03-25,WAG,junior and senior,International Event,National Event,91
+398,Icelandic Team Championships,2019,2019-03-01,2019-03-02,WAG,junior and senior,International Event,National Event,108
+463,Icelandic Team Championships,2020,2020-02-29,2020-02-29,MAG and WAG,junior and senior,International Event,National Event,172
+565,Icelandic Team Championships,2021,2021-02-27,2021-02-27,MAG and WAG,junior and senior,International Event,National Event,201
+23,Indian Championships,2018,2018-03-25,2018-03-27,MAG and WAG,senior,International Event,National Event,322
+212,Indian Championships,2019,2019-05-03,2019-05-05,MAG and WAG,junior and senior,International Event,National Event,1688
+1178,Indian Championships,2024,2024-01-02,2024-01-04,MAG and WAG,senior,International Event,National Event,1449
+937,Indian Junior Championships,2023,2023-12-28,2023-12-30,MAG and WAG,junior and senior,International Event,National Event,1250
+1384,Indian National Games,2025,2025-02-08,2025-02-13,MAG and WAG,senior,International Event,National Event,947
+3,Irish Championships,2018,2018-05-12,2018-05-13,MAG and WAG,junior and senior,International Event,National Event,359
+222,Irish Championships,2019,2019-05-25,2019-05-26,MAG and WAG,junior and senior,International Event,National Event,320
+752,Irish Championships,2022,2022-05-21,2022-05-22,MAG and WAG,junior and senior,International Event,National Event,177
+966,Irish Championships,2023,2023-05-20,2023-05-21,MAG and WAG,junior and senior,International Event,National Event,170
+1201,Irish Championships,2024,2024-05-18,2024-05-19,MAG and WAG,junior and senior,International Event,National Event,258
+1437,Irish Championships,2025,2025-05-17,2025-05-18,MAG and WAG,junior and senior,International Event,National Event,307
+1695,Irish Championships,2026,2026-05-16,2026-05-17,MAG and WAG,junior and senior,International Event,National Event,268
+4,Irish Super Championships,2018,2018-06-30,2018-07-01,MAG and WAG,junior and senior,International Event,National Event,103
+221,Irish Super Championships,2019,2019-07-27,2019-07-28,MAG and WAG,junior and senior,International Event,National Event,56
+362,Irish Team Championships,2019,2019-11-09,2019-11-10,WAG,junior and senior,International Event,National Event,65
+37,Israeli Championships,2018,2018-07-04,2018-07-04,MAG and WAG,junior and senior,International Event,National Event,220
+251,Israeli Championships,2019,2019-08-16,2019-08-17,MAG and WAG,junior and senior,International Event,National Event,265
+651,Israeli Championships,2021,2021-06-22,2021-06-23,WAG,junior and senior,International Event,National Event,162
+831,Israeli Championships,2022,2022-07-18,2022-07-19,MAG and WAG,junior and senior,International Event,National Event,308
+1516,Israeli Championships,2025,2025-07-08,2025-07-11,MAG and WAG,junior and senior,International Event,National Event,231
+91,Italian Championships,2018,2018-07-07,2018-07-08,MAG and WAG,junior and senior,International Event,National Event,363
+327,Italian Championships,2019,2019-09-13,2019-09-15,MAG and WAG,junior and senior,International Event,National Event,328
+484,Italian Championships,2020,2020-11-06,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,346
+609,Italian Championships,2021,2021-07-10,2021-07-11,MAG and WAG,junior and senior,International Event,National Event,428
+841,Italian Championships,2022,2022-10-12,2022-10-16,MAG and WAG,junior and senior,International Event,National Event,493
+1022,Italian Championships,2023,2023-09-06,2023-09-10,MAG and WAG,junior and senior,International Event,National Event,633
+1308,Italian Championships,2024,2024-07-05,2024-07-07,MAG and WAG,junior and senior,International Event,National Event,380
+1522,Italian Championships,2025,2025-09-26,2025-09-28,MAG and WAG,junior and senior,International Event,National Event,440
+159,Italian Gold Championships,2018,2018-05-18,2018-05-20,WAG,junior and senior,International Event,National Event,998
+386,Italian Gold Championships,2019,2019-04-26,2019-04-28,WAG,junior and senior,International Event,National Event,754
+510,Italian Gold Championships,2020,2020-10-24,2020-10-24,WAG,senior,International Event,National Event,375
+664,Italian Gold Championships,2021,2021-12-11,2021-12-12,WAG,junior and senior,International Event,National Event,942
+906,Italian Gold Championships,2022,2022-12-02,2022-12-03,WAG,junior and senior,International Event,National Event,958
+1148,Italian Gold Championships,2023,2023-12-01,2023-12-03,WAG,junior and senior,International Event,National Event,997
+1357,Italian Gold Championships,2024,2024-12-05,2024-12-08,WAG,junior and senior,International Event,National Event,1019
+1567,Italian Gold Championships,2025,2025-12-19,2025-12-21,WAG,junior and senior,International Event,National Event,791
+1124,Italian Gold Championships Qualifier,2023,2023-11-17,2023-11-19,WAG,junior and senior,International Event,National Event,1535
+503,Italian Gold Junior Championships,2020,2020-11-01,2020-11-01,WAG,junior,International Event,National Event,583
+1273,Japan Specialist Championships,2024,2024-09-16,2024-09-16,MAG,senior,International Event,National Event,47
+1525,Japanese National Sports Festival,2025,2025-09-12,2025-09-15,MAG,junior and senior,International Event,National Event,1846
+1135,July National Team Camp,2023,2023-07-09,2023-07-12,WAG,junior and senior,International Event,National Event,72
+160,KPAC National Qualifier,2018,2018-03-08,2018-03-11,WAG,junior and senior,International Event,National Event,478
+378,KPAC National Qualifier,2019,2019-03-07,2019-03-09,WAG,junior and senior,International Event,National Event,489
+500,KPAC National Qualifier,2020,2020-03-12,2020-03-13,WAG,junior and senior,International Event,National Event,281
+880,KPAC National Qualifier,2022,2022-03-10,2022-03-11,WAG,junior and senior,International Event,National Event,312
+1560,KPAC National Qualifier,2025,2025-03-13,2025-03-16,WAG,junior and senior,International Event,National Event,278
+75,Kazakhstan Championships,2018,2018-06-18,2018-06-24,MAG and WAG,junior and senior,International Event,National Event,536
+84,Kazakhstan Junior Championships,2018,2018-11-05,2018-11-10,MAG and WAG,junior,International Event,National Event,352
+572,Korean National Sports Festival,2021,2021-10-08,2021-10-10,MAG and WAG,senior,International Event,National Event,633
+1467,Korean National Sports Festival,2025,2025-09-25,2025-09-27,MAG and WAG,junior and senior,International Event,National Event,1333
+441,Korean National Team Selection,2019,2019-05-11,2019-05-11,WAG,junior and senior,International Event,National Event,115
+1115,Las Vegas National Qualifier,2023,2023-01-27,2023-01-29,WAG,junior and senior,International Event,National Event,285
+90,Latvian Championships,2018,2018-04-13,2018-04-14,MAG and WAG,junior and senior,International Event,National Event,523
+416,Latvian Championships,2019,2019-03-22,2019-03-23,WAG,junior and senior,International Event,National Event,281
+920,Latvian Championships,2022,2022-12-09,2022-12-10,WAG,junior and senior,International Event,National Event,183
+1084,Latvian Championships,2023,2023-03-17,2023-03-18,MAG and WAG,junior and senior,International Event,National Event,491
+1248,Latvian Championships,2024,2024-11-09,2024-11-10,MAG and WAG,junior and senior,International Event,National Event,300
+1458,Latvian Championships,2025,2025-11-21,2025-11-22,MAG and WAG,junior and senior,International Event,National Event,437
+340,Lithuanian Championships,2019,2019-03-14,2019-03-15,MAG and WAG,junior and senior,International Event,National Event,213
+505,Lithuanian Championships,2020,2020-12-10,2020-12-10,WAG,junior and senior,International Event,National Event,76
+666,Lithuanian Championships,2021,2021-04-02,2021-04-03,WAG,junior and senior,International Event,National Event,153
+907,Lithuanian Championships,2022,2022-11-24,2022-11-24,WAG,junior and senior,International Event,National Event,172
+1263,Lithuanian Championships,2024,2024-03-21,2024-03-21,MAG and WAG,junior and senior,International Event,National Event,374
+1485,Lithuanian Championships,2025,2025-03-28,2025-03-29,MAG and WAG,junior and senior,International Event,National Event,274
+402,Luxembourg Championships,2019,2019-05-18,2019-05-18,WAG,junior and senior,International Event,National Event,93
+1114,Magical March National Qualifier,2023,2023-03-10,2023-03-12,WAG,junior and senior,International Event,National Event,242
+1365,Magical March National Qualifier,2024,2024-03-15,2024-03-17,WAG,junior and senior,International Event,National Event,174
+444,Malta Championships,2019,2019-11-01,2019-11-01,WAG,junior and senior,International Event,National Event,11
+713,Malta Championships,2021,2021-07-09,2021-07-11,WAG,senior,International Event,National Event,21
+928,Malta Championships,2022,2022-04-09,2022-04-10,WAG,junior and senior,International Event,National Event,105
+1155,Malta Championships,2023,2023-03-25,2023-03-26,WAG,junior and senior,International Event,National Event,90
+1378,Malta Championships,2024,2024-03-21,2024-03-21,WAG,junior and senior,International Event,National Event,49
+1594,Malta Championships,2025,2025-03-14,2025-03-16,WAG,junior and senior,International Event,National Event,40
+675,March National Team Camp,2021,2021-03-13,2021-03-13,WAG,junior and senior,International Event,National Event,104
+896,March U.S. National Team Camp,2022,2022-03-31,2022-04-03,WAG,junior and senior,International Event,National Event,170
+498,Metroplex National Qualifier,2020,2020-01-24,2020-01-26,WAG,junior and senior,International Event,National Event,664
+876,Metroplex National Qualifier,2022,2022-02-18,2022-02-20,WAG,junior and senior,International Event,National Event,258
+1570,Metroplex National Qualifier,2025,2025-02-13,2025-02-16,WAG,junior and senior,International Event,National Event,304
+87,Mexican Championships,2018,2018-05-27,2018-06-03,MAG and WAG,junior and senior,International Event,National Event,1040
+299,Mexican Championships,2019,2019-05-30,2019-06-02,MAG and WAG,junior and senior,International Event,National Event,486
+747,Mexican Championships,2022,2022-05-23,2022-05-27,MAG and WAG,senior,International Event,National Event,361
+1011,Mexican Championships,2023,2023-05-14,2023-05-18,MAG and WAG,junior and senior,International Event,National Event,557
+1247,Mexican Championships,2024,2024-05-27,2024-05-31,MAG and WAG,senior,International Event,National Event,330
+1452,Mexican Championships,2025,2025-05-28,2025-06-03,MAG and WAG,junior and senior,International Event,National Event,643
+1615,Mexican Championships,2026,2026-05-07,2026-05-13,MAG and WAG,junior and senior,International Event,National Event,883
+1619,NCAA Week 1,2026,2026-01-09,2026-01-11,MAG,senior,International Event,National Event,229
+1623,NCAA Week 10,2026,2026-03-14,2026-03-14,MAG,senior,International Event,National Event,252
+1628,NCAA Week 11,2026,2026-03-16,2026-03-22,MAG,senior,International Event,National Event,341
+1629,NCAA Week 11 (Meet 2),2026,2026-03-16,2026-03-22,MAG,senior,International Event,National Event,49
+1618,NCAA Week 3,2026,2026-01-24,2026-01-24,MAG,senior,International Event,National Event,127
+1673,NCAA Week 4,2026,2026-01-31,2026-02-01,MAG,senior,International Event,National Event,200
+1624,NCAA Week 5,2026,2026-02-07,2026-02-07,MAG,senior,International Event,National Event,293
+1630,NCAA Week 6,2026,2026-02-13,2026-02-14,MAG,senior,International Event,National Event,250
+1680,NCAA Week 7,2026,2026-02-21,2026-02-21,MAG,senior,International Event,National Event,48
+1621,NCAA Week 8,2026,2026-02-28,2026-03-01,MAG,senior,International Event,National Event,349
+1620,NCAA Week 9,2026,2026-03-07,2026-03-07,MAG,senior,International Event,National Event,353
+897,NTTC National Qualifier,2022,2022-04-09,2022-04-10,WAG,junior and senior,International Event,National Event,175
+127,New Zealand Championships,2018,2018-10-03,2018-10-06,MAG and WAG,junior and senior,International Event,National Event,170
+321,New Zealand Championships,2019,2019-10-02,2019-10-05,MAG and WAG,junior and senior,International Event,National Event,141
+530,New Zealand Championships,2021,2021-07-21,2021-07-24,MAG and WAG,junior and senior,International Event,National Event,171
+934,New Zealand Championships,2022,2022-07-13,2022-07-16,WAG,junior and senior,International Event,National Event,49
+1095,New Zealand Championships,2023,2023-07-05,2023-07-08,MAG and WAG,junior and senior,International Event,National Event,203
+1289,New Zealand Championships,2024,2024-10-07,2024-10-11,MAG and WAG,junior and senior,International Event,National Event,204
+1549,New Zealand Championships,2025,2025-09-23,2025-09-27,MAG and WAG,junior and senior,International Event,National Event,218
+1719,Next Era National Qualifier,2026,2026-01-30,2026-02-01,WAG,junior and senior,International Event,National Event,21
+135,Norwegian Championships,2018,2018-09-22,2018-09-23,MAG and WAG,senior,International Event,National Event,381
+290,Norwegian Championships,2019,2019-06-28,2019-06-29,MAG and WAG,senior,International Event,National Event,440
+495,Norwegian Championships,2020,2020-09-26,2020-09-27,MAG and WAG,junior and senior,International Event,National Event,361
+641,Norwegian Championships,2021,2021-10-02,2021-10-03,MAG and WAG,junior and senior,International Event,National Event,350
+814,Norwegian Championships,2022,2022-06-17,2022-06-19,MAG and WAG,senior,International Event,National Event,391
+1047,Norwegian Championships,2023,2023-06-17,2023-06-18,MAG and WAG,senior,International Event,National Event,461
+1281,Norwegian Championships,2024,2024-09-07,2024-09-08,MAG and WAG,junior and senior,International Event,National Event,669
+1490,Norwegian Championships,2025,2025-06-14,2025-06-15,MAG and WAG,junior and senior,International Event,National Event,594
+1675,Norwegian Championships,2026,2026-06-20,2026-06-21,MAG and WAG,senior,International Event,National Event,590
+170,Norwegian Junior Championships,2018,2018-06-16,2018-06-17,WAG,junior,International Event,National Event,409
+424,Norwegian Junior Championships,2019,2019-06-01,2019-06-02,WAG,junior,International Event,National Event,502
+493,Norwegian Junior Championships,2020,2020-10-24,2020-10-25,MAG and WAG,junior,International Event,National Event,588
+597,Norwegian Junior Championships,2021,2021-10-23,2021-10-24,MAG and WAG,junior,International Event,National Event,950
+817,Norwegian Junior Championships,2022,2022-06-11,2022-06-12,MAG and WAG,junior,International Event,National Event,549
+1014,Norwegian Junior Championships,2023,2023-06-03,2023-06-04,MAG and WAG,junior,International Event,National Event,604
+1370,Norwegian Junior Championships,2024,2024-10-25,2024-10-27,WAG,junior,International Event,National Event,241
+1493,Norwegian Junior Championships,2025,2025-10-25,2025-10-26,MAG and WAG,junior,International Event,National Event,588
+291,Norweigan Junior Championships,2019,2019-06-01,2019-06-02,MAG,junior,International Event,National Event,270
+366,Parkettes National Qualifier,2019,2019-06-01,2019-06-03,WAG,junior and senior,International Event,National Event,541
+642,Parkettes National Qualifier,2021,2021-04-09,2021-04-11,WAG,junior and senior,International Event,National Event,474
+926,Parkettes National Qualifier,2022,2022-06-10,2022-06-12,WAG,junior and senior,International Event,National Event,299
+1121,Parkettes National Qualifier,2023,2023-06-02,2023-06-04,WAG,junior and senior,International Event,National Event,360
+1342,Parkettes National Qualifier,2024,2024-04-05,2024-04-07,WAG,junior and senior,International Event,National Event,227
+1710,Parkettes National Qualifier,2026,2026-06-12,2026-06-13,WAG,junior and senior,International Event,National Event,97
+1109,Philippine National Games,2023,2023-12-17,2023-12-22,MAG,senior,International Event,National Event,59
+1581,Pikes Peak Cup National Qualifier,2025,2025-01-23,2025-01-26,WAG,junior and senior,International Event,National Event,140
+55,Polish Championships,2018,2018-06-28,2018-07-01,MAG and WAG,junior and senior,International Event,National Event,770
+337,Polish Championships,2019,2019-04-26,2019-04-28,MAG and WAG,junior and senior,International Event,National Event,614
+461,Polish Championships,2020,2020-11-07,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,766
+630,Polish Championships,2021,,,MAG and WAG,junior and senior,International Event,National Event,541
+859,Polish Championships,2022,2022-06-10,2022-06-12,MAG and WAG,junior and senior,International Event,National Event,902
+1164,Polish Championships,2023,2023-03-11,2023-03-12,WAG,junior and senior,International Event,National Event,318
+1323,Polish Championships,2024,2024-03-23,2024-03-24,MAG and WAG,junior and senior,International Event,National Event,658
+1441,Polish Championships,2025,2025-04-11,2025-04-13,MAG and WAG,junior and senior,International Event,National Event,702
+1717,Polish Championships,2026,2026-05-15,2026-05-17,WAG,junior and senior,International Event,National Event,425
+136,Portuguese Championships,2018,2018-05-20,2018-05-20,MAG and WAG,junior and senior,International Event,National Event,240
+350,Portuguese Championships,2019,2019-05-11,2019-05-12,MAG and WAG,junior and senior,International Event,National Event,220
+872,Portuguese Championships,2022,2022-05-21,2022-05-21,MAG and WAG,junior and senior,International Event,National Event,204
+1101,Portuguese Championships,2023,2023-05-13,2023-05-14,MAG and WAG,junior and senior,International Event,National Event,285
+1324,Portuguese Championships,2024,2024-05-25,2024-05-26,MAG and WAG,junior and senior,International Event,National Event,196
+437,Puerto Rican Championships,2019,2019-06-15,2019-06-15,WAG,junior and senior,International Event,National Event,45
+1712,Rochester National Qualifier,2026,2026-02-13,2026-02-15,WAG,junior and senior,International Event,National Event,84
+49,Romanian Championships,2018,2018-10-12,2018-10-14,MAG and WAG,junior and senior,International Event,National Event,461
+260,Romanian Championships,2019,2019-09-06,2019-09-08,MAG and WAG,junior and senior,International Event,National Event,373
+486,Romanian Championships,2020,2020-11-18,2020-11-21,MAG and WAG,junior and senior,International Event,National Event,379
+613,Romanian Championships,2021,2021-09-17,2021-09-19,MAG and WAG,junior and senior,International Event,National Event,390
+797,Romanian Championships,2022,2022-09-30,2022-10-02,MAG and WAG,junior and senior,International Event,National Event,532
+1068,Romanian Championships,2023,2023-09-01,2023-09-03,MAG and WAG,junior and senior,International Event,National Event,410
+1513,Romanian Championships,2025,2025-10-02,2025-10-04,MAG and WAG,junior and senior,International Event,National Event,355
+430,Romanian Individual Championships,2019,2019-10-18,2019-10-20,WAG,junior,International Event,National Event,169
+1301,Romanian Individual Championships,2024,2024-11-15,2024-11-17,MAG and WAG,junior and senior,International Event,National Event,354
+391,Romanian Junior Championships,2019,2019-06-14,2019-06-14,WAG,junior,International Event,National Event,207
+680,Romanian Junior Championships,2021,2021-06-11,2021-06-11,WAG,junior and senior,International Event,National Event,122
+903,Romanian Junior Championships,2022,2022-07-02,2022-07-03,WAG,junior,International Event,National Event,172
+1146,Romanian Junior Championships,2023,2023-10-28,2023-10-29,WAG,junior,International Event,National Event,221
+1360,Romanian Junior Championships,2024,2024-10-24,2024-10-27,WAG,junior,International Event,National Event,190
+1565,Romanian Junior Championships,2025,2025-06-12,2025-06-14,WAG,junior,International Event,National Event,163
+1707,Romanian Junior Championships,2026,2026-06-10,2026-06-11,WAG,junior,International Event,National Event,173
+902,Romanian Junior Individual Championships,2022,2022-11-26,2022-11-27,WAG,junior,International Event,National Event,187
+88,Russian Championships,2018,2018-04-18,2018-04-22,MAG and WAG,junior and senior,International Event,National Event,2294
+302,Russian Championships,2019,2019-03-04,2019-03-10,MAG and WAG,senior,International Event,National Event,1316
+469,Russian Championships,2020,2020-11-04,2020-11-08,MAG and WAG,junior and senior,International Event,National Event,1739
+599,Russian Championships,2021,2021-03-10,2021-03-14,MAG and WAG,senior,International Event,National Event,1233
+818,Russian Championships,2022,2022-04-06,2022-04-10,MAG and WAG,junior and senior,International Event,National Event,2657
+1051,Russian Championships,2023,2023-03-08,2023-03-12,MAG and WAG,junior and senior,International Event,National Event,1397
+1210,Russian Championships,2024,2024-03-11,2024-03-17,MAG and WAG,senior,International Event,National Event,1494
+1495,Russian Championships,2025,2025-09-28,2025-10-05,MAG and WAG,junior and senior,International Event,National Event,1067
+1677,Russian Championships,2026,2026-06-28,2026-07-06,MAG and WAG,junior and senior,International Event,National Event,1080
+660,Russian Federal Championships,2021,2021-02-08,2021-02-12,WAG,senior,International Event,National Event,2388
+115,Russian Junior Championships,2018,2018-06-27,2018-06-30,MAG and WAG,junior,International Event,National Event,1336
+301,Russian Junior Championships,2019,2019-05-13,2019-05-18,MAG and WAG,junior,International Event,National Event,2054
+688,Russian Junior Championships,2021,2021-04-01,2021-04-04,WAG,junior,International Event,National Event,804
+967,Russian Junior Championships,2023,2023-05-09,2023-05-13,MAG and WAG,junior,International Event,National Event,1971
+1203,Russian Junior Championships,2024,2024-04-03,2024-04-08,MAG and WAG,junior,International Event,National Event,1963
+1414,Russian Junior Championships,2025,2025-03-22,2025-03-29,MAG and WAG,junior,International Event,National Event,2626
+1667,Russian Junior Team Championships,2026,2026-03-16,2026-03-22,MAG and WAG,junior,International Event,National Event,2132
+39,Scottish Championships,2018,2018-02-24,2018-02-25,MAG and WAG,junior and senior,International Event,National Event,716
+252,Scottish Championships,2019,2019-02-23,2019-02-24,MAG and WAG,junior and senior,International Event,National Event,476
+707,Scottish Championships,2021,2021-09-26,2021-09-26,WAG,junior and senior,International Event,National Event,35
+730,Scottish Championships,2022,2022-02-26,2022-02-27,MAG and WAG,junior and senior,International Event,National Event,680
+948,Scottish Championships,2023,2023-02-17,2023-02-19,MAG and WAG,junior and senior,International Event,National Event,1073
+1185,Scottish Championships,2024,2024-02-17,2024-02-18,MAG and WAG,junior and senior,International Event,National Event,685
+1393,Scottish Championships,2025,2025-03-01,2025-03-02,MAG and WAG,junior and senior,International Event,National Event,955
+1614,Scottish Championships,2026,2026-02-20,2026-02-22,MAG and WAG,junior and senior,International Event,National Event,1306
+209,Singapore Championships,2018,2018-03-10,2018-03-11,WAG,junior and senior,International Event,National Event,137
+359,Singapore Championships,2019,2019-03-15,2019-03-17,MAG and WAG,junior and senior,International Event,National Event,84
+542,Singapore Championships,2021,2021-03-12,2021-03-21,MAG and WAG,junior and senior,International Event,National Event,176
+858,Singapore Championships,2022,2022-03-11,2022-03-12,MAG and WAG,junior and senior,International Event,National Event,272
+1089,Singapore Championships,2023,2023-03-09,2023-03-19,MAG and WAG,junior and senior,International Event,National Event,250
+1304,Singapore Championships,2024,2024-03-08,2024-03-17,MAG and WAG,junior and senior,International Event,National Event,366
+1407,Singapore Championships,2025,2025-03-14,2025-03-23,MAG and WAG,junior and senior,International Event,National Event,379
+1635,Singapore Championships,2026,2026-03-12,2026-03-15,MAG and WAG,junior and senior,International Event,National Event,367
+1528,Slovenian Championships,2025,2025-11-29,2025-11-30,MAG and WAG,junior and senior,International Event,National Event,160
+211,South Korean Championships,2018,2018-06-09,2018-06-10,WAG,senior,International Event,National Event,80
+573,South Korean Championships,2021,2021-05-01,2021-05-02,MAG and WAG,senior,International Event,National Event,1119
+1028,South Korean Championships,2023,2023-04-14,2023-04-16,MAG and WAG,junior and senior,International Event,National Event,1297
+1262,South Korean Championships,2024,2024-04-19,2024-04-21,MAG and WAG,junior and senior,International Event,National Event,1500
+1466,South Korean Championships,2025,2025-04-18,2025-04-20,MAG and WAG,junior and senior,International Event,National Event,1887
+57,Spanish Championships,2018,2018-07-08,2018-07-15,MAG and WAG,junior and senior,International Event,National Event,519
+264,Spanish Championships,2019,2019-06-30,2019-07-07,MAG and WAG,junior and senior,International Event,National Event,558
+459,Spanish Championships,2020,2020-12-04,2020-12-08,MAG and WAG,junior and senior,International Event,National Event,261
+561,Spanish Championships,2021,2021-12-03,2021-12-08,MAG and WAG,junior and senior,International Event,National Event,615
+787,Spanish Championships,2022,2022-07-20,2022-07-23,MAG and WAG,junior and senior,International Event,National Event,628
+1009,Spanish Championships,2023,2023-07-19,2023-07-23,MAG and WAG,junior and senior,International Event,National Event,688
+1244,Spanish Championships,2024,2024-06-19,2024-06-23,MAG and WAG,junior and senior,International Event,National Event,721
+1451,Spanish Championships,2025,2025-06-24,2025-06-29,MAG and WAG,junior and senior,International Event,National Event,702
+1128,Spanish League Final,2023,2023-06-16,2023-06-18,WAG,junior and senior,International Event,National Event,276
+1344,Spanish League Final,2024,2024-06-29,2024-06-30,WAG,junior and senior,International Event,National Event,270
+1575,Spanish League Final,2025,2025-07-05,2025-07-06,WAG,junior and senior,International Event,National Event,218
+1699,Spanish League Final,2026,2026-06-22,2026-06-28,WAG,junior and senior,International Event,National Event,442
+375,Spanish League Finals,2019,2019-06-15,2019-06-16,WAG,junior and senior,International Event,National Event,498
+663,Spanish League Finals,2021,2021-12-10,2021-12-12,WAG,junior and senior,International Event,National Event,223
+33,Swedish Championships,2018,2018-07-03,2018-07-06,MAG,junior and senior,International Event,National Event,240
+246,Swedish Championships,2019,2019-06-26,2019-06-27,MAG and WAG,junior and senior,International Event,National Event,496
+456,Swedish Championships,2020,2020-10-10,2020-10-11,MAG and WAG,junior and senior,International Event,National Event,562
+526,Swedish Championships,2021,2021-10-02,2021-10-03,MAG and WAG,junior and senior,International Event,National Event,719
+757,Swedish Championships,2022,2022-06-27,2022-06-28,MAG and WAG,junior and senior,International Event,National Event,567
+978,Swedish Championships,2023,2023-06-28,2023-06-29,MAG and WAG,junior and senior,International Event,National Event,852
+1213,Swedish Championships,2024,2024-06-29,2024-06-30,MAG and WAG,junior and senior,International Event,National Event,852
+1425,Swedish Championships,2025,2025-04-26,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,944
+245,Swedish Junior Men's Championships,2019,2019-05-04,2019-05-04,MAG,junior,International Event,National Event,88
+128,Swiss Championships,2018,2018-09-22,2018-09-23,MAG and WAG,junior and senior,International Event,National Event,151
+334,Swiss Championships,2019,2019-09-07,2019-09-08,MAG and WAG,junior and senior,International Event,National Event,147
+588,Swiss Championships,2021,2021-06-26,2021-06-26,MAG and WAG,senior,International Event,National Event,180
+809,Swiss Championships,2022,2022-06-25,2022-06-26,MAG and WAG,junior and senior,International Event,National Event,510
+1097,Swiss Championships,2023,2023-09-02,2023-09-03,MAG and WAG,junior and senior,International Event,National Event,251
+1212,Swiss Championships,2024,2024-06-22,2024-06-23,MAG and WAG,junior and senior,International Event,National Event,508
+1422,Swiss Championships,2025,2025-06-14,2025-06-14,MAG and WAG,junior and senior,International Event,National Event,383
+161,Swiss Junior Championships,2018,2018-06-09,2018-06-10,WAG,junior,International Event,National Event,148
+394,Swiss Junior Championships,2019,2019-06-01,2019-06-02,WAG,junior,International Event,National Event,100
+670,Swiss Junior Championships,2021,2021-06-12,2021-06-13,WAG,junior,International Event,National Event,37
+1043,Swiss Junior Championships,2023,2023-06-10,2023-06-11,MAG and WAG,junior,International Event,National Event,370
+1423,Swiss Junior Championships,2025,2025-05-27,2025-05-31,MAG and WAG,junior,International Event,National Event,207
+224,Swiss Team Championships,2019,2019-10-26,2019-10-27,MAG and WAG,junior and senior,International Event,National Event,706
+977,Swiss Team Championships,2023,2023-10-28,2023-10-29,MAG and WAG,junior and senior,International Event,National Event,771
+1453,Swiss Team Championships,2025,2025-11-23,2025-11-23,MAG and WAG,junior and senior,International Event,National Event,402
+7,Turkish Championships,2018,2018-03-02,2018-03-04,MAG and WAG,junior and senior,International Event,National Event,276
+227,Turkish Championships,2019,2019-03-01,2019-03-03,MAG and WAG,junior and senior,International Event,National Event,482
+451,Turkish Championships,2020,2020-02-28,2020-03-01,MAG and WAG,junior and senior,International Event,National Event,462
+555,Turkish Championships,2021,2021-03-26,2021-03-28,MAG and WAG,junior and senior,International Event,National Event,403
+779,Turkish Championships,2022,2022-09-30,2022-10-02,MAG and WAG,junior and senior,International Event,National Event,1016
+1000,Turkish Championships,2023,2023-08-25,2023-08-27,MAG and WAG,junior and senior,International Event,National Event,574
+1236,Turkish Championships,2024,2024-09-27,2024-09-29,MAG and WAG,junior and senior,International Event,National Event,387
+1444,Turkish Championships,2025,2025-09-12,2025-09-14,MAG and WAG,junior and senior,International Event,National Event,887
+559,Turkish Team Championships,2021,2021-09-17,2021-09-19,MAG and WAG,junior and senior,International Event,National Event,397
+1347,Turkish Team Championships,2024,2024-04-05,2024-04-07,WAG,junior and senior,International Event,National Event,177
+1446,Turkish Team Championships,2025,2025-04-25,2025-04-27,MAG and WAG,junior and senior,International Event,National Event,1108
+45,U.S. Championships,2018,2018-08-16,2018-08-19,MAG and WAG,junior and senior,International Event,National Event,1399
+529,U.S. Championships,2021,2021-06-03,2021-06-06,MAG and WAG,junior and senior,International Event,National Event,1342
+767,U.S. Championships,2022,2022-08-18,2022-08-21,MAG and WAG,junior and senior,International Event,National Event,1506
+986,U.S. Championships,2023,2023-08-24,2023-08-27,MAG and WAG,junior and senior,International Event,National Event,1631
+1287,U.S. Championships,2024,2024-05-30,2024-06-02,MAG and WAG,junior and senior,International Event,National Event,1346
+1401,U.S. Championships,2025,2025-08-07,2025-08-10,MAG and WAG,junior and senior,International Event,National Event,1425
+258,U.S. Championships D1,2019,2019-08-08,2019-08-11,MAG and WAG,junior and senior,International Event,National Event,713
+257,U.S. Championships D2,2019,2019-08-08,2019-08-11,MAG and WAG,junior and senior,International Event,National Event,718
+46,U.S. Men's National Qualifier,2018,2018-07-14,2018-07-14,MAG,junior and senior,International Event,National Event,345
+267,U.S. Men's National Qualifier,2019,2019-07-06,2019-07-07,MAG,junior and senior,International Event,National Event,334
+1681,U.S. Men's National Qualifier,2026,2026-06-27,2026-06-27,MAG,junior and senior,International Event,National Event,339
+423,Ukrainian Championships,2019,2019-03-03,2019-03-07,WAG,junior and senior,International Event,National Event,304
+487,Ukrainian Championships,2020,2020-09-06,2020-09-11,MAG and WAG,junior and senior,International Event,National Event,434
+619,Ukrainian Championships,2021,2021-04-02,2021-04-07,MAG and WAG,junior and senior,International Event,National Event,574
+1327,Ukrainian Championships,2024,2024-09-28,2024-09-29,MAG and WAG,senior,International Event,National Event,94
+518,Ukrainian Youth Championships,2020,2020-10-11,2020-10-15,WAG,junior,International Event,National Event,120
+875,Vegas Cup National Qualifier,2022,2022-01-21,2022-01-22,WAG,junior and senior,International Event,National Event,182
+1338,Vegas Cup National Qualifier,2024,2024-01-26,2024-01-28,WAG,junior and senior,International Event,National Event,389
+1561,Vegas Cup National Qualifier,2025,2025-01-16,2025-01-19,WAG,junior and senior,International Event,National Event,314
+1713,Vegas Cup National Qualifier,2026,2026-01-16,2026-01-18,WAG,junior and senior,International Event,National Event,166
+1126,WOGA Classic National Qualifier,2023,2023-02-17,2023-02-19,WAG,junior and senior,International Event,National Event,252
+86,Welsh Championships,2018,2018-02-17,2018-02-18,MAG and WAG,junior and senior,International Event,National Event,458
+296,Welsh Championships,2019,2019-02-23,2019-02-24,MAG and WAG,junior and senior,International Event,National Event,548
+832,Welsh Championships,2022,2022-02-26,2022-02-27,MAG and WAG,junior and senior,International Event,National Event,350
+990,Welsh Championships,2023,2023-03-11,2023-03-12,MAG and WAG,junior and senior,International Event,National Event,559
+1292,Welsh Championships,2024,2024-02-16,2024-02-18,MAG and WAG,junior and senior,International Event,National Event,942
+1424,Welsh Championships,2025,2025-02-14,2025-02-16,MAG and WAG,junior and senior,International Event,National Event,1056
+1611,Welsh Championships,2026,2026-02-12,2026-02-15,MAG and WAG,junior and senior,International Event,National Event,1594
+1704,Winter Classic National Qualifier,2026,2026-02-19,2026-02-20,WAG,junior and senior,International Event,National Event,73
+365,World Champion's National Qualifier,2019,2019-02-13,2019-02-17,WAG,junior and senior,International Event,National Event,341

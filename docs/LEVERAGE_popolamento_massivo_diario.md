@@ -4197,6 +4197,111 @@ La fase Results 2026 e completata:
 - database aggiornato fino al primo semestre 2026;
 - duplicati semantici post-import pari a 0.
 
+### 17.14 Controllo qualita post-import su punteggi non-AA sopra 20
+
+Data: 23 luglio 2026
+
+Durante la rifinitura frontend e stato individuato un punteggio VT impossibile:
+
+| Athlete | Event | Data evento | Apparatus | Score DB |
+|---|---|---|---|---:|
+| Giuseppe Bertoli | `Champion's Cup` | 2026-05-29 | `VT` attempt 2 | `24.5` |
+
+Analisi sorgente:
+
+- file: `import_files/Results 2026.xlsx`;
+- sheet: `MAG`;
+- row: `2969`;
+- valori sorgente: `VT = 1.2`, `VT AVG = 12.85`;
+- valori D-score collegati: `VT D = 4.4`, `VT SUM D = 7.6`;
+- causa: il tool legacy aveva derivato `VT2 = 2 * VT AVG - VT1`, ottenendo `24.5` perche `VT1` era stato letto come `1.2`;
+- correzione coerente: `VT1 = 13.2`, quindi `VT2 = 12.5`.
+
+Correzioni applicate al DB:
+
+| Result ID | Campo | Da | A |
+|---:|---|---:|---:|
+| `765954` | `score` | `1.2` | `13.2` |
+| `765956` | `score` | `24.5` | `12.5` |
+
+Tracciabilita:
+
+- backup: `backups/leverage_before_score_outlier_repair_20260723_123228.db`;
+- report riparazione: `docs/import_reports/result_score_outlier_repair_20260723.csv`;
+- report audit residuo: `docs/import_reports/result_score_outlier_audit_20260723.csv`.
+
+Esito controllo globale:
+
+| Controllo | Conteggio dopo correzione |
+|---|---:|
+| Result non-AA con `score > 20` | 0 |
+| Result con `D_score > 10` | 0 |
+
+Decisione metodologica:
+
+- i result non-AA con final score superiore a `20.0` non sono compatibili con il dominio sportivo LEVERAGE;
+- `AA` e escluso dal limite perche rappresenta un totale multi-apparato;
+- i quattro `D_score > 10` individuati sono stati confermati come errori e portati a `NULL` / `not available`, perche non esiste una correzione certa da applicare senza inventare il valore.
+
+Protezione tecnica aggiunta:
+
+- il parser Gymternet legacy non importa piu un `VT attempt 2` derivato se il calcolo genera un final score non-AA sopra `20.0`;
+- gli endpoint admin di inserimento result singolo e bulk manuale rifiutano final score non-AA sopra `20.0`;
+- il parser Gymternet legacy e gli endpoint admin rifiutano `D_score > 10.0`; nei dati storici sospetti il campo viene marcato come non disponibile invece di essere forzato a un valore stimato;
+- la migration Alembic `0030_add_result_score_upper_bounds` rende gli stessi limiti parte dello schema DB;
+- il contratto import comune e stato aggiornato con questa regola.
+
+Report aggiuntivi:
+
+- riparazione D-score: `docs/import_reports/result_dscore_outlier_repair_20260723.csv`;
+- audit post-riparazione: `docs/import_reports/result_dscore_outlier_audit_post_repair_20260723.csv`;
+- backup seconda riparazione: `backups/leverage_before_score_outlier_repair_20260723_125046.db`.
+
+### 17.14 Controllo E-score ed execution estimate
+
+Data: 29 luglio 2026
+
+Durante il controllo UI dei ranking e stata individuata la necessita di impedire la visualizzazione di valori di esecuzione fuori scala. Nel modello sportivo LEVERAGE l'`E_score` ufficiale deve essere compreso tra `0` e `10`; per i dati Gymternet legacy, quando `E_score` non e disponibile, il sistema calcola una `execution_estimate = score - D_score`.
+
+Audit iniziale:
+
+| Controllo | Conteggio |
+|---|---:|
+| `E_score` ufficiali fuori scala | 0 |
+| `execution_estimate` fuori scala | 527 |
+
+Decisione metodologica:
+
+- i 527 casi non avevano un `E_score` ufficiale errato;
+- il problema derivava da `D_score` incoerenti che producevano una stima di esecuzione negativa o superiore a `10`;
+- senza una conferma diretta dalla fonte non e stato applicato alcun recupero deduttivo del D-score;
+- il final score e stato preservato, mentre il `D_score` e stato portato a `NULL` / `not available`.
+
+Effetto sui dati:
+
+| Controllo corrente | Conteggio |
+|---|---:|
+| Result con final score e `D_score` | 594.819 |
+| Result con final score ma senza `D_score` | 220.133 |
+| Result senza final score | 4.787 |
+| `E_score` fuori scala dopo repair | 0 |
+| `execution_estimate` fuori scala dopo repair | 0 |
+
+Tracciabilita:
+
+- script: `scripts/repair_result_e_score_outliers.py`;
+- dry-run: `docs/import_reports/result_e_score_outlier_repair_dry_run_20260729.csv`;
+- backup: `backups/leverage_before_e_score_outlier_repair_20260729_183835.db`;
+- report repair: `docs/import_reports/result_e_score_outlier_repair_20260729.csv`;
+- audit post-repair: `docs/import_reports/result_e_score_outlier_audit_post_repair_20260729.csv`.
+
+Protezione futura:
+
+- `E_score > 10` viene bloccato da validazione backend e vincolo DB;
+- `calculate_execution_estimate()` restituisce un valore solo se la stima e compresa tra `0` e `10`;
+- il parser Gymternet legacy scarta automaticamente un `D_score` che produrrebbe una `execution_estimate` impossibile e lo segnala negli issues dell'import;
+- la migration Alembic `0031_add_result_e_score_upper_bound` e stata applicata al database locale.
+
 ## 18. Riconciliazione Calendar 2026 - primo semestre
 
 Data: 15 luglio 2026
@@ -4475,3 +4580,159 @@ La fase dati storici ora copre:
 - Calendar 2026 riconciliato per gli Event con risultati disponibili e materializzato anche per gli eventi futuri schedulati dal 16 luglio 2026.
 
 Il prossimo completamento dati avverra quando sara disponibile il file Results 2026 di fine anno o un secondo file 2026 aggiornato.
+
+## 19. Avvio rifinitura Frontend MVP
+
+### 19.1 Home pubblica e prime sezioni consultabili
+
+Aggiornamento del 23 luglio 2026:
+
+Terminata la fase di popolamento massivo storico e di riconciliazione calendario, il lavoro si e spostato sulla costruzione della prima interfaccia pubblica di LEVERAGE. L'obiettivo e rendere consultabile il dataset con una UI minimal, pulita e coerente con il brand blu LEVERAGE.
+
+Elementi gia impostati nella UI:
+
+- splash iniziale con logo LEVERAGE e comparsa della top bar;
+- home pubblica con ricerca globale, calendario e ranking di anteprima;
+- navigazione principale con sezioni Home, Athletes, Events, Rankings e Analytics;
+- selettore lingua EN/IT/ES/FR;
+- modalita demo temporanea `DEMO USER`, `DEMO ADMIN` e `DEMO SUPER ADMIN`, da rimuovere prima della pubblicazione definitiva;
+- sezioni Athletes ed Events con ricerca dedicata, filtri coerenti e supporto ai preferiti per utenti loggati;
+- sezione Rankings con filtri sportivi, periodo, ciclo olimpico, salvataggio configurazioni e reset filtri.
+
+Decisione UI applicata:
+
+- i controlli delle sezioni Athletes ed Events devono usare bordi in stile app, non pillole;
+- la barra di ricerca dedicata e i pulsanti filtro devono avere altezza coerente;
+- i filtri devono restare raggruppati e leggibili a destra della ricerca, senza spaziature eccessive;
+- il filtro `Preferiti` deve essere l'ultimo del gruppo ma non deve separarsi artificialmente dagli altri filtri;
+- su schermi stretti la ricerca e i filtri devono impilarsi in modo ordinato.
+
+Rifinitura successiva: nelle sezioni Athletes ed Events la search form e stata resa visivamente coerente con i filtri. Il wrapper non viene piu usato come contenitore alto separato; input, pulsante `Search` e filtri condividono altezza, radius e scala visiva da controllo app-style.
+
+Ulteriore raffinamento UI: il pulsante `Search` e stato ricollocato dentro il riquadro della barra di ricerca. Era stata valutata anche una raccolta dei filtri in un riquadro dedicato, coerente per bordo, radius, padding e scala visiva con il riquadro della ricerca.
+
+Revisione della scelta visiva: il riquadro dei filtri e stato rimosso per alleggerire la UI. Nelle sezioni Athletes ed Events la barra di ricerca resta in alto, mentre i filtri vengono posizionati sotto la barra, senza contenitore aggiuntivo.
+
+Scelta UX successiva: nelle sezioni Athletes ed Events il pulsante `Search` e stato rimosso, perche la ricerca sui record avviene gia dinamicamente durante la digitazione. Il form resta disponibile per supportare il tasto Invio, ma la UI mostra solo la barra live search e i filtri sottostanti.
+
+Rifinitura Rankings: il filtro `Periodo` e stato semplificato. Al click non mostra piu griglie di anni o campi tecnici separati, ma un piccolo pannello minimale con sola data di inizio e data di fine, in stile date picker. La selezione per anno resta esprimibile tramite range data, per esempio `2025-01-01` / `2025-12-31`, evitando un'interfaccia sovraccarica.
+
+Rifinitura successiva: i campi data del filtro `Periodo` non usano piu il date picker nativo del browser. Sono stati sostituiti da una rotella custom stile Apple, con tre colonne scrollabili per anno, mese e giorno. In questo modo il controllo resta coerente con la UI LEVERAGE e non dipende dall'aspetto del calendario nativo del sistema operativo/browser.
+
+Estensione alla sezione Events: i quattro filtri `Con risultati`, `Risultati mancanti`, `In corso` e `In programma` sono stati rimossi dalla barra filtri pubblica. Al loro posto e stato inserito un unico filtro `Periodo`, basato sulla stessa rotella custom usata nei Rankings. Il periodo filtra sia la lista eventi sia il calendario completo usando `start_date` e `end_date`; gli stati evento restano visibili nel calendario come legenda/colore, ma non sono piu controlli filtro principali.
+
+Rifinitura del controllo `Periodo`: le caselle `Da data` e `A data` sono ora digitabili manualmente oltre che selezionabili tramite rotella. La UI accetta date complete in formato `YYYY-MM-DD` e formati naturali come `DD/MM/YYYY` o `DD-MM-YYYY`; quando la data e valida, la rotella anno/mese/giorno si riallinea automaticamente. Il popup della rotella viene mantenuto sotto le caselle, con distanza sufficiente per evitare sovrapposizioni visive.
+
+Rifinitura successiva del controllo `Periodo`: la casella mostra direttamente il formato `gg/mm/aaaa` e inserisce automaticamente gli slash durante la digitazione numerica. Il popup della rotella e stato uniformato ai popup degli altri filtri, con stesso stile di bordo, radius, ombra, blur e animazione di apertura. Le colonne della rotella seguono lo stesso ordine della casella: giorno, mese, anno.
+
+Rifinitura della granularita del periodo: non e piu obbligatorio inserire una data completa. La UI accetta anche solo l'anno (`2021`) oppure mese/anno (`07/2021`). Internamente questi valori vengono risolti in intervalli precisi per interrogare il backend: un anno copre dal 1 gennaio al 31 dicembre, un mese copre dal primo all'ultimo giorno del mese. La casella mantiene pero la forma sintetica scelta dall'utente, cosi il filtro resta leggibile.
+
+Rifinitura di allineamento del popup `Periodo`: il pannello delle rotelline giorno/mese/anno e stato ridimensionato e distanziato dal pannello `Da data` / `A data`, evitando sovrapposizioni visive. Su desktop le rotelline si aprono sotto i due campi a larghezza coerente con il pannello; su mobile entrano nel flusso verticale del popup, mantenendo leggibilita e continuita con lo stile app.
+
+Micro-rifinitura del popup `Periodo`: e stato rimosso il piccolo cambio di dimensione che avveniva quando si apriva una rotellina. Il pannello `Da data` / `A data` viene mostrato subito nella dimensione definitiva, evitando scatti visivi durante l'interazione.
+
+Correzione della micro-rifinitura: le rotelline non devono apparire come popup separato. Il controllo `Periodo` viene quindi mantenuto come pannello unico integrato, con campi `Da data` / `A data` nella parte superiore e rotelline giorno/mese/anno nella parte inferiore dello stesso pannello.
+
+Rifinitura conclusiva del controllo `Periodo`: il pannello principale non viene piu aperto subito nella sua altezza massima. All'apertura mostra solo i campi `Da data` / `A data`; quando l'utente clicca uno dei campi, il pannello si allunga in altezza e mostra le rotelline integrate nello stesso riquadro.
+
+Rifinitura di coordinamento popup: i menu filtro non possono restare aperti contemporaneamente. Quando l'utente apre un popup diverso, per esempio `Ciclo olimpico` dopo `Periodo`, il popup precedente viene chiuso automaticamente. La chiusura riguarda solo l'interfaccia del menu e non cancella i filtri gia selezionati.
+
+Rifinitura di chiusura popup: i menu filtro che aprono un pannello (`Level`, `Periodo`, `Ciclo olimpico` e controlli analoghi) ora si chiudono anche quando l'utente clicca fuori dal popup in un punto qualsiasi della schermata. Il comportamento chiude solo l'interfaccia del menu e non cancella i filtri gia impostati.
+
+Rifinitura funzionale del filtro `Periodo`: il controllo e tornato a comportarsi come toggle del solo popup. Un secondo click su `Periodo` chiude il pannello senza annullare il filtro temporale selezionato. La cancellazione del periodo e degli altri filtri passa invece dal comando esplicito `Pulisci filtri`. In Rankings il pulsante `Periodo` resta affiancato a `Ciclo olimpico`, perche entrambi definiscono l'orizzonte temporale del confronto. In Events il pulsante `Periodo` resta tra `Level` e `Preferiti`, mantenendo i filtri descrittivi prima delle preferenze personali dell'utente.
+
+Estensione alla sezione Events: e stato aggiunto anche negli Eventi il pulsante `Pulisci filtri`, coerente con la sezione Rankings. Il comando azzera discipline, category, level, preferiti e periodo, senza modificare il testo eventualmente digitato nella barra di ricerca.
+
+Questa fase non modifica la semantica del backend: serve a trasformare i contratti dati gia sviluppati in un'esperienza utente stabile e leggibile per il futuro MVP online.
+
+Revisione semantica `Event.level` post-popolamento: durante la rifinitura dei filtri `Level` e stata eseguita una revisione completa degli eventi marcati `International Event`. L'audit iniziale ha contato 1.315 eventi internazionali attivi e ha evidenziato un cluster molto ampio di eventi domestici/nazionali importati in modo prudente dal tool Gymternet legacy. Sono state quindi introdotte regole condivise per riconoscere campionati domestici con prefisso nazionale, `NCAA`, `Spanish League`, `National Qualifier`, `National Team`, `National Camp/Test/Review/Selection`, `National Games` e `National Sports Festival`. La migration `0034_reclassify_domestic_event_levels` ha riclassificato 659 eventi verso `National Event`; la migration `0035_cleanup_residual_event_levels` ha corretto refusi residui (`Bundlesiga`, `National Spots Festival`) e ha spostato alcuni campionati continentali residui (`Asian Junior Championships`, `Junior Pan Am Championships`, `Oceania Championships`) a `Continental Championships`. Dopo il cleanup, la distribuzione attiva e: `National Event` 976, `International Event` 647, `Continental Championships` 37, `World Challenge Cup` 44, `World Cup` 40, `World Championships` 10, `Olympic Games` 5. I quattro casi residuali `COMEGYM Championships`, `Klaverblad Championships`, `Liepaja Championships` e `Platinum League Online` sono stati confermati da review admin come `International Event` e inseriti come override espliciti per gli import futuri. Report principali: `docs/import_reports/event_level_domestic_reclassification_candidates_20260804.csv`, `docs/import_reports/event_level_residual_cleanup_20260804.csv`, `docs/import_reports/event_level_international_overrides_20260804.csv`, `docs/import_reports/international_events_cluster_review_20260804.csv`.
+
+Micro-rifinitura del filtro `Periodo`: quando il campo data e vuoto, la rotella del popup non si apre piu sulla data corrente, ma su `01/01` dell'anno corrente. Il default viene mostrato come placeholder leggero nella casella, non come valore nero gia selezionato, e la rotella scorre automaticamente sulla selezione attiva quando viene aperta. In questo modo l'utente puo scegliere piu rapidamente periodi annuali o intervalli tra due anni specifici, cambiando principalmente l'anno e mantenendo automaticamente primo gennaio come giorno/mese di partenza.
+
+Rifinitura rapida del popup `Periodo`: nella colonna anno della rotella e stato aggiunto il pulsante `Oggi`, posto sotto l'ultimo anno disponibile. Il comando permette di impostare immediatamente il campo `Da data` o `A data` alla data corrente senza digitazione manuale.
+
+Protezione intervallo del popup `Periodo`: il filtro non permette piu di impostare `A data` prima di `Da data`. La regola vale sia per input manuale sia per selezione tramite rotella o pulsante `Oggi`; le opzioni non coerenti della rotella vengono disabilitate. Se `Da data` viene spostata dopo una `A data` gia presente, il campo finale viene svuotato per mantenere il filtro in uno stato valido.
+
+Rifinitura visibilita funzioni personali: nella sezione Rankings il comando `Salva questo Ranking` viene ora mostrato solo agli utenti loggati, analogamente ai comandi `Preferiti` e `Salvati`. Per gli utenti non autenticati la barra filtri non mostra piu il pulsante di salvataggio ne un rimando al login, mantenendo separata la consultazione pubblica dalle funzioni personali.
+
+Micro-rifinitura layout Rankings: dopo aver nascosto `Salva questo Ranking` ai visitatori anonimi, il comando `Pulisci filtri` viene mantenuto nella riga bassa della colonna azioni invece di risalire verticalmente. La barra filtri resta quindi coerente tra stato loggato e non loggato.
+
+Micro-rifinitura interazione Rankings: il popup `Salva questo Ranking` si chiude ora cliccando fuori dal pannello o premendo `Escape`, come i popup `Level`, `Periodo` e `Ciclo olimpico`. L'interazione mantiene separata la chiusura visuale del popup dalla cancellazione dei filtri, che resta affidata al comando esplicito `Pulisci filtri`.
+
+Sviluppo scheda atleta MVP: e stata introdotta la prima pagina dettaglio associata a ciascuna scheda atleta. La vista pubblica mostra campi ufficiali dell'entita `Athlete`, immagine o iniziali, badge disciplina/country/ID, collegamento World Gymnastics quando verificato e storico dei cambi di nazionalita. Per USER loggati resta disponibile la stellina preferiti. Per ADMIN loggati viene mostrato un pannello dedicato con modifica campi principali, review dei suggerimenti pendenti e assistente World Gymnastics per cercare o collegare profili ufficiali generando suggerimenti da approvare/rifiutare/modificare.
+
+Governance dati post-import: e stata predisposta la revisione super-admin delle modifiche effettuate dagli admin ordinari. Gli audit log ora conservano uno stato di revisione (`pending`, `approved`, `reverted`), il super-admin revisore, data e nota. Un super-admin puo approvare una modifica oppure ripristinare lo snapshot precedente di `Athlete`, `Event` o `Result`; il ripristino genera a sua volta un audit log `revert_update`. La scelta rende il dataset storico importato piu protetto nella fase successiva di gestione online, dove piu admin potranno collaborare al data entry e alla manutenzione.
+
+Correzione duplicato atleta post-import: durante la rifinitura della scheda atleta e stato individuato un errore grave su `Illia Kovtun`, presente in tre schede attive (`Illia Kovtun` UKR, `Ilya Kovtun` UKR, `Illia Kovtun` CRO). Dopo backup locale `backups/leverage_before_kovtun_duplicate_merge_20260806.db`, le due schede duplicate sono state fuse nella scheda canonica `#1212`, spostando 45 result e mantenendo una sola entita attiva con `country=CRO` e storico `UKR -> CRO` dal 2026. Per prevenire ricorrenze future, il parser Gymternet normalizza ora `Ilya Kovtun` in `Illia Kovtun`. Parallelamente e stato generato il report `docs/import_reports/athlete_duplicate_audit_20260806.csv`, con 124 candidati residui di duplicazione da verificare tramite review admin prima di eventuali merge.
+
+Convenzione finale di visualizzazione dei nomi atleta: dopo la fase di popolamento massivo e review duplicati, e stata fissata una regola UI/API di presentazione unica per tutta la piattaforma: ogni atleta viene mostrato come `Cognome Nome`, anche nelle sezioni admin e nei report visualizzati dentro Leverage. La scelta non modifica la struttura del database, che continua a conservare `first_name` e `last_name` come campi separati, ne altera la tracciabilita dei nomi grezzi importati dai file Gymternet quando servono a documentare il dato sorgente.
+
+Sviluppo analytics nella scheda atleta: e stata aggiunta alla pagina dettaglio dell'atleta una sezione pubblica di `Performance analytics`, costruita sugli endpoint backend gia predisposti (`/analytics/athletes/{athlete_id}/profile-view` e relativo contratto dashboard/profilo attrezzi). La scelta tecnica e stata di usare SVG nativo nel frontend, senza nuove dipendenze, per mantenere il prototipo MVP leggero e facilmente controllabile. La sezione permette di cambiare metrica tra `Final Score`, `D Score`, `E Score` stimato, `Penalty` e `Bonus`; per MAG disegna un profilo a esagono con vertici ordinati `FX - PH - SR - VT - PB - HB`, mentre per WAG disegna un rombo con vertici `VT - UB - BB - FX`. Il cursore temporale permette di osservare il profilo come periodo progressivo oppure come snapshot, aggiornando poligono, statistiche riepilogative, trend e medie per anno. I casi di `E Score` stimato e metriche non disponibili vengono segnalati nella UI con note coerenti con le regole gia usate nei Rankings.
+
+Rifinitura interazione analytics atleta: il cursore temporale della scheda atleta e stato reso realmente interattivo durante il drag. In precedenza lo spostamento ricreava l'intero blocco analytics, inclusi i controlli, rendendo l'interazione potenzialmente scattosa. La UI ora mantiene stabile l'input range e aggiorna in tempo reale solo grafici, statistiche e label temporale; il cursore ha inoltre uno stato visivo di trascinamento.
+
+Rifinitura interazione metriche analytics atleta: anche il selettore della metrica (`Final Score`, `D Score`, `E Score`, `Penalty`, `Bonus`) e stato reso stabile e reattivo. Al click la selezione visuale si sposta immediatamente, mentre il frontend aggiorna in modo soft solo l'area dinamica di grafici/statistiche quando riceve il payload della nuova metrica. I controlli restano quindi utilizzabili e non vengono piu ricreati durante il cambio metrica.
+
+Rifinitura UX dei filtri nelle sezioni dati: nelle viste `Athletes`, `Events` e `Rankings` l'aggiunta di un nuovo filtro non produce piu un refresh completo della pagina. Se l'utente si trova in basso nella lista, il frontend prima riavvolge con scroll morbido fino all'inizio della sezione, dove tornano visibili titolo e sottotitolo, e solo dopo aggiorna localmente i record con il nuovo filtro. In `Rankings`, il cambio `MAG/WAG` aggiorna localmente anche la riga degli attrezzi disponibili, cosi i filtri restano semanticamente coerenti senza ridisegnare tutta la pagina.
+
+Micro-taratura del refresh filtri: il caricamento della nuova lista filtrata viene ora avviato quando lo scroll e gia vicino al top della sezione, invece che dopo l'arrivo completo. La scelta riduce il tempo percepito di attesa mantenendo invariata la sequenza UX principale: prima riavvolgimento ordinato, poi visualizzazione dei record coerenti con il nuovo filtro.
+
+Rifinitura leggibilita calendario: la vista calendario della home e della sezione `Events` e stata resa meno ambigua dividendo il mese in bande settimanali autonome. I giorni restano nella parte superiore della banda e gli eventi nella parte inferiore, con una separazione netta dalla settimana successiva e leggere guide verticali nell'area eventi. Questo chiarisce che ogni barra evento si riferisce ai giorni immediatamente sopra.
+
+Correzione visiva successiva: per evitare la percezione di riquadri settimanali non perfettamente allineati, il calendario e stato riportato dentro un unico frame mensile. Le settimane restano distinguibili tramite separatori orizzontali, ma colonne, giorni e barre evento condividono lo stesso perimetro e risultano piu ordinati.
+
+Micro-correzione di precisione: la griglia delle barre evento aveva ancora un padding orizzontale interno che sfalsava i quadretti eventi rispetto ai riquadri giorno. Il padding orizzontale e stato rimosso, mantenendo solo quello verticale, cosi linee guida, barre evento e giorni sono allineati sulla stessa griglia a sette colonne.
+
+Rifinitura analytics atleta: la timeline della sezione statistiche atleta e stata trasformata da cursore singolo a doppio cursore `Da/A`. L'utente puo ora scegliere sia l'inizio sia la fine del periodo storico; il frontend ricalcola in tempo reale diagramma apparati, trend, medie annuali e statistiche riepilogative usando solo i result compresi nel range selezionato. La modalita `Snapshot` continua a usare il solo cursore finale come istante di riferimento.
+
+Decisione metodologica sulle date dei result in eventi multigiorno: i file storici Gymternet forniscono risultati e il file Calendar fornisce il periodo dell'evento, ma nella maggior parte dei casi non forniscono la data esatta di ogni qualifica, finale o sessione interna. Si e deciso quindi di non introdurre una review manuale massiva delle date da parte dell'admin e di non stimare date non presenti nelle fonti. Per le analytics atleta, il backend espone `event_start_date`, `event_end_date` e `date_precision`; quando il result non ha un `day` affidabile, il punto viene ordinato cronologicamente usando l'inizio evento, ma la UI lo comunica come risultato ottenuto nel `Periodo evento`, mostrando anche nome gara, round, format, disciplina e apparatus nei dettagli del punto. Questa scelta mantiene LEVERAGE fedele alla granularita dei dati forniti e riduce il rischio di creare una falsa precisione temporale.
+
+Rifinitura di leggibilita della regola: il chiarimento non resta soltanto nei tooltip dei grafici, ma viene mostrato anche nella parte statistiche della scheda atleta. Quando la selezione contiene result da eventi multigiorno senza data sessione esatta, sotto le statistiche riepilogative compare un box `Fonte temporale` con i periodi coinvolti e alcuni contesti gara/round/format. Inoltre, nella modalita `Istante`, il box data non mostra piu l'etichetta `Al`, ma soltanto la data o il periodo selezionato.
+
+Micro-rifinitura successiva: il box `Fonte temporale` viene mostrato ogni volta che la selezione analytics contiene result, non solo quando sono presenti result multigiorno marcati come `event_period`. In questo modo l'utente vede sempre il criterio temporale usato dalle statistiche. Nella modalita `Istante`, il box data mostra ora l'etichetta `Data`, coerente con le etichette `Da data` e `A data` della modalita `Periodo`.
+
+Rifinitura informativa finale: il box `Fonte temporale` elenca ora le gare coinvolte nella selezione analytics, con nome evento, periodo completo e round/format disponibili. Nella modalita `Istante`, quando il punto selezionato appartiene a un evento multigiorno, il box `Data` mostra soltanto il periodo inizio/fine dell'evento: in questi casi l'istante viene interpretato come periodo fonte della competizione, non come singolo giorno.
+
+Correzione tecnica del label snapshot: il box `Data` della modalita `Istante` usa un contesto temporale dedicato, separato dai soli result validi per la metrica corrente. Questo evita che, osservando metriche parziali, venga mostrata soltanto la data di inizio invece del periodo completo della gara multigiorno. Nome gara e round/format restano nel box `Fonte temporale`, mentre il box `Data` resta limitato alle date.
+
+Rifinitura della timeline analytics: sulla linea del cursore temporale sono stati aggiunti piccoli marker verticali nei punti di passaggio tra cicli olimpici / Code of Points. La logica e la stessa usata per le linee verticali del grafico trend, mantenendo coerente la lettura temporale tra controllo e visualizzazione.
+
+Micro-rifinitura visuale: sopra i marker verticali della timeline viene mostrato, in modo molto leggero, l'anno di inizio del nuovo ciclo (`2022`, `2025`, ecc.), cosi il cambio di Code of Points resta leggibile senza appesantire il controllo.
+
+Rifinitura globale dei box di avviso/avvertimento: i warning tecnici restituiti dal backend per Result, Rankings, analytics atleta e strumenti World Gymnastics vengono ora tradotti nel frontend prima di essere mostrati all'utente, invece di restare sempre in inglese. La revisione ha corretto anche diversi micro-casi di singolare/plurale nei box informativi (`Ciclo olimpico` vs `Cicli olimpici`, `risultato/risultati`, `punto/punti`, `suggerimento admin/suggerimenti admin`) e ha uniformato i testi dei warning nelle quattro lingue supportate dalla UI. Questa scelta migliora la qualita comunicativa dell'MVP senza modificare il contratto dati delle API, che continua a esporre codici e warning tecnici stabili.
+
+Semplificazione della homepage iniziale: sono state rimosse le preview di `Calendario` e `Ranking` dalla home, per evitare che la prima schermata risultasse troppo densa o anticipasse sezioni operative gia disponibili altrove. La homepage resta ora focalizzata su identita LEVERAGE, ricerca globale e quattro accessi principali ai dati. Calendario completo e Rankings rimangono nelle rispettive sezioni dedicate, dove filtri, layout e interazioni sono piu adatti alla consultazione approfondita.
+
+Micro-rifinitura successiva della home: dopo la rimozione delle preview, gli spazi verticali della schermata iniziale sono stati accorciati di poco, intervenendo solo sulla classe home del `main`, sulla hero, sulla distanza della search globale e sull'altezza delle quattro card principali. L'obiettivo UX e fare entrare brand, ricerca e percorsi principali direttamente nel primo viewport, senza costringere l'utente a scorrere per vedere l'intera struttura iniziale.
+
+Pulizia footer pre-MVP: e stato rimosso dalla UI pubblica il box tecnico `API`, che permetteva di cambiare manualmente l'indirizzo del backend FastAPI durante la fase di sviluppo. Il controllo non era utile per l'utente finale e rendeva il footer meno pulito. La logica di scelta automatica del backend locale resta nel frontend, cosi la preview continua a essere gestibile in sviluppo senza esporre elementi tecnici.
+
+Rifinitura semantica della ricerca globale: la barra globale continua a interpretare termini come nazioni, paesi e attrezzi per capire meglio la richiesta dell'utente, ma questi elementi non vengono piu restituiti come risultati autonomi. Gli output e i suggerimenti della ricerca globale sono limitati a `Athletes`, `Events` e `Results`; una ricerca come `USA` puo quindi mostrare atleti e risultati collegati agli Stati Uniti, e una ricerca come `balance` puo mostrare risultati su `BB`, senza generare sezioni generiche `Country` o `Apparatus`.
+
+Micro-rifinitura layout sezioni MVP: gli heading delle sezioni principali (`Athletes`, `Events`, `Rankings`, `Analytics`) sono stati portati leggermente piu in alto tramite una classe frontend dedicata. L'intervento migliora l'allineamento visivo con la wordmark LEVERAGE della homepage e non modifica le pagine dettaglio o l'area privata.
+
+Micro-rifinitura della navigazione principale: la topbar usa ora un unico indicatore animato per mostrare la sezione corrente. L'indicatore si sposta dinamicamente tra le voci di menu quando l'utente cambia sezione e viene ricalcolato anche su resize/cambio lingua, migliorando la continuita visiva della UI.
+
+Allineamento analytics atleta ai criteri di lettura dei Rankings: la selezione temporale iniziale delle statistiche atleta viene impostata sull'ultimo ciclo olimpico disponibile nei dati dell'atleta, preservando pero l'accesso allo storico completo tramite i cursori. Il contesto del ciclo viene mostrato nello stesso box `context-note` usato nei Rankings e, quando la selezione attraversa piu cicli, compare un avviso metodologico localizzato sui possibili diversi Codes of Points.
+
+Rifinitura interattiva delle analytics atleta: i punti della curva trend mostrano ora un tooltip UI vicino al grafico quando l'utente passa sopra con il mouse o li raggiunge via tastiera. Il tooltip riporta metrica/valore, fonte temporale e contesto gara collegato, rendendo piu chiara la provenienza dei dati senza appesantire stabilmente il grafico.
+
+Micro-rifinitura del tooltip trend atleta: il contenuto e stato ridotto a valore, data/periodo e nome gara, eliminando dettagli superflui come metrica, conteggio e round/format. Rimossi inoltre i tooltip nativi SVG (`title`) dal trend per impedire la comparsa del popup grigio del browser sopra il tooltip custom.
+
+Rifinitura globale dei tooltip nativi: sono stati rimossi anche gli attributi HTML `title` dal resto della piattaforma, in particolare calendario, bottoni preferiti, cancellazione ricerca, cestino ranking salvati, filtri con popup e marker dei cicli olimpici. Le informazioni utili restano accessibili tramite `aria-label` o tooltip custom, evitando la comparsa dei popup grigi nativi del browser.
+
+Micro-rifinitura tooltip analytics: il box custom del trend atleta e stato ridotto leggermente in larghezza, padding e corpo testo, restando abbastanza capiente per valore, data/periodo e nome gara.
+
+Correzione semantica date multigiorno nelle analytics atleta: i result con `date_precision=event_period` vengono ora visualizzati nei box timeline e nei tooltip trend come periodo dell'evento, non come risultati del solo giorno iniziale. La data di inizio resta usata internamente soltanto per ordinamento cronologico.
+
+Rifinitura successiva: per evitare ambiguita, il punto del trend puo restare posizionato sul primo giorno dell'evento multigiorno, ma il tooltip dinamico mostra comunque sempre data di inizio e data di fine evento quando disponibili.
+
+Verifica puntuale sul caso `Abbadini Yumin` / `Olympic Games` 2024: il database contiene correttamente il periodo `2024-07-26` - `2024-08-11`. Il tooltip trend e stato forzato a usare direttamente il periodo evento dei punti analytics, cosi non ricade piu sulla sola data tecnica di posizionamento.
+
+Correzione ambiente preview: la mancata comparsa del periodo nel tooltip era dovuta anche a backend locali gia attivi su `8000/8001` con payload analytics vecchio, senza i campi temporali evento. La preview aggiornata usa ora backend `8002`, verificato sul caso Abbadini/Olympic Games con `event_end_date=2024-08-11`.
+
+Rifinitura marker cicli olimpici nella timeline atleta: i trattini sulla timeline ora sono calcolati sulla stessa scala discreta dei cursori, cioe sugli indici dei punti selezionabili. Questo evita disallineamenti visivi con la timeline; il trend chart mantiene invece le linee ciclo sulla scala temporale continua dell'asse X.
+
+Rifinitura navigazione frontend: la topbar conserva in memoria, per la durata della sessione browser, l'ultimo route visitato in ciascuna sezione principale (`Athletes`, `Events`, `Rankings`, `Analytics`). Questo permette all'utente di cambiare sezione temporaneamente e tornare esattamente alla scheda o vista che stava consultando.
+
+Ripristino preview e pulizia scheda atleta: aggiunte le porte frontend locali `5177-5179` alle origini CORS di sviluppo, cosi i record tornano caricabili anche su preview alternative. Rimosso inoltre il grande box `Fonte temporale` dalle analytics atleta, mantenendo l'informazione nel tooltip del trend.

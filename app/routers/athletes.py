@@ -4,13 +4,14 @@ from uuid import uuid4
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, case, or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms, resolve_exact_country_codes
 from app.database import get_db
+from app.display_names import athlete_display_name, athlete_display_name_from_parts
 from app.gymternet_import import record_athlete_country_change
 from app.result_identity import result_identity_key
 from app.result_ranking import apply_data_quality_filter, result_represented_country
@@ -345,6 +346,7 @@ def list_athletes(
     discipline: Optional[models.DisciplineEnum] = Query(None),
     category: Optional[list[models.ResultCategoryEnum]] = Query(None, description="Filter athletes with at least one result in the selected category"),
     country: Optional[str] = Query(None),
+    sort_by: str = Query("name", pattern="^(name|country)$", description="Sort athletes by name or country"),
     favorite_only: bool = Query(False, description="Return only athletes followed by the authenticated user"),
     limit: int = Query(100, ge=1, le=500),
     offset: int = Query(0, ge=0),
@@ -385,7 +387,30 @@ def list_athletes(
         ).distinct()
     if country:
         query = query.filter(or_(*athlete_country_conditions(country)))
-    return query.order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id).offset(offset).limit(limit).all()
+    missing_last_name = or_(models.Athlete.last_name.is_(None), models.Athlete.last_name == "")
+    last_name_sort_priority = case(
+        (missing_last_name, 2),
+        (models.Athlete.last_name.like("(%"), 1),
+        else_=0,
+    )
+    if sort_by == "country":
+        missing_country = or_(models.Athlete.country.is_(None), models.Athlete.country == "")
+        query = query.order_by(
+            missing_country,
+            models.Athlete.country,
+            last_name_sort_priority,
+            models.Athlete.last_name,
+            models.Athlete.first_name,
+            models.Athlete.id,
+        )
+    else:
+        query = query.order_by(
+            last_name_sort_priority,
+            models.Athlete.last_name,
+            models.Athlete.first_name,
+            models.Athlete.id,
+        )
+    return query.offset(offset).limit(limit).all()
 
 
 @router.get("/suggestions", response_model=list[schemas.AthleteSuggestion])
@@ -562,8 +587,8 @@ def merge_athlete_into_target(
         current_user,
         (
             f"Security: {current_user.email} merged athlete "
-            f"{source_before['first_name']} {source_before['last_name']} "
-            f"into {target_athlete.first_name} {target_athlete.last_name}."
+            f"{athlete_display_name_from_parts(source_before.get('first_name'), source_before.get('last_name'))} "
+            f"into {athlete_display_name(target_athlete)}."
         ),
         related_athlete_id=target_athlete.id,
     )
@@ -899,7 +924,7 @@ def compare_athletes_scores(
         )
         comparison.append(schemas.ComparisonScorePoint(
             athlete_id=athlete_id,
-            athlete_name=f"{first_name} {last_name}",
+            athlete_name=athlete_display_name_from_parts(first_name, last_name),
             date=result.event.start_date or result.created_at.date(),
             represented_country=result_represented_country(result),
             score=result.score,
@@ -1116,7 +1141,7 @@ def delete_athlete(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} soft-deleted athlete {athlete.first_name} {athlete.last_name}.",
+        f"Security: {current_user.email} soft-deleted athlete {athlete_display_name(athlete)}.",
         related_athlete_id=athlete.id,
     )
     db.commit()

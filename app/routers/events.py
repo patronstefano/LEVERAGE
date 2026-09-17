@@ -12,6 +12,7 @@ from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
+from app.display_names import athlete_display_name, athlete_display_name_from_parts
 from app.event_search import (
     EVENT_YEAR_PATTERN,
     compact_event_search_text,
@@ -33,7 +34,10 @@ from app.result_ranking import (
     build_athlete_search_condition,
     build_event_filter_options,
     build_ranking_entries,
+    count_aa_d_score_ranked_results,
+    fetch_aa_d_score_ranked_results,
     order_ranking_query,
+    uses_derived_aa_d_score_sort,
 )
 from app.result_identity import result_identity_key
 from app.routers.results import (
@@ -395,7 +399,7 @@ def resolve_result_entry_athlete(
 
 def result_entry_item_label(index: int, item: schemas.ResultEntryItem, apparatus: Optional[str]) -> str:
     if item.athlete:
-        athlete_name = f"{item.athlete.first_name} {item.athlete.last_name}".strip()
+        athlete_name = athlete_display_name(item.athlete)
     elif item.athlete_id is not None:
         athlete_name = f"athlete_id {item.athlete_id}"
     else:
@@ -444,7 +448,7 @@ def notify_admin_about_manual_created_athletes(
         return
 
     athlete_names = ", ".join(
-        f"{athlete.first_name} {athlete.last_name}".strip()
+        athlete_display_name(athlete)
         for athlete in unique_athletes[:5]
     )
     if len(unique_athletes) > 5:
@@ -890,7 +894,7 @@ def resolve_event_athlete(
     suggestions = build_athlete_suggestions_for_event(
         db,
         event,
-        f"{payload.first_name} {payload.last_name}",
+        athlete_display_name_from_parts(payload.first_name, payload.last_name),
     )
     if athlete:
         return schemas.EventAthleteResolveResponse(
@@ -968,9 +972,18 @@ def get_event_ranking_view(
         athlete=athlete,
         data_quality=data_quality,
     )
-    ordered_ranking_query = order_ranking_query(ranking_query, sort_by)
-    ranking_total = ordered_ranking_query.count()
-    ranking_results = ordered_ranking_query.offset(ranking_offset).limit(ranking_limit).all()
+    if uses_derived_aa_d_score_sort(sort_by, [apparatus] if apparatus else None):
+        ranking_total = count_aa_d_score_ranked_results(ranking_query, db)
+        ranking_results = fetch_aa_d_score_ranked_results(
+            ranking_query,
+            db,
+            ranking_limit,
+            offset=ranking_offset,
+        )
+    else:
+        ordered_ranking_query = order_ranking_query(ranking_query, sort_by)
+        ranking_total = ordered_ranking_query.count()
+        ranking_results = ordered_ranking_query.offset(ranking_offset).limit(ranking_limit).all()
 
     athlete_suggestions = []
     if athlete_query and len(athlete_query.strip()) >= 2:
@@ -1007,7 +1020,7 @@ def get_event_ranking_view(
             sort_by=sort_by,
             data_quality=data_quality,
         ),
-        results=build_ranking_entries(ranking_results, sort_by),
+        results=build_ranking_entries(ranking_results, sort_by, rank_offset=ranking_offset),
         total_results=ranking_total,
     )
 
@@ -1036,24 +1049,44 @@ def get_event_profile_view(
     result_count = len(event_results)
     groups = (
         db.query(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
             models.Result.apparatus,
             models.Result.day,
             models.Result.round,
             func.count(models.Result.id).label("count"),
         )
         .filter(models.Result.event_id == event_id, models.Result.is_deleted.is_(False))
-        .group_by(models.Result.apparatus, models.Result.day, models.Result.round)
-        .order_by(models.Result.round, models.Result.day, models.Result.apparatus)
+        .group_by(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
+            models.Result.apparatus,
+            models.Result.day,
+            models.Result.round,
+        )
+        .order_by(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
+            models.Result.round,
+            models.Result.day,
+            models.Result.apparatus,
+        )
         .all()
     )
     result_groups = [
         {
+            "discipline": discipline_value,
+            "category": category_value,
+            "format": format_value,
             "apparatus": apparatus,
             "day": day,
             "round": round_value,
             "count": count,
         }
-        for apparatus, day, round_value, count in groups
+        for discipline_value, category_value, format_value, apparatus, day, round_value, count in groups
     ]
 
     ranking_query = apply_event_ranking_filters(
@@ -1067,9 +1100,17 @@ def get_event_profile_view(
         athlete=athlete,
         data_quality=data_quality,
     )
-    ordered_ranking_query = order_ranking_query(ranking_query, sort_by)
-    ranking_total = ordered_ranking_query.count()
-    ranking_results = ordered_ranking_query.limit(ranking_limit).all()
+    if uses_derived_aa_d_score_sort(sort_by, [apparatus] if apparatus else None):
+        ranking_total = count_aa_d_score_ranked_results(ranking_query, db)
+        ranking_results = fetch_aa_d_score_ranked_results(
+            ranking_query,
+            db,
+            ranking_limit,
+        )
+    else:
+        ordered_ranking_query = order_ranking_query(ranking_query, sort_by)
+        ranking_total = ordered_ranking_query.count()
+        ranking_results = ordered_ranking_query.limit(ranking_limit).all()
     event_item = build_event_calendar_item(event, result_count, as_of)
     empty_state = None
     if not result_count:
@@ -1164,25 +1205,45 @@ def get_event_result_groups(
 
     groups = (
         db.query(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
             models.Result.apparatus,
             models.Result.day,
             models.Result.round,
             func.count(models.Result.id).label("count"),
         )
         .filter(models.Result.event_id == event_id, models.Result.is_deleted.is_(False))
-        .group_by(models.Result.apparatus, models.Result.day, models.Result.round)
-        .order_by(models.Result.round, models.Result.day, models.Result.apparatus)
+        .group_by(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
+            models.Result.apparatus,
+            models.Result.day,
+            models.Result.round,
+        )
+        .order_by(
+            models.Result.discipline,
+            models.Result.category,
+            models.Result.format,
+            models.Result.round,
+            models.Result.day,
+            models.Result.apparatus,
+        )
         .all()
     )
 
     return [
         {
+            "discipline": discipline_value,
+            "category": category_value,
+            "format": format_value,
             "apparatus": apparatus,
             "day": day,
             "round": round_value,
             "count": count,
         }
-        for apparatus, day, round_value, count in groups
+        for discipline_value, category_value, format_value, apparatus, day, round_value, count in groups
     ]
 
 

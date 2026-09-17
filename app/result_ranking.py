@@ -1,8 +1,10 @@
 from typing import Optional
 
-from sqlalchemy import and_, case, or_
+from sqlalchemy import and_, case, func, or_
+from sqlalchemy.orm import aliased, object_session
 
 from app import models, schemas
+from app.display_names import athlete_display_name
 
 
 RANKING_METRIC_COLUMNS = {
@@ -176,8 +178,166 @@ def order_ranking_query(
 
 def get_result_metric_value(result: models.Result, sort_by: schemas.ResultRankingMetricEnum):
     if sort_by == schemas.ResultRankingMetricEnum.EXECUTION_ESTIMATE:
-        return schemas.calculate_execution_estimate(result.score, result.D_score)
+        return result_execution_estimate_for_ranking_entry(result)
+    if sort_by == schemas.ResultRankingMetricEnum.D_SCORE:
+        return result_d_score_for_ranking_entry(result)
     return getattr(result, RANKING_METRIC_COLUMNS[sort_by].key)
+
+
+def uses_derived_aa_d_score_sort(
+    sort_by: schemas.ResultRankingMetricEnum,
+    apparatus_filters: Optional[list[str]] = None,
+) -> bool:
+    return (
+        sort_by == schemas.ResultRankingMetricEnum.D_SCORE
+        and apparatus_filters is not None
+        and set(apparatus_filters) == {"AA"}
+    )
+
+
+def _nullable_columns_match(left_column, right_column):
+    return or_(
+        left_column == right_column,
+        and_(left_column.is_(None), right_column.is_(None)),
+    )
+
+
+def build_aa_d_score_totals_subquery(db):
+    component = aliased(models.Result)
+    component_count = func.count(component.id)
+    component_d_score_count = func.count(component.D_score)
+    represented_apparatus_count = func.count(func.distinct(component.apparatus))
+
+    return (
+        db.query(
+            component.athlete_id.label("athlete_id"),
+            component.event_id.label("event_id"),
+            component.discipline.label("discipline"),
+            component.category.label("category"),
+            component.format.label("format"),
+            component.round.label("round"),
+            component.day.label("day"),
+            func.sum(component.D_score).label("aa_d_score_total"),
+        )
+        .filter(
+            component.is_deleted.is_(False),
+            component.apparatus.is_not(None),
+            component.apparatus.notin_(["AA", "VT AVG"]),
+            component.score.is_not(None),
+        )
+        .group_by(
+            component.athlete_id,
+            component.event_id,
+            component.discipline,
+            component.category,
+            component.format,
+            component.round,
+            component.day,
+        )
+        .having(component_d_score_count == component_count)
+        .having(
+            or_(
+                and_(
+                    component.discipline == models.DisciplineEnum.MAG,
+                    represented_apparatus_count >= len(RANKING_APPARATUS_BREAKDOWN_ORDER[models.DisciplineEnum.MAG]),
+                ),
+                and_(
+                    component.discipline == models.DisciplineEnum.WAG,
+                    represented_apparatus_count >= len(RANKING_APPARATUS_BREAKDOWN_ORDER[models.DisciplineEnum.WAG]),
+                ),
+            )
+        )
+        .subquery()
+    )
+
+
+def apply_aa_d_score_total_join(query, db):
+    totals_subquery = build_aa_d_score_totals_subquery(db)
+    return (
+        query.filter(models.Result.apparatus == "AA")
+        .join(
+            totals_subquery,
+            and_(
+                models.Result.athlete_id == totals_subquery.c.athlete_id,
+                models.Result.event_id == totals_subquery.c.event_id,
+                models.Result.discipline == totals_subquery.c.discipline,
+                models.Result.category == totals_subquery.c.category,
+                models.Result.format == totals_subquery.c.format,
+                models.Result.round == totals_subquery.c.round,
+                _nullable_columns_match(models.Result.day, totals_subquery.c.day),
+            ),
+        )
+        .filter(totals_subquery.c.aa_d_score_total.is_not(None)),
+        totals_subquery.c.aa_d_score_total,
+    )
+
+
+def aa_d_score_order_by(aa_d_score_total_column, use_official_rank: bool = True):
+    order_by = [
+        aa_d_score_total_column.desc(),
+        case((models.Result.score.is_(None), 1), else_=0),
+        models.Result.score.desc(),
+    ]
+    if use_official_rank:
+        order_by.extend([
+            case((models.Result.rank.is_(None), 1), else_=0),
+            models.Result.rank.asc(),
+        ])
+    order_by.append(models.Result.id.asc())
+    return order_by
+
+
+def attach_aa_d_score_total(result: models.Result, aa_d_score_total) -> models.Result:
+    result._derived_aa_d_score_total = round(float(aa_d_score_total), 3)
+    return result
+
+
+def fetch_aa_d_score_ranked_results(
+    query,
+    db,
+    limit: int,
+    offset: int = 0,
+    use_official_rank: bool = True,
+) -> list[models.Result]:
+    ranked_query, aa_d_score_total_column = apply_aa_d_score_total_join(query, db)
+    rows = (
+        ranked_query
+        .add_columns(aa_d_score_total_column)
+        .order_by(*aa_d_score_order_by(aa_d_score_total_column, use_official_rank))
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+    return [attach_aa_d_score_total(result, aa_d_score_total) for result, aa_d_score_total in rows]
+
+
+def count_aa_d_score_ranked_results(query, db) -> int:
+    ranked_query, _aa_d_score_total_column = apply_aa_d_score_total_join(query, db)
+    return ranked_query.count()
+
+
+def order_python_ranking_results(
+    results: list[models.Result],
+    sort_by: schemas.ResultRankingMetricEnum,
+    use_official_rank: bool = True,
+) -> list[models.Result]:
+    ranked_results = [
+        result for result in results
+        if get_result_metric_value(result, sort_by) is not None
+    ]
+
+    def sort_key(result: models.Result):
+        metric_value = get_result_metric_value(result, sort_by)
+        primary_value = metric_value if sort_by == schemas.ResultRankingMetricEnum.PENALTY else -metric_value
+        score_missing = result.score is None
+        score_value = -(result.score or 0)
+        rank_missing = result.rank is None
+        rank_value = result.rank or 0
+        if not use_official_rank:
+            return (primary_value, score_missing, score_value, result.id)
+        return (primary_value, score_missing, score_value, rank_missing, rank_value, result.id)
+
+    return sorted(ranked_results, key=sort_key)
 
 
 def build_ranking_score_component(result: models.Result) -> schemas.ResultRankingScoreComponent:
@@ -234,6 +394,86 @@ def aa_component_matches(component: models.Result, aa_result: models.Result) -> 
     )
 
 
+def result_component_scope_key(result: models.Result):
+    return (
+        result.athlete_id,
+        result.event_id,
+        result.discipline,
+        result.category,
+        result.format,
+        result.round,
+        result.day,
+    )
+
+
+def build_ranking_component_context(results: list[models.Result]) -> dict[str, dict[tuple, list[models.Result]]]:
+    target_results = [
+        result
+        for result in results
+        if result.apparatus in {"AA", "VT AVG"}
+    ]
+    if not target_results:
+        return {"aa": {}, "vt_avg": {}}
+
+    session = object_session(target_results[0])
+    if session is None:
+        return {"aa": {}, "vt_avg": {}}
+
+    event_ids = {result.event_id for result in target_results}
+    athlete_ids = {result.athlete_id for result in target_results}
+    components = (
+        session.query(models.Result)
+        .filter(
+            models.Result.is_deleted.is_(False),
+            models.Result.event_id.in_(event_ids),
+            models.Result.athlete_id.in_(athlete_ids),
+            or_(
+                and_(
+                    models.Result.apparatus.is_not(None),
+                    models.Result.apparatus.notin_(["AA", "VT AVG"]),
+                    models.Result.score.is_not(None),
+                ),
+                and_(
+                    models.Result.apparatus == "VT",
+                    models.Result.vt_attempt.in_([1, 2]),
+                ),
+            ),
+        )
+        .all()
+    )
+
+    aa_components_by_key: dict[tuple, list[models.Result]] = {}
+    vt_avg_components_by_key: dict[tuple, list[models.Result]] = {}
+    for component in components:
+        key = result_component_scope_key(component)
+        if component.apparatus not in (None, "AA", "VT AVG") and component.score is not None:
+            aa_components_by_key.setdefault(key, []).append(component)
+        if component.apparatus == "VT" and component.vt_attempt in (1, 2):
+            vt_avg_components_by_key.setdefault(key, []).append(component)
+
+    for key, key_components in aa_components_by_key.items():
+        aa_components_by_key[key] = sorted(key_components, key=aa_component_sort_key)
+    for key, key_components in vt_avg_components_by_key.items():
+        vt_avg_components_by_key[key] = sorted(key_components, key=vt_avg_component_sort_key)
+
+    return {
+        "aa": aa_components_by_key,
+        "vt_avg": vt_avg_components_by_key,
+    }
+
+
+def build_aa_component_results(result: models.Result) -> list[models.Result]:
+    if result.apparatus != "AA" or not result.event:
+        return []
+    return sorted(
+        (
+            component for component in result.event.results
+            if aa_component_matches(component, result)
+        ),
+        key=aa_component_sort_key,
+    )
+
+
 def aa_component_sort_key(component: models.Result):
     apparatus_order = RANKING_APPARATUS_BREAKDOWN_ORDER.get(component.discipline, [])
     apparatus_index = (
@@ -244,15 +484,64 @@ def aa_component_sort_key(component: models.Result):
     return apparatus_index, component.vt_attempt or 0, component.id
 
 
-def build_aa_apparatus_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
-    if result.apparatus != "AA" or not result.event:
-        return []
-    components = sorted(
-        (
-            component for component in result.event.results
-            if aa_component_matches(component, result)
-        ),
-        key=aa_component_sort_key,
+def expected_aa_apparatus_count(result: models.Result) -> int:
+    return len(RANKING_APPARATUS_BREAKDOWN_ORDER.get(result.discipline, []))
+
+
+def calculate_aa_d_score_total_from_components(
+    result: models.Result,
+    components: list[models.Result],
+) -> Optional[float]:
+    expected_count = expected_aa_apparatus_count(result)
+    if not components or expected_count == 0:
+        return None
+    represented_apparatuses = {component.apparatus for component in components}
+    if len(represented_apparatuses) < expected_count:
+        return None
+    if any(component.D_score is None for component in components):
+        return None
+    return round(sum(float(component.D_score) for component in components), 3)
+
+
+def calculate_aa_d_score_total(result: models.Result) -> Optional[float]:
+    return calculate_aa_d_score_total_from_components(result, build_aa_component_results(result))
+
+
+def result_d_score_for_ranking_entry(
+    result: models.Result,
+    component_context: Optional[dict[str, dict[tuple, list[models.Result]]]] = None,
+) -> Optional[float]:
+    if result.apparatus == "AA" and hasattr(result, "_derived_aa_d_score_total"):
+        return result._derived_aa_d_score_total
+    if result.apparatus == "AA" and component_context is not None:
+        components = component_context["aa"].get(result_component_scope_key(result), [])
+        return calculate_aa_d_score_total_from_components(result, components)
+    if result.apparatus == "AA":
+        return calculate_aa_d_score_total(result)
+    return result.D_score
+
+
+def result_execution_estimate_for_ranking_entry(
+    result: models.Result,
+    component_context: Optional[dict[str, dict[tuple, list[models.Result]]]] = None,
+) -> Optional[float]:
+    d_score = result_d_score_for_ranking_entry(result, component_context)
+    if result.apparatus == "AA":
+        if result.score is None or d_score is None:
+            return None
+        execution_estimate = round(float(result.score) - float(d_score), 3)
+        return execution_estimate if execution_estimate >= 0 else None
+    return schemas.calculate_execution_estimate(result.score, d_score)
+
+
+def build_aa_apparatus_scores(
+    result: models.Result,
+    component_context: Optional[dict[str, dict[tuple, list[models.Result]]]] = None,
+) -> list[schemas.ResultRankingScoreComponent]:
+    components = (
+        component_context["aa"].get(result_component_scope_key(result), [])
+        if component_context is not None
+        else build_aa_component_results(result)
     )
     return [build_ranking_score_component(component) for component in components]
 
@@ -277,36 +566,52 @@ def vt_avg_component_sort_key(component: models.Result):
     return component.vt_attempt or 0, component.id
 
 
-def build_vt_avg_apparatus_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
-    if result.apparatus != "VT AVG" or not result.event:
+def build_vt_avg_apparatus_scores(
+    result: models.Result,
+    component_context: Optional[dict[str, dict[tuple, list[models.Result]]]] = None,
+) -> list[schemas.ResultRankingScoreComponent]:
+    if result.apparatus != "VT AVG":
         return []
-    components = sorted(
-        (
-            component for component in result.event.results
-            if vt_avg_component_matches(component, result)
-        ),
-        key=vt_avg_component_sort_key,
+    if component_context is not None:
+        components = component_context["vt_avg"].get(result_component_scope_key(result), [])
+        return [build_ranking_score_component(component) for component in components]
+    if not result.event:
+        return []
+    components = (
+        sorted(
+            (
+                component for component in result.event.results
+                if vt_avg_component_matches(component, result)
+            ),
+            key=vt_avg_component_sort_key,
+        )
     )
     return [build_ranking_score_component(component) for component in components]
 
 
-def build_ranking_detail_scores(result: models.Result) -> list[schemas.ResultRankingScoreComponent]:
+def build_ranking_detail_scores(
+    result: models.Result,
+    component_context: Optional[dict[str, dict[tuple, list[models.Result]]]] = None,
+) -> list[schemas.ResultRankingScoreComponent]:
     if result.apparatus == "AA":
-        return build_aa_apparatus_scores(result)
+        return build_aa_apparatus_scores(result, component_context)
     if result.apparatus == "VT AVG":
-        return build_vt_avg_apparatus_scores(result)
+        return build_vt_avg_apparatus_scores(result, component_context)
     return []
 
 
 def build_ranking_entries(
     results: list[models.Result],
     sort_by: schemas.ResultRankingMetricEnum,
+    rank_offset: int = 0,
 ) -> list[schemas.ResultRankingEntry]:
     ranking = []
     previous_value = object()
     current_rank = 0
-    for index, result in enumerate(results, start=1):
+    component_context = build_ranking_component_context(results)
+    for index, result in enumerate(results, start=rank_offset + 1):
         metric_value = get_result_metric_value(result, sort_by)
+        entry_d_score = result_d_score_for_ranking_entry(result, component_context)
         e_score_status = schemas.result_nullable_execution_component_status(
             result.event.year if result.event else None,
             result.E_score,
@@ -321,6 +626,7 @@ def build_ranking_entries(
             result.apparatus,
             result.Bonus,
         )
+        entry_execution_estimate = result_execution_estimate_for_ranking_entry(result, component_context)
         if metric_value != previous_value:
             current_rank = index
             previous_value = metric_value
@@ -330,7 +636,7 @@ def build_ranking_entries(
                 computed_rank=current_rank,
                 official_rank=result.rank,
                 athlete_id=result.athlete_id,
-                athlete_name=f"{result.athlete.first_name} {result.athlete.last_name}",
+                athlete_name=athlete_display_name(result.athlete),
                 country=result_represented_country(result),
                 event_id=result.event_id,
                 event_name=result.event.name,
@@ -344,24 +650,24 @@ def build_ranking_entries(
                 format=result.format,
                 round=result.round,
                 score=result.score,
-                D_score=result.D_score,
-                execution_estimate=schemas.calculate_execution_estimate(result.score, result.D_score),
+                D_score=entry_d_score,
+                execution_estimate=entry_execution_estimate,
                 E_score=result.E_score,
                 Penalty=result.Penalty,
                 e_score_status=e_score_status,
                 penalty_status=penalty_status,
                 Bonus=result.Bonus,
                 bonus_status=bonus_status,
-                is_complete=result_is_complete(result),
-                missing_fields=schemas.result_missing_fields(result.score, result.D_score),
+                is_complete=schemas.result_is_complete(result.score, entry_d_score),
+                missing_fields=schemas.result_missing_fields(result.score, entry_d_score),
                 vault_attempt_order_uncertain=result.vault_attempt_order_uncertain,
                 data_warnings=schemas.result_data_warnings(
                     result.vault_attempt_order_uncertain,
-                    schemas.has_execution_estimate(result.score, result.D_score),
+                    entry_execution_estimate is not None,
                     penalty_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                     bonus_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
                 ),
-                apparatus_scores=build_ranking_detail_scores(result),
+                apparatus_scores=build_ranking_detail_scores(result, component_context),
             )
         )
     return ranking

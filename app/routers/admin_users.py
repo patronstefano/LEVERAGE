@@ -1,5 +1,7 @@
+import json
 from datetime import date, datetime
-from typing import Optional
+from enum import Enum
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_
@@ -444,6 +446,7 @@ def list_audit_logs(
     entity_type: Optional[str] = Query(None),
     entity_id: Optional[int] = Query(None),
     action: Optional[str] = Query(None),
+    review_status: Optional[models.AuditReviewStatusEnum] = Query(None),
     limit: int = Query(100, ge=1, le=500),
 ):
     query = db.query(models.AuditLog)
@@ -453,7 +456,183 @@ def list_audit_logs(
         query = query.filter(models.AuditLog.entity_id == entity_id)
     if action:
         query = query.filter(models.AuditLog.action == action)
+    if review_status:
+        query = query.filter(models.AuditLog.review_status == review_status)
     return query.order_by(models.AuditLog.created_at.desc(), models.AuditLog.id.desc()).limit(limit).all()
+
+
+AUDIT_REVERT_MODELS = {
+    "Athlete": models.Athlete,
+    "Event": models.Event,
+    "Result": models.Result,
+}
+
+
+def get_audit_log_or_404(db: Session, audit_log_id: int) -> models.AuditLog:
+    audit_log = db.query(models.AuditLog).filter(models.AuditLog.id == audit_log_id).first()
+    if not audit_log:
+        raise HTTPException(status_code=404, detail="Audit log not found")
+    return audit_log
+
+
+def ensure_audit_log_can_be_reviewed(
+    audit_log: models.AuditLog,
+    current_user: models.User,
+) -> None:
+    if audit_log.review_status != models.AuditReviewStatusEnum.PENDING:
+        raise HTTPException(status_code=400, detail="Audit log has already been reviewed")
+    if audit_log.admin_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Super admin cannot review their own audit log")
+
+
+def parse_snapshot(snapshot_json: Optional[str]) -> dict[str, Any]:
+    if not snapshot_json:
+        raise HTTPException(status_code=400, detail="Audit log does not contain a reversible snapshot")
+    try:
+        snapshot = json.loads(snapshot_json)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail="Audit log snapshot is not valid JSON") from exc
+    if not isinstance(snapshot, dict):
+        raise HTTPException(status_code=400, detail="Audit log snapshot is not an object")
+    return snapshot
+
+
+def coerce_snapshot_value(column, value):
+    if value is None:
+        return None
+    try:
+        python_type = column.type.python_type
+    except NotImplementedError:
+        return value
+
+    if isinstance(python_type, type) and issubclass(python_type, Enum):
+        try:
+            return python_type(value)
+        except ValueError:
+            try:
+                return python_type[str(value)]
+            except KeyError as exc:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Snapshot value {value!r} is invalid for {column.name}",
+                ) from exc
+    if python_type is datetime and isinstance(value, str):
+        return datetime.fromisoformat(value)
+    if python_type is date and isinstance(value, str):
+        return date.fromisoformat(value)
+    if python_type is bool:
+        if isinstance(value, bool):
+            return value
+        return str(value).strip().lower() in {"1", "true", "yes"}
+    if python_type is int:
+        return int(value)
+    if python_type is float:
+        return float(value)
+    return value
+
+
+def apply_audit_snapshot(entity, snapshot: dict[str, Any]) -> None:
+    for column in entity.__table__.columns:
+        if column.name == "id" or column.name not in snapshot:
+            continue
+        setattr(entity, column.name, coerce_snapshot_value(column, snapshot[column.name]))
+
+
+def mark_audit_log_reviewed(
+    audit_log: models.AuditLog,
+    current_user: models.User,
+    status: models.AuditReviewStatusEnum,
+    note: Optional[str],
+) -> None:
+    audit_log.review_status = status
+    audit_log.reviewed_by_super_admin_id = current_user.id
+    audit_log.reviewed_at = datetime.utcnow()
+    audit_log.review_note = note
+
+
+@router.post("/audit-logs/{audit_log_id}/approve", response_model=schemas.AuditLogRead)
+def approve_audit_log(
+    audit_log_id: int,
+    payload: Optional[schemas.AuditLogReviewDecision] = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_super_admin_user),
+):
+    audit_log = get_audit_log_or_404(db, audit_log_id)
+    ensure_audit_log_can_be_reviewed(audit_log, current_user)
+    mark_audit_log_reviewed(
+        audit_log,
+        current_user,
+        models.AuditReviewStatusEnum.APPROVED,
+        payload.note if payload else None,
+    )
+    add_security_alert(
+        db,
+        current_user,
+        f"Security: {current_user.email} approved audit log #{audit_log.id} "
+        f"({audit_log.action} {audit_log.entity_type} #{audit_log.entity_id}).",
+        related_athlete_id=audit_log.entity_id if audit_log.entity_type == "Athlete" else None,
+        related_event_id=audit_log.entity_id if audit_log.entity_type == "Event" else None,
+        related_result_id=audit_log.entity_id if audit_log.entity_type == "Result" else None,
+    )
+    db.commit()
+    db.refresh(audit_log)
+    return audit_log
+
+
+@router.post("/audit-logs/{audit_log_id}/revert", response_model=schemas.AuditLogRead)
+def revert_audit_log(
+    audit_log_id: int,
+    payload: Optional[schemas.AuditLogReviewDecision] = None,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_super_admin_user),
+):
+    audit_log = get_audit_log_or_404(db, audit_log_id)
+    ensure_audit_log_can_be_reviewed(audit_log, current_user)
+    if audit_log.action != "update":
+        raise HTTPException(status_code=400, detail="Only update audit logs can be reverted")
+
+    model_class = AUDIT_REVERT_MODELS.get(audit_log.entity_type)
+    if model_class is None:
+        raise HTTPException(status_code=400, detail="Audit log entity type cannot be reverted")
+
+    entity = db.query(model_class).filter(model_class.id == audit_log.entity_id).first()
+    if not entity:
+        raise HTTPException(status_code=404, detail=f"{audit_log.entity_type} not found")
+
+    snapshot = parse_snapshot(audit_log.before_json)
+    before_revert = model_snapshot(entity)
+    apply_audit_snapshot(entity, snapshot)
+    mark_audit_log_reviewed(
+        audit_log,
+        current_user,
+        models.AuditReviewStatusEnum.REVERTED,
+        payload.note if payload else None,
+    )
+    revert_log = add_audit_log(
+        db,
+        current_user,
+        "revert_update",
+        audit_log.entity_type,
+        audit_log.entity_id,
+        before=before_revert,
+        after=model_snapshot(entity),
+    )
+    revert_log.review_status = models.AuditReviewStatusEnum.APPROVED
+    revert_log.reviewed_by_super_admin_id = current_user.id
+    revert_log.reviewed_at = audit_log.reviewed_at
+    revert_log.review_note = f"Generated by reverting audit log #{audit_log.id}"
+    add_security_alert(
+        db,
+        current_user,
+        f"Security: {current_user.email} reverted audit log #{audit_log.id} "
+        f"({audit_log.entity_type} #{audit_log.entity_id}).",
+        related_athlete_id=audit_log.entity_id if audit_log.entity_type == "Athlete" else None,
+        related_event_id=audit_log.entity_id if audit_log.entity_type == "Event" else None,
+        related_result_id=audit_log.entity_id if audit_log.entity_type == "Result" else None,
+    )
+    db.commit()
+    db.refresh(audit_log)
+    return audit_log
 
 
 def restore_entity(entity, current_user: models.User, db: Session, entity_type: str):

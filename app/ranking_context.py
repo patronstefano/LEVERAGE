@@ -56,6 +56,11 @@ def apply_ranking_scoring_cycle_scope(
     explicit_period_filter: bool,
 ):
     scoring_cycle_values = parse_multi_value_query(scoring_cycle)
+    if explicit_period_filter and (scoring_cycle_values or include_all_scoring_cycles):
+        raise HTTPException(
+            status_code=400,
+            detail="Use either scoring_cycle/include_all_scoring_cycles or explicit period filters, not both",
+        )
     if scoring_cycle_values and include_all_scoring_cycles:
         raise HTTPException(
             status_code=400,
@@ -101,6 +106,7 @@ def build_ranking_response(
     allow_mixed_disciplines: bool,
     context_years: Optional[list[int]] = None,
     context_disciplines: Optional[list[models.DisciplineEnum]] = None,
+    rank_offset: int = 0,
 ) -> schemas.ResultRanking:
     available_cycles = unique_scoring_cycles_for_years(
         context_years
@@ -131,7 +137,7 @@ def build_ranking_response(
         )
 
     return schemas.ResultRanking(
-        ranking=build_ranking_entries(results, sort_by),
+        ranking=build_ranking_entries(results, sort_by, rank_offset=rank_offset),
         discipline=discipline,
         scoring_cycle=scoring_cycle_payload(selected_cycle) if selected_cycle else None,
         available_scoring_cycles=[scoring_cycle_payload(cycle) for cycle in available_cycles],

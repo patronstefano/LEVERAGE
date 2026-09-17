@@ -16,6 +16,12 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app import models
+from app.display_names import athlete_display_name, athlete_display_name_from_parts
+from app.event_levels import (
+    is_continental_event_level_name,
+    is_international_event_level_name,
+    is_national_event_level_name,
+)
 from app.i18n import translate
 from app.result_identity import result_identity_key
 
@@ -25,6 +31,10 @@ WAG_APPARATUS = {"VT", "UB", "BB", "FX"}
 AA_ALIASES = {"AA", "ALL AROUND", "ALL-AROUND", "ALLAROUND", "TOTAL"}
 VT_AVG_ALIASES = {"VT AVG", "VT AVERAGE", "VAULT AVG", "VAULT AVERAGE"}
 VT_SUM_ALIASES = {"VT SUM"}
+MIXED_TEAM_APPARATUS_BY_DISCIPLINE = {
+    models.DisciplineEnum.MAG: {"FX", "PB", "HB"},
+    models.DisciplineEnum.WAG: {"BB", "UB", "FX"},
+}
 GYMTERNET_POST_2025_COMPONENT_WARNING = (
     "Gymternet legacy import detected results after 2025: 2025 vault and missing-component "
     "rules are applied. Missing E_score, Penalty and Bonus remain not available. "
@@ -36,12 +46,16 @@ SAME_CONTEXT_DIFFERENT_SCORE_RULE_MESSAGE = (
     "separate when merging them would create the same event/result context with different "
     "score or D_score values."
 )
+ATHLETE_NAME_NORMALIZATION_OVERRIDES = {
+    "ilya kovtun": "Illia Kovtun",
+}
 
 MEET_SUFFIX_MAP = {
     "QF": (models.RoundEnum.QUALIFICATION, models.FormatEnum.INDIVIDUAL),
     "TF": (models.RoundEnum.FINAL, models.FormatEnum.TEAM),
     "AA": (models.RoundEnum.FINAL, models.FormatEnum.INDIVIDUAL),
     "EF": (models.RoundEnum.FINAL, models.FormatEnum.APPARATUS),
+    "MT": (models.RoundEnum.FINAL, models.FormatEnum.MIXED_TEAM),
 }
 
 EVENT_LEVEL_MAP = {
@@ -283,12 +297,61 @@ def parse_gymternet_file(
             issues=[{"severity": "error", "message": "Only .xlsx and .csv files are supported"}],
         )
     records = assign_automatic_days(parsed.records, parsed.issues)
+    append_mixed_team_apparatus_profile_warnings(records, parsed.issues)
     append_post_2025_policy_warning(records, parsed.issues)
     return GymternetParseOutput(
         records=records,
         issues=parsed.issues,
         orphan_dscore_records=parsed.orphan_dscore_records or [],
     )
+
+
+def append_mixed_team_apparatus_profile_warnings(
+    records: list[ParsedGymternetResult],
+    issues: list[dict],
+) -> None:
+    observed_by_event: dict[tuple[str, int], dict[models.DisciplineEnum, set[str]]] = {}
+    unexpected_by_event: dict[tuple[str, int], dict[models.DisciplineEnum, set[str]]] = {}
+    rows_by_event: dict[tuple[str, int], set[tuple[str, int]]] = {}
+
+    for record in records:
+        if record.format != models.FormatEnum.MIXED_TEAM:
+            continue
+        key = (record.event_name, record.year)
+        observed_by_event.setdefault(key, {}).setdefault(record.discipline, set()).add(record.apparatus)
+        rows_by_event.setdefault(key, set()).add((record.source_sheet, record.source_row))
+        expected = MIXED_TEAM_APPARATUS_BY_DISCIPLINE[record.discipline]
+        if record.apparatus not in expected:
+            unexpected_by_event.setdefault(key, {}).setdefault(record.discipline, set()).add(record.apparatus)
+
+    for key, unexpected_by_discipline in sorted(unexpected_by_event.items()):
+        event_name, year = key
+        observed = observed_by_event.get(key, {})
+        issues.append({
+            "severity": "warning",
+            "message": (
+                f"Mixed Team apparatus profile review needed for {event_name} {year}: "
+                "MT is expected to contain only MAG FX/PB/HB and WAG BB/UB/FX."
+            ),
+            "event_name": event_name,
+            "year": year,
+            "expected_apparatus_by_discipline": {
+                discipline.value: sorted(apparatuses)
+                for discipline, apparatuses in MIXED_TEAM_APPARATUS_BY_DISCIPLINE.items()
+            },
+            "observed_apparatus_by_discipline": {
+                discipline.value: sorted(apparatuses)
+                for discipline, apparatuses in observed.items()
+            },
+            "unexpected_apparatus_by_discipline": {
+                discipline.value: sorted(apparatuses)
+                for discipline, apparatuses in unexpected_by_discipline.items()
+            },
+            "source_rows": [
+                {"sheet": sheet, "row": row}
+                for sheet, row in sorted(rows_by_event.get(key, set()))
+            ],
+        })
 
 
 def append_post_2025_policy_warning(
@@ -654,28 +717,38 @@ def parse_pivot_rows(
                 day=record_day,
             )
             if derive_vt2_final_score and vt_score is not None and score_kind == "final":
-                add_record_if_score(
-                    records,
-                    sheet_name,
-                    row_number,
-                    event_name,
-                    year,
-                    athlete_name,
-                    first_name,
-                    last_name,
-                    country,
-                    discipline,
-                    category,
-                    "VT",
-                    2,
-                    base_format,
-                    round_value,
+                derived_vt2_score = validate_derived_gymternet_score_value(
                     round(vt_avg * 2 - vt_score, 3),
                     score_kind,
+                    "VT",
                     issues,
-                    day=record_day,
-                    vault_attempt_order_uncertain=True,
+                    sheet_name,
+                    row_number,
+                    f"(2 * VT AVG {vt_avg}) - VT {vt_score}",
                 )
+                if derived_vt2_score is not None:
+                    add_record_if_score(
+                        records,
+                        sheet_name,
+                        row_number,
+                        event_name,
+                        year,
+                        athlete_name,
+                        first_name,
+                        last_name,
+                        country,
+                        discipline,
+                        category,
+                        "VT",
+                        2,
+                        base_format,
+                        round_value,
+                        derived_vt2_score,
+                        score_kind,
+                        issues,
+                        day=record_day,
+                        vault_attempt_order_uncertain=True,
+                    )
             if create_missing_vt2_final_score and vt_score is not None and score_kind == "final":
                 add_record(
                     records,
@@ -866,6 +939,7 @@ def merge_final_and_dscore(
             continue
         if d_score is not None:
             matched_dscore_keys.add(record.import_key)
+        d_score = validate_gymternet_execution_estimate(record, d_score, issues)
         merged.append(ParsedGymternetResult(
             source_sheet=record.source_sheet,
             source_row=record.source_row,
@@ -971,10 +1045,18 @@ def should_create_missing_vt2_final_score(year: int, discipline: models.Discipli
     return year >= 2025 and discipline == models.DisciplineEnum.WAG
 
 
+def normalize_athlete_name_lookup_key(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value.strip().lower())
+    normalized = "".join(character for character in normalized if not unicodedata.combining(character))
+    normalized = re.sub(r"[^a-z0-9]+", " ", normalized)
+    return re.sub(r"\s+", " ", normalized).strip()
+
+
 def normalize_athlete_name(name_raw) -> tuple[str, str, str, models.ResultCategoryEnum]:
     raw = str(name_raw).strip()
     category = models.ResultCategoryEnum.JUNIOR if "*" in raw else models.ResultCategoryEnum.SENIOR
     clean = re.sub(r"\s*\*+\s*$", "", raw).strip()
+    clean = ATHLETE_NAME_NORMALIZATION_OVERRIDES.get(normalize_athlete_name_lookup_key(clean), clean)
     parts = clean.split()
     if not parts:
         return "Unknown", "Unknown", "", category
@@ -1057,7 +1139,7 @@ def gymternet_score_upper_bound(score_kind: str, apparatus: str) -> Optional[flo
     if score_kind == "final":
         return 100.0 if apparatus == "AA" else 20.0
     if score_kind == "dscore":
-        return 20.0
+        return 20.0 if apparatus == "VT SUM" else 10.0
     return None
 
 
@@ -1075,6 +1157,18 @@ def normalize_gymternet_score_value(
     upper_bound = gymternet_score_upper_bound(score_kind, apparatus)
     if upper_bound is None or score <= upper_bound:
         return score
+
+    if score_kind == "dscore" and apparatus != "VT SUM" and score < 20:
+        issues.append({
+            "severity": "error",
+            "sheet": source,
+            "row": row_number,
+            "message": f"Skipped outlier {score_kind} score for {apparatus}: {score}",
+            "original_score": score,
+            "apparatus": apparatus,
+            "score_kind": score_kind,
+        })
+        return None
 
     for divisor in (10, 100, 1000):
         candidate = round(score / divisor, 3)
@@ -1102,7 +1196,64 @@ def normalize_gymternet_score_value(
         "apparatus": apparatus,
         "score_kind": score_kind,
     })
-    return score
+    return None
+
+
+def validate_derived_gymternet_score_value(
+    score: Optional[float],
+    score_kind: str,
+    apparatus: str,
+    issues: list[dict],
+    source: str,
+    row_number: int,
+    formula: str,
+) -> Optional[float]:
+    if score is None:
+        return None
+    upper_bound = gymternet_score_upper_bound(score_kind, apparatus)
+    if upper_bound is None or 0 <= score <= upper_bound:
+        return score
+    issues.append({
+        "severity": "error",
+        "sheet": source,
+        "row": row_number,
+        "message": (
+            f"Skipped derived outlier {score_kind} score for {apparatus}: "
+            f"{score} from {formula}"
+        ),
+        "original_score": score,
+        "apparatus": apparatus,
+        "score_kind": score_kind,
+        "formula": formula,
+    })
+    return None
+
+
+def validate_gymternet_execution_estimate(
+    record: ParsedGymternetResult,
+    D_score: Optional[float],
+    issues: list[dict],
+) -> Optional[float]:
+    if record.score is None or D_score is None:
+        return D_score
+    execution_estimate = round(record.score - D_score, 3)
+    if 0 <= execution_estimate <= 10:
+        return D_score
+    issues.append({
+        "severity": "warning",
+        "sheet": record.source_sheet,
+        "row": record.source_row,
+        "message": (
+            "Skipped D_score because it would produce an invalid estimated E score "
+            f"for {record.apparatus}: score {record.score} - D_score {D_score} = {execution_estimate}"
+        ),
+        "score": record.score,
+        "D_score": D_score,
+        "execution_estimate": execution_estimate,
+        "apparatus": record.apparatus,
+        "score_kind": "execution_estimate",
+    })
+    return None
 
 
 def parse_int(value) -> Optional[int]:
@@ -1130,12 +1281,30 @@ def parse_format(value) -> Optional[models.FormatEnum]:
     if not value:
         return None
     raw = str(value).strip().lower()
-    aliases = {"aa": "individual", "ind": "individual", "individual": "individual", "team": "team", "apparatus": "apparatus", "ef": "apparatus"}
+    aliases = {
+        "aa": "individual",
+        "ind": "individual",
+        "individual": "individual",
+        "team": "team",
+        "apparatus": "apparatus",
+        "ef": "apparatus",
+        "mixed": "mixed team",
+        "mixed team": "mixed team",
+        "mixed final": "mixed team",
+        "mixed team final": "mixed team",
+        "mt": "mixed team",
+    }
     return models.FormatEnum(aliases.get(raw, raw))
 
 
 def infer_event_level(event_name: str) -> models.LevelEnum:
     lower = event_name.strip().lower()
+    if is_national_event_level_name(lower):
+        return models.LevelEnum.NATIONAL_EVENT
+    if is_international_event_level_name(lower):
+        return models.LevelEnum.INTERNATIONAL_EVENT
+    if is_continental_event_level_name(lower):
+        return models.LevelEnum.CONTINENTAL_CHAMPIONSHIPS
     for key, level in EVENT_LEVEL_MAP.items():
         if key in lower:
             return level
@@ -1351,17 +1520,18 @@ def normalized_similarity(left: str, right: str) -> float:
 
 
 def athlete_full_name(athlete: models.Athlete) -> str:
-    return f"{athlete.first_name} {athlete.last_name}".strip()
+    return athlete_display_name(athlete)
 
 
 def athlete_name_similarity(record: ParsedGymternetResult, athlete: models.Athlete) -> float:
     imported = record.athlete_name.strip()
     existing = athlete_full_name(athlete)
-    existing_reversed = f"{athlete.last_name} {athlete.first_name}".strip()
+    existing_source_order = athlete_display_name_from_parts(athlete.last_name, athlete.first_name)
     return max(
         normalized_similarity(imported, existing),
-        normalized_similarity(imported, existing_reversed),
+        normalized_similarity(imported, existing_source_order),
         normalized_similarity(f"{record.first_name} {record.last_name}", existing),
+        normalized_similarity(f"{record.first_name} {record.last_name}", existing_source_order),
     )
 
 

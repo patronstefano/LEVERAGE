@@ -339,6 +339,8 @@ Nel data entry manuale e negli import futuri non-Gymternet, invece, se l'admin l
 
 Per alcuni result e possibile stimare una componente di esecuzione sottraendo il `D_score` dal final score. Questa stima non equivale sempre all'E-score ufficiale, perche puo includere penalty o bonus non registrati.
 
+La stima viene considerata utilizzabile solo se il valore calcolato rientra nell'intervallo tecnicamente valido `0-10`. Se `score - D_score` produce un valore negativo o superiore a `10`, il problema viene trattato come incoerenza del `D_score`: il final score resta nel database, mentre il `D_score` viene portato a `NULL` / `not available` per evitare che ranking, medie di difficolta e grafici mostrino una E stimata impossibile.
+
 Per questo motivo i result con execution stimata sono marcati e devono essere accompagnati da un alert UI del tipo:
 
 ```text
@@ -366,6 +368,23 @@ L'interfaccia dovra mostrare un alert sui vault derivati, ad esempio:
 ```text
 Si noti che Vault 1 puo riferirsi a Vault 2 e viceversa.
 ```
+
+### 8.6 Upper bound dei final score non-AA e dei D-score
+
+Durante il controllo post-import e stato rilevato un caso di `VT` con final score superiore a `20.0`, valore incompatibile con un singolo apparatus. L'analisi ha mostrato che il punteggio impossibile non proveniva direttamente da una classifica finale valida, ma da un valore `VT attempt 2` derivato automaticamente da `VT AVG` usando un `VT attempt 1` sorgente digitato in modo errato.
+
+La regola adottata e:
+
+- i result non-AA non possono avere final score superiore a `20.0`;
+- i result `AA` possono superare `20.0`, perche rappresentano un totale multi-apparato;
+- il `D_score` salvato su un result non puo superare `10.0`;
+- per `AA` non viene salvato un `D_score` aggregato sopra `10.0`; la composizione tecnica dell'AA resta ricostruibile dai result dei singoli apparati collegati allo stesso atleta/evento/round/format;
+- se un valore derivato supera il limite, il tool non lo importa e lo segnala in review;
+- se il valore e gia nel database, la correzione avviene tramite script tracciabile, backup e report CSV.
+
+Per i D-score storici sopra `10.0`, quando non esiste una correzione certa, il campo viene portato a `NULL` / `not available` invece di essere stimato. Questa scelta evita di alterare medie di difficolta, ranking per D-score e profili atleta.
+
+Queste regole proteggono ranking, grafici e analisi aggregate da outlier non fisiologici, mantenendo pero validi i totali all-around.
 
 ---
 
@@ -546,6 +565,7 @@ I principali sono:
 - alcuni result 2025 senza final score quando il dato non e ricostruibile in modo affidabile;
 - necessita di review manuale per collisioni atleta/country;
 - possibili variazioni di naming dovute a traslitterazioni, refusi o inversioni nome/cognome.
+- assenza, nella maggior parte dei casi, della data esatta della singola sessione interna a eventi multigiorno. I file Calendar forniscono il periodo della competizione e i file Results forniscono round/format/apparatus, ma non sempre la data puntuale di qualifiche o finali. LEVERAGE evita quindi di inventare date non presenti nella fonte: nelle analytics i punti vengono ordinati usando l'inizio evento solo come riferimento cronologico, ma sono comunicati all'utente come risultati ottenuti nel periodo dell'evento.
 
 Questi limiti non sono stati nascosti. Sono stati modellati nel backend tramite campi, flag, alert e report, in modo che l'interfaccia futura possa mostrare all'utente quando un dato e completo, parziale, stimato o non disponibile.
 

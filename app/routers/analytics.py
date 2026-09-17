@@ -1,5 +1,5 @@
 from collections import defaultdict
-from datetime import date
+from datetime import date, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -8,13 +8,18 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.database import get_db
+from app.display_names import athlete_display_name
 from app.result_ranking import (
     apply_data_quality_filter,
+    fetch_aa_d_score_ranked_results,
     get_available_ranking_metrics,
     get_available_data_qualities,
     get_result_metric_value,
     order_ranking_query,
+    result_d_score_for_ranking_entry,
+    result_execution_estimate_for_ranking_entry,
     result_represented_country,
+    uses_derived_aa_d_score_sort,
 )
 from app.ranking_context import (
     apply_ranking_scoring_cycle_scope,
@@ -52,6 +57,18 @@ def parse_athlete_ids(ids: str) -> list[int]:
     return athlete_ids
 
 
+def parse_level_filters(raw_values: Optional[list[str]]) -> list[models.LevelEnum]:
+    levels: list[models.LevelEnum] = []
+    for raw_value in parse_multi_value_query(raw_values):
+        try:
+            level = models.LevelEnum(raw_value)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=f"Invalid event level: {raw_value}") from exc
+        if level not in levels:
+            levels.append(level)
+    return levels
+
+
 def metric_is_lower_better(metric: schemas.ResultRankingMetricEnum) -> bool:
     return metric == schemas.ResultRankingMetricEnum.PENALTY
 
@@ -72,8 +89,32 @@ def event_sort_date(event: models.Event) -> date:
     return event.start_date or date(event.year, 1, 1)
 
 
+def result_timeline_date(result: models.Result) -> Optional[date]:
+    event = result.event
+    if not event:
+        return None
+    if event.start_date and result.day and event.end_date:
+        candidate_date = event.start_date + timedelta(days=result.day - 1)
+        if event.start_date <= candidate_date <= event.end_date:
+            return candidate_date
+    return event.start_date
+
+
+def result_date_precision(result: models.Result) -> str:
+    event = result.event
+    if not event or not event.start_date:
+        return "year"
+    if result.day and event.end_date:
+        candidate_date = event.start_date + timedelta(days=result.day - 1)
+        if event.start_date <= candidate_date <= event.end_date:
+            return "derived_from_day"
+    if not event.end_date or event.end_date == event.start_date:
+        return "event_date"
+    return "event_period"
+
+
 def result_sort_key(result: models.Result):
-    return (event_sort_date(result.event), result.event_id, result.id)
+    return (result_timeline_date(result) or event_sort_date(result.event), result.event_id, result.id)
 
 
 def get_athlete_or_404(db: Session, athlete_id: int) -> models.Athlete:
@@ -158,8 +199,9 @@ def build_athlete_results_query(
 ):
     query = (
         db.query(models.Result)
-        .join(models.Event)
-        .join(models.Athlete)
+        .select_from(models.Result)
+        .join(models.Event, models.Result.event_id == models.Event.id)
+        .join(models.Athlete, models.Result.athlete_id == models.Athlete.id)
     )
     return apply_analytics_filters(
         query,
@@ -254,7 +296,9 @@ def build_raw_point(
     if value is None:
         return None
 
-    event_date = result.event.start_date
+    event_date = result_timeline_date(result)
+    d_score_value = result_d_score_for_ranking_entry(result)
+    execution_estimate_value = result_execution_estimate_for_ranking_entry(result)
     e_score_status = schemas.result_nullable_execution_component_status(
         result.event.year if result.event else None,
         result.E_score,
@@ -272,21 +316,27 @@ def build_raw_point(
     return schemas.AnalyticsChartPoint(
         x=event_date.isoformat() if event_date else str(result.event.year),
         value=value,
+        score=result.score,
+        D_score=d_score_value,
         year=result.event.year,
         date=event_date,
+        event_start_date=result.event.start_date,
+        event_end_date=result.event.end_date,
+        date_precision=result_date_precision(result),
         result_id=result.id,
         event_id=result.event_id,
         event_name=result.event.name,
         athlete_id=result.athlete_id,
-        athlete_name=f"{result.athlete.first_name} {result.athlete.last_name}",
+        athlete_name=athlete_display_name(result.athlete),
         country=result_represented_country(result),
         discipline=result.discipline,
         category=result.category,
         apparatus=result.apparatus,
+        vt_attempt=result.vt_attempt,
         day=result.day,
         format=result.format,
         round=result.round,
-        execution_estimate=schemas.calculate_execution_estimate(result.score, result.D_score),
+        execution_estimate=execution_estimate_value,
         E_score=result.E_score,
         Penalty=result.Penalty,
         e_score_status=e_score_status,
@@ -300,7 +350,7 @@ def build_raw_point(
         vault_attempt_order_uncertain=result.vault_attempt_order_uncertain,
         data_warnings=schemas.result_data_warnings(
             result.vault_attempt_order_uncertain,
-            schemas.has_execution_estimate(result.score, result.D_score),
+            execution_estimate_value is not None,
             penalty_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
             bonus_status == schemas.ScoreComponentStatusEnum.NOT_AVAILABLE,
         ),
@@ -722,7 +772,7 @@ def get_analytics_rankings(
     apparatus: Optional[list[str]] = Query(None, description="Repeat or comma-separate apparatus filters"),
     day: Optional[int] = Query(None, ge=1),
     country: Optional[str] = Query(None),
-    level: Optional[models.LevelEnum] = Query(None),
+    level: Optional[list[str]] = Query(None, description="Repeat or comma-separate event level filters"),
     start_year: Optional[int] = Query(None, ge=1900, le=2100),
     end_year: Optional[int] = Query(None, ge=1900, le=2100),
     start_date: Optional[date] = Query(None),
@@ -745,6 +795,7 @@ def get_analytics_rankings(
         description="Data quality filter: all, complete, missing_d_score, missing_score",
     ),
     limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
 ):
     event = None
     if event_id is not None:
@@ -757,11 +808,19 @@ def get_analytics_rankings(
     validate_period_bounds(start_year, end_year, start_date, end_date)
     validate_global_ranking_scope(event, discipline, allow_mixed_disciplines)
     apparatus_filters = parse_multi_value_query(apparatus)
+    level_filters = parse_level_filters(level)
+    exclusive_apparatus_filters = {"AA", "VT AVG"}
+    if exclusive_apparatus_filters.intersection(apparatus_filters) and len(set(apparatus_filters)) > 1:
+        raise HTTPException(
+            status_code=422,
+            detail="AA and VT AVG cannot be combined with other apparatus filters",
+        )
 
     query = (
         db.query(models.Result)
-        .join(models.Event)
-        .join(models.Athlete)
+        .select_from(models.Result)
+        .join(models.Event, models.Result.event_id == models.Event.id)
+        .join(models.Athlete, models.Result.athlete_id == models.Athlete.id)
     )
     query = apply_analytics_filters(
         query,
@@ -773,7 +832,7 @@ def get_analytics_rankings(
         apparatus=None,
         day=day,
         country=country,
-        level=level,
+        level=None,
         start_year=start_year,
         end_year=end_year,
         start_date=start_date,
@@ -782,18 +841,42 @@ def get_analytics_rankings(
     )
     if apparatus_filters:
         query = query.filter(models.Result.apparatus.in_(apparatus_filters))
+    if level_filters:
+        query = query.filter(models.Event.level.in_(level_filters))
     query, selected_cycle = apply_ranking_scoring_cycle_scope(
         query,
         scoring_cycle,
         include_all_scoring_cycles,
         has_explicit_period_filter(start_year, end_year, start_date, end_date),
     )
-    context_years = [year for (year,) in query.with_entities(models.Event.year).distinct().all()]
-    context_disciplines = [
-        result_discipline
-        for (result_discipline,) in query.with_entities(models.Result.discipline).distinct().all()
-    ]
-    results = order_ranking_query(query, sort_by, use_official_rank=event_id is not None).limit(limit).all()
+    context_years = (
+        [selected_cycle.start_year, selected_cycle.end_year]
+        if selected_cycle
+        else [year for (year,) in query.with_entities(models.Event.year).distinct().all()]
+    )
+    context_disciplines = (
+        [discipline]
+        if discipline
+        else [
+            result_discipline
+            for (result_discipline,) in query.with_entities(models.Result.discipline).distinct().all()
+        ]
+    )
+    if uses_derived_aa_d_score_sort(sort_by, apparatus_filters):
+        results = fetch_aa_d_score_ranked_results(
+            query,
+            db,
+            limit,
+            offset=offset,
+            use_official_rank=event_id is not None,
+        )
+    else:
+        results = (
+            order_ranking_query(query, sort_by, use_official_rank=event_id is not None)
+            .offset(offset)
+            .limit(limit)
+            .all()
+        )
     return build_ranking_response(
         results,
         sort_by,
@@ -802,6 +885,7 @@ def get_analytics_rankings(
         allow_mixed_disciplines,
         context_years=context_years,
         context_disciplines=context_disciplines,
+        rank_offset=offset,
     )
 
 
@@ -872,7 +956,7 @@ def compare_athletes_for_dashboard(
         series.append(
             schemas.AnalyticsAthleteSeries(
                 athlete_id=athlete.id,
-                athlete_name=f"{athlete.first_name} {athlete.last_name}",
+                athlete_name=athlete_display_name(athlete),
                 country=athlete.country,
                 discipline=athlete.discipline,
                 points=aggregate_results(results_by_athlete[athlete.id], metric, aggregation),
@@ -1156,7 +1240,7 @@ def get_age_by_country(
         if key not in unique_points:
             unique_points[key] = {
                 "athlete_id": result.athlete_id,
-                "athlete_name": f"{result.athlete.first_name} {result.athlete.last_name}",
+                "athlete_name": athlete_display_name(result.athlete),
                 "country": represented_country,
                 "birth_year": result.athlete.birth_year,
                 "age": age,
