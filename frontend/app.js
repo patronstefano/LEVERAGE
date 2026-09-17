@@ -1801,10 +1801,13 @@ function closeLanguageMenu() {
 }
 
 function closeSearchSuggestions() {
+  searchAutocompleteRequestId += 1;
+  analyticsComparisonSearchRequestId += 1;
   document.querySelectorAll(".search-suggestions").forEach((node) => {
     node.hidden = true;
     node.innerHTML = "";
     setSearchSuggestionsOpen(node, false);
+    setSearchSuggestionsBusy(node, false);
   });
 }
 
@@ -1823,6 +1826,14 @@ function setSearchSuggestionsOpen(suggestions, isOpen, itemCount = 4) {
   const panelPadding = 16;
   const height = panelPadding + (visibleRows * rowHeight) + (Math.max(0, visibleRows - 1) * rowGap);
   form.style.setProperty("--search-suggestions-visible-height", `${height}px`);
+}
+
+function setSearchSuggestionsBusy(suggestions, isBusy) {
+  if (isBusy) {
+    suggestions.setAttribute("aria-busy", "true");
+  } else {
+    suggestions.removeAttribute("aria-busy");
+  }
 }
 
 function setupIntroSplash() {
@@ -2946,9 +2957,10 @@ function buildSuggestionItems(data) {
 
 function renderSearchSuggestions(container, items) {
   if (!items.length) {
-    container.hidden = true;
-    container.innerHTML = "";
-    setSearchSuggestionsOpen(container, false);
+    container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("noResults"))}</div>`;
+    container.hidden = false;
+    setSearchSuggestionsOpen(container, true, 1);
+    setSearchSuggestionsBusy(container, false);
     return;
   }
   container.innerHTML = items.map((item) => `
@@ -2959,6 +2971,7 @@ function renderSearchSuggestions(container, items) {
   `).join("");
   container.hidden = false;
   setSearchSuggestionsOpen(container, true, items.length);
+  setSearchSuggestionsBusy(container, false);
   container.querySelectorAll(".search-suggestion").forEach((button) => {
     button.addEventListener("click", () => {
       closeSearchSuggestions();
@@ -2982,26 +2995,34 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
   const updateSuggestions = () => {
     window.clearTimeout(debounceTimer);
     const query = input.value.trim();
+    const requestId = ++searchAutocompleteRequestId;
     if (query.length < 2) {
       suggestions.hidden = true;
       suggestions.innerHTML = "";
       setSearchSuggestionsOpen(suggestions, false);
+      setSearchSuggestionsBusy(suggestions, false);
       return;
     }
-    suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${t("loading")}</div>`;
-    suggestions.hidden = false;
-    setSearchSuggestionsOpen(suggestions, true, 1);
+    const hadStableSuggestions = !suggestions.hidden && Boolean(suggestions.querySelector("button.search-suggestion"));
+    if (suggestions.hidden || !suggestions.childElementCount) {
+      suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
+      suggestions.hidden = false;
+      setSearchSuggestionsOpen(suggestions, true, 1);
+    }
+    setSearchSuggestionsBusy(suggestions, true);
     debounceTimer = window.setTimeout(async () => {
-      const requestId = ++searchAutocompleteRequestId;
       try {
         const data = await getJson("/search/", { q: query, limit: 5 });
         if (requestId !== searchAutocompleteRequestId) return;
         renderSearchSuggestions(suggestions, buildSuggestionItems(data));
       } catch (_error) {
         if (requestId !== searchAutocompleteRequestId) return;
-        suggestions.hidden = true;
-        suggestions.innerHTML = "";
-        setSearchSuggestionsOpen(suggestions, false);
+        setSearchSuggestionsBusy(suggestions, false);
+        if (!hadStableSuggestions) {
+          suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loadFailed"))}</div>`;
+          suggestions.hidden = false;
+          setSearchSuggestionsOpen(suggestions, true, 1);
+        }
       }
     }, 170);
   };
@@ -9075,6 +9096,7 @@ function renderAnalyticsComparisonSuggestions(athletes) {
   }
   container.hidden = false;
   setSearchSuggestionsOpen(container, true, Math.max(1, athletes.length));
+  setSearchSuggestionsBusy(container, false);
   container.querySelectorAll("[data-analytics-athlete-choice]").forEach((button) => {
     button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.athleteId)));
   });
@@ -9083,16 +9105,21 @@ function renderAnalyticsComparisonSuggestions(athletes) {
 async function searchAnalyticsComparisonAthletes(query) {
   const container = $("#analyticsAthleteSuggestions");
   if (!container) return;
+  const requestId = ++analyticsComparisonSearchRequestId;
   if (!query.trim()) {
     container.hidden = true;
     container.innerHTML = "";
     setSearchSuggestionsOpen(container, false);
+    setSearchSuggestionsBusy(container, false);
     return;
   }
-  const requestId = ++analyticsComparisonSearchRequestId;
-  container.hidden = false;
-  container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
-  setSearchSuggestionsOpen(container, true, 1);
+  const hadStableSuggestions = !container.hidden && Boolean(container.querySelector("[data-analytics-athlete-choice]"));
+  if (container.hidden || !container.childElementCount) {
+    container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
+    container.hidden = false;
+    setSearchSuggestionsOpen(container, true, 1);
+  }
+  setSearchSuggestionsBusy(container, true);
   try {
     const discipline = state.analyticsComparison.athletes.find(Boolean)?.discipline || "";
     const athletes = await getJson("/athletes/", { search: query.trim(), discipline, limit: 9, offset: 0 });
@@ -9101,8 +9128,12 @@ async function searchAnalyticsComparisonAthletes(query) {
     renderAnalyticsComparisonSuggestions(athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
   } catch (error) {
     if (requestId !== analyticsComparisonSearchRequestId) return;
-    container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(error.message || t("loadFailed"))}</div>`;
-    setSearchSuggestionsOpen(container, true, 1);
+    setSearchSuggestionsBusy(container, false);
+    if (!hadStableSuggestions) {
+      container.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(error.message || t("loadFailed"))}</div>`;
+      container.hidden = false;
+      setSearchSuggestionsOpen(container, true, 1);
+    }
   }
 }
 
@@ -9151,6 +9182,7 @@ function bindAnalyticsComparisonPickers() {
     let timer;
     input.addEventListener("input", () => {
       window.clearTimeout(timer);
+      analyticsComparisonSearchRequestId += 1;
       timer = window.setTimeout(() => searchAnalyticsComparisonAthletes(input.value), 140);
     });
     input.addEventListener("keydown", (event) => {
