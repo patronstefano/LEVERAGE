@@ -3416,6 +3416,7 @@ button {
 
 .analytics-comparison-remove span {
   display: block;
+  font-size: 18px;
   line-height: 1;
   transform: translateY(-1px);
 }
