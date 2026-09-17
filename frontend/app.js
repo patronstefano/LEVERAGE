@@ -38,6 +38,19 @@ function routeSection(route) {
   return "";
 }
 
+function contextualAthleteSourceSection(route) {
+  const [routePath, query = ""] = String(route || "/").split("?");
+  if (!/^\/athletes\/\d+$/.test(routePath)) return "";
+  const source = new URLSearchParams(query).get("from") || "";
+  if (source === "ranking") return "rankings";
+  if (source === "classification") return "events";
+  return "";
+}
+
+function activeRouteSection(route) {
+  return contextualAthleteSourceSection(route) || routeSection(route);
+}
+
 function routeBelongsToSection(route, section) {
   return routeSection(route) === section;
 }
@@ -2230,6 +2243,7 @@ function persistSectionRoutes() {
 }
 
 function rememberCurrentSectionRoute() {
+  if (contextualAthleteSourceSection(state.route)) return;
   const section = routeSection(state.route);
   if (!section) return;
   state.sectionRoutes[section] = state.route;
@@ -2267,7 +2281,7 @@ function syncNavIndicator() {
 function setActiveNav() {
   rememberCurrentSectionRoute();
   syncSectionNavLinks();
-  const currentSection = routeSection(state.route);
+  const currentSection = activeRouteSection(state.route);
   document.querySelectorAll(".nav-trigger").forEach((link) => {
     const section = link.dataset.sectionNav || "";
     const route = link.getAttribute("href")?.replace("#", "") || "/";
