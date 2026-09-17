@@ -42,6 +42,7 @@ function contextualAthleteSourceSection(route) {
   const [routePath, query = ""] = String(route || "/").split("?");
   if (!/^\/athletes\/\d+$/.test(routePath)) return "";
   const source = new URLSearchParams(query).get("from") || "";
+  if (source === "athletes") return "athletes";
   if (source === "ranking") return "rankings";
   if (source === "classification") return "events";
   return "";
@@ -2254,7 +2255,7 @@ function syncSectionNavLinks() {
   document.querySelectorAll(".nav-trigger[data-section-nav]").forEach((link) => {
     const section = link.dataset.sectionNav;
     if (!section || !SECTION_BASE_ROUTES[section]) return;
-    if (contextualSource && section === "athletes") {
+    if (contextualSource && contextualSource !== "athletes" && section === "athletes") {
       link.setAttribute("href", `#${SECTION_BASE_ROUTES.athletes}`);
       return;
     }
@@ -5587,6 +5588,15 @@ function athleteCardDisplayName(athlete = {}, fallback = "") {
   return [lastName, firstName].filter(Boolean).join(" ") || fallback;
 }
 
+function athleteSectionProfileHref(athleteId) {
+  const params = new URLSearchParams({ from: "athletes" });
+  const returnRoute = routeSection(state.route) === "athletes"
+    ? state.route
+    : SECTION_BASE_ROUTES.athletes;
+  params.set("return_to", returnRoute);
+  return `#/athletes/${athleteId}?${params.toString()}`;
+}
+
 function leverageIdLabel(id) {
   return `${t("leverageId")} ${id}`;
 }
@@ -5608,7 +5618,7 @@ function renderAthleteCards(athletes) {
       escapeHtml(athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`)),
       athlete.world_gymnastics_status || "",
       pills,
-      `#/athletes/${athlete.id}`,
+      athleteSectionProfileHref(athlete.id),
       favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
     );
   }).join("")}</div>`;
@@ -9626,6 +9636,12 @@ function athleteDetailBackDestination() {
   const params = new URLSearchParams(query);
   const source = params.get("from") || "";
   const returnRoute = params.get("return_to") || "";
+  if (source === "athletes") {
+    const athleteRoute = routeSection(returnRoute) === "athletes"
+      ? returnRoute
+      : SECTION_BASE_ROUTES.athletes;
+    return { href: `#${athleteRoute}`, label: t("backToAthletes") };
+  }
   if (source === "ranking") {
     const rankingRoute = routeSection(returnRoute) === "rankings"
       ? returnRoute
