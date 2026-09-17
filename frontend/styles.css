@@ -4425,6 +4425,11 @@ button {
   stroke-width: 1.6;
 }
 
+.athlete-radar-area.is-comparison.is-muted {
+  fill: color-mix(in srgb, var(--comparison-color) 6%, transparent);
+  stroke: color-mix(in srgb, var(--comparison-color) 30%, transparent);
+}
+
 .athlete-radar-focus-line {
   stroke: var(--brand-blue);
   stroke-linecap: round;
@@ -4436,6 +4441,10 @@ button {
   fill: var(--brand-blue);
   stroke: #fff;
   stroke-width: 2;
+}
+
+.athlete-radar-dot.analytics-comparison-radar-dot {
+  fill: var(--series-color);
 }
 
 .athlete-radar-dot {
@@ -4638,6 +4647,10 @@ button {
 
 .analytics-comparison-legend .is-primary {
   color: var(--series-color);
+}
+
+.analytics-comparison-radar-figure .analytics-comparison-legend .is-primary::before {
+  background: var(--series-color);
 }
 
 .athlete-trend-legend .is-primary::before {
