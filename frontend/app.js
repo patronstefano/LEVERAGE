@@ -8668,7 +8668,7 @@ function renderAnalyticsComparisonSelectedAthlete(athlete, slot) {
           <strong>${escapeHtml(name)}</strong>
           <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
         </div>
-        <button class="icon-button analytics-comparison-remove" type="button" data-analytics-remove-athlete="${slot}" aria-label="${escapeHtml(t("analyticsCompareRemove"))}" title="${escapeHtml(t("analyticsCompareRemove"))}">&times;</button>
+        <button class="icon-button analytics-comparison-remove" type="button" data-analytics-remove-athlete="${slot}" aria-label="${escapeHtml(t("analyticsCompareRemove"))}" title="${escapeHtml(t("analyticsCompareRemove"))}"><span aria-hidden="true">&times;</span></button>
       </div>
     </article>
   `;

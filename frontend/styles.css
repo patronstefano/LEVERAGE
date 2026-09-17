@@ -3323,6 +3323,7 @@ button {
 }
 
 .analytics-comparison-picker {
+  position: relative;
   display: grid;
   gap: var(--card-gap);
   min-width: 0;
@@ -3357,10 +3358,11 @@ button {
 
 .analytics-comparison-selected-athlete {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   min-height: 42px;
+  padding-right: 38px;
 }
 
 .analytics-comparison-selected-athlete > div {
@@ -3392,6 +3394,9 @@ button {
 }
 
 .analytics-comparison-remove {
+  position: absolute;
+  top: 50%;
+  right: var(--card-padding);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3405,7 +3410,14 @@ button {
   font-size: 18px;
   font-weight: 400;
   line-height: 1;
+  transform: translateY(-50%);
   transition: background 140ms ease, color 140ms ease;
+}
+
+.analytics-comparison-remove span {
+  display: block;
+  line-height: 1;
+  transform: translateY(-1px);
 }
 
 .analytics-comparison-remove:hover,
