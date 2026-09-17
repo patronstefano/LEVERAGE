@@ -8877,7 +8877,7 @@ function renderAnalyticsComparisonContent(data) {
         <div class="athlete-analytics-chart-block athlete-shape-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>
         <div class="athlete-analytics-chart-block athlete-trend-chart-block analytics-comparison-athlete-chart" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>
       </div>
-      <div class="analytics-comparison-summary-grid is-single">${renderAnalyticsComparisonSummary(item)}</div>
+      ${renderAthleteAnalyticsSummaryGrid({ metric: state.analyticsComparison.metric, summary: item.summary })}
       ${warningStack}
     `;
   }
