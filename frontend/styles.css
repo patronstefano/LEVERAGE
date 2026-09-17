@@ -3516,25 +3516,6 @@ button {
   grid-template-columns: minmax(0, 1fr);
 }
 
-.analytics-comparison-chart-heading {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 8px;
-  align-items: center;
-}
-
-.analytics-comparison-chart-heading h2 {
-  overflow: hidden;
-  font-size: 15px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.analytics-comparison-chart-heading small {
-  color: var(--muted);
-  font-size: 11px;
-}
-
 .analytics-comparison-radar-figure {
   min-height: 300px;
 }

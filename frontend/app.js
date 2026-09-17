@@ -398,8 +398,6 @@ const translations = {
     analyticsCompareOverlay: "Overlay",
     analyticsCompareRemove: "Remove athlete",
     analyticsCompareNoSuggestions: "No compatible athletes found.",
-    analyticsCompareProfile: "Apparatus profile",
-    analyticsCompareTrend: "Performance trend",
     loginHeading: "Sign in",
     loginIntro: "User and admin areas will use the authentication system already implemented in the backend.",
     noResults: "No results found.",
@@ -723,8 +721,6 @@ const translations = {
     analyticsCompareOverlay: "Sovrapposti",
     analyticsCompareRemove: "Rimuovi atleta",
     analyticsCompareNoSuggestions: "Nessun atleta compatibile trovato.",
-    analyticsCompareProfile: "Profilo attrezzi",
-    analyticsCompareTrend: "Trend performance",
     loginHeading: "Accedi",
     loginIntro: "Le aree utente e admin useranno il sistema di autenticazione già implementato.",
     noResults: "Nessun risultato trovato.",
@@ -1048,8 +1044,6 @@ const translations = {
     analyticsCompareOverlay: "Superpuestos",
     analyticsCompareRemove: "Eliminar atleta",
     analyticsCompareNoSuggestions: "No se encontraron atletas compatibles.",
-    analyticsCompareProfile: "Perfil por aparato",
-    analyticsCompareTrend: "Tendencia de rendimiento",
     loginHeading: "Entrar",
     loginIntro: "Las areas de usuario y admin usaran el sistema de autenticacion ya implementado.",
     noResults: "No se encontraron resultados.",
@@ -1373,8 +1367,6 @@ const translations = {
     analyticsCompareOverlay: "Superposes",
     analyticsCompareRemove: "Retirer l'athlete",
     analyticsCompareNoSuggestions: "Aucun athlete compatible trouve.",
-    analyticsCompareProfile: "Profil par appareil",
-    analyticsCompareTrend: "Tendance de performance",
     loginHeading: "Connexion",
     loginIntro: "Les espaces utilisateur et admin utiliseront l'authentification deja implementee.",
     noResults: "Aucun resultat.",
@@ -8754,7 +8746,7 @@ function renderAnalyticsComparisonTrendFigure(series, data) {
   }
   return `
     <div class="athlete-trend-figure analytics-comparison-trend-figure ${state.analyticsComparison.mode === "snapshot" ? "is-snapshot" : ""}" data-comparison-trend="true">
-      <svg class="athlete-trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("analyticsCompareTrend"))}">
+      <svg class="athlete-trend-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(t("analyticsTrendTitle"))}">
         ${renderAthleteTrendAxes(data.dateDomain, padding, width, height, minValue, maxValue, state.analyticsComparison.metric)}
         ${series.map((item) => {
           const sourceTrend = state.analyticsComparison.mode === "snapshot" ? item.contextTrend : item.trend;
@@ -8807,7 +8799,7 @@ function renderAnalyticsComparisonRadarFigure(series, data) {
   }).join("");
   return `
     <div class="athlete-radar-figure analytics-comparison-radar-figure">
-      <svg class="athlete-radar-svg" viewBox="0 0 300 300" role="img" aria-label="${escapeHtml(t("analyticsCompareProfile"))}">
+      <svg class="athlete-radar-svg" viewBox="0 0 300 300" role="img" aria-label="${escapeHtml(t("analyticsShapeTitle"))}">
         ${rings}${axes}<text class="athlete-radar-scale-label is-center" x="${center + 9}" y="${center + 3}">${escapeHtml(athleteAnalyticsRadarScaleLabel(athleteAnalyticsLowerIsBetter(state.analyticsComparison.metric) ? data.radarMax : 0))}</text>${scale}
         ${series.map((item) => {
           const points = item.vertices.map((vertex, index) => {
@@ -8841,6 +8833,17 @@ function renderAnalyticsComparisonSummary(item) {
   `;
 }
 
+function renderAnalyticsComparisonChartHeader(titleKey, athlete = null) {
+  return `
+    <div class="section-header compact-section-header">
+      <div>
+        <h2>${escapeHtml(t(titleKey))}</h2>
+        ${athlete ? `<p>${escapeHtml(athleteCardDisplayName(athlete))}</p>` : ""}
+      </div>
+    </div>
+  `;
+}
+
 function renderAnalyticsComparisonContent(data) {
   const overlay = state.analyticsComparison.layout === "overlay";
   const cycleContext = renderAthleteAnalyticsScoringCycleContext(data.cycles, data.discipline);
@@ -8854,8 +8857,8 @@ function renderAnalyticsComparisonContent(data) {
     return `
       ${cycleContext}
       <div class="athlete-analytics-visual-grid analytics-comparison-single-grid">
-        <div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareProfile"))}</small></div>${renderAnalyticsComparisonRadarFigure([item], data)}</div>
-        <div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareTrend"))}</small></div>${renderAnalyticsComparisonTrendFigure([item], data)}</div>
+        <div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>
+        <div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>
       </div>
       <div class="analytics-comparison-summary-grid is-single">${renderAnalyticsComparisonSummary(item)}</div>
       ${warningStack}
@@ -8865,8 +8868,8 @@ function renderAnalyticsComparisonContent(data) {
     return `
       ${cycleContext}
       <div class="athlete-analytics-visual-grid analytics-comparison-overlay-grid">
-        <div class="athlete-analytics-chart-block athlete-shape-chart-block"><h2>${escapeHtml(t("analyticsCompareProfile"))}</h2>${renderAnalyticsComparisonRadarFigure(data.athleteData, data)}</div>
-        <div class="athlete-analytics-chart-block athlete-trend-chart-block"><h2>${escapeHtml(t("analyticsCompareTrend"))}</h2>${renderAnalyticsComparisonTrendFigure(data.athleteData, data)}</div>
+        <div class="athlete-analytics-chart-block athlete-shape-chart-block">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle")}${renderAnalyticsComparisonRadarFigure(data.athleteData, data)}</div>
+        <div class="athlete-analytics-chart-block athlete-trend-chart-block">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle")}${renderAnalyticsComparisonTrendFigure(data.athleteData, data)}</div>
       </div>
       <div class="analytics-comparison-summary-grid">${data.athleteData.map(renderAnalyticsComparisonSummary).join("")}</div>
       ${warningStack}
@@ -8875,10 +8878,10 @@ function renderAnalyticsComparisonContent(data) {
   return `
     ${cycleContext}
     <div class="analytics-comparison-chart-row">
-      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareProfile"))}</small></div>${renderAnalyticsComparisonRadarFigure([item], data)}</div>`).join("")}
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsShapeTitle", item.athlete)}${renderAnalyticsComparisonRadarFigure([item], data)}</div>`).join("")}
     </div>
     <div class="analytics-comparison-chart-row">
-      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareTrend"))}</small></div>${renderAnalyticsComparisonTrendFigure([item], data)}</div>`).join("")}
+      ${data.athleteData.map((item) => `<div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};">${renderAnalyticsComparisonChartHeader("analyticsTrendTitle", item.athlete)}${renderAnalyticsComparisonTrendFigure([item], data)}</div>`).join("")}
     </div>
     <div class="analytics-comparison-summary-grid">${data.athleteData.map(renderAnalyticsComparisonSummary).join("")}</div>
     ${warningStack}
