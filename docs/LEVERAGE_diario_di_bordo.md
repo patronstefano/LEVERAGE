@@ -2803,8 +2803,46 @@ Rifinitura successiva:
 - risolta la duplicazione dell'atleta `Mozzato Nicolo` / `Mozzato Nicolò`, gia emersa nell'audit dei possibili duplicati. La verifica tecnica ha confermato stessa disciplina `MAG`, stessa nazionalita corrente `ITA` e assenza di conflitti tra i risultati. E stata mantenuta come entita canonica quella storica con Leverage ID `2148`, correggendone il nome in `Nicolò`; l'entita duplicata `18421` e stata incorporata tramite il flusso amministrativo protetto e marcata come eliminata logicamente. Sono stati trasferiti 56 risultati, che si aggiungono ai 205 gia collegati all'entita canonica per un totale di 261. I valori `represented_country` dei singoli risultati sono rimasti invariati, preservando la rappresentanza storica nelle competizioni. L'operazione e stata eseguita come super admin, registrata negli audit log, preceduta dal backup `backups/leverage_before_mozzato_duplicate_merge_20260917.db` e riportata nel report `athlete_duplicate_audit_20260806.csv`.
 - prodotto il documento di sintesi `docs/LEVERAGE_overview_completa_progetto.md`, pensato come panoramica estesa per lavoro accademico/tesi. Il documento descrive cosa e LEVERAGE, il suo posizionamento di mercato, il valore innovativo, l'architettura, le entita, gli import, la data governance, i motori World Gymnastics, la UI, le analytics, lo stato quantitativo del DB locale e i prossimi passi verso MVP online.
 
-## 21. Conclusione
+## 21. Milestone - Frontend pubblico USER completato
 
-LEVERAGE oggi non e piu solo un backend CRUD: e diventato un sistema dati strutturato per ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione qualita dato, preferenze utente, notifiche, analytics, strumenti admin e una base storica consistente.
+Data milestone: 17 settembre 2026
 
-La fase di trasformazione del backend in piattaforma web utilizzabile e ora iniziata con una prima UI pubblica minimal. I prossimi sviluppi dovranno consolidare frontend pubblico, area utente, area admin, calendario interattivo, schede atleta, schede evento, grafici, deploy online e gestione produzione.
+LEVERAGE ha raggiunto una nuova milestone centrale dell'MVP: e stato completato il perimetro funzionale e visuale delle cinque sezioni pubbliche principali della piattaforma, `Home`, `Athletes`, `Events`, `Rankings` e `Analytics`.
+
+Questa milestone chiude la fase di progettazione e sviluppo dell'esperienza pubblica dedicata alla consultazione, alla ricerca e all'analisi dei dati. Le sezioni condividono ora una grammatica UI coerente, responsive e minimale, un sistema comune di ricerca e filtri, navigazione persistente, componenti riutilizzabili e collegamento ai dati reali del backend.
+
+Stato raggiunto:
+
+- `Home`: identita LEVERAGE, introduzione animata, navigazione principale, selezione lingua e ricerca globale congiunta di atleti, eventi e risultati;
+- `Athletes`: ricerca dinamica per atleta e country, filtri disciplina/categoria/preferiti, ordinamento nome/nazione, paginazione progressiva e accesso alle Schede Atleta;
+- `Events`: ricerca intelligente delle competizioni, filtri disciplina/categoria/level/periodo/preferiti, viste Lista e Calendario, navigazione tra eventi e accesso alle Schede Evento;
+- `Rankings`: costruzione di ranking analitici per disciplina, categoria, level, ciclo olimpico o periodo, apparatus e metrica, con graduatorie compatte, breakdown AA/VT AVG, avvisi metodologici e configurazioni salvabili per utenti autenticati;
+- `Analytics`: confronto interattivo di uno o due atleti della stessa disciplina, con ricerca progressiva, diagrammi poligonali, trend performance, metriche, apparatus, periodo/istante e viste affiancate o sovrapposte;
+- `Scheda Atleta`: identita essenziale, collegamento World Gymnastics, preferiti e analytics personali interattive;
+- `Scheda Evento`: dettagli essenziali, collegamento World Gymnastics, preferiti e classifiche ufficiali realmente disponibili per la gara;
+- UI multilingua in inglese, italiano, spagnolo e francese, con inglese come lingua predefinita;
+- comportamento responsive per desktop e mobile, con stati vuoti, loading, warning, popup e controlli resi coerenti tra le sezioni;
+- integrazione con il backend e con la base dati storica riconciliata fino al primo semestre 2026;
+- suite automatica stabile con 135 test superati al momento della milestone.
+
+Decisione progettuale:
+
+- le cinque sezioni pubbliche vengono considerate completate nel loro perimetro MVP USER;
+- eventuali rifiniture successive saranno correzioni puntuali o miglioramenti evolutivi, non una riapertura della progettazione di base;
+- la fase successiva si concentra sull'esperienza autenticata e sugli strumenti operativi, riutilizzando il design system e i pattern UX consolidati nella parte pubblica.
+
+Nuovo perimetro di sviluppo:
+
+1. completamento del flusso reale di registrazione, verifica email, login, recupero password, sessione e logout;
+2. area personale USER con preferenze, atleti ed eventi preferiti, ranking salvati, lingua e notifiche;
+3. area ADMIN con data entry manuale, import Gymternet/CSV/XLSX, review assistite, notifiche, calendario gestionale e completamento entita;
+4. area SUPER ADMIN con gestione ruoli, audit log, restore, sicurezza delle modifiche e strumenti di merge/controllo duplicati;
+5. hardening finale, accessibilita, test end-to-end, configurazione produzione e deploy online.
+
+La milestone e versionata su GitHub con il tag annotato `v0.4.0-public-frontend`.
+
+## 22. Conclusione
+
+LEVERAGE oggi non e piu solo un backend CRUD: e una piattaforma dati full-stack per la ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione della qualita dato, base storica consistente e un frontend pubblico completo per ricerca, consultazione, classifiche e confronto analitico.
+
+Con la chiusura delle sezioni `Home`, `Athletes`, `Events`, `Rankings` e `Analytics`, il progetto entra nella fase dedicata agli utenti autenticati e all'operativita amministrativa. I prossimi sviluppi riguarderanno login e sessioni reali, area personale, strumenti Admin/Super Admin, sicurezza end-to-end e preparazione del deploy di produzione.
