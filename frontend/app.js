@@ -387,11 +387,10 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Build score Rankings from the results database. Filter by apparatus, level, period and Olympic cycle, then sort by Final Score or score components.",
     analyticsHeading: "Analytics",
-    analyticsIntro: "Compare two athletes through synchronized apparatus profiles and performance trends.",
+    analyticsIntro: "Compare two athletes through synchronized apparatus profiles and performance trends. Search and add an athlete to start the analysis.",
     analyticsCompareAthleteA: "First athlete",
     analyticsCompareAthleteB: "Second athlete",
     analyticsCompareSearchFull: "Remove an athlete to add another one.",
-    analyticsCompareSelectBoth: "Search and add an athlete to start the analysis.",
     analyticsCompareSameDiscipline: "Choose an athlete from the same discipline.",
     analyticsCompareSameAthlete: "Choose two different athletes.",
     analyticsCompareSideBySide: "Side by side",
@@ -710,11 +709,10 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Costruisci Rankings dai risultati: filtra per attrezzo, level, periodo e ciclo olimpico, poi ordina per Final Score o componenti del punteggio.",
     analyticsHeading: "Analytics",
-    analyticsIntro: "Confronta due atleti attraverso profili attrezzo e trend di performance sincronizzati.",
+    analyticsIntro: "Confronta due atleti attraverso profili attrezzo e Trend performance sincronizzati. Cerca e aggiungi un atleta per iniziare l'analisi.",
     analyticsCompareAthleteA: "Primo atleta",
     analyticsCompareAthleteB: "Secondo atleta",
     analyticsCompareSearchFull: "Rimuovi un atleta per aggiungerne un altro.",
-    analyticsCompareSelectBoth: "Cerca e aggiungi un atleta per iniziare l'analisi.",
     analyticsCompareSameDiscipline: "Scegli un atleta della stessa disciplina.",
     analyticsCompareSameAthlete: "Scegli due atleti differenti.",
     analyticsCompareSideBySide: "Affiancati",
@@ -1033,11 +1031,10 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Construye Rankings desde los resultados: filtra por aparato, level, periodo y ciclo olimpico, y ordena por Final Score o componentes.",
     analyticsHeading: "Analitica",
-    analyticsIntro: "Compara dos atletas mediante perfiles por aparato y tendencias de rendimiento sincronizadas.",
+    analyticsIntro: "Compara dos atletas mediante perfiles por aparato y tendencias de rendimiento sincronizadas. Busca y anade un atleta para iniciar el analisis.",
     analyticsCompareAthleteA: "Primer atleta",
     analyticsCompareAthleteB: "Segundo atleta",
     analyticsCompareSearchFull: "Elimina un atleta para anadir otro.",
-    analyticsCompareSelectBoth: "Busca y anade un atleta para iniciar el analisis.",
     analyticsCompareSameDiscipline: "Elige un atleta de la misma disciplina.",
     analyticsCompareSameAthlete: "Elige dos atletas diferentes.",
     analyticsCompareSideBySide: "En paralelo",
@@ -1356,11 +1353,10 @@ const translations = {
     rankingsHeading: "Rankings",
     rankingsIntro: "Construisez des Rankings depuis les resultats: filtrez par appareil, level, periode et cycle olympique, puis triez par Final Score ou composants.",
     analyticsHeading: "Analytique",
-    analyticsIntro: "Comparez deux athletes avec des profils par appareil et des tendances de performance synchronises.",
+    analyticsIntro: "Comparez deux athletes avec des profils par appareil et des tendances de performance synchronises. Recherchez et ajoutez un athlete pour commencer l'analyse.",
     analyticsCompareAthleteA: "Premier athlete",
     analyticsCompareAthleteB: "Deuxieme athlete",
     analyticsCompareSearchFull: "Retirez un athlete pour en ajouter un autre.",
-    analyticsCompareSelectBoth: "Recherchez et ajoutez un athlete pour commencer l'analyse.",
     analyticsCompareSameDiscipline: "Choisissez un athlete de la meme discipline.",
     analyticsCompareSameAthlete: "Choisissez deux athletes differents.",
     analyticsCompareSideBySide: "Cote a cote",
@@ -9045,7 +9041,7 @@ function renderAnalyticsComparisonWorkspace({ animate = false } = {}) {
   const workspace = $("#analyticsComparisonWorkspace");
   if (!workspace) return;
   if (!state.analyticsComparison.payloads.some(Boolean)) {
-    workspace.innerHTML = `<div class="empty-state analytics-comparison-empty">${escapeHtml(t("analyticsCompareSelectBoth"))}</div>`;
+    workspace.innerHTML = "";
     return;
   }
   const data = analyticsComparisonPreparedData();
