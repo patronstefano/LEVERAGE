@@ -390,8 +390,10 @@ const translations = {
     analyticsIntro: "Compare two athletes through synchronized apparatus profiles and performance trends.",
     analyticsCompareAthleteA: "First athlete",
     analyticsCompareAthleteB: "Second athlete",
+    analyticsCompareAdd: "Add athlete",
     analyticsCompareSearch: "Search athlete by surname, name or ID...",
-    analyticsCompareSelectBoth: "Select two athletes from the same discipline to start the comparison.",
+    analyticsCompareSearchFull: "Remove an athlete to add another one.",
+    analyticsCompareSelectBoth: "Search and add an athlete to start the analysis.",
     analyticsCompareSameDiscipline: "Choose an athlete from the same discipline.",
     analyticsCompareSameAthlete: "Choose two different athletes.",
     analyticsCompareSideBySide: "Side by side",
@@ -715,8 +717,10 @@ const translations = {
     analyticsIntro: "Confronta due atleti attraverso profili attrezzo e trend di performance sincronizzati.",
     analyticsCompareAthleteA: "Primo atleta",
     analyticsCompareAthleteB: "Secondo atleta",
+    analyticsCompareAdd: "Aggiungi atleta",
     analyticsCompareSearch: "Cerca atleta per cognome, nome o ID...",
-    analyticsCompareSelectBoth: "Seleziona due atleti della stessa disciplina per iniziare il confronto.",
+    analyticsCompareSearchFull: "Rimuovi un atleta per aggiungerne un altro.",
+    analyticsCompareSelectBoth: "Cerca e aggiungi un atleta per iniziare l'analisi.",
     analyticsCompareSameDiscipline: "Scegli un atleta della stessa disciplina.",
     analyticsCompareSameAthlete: "Scegli due atleti differenti.",
     analyticsCompareSideBySide: "Affiancati",
@@ -1040,8 +1044,10 @@ const translations = {
     analyticsIntro: "Compara dos atletas mediante perfiles por aparato y tendencias de rendimiento sincronizadas.",
     analyticsCompareAthleteA: "Primer atleta",
     analyticsCompareAthleteB: "Segundo atleta",
+    analyticsCompareAdd: "Anadir atleta",
     analyticsCompareSearch: "Buscar atleta por apellido, nombre o ID...",
-    analyticsCompareSelectBoth: "Selecciona dos atletas de la misma disciplina para iniciar la comparacion.",
+    analyticsCompareSearchFull: "Elimina un atleta para anadir otro.",
+    analyticsCompareSelectBoth: "Busca y anade un atleta para iniciar el analisis.",
     analyticsCompareSameDiscipline: "Elige un atleta de la misma disciplina.",
     analyticsCompareSameAthlete: "Elige dos atletas diferentes.",
     analyticsCompareSideBySide: "En paralelo",
@@ -1365,8 +1371,10 @@ const translations = {
     analyticsIntro: "Comparez deux athletes avec des profils par appareil et des tendances de performance synchronises.",
     analyticsCompareAthleteA: "Premier athlete",
     analyticsCompareAthleteB: "Deuxieme athlete",
+    analyticsCompareAdd: "Ajouter un athlete",
     analyticsCompareSearch: "Rechercher par nom, prenom ou ID...",
-    analyticsCompareSelectBoth: "Selectionnez deux athletes de la meme discipline pour commencer la comparaison.",
+    analyticsCompareSearchFull: "Retirez un athlete pour en ajouter un autre.",
+    analyticsCompareSelectBoth: "Recherchez et ajoutez un athlete pour commencer l'analyse.",
     analyticsCompareSameDiscipline: "Choisissez un athlete de la meme discipline.",
     analyticsCompareSameAthlete: "Choisissez deux athletes differents.",
     analyticsCompareSideBySide: "Cote a cote",
@@ -8498,7 +8506,7 @@ async function loadAthleteAnalytics(athleteId, { preserveControls = false } = {}
   }
 }
 
-const analyticsComparisonSearchRequestIds = [0, 0];
+let analyticsComparisonSearchRequestId = 0;
 let analyticsComparisonProfileRequestId = 0;
 
 function analyticsComparisonDiscipline() {
@@ -8638,44 +8646,40 @@ function analyticsComparisonPreparedData() {
   };
 }
 
-function renderAnalyticsComparisonPicker(slot) {
-  const athlete = state.analyticsComparison.athletes[slot];
+function renderAnalyticsComparisonSelectedAthlete(athlete, slot) {
   const label = t(slot === 0 ? "analyticsCompareAthleteA" : "analyticsCompareAthleteB");
-  if (athlete) {
-    const name = athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`);
-    return `
-      <article class="analytics-comparison-picker is-selected" style="--athlete-color: ${ANALYTICS_COMPARISON_COLORS[slot]};">
-        <span class="analytics-comparison-picker-label">${escapeHtml(label)}</span>
-        <div class="analytics-comparison-selected-athlete">
-          <span class="analytics-comparison-color-dot" aria-hidden="true"></span>
-          <div>
-            <strong>${escapeHtml(name)}</strong>
-            <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
-          </div>
-          <button class="icon-button analytics-comparison-remove" type="button" data-analytics-remove-athlete="${slot}" aria-label="${escapeHtml(t("analyticsCompareRemove"))}" title="${escapeHtml(t("analyticsCompareRemove"))}">&times;</button>
-        </div>
-      </article>
-    `;
-  }
+  const name = athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`);
   return `
-    <article class="analytics-comparison-picker">
-      <label class="analytics-comparison-picker-label" for="analyticsAthleteSearch${slot}">${escapeHtml(label)}</label>
-      <form class="search-form section-search-form analytics-comparison-search-form" data-analytics-athlete-form="${slot}">
-        <div class="search-input-shell analytics-comparison-search-shell">
-          <input class="search-input" id="analyticsAthleteSearch${slot}" type="search" data-analytics-athlete-search="${slot}" autocomplete="off" placeholder="${escapeHtml(t("analyticsCompareSearch"))}">
-          <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch${slot}" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
-          <div class="analytics-comparison-suggestions" data-analytics-athlete-suggestions="${slot}" role="listbox" hidden></div>
+    <article class="analytics-comparison-picker is-selected" style="--athlete-color: ${ANALYTICS_COMPARISON_COLORS[slot]};">
+      <span class="analytics-comparison-picker-label">${escapeHtml(label)}</span>
+      <div class="analytics-comparison-selected-athlete">
+        <span class="analytics-comparison-color-dot" aria-hidden="true"></span>
+        <div>
+          <strong>${escapeHtml(name)}</strong>
+          <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
         </div>
-      </form>
+        <button class="icon-button analytics-comparison-remove" type="button" data-analytics-remove-athlete="${slot}" aria-label="${escapeHtml(t("analyticsCompareRemove"))}" title="${escapeHtml(t("analyticsCompareRemove"))}">&times;</button>
+      </div>
     </article>
   `;
 }
 
 function renderAnalyticsComparisonSelection() {
+  const athletes = state.analyticsComparison.athletes.filter(Boolean);
+  const selectionFull = athletes.length >= 2;
   return `
     <section class="analytics-comparison-selection">
-      ${renderAnalyticsComparisonPicker(0)}
-      ${renderAnalyticsComparisonPicker(1)}
+      <div class="analytics-comparison-search-stage">
+        <label class="analytics-comparison-picker-label" for="analyticsAthleteSearch">${escapeHtml(t("analyticsCompareAdd"))}</label>
+        <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
+        <div class="search-input-shell analytics-comparison-search-shell">
+          <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t(selectionFull ? "analyticsCompareSearchFull" : "analyticsCompareSearch"))}" ${selectionFull ? "disabled" : ""}>
+          <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
+          <div class="analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
+        </div>
+      </form>
+      </div>
+      ${athletes.length ? `<div class="analytics-comparison-selected-list">${athletes.map(renderAnalyticsComparisonSelectedAthlete).join("")}</div>` : ""}
     </section>
     <div id="analyticsComparisonMessage" class="auth-message analytics-comparison-message" role="status" aria-live="polite"></div>
   `;
@@ -8714,7 +8718,7 @@ function renderAnalyticsComparisonControls(data) {
             ${ATHLETE_ANALYTICS_METRICS.map((item) => `<button class="segmented-option athlete-analytics-metric-option" type="button" role="radio" data-analytics-comparison-metric="${escapeHtml(item.value)}" aria-checked="${String(comparison.metric === item.value)}">${escapeHtml(item.label)}</button>`).join("")}
             <span class="segmented-thumb athlete-analytics-metric-thumb" aria-hidden="true"></span>
           </div>
-          ${renderAnalyticsComparisonLayoutControl()}
+          ${data.athleteData.length > 1 ? renderAnalyticsComparisonLayoutControl() : ""}
         </div>
         <div class="athlete-analytics-time-cluster">
           <div class="athlete-analytics-control-group athlete-analytics-mode-group">
@@ -8854,6 +8858,18 @@ function renderAnalyticsComparisonContent(data) {
     ...data.athleteData.flatMap((item) => item.warnings),
   ];
   const warningStack = renderDataWarningStack(warningMessages, "athlete-analytics-warning-stack");
+  if (data.athleteData.length === 1) {
+    const item = data.athleteData[0];
+    return `
+      ${cycleContext}
+      <div class="athlete-analytics-visual-grid analytics-comparison-single-grid">
+        <div class="athlete-analytics-chart-block athlete-shape-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareProfile"))}</small></div>${renderAnalyticsComparisonRadarFigure([item], data)}</div>
+        <div class="athlete-analytics-chart-block athlete-trend-chart-block" style="--athlete-color: ${item.color};"><div class="analytics-comparison-chart-heading"><span class="analytics-comparison-color-dot"></span><h2>${escapeHtml(athleteCardDisplayName(item.athlete))}</h2><small>${escapeHtml(t("analyticsCompareTrend"))}</small></div>${renderAnalyticsComparisonTrendFigure([item], data)}</div>
+      </div>
+      <div class="analytics-comparison-summary-grid is-single">${renderAnalyticsComparisonSummary(item)}</div>
+      ${warningStack}
+    `;
+  }
   if (overlay) {
     return `
       ${cycleContext}
@@ -8880,7 +8896,7 @@ function renderAnalyticsComparisonContent(data) {
 
 function updateAnalyticsComparisonContent({ animate = false } = {}) {
   const content = $("#analyticsComparisonContent");
-  if (!content || state.analyticsComparison.payloads.some((payload) => !payload)) return;
+  if (!content || !state.analyticsComparison.payloads.some(Boolean)) return;
   const data = analyticsComparisonPreparedData();
   content.innerHTML = renderAnalyticsComparisonContent(data);
   if (animate && !window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches) {
@@ -9014,7 +9030,7 @@ function bindAnalyticsComparisonControls() {
 function renderAnalyticsComparisonWorkspace({ animate = false } = {}) {
   const workspace = $("#analyticsComparisonWorkspace");
   if (!workspace) return;
-  if (state.analyticsComparison.payloads.some((payload) => !payload)) {
+  if (!state.analyticsComparison.payloads.some(Boolean)) {
     workspace.innerHTML = `<div class="empty-state analytics-comparison-empty">${escapeHtml(t("analyticsCompareSelectBoth"))}</div>`;
     return;
   }
@@ -9033,14 +9049,14 @@ function analyticsComparisonSuggestionName(athlete) {
   return athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`);
 }
 
-function renderAnalyticsComparisonSuggestions(slot, athletes) {
-  const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
+function renderAnalyticsComparisonSuggestions(athletes) {
+  const container = $("#analyticsAthleteSuggestions");
   if (!container) return;
   if (!athletes.length) {
     container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("analyticsCompareNoSuggestions"))}</div>`;
   } else {
     container.innerHTML = athletes.map((athlete) => `
-      <button type="button" class="analytics-comparison-suggestion search-suggestion" role="option" data-analytics-athlete-choice="${slot}" data-athlete-id="${athlete.id}">
+      <button type="button" class="analytics-comparison-suggestion search-suggestion" role="option" data-analytics-athlete-choice data-athlete-id="${athlete.id}">
         <strong>${escapeHtml(analyticsComparisonSuggestionName(athlete))}</strong>
         <span>${escapeHtml([athlete.country, athlete.discipline, `ID ${athlete.id}`].filter(Boolean).join(" · "))}</span>
       </button>
@@ -9048,51 +9064,53 @@ function renderAnalyticsComparisonSuggestions(slot, athletes) {
   }
   container.hidden = false;
   container.querySelectorAll("[data-analytics-athlete-choice]").forEach((button) => {
-    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(slot, Number(button.dataset.athleteId)));
+    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.athleteId)));
   });
 }
 
-async function searchAnalyticsComparisonAthletes(slot, query) {
-  const container = document.querySelector(`[data-analytics-athlete-suggestions="${slot}"]`);
+async function searchAnalyticsComparisonAthletes(query) {
+  const container = $("#analyticsAthleteSuggestions");
   if (!container) return;
   if (!query.trim()) {
     container.hidden = true;
     container.innerHTML = "";
     return;
   }
-  const requestId = ++analyticsComparisonSearchRequestIds[slot];
+  const requestId = ++analyticsComparisonSearchRequestId;
   container.hidden = false;
   container.innerHTML = `<div class="analytics-comparison-suggestion-empty search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
   try {
     const discipline = state.analyticsComparison.athletes.find(Boolean)?.discipline || "";
     const athletes = await getJson("/athletes/", { search: query.trim(), discipline, limit: 9, offset: 0 });
-    if (requestId !== analyticsComparisonSearchRequestIds[slot]) return;
+    if (requestId !== analyticsComparisonSearchRequestId) return;
     const selectedIds = new Set(state.analyticsComparison.athletes.filter(Boolean).map((athlete) => Number(athlete.id)));
-    renderAnalyticsComparisonSuggestions(slot, athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
+    renderAnalyticsComparisonSuggestions(athletes.filter((athlete) => !selectedIds.has(Number(athlete.id))).slice(0, 8));
   } catch (error) {
-    if (requestId !== analyticsComparisonSearchRequestIds[slot]) return;
+    if (requestId !== analyticsComparisonSearchRequestId) return;
     container.innerHTML = errorState(error);
   }
 }
 
-async function selectAnalyticsComparisonAthlete(slot, athleteId) {
+async function selectAnalyticsComparisonAthlete(athleteId) {
   const message = $("#analyticsComparisonMessage");
-  const otherSlot = slot === 0 ? 1 : 0;
-  if (state.analyticsComparison.athletes[otherSlot]?.id === athleteId) {
+  const selectedAthletes = state.analyticsComparison.athletes.filter(Boolean);
+  if (selectedAthletes.some((athlete) => Number(athlete.id) === athleteId)) {
     if (message) message.textContent = t("analyticsCompareSameAthlete");
     return;
   }
+  if (selectedAthletes.length >= 2) return;
   const requestId = ++analyticsComparisonProfileRequestId;
   if (message) message.textContent = t("loading");
   try {
     const payload = await getJson(`/analytics/athletes/${athleteId}/profile-view`, { metric: "score", criterion: "average" });
     if (requestId !== analyticsComparisonProfileRequestId) return;
     const athlete = payload.athlete;
-    const otherAthlete = state.analyticsComparison.athletes[otherSlot];
-    if (otherAthlete && otherAthlete.discipline !== athlete.discipline) {
+    const firstAthlete = selectedAthletes[0];
+    if (firstAthlete && firstAthlete.discipline !== athlete.discipline) {
       if (message) message.textContent = t("analyticsCompareSameDiscipline");
       return;
     }
+    const slot = selectedAthletes.length;
     state.analyticsComparison.athletes[slot] = athlete;
     state.analyticsComparison.payloads[slot] = payload;
     state.analyticsComparison.startIndex = -1;
@@ -9108,29 +9126,27 @@ async function selectAnalyticsComparisonAthlete(slot, athleteId) {
 
 function bindAnalyticsComparisonPickers() {
   bindSearchClearButtons();
-  document.querySelectorAll("[data-analytics-athlete-form]").forEach((form) => {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      form.querySelector("[data-analytics-athlete-choice]")?.click();
-    });
+  $("#analyticsAthleteForm")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    $("#analyticsAthleteSuggestions")?.querySelector("[data-analytics-athlete-choice]")?.click();
   });
   document.querySelectorAll("[data-analytics-athlete-search]").forEach((input) => {
     let timer;
     input.addEventListener("input", () => {
       window.clearTimeout(timer);
-      timer = window.setTimeout(() => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value), 140);
+      timer = window.setTimeout(() => searchAnalyticsComparisonAthletes(input.value), 140);
     });
     input.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
-        const suggestions = document.querySelector(`[data-analytics-athlete-suggestions="${input.dataset.analyticsAthleteSearch}"]`);
+        const suggestions = $("#analyticsAthleteSuggestions");
         if (suggestions) suggestions.hidden = true;
         input.blur();
       }
     });
-    input.addEventListener("focus", () => searchAnalyticsComparisonAthletes(Number(input.dataset.analyticsAthleteSearch), input.value));
+    input.addEventListener("focus", () => searchAnalyticsComparisonAthletes(input.value));
     input.addEventListener("blur", () => {
       window.setTimeout(() => {
-        const suggestions = document.querySelector(`[data-analytics-athlete-suggestions="${input.dataset.analyticsAthleteSearch}"]`);
+        const suggestions = $("#analyticsAthleteSuggestions");
         if (suggestions) suggestions.hidden = true;
       }, 160);
     });
@@ -9138,8 +9154,10 @@ function bindAnalyticsComparisonPickers() {
   document.querySelectorAll("[data-analytics-remove-athlete]").forEach((button) => {
     button.addEventListener("click", () => {
       const slot = Number(button.dataset.analyticsRemoveAthlete);
-      state.analyticsComparison.athletes[slot] = null;
-      state.analyticsComparison.payloads[slot] = null;
+      state.analyticsComparison.athletes.splice(slot, 1);
+      state.analyticsComparison.payloads.splice(slot, 1);
+      state.analyticsComparison.athletes = [...state.analyticsComparison.athletes.filter(Boolean), null, null].slice(0, 2);
+      state.analyticsComparison.payloads = [...state.analyticsComparison.payloads.filter(Boolean), null, null].slice(0, 2);
       state.analyticsComparison.startIndex = -1;
       state.analyticsComparison.endIndex = -1;
       state.analyticsComparison.snapshotIndex = -1;
