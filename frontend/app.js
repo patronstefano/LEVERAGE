@@ -390,8 +390,6 @@ const translations = {
     analyticsIntro: "Compare two athletes through synchronized apparatus profiles and performance trends.",
     analyticsCompareAthleteA: "First athlete",
     analyticsCompareAthleteB: "Second athlete",
-    analyticsCompareAdd: "Add athlete",
-    analyticsCompareSearch: "Search athlete by surname, name or ID...",
     analyticsCompareSearchFull: "Remove an athlete to add another one.",
     analyticsCompareSelectBoth: "Search and add an athlete to start the analysis.",
     analyticsCompareSameDiscipline: "Choose an athlete from the same discipline.",
@@ -717,8 +715,6 @@ const translations = {
     analyticsIntro: "Confronta due atleti attraverso profili attrezzo e trend di performance sincronizzati.",
     analyticsCompareAthleteA: "Primo atleta",
     analyticsCompareAthleteB: "Secondo atleta",
-    analyticsCompareAdd: "Aggiungi atleta",
-    analyticsCompareSearch: "Cerca atleta per cognome, nome o ID...",
     analyticsCompareSearchFull: "Rimuovi un atleta per aggiungerne un altro.",
     analyticsCompareSelectBoth: "Cerca e aggiungi un atleta per iniziare l'analisi.",
     analyticsCompareSameDiscipline: "Scegli un atleta della stessa disciplina.",
@@ -1044,8 +1040,6 @@ const translations = {
     analyticsIntro: "Compara dos atletas mediante perfiles por aparato y tendencias de rendimiento sincronizadas.",
     analyticsCompareAthleteA: "Primer atleta",
     analyticsCompareAthleteB: "Segundo atleta",
-    analyticsCompareAdd: "Anadir atleta",
-    analyticsCompareSearch: "Buscar atleta por apellido, nombre o ID...",
     analyticsCompareSearchFull: "Elimina un atleta para anadir otro.",
     analyticsCompareSelectBoth: "Busca y anade un atleta para iniciar el analisis.",
     analyticsCompareSameDiscipline: "Elige un atleta de la misma disciplina.",
@@ -1371,8 +1365,6 @@ const translations = {
     analyticsIntro: "Comparez deux athletes avec des profils par appareil et des tendances de performance synchronises.",
     analyticsCompareAthleteA: "Premier athlete",
     analyticsCompareAthleteB: "Deuxieme athlete",
-    analyticsCompareAdd: "Ajouter un athlete",
-    analyticsCompareSearch: "Rechercher par nom, prenom ou ID...",
     analyticsCompareSearchFull: "Retirez un athlete pour en ajouter un autre.",
     analyticsCompareSelectBoth: "Recherchez et ajoutez un athlete pour commencer l'analyse.",
     analyticsCompareSameDiscipline: "Choisissez un athlete de la meme discipline.",
@@ -8670,10 +8662,9 @@ function renderAnalyticsComparisonSelection() {
   return `
     <section class="analytics-comparison-selection">
       <div class="analytics-comparison-search-stage">
-        <label class="analytics-comparison-picker-label" for="analyticsAthleteSearch">${escapeHtml(t("analyticsCompareAdd"))}</label>
         <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
         <div class="search-input-shell analytics-comparison-search-shell">
-          <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t(selectionFull ? "analyticsCompareSearchFull" : "analyticsCompareSearch"))}" ${selectionFull ? "disabled" : ""}>
+          <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t("athleteSearchPlaceholder"))}" aria-label="${escapeHtml(t("athleteSearchPlaceholder"))}" ${selectionFull ? `disabled title="${escapeHtml(t("analyticsCompareSearchFull"))}"` : ""}>
           <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
           <div class="analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
         </div>
