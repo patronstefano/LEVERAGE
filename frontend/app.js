@@ -1812,6 +1812,7 @@ function setSearchSuggestionsOpen(suggestions, isOpen, itemCount = 4) {
   const form = suggestions.closest(".search-form");
   if (!form) return;
   form.classList.toggle("search-suggestions-open", isOpen);
+  form.closest(".section-search-row")?.classList.toggle("search-suggestions-layer-open", isOpen);
   if (!isOpen) {
     form.style.removeProperty("--search-suggestions-visible-height");
     return;
