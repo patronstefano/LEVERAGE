@@ -3217,7 +3217,7 @@ function leaderboardPrimarySecondaryChips() {
   return "";
 }
 
-function leaderboardPrimaryPopoverRows(entry, selectedMetric = rankingSortBy()) {
+function leaderboardPrimaryDetailRows(entry, selectedMetric = rankingSortBy()) {
   if (!rankingIsAaEntry(entry)) return [];
   if (selectedMetric === "score") {
     if (entry.D_score === null || entry.D_score === undefined) return [];
@@ -3279,7 +3279,7 @@ function aaLeaderboardScoreCells(entry, selectedMetric = rankingSortBy()) {
       label: apparatus,
       value: aaLeaderboardComponentValue(component, selectedMetric),
       muted: !component || leaderboardValueIsUnavailable(aaLeaderboardComponentValue(component, selectedMetric)),
-      popoverRows: aaLeaderboardComponentDetails(component, selectedMetric),
+      detailRows: aaLeaderboardComponentDetails(component, selectedMetric),
     };
   });
 }
@@ -3295,7 +3295,7 @@ function vaultAverageLeaderboardScoreCells(entry) {
       label: `VT ${attempt}`,
       value: component ? scoreLabel(component.score) : t("notAvailable"),
       muted: !component || component.score === null || component.score === undefined,
-      popoverRows: component ? aaLeaderboardComponentDetails(component, "score") : [],
+      detailRows: component ? aaLeaderboardComponentDetails(component, "score") : [],
     };
   });
 }
@@ -3318,6 +3318,21 @@ function leaderboardScoreCells(entry, selectedMetric = rankingSortBy()) {
   return standardLeaderboardScoreCells(entry, selectedMetric);
 }
 
+function renderLeaderboardExpandedDetails(rows = [], className = "") {
+  const visibleRows = rows.filter((item) => item && hasDisplayValue(item.label));
+  if (!visibleRows.length) return "";
+  return `
+    <span class="leaderboard-score-details ${className}" aria-hidden="true">
+      ${visibleRows.map((item) => `
+        <span class="leaderboard-score-detail-row">
+          <strong>${escapeHtml(item.label)}</strong>
+          <span>${escapeHtml(item.value)}</span>
+        </span>
+      `).join("")}
+    </span>
+  `;
+}
+
 function renderLeaderboardScoreTable(cells = []) {
   const visibleCells = cells.filter((cell) => cell && hasDisplayValue(cell.label));
   if (!visibleCells.length) {
@@ -3329,24 +3344,15 @@ function renderLeaderboardScoreTable(cells = []) {
         const value = cell.value === null || cell.value === undefined ? t("notAvailable") : String(cell.value);
         const muted = cell.muted || leaderboardValueIsUnavailable(value);
         const subValues = (cell.subValues || []).filter((item) => item && hasDisplayValue(item.label));
-        const popoverRows = (cell.popoverRows || []).filter((item) => item && hasDisplayValue(item.label));
+        const detailRows = (cell.detailRows || []).filter((item) => item && hasDisplayValue(item.label));
         return `
-          <span class="leaderboard-score-cell${muted ? " is-muted" : ""}${popoverRows.length ? " has-popover" : ""}">
+          <span class="leaderboard-score-cell${muted ? " is-muted" : ""}${detailRows.length ? " has-details" : ""}">
             <strong>${escapeHtml(cell.label)}</strong>
-            <span>${escapeHtml(value)}</span>
+            <span class="leaderboard-score-value">${escapeHtml(value)}</span>
             ${subValues.length ? `
               <small>${subValues.map((item) => `${escapeHtml(item.label)} ${escapeHtml(item.value)}`).join(" · ")}</small>
             ` : ""}
-            ${popoverRows.length ? `
-              <span class="leaderboard-score-popover" aria-hidden="true">
-                ${popoverRows.map((item) => `
-                  <span class="leaderboard-score-popover-row">
-                    <strong>${escapeHtml(item.label)}</strong>
-                    <span>${escapeHtml(item.value)}</span>
-                  </span>
-                `).join("")}
-              </span>
-            ` : ""}
+            ${renderLeaderboardExpandedDetails(detailRows)}
           </span>
         `;
       }).join("")}
@@ -3382,39 +3388,72 @@ function renderLeaderboardList(entries = [], options = {}) {
           .join(" · ");
         const href = options.hrefForEntry ? options.hrefForEntry(entry) : `#/athletes/${entry.athlete_id}`;
         const secondaryScores = leaderboardPrimarySecondaryChips(entry, selectedMetric);
-        const primaryPopoverRows = leaderboardPrimaryPopoverRows(entry, selectedMetric);
-        const scoreTable = renderLeaderboardScoreTable(leaderboardScoreCells(entry, selectedMetric));
-        return `
-          <a class="leaderboard-row" href="${escapeHtml(href)}">
+        const primaryDetailRows = leaderboardPrimaryDetailRows(entry, selectedMetric);
+        const scoreCells = leaderboardScoreCells(entry, selectedMetric);
+        const scoreTable = renderLeaderboardScoreTable(scoreCells);
+        const expandable = (rankingIsAaEntry(entry) || entry.apparatus === "VT AVG") && (
+          primaryDetailRows.length || scoreCells.some((cell) => (cell.detailRows || []).length)
+        );
+        const rowContent = `
             <span class="leaderboard-rank">#${escapeHtml(String(rank || ""))}</span>
             <span class="leaderboard-athlete">
-              <strong>${escapeHtml(entry.athlete_name || t("athlete"))}</strong>
+              ${expandable
+                ? `<a class="leaderboard-athlete-link" href="${escapeHtml(href)}">${escapeHtml(entry.athlete_name || t("athlete"))}</a>`
+                : `<strong>${escapeHtml(entry.athlete_name || t("athlete"))}</strong>`}
               ${meta ? `<span>${escapeHtml(meta)}</span>` : ""}
             </span>
-            <span class="leaderboard-primary-score${primaryPopoverRows.length ? " has-popover" : ""}">
+            <span class="leaderboard-primary-score${primaryDetailRows.length ? " has-details" : ""}">
               <strong>${escapeHtml(primaryValue)}</strong>
-              <span>${escapeHtml(leaderboardPrimaryLabel(entry, selectedMetric))}</span>
+              <span class="leaderboard-primary-label">${escapeHtml(leaderboardPrimaryLabel(entry, selectedMetric))}</span>
               ${secondaryScores}
-              ${primaryPopoverRows.length ? `
-                <span class="leaderboard-score-popover leaderboard-primary-popover" aria-hidden="true">
-                  ${primaryPopoverRows.map((item) => `
-                    <span class="leaderboard-score-popover-row">
-                      <strong>${escapeHtml(item.label)}</strong>
-                      <span>${escapeHtml(item.value)}</span>
-                    </span>
-                  `).join("")}
-                </span>
-              ` : ""}
+              ${renderLeaderboardExpandedDetails(primaryDetailRows, "leaderboard-primary-details")}
             </span>
             <span class="leaderboard-detail-row">
               ${rankingLeaderboardTags(entry, options)}
               ${scoreTable}
             </span>
-          </a>
         `;
+        if (expandable) {
+          return `
+            <div
+              class="leaderboard-row is-expandable"
+              role="button"
+              tabindex="0"
+              aria-expanded="false"
+              data-leaderboard-expandable-row
+            >${rowContent}</div>
+          `;
+        }
+        return `<a class="leaderboard-row" href="${escapeHtml(href)}">${rowContent}</a>`;
       }).join("")}
     </div>
   `;
+}
+
+function setLeaderboardRowExpanded(row, expanded) {
+  row.classList.toggle("is-expanded", expanded);
+  row.setAttribute("aria-expanded", String(expanded));
+  row.querySelectorAll(".leaderboard-score-details").forEach((details) => {
+    details.setAttribute("aria-hidden", String(!expanded));
+  });
+}
+
+function toggleLeaderboardRow(row) {
+  setLeaderboardRowExpanded(row, row.getAttribute("aria-expanded") !== "true");
+}
+
+function bindLeaderboardExpansionEvents() {
+  document.addEventListener("click", (event) => {
+    const row = event.target.closest?.("[data-leaderboard-expandable-row]");
+    if (!row || event.target.closest("a, button, input, select, textarea")) return;
+    toggleLeaderboardRow(row);
+  });
+  document.addEventListener("keydown", (event) => {
+    const row = event.target.closest?.("[data-leaderboard-expandable-row]");
+    if (!row || event.target !== row || !["Enter", " "].includes(event.key)) return;
+    event.preventDefault();
+    toggleLeaderboardRow(row);
+  });
 }
 
 function searchResultCard(result) {
@@ -9751,6 +9790,7 @@ async function init() {
   bindAthleteTrendTooltipEvents();
   bindAthleteTrendZoomEvents();
   bindAthleteRadarTooltipEvents();
+  bindLeaderboardExpansionEvents();
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closeLanguageMenu();
