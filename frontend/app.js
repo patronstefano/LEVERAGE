@@ -52,7 +52,7 @@ function activeRouteSection(route) {
 }
 
 function routeBelongsToSection(route, section) {
-  return routeSection(route) === section;
+  return activeRouteSection(route) === section;
 }
 
 function initialSectionRoutes() {
@@ -2243,8 +2243,7 @@ function persistSectionRoutes() {
 }
 
 function rememberCurrentSectionRoute() {
-  if (contextualAthleteSourceSection(state.route)) return;
-  const section = routeSection(state.route);
+  const section = activeRouteSection(state.route);
   if (!section) return;
   state.sectionRoutes[section] = state.route;
   persistSectionRoutes();
@@ -3425,6 +3424,10 @@ function leaderboardAthleteHref(href, options = {}) {
   const [path, query = ""] = String(href).split("?");
   const params = new URLSearchParams(query);
   params.set("from", returnContext);
+  const expectedReturnSection = returnContext === "ranking" ? "rankings" : "events";
+  if (routeSection(state.route) === expectedReturnSection) {
+    params.set("return_to", state.route);
+  }
   if (returnContext === "classification" && options.returnEventId) {
     params.set("event_id", String(options.returnEventId));
   }
@@ -9622,13 +9625,17 @@ function athleteDetailBackDestination() {
   const [, query = ""] = state.route.split("?");
   const params = new URLSearchParams(query);
   const source = params.get("from") || "";
+  const returnRoute = params.get("return_to") || "";
   if (source === "ranking") {
-    const rankingRoute = routeBelongsToSection(state.sectionRoutes.rankings, "rankings")
-      ? state.sectionRoutes.rankings
+    const rankingRoute = routeSection(returnRoute) === "rankings"
+      ? returnRoute
       : SECTION_BASE_ROUTES.rankings;
     return { href: `#${rankingRoute}`, label: t("backToRanking") };
   }
   if (source === "classification") {
+    if (routeSection(returnRoute) === "events") {
+      return { href: `#${returnRoute}`, label: t("backToClassification") };
+    }
     const eventId = Number(params.get("event_id"));
     if (Number.isInteger(eventId) && eventId > 0) {
       return { href: `#/events/${eventId}`, label: t("backToClassification") };
