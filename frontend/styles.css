@@ -3392,11 +3392,27 @@ button {
 }
 
 .analytics-comparison-remove {
-  width: 30px;
-  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--data-chip-radius);
+  background: rgba(25, 23, 71, 0.08);
   color: var(--muted);
-  font-size: 20px;
-  font-weight: 350;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.analytics-comparison-remove:hover,
+.analytics-comparison-remove:focus-visible {
+  background: rgba(25, 23, 71, 0.14);
+  color: var(--ink);
+  outline: none;
 }
 
 .analytics-comparison-message {
