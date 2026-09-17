@@ -3232,6 +3232,21 @@ function componentScoreDataIsVisible(value, status) {
   return value !== null && value !== undefined || status === "not_available";
 }
 
+function combineUnavailablePenaltyBonus(rows = []) {
+  const unavailableValue = t("notAvailable");
+  const penaltyIndex = rows.findIndex((row) => row.metric === "Penalty" && row.value === unavailableValue);
+  const bonusIndex = rows.findIndex((row) => row.metric === "Bonus" && row.value === unavailableValue);
+  if (penaltyIndex < 0 || bonusIndex < 0) return rows;
+  const insertionIndex = Math.min(penaltyIndex, bonusIndex);
+  const compactRows = rows.filter((row) => row.metric !== "Penalty" && row.metric !== "Bonus");
+  compactRows.splice(insertionIndex, 0, {
+    metric: "PenaltyBonus",
+    label: "P / B",
+    value: unavailableValue,
+  });
+  return compactRows;
+}
+
 function aaLeaderboardComponentValue(component, selectedMetric = rankingSortBy()) {
   if (!component) return t("notAvailable");
   if (selectedMetric === "D_score") return dScoreLabel(component.D_score);
@@ -3261,10 +3276,11 @@ function aaLeaderboardComponentDetails(component, selectedMetric = rankingSortBy
   if (componentScoreDataIsVisible(component.Bonus, component.bonus_status)) {
     rows.push({ metric: "Bonus", label: "B", value: componentValueLabel(component.Bonus, component.bonus_status) });
   }
-  return rows.filter((row) => {
+  const visibleRows = rows.filter((row) => {
     if (selectedMetric === "score") return row.metric !== "score";
     return !scoreCompositionMetricIsExcluded(row.metric, selectedMetric);
   });
+  return combineUnavailablePenaltyBonus(visibleRows);
 }
 
 function aaLeaderboardScoreCells(entry, selectedMetric = rankingSortBy()) {
