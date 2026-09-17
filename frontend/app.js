@@ -3004,11 +3004,6 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
       return;
     }
     const hadStableSuggestions = !suggestions.hidden && Boolean(suggestions.querySelector("button.search-suggestion"));
-    if (suggestions.hidden || !suggestions.childElementCount) {
-      suggestions.innerHTML = `<div class="search-suggestion search-suggestion-status">${escapeHtml(t("loading"))}</div>`;
-      suggestions.hidden = false;
-      setSearchSuggestionsOpen(suggestions, true, 1);
-    }
     setSearchSuggestionsBusy(suggestions, true);
     debounceTimer = window.setTimeout(async () => {
       try {
