@@ -3324,11 +3324,11 @@ button {
 
 .analytics-comparison-picker {
   display: grid;
-  gap: 7px;
+  gap: var(--card-gap);
   min-width: 0;
-  padding: 12px;
+  padding: var(--card-padding);
   border: 1px solid var(--line);
-  border-radius: var(--surface-radius);
+  border-radius: var(--control-radius);
   background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 14px 44px rgba(16, 16, 20, 0.04);
 }
@@ -3339,8 +3339,9 @@ button {
 
 .analytics-comparison-picker-label {
   color: var(--muted);
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--card-pill-size);
+  font-weight: 650;
+  line-height: 1.2;
   text-transform: uppercase;
 }
 
@@ -3357,32 +3358,35 @@ button {
 .analytics-comparison-selected-athlete {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 9px;
+  gap: 10px;
   align-items: center;
-  min-height: 38px;
+  min-height: 42px;
 }
 
 .analytics-comparison-selected-athlete > div {
   display: grid;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
 .analytics-comparison-selected-athlete strong {
   overflow: hidden;
-  font-size: 14px;
+  font-size: var(--card-title-size);
+  font-weight: 690;
+  line-height: 1.24;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .analytics-comparison-selected-athlete span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--card-meta-size);
+  line-height: 1.36;
 }
 
 .analytics-comparison-color-dot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--athlete-color, var(--series-color, var(--brand-blue)));
 }
