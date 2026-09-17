@@ -7678,16 +7678,9 @@ function athleteAnalyticsDerivedSeriesPoints(points, definition) {
     .filter(Boolean);
 }
 
-function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selectedApparatuses, discipline) {
+function athleteAnalyticsBackgroundSeries(points, selectedApparatuses, discipline, metric, startDate, endDate, mode) {
   const isSnapshot = mode === "snapshot";
-  const mainPoints = athleteAnalyticsPointsForSelection(points, selectedApparatuses);
-  const mainReferenceDates = athleteAnalyticsTrendReferenceDates(mainPoints, startDate, endDate, mode);
-  const trend = athleteAnalyticsTrendPoints(mainPoints, startDate, endDate, mode);
-  const contextScope = athleteAnalyticsTrendScope(mainPoints, startDate, endDate, mode, isSnapshot);
-  const contextTrend = isSnapshot
-    ? athleteAnalyticsTrendPoints(mainPoints, contextScope.startDate, contextScope.endDate, contextScope.mode)
-    : [];
-  const backgroundSeries = athleteAnalyticsComponentDefinitions(selectedApparatuses, discipline, metric)
+  return athleteAnalyticsComponentDefinitions(selectedApparatuses, discipline, metric)
     .map((definition) => {
       const sourcePoints = points.filter(definition.filter);
       const componentPoints = athleteAnalyticsDerivedSeriesPoints(points, definition);
@@ -7710,6 +7703,26 @@ function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selecte
     })
     .filter((series) => series.trend.length >= 1)
     .filter((series) => !series.hideWhenAllZero || series.trend.some((point) => Math.abs(Number(point.value)) > 0));
+}
+
+function renderAthleteTrendSvg(points, metric, startDate, endDate, mode, selectedApparatuses, discipline) {
+  const isSnapshot = mode === "snapshot";
+  const mainPoints = athleteAnalyticsPointsForSelection(points, selectedApparatuses);
+  const mainReferenceDates = athleteAnalyticsTrendReferenceDates(mainPoints, startDate, endDate, mode);
+  const trend = athleteAnalyticsTrendPoints(mainPoints, startDate, endDate, mode);
+  const contextScope = athleteAnalyticsTrendScope(mainPoints, startDate, endDate, mode, isSnapshot);
+  const contextTrend = isSnapshot
+    ? athleteAnalyticsTrendPoints(mainPoints, contextScope.startDate, contextScope.endDate, contextScope.mode)
+    : [];
+  const backgroundSeries = athleteAnalyticsBackgroundSeries(
+    points,
+    selectedApparatuses,
+    discipline,
+    metric,
+    startDate,
+    endDate,
+    mode,
+  );
   if (!trend.length) {
     return `<div class="empty-state compact-empty">${t("analyticsNoData")}</div>`;
   }
@@ -8595,6 +8608,15 @@ function analyticsComparisonPreparedData() {
       range.endDate,
       comparison.mode,
     );
+    const backgroundSeries = athleteAnalyticsBackgroundSeries(
+      points,
+      selectedApparatuses,
+      discipline,
+      comparison.metric,
+      range.startDate,
+      range.endDate,
+      comparison.mode,
+    );
     return {
       athlete: payload.athlete,
       color: ANALYTICS_COMPARISON_COLORS[index],
@@ -8604,6 +8626,7 @@ function analyticsComparisonPreparedData() {
       vertices,
       trend,
       contextTrend,
+      backgroundSeries,
       summary: athleteAnalyticsSummary(includedPoints, comparison.metric),
       warnings: localizedBackendWarnings(includedPoints.flatMap((point) => point.data_warnings || [])),
     };
@@ -8614,7 +8637,10 @@ function analyticsComparisonPreparedData() {
     ? timeline
     : timeline.filter((date) => date >= range.startDate && date <= range.endDate);
   const trendValues = athleteData.flatMap((item) => (
-    comparison.mode === "snapshot" ? item.contextTrend : item.trend
+    [
+      ...(comparison.mode === "snapshot" ? item.contextTrend : item.trend),
+      ...item.backgroundSeries.flatMap((series) => series.trend),
+    ]
   ).map((point) => point.value));
   const trendValueDomain = athleteAnalyticsTrendValueDomain(comparison.metric, trendValues);
   return {
@@ -8758,6 +8784,29 @@ function renderAnalyticsComparisonTrendFigure(series, data) {
             ? athleteAnalyticsSvgCoordinates(item.trend, item.trend.map((point) => point.date), padding, width, height, minValue, valueRange, data.dateDomain)
             : coordinates;
           return `
+            ${item.backgroundSeries.map((background) => {
+              const backgroundCoordinates = athleteAnalyticsSvgCoordinates(
+                background.trend,
+                background.referenceDates,
+                padding,
+                width,
+                height,
+                minValue,
+                valueRange,
+                data.dateDomain,
+              );
+              const backgroundStyle = `style="--series-color: ${athleteAnalyticsComponentColor(background)};"`;
+              return `
+                ${renderAthleteTrendPaths(backgroundCoordinates, background.referenceDates, "athlete-trend-line is-background", backgroundStyle)}
+                ${backgroundCoordinates.map((point) => renderAthleteTrendDot(
+                  analyticsComparisonSeriesPoint(point, athleteCardDisplayName(item.athlete)),
+                  background.metric || state.analyticsComparison.metric,
+                  "athlete-trend-dot is-background",
+                  3.1,
+                  backgroundStyle,
+                )).join("")}
+              `;
+            }).join("")}
             ${renderAthleteTrendPaths(coordinates, referenceDates, lineClass, style)}
             ${focusCoordinates.map((point) => renderAthleteTrendDot(
               analyticsComparisonSeriesPoint(point, athleteCardDisplayName(item.athlete)),
@@ -8771,7 +8820,8 @@ function renderAnalyticsComparisonTrendFigure(series, data) {
       </svg>
       <div class="athlete-trend-tooltip" role="status" hidden></div>
       <div class="athlete-trend-legend analytics-comparison-legend">
-        ${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(athleteCardDisplayName(item.athlete))}</span>`).join("")}
+        ${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${athleteAnalyticsApparatusSelectionLabel(data.selectedApparatuses)} · ${athleteAnalyticsMetricLabel(state.analyticsComparison.metric)}`)}</span>`).join("")}
+        ${series.flatMap((item) => item.backgroundSeries.map((background) => `<span style="--series-color: ${athleteAnalyticsComponentColor(background)};">${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${background.label}`)}</span>`)).join("")}
       </div>
     </div>
   `;
@@ -8784,6 +8834,7 @@ function renderAnalyticsComparisonRadarFigure(series, data) {
   const radius = 106;
   const center = 150;
   const total = vertices.length;
+  const hasApparatusFocus = data.selectedApparatuses.length > 0 && !data.selectedApparatuses.includes("AA");
   const scaleRatios = [0.25, 0.5, 0.75, 1];
   const rings = scaleRatios.map((ratio) => `<polygon class="athlete-radar-ring" points="${athleteAnalyticsSvgPolygon(vertices.map((_, index) => athleteAnalyticsPolarPoint(index, total, radius * ratio, center)))}"></polygon>`).join("");
   const axes = vertices.map((vertex, index) => {
@@ -8811,14 +8862,20 @@ function renderAnalyticsComparisonRadarFigure(series, data) {
               : 0;
             return athleteAnalyticsPolarPoint(index, total, radius * normalized, center);
           });
-          return `<polygon class="athlete-radar-area is-comparison" style="--comparison-color: ${item.color};" points="${athleteAnalyticsSvgPolygon(points)}"></polygon>${points.map((point, index) => {
+          const focusLines = hasApparatusFocus ? points.map((point, index) => {
             const vertex = item.vertices[index];
-            return `<circle class="athlete-radar-dot analytics-comparison-radar-dot" style="--series-color: ${item.color};" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="4" data-athlete-radar-point="true" data-radar-apparatus="${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${vertex.apparatus}`)}" data-radar-value="${escapeHtml(athleteAnalyticsFormatValue(vertex.value, state.analyticsComparison.metric))}" tabindex="0"></circle>`;
+            if (!athleteAnalyticsVertexIsActive(vertex.apparatus, data.selectedApparatuses, data.discipline)) return "";
+            return `<line class="athlete-radar-focus-line" style="--series-color: ${item.color};" x1="${center}" y1="${center}" x2="${point.x.toFixed(1)}" y2="${point.y.toFixed(1)}"></line>`;
+          }).join("") : "";
+          return `<polygon class="athlete-radar-area is-comparison ${hasApparatusFocus ? "is-muted" : ""}" style="--comparison-color: ${item.color};" points="${athleteAnalyticsSvgPolygon(points)}"></polygon>${focusLines}${points.map((point, index) => {
+            const vertex = item.vertices[index];
+            const active = athleteAnalyticsVertexIsActive(vertex.apparatus, data.selectedApparatuses, data.discipline);
+            return `<circle class="athlete-radar-dot analytics-comparison-radar-dot ${active ? "is-active" : "is-muted"}" style="--series-color: ${item.color};" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="${active ? 4.6 : 3.5}" data-athlete-radar-point="true" data-radar-apparatus="${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${vertex.apparatus}`)}" data-radar-value="${escapeHtml(athleteAnalyticsFormatValue(vertex.value, state.analyticsComparison.metric))}" tabindex="0"></circle>`;
           }).join("")}`;
         }).join("")}
       </svg>
       <div class="athlete-radar-tooltip" role="status" hidden></div>
-      <div class="athlete-trend-legend analytics-comparison-legend">${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(athleteCardDisplayName(item.athlete))}</span>`).join("")}</div>
+      <div class="athlete-trend-legend analytics-comparison-legend">${series.map((item) => `<span class="is-primary" style="--series-color: ${item.color};">${escapeHtml(`${athleteCardDisplayName(item.athlete)} · ${athleteAnalyticsApparatusSelectionLabel(data.selectedApparatuses)} ${athleteAnalyticsFormatValue(item.summary.average, state.analyticsComparison.metric)}`)}</span>`).join("")}</div>
     </div>
   `;
 }

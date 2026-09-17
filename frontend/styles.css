@@ -3487,6 +3487,10 @@ button {
   stroke: #fff;
 }
 
+.analytics-comparison-radar-figure .athlete-radar-focus-line {
+  stroke: var(--series-color);
+}
+
 .analytics-comparison-line,
 .analytics-comparison-dot {
   stroke: var(--series-color);
