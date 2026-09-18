@@ -5713,7 +5713,7 @@ function renderRankingSavePanel() {
   }
   return `
     <div class="saved-ranking-panel">
-      <button class="quiet-button" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
+      <button class="quiet-button ranking-outline-action ranking-save-toggle" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
       <section class="panel saved-ranking-form-shell" id="rankingSaveFormShell" hidden>
         <form class="saved-ranking-form" id="rankingSaveForm">
           <label>
@@ -6256,7 +6256,7 @@ async function renderRankings() {
           <div class="ranking-filter-actions">
             ${renderRankingSavePanel()}
             <div class="ranking-filter-bottom-actions">
-              ${state.currentUser ? `<a class="quiet-button ranking-saved-shortcut" href="#/account?section=saved-rankings">${t("savedRankingsShortcut")}</a>` : ""}
+              ${state.currentUser ? `<a class="quiet-button ranking-outline-action ranking-saved-shortcut" href="#/account?section=saved-rankings">${t("savedRankingsShortcut")}</a>` : ""}
               <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearRankingFiltersButton">${t("clearRankingFilters")}</button>
             </div>
           </div>

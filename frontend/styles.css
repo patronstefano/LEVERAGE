@@ -3004,6 +3004,25 @@ button {
   gap: 5px;
 }
 
+.ranking-filter-actions .saved-ranking-panel,
+.ranking-filter-actions #showRankingSaveFormButton {
+  width: 100%;
+}
+
+.quiet-button.ranking-outline-action:hover,
+.quiet-button.ranking-outline-action:focus-visible {
+  border-color: var(--brand-blue);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+}
+
+.quiet-button.ranking-outline-action:active,
+.quiet-button.ranking-save-toggle[aria-expanded="true"] {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
+
 .ranking-metric-row {
   transform: translateY(-2px);
 }
@@ -5657,6 +5676,11 @@ button {
   .ranking-filter-actions .saved-ranking-panel {
     grid-row: auto;
     justify-items: start;
+  }
+
+  .ranking-filter-actions .saved-ranking-panel,
+  .ranking-filter-actions #showRankingSaveFormButton {
+    width: max-content;
   }
 
   .ranking-filter-bottom-actions {
