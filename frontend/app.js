@@ -9574,6 +9574,72 @@ function renderAnalyticsComparison() {
   renderAnalyticsComparisonWorkspace();
 }
 
+function renderAdminSelectControl(name, label, value, options) {
+  const normalizedOptions = options.map((option) => (
+    typeof option === "string" ? { value: option, label: option } : option
+  ));
+  const selectedOption = normalizedOptions.find((option) => option.value === value) || normalizedOptions[0];
+  return `
+    <div class="admin-form-field admin-custom-select-field">
+      <span>${escapeHtml(label)}</span>
+      <details class="admin-custom-select" data-admin-select>
+        <summary aria-haspopup="listbox" aria-label="${escapeHtml(label)}">
+          <span data-admin-select-label>${escapeHtml(selectedOption?.label || "")}</span>
+          <span class="admin-select-caret" aria-hidden="true"></span>
+        </summary>
+        <div class="admin-custom-select-menu" role="listbox" aria-label="${escapeHtml(label)}">
+          ${normalizedOptions.map((option) => `
+            <button
+              type="button"
+              role="option"
+              aria-selected="${option.value === selectedOption?.value}"
+              data-admin-select-value="${escapeHtml(option.value)}"
+            >${escapeHtml(option.label)}</button>
+          `).join("")}
+        </div>
+        <input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(selectedOption?.value || "")}" data-admin-select-input>
+      </details>
+    </div>
+  `;
+}
+
+function closeAdminSelectControls(except = null) {
+  document.querySelectorAll("[data-admin-select][open]").forEach((control) => {
+    if (control !== except) control.removeAttribute("open");
+  });
+}
+
+function bindAdminSelectControls(rootNode = document) {
+  rootNode.querySelectorAll("[data-admin-select]").forEach((control) => {
+    if (control.dataset.adminSelectBound === "true") return;
+    control.dataset.adminSelectBound = "true";
+    control.addEventListener("toggle", () => {
+      if (control.open) closeAdminSelectControls(control);
+    });
+    control.querySelectorAll("[data-admin-select-value]").forEach((option) => {
+      option.addEventListener("click", () => {
+        const value = option.dataset.adminSelectValue || "";
+        const input = control.querySelector("[data-admin-select-input]");
+        const label = control.querySelector("[data-admin-select-label]");
+        if (input) input.value = value;
+        if (label) label.textContent = option.textContent.trim();
+        control.querySelectorAll("[role='option']").forEach((item) => {
+          item.setAttribute("aria-selected", String(item === option));
+        });
+        control.removeAttribute("open");
+      });
+    });
+  });
+  if (document.documentElement.dataset.adminSelectOutsideBound === "true") return;
+  document.documentElement.dataset.adminSelectOutsideBound = "true";
+  document.addEventListener("pointerdown", (event) => {
+    if (!event.target.closest("[data-admin-select]")) closeAdminSelectControls();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAdminSelectControls();
+  });
+}
+
 function renderAthleteAdminForm(athlete) {
   return `
     <form class="admin-edit-form" id="athleteAdminForm">
@@ -9604,13 +9670,7 @@ function renderAthleteAdminForm(athlete) {
           <span>${t("countryChangeYear")}</span>
           <input name="country_change_year" type="number" min="1900" max="2100">
         </label>
-        <label>
-          <span>${t("discipline")}</span>
-          <select name="discipline">
-            <option value="MAG" ${athlete.discipline === "MAG" ? "selected" : ""}>MAG</option>
-            <option value="WAG" ${athlete.discipline === "WAG" ? "selected" : ""}>WAG</option>
-          </select>
-        </label>
+        ${renderAdminSelectControl("discipline", t("discipline"), athlete.discipline, ["MAG", "WAG"])}
         <label class="admin-form-wide">
           <span>${t("imageUrl")}</span>
           <input name="image_url" value="${escapeHtml(athlete.image_url || "")}">
@@ -9731,6 +9791,7 @@ function renderAthleteAdminPanel(athlete, adminView, adminViewError = null) {
 function bindAthleteAdminForm(athleteId) {
   const form = $("#athleteAdminForm");
   if (!form) return;
+  bindAdminSelectControls(form);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = $("#athleteAdminMessage");
@@ -10428,24 +10489,19 @@ function renderEventAdminForm(event) {
           <span>${t("toDate")}</span>
           <input name="end_date" type="date" value="${escapeHtml(event.end_date || "")}">
         </label>
-        <label>
-          <span>${t("discipline")}</span>
-          <select name="discipline">
-            ${["MAG", "WAG", "MAG and WAG"].map((value) => `<option value="${value}" ${event.discipline === value ? "selected" : ""}>${displayEnumValue(value)}</option>`).join("")}
-          </select>
-        </label>
-        <label>
-          <span>${t("category")}</span>
-          <select name="category">
-            ${["senior", "junior", "junior and senior"].map((value) => `<option value="${value}" ${event.category === value ? "selected" : ""}>${displayEnumValue(value)}</option>`).join("")}
-          </select>
-        </label>
-        <label>
-          <span>${t("levelFilter")}</span>
-          <select name="level">
-            ${EVENT_LEVEL_FILTERS.map((level) => `<option value="${escapeHtml(level.value)}" ${event.level === level.value ? "selected" : ""}>${escapeHtml(level.label)}</option>`).join("")}
-          </select>
-        </label>
+        ${renderAdminSelectControl(
+          "discipline",
+          t("discipline"),
+          event.discipline,
+          ["MAG", "WAG", "MAG and WAG"].map((value) => ({ value, label: displayEnumValue(value) })),
+        )}
+        ${renderAdminSelectControl(
+          "category",
+          t("category"),
+          event.category,
+          ["senior", "junior", "junior and senior"].map((value) => ({ value, label: displayEnumValue(value) })),
+        )}
+        ${renderAdminSelectControl("level", t("levelFilter"), event.level, EVENT_LEVEL_FILTERS)}
         <label class="admin-form-wide">
           <span>${t("imageUrl")}</span>
           <input name="image_url" value="${escapeHtml(event.image_url || "")}">
@@ -10575,6 +10631,7 @@ function renderEventAdminPanel(event, adminView, adminViewError = null) {
 function bindEventAdminForm(eventId) {
   const form = $("#eventAdminForm");
   if (!form) return;
+  bindAdminSelectControls(form);
   form.addEventListener("submit", async (submitEvent) => {
     submitEvent.preventDefault();
     const message = $("#eventAdminMessage");
