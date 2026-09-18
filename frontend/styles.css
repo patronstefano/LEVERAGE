@@ -3278,6 +3278,19 @@ button {
   padding-left: 4px;
 }
 
+.account-saved-ranking-list .delete-button:hover,
+.account-saved-ranking-list .delete-button:focus-visible {
+  border-color: var(--danger);
+  background: #fff;
+  color: rgba(25, 23, 71, 0.68);
+}
+
+.account-saved-ranking-list .delete-button:active {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
 .account-ranking-views {
   margin-top: 0;
 }
