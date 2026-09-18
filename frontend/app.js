@@ -324,6 +324,8 @@ const translations = {
     clearRankingFilters: "Clear filters",
     clearSearch: "Clear search",
     filters: "Filters",
+    activeFilterSingular: "active filter",
+    activeFilterPlural: "active filters",
     backToFilters: "Back to filters",
     loadMoreAthletes: "Load more Athletes",
     loadMoreEvents: "Load more Events",
@@ -666,6 +668,8 @@ const translations = {
     clearRankingFilters: "Pulisci filtri",
     clearSearch: "Cancella ricerca",
     filters: "Filtri",
+    activeFilterSingular: "filtro attivo",
+    activeFilterPlural: "filtri attivi",
     backToFilters: "Torna ai filtri",
     loadMoreAthletes: "Carica altri Atleti",
     loadMoreEvents: "Carica altri Eventi",
@@ -1008,6 +1012,8 @@ const translations = {
     clearRankingFilters: "Limpiar filtros",
     clearSearch: "Borrar busqueda",
     filters: "Filtros",
+    activeFilterSingular: "filtro activo",
+    activeFilterPlural: "filtros activos",
     backToFilters: "Volver a los filtros",
     loadMoreAthletes: "Cargar mas Atletas",
     loadMoreEvents: "Cargar mas Eventos",
@@ -1350,6 +1356,8 @@ const translations = {
     clearRankingFilters: "Effacer filtres",
     clearSearch: "Effacer recherche",
     filters: "Filtres",
+    activeFilterSingular: "filtre actif",
+    activeFilterPlural: "filtres actifs",
     backToFilters: "Retour aux filtres",
     loadMoreAthletes: "Charger plus d'Athletes",
     loadMoreEvents: "Charger plus d'Evenements",
@@ -10638,22 +10646,49 @@ function bindEventSuggestionActions(eventId) {
   });
 }
 
+function savedRankingActiveFilterCount(filters = {}) {
+  const hasTimeFilter = Boolean(
+    filters.startYear || filters.endYear ||
+    filters.startDate || filters.endDate ||
+    filters.startPeriod || filters.endPeriod
+  );
+  return [
+    normalizeSavedFilterArray(filters.discipline).length > 0,
+    normalizeSavedFilterArray(filters.category).length > 0,
+    normalizeSavedFilterArray(filters.level).length > 0,
+    normalizeSavedFilterArray(filters.sortBy || filters.sort_by).length > 0,
+    normalizeSavedFilterArray(filters.apparatus).length > 0,
+    hasTimeFilter || normalizeSavedFilterArray(filters.scoringCycle).length > 0,
+  ].filter(Boolean).length;
+}
+
+function savedRankingCategoryLabel(filters = {}) {
+  const categories = normalizeSavedFilterArray(filters.category)
+    .filter((value) => ["junior", "senior"].includes(value));
+  if (categories.includes("junior") && categories.includes("senior")) {
+    return displayEnumValue("junior and senior");
+  }
+  if (categories[0] === "junior") return t("junior");
+  if (categories[0] === "senior") return t("senior");
+  return "";
+}
+
 function renderSavedRankingViews(views) {
   const rankingViews = views.filter((view) => view.view_type === "ranking");
   if (!rankingViews.length) return emptyMessage(t("noSavedRankingViews"));
   return `<div class="grid-3 ranking-results-list account-preference-card-list account-saved-ranking-list">${rankingViews.map((view) => {
     const filters = view.filters || {};
-    const summary = rankingFilterSummary(filters);
     const discipline = normalizeSavedFilterArray(filters.discipline)[0] || "MAG";
-    const apparatus = normalizeSavedFilterArray(filters.apparatus)[0] || "AA";
+    const category = savedRankingCategoryLabel(filters);
     const metric = rankingMetricLabel(normalizeRankingMetricValue(normalizeSavedFilterArray(filters.sortBy || filters.sort_by)[0]));
+    const activeFilterCount = savedRankingActiveFilterCount(filters);
     const meta = [
-      `${t("filters")}: ${summary}`,
+      `${activeFilterCount} ${t(activeFilterCount === 1 ? "activeFilterSingular" : "activeFilterPlural")}`,
       view.created_at ? `${t("savedOn")} ${formatReadableDate(String(view.created_at).slice(0, 10))}` : "",
     ].filter(Boolean).join(" · ");
     const pills = [
       { label: discipline, variant: "brand" },
-      { label: apparatus },
+      ...(category ? [{ label: category }] : []),
       { label: metric },
     ];
     return entityCard(
