@@ -52,6 +52,11 @@ function activeRouteSection(route) {
   return contextualAthleteSourceSection(route) || routeSection(route);
 }
 
+function isAthleteSectionDetailRoute(route) {
+  const routePath = String(route || "/").split("?")[0];
+  return /^\/athletes\/\d+$/.test(routePath) && activeRouteSection(route) === "athletes";
+}
+
 function routeBelongsToSection(route, section) {
   return activeRouteSection(route) === section;
 }
@@ -2406,8 +2411,22 @@ function persistSectionRoutes() {
 function rememberCurrentSectionRoute() {
   const section = activeRouteSection(state.route);
   if (!section) return;
+  if (
+    section === "athletes" &&
+    !isAthleteSectionDetailRoute(state.route) &&
+    isAthleteSectionDetailRoute(state.sectionRoutes.athletes)
+  ) {
+    return;
+  }
   state.sectionRoutes[section] = state.route;
   persistSectionRoutes();
+}
+
+function rememberAthleteListRoute() {
+  if (!routeIsListSection("athletes")) return;
+  state.sectionRoutes.athletes = state.route;
+  persistSectionRoutes();
+  syncSectionNavLinks();
 }
 
 function sectionNavigationRoute(section) {
@@ -5792,6 +5811,7 @@ function athleteSearchRoute(query) {
 }
 
 function syncAthleteSearchRoute(query) {
+  if (!routeIsListSection("athletes")) return;
   const route = athleteSearchRoute(query);
   state.route = route;
   window.history.replaceState(null, "", `#${route}`);
@@ -5945,6 +5965,7 @@ function syncTimeFilterUi(scope) {
 }
 
 async function renderAthletes() {
+  rememberAthleteListRoute();
   const params = currentParams();
   const search = params.get("search") || "";
   await ensureFavoritesLoaded().catch(() => {});
