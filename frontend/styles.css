@@ -3632,22 +3632,35 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .athlete-identity-history .timeline-list {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
   gap: 6px;
 }
 
 .athlete-identity-history .timeline-item {
-  grid-template-columns: 52px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  align-items: start;
+  min-height: 42px;
   padding: 7px 9px;
 }
 
-.athlete-identity-history .timeline-item span,
-.athlete-identity-history .timeline-item strong {
-  font-size: 12px;
+.athlete-identity-panel-embedded .athlete-identity-history .timeline-list {
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
 }
 
-.athlete-identity-world-gymnastics .timeline-item {
-  grid-template-columns: minmax(92px, max-content) minmax(0, 1fr);
+.athlete-identity-panel-embedded .athlete-identity-history .timeline-item {
+  min-height: 38px;
+  padding: 6px 8px;
+}
+
+.athlete-identity-history .timeline-item span {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.athlete-identity-history .timeline-item strong {
+  font-size: 13px;
+  line-height: 1.18;
 }
 
 .athlete-identity-world-gymnastics .timeline-item strong {
