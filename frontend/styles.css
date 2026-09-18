@@ -3161,13 +3161,13 @@ button {
 }
 
 .account-view-toggle {
-  grid-template-columns: repeat(3, minmax(88px, max-content));
-  width: max-content;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(300px, 100%);
   max-width: 100%;
 }
 
 .account-view-toggle .segmented-option {
-  min-width: 88px;
+  min-width: 0;
   height: 34px;
   padding: 0 14px;
   color: rgba(17, 17, 20, 0.76);
