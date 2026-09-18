@@ -99,6 +99,8 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
   Endpoint admin-only per registrare un cambio country con `to_country` e `change_year`
 - `GET /athletes/{athlete_id}/admin-view`
   Endpoint admin-only: restituisce la scheda Athlete ufficiale e i suggerimenti pendenti visibili solo agli admin
+- `PATCH /athletes/{athlete_id}/world-gymnastics`
+  Endpoint admin-only per correggere FIG ID, URL profilo e status gia importati oppure revocare il badge. La modifica manuale di FIG ID o URL invalida automaticamente la certificazione; per riattivarla occorre confermare nuovamente un profilo tramite `Importa dati`.
 - `POST /athletes/{source_athlete_id}/merge-preview`
   Endpoint admin-only per verificare se una scheda atleta duplicata puo essere unita a un atleta canonico indicato tramite `target_athlete_id`
 - `POST /athletes/{source_athlete_id}/merge`
@@ -453,6 +455,7 @@ Flusso consigliato nella scheda admin Athlete:
 4. `POST /world-gymnastics/athletes/{athlete_id}/suggestions`
    Con `fig_athlete_id` oppure `fig_profile_url`, legge la pagina profilo ufficiale e crea suggerimenti `pending`.
 5. L'admin approva, modifica o rifiuta i suggerimenti tramite gli endpoint `data-suggestions`.
+6. Dopo il primo collegamento, usa `PATCH /athletes/{athlete_id}/world-gymnastics` soltanto per manutenzione controllata o revoca; tutte le variazioni sono registrate nell'audit amministrativo.
 
 Campi suggeribili attuali:
 

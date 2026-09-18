@@ -108,7 +108,13 @@ L'elemento innovativo non risiede quindi nella sola icona, ma nell'architettura 
 - audit e supervisione Super Admin;
 - comunicazione pubblica immediata e comprensibile.
 
-## 7. Evidenze nel repository GitHub
+## 7. Manutenzione e revoca della certificazione
+
+La certificazione non e irreversibile. Dopo il collegamento iniziale, gli utenti Admin e Super Admin possono correggere FIG ID, URL del profilo e status World Gymnastics attraverso campi dedicati nella sezione `Modifica atleta`. La piattaforma applica tuttavia una distinzione semantica precisa: lo status descrive una condizione del profilo e puo cambiare senza alterarne l'identita; FIG ID e URL identificano invece la fonte ufficiale certificata. La modifica manuale di uno di questi ultimi campi revoca pertanto in modo automatico il badge, la data di verifica e il riferimento all'Admin verificatore.
+
+E inoltre disponibile una revoca esplicita del solo badge, che conserva FIG ID, URL e status per non perdere il collegamento informativo. Ogni modifica o revoca genera una voce di audit. Per ripristinare il badge non e sufficiente intervenire manualmente sul booleano: l'Admin deve selezionare nuovamente un profilo ufficiale riscontrato e confermare `Importa dati`. Questo ciclo rende la certificazione correggibile nel tempo senza indebolirne il significato metodologico.
+
+## 8. Evidenze nel repository GitHub
 
 La versione definitiva del flusso automatico e verificabile nel repository pubblico:
 
@@ -124,6 +130,6 @@ Commit collegati:
 
 Il commit `39ac359` rappresenta la decisione semantica definitiva: nessun badge per la sola ricerca e nessuna assegnazione libera dal form; certificazione soltanto dopo la selezione e l'importazione esplicita di un profilo ufficiale riscontrato.
 
-## 8. Formula sintetica utilizzabile nella monografia
+## 9. Formula sintetica utilizzabile nella monografia
 
 LEVERAGE adotta un meccanismo di certificazione controllata delle Schede Atleta: il badge pubblico viene assegnato esclusivamente quando un amministratore seleziona e importa un profilo ufficiale World Gymnastics riscontrato. La ricerca preliminare non altera lo stato della scheda e i singoli dati importati rimangono soggetti ad approvazione separata. La certificazione attesta pertanto il matching dell'identita e la provenienza istituzionale del riferimento, non un'approvazione generalizzata di tutti i dati ne un endorsement da parte della federazione. L'intera transizione e persistente, auditabile e protetta da ruoli amministrativi.

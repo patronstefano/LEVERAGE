@@ -1,6 +1,7 @@
 from datetime import date as Date, datetime
 from typing import Any, Optional
 from enum import Enum
+from urllib.parse import parse_qs, urlparse
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, computed_field, model_validator
 
@@ -589,6 +590,38 @@ class AthleteUpdate(BaseModel):
     @model_validator(mode="after")
     def validate_year(self):
         validate_birth_year(self.birth_year)
+        return self
+
+
+class AthleteWorldGymnasticsUpdate(BaseModel):
+    world_gymnastics_athlete_id: Optional[str] = None
+    world_gymnastics_profile_url: Optional[str] = None
+    world_gymnastics_status: Optional[str] = None
+    remove_verification_badge: bool = False
+
+    @model_validator(mode="after")
+    def validate_world_gymnastics_fields(self):
+        fig_id = (self.world_gymnastics_athlete_id or "").strip()
+        if fig_id and not fig_id.isdigit():
+            raise ValueError("world_gymnastics_athlete_id must be numeric")
+
+        profile_url = (self.world_gymnastics_profile_url or "").strip()
+        if profile_url:
+            parsed = urlparse(profile_url)
+            if parsed.scheme not in {"http", "https"}:
+                raise ValueError("world_gymnastics_profile_url must use http or https")
+            hostname = (parsed.hostname or "").lower()
+            if hostname != "gymnastics.sport" and not hostname.endswith(".gymnastics.sport"):
+                raise ValueError("world_gymnastics_profile_url must use gymnastics.sport")
+            profile_id = parse_qs(parsed.query).get("id", [None])[0]
+            if not profile_id or not profile_id.isdigit():
+                raise ValueError("world_gymnastics_profile_url must include a numeric id")
+            if fig_id and profile_id != fig_id:
+                raise ValueError("FIG ID and World Gymnastics profile URL id must match")
+
+        status = (self.world_gymnastics_status or "").strip()
+        if len(status) > 100:
+            raise ValueError("world_gymnastics_status must be 100 characters or fewer")
         return self
 
 

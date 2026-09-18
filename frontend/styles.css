@@ -5631,6 +5631,37 @@ a:focus-visible > .entity-card-clickable {
   grid-column: 1 / -1;
 }
 
+.admin-form-span-two {
+  grid-column: span 2;
+}
+
+.admin-linked-data {
+  display: grid;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(25, 23, 71, 0.08);
+}
+
+.admin-linked-data-header {
+  align-items: center;
+  margin: 0;
+}
+
+.admin-linked-data-header h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 690;
+  line-height: 1.25;
+}
+
+.admin-linked-data-header p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: var(--card-meta-size);
+  font-weight: 520;
+}
+
 .admin-inline-form {
   display: flex;
   gap: 8px;
@@ -5954,6 +5985,10 @@ a:focus-visible > .entity-card-clickable {
   .athlete-analytics-visual-grid,
   .admin-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-form-span-two {
+    grid-column: auto;
   }
 
   .athlete-analytics-controls {

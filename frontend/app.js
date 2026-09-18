@@ -493,6 +493,12 @@ const translations = {
     updateSaved: "Athlete updated.",
     updateError: "Unable to update athlete.",
     verifiedAthleteBadge: "Verified athlete",
+    editWorldGymnasticsData: "World Gymnastics data",
+    verificationBadgeActive: "Verification badge active",
+    verificationBadgeInactive: "Verification badge not active",
+    removeVerificationBadge: "Remove verification badge",
+    badgeRemoved: "Verification badge removed.",
+    badgeRemovalError: "Unable to remove the verification badge.",
     countryChangeYear: "Country change year",
     adminSuggestions: "Data awaiting approval",
     adminSuggestionSingular: "item awaiting approval",
@@ -839,6 +845,12 @@ const translations = {
     updateSaved: "Atleta aggiornato.",
     updateError: "Impossibile aggiornare l'atleta.",
     verifiedAthleteBadge: "Atleta verificato",
+    editWorldGymnasticsData: "Dati World Gymnastics",
+    verificationBadgeActive: "Badge di verifica attivo",
+    verificationBadgeInactive: "Badge di verifica non attivo",
+    removeVerificationBadge: "Rimuovi badge di verifica",
+    badgeRemoved: "Badge di verifica rimosso.",
+    badgeRemovalError: "Impossibile rimuovere il badge di verifica.",
     countryChangeYear: "Anno cambio nazionalità",
     adminSuggestions: "Dati in attesa di approvazione",
     adminSuggestionSingular: "dato in attesa di approvazione",
@@ -1185,6 +1197,12 @@ const translations = {
     updateSaved: "Atleta actualizado.",
     updateError: "No se pudo actualizar el atleta.",
     verifiedAthleteBadge: "Atleta verificado",
+    editWorldGymnasticsData: "Datos de World Gymnastics",
+    verificationBadgeActive: "Insignia de verificación activa",
+    verificationBadgeInactive: "Insignia de verificación no activa",
+    removeVerificationBadge: "Eliminar insignia de verificación",
+    badgeRemoved: "Insignia de verificación eliminada.",
+    badgeRemovalError: "No se pudo eliminar la insignia de verificación.",
     countryChangeYear: "Ano de cambio de nacionalidad",
     adminSuggestions: "Datos pendientes de aprobación",
     adminSuggestionSingular: "dato pendiente de aprobación",
@@ -1531,6 +1549,12 @@ const translations = {
     updateSaved: "Athlete mis a jour.",
     updateError: "Impossible de mettre a jour l'athlete.",
     verifiedAthleteBadge: "Athlete verifie",
+    editWorldGymnasticsData: "Donnees World Gymnastics",
+    verificationBadgeActive: "Badge de verification actif",
+    verificationBadgeInactive: "Badge de verification inactif",
+    removeVerificationBadge: "Retirer le badge de verification",
+    badgeRemoved: "Badge de verification retire.",
+    badgeRemovalError: "Impossible de retirer le badge de verification.",
     countryChangeYear: "Annee changement nationalite",
     adminSuggestions: "Données en attente d’approbation",
     adminSuggestionSingular: "donnée en attente d’approbation",
@@ -9734,7 +9758,16 @@ function syncAthleteAdminForm(athlete) {
   ["last_name", "first_name", "birth_year", "country", "discipline", "image_url"].forEach((name) => {
     syncAdminFormValue(form, name, athlete[name]);
   });
+  ["world_gymnastics_athlete_id", "world_gymnastics_profile_url", "world_gymnastics_status"].forEach((name) => {
+    syncAdminFormValue(form, name, athlete[name]);
+  });
   syncAdminFormValue(form, "country_change_year", "");
+  const verificationState = $("#athleteVerificationState");
+  if (verificationState) {
+    verificationState.textContent = t(athlete.is_profile_verified ? "verificationBadgeActive" : "verificationBadgeInactive");
+  }
+  const removeBadge = $("#removeAthleteVerificationBadge");
+  if (removeBadge) removeBadge.hidden = !athlete.is_profile_verified;
 }
 
 async function refreshAthleteAdminState(athleteId, options = {}) {
@@ -9760,6 +9793,13 @@ async function refreshAthleteAdminState(athleteId, options = {}) {
 }
 
 function renderAthleteAdminForm(athlete) {
+  const hasWorldGymnasticsData = Boolean(
+    athlete.world_gymnastics_athlete_id
+    || athlete.world_gymnastics_profile_url
+    || athlete.world_gymnastics_status
+    || athlete.world_gymnastics_verified_at
+    || athlete.is_profile_verified
+  );
   return `
     <form class="admin-edit-form" id="athleteAdminForm">
       <div class="section-header compact-section-header">
@@ -9795,6 +9835,36 @@ function renderAthleteAdminForm(athlete) {
           <input name="image_url" value="${escapeHtml(athlete.image_url || "")}">
         </label>
       </div>
+      ${hasWorldGymnasticsData ? `
+        <div class="admin-linked-data" data-athlete-world-gymnastics-fields>
+          <div class="section-header compact-section-header admin-linked-data-header">
+            <div>
+              <h3>${t("editWorldGymnasticsData")}</h3>
+              <p id="athleteVerificationState">${t(athlete.is_profile_verified ? "verificationBadgeActive" : "verificationBadgeInactive")}</p>
+            </div>
+            <button
+              class="quiet-button filter-clear-button"
+              id="removeAthleteVerificationBadge"
+              type="button"
+              ${athlete.is_profile_verified ? "" : "hidden"}
+            >${t("removeVerificationBadge")}</button>
+          </div>
+          <div class="admin-form-grid">
+            <label>
+              <span>${t("worldGymnasticsId")}</span>
+              <input name="world_gymnastics_athlete_id" inputmode="numeric" value="${escapeHtml(athlete.world_gymnastics_athlete_id || "")}">
+            </label>
+            <label class="admin-form-span-two">
+              <span>${t("worldGymnasticsProfile")}</span>
+              <input name="world_gymnastics_profile_url" type="url" value="${escapeHtml(athlete.world_gymnastics_profile_url || "")}">
+            </label>
+            <label>
+              <span>${t("worldGymnasticsStatus")}</span>
+              <input name="world_gymnastics_status" maxlength="100" value="${escapeHtml(athlete.world_gymnastics_status || "")}">
+            </label>
+          </div>
+        </div>
+      ` : ""}
       <span class="auth-message" id="athleteAdminMessage" role="status" aria-live="polite"></span>
     </form>
   `;
@@ -9949,12 +10019,44 @@ function bindAthleteAdminForm(athleteId) {
     submit.disabled = true;
     try {
       await sendJson(`/athletes/${athleteId}`, { method: "PUT", body: payload });
+      if (form.querySelector("[data-athlete-world-gymnastics-fields]")) {
+        await sendJson(`/athletes/${athleteId}/world-gymnastics`, {
+          method: "PATCH",
+          body: {
+            world_gymnastics_athlete_id: String(formData.get("world_gymnastics_athlete_id") || "").trim() || null,
+            world_gymnastics_profile_url: String(formData.get("world_gymnastics_profile_url") || "").trim() || null,
+            world_gymnastics_status: String(formData.get("world_gymnastics_status") || "").trim() || null,
+          },
+        });
+      }
       await refreshAthleteAdminState(athleteId, { refreshAnalytics: true });
       message.textContent = t("updateSaved");
     } catch (_error) {
       message.textContent = t("updateError");
     } finally {
       submit.disabled = false;
+    }
+  });
+
+  $("#removeAthleteVerificationBadge")?.addEventListener("click", async (event) => {
+    const button = event.currentTarget;
+    const message = $("#athleteAdminMessage");
+    message.textContent = "";
+    button.disabled = true;
+    try {
+      await sendJson(`/athletes/${athleteId}/world-gymnastics`, {
+        method: "PATCH",
+        body: { remove_verification_badge: true },
+      });
+      await refreshAthleteAdminState(athleteId, {
+        refreshProfile: true,
+        refreshForm: true,
+        refreshSuggestions: false,
+      });
+      message.textContent = t("badgeRemoved");
+    } catch (_error) {
+      message.textContent = t("badgeRemovalError");
+      button.disabled = false;
     }
   });
 }

@@ -544,6 +544,117 @@ def test_update_and_delete_athlete():
     assert get_after_delete.status_code == 404
 
 
+def test_admin_can_edit_world_gymnastics_data_and_revoke_verification_badge():
+    client.post("/auth/register", json={"email": "wg-editor@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("wg-editor@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+
+    athlete = client.post(
+        "/athletes/",
+        json={
+            "first_name": "Giulia",
+            "last_name": "Verdi",
+            "discipline": "WAG",
+            "country": "ITA",
+        },
+        headers=headers,
+    ).json()
+    athlete_id = athlete["id"]
+
+    linked_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={
+            "world_gymnastics_athlete_id": "12345",
+            "world_gymnastics_profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=12345",
+            "world_gymnastics_status": "Active",
+        },
+        headers=headers,
+    )
+    assert linked_response.status_code == 200
+    assert linked_response.json()["world_gymnastics_athlete_id"] == "12345"
+    assert linked_response.json()["is_profile_verified"] is False
+
+    db = SessionLocal()
+    try:
+        stored_athlete = db.query(models.Athlete).filter(models.Athlete.id == athlete_id).one()
+        admin = db.query(models.User).filter(models.User.email == "wg-editor@example.com").one()
+        stored_athlete.is_profile_verified = True
+        stored_athlete.world_gymnastics_verified_at = datetime.utcnow()
+        stored_athlete.world_gymnastics_verified_by_admin_id = admin.id
+        db.commit()
+    finally:
+        db.close()
+
+    status_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={"world_gymnastics_status": "Retired"},
+        headers=headers,
+    )
+    assert status_response.status_code == 200
+    assert status_response.json()["world_gymnastics_status"] == "Retired"
+    assert status_response.json()["is_profile_verified"] is True
+
+    removal_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={"remove_verification_badge": True},
+        headers=headers,
+    )
+    assert removal_response.status_code == 200
+    assert removal_response.json()["is_profile_verified"] is False
+    assert removal_response.json()["world_gymnastics_athlete_id"] == "12345"
+    assert removal_response.json()["world_gymnastics_profile_url"].endswith("id=12345")
+
+    db = SessionLocal()
+    try:
+        stored_athlete = db.query(models.Athlete).filter(models.Athlete.id == athlete_id).one()
+        admin = db.query(models.User).filter(models.User.email == "wg-editor@example.com").one()
+        stored_athlete.is_profile_verified = True
+        stored_athlete.world_gymnastics_verified_at = datetime.utcnow()
+        stored_athlete.world_gymnastics_verified_by_admin_id = admin.id
+        db.commit()
+    finally:
+        db.close()
+
+    identity_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={
+            "world_gymnastics_athlete_id": "67890",
+            "world_gymnastics_profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=67890",
+        },
+        headers=headers,
+    )
+    assert identity_response.status_code == 200
+    assert identity_response.json()["is_profile_verified"] is False
+    assert identity_response.json()["world_gymnastics_verified_at"] is None
+    assert identity_response.json()["world_gymnastics_verified_by_admin_id"] is None
+
+    invalid_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={"world_gymnastics_profile_url": "https://example.com/profile?id=67890"},
+        headers=headers,
+    )
+    assert invalid_response.status_code == 422
+
+    mismatched_id_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={
+            "world_gymnastics_athlete_id": "11111",
+            "world_gymnastics_profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=22222",
+        },
+        headers=headers,
+    )
+    assert mismatched_id_response.status_code == 422
+
+    client.post("/auth/register", json={"email": "wg-viewer@example.com", "password": TEST_PASSWORD})
+    user_token = login_as_user("wg-viewer@example.com")
+    forbidden_response = client.patch(
+        f"/athletes/{athlete_id}/world-gymnastics",
+        json={"remove_verification_badge": True},
+        headers={"Authorization": f"Bearer {user_token}"},
+    )
+    assert forbidden_response.status_code == 403
+
+
 def test_admin_can_preview_and_merge_duplicate_athlete_into_canonical_entity():
     client.post("/auth/register", json={"email": "merge_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("merge_admin@example.com")

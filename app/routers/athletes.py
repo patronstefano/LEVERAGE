@@ -1069,6 +1069,55 @@ def update_athlete(
     return athlete
 
 
+@router.patch("/{athlete_id}/world-gymnastics", response_model=schemas.AthleteAdminRead)
+def update_athlete_world_gymnastics(
+    athlete_id: int,
+    payload: schemas.AthleteWorldGymnasticsUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    athlete = db.query(models.Athlete).filter(
+        models.Athlete.id == athlete_id,
+        models.Athlete.is_deleted.is_(False),
+    ).first()
+    if not athlete:
+        raise HTTPException(status_code=404, detail="Athlete not found")
+
+    before = model_snapshot(athlete)
+    update_data = payload.model_dump(
+        exclude_unset=True,
+        exclude={"remove_verification_badge"},
+    )
+    identity_changed = False
+    for field, value in update_data.items():
+        normalized_value = value.strip() if isinstance(value, str) else value
+        normalized_value = normalized_value or None
+        if field in {"world_gymnastics_athlete_id", "world_gymnastics_profile_url"}:
+            identity_changed = identity_changed or getattr(athlete, field) != normalized_value
+        setattr(athlete, field, normalized_value)
+
+    badge_removed = payload.remove_verification_badge or identity_changed
+    if badge_removed:
+        athlete.is_profile_verified = False
+        athlete.world_gymnastics_verified_at = None
+        athlete.world_gymnastics_verified_by_admin_id = None
+
+    after = model_snapshot(athlete)
+    if before != after:
+        add_audit_log(
+            db,
+            current_user,
+            "update_world_gymnastics",
+            "Athlete",
+            athlete.id,
+            before=before,
+            after=after,
+        )
+        db.commit()
+        db.refresh(athlete)
+    return athlete
+
+
 @router.post("/{athlete_id}/country-changes", response_model=schemas.AthleteRead)
 def create_athlete_country_change(
     athlete_id: int,
