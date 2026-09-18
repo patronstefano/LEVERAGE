@@ -2892,6 +2892,7 @@ Flusso di registrazione USER:
 - reso piu compatto lo stato vuoto `Nessun suggerimento pendente` nei pannelli Admin: il box ora segue il contenuto, usa padding ridotto, testo alla scala dei metadati e lo stesso arrotondamento dei piccoli blocchi informativi di LEVERAGE.
 - corretta la resa dei menu a scelta nei pannelli Admin, rimuovendo l'aspetto nativo non coerente applicato dal browser. I campi Disciplina, Categoria e Livello presentano ora lo stesso raggio dei campi di testo, padding uniforme e un indicatore a tendina discreto, mantenendo coerenti hover e focus.
 - completata la localizzazione del campo `venue`, che in precedenza ricadeva sempre sul nome tecnico inglese per assenza della chiave nei dizionari frontend. Il campo viene ora mostrato come `Venue` in inglese, `Sede` in italiano e spagnolo e `Site` in francese, sia nelle informazioni Evento sia negli strumenti Admin.
+- uniformata la gerarchia tipografica dei grafici alla sezione `Identita`: `Profilo attrezzi`, `Trend performance` e `Medie per anno` utilizzano ora titoli da 17 px, con sottotitoli e metriche proporzionati a 13 px. La stessa scala e applicata alle Analytics della Scheda Atleta e alla Sezione Analytics di confronto.
 
 ## 23. Conclusione
 
