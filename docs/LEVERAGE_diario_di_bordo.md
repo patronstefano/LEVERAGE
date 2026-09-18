@@ -2891,6 +2891,7 @@ Flusso di registrazione USER:
 - riallineata la scala tipografica dei pannelli Admin a quella generale di LEVERAGE: titoli di sezione, etichette, valori editabili, pulsanti, metadati e suggerimenti utilizzano ora le stesse dimensioni delle card e dei controlli principali, eliminando l'eccessiva riduzione introdotta durante la prima compattazione.
 - reso piu compatto lo stato vuoto `Nessun suggerimento pendente` nei pannelli Admin: il box ora segue il contenuto, usa padding ridotto, testo alla scala dei metadati e lo stesso arrotondamento dei piccoli blocchi informativi di LEVERAGE.
 - corretta la resa dei menu a scelta nei pannelli Admin, rimuovendo l'aspetto nativo non coerente applicato dal browser. I campi Disciplina, Categoria e Livello presentano ora lo stesso raggio dei campi di testo, padding uniforme e un indicatore a tendina discreto, mantenendo coerenti hover e focus.
+- completata la localizzazione del campo `venue`, che in precedenza ricadeva sempre sul nome tecnico inglese per assenza della chiave nei dizionari frontend. Il campo viene ora mostrato come `Venue` in inglese, `Sede` in italiano e spagnolo e `Site` in francese, sia nelle informazioni Evento sia negli strumenti Admin.
 
 ## 23. Conclusione
 
