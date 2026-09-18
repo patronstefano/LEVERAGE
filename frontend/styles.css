@@ -1916,9 +1916,43 @@ button {
 }
 
 .entity-card {
+  position: relative;
   display: grid;
   gap: 8px;
   padding: 16px;
+}
+
+.entity-card-clickable {
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.entity-card-clickable:hover {
+  border-color: rgba(25, 23, 71, 0.22);
+  box-shadow: 0 16px 42px rgba(16, 16, 20, 0.07);
+  transform: translateY(-1px);
+}
+
+.entity-card-clickable:focus-within,
+a:focus-visible > .entity-card-clickable {
+  border-color: rgba(25, 23, 71, 0.3);
+  box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.1);
+}
+
+.entity-card-clickable .entity-title-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.entity-card-clickable .favorite-button {
+  position: relative;
+  z-index: 2;
 }
 
 .ranking-card {

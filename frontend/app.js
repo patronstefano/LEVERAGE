@@ -2651,8 +2651,9 @@ function entityCard(title, meta, pills = [], href = "", actionHtml = "") {
   const titleContent = href && actionHtml
     ? `<a class="entity-title-link" href="${href}">${title}</a>`
     : title;
+  const cardClasses = ["entity-card", href ? "entity-card-clickable" : ""].filter(Boolean).join(" ");
   const content = `
-    <article class="entity-card">
+    <article class="${cardClasses}">
       <div class="entity-row">
         <h3>${titleContent}</h3>
         ${actionHtml}
