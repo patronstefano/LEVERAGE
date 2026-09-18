@@ -2434,6 +2434,9 @@ function bindSectionNavLinks() {
     link.addEventListener("click", (event) => {
       const section = link.dataset.sectionNav;
       if (!section || !SECTION_BASE_ROUTES[section]) return;
+      // Capture the exact open view before resolving another section's remembered route.
+      normalizeRoute();
+      rememberCurrentSectionRoute();
       const route = sectionNavigationRoute(section);
       link.setAttribute("href", `#${route}`);
       if (window.location.hash === `#${route}`) return;
@@ -11157,6 +11160,8 @@ async function renderAthleteDetail(athleteId) {
     bindAthleteWorldGymnasticsTools(athlete.id);
     bindAthleteSuggestionActions(athlete.id);
     loadAthleteAnalytics(athlete.id);
+    rememberCurrentSectionRoute();
+    syncSectionNavLinks();
   } catch (error) {
     setApp(errorState(error));
   }
