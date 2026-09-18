@@ -3416,6 +3416,72 @@ button {
   gap: 12px;
 }
 
+.analytics-comparison-search-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(760px, 100%);
+}
+
+.analytics-comparison-search-primary .analytics-comparison-search-form {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.analytics-favorites-toggle {
+  flex: 0 0 auto;
+}
+
+.analytics-favorite-picker {
+  width: 100%;
+  padding-top: 2px;
+}
+
+.analytics-favorite-athlete-grid {
+  align-items: stretch;
+}
+
+.analytics-favorite-athlete-card {
+  display: grid;
+  gap: var(--card-gap);
+  min-width: 0;
+  padding: var(--card-padding);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.analytics-favorite-athlete-card:hover,
+.analytics-favorite-athlete-card:focus-visible {
+  border-color: color-mix(in srgb, var(--favorite-yellow) 70%, var(--line));
+  box-shadow: 0 16px 38px rgba(16, 16, 20, 0.08);
+  transform: translateY(-1px);
+}
+
+.analytics-favorite-athlete-card .entity-row {
+  min-width: 0;
+}
+
+.analytics-favorite-athlete-card h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-favorite-card-star {
+  color: var(--favorite-yellow);
+  font-size: 17px;
+  line-height: 1;
+}
+
+.analytics-favorite-picker-status {
+  padding: 12px 2px 4px;
+  color: var(--muted);
+  font-size: var(--card-meta-size);
+}
+
 .analytics-comparison-search-row::before {
   border-bottom: 0;
 }
@@ -5303,6 +5369,23 @@ button {
 }
 
 @media (max-width: 640px) {
+  .analytics-comparison-search-primary {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .analytics-comparison-search-primary .analytics-comparison-search-form {
+    flex-basis: 100%;
+  }
+
+  .analytics-favorites-toggle {
+    margin-left: auto;
+  }
+
+  .analytics-favorite-athlete-grid {
+    grid-template-columns: 1fr;
+  }
+
   .main-view,
   .footer {
     width: min(100% - 28px, 1180px);

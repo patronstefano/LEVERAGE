@@ -104,6 +104,10 @@ const state = {
   analyticsComparison: {
     athletes: [null, null],
     payloads: [null, null],
+    favoriteDetails: [],
+    favoritesOpen: false,
+    favoritesLoading: false,
+    favoritesError: "",
     metric: "score",
     mode: "period",
     apparatuses: ["AA"],
@@ -419,6 +423,8 @@ const translations = {
     analyticsCompareOverlay: "Overlay",
     analyticsCompareRemove: "Remove athlete",
     analyticsCompareNoSuggestions: "No compatible athletes found.",
+    analyticsCompareFavoriteEmpty: "No compatible favorite athletes available.",
+    analyticsCompareFavoriteError: "Unable to load favorite athletes.",
     loginHeading: "Sign in",
     loginIntro: "User and admin areas will use the authentication system already implemented in the backend.",
     noResults: "No results found.",
@@ -759,6 +765,8 @@ const translations = {
     analyticsCompareOverlay: "Sovrapposti",
     analyticsCompareRemove: "Rimuovi atleta",
     analyticsCompareNoSuggestions: "Nessun atleta compatibile trovato.",
+    analyticsCompareFavoriteEmpty: "Nessun atleta preferito compatibile disponibile.",
+    analyticsCompareFavoriteError: "Impossibile caricare gli atleti preferiti.",
     loginHeading: "Accedi",
     loginIntro: "Le aree utente e admin useranno il sistema di autenticazione già implementato.",
     noResults: "Nessun risultato trovato.",
@@ -1099,6 +1107,8 @@ const translations = {
     analyticsCompareOverlay: "Superpuestos",
     analyticsCompareRemove: "Eliminar atleta",
     analyticsCompareNoSuggestions: "No se encontraron atletas compatibles.",
+    analyticsCompareFavoriteEmpty: "No hay atletas favoritos compatibles disponibles.",
+    analyticsCompareFavoriteError: "No se pudieron cargar los atletas favoritos.",
     loginHeading: "Entrar",
     loginIntro: "Las areas de usuario y admin usaran el sistema de autenticacion ya implementado.",
     noResults: "No se encontraron resultados.",
@@ -1439,6 +1449,8 @@ const translations = {
     analyticsCompareOverlay: "Superposes",
     analyticsCompareRemove: "Retirer l'athlete",
     analyticsCompareNoSuggestions: "Aucun athlete compatible trouve.",
+    analyticsCompareFavoriteEmpty: "Aucun athlete favori compatible disponible.",
+    analyticsCompareFavoriteError: "Impossible de charger les athletes favoris.",
     loginHeading: "Connexion",
     loginIntro: "Les espaces utilisateur et admin utiliseront l'authentification deja implementee.",
     noResults: "Aucun resultat.",
@@ -2002,6 +2014,10 @@ function clearAuth() {
   state.favoritesLoaded = false;
   state.filters.athletes.favoritesOnly = "";
   state.filters.events.favoritesOnly = "";
+  state.analyticsComparison.favoriteDetails = [];
+  state.analyticsComparison.favoritesOpen = false;
+  state.analyticsComparison.favoritesLoading = false;
+  state.analyticsComparison.favoritesError = "";
   localStorage.removeItem(AUTH_TOKEN_KEY);
   updateAuthUi();
 }
@@ -8860,18 +8876,72 @@ function renderAnalyticsComparisonSelectedAthlete(athlete, slot) {
   `;
 }
 
+function analyticsCompatibleFavoriteDetails() {
+  const comparison = state.analyticsComparison;
+  const selectedAthletes = comparison.athletes.filter(Boolean);
+  if (selectedAthletes.length >= 2) return [];
+  const selectedIds = new Set(selectedAthletes.map((athlete) => Number(athlete.id)));
+  const discipline = selectedAthletes[0]?.discipline || "";
+  return sortFavoriteAthleteDetails(comparison.favoriteDetails.filter((detail) => {
+    const athlete = detail.athlete || {};
+    return athlete.id &&
+      !selectedIds.has(Number(athlete.id)) &&
+      (!discipline || athlete.discipline === discipline);
+  }));
+}
+
+function renderAnalyticsFavoriteAthletes() {
+  const comparison = state.analyticsComparison;
+  if (comparison.favoritesLoading) {
+    return `<div class="analytics-favorite-picker-status">${escapeHtml(t("loading"))}</div>`;
+  }
+  if (comparison.favoritesError) {
+    return `<div class="analytics-favorite-picker-status">${escapeHtml(t("analyticsCompareFavoriteError"))}</div>`;
+  }
+  const details = analyticsCompatibleFavoriteDetails();
+  if (!details.length) {
+    return `<div class="analytics-favorite-picker-status">${escapeHtml(t("analyticsCompareFavoriteEmpty"))}</div>`;
+  }
+  return `
+    <div class="grid-3 analytics-favorite-athlete-grid">
+      ${details.map((detail) => {
+        const athlete = detail.athlete || {};
+        const name = athleteCardDisplayName(athlete, `${t("athlete")} ${detail.athlete_id}`);
+        return `
+          <button class="entity-card analytics-favorite-athlete-card" type="button" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
+            <div class="entity-row">
+              <h3>${escapeHtml(name)}</h3>
+              <span class="analytics-favorite-card-star" aria-hidden="true">&#9733;</span>
+            </div>
+            <p class="meta">${escapeHtml([athlete.country, `${Number(detail.result_count || 0).toLocaleString()} ${t("results")}`].filter(Boolean).join(" · "))}</p>
+            <div class="pill-row">
+              ${renderPill({ label: escapeHtml(athlete.discipline || t("discipline")), variant: "brand" })}
+              ${renderPill({ label: escapeHtml(compactIdLabel(detail.athlete_id)) })}
+            </div>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 function renderAnalyticsComparisonSelection() {
   const athletes = state.analyticsComparison.athletes.filter(Boolean);
   const selectionFull = athletes.length >= 2;
+  const favoritesOpen = Boolean(state.currentUser && state.analyticsComparison.favoritesOpen);
   return `
     <div class="section-search-row analytics-comparison-search-row">
-      <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
-        <div class="search-input-shell">
-          <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t("athleteSearchPlaceholder"))}" aria-label="${escapeHtml(t("athleteSearchPlaceholder"))}" ${selectionFull ? `disabled title="${escapeHtml(t("analyticsCompareSearchFull"))}"` : ""}>
-          <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="search-suggestions analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
-      </form>
+      <div class="analytics-comparison-search-primary">
+        <form class="search-form section-search-form analytics-comparison-search-form" id="analyticsAthleteForm">
+          <div class="search-input-shell">
+            <input class="search-input" id="analyticsAthleteSearch" type="search" data-analytics-athlete-search autocomplete="off" placeholder="${escapeHtml(t("athleteSearchPlaceholder"))}" aria-label="${escapeHtml(t("athleteSearchPlaceholder"))}" ${selectionFull ? `disabled title="${escapeHtml(t("analyticsCompareSearchFull"))}"` : ""}>
+            <button class="search-clear-button" type="button" data-search-clear-for="analyticsAthleteSearch" aria-label="${escapeHtml(t("clearSearch"))}" hidden><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="search-suggestions analytics-comparison-suggestions" id="analyticsAthleteSuggestions" role="listbox" hidden></div>
+        </form>
+        ${state.currentUser ? `<button class="quiet-button section-favorite-filter analytics-favorites-toggle" type="button" data-analytics-favorites-toggle aria-pressed="${String(favoritesOpen)}" aria-expanded="${String(favoritesOpen)}">${escapeHtml(t("favoritesFilter"))}</button>` : ""}
+      </div>
+      ${state.currentUser ? `<div class="analytics-favorite-picker" id="analyticsFavoritePicker" ${favoritesOpen ? "" : "hidden"}>${favoritesOpen ? renderAnalyticsFavoriteAthletes() : ""}</div>` : ""}
     </div>
     ${athletes.length ? `<section class="analytics-comparison-selection"><div class="analytics-comparison-selected-list">${athletes.map(renderAnalyticsComparisonSelectedAthlete).join("")}</div></section>` : ""}
     <div id="analyticsComparisonMessage" class="auth-message analytics-comparison-message" role="status" aria-live="polite"></div>
@@ -9318,6 +9388,39 @@ async function searchAnalyticsComparisonAthletes(query) {
   }
 }
 
+function refreshAnalyticsFavoritePicker() {
+  const picker = $("#analyticsFavoritePicker");
+  const toggle = document.querySelector("[data-analytics-favorites-toggle]");
+  if (!picker || !toggle) return;
+  const isOpen = Boolean(state.analyticsComparison.favoritesOpen);
+  picker.hidden = !isOpen;
+  picker.innerHTML = isOpen ? renderAnalyticsFavoriteAthletes() : "";
+  toggle.setAttribute("aria-pressed", String(isOpen));
+  toggle.setAttribute("aria-expanded", String(isOpen));
+  picker.querySelectorAll("[data-analytics-favorite-athlete-id]").forEach((button) => {
+    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.analyticsFavoriteAthleteId)));
+  });
+}
+
+async function loadAnalyticsFavoriteAthletes() {
+  const comparison = state.analyticsComparison;
+  comparison.favoritesLoading = true;
+  comparison.favoritesError = "";
+  refreshAnalyticsFavoritePicker();
+  try {
+    const details = await getJson("/preferences/athletes/followed/details", {}, { auth: true });
+    comparison.favoriteDetails = details;
+    state.favoriteAthleteIds = new Set(details.map((item) => Number(item.athlete_id)));
+    state.favoritesLoaded = true;
+  } catch (_error) {
+    comparison.favoriteDetails = [];
+    comparison.favoritesError = "load_failed";
+  } finally {
+    comparison.favoritesLoading = false;
+    refreshAnalyticsFavoritePicker();
+  }
+}
+
 async function selectAnalyticsComparisonAthlete(athleteId) {
   const message = $("#analyticsComparisonMessage");
   const selectedAthletes = state.analyticsComparison.athletes.filter(Boolean);
@@ -9344,6 +9447,7 @@ async function selectAnalyticsComparisonAthlete(athleteId) {
     state.analyticsComparison.endIndex = -1;
     state.analyticsComparison.snapshotIndex = -1;
     state.analyticsComparison.apparatuses = ["AA"];
+    if (slot === 1) state.analyticsComparison.favoritesOpen = false;
     renderAnalyticsComparison();
   } catch (error) {
     if (requestId !== analyticsComparisonProfileRequestId) return;
@@ -9395,6 +9499,16 @@ function bindAnalyticsComparisonPickers() {
       state.analyticsComparison.snapshotIndex = -1;
       renderAnalyticsComparison();
     });
+  });
+  document.querySelector("[data-analytics-favorites-toggle]")?.addEventListener("click", () => {
+    const comparison = state.analyticsComparison;
+    comparison.favoritesOpen = !comparison.favoritesOpen;
+    closeSearchSuggestions();
+    refreshAnalyticsFavoritePicker();
+    if (comparison.favoritesOpen && !comparison.favoritesLoading) loadAnalyticsFavoriteAthletes();
+  });
+  document.querySelectorAll("[data-analytics-favorite-athlete-id]").forEach((button) => {
+    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.analyticsFavoriteAthleteId)));
   });
 }
 
