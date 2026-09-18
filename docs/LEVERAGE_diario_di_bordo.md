@@ -2889,6 +2889,7 @@ Flusso di registrazione USER:
 - esteso il medesimo comportamento ai pulsanti ingranaggio riservati ad Admin e Super Admin nelle Schede Atleta ed Evento. A pannello chiuso, hover e focus evidenziano soltanto il contorno blu Leverage mantenendo neutri sfondo e icona; il pulsante si riempie durante la pressione e resta blu esclusivamente mentre il pannello degli strumenti amministrativi e aperto.
 - completata la revisione UI condivisa dei pannelli strumenti Admin nelle Schede Atleta ed Evento. Le due interfacce adottano ora la stessa gerarchia compatta, con intestazioni e sezioni coerenti, griglia responsiva, campi da 42 px, raggi Leverage uniformi, stati hover/focus accessibili, azioni con comportamento a contorno e righe di revisione piu leggibili. Apertura e chiusura del pannello sono state rese progressive, mantenendo inalterati salvataggio, suggerimenti e assistenti World Gymnastics.
 - riallineata la scala tipografica dei pannelli Admin a quella generale di LEVERAGE: titoli di sezione, etichette, valori editabili, pulsanti, metadati e suggerimenti utilizzano ora le stesse dimensioni delle card e dei controlli principali, eliminando l'eccessiva riduzione introdotta durante la prima compattazione.
+- reso piu compatto lo stato vuoto `Nessun suggerimento pendente` nei pannelli Admin: il box ora segue il contenuto, usa padding ridotto, testo alla scala dei metadati e lo stesso arrotondamento dei piccoli blocchi informativi di LEVERAGE.
 
 ## 23. Conclusione
 

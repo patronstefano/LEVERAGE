@@ -5372,6 +5372,17 @@ button {
   line-height: 1.35;
 }
 
+.athlete-admin-panel .admin-tool-block > .empty-state {
+  width: fit-content;
+  max-width: 100%;
+  padding: 9px 12px;
+  border-radius: var(--data-chip-radius);
+  background: rgba(245, 245, 247, 0.62);
+  box-shadow: none;
+  font-size: var(--card-meta-size);
+  line-height: 1.3;
+}
+
 .admin-review-list {
   display: grid;
   gap: 10px;
