@@ -2904,6 +2904,7 @@ Flusso di registrazione USER:
 - ricalibrata la gerarchia tipografica dei pannelli strumenti Admin rispetto alla scala definitiva delle Schede Atleta ed Evento: il titolo principale usa ora gli stessi 17 px di `Identita`, `Profilo attrezzi` e `Trend performance`, mentre `Modifica`, assistente World Gymnastics e suggerimenti restano subordinati a 15 px. Etichette, valori e pulsanti mantengono la dimensione leggibile gia approvata.
 - chiarita la terminologia del flusso World Gymnastics nei pannelli Admin: `Genera suggerimenti` e diventato `Importa dati dal profilo`, mentre `Suggerimenti Admin` e diventato `Dati in attesa di approvazione`. Aggiornati coerentemente stato vuoto, conferma di importazione, conteggi e traduzioni EN/IT/ES/FR, senza modificare il principio di approvazione obbligatoria prima della scrittura dei dati.
 - rifinita la revisione World Gymnastics nei pannelli Admin: la percentuale di compatibilita e ora allineata sulla stessa riga del comando di selezione, usa cifre tabulari e una larghezza stabile. Il pulsante `Accetta` dei dati in attesa mostra inoltre il solo contorno verde in hover/focus e si riempie di verde esclusivamente durante la pressione.
+- resa piu esplicita la scelta operativa nell'Assistente World Gymnastics: il comando che cerca autonomamente i candidati e ora `Ricerca automatica`, mentre il comando collegato al FIG ID o URL inserito dall'Admin e `Ricerca manuale`. La distinzione e identica per Atleti ed Eventi ed e tradotta in EN/IT/ES/FR.
 
 ## 23. Conclusione
 
