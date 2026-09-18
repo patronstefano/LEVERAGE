@@ -877,6 +877,8 @@ Il motore World Gymnastics Athlete:
 
 La scheda atleta puo mostrare il link ufficiale World Gymnastics solo quando verificato.
 
+Il flusso comprende inoltre una certificazione controllata dell'identita: la sola ricerca di candidati non assegna alcun badge, mentre la selezione esplicita del profilo e il comando `Importa dati` impostano `is_profile_verified`, registrano la decisione nell'audit e mostrano il badge pubblico blu LEVERAGE. I singoli valori proposti restano separatamente soggetti a review Admin. Razionale, limiti e implementazione sono descritti nel capitolo dedicato [LEVERAGE_monografia_certificazione_schede_atleta.md](LEVERAGE_monografia_certificazione_schede_atleta.md).
+
 ### 15.4 World Gymnastics Event
 
 Il motore World Gymnastics Event e stato impostato in modo analogo:

@@ -532,6 +532,8 @@ Il contratto comune che un import parallelo futuro dovra rispettare e documentat
 
 Il popolamento storico 2018-2025 viene documentato passo passo in [docs/LEVERAGE_popolamento_massivo_diario.md](docs/LEVERAGE_popolamento_massivo_diario.md), con preview, statistiche, scelte admin, commit e controlli post-import per ogni anno.
 
+La certificazione controllata delle Schede Atleta tramite riscontro World Gymnastics e descritta nel capitolo per la monografia [docs/LEVERAGE_monografia_certificazione_schede_atleta.md](docs/LEVERAGE_monografia_certificazione_schede_atleta.md), con significato, limiti, flusso, sicurezza ed evidenze Git.
+
 Una sintesi metodologica in forma di capitolo da tesi e disponibile in [docs/LEVERAGE_capitolo_metodologia_popolamento_db.md](docs/LEVERAGE_capitolo_metodologia_popolamento_db.md), con copia Word in `docs/LEVERAGE_capitolo_metodologia_popolamento_db.docx`.
 
 Flusso consigliato per la UI admin:
