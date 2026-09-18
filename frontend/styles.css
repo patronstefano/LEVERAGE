@@ -908,6 +908,11 @@ button {
   line-height: 1;
   text-align: center;
   white-space: nowrap;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
 }
 
 .search-form.section-search-form {
@@ -1017,6 +1022,12 @@ button {
   border-color: var(--brand-blue);
 }
 
+.filter-button:active {
+  color: #fff;
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+}
+
 .section-favorite-filter:hover,
 .section-favorite-filter:focus-visible {
   border-color: var(--favorite-yellow);
@@ -1067,6 +1078,12 @@ button {
   border-radius: var(--control-radius);
   background: #fff;
   overflow: hidden;
+  transition: border-color 160ms ease;
+}
+
+.segmented-control:hover,
+.segmented-control:focus-within {
+  border-color: rgba(25, 23, 71, 0.34);
 }
 
 .segmented-option {
@@ -3067,6 +3084,19 @@ button {
   min-width: 0;
 }
 
+.quiet-button.detail-back-button:hover,
+.quiet-button.detail-back-button:focus-visible {
+  border-color: var(--brand-blue);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+}
+
+.quiet-button.detail-back-button:active {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
+
 .auth-panel {
   max-width: 520px;
 }
@@ -4211,6 +4241,19 @@ button {
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
+}
+
+.quiet-button.athlete-analytics-apparatus-button:not(.is-active):hover,
+.quiet-button.athlete-analytics-apparatus-button:not(.is-active):focus-visible {
+  border-color: var(--brand-blue);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+}
+
+.quiet-button.athlete-analytics-apparatus-button:not(.is-active):active {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
 }
 
 .athlete-analytics-mode-control {
