@@ -2708,16 +2708,21 @@ button {
     transform 160ms ease;
 }
 
-.favorite-button:not(.delete-button):hover,
-.favorite-button:not(.delete-button):focus-visible {
+.favorite-button[data-favorite-kind]:not(.is-active):hover,
+.favorite-button[data-favorite-kind]:not(.is-active):focus-visible {
   border-color: var(--favorite-yellow);
-  background: var(--favorite-yellow);
-  color: #fff;
-  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(25, 23, 71, 0.68);
 }
 
 .favorite-button:active {
   transform: translateY(0) scale(0.98);
+}
+
+.favorite-button[data-favorite-kind]:not(.is-active):active {
+  border-color: var(--favorite-yellow);
+  background: var(--favorite-yellow);
+  color: #fff;
 }
 
 .favorite-button.is-active {
