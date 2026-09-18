@@ -9640,6 +9640,66 @@ function bindAdminSelectControls(rootNode = document) {
   });
 }
 
+function syncAdminFormValue(form, name, value) {
+  const input = form?.elements?.namedItem(name);
+  if (!input) return;
+  input.value = value ?? "";
+  const control = input.closest("[data-admin-select]");
+  if (!control) return;
+  const selected = [...control.querySelectorAll("[data-admin-select-value]")]
+    .find((option) => option.dataset.adminSelectValue === String(input.value));
+  if (!selected) return;
+  const label = control.querySelector("[data-admin-select-label]");
+  if (label) label.textContent = selected.textContent.trim();
+  control.querySelectorAll("[role='option']").forEach((option) => {
+    option.setAttribute("aria-selected", String(option === selected));
+  });
+}
+
+function updateAthleteProfileSummary(athlete) {
+  const panel = $("#athleteProfileSummary");
+  if (!panel || !athlete) return;
+  const currentImage = panel.querySelector(".athlete-profile-image");
+  if (currentImage) currentImage.outerHTML = renderAthleteProfileImage(athlete);
+  const title = panel.querySelector(".athlete-profile-title-copy h2");
+  if (title) title.textContent = athleteProfileDisplayName(athlete);
+  const meta = panel.querySelector(".athlete-profile-title-copy .meta");
+  if (meta) meta.textContent = [athlete.country, athlete.discipline].filter(Boolean).join(" · ");
+  const identity = panel.querySelector(".athlete-identity-panel");
+  if (identity) identity.outerHTML = renderAthleteIdentityPanel(athlete, { embedded: true, showHeader: true });
+}
+
+function syncAthleteAdminForm(athlete) {
+  const form = $("#athleteAdminForm");
+  if (!form || !athlete) return;
+  ["last_name", "first_name", "birth_year", "country", "discipline", "image_url"].forEach((name) => {
+    syncAdminFormValue(form, name, athlete[name]);
+  });
+  syncAdminFormValue(form, "country_change_year", "");
+}
+
+async function refreshAthleteAdminState(athleteId, options = {}) {
+  const {
+    refreshProfile = true,
+    refreshForm = true,
+    refreshSuggestions = true,
+    refreshAnalytics = false,
+  } = options;
+  const adminView = await getJson(`/athletes/${athleteId}/admin-view`, {}, { auth: true });
+  const athlete = adminView.athlete;
+  if (refreshProfile) updateAthleteProfileSummary(athlete);
+  if (refreshForm) syncAthleteAdminForm(athlete);
+  if (refreshSuggestions) {
+    const host = $("#athleteSuggestionList");
+    if (host) {
+      host.innerHTML = renderAthleteSuggestions(adminView.pending_suggestions || []);
+      bindAthleteSuggestionActions(athleteId);
+    }
+  }
+  if (refreshAnalytics) await loadAthleteAnalytics(athleteId, { preserveControls: true });
+  return athlete;
+}
+
 function renderAthleteAdminForm(athlete) {
   return `
     <form class="admin-edit-form" id="athleteAdminForm">
@@ -9780,7 +9840,9 @@ function renderAthleteAdminPanel(athlete, adminView, adminViewError = null) {
           </div>
         </div>
         <div id="athleteSuggestionMessage" class="auth-message" role="status" aria-live="polite"></div>
-        ${adminViewError ? errorState(adminViewError) : renderAthleteSuggestions(suggestions)}
+        <div id="athleteSuggestionList">
+          ${adminViewError ? errorState(adminViewError) : renderAthleteSuggestions(suggestions)}
+        </div>
       </div>
     </section>
   `;
@@ -9810,8 +9872,8 @@ function bindAthleteAdminForm(athleteId) {
     submit.disabled = true;
     try {
       await sendJson(`/athletes/${athleteId}`, { method: "PUT", body: payload });
+      await refreshAthleteAdminState(athleteId, { refreshAnalytics: true });
       message.textContent = t("updateSaved");
-      await renderAthleteDetail(athleteId);
     } catch (_error) {
       message.textContent = t("updateError");
     } finally {
@@ -9833,7 +9895,11 @@ async function createWorldGymnasticsAthleteSuggestions(athleteId, payload, outpu
         </div>
       `;
     }
-    await renderAthleteDetail(athleteId);
+    await refreshAthleteAdminState(athleteId, {
+      refreshProfile: false,
+      refreshForm: false,
+      refreshSuggestions: true,
+    });
   } catch (_error) {
     if (output) output.innerHTML = errorState(new Error(t("profileSearchError")));
   }
@@ -9880,8 +9946,8 @@ function bindAthleteSuggestionActions(athleteId) {
         await sendJson(`/data-suggestions/${suggestionId}/accept`, {
           body: value ? { value } : {},
         });
+        await refreshAthleteAdminState(athleteId, { refreshAnalytics: true });
         if (message) message.textContent = t("suggestionAccepted");
-        await renderAthleteDetail(athleteId);
       } catch (_error) {
         if (message) message.textContent = t("suggestionError");
       } finally {
@@ -9896,8 +9962,12 @@ function bindAthleteSuggestionActions(athleteId) {
       button.disabled = true;
       try {
         await sendJson(`/data-suggestions/${suggestionId}/reject`);
+        await refreshAthleteAdminState(athleteId, {
+          refreshProfile: false,
+          refreshForm: false,
+          refreshSuggestions: true,
+        });
         if (message) message.textContent = t("suggestionRejected");
-        await renderAthleteDetail(athleteId);
       } catch (_error) {
         if (message) message.textContent = t("suggestionError");
       } finally {
@@ -9995,6 +10065,61 @@ function renderEventDetailsPanel(event, options = {}) {
       </div>
     </${tag}>
   `;
+}
+
+function updateEventProfileSummary(event) {
+  const panel = $("#eventProfileSummary");
+  if (!panel || !event) return;
+  const currentImage = panel.querySelector(".athlete-profile-image");
+  if (currentImage) currentImage.outerHTML = renderEventProfileImage(event);
+  const title = panel.querySelector(".athlete-profile-title-copy h2");
+  if (title) title.textContent = event.name || "";
+  const meta = panel.querySelector(".athlete-profile-title-copy .meta");
+  if (meta) meta.textContent = formatReadableDateRange(event);
+  const details = panel.querySelector(".event-details-panel");
+  if (details) details.outerHTML = renderEventDetailsPanel(event, { embedded: true, showHeader: true });
+}
+
+function syncEventAdminForm(event) {
+  const form = $("#eventAdminForm");
+  if (!form || !event) return;
+  [
+    "name",
+    "year",
+    "location",
+    "venue",
+    "start_date",
+    "end_date",
+    "discipline",
+    "category",
+    "level",
+    "image_url",
+  ].forEach((name) => syncAdminFormValue(form, name, event[name]));
+}
+
+async function refreshEventAdminState(eventId, options = {}) {
+  const {
+    refreshProfile = true,
+    refreshForm = true,
+    refreshSuggestions = true,
+  } = options;
+  const adminView = await getJson(`/events/${eventId}/admin-view`, {}, { auth: true });
+  const currentEvent = state.eventDetail.profile?.event || {};
+  const event = {
+    ...currentEvent,
+    ...(adminView.event || {}),
+  };
+  if (state.eventDetail.profile) state.eventDetail.profile.event = event;
+  if (refreshProfile) updateEventProfileSummary(event);
+  if (refreshForm) syncEventAdminForm(event);
+  if (refreshSuggestions) {
+    const host = $("#eventSuggestionList");
+    if (host) {
+      host.innerHTML = renderEventSuggestions(adminView.pending_suggestions || []);
+      bindEventSuggestionActions(eventId);
+    }
+  }
+  return event;
 }
 
 function eventClassificationKey(group = {}) {
@@ -10618,7 +10743,9 @@ function renderEventAdminPanel(event, adminView, adminViewError = null) {
           </div>
         </div>
         <div id="eventSuggestionMessage" class="auth-message" role="status" aria-live="polite"></div>
-        ${adminViewError ? errorState(adminViewError) : renderEventSuggestions(suggestions)}
+        <div id="eventSuggestionList">
+          ${adminViewError ? errorState(adminViewError) : renderEventSuggestions(suggestions)}
+        </div>
       </div>
     </section>
   `;
@@ -10650,8 +10777,8 @@ function bindEventAdminForm(eventId) {
     submit.disabled = true;
     try {
       await sendJson(`/events/${eventId}`, { method: "PUT", body: payload });
+      await refreshEventAdminState(eventId);
       if (message) message.textContent = t("eventUpdateSaved");
-      await renderEventDetail(eventId);
     } catch (_error) {
       if (message) message.textContent = t("eventUpdateError");
     } finally {
@@ -10673,7 +10800,11 @@ async function createWorldGymnasticsEventSuggestions(eventId, payload, outputNod
         </div>
       `;
     }
-    await renderEventDetail(eventId);
+    await refreshEventAdminState(eventId, {
+      refreshProfile: false,
+      refreshForm: false,
+      refreshSuggestions: true,
+    });
   } catch (_error) {
     if (output) output.innerHTML = errorState(new Error(t("profileSearchError")));
   }
@@ -10720,8 +10851,8 @@ function bindEventSuggestionActions(eventId) {
         await sendJson(`/data-suggestions/${suggestionId}/accept`, {
           body: value ? { value } : {},
         });
+        await refreshEventAdminState(eventId);
         if (message) message.textContent = t("suggestionAccepted");
-        await renderEventDetail(eventId);
       } catch (_error) {
         if (message) message.textContent = t("suggestionError");
       } finally {
@@ -10736,8 +10867,12 @@ function bindEventSuggestionActions(eventId) {
       button.disabled = true;
       try {
         await sendJson(`/data-suggestions/${suggestionId}/reject`);
+        await refreshEventAdminState(eventId, {
+          refreshProfile: false,
+          refreshForm: false,
+          refreshSuggestions: true,
+        });
         if (message) message.textContent = t("suggestionRejected");
-        await renderEventDetail(eventId);
       } catch (_error) {
         if (message) message.textContent = t("suggestionError");
       } finally {
@@ -10993,7 +11128,7 @@ async function renderAthleteDetail(athleteId) {
       <div class="detail-topbar">
         <a class="quiet-button detail-back-button" href="${escapeHtml(backDestination.href)}">${escapeHtml(backDestination.label)}</a>
       </div>
-      <section class="panel profile-panel athlete-profile-summary-panel">
+      <section class="panel profile-panel athlete-profile-summary-panel" id="athleteProfileSummary">
         <div class="athlete-profile-title-row">
           ${renderAthleteProfileImage(athlete)}
           <div class="athlete-profile-title-copy">
@@ -11050,7 +11185,7 @@ async function renderEventDetail(eventId) {
       <div class="detail-topbar">
         <a class="quiet-button detail-back-button" href="#/events">${escapeHtml(t("backToEvents"))}</a>
       </div>
-      <section class="panel profile-panel athlete-profile-summary-panel event-profile-summary-panel">
+      <section class="panel profile-panel athlete-profile-summary-panel event-profile-summary-panel" id="eventProfileSummary">
         <div class="athlete-profile-title-row">
           ${renderEventProfileImage(event)}
           <div class="athlete-profile-title-copy">
