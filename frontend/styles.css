@@ -5294,7 +5294,7 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .athlete-admin-panel > .compact-section-header h2 {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 690;
   line-height: 1.2;
 }
@@ -5318,7 +5318,7 @@ a:focus-visible > .entity-card-clickable {
 
 .admin-edit-form > .compact-section-header h2,
 .admin-tool-block > .compact-section-header h2 {
-  font-size: var(--card-title-size);
+  font-size: 15px;
   font-weight: 690;
   line-height: 1.25;
 }
