@@ -2791,14 +2791,27 @@ function bindAdminToolsToggles() {
       const panel = document.getElementById(button.dataset.adminToolsToggle || "");
       if (!panel) return;
       const willOpen = panel.hidden;
-      panel.hidden = !willOpen;
       button.setAttribute("aria-expanded", String(willOpen));
       button.classList.toggle("is-open", willOpen);
       if (willOpen) {
+        window.clearTimeout(Number(panel.dataset.closeTimer || 0));
+        panel.hidden = false;
+        panel.classList.remove("is-closing");
         requestAnimationFrame(() => {
+          panel.classList.add("is-visible");
           panel.scrollIntoView({ behavior: "smooth", block: "start" });
         });
+        return;
       }
+
+      panel.classList.remove("is-visible");
+      panel.classList.add("is-closing");
+      const closeTimer = window.setTimeout(() => {
+        panel.hidden = true;
+        panel.classList.remove("is-closing");
+        delete panel.dataset.closeTimer;
+      }, 220);
+      panel.dataset.closeTimer = String(closeTimer);
     });
   });
 }

@@ -2777,6 +2777,25 @@ button {
   display: none;
 }
 
+.detail-admin-panel {
+  opacity: 0;
+  transform: translateY(-8px);
+  transform-origin: top center;
+  transition:
+    opacity 180ms ease,
+    transform var(--control-expand-motion);
+  will-change: opacity, transform;
+}
+
+.detail-admin-panel.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.detail-admin-panel.is-closing {
+  pointer-events: none;
+}
+
 .delete-button {
   color: rgba(25, 23, 71, 0.68);
 }
@@ -5171,31 +5190,70 @@ button {
 
 .athlete-admin-panel {
   display: grid;
-  gap: 18px;
+  gap: 0;
   margin-top: 14px;
+  padding: 18px;
+  border-radius: var(--control-radius);
+  background: #fff;
+}
+
+.athlete-admin-panel > .compact-section-header {
+  margin-bottom: 0;
+  padding-bottom: 14px;
+}
+
+.athlete-admin-panel > .compact-section-header .eyebrow {
+  margin: 0 0 5px;
+  color: var(--brand-blue);
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+}
+
+.athlete-admin-panel > .compact-section-header h2 {
+  font-size: 19px;
+  font-weight: 690;
+  line-height: 1.2;
 }
 
 .admin-edit-form,
 .admin-tool-block {
   display: grid;
-  gap: 12px;
-  padding-top: 16px;
+  gap: 14px;
+  padding: 16px 0;
   border-top: 1px solid rgba(25, 23, 71, 0.08);
+}
+
+.athlete-admin-panel > :last-child {
+  padding-bottom: 0;
+}
+
+.admin-edit-form > .compact-section-header,
+.admin-tool-block > .compact-section-header {
+  margin-bottom: 0;
+}
+
+.admin-edit-form > .compact-section-header h2,
+.admin-tool-block > .compact-section-header h2 {
+  font-size: 15px;
+  font-weight: 690;
+  line-height: 1.25;
 }
 
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .admin-form-grid label,
 .admin-review-actions label {
   display: grid;
-  gap: 6px;
+  gap: 7px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 650;
+  line-height: 1.25;
 }
 
 .admin-form-grid input,
@@ -5203,21 +5261,45 @@ button {
 .admin-inline-form input,
 .admin-review-actions input {
   width: 100%;
-  height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid rgba(25, 23, 71, 0.14);
   border-radius: var(--control-radius);
   background: #fff;
   color: var(--ink);
-  font: inherit;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1;
   outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.admin-form-grid input:hover,
+.admin-form-grid select:hover,
+.admin-inline-form input:hover,
+.admin-review-actions input:hover {
+  border-color: rgba(25, 23, 71, 0.26);
 }
 
 .admin-form-grid input:focus-visible,
 .admin-form-grid select:focus-visible,
 .admin-inline-form input:focus-visible,
 .admin-review-actions input:focus-visible {
-  border-color: rgba(25, 23, 71, 0.28);
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.1);
+}
+
+.admin-form-grid input:disabled,
+.admin-form-grid select:disabled,
+.admin-inline-form input:disabled,
+.admin-review-actions input:disabled {
+  background: var(--soft);
+  color: var(--muted);
+  cursor: not-allowed;
 }
 
 .admin-form-wide {
@@ -5226,7 +5308,7 @@ button {
 
 .admin-inline-form {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
 }
 
@@ -5239,6 +5321,57 @@ button {
   gap: 10px;
 }
 
+.athlete-admin-panel .quiet-button {
+  min-height: 36px;
+  border-color: rgba(25, 23, 71, 0.14);
+  border-radius: var(--control-radius);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+  font-size: 13px;
+  font-weight: 560;
+}
+
+.athlete-admin-panel .quiet-button:hover,
+.athlete-admin-panel .quiet-button:focus-visible {
+  border-color: var(--brand-blue);
+  background: #fff;
+  color: var(--brand-blue);
+}
+
+.athlete-admin-panel .quiet-button:active {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+  transform: scale(0.98);
+}
+
+.athlete-admin-panel .quiet-button.filter-clear-button:hover,
+.athlete-admin-panel .quiet-button.filter-clear-button:focus-visible {
+  border-color: var(--danger);
+  background: #fff;
+  color: var(--danger);
+}
+
+.athlete-admin-panel .quiet-button.filter-clear-button:active {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+.athlete-admin-panel .auth-message:empty {
+  display: none;
+}
+
+.athlete-admin-panel .auth-message:not(:empty) {
+  min-height: 0;
+  margin: 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(154, 103, 0, 0.2);
+  border-radius: var(--data-chip-radius);
+  background: rgba(255, 249, 235, 0.72);
+  line-height: 1.35;
+}
+
 .admin-review-list {
   display: grid;
   gap: 10px;
@@ -5249,10 +5382,18 @@ button {
   grid-template-columns: minmax(0, 1fr) minmax(240px, auto);
   gap: 14px;
   align-items: center;
-  padding: 12px;
+  padding: 13px 14px;
   border: 1px solid rgba(25, 23, 71, 0.08);
-  border-radius: var(--data-chip-radius);
-  background: rgba(245, 245, 247, 0.72);
+  border-radius: var(--control-radius);
+  background: rgba(245, 245, 247, 0.62);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.admin-review-row:hover {
+  border-color: rgba(25, 23, 71, 0.16);
+  background: rgba(245, 245, 247, 0.86);
 }
 
 .admin-review-copy {
@@ -5270,8 +5411,9 @@ button {
 
 .admin-review-copy strong {
   color: var(--ink);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 690;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
@@ -5286,6 +5428,7 @@ button {
   display: grid;
   gap: 8px;
   justify-items: end;
+  min-width: 240px;
 }
 
 .admin-review-actions div {
@@ -5355,6 +5498,10 @@ button {
   .language-button,
   .language-caret,
   .language-menu {
+    transition: none;
+  }
+
+  .detail-admin-panel {
     transition: none;
   }
 }
@@ -5486,6 +5633,7 @@ button {
 
   .admin-review-actions {
     justify-items: start;
+    min-width: 0;
   }
 
   .admin-review-actions div {
