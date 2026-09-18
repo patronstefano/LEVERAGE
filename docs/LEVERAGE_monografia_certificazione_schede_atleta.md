@@ -67,6 +67,8 @@ Athlete.is_profile_verified
 
 Il campo e stato introdotto dalla migrazione Alembic `0037_add_athlete_profile_verification` con valore predefinito `false`, preservando la compatibilita con tutti gli atleti storici gia presenti nel database.
 
+Per le schede collegate e approvate prima dell'introduzione del booleano e stata aggiunta la migrazione dati `0038_backfill_verified_athlete_profiles`. Il riallineamento assegna il badge soltanto se la scheda contiene congiuntamente URL del profilo ufficiale, data di verifica e identificativo dell'Admin verificatore. Il solo URL non e considerato sufficiente per inferire retroattivamente una certificazione.
+
 Le responsabilita sono distribuite come segue:
 
 - `app/models.py`: persistenza del booleano sull'entita `Athlete`;
