@@ -2895,6 +2895,7 @@ Flusso di registrazione USER:
 - uniformata la gerarchia tipografica dei grafici alla sezione `Identita`: `Profilo attrezzi`, `Trend performance` e `Medie per anno` utilizzano ora titoli da 17 px, con sottotitoli e metriche proporzionati a 13 px. La stessa scala e applicata alle Analytics della Scheda Atleta e alla Sezione Analytics di confronto.
 - estesa l'area di navigazione delle card nelle Sezioni Atleti ed Eventi: tutta la superficie della card apre ora la relativa scheda, non soltanto il nome. La stellina resta un comando indipendente grazie a un livello interattivo separato; hover e focus evidenziano inoltre la cliccabilita della card senza alterarne dimensioni o impaginazione.
 - uniformati i comandi `Accedi`, `Cerca` della ricerca globale ed `Esci` al comportamento a contorno di LEVERAGE: stato predefinito neutro, solo bordo e testo blu in hover/focus e riempimento blu durante la pressione. La regola e circoscritta a questi comandi e non modifica i pulsanti primari dei flussi di login e registrazione.
+- uniformate le dimensioni delle card ordinarie, preferite e salvate tramite un'altezza minima condivisa e l'estensione all'intera cella della griglia. Le card degli atleti preferiti selezionabili nella Sezione Analytics adottano inoltre il medesimo contorno blu in hover/focus delle card interattive, mantenendo invariata la selezione al clic.
 
 ## 23. Conclusione
 

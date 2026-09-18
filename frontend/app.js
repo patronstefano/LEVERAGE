@@ -8955,7 +8955,7 @@ function renderAnalyticsFavoriteAthletes() {
           `${t("savedOn")} ${formatReadableDate(String(detail.created_at || "").slice(0, 10))}`,
         ].filter(Boolean).join(" · ");
         return `
-          <article class="entity-card analytics-favorite-athlete-card" role="button" tabindex="0" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
+          <article class="entity-card entity-card-clickable analytics-favorite-athlete-card" role="button" tabindex="0" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
             <div class="entity-row">
               <h3>${escapeHtml(name)}</h3>
               <span class="favorite-button is-active analytics-favorite-static" aria-hidden="true"><span>&#9733;</span></span>

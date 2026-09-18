@@ -27,6 +27,7 @@
   --card-title-size: 16px;
   --card-meta-size: 13px;
   --card-pill-size: 11.5px;
+  --entity-card-min-height: 126px;
   --topbar-height: 72px;
   --control-expand-motion: 220ms cubic-bezier(0.22, 1, 0.36, 1);
   --control-fade-motion: 140ms ease;
@@ -1384,11 +1385,21 @@ button {
 .event-results-list,
 .ranking-results-list {
   gap: 8px;
+  grid-auto-rows: 1fr;
+}
+
+.athlete-results-list > a,
+.event-results-list > a,
+.ranking-results-list > a {
+  height: 100%;
 }
 
 .athlete-results-list .entity-card,
 .event-results-list .entity-card,
 .ranking-results-list .entity-card {
+  min-height: var(--entity-card-min-height);
+  height: 100%;
+  align-content: start;
   gap: var(--card-gap);
   padding: var(--card-padding);
 }
@@ -3365,7 +3376,8 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .account-preference-card-list .entity-card {
-  min-height: 126px;
+  min-height: var(--entity-card-min-height);
+  height: 100%;
   align-content: start;
   gap: var(--card-gap);
   padding: var(--card-padding);
@@ -3663,6 +3675,11 @@ a:focus-visible > .entity-card-clickable {
 .analytics-favorite-athlete-card {
   min-width: 0;
   cursor: pointer;
+}
+
+.analytics-favorite-athlete-card:hover,
+.analytics-favorite-athlete-card:focus-visible {
+  border-color: var(--brand-blue);
 }
 
 .analytics-favorite-athlete-card:focus-visible {
