@@ -3527,6 +3527,44 @@ a:focus-visible > .entity-card-clickable {
   line-height: 1;
 }
 
+.athlete-profile-verification {
+  display: flex;
+  min-height: 18px;
+  margin-top: 6px;
+}
+
+.athlete-profile-verification:empty {
+  display: none;
+}
+
+.athlete-verification-badge {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  background: var(--brand-blue);
+  clip-path: polygon(
+    50% 0%, 61% 7%, 74% 6%, 81% 18%, 94% 25%, 93% 39%,
+    100% 50%, 93% 61%, 94% 75%, 81% 82%, 74% 94%, 61% 93%,
+    50% 100%, 39% 93%, 26% 94%, 19% 82%, 6% 75%, 7% 61%,
+    0% 50%, 7% 39%, 6% 25%, 19% 18%, 26% 6%, 39% 7%
+  );
+  box-shadow: 0 0 0 1px rgba(25, 23, 71, 0.08);
+  place-items: center;
+}
+
+.athlete-verification-badge > span {
+  width: 7px;
+  height: 4px;
+  margin-top: -2px;
+  border-bottom: 2px solid #fff;
+  border-left: 2px solid #fff;
+  transform: rotate(-45deg);
+}
+
+.athlete-profile-verification:not(:empty) + .meta {
+  margin-top: 5px;
+}
+
 .athlete-profile-title-copy .meta {
   margin-top: 7px;
 }
@@ -5370,6 +5408,21 @@ a:focus-visible > .entity-card-clickable {
   font-size: 15px;
   font-weight: 690;
   line-height: 1.25;
+}
+
+.admin-form-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.athlete-admin-panel .athlete-verification-toggle.is-active,
+.athlete-admin-panel .athlete-verification-toggle.is-active:hover,
+.athlete-admin-panel .athlete-verification-toggle.is-active:focus-visible {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
 }
 
 .admin-form-grid {

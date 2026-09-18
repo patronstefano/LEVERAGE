@@ -548,6 +548,10 @@ def merge_athlete_into_target(
             setattr(target_athlete, field, source_value)
             copied_metadata_fields.append(field)
 
+    if source_athlete.is_profile_verified and not target_athlete.is_profile_verified:
+        target_athlete.is_profile_verified = True
+        copied_metadata_fields.append("is_profile_verified")
+
     source_athlete.is_deleted = True
     source_athlete.deleted_at = datetime.utcnow()
     source_athlete.deleted_by_admin_id = current_user.id

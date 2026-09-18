@@ -561,6 +561,7 @@ class AthleteCountryChangeRead(AthleteCountryChangeBase):
 
 class AthleteRead(AthleteBase):
     id: int
+    is_profile_verified: bool = False
     world_gymnastics_athlete_id: Optional[str] = None
     world_gymnastics_profile_url: Optional[str] = None
     world_gymnastics_status: Optional[str] = None
@@ -581,6 +582,7 @@ class AthleteUpdate(BaseModel):
     country_change_year: Optional[int] = None
     discipline: Optional[DisciplineEnum] = None
     image_url: Optional[str] = None
+    is_profile_verified: Optional[bool] = None
 
     @model_validator(mode="after")
     def validate_year(self):

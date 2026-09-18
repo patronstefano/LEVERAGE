@@ -307,6 +307,7 @@ Campi principali:
 - `country`;
 - `discipline`;
 - `image_url`;
+- `is_profile_verified`;
 - `world_gymnastics_athlete_id`;
 - `world_gymnastics_profile_url`;
 - `world_gymnastics_status`;
@@ -327,6 +328,7 @@ Scelte importanti:
 - nella UI gli atleti sono mostrati come `Cognome Nome`;
 - il DB mantiene separati `first_name` e `last_name`;
 - il Result salva solo `athlete_id`, non copia nome e cognome.
+- `is_profile_verified` e un attributo amministrativo distinto dalla verifica del collegamento World Gymnastics: quando attivo mostra il badge pubblico blu LEVERAGE nella Scheda Atleta; assegnazione e rimozione sono riservate ad Admin/Super Admin e restano tracciate nell'audit.
 
 ### 8.3 AthleteCountryChange
 
@@ -1714,4 +1716,3 @@ La parte ancora da completare riguarda soprattutto la trasformazione definitiva 
 - test finale.
 
 La direzione progettuale e solida: LEVERAGE non e soltanto un database di risultati, ma un sistema informativo verticale che organizza conoscenza sportiva, controlla qualita, rende visibili le incertezze e permette analisi che oggi richiederebbero lavoro manuale su fonti sparse.
-

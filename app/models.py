@@ -169,6 +169,7 @@ class Athlete(Base):
     world_gymnastics_status = Column(String(100), nullable=True)
     world_gymnastics_verified_at = Column(DateTime, nullable=True)
     world_gymnastics_verified_by_admin_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    is_profile_verified = Column(Boolean, default=False, nullable=False)
     is_deleted = Column(Boolean, default=False, nullable=False, index=True)
     deleted_at = Column(DateTime, nullable=True)
     deleted_by_admin_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
