@@ -3417,19 +3417,19 @@ button {
 }
 
 .analytics-comparison-search-primary {
-  display: flex;
-  align-items: center;
+  display: grid;
+  align-items: start;
   gap: 8px;
   width: min(760px, 100%);
 }
 
 .analytics-comparison-search-primary .analytics-comparison-search-form {
-  flex: 1 1 auto;
+  width: min(620px, 100%);
   min-width: 0;
 }
 
 .analytics-favorites-toggle {
-  flex: 0 0 auto;
+  justify-self: start;
 }
 
 .analytics-favorite-picker {
@@ -5369,19 +5369,6 @@ button {
 }
 
 @media (max-width: 640px) {
-  .analytics-comparison-search-primary {
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
-  .analytics-comparison-search-primary .analytics-comparison-search-form {
-    flex-basis: 100%;
-  }
-
-  .analytics-favorites-toggle {
-    margin-left: auto;
-  }
-
   .analytics-favorite-athlete-grid {
     grid-template-columns: 1fr;
   }
