@@ -2894,6 +2894,7 @@ Flusso di registrazione USER:
 - completata la localizzazione del campo `venue`, che in precedenza ricadeva sempre sul nome tecnico inglese per assenza della chiave nei dizionari frontend. Il campo viene ora mostrato come `Venue` in inglese, `Sede` in italiano e spagnolo e `Site` in francese, sia nelle informazioni Evento sia negli strumenti Admin.
 - uniformata la gerarchia tipografica dei grafici alla sezione `Identita`: `Profilo attrezzi`, `Trend performance` e `Medie per anno` utilizzano ora titoli da 17 px, con sottotitoli e metriche proporzionati a 13 px. La stessa scala e applicata alle Analytics della Scheda Atleta e alla Sezione Analytics di confronto.
 - estesa l'area di navigazione delle card nelle Sezioni Atleti ed Eventi: tutta la superficie della card apre ora la relativa scheda, non soltanto il nome. La stellina resta un comando indipendente grazie a un livello interattivo separato; hover e focus evidenziano inoltre la cliccabilita della card senza alterarne dimensioni o impaginazione.
+- uniformati i comandi `Accedi`, `Cerca` della ricerca globale ed `Esci` al comportamento a contorno di LEVERAGE: stato predefinito neutro, solo bordo e testo blu in hover/focus e riempimento blu durante la pressione. La regola e circoscritta a questi comandi e non modifica i pulsanti primari dei flussi di login e registrazione.
 
 ## 23. Conclusione
 

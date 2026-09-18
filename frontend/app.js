@@ -2971,7 +2971,7 @@ async function renderHome() {
         <div class="search-panel">
           <form class="search-form" id="globalSearchForm">
             ${searchInputControl("globalSearchInput", "", t("searchPlaceholder"))}
-            <button class="primary-button" type="submit">${t("search")}</button>
+            <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
             <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
           </form>
         </div>
@@ -3788,7 +3788,7 @@ async function renderGlobalSearch() {
     ${pageHeading("globalSearchHeading", "globalSearchIntro")}
     <form class="search-form search-page-form" id="globalSearchPageForm">
       ${searchInputControl("globalSearchPageInput", query, t("searchPlaceholder"))}
-      <button class="primary-button" type="submit">${t("search")}</button>
+      <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
       <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>
     </form>
     <div id="globalSearchResults">${query ? loadingState() : messageState(t("noGlobalSearchQuery"))}</div>
@@ -10827,7 +10827,7 @@ async function renderAccount() {
         <strong>${escapeHtml(state.currentUser.email)}</strong>
         <span>${escapeHtml(state.currentUser.role)}</span>
       </div>
-      <button class="quiet-button" type="button" id="signOutButton">${t("signOut")}</button>
+      <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
     </section>
     ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">

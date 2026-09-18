@@ -874,6 +874,39 @@ button {
   white-space: nowrap;
 }
 
+.signin-link.outline-command-button,
+.primary-button.outline-command-button,
+.quiet-button.outline-command-button {
+  border-color: rgba(25, 23, 71, 0.14);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.signin-link.outline-command-button:hover,
+.signin-link.outline-command-button:focus-visible,
+.primary-button.outline-command-button:hover,
+.primary-button.outline-command-button:focus-visible,
+.quiet-button.outline-command-button:hover,
+.quiet-button.outline-command-button:focus-visible {
+  border-color: var(--brand-blue);
+  background: #fff;
+  color: var(--brand-blue);
+}
+
+.signin-link.outline-command-button:active,
+.primary-button.outline-command-button:active,
+.quiet-button.outline-command-button:active {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+  transform: scale(0.98);
+}
+
 .toolbar,
 .metric-row {
   display: flex;
