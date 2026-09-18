@@ -5623,6 +5623,11 @@ a:focus-visible > .entity-card-clickable {
   border-radius: var(--control-radius);
 }
 
+.athlete-admin-panel .admin-world-gymnastics-search-button {
+  width: 170px;
+  min-width: 170px;
+}
+
 .admin-tool-output {
   display: grid;
   gap: 10px;

@@ -404,7 +404,7 @@ const translations = {
     adminToolsButton: "Open admin tools",
     editEvent: "Edit event",
     findEvent: "Automatic search",
-    useEvent: "Use event",
+    useEvent: "Import data",
     figEventIdOrUrl: "FIG event ID or event URL",
     officialRank: "Official rank",
     format: "Format",
@@ -502,7 +502,7 @@ const translations = {
     findProfile: "Automatic search",
     figIdOrUrl: "FIG ID or profile URL",
     generateFromProfile: "Manual search",
-    useProfile: "Use profile",
+    useProfile: "Import data",
     noWorldGymnasticsCandidates: "No World Gymnastics candidates found.",
     profileSearchError: "Unable to search World Gymnastics.",
     profileSuggestionsCreated: "World Gymnastics data imported for review.",
@@ -748,7 +748,7 @@ const translations = {
     adminToolsButton: "Apri strumenti admin",
     editEvent: "Modifica evento",
     findEvent: "Ricerca automatica",
-    useEvent: "Usa evento",
+    useEvent: "Importa dati",
     figEventIdOrUrl: "FIG event ID o URL evento",
     officialRank: "Rank ufficiale",
     format: "Format",
@@ -846,7 +846,7 @@ const translations = {
     findProfile: "Ricerca automatica",
     figIdOrUrl: "FIG ID o URL profilo",
     generateFromProfile: "Ricerca manuale",
-    useProfile: "Usa profilo",
+    useProfile: "Importa dati",
     noWorldGymnasticsCandidates: "Nessun candidato World Gymnastics trovato.",
     profileSearchError: "Impossibile cercare su World Gymnastics.",
     profileSuggestionsCreated: "Dati World Gymnastics importati per la revisione.",
@@ -1092,7 +1092,7 @@ const translations = {
     adminToolsButton: "Abrir herramientas admin",
     editEvent: "Editar evento",
     findEvent: "Búsqueda automática",
-    useEvent: "Usar evento",
+    useEvent: "Importar datos",
     figEventIdOrUrl: "FIG event ID o URL evento",
     officialRank: "Rank oficial",
     format: "Format",
@@ -1190,7 +1190,7 @@ const translations = {
     findProfile: "Búsqueda automática",
     figIdOrUrl: "FIG ID o URL perfil",
     generateFromProfile: "Búsqueda manual",
-    useProfile: "Usar perfil",
+    useProfile: "Importar datos",
     noWorldGymnasticsCandidates: "No se encontraron candidatos World Gymnastics.",
     profileSearchError: "No se pudo buscar en World Gymnastics.",
     profileSuggestionsCreated: "Datos de World Gymnastics importados para revisión.",
@@ -1436,7 +1436,7 @@ const translations = {
     adminToolsButton: "Ouvrir les outils admin",
     editEvent: "Modifier evenement",
     findEvent: "Recherche automatique",
-    useEvent: "Utiliser evenement",
+    useEvent: "Importer les donnees",
     figEventIdOrUrl: "FIG event ID ou URL evenement",
     officialRank: "Rang officiel",
     format: "Format",
@@ -1534,7 +1534,7 @@ const translations = {
     findProfile: "Recherche automatique",
     figIdOrUrl: "FIG ID ou URL profil",
     generateFromProfile: "Recherche manuelle",
-    useProfile: "Utiliser profil",
+    useProfile: "Importer les donnees",
     noWorldGymnasticsCandidates: "Aucun candidat World Gymnastics trouve.",
     profileSearchError: "Recherche World Gymnastics impossible.",
     profileSuggestionsCreated: "Données World Gymnastics importées pour révision.",
@@ -9749,12 +9749,12 @@ function renderAthleteWorldGymnasticsAdminTools() {
         <div>
           <h2>${t("worldGymnasticsAssistant")}</h2>
         </div>
-        <button class="quiet-button" type="button" id="findAthleteWorldGymnasticsCandidates">${t("findProfile")}</button>
+        <button class="quiet-button admin-world-gymnastics-search-button" type="button" id="findAthleteWorldGymnasticsCandidates">${t("findProfile")}</button>
       </div>
       <form class="admin-inline-form" id="athleteWorldGymnasticsManualForm">
         <span class="admin-inline-input-shell">
           <input id="athleteWorldGymnasticsSource" placeholder="${escapeHtml(t("figIdOrUrl"))}">
-          <button class="quiet-button" type="submit">${t("generateFromProfile")}</button>
+          <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
         </span>
       </form>
       <div class="admin-tool-output" id="athleteWorldGymnasticsOutput"></div>
@@ -10589,12 +10589,12 @@ function renderEventWorldGymnasticsAdminTools() {
         <div>
           <h2>${t("worldGymnasticsAssistant")}</h2>
         </div>
-        <button class="quiet-button" type="button" id="findEventWorldGymnasticsCandidates">${t("findEvent")}</button>
+        <button class="quiet-button admin-world-gymnastics-search-button" type="button" id="findEventWorldGymnasticsCandidates">${t("findEvent")}</button>
       </div>
       <form class="admin-inline-form" id="eventWorldGymnasticsManualForm">
         <span class="admin-inline-input-shell">
           <input id="eventWorldGymnasticsSource" placeholder="${escapeHtml(t("figEventIdOrUrl"))}">
-          <button class="quiet-button" type="submit">${t("generateFromProfile")}</button>
+          <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
         </span>
       </form>
       <div class="admin-tool-output" id="eventWorldGymnasticsOutput"></div>
