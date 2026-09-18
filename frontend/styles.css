@@ -3677,11 +3677,6 @@ a:focus-visible > .entity-card-clickable {
   cursor: pointer;
 }
 
-.analytics-favorite-athlete-card:hover,
-.analytics-favorite-athlete-card:focus-visible {
-  border-color: var(--brand-blue);
-}
-
 .analytics-favorite-athlete-card:focus-visible {
   outline: 3px solid rgba(25, 23, 71, 0.16);
   outline-offset: 2px;

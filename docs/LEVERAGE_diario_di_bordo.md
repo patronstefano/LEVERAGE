@@ -2897,6 +2897,7 @@ Flusso di registrazione USER:
 - uniformati i comandi `Accedi`, `Cerca` della ricerca globale ed `Esci` al comportamento a contorno di LEVERAGE: stato predefinito neutro, solo bordo e testo blu in hover/focus e riempimento blu durante la pressione. La regola e circoscritta a questi comandi e non modifica i pulsanti primari dei flussi di login e registrazione.
 - uniformate le dimensioni delle card ordinarie, preferite e salvate tramite un'altezza minima condivisa e l'estensione all'intera cella della griglia. Le card degli atleti preferiti selezionabili nella Sezione Analytics adottano inoltre il medesimo contorno blu in hover/focus delle card interattive, mantenendo invariata la selezione al clic.
 - semplificato lo stato iniziale della pagina Ricerca globale rimuovendo il suggerimento testuale che invitava a digitare un termine e l'intero box che lo conteneva. In assenza di query la pagina resta ora pulita; il contenitore dei risultati viene creato soltanto quando esiste una ricerca da elaborare.
+- corretta l'intensita del contorno hover delle card Atleta preferite nel selettore Analytics: rimossa la forzatura al blu pieno, le card ereditano ora lo stesso bordo blu attenuato e la medesima transizione delle card interattive nelle Sezioni Atleti ed Eventi.
 
 ## 23. Conclusione
 
