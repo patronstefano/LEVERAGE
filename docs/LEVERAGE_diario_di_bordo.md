@@ -2890,6 +2890,7 @@ Flusso di registrazione USER:
 - completata la revisione UI condivisa dei pannelli strumenti Admin nelle Schede Atleta ed Evento. Le due interfacce adottano ora la stessa gerarchia compatta, con intestazioni e sezioni coerenti, griglia responsiva, campi da 42 px, raggi Leverage uniformi, stati hover/focus accessibili, azioni con comportamento a contorno e righe di revisione piu leggibili. Apertura e chiusura del pannello sono state rese progressive, mantenendo inalterati salvataggio, suggerimenti e assistenti World Gymnastics.
 - riallineata la scala tipografica dei pannelli Admin a quella generale di LEVERAGE: titoli di sezione, etichette, valori editabili, pulsanti, metadati e suggerimenti utilizzano ora le stesse dimensioni delle card e dei controlli principali, eliminando l'eccessiva riduzione introdotta durante la prima compattazione.
 - reso piu compatto lo stato vuoto `Nessun suggerimento pendente` nei pannelli Admin: il box ora segue il contenuto, usa padding ridotto, testo alla scala dei metadati e lo stesso arrotondamento dei piccoli blocchi informativi di LEVERAGE.
+- corretta la resa dei menu a scelta nei pannelli Admin, rimuovendo l'aspetto nativo non coerente applicato dal browser. I campi Disciplina, Categoria e Livello presentano ora lo stesso raggio dei campi di testo, padding uniforme e un indicatore a tendina discreto, mantenendo coerenti hover e focus.
 
 ## 23. Conclusione
 
