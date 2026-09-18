@@ -347,7 +347,6 @@ const translations = {
     matchingResults: "Results",
     filteredResults: "Filtered results",
     relatedResults: "Related results",
-    noGlobalSearchQuery: "Type a search term to explore all LEVERAGE data.",
     noGlobalSearchResults: "No global results found.",
     noStructuredSearchResults: "No results match all the search filters together. Related matches are shown below.",
     dataLoadError: "Unable to load live data. Please try again in a moment.",
@@ -692,7 +691,6 @@ const translations = {
     matchingResults: "Risultati",
     filteredResults: "Risultati filtrati",
     relatedResults: "Risultati collegati",
-    noGlobalSearchQuery: "Scrivi un termine per cercare in tutti i dati di LEVERAGE.",
     noGlobalSearchResults: "Nessun risultato globale trovato.",
     noStructuredSearchResults: "Nessun risultato corrisponde a tutti i filtri della ricerca. Sotto trovi i match collegati.",
     dataLoadError: "Impossibile caricare i dati live. Riprova tra poco.",
@@ -1037,7 +1035,6 @@ const translations = {
     matchingResults: "Resultados",
     filteredResults: "Resultados filtrados",
     relatedResults: "Resultados relacionados",
-    noGlobalSearchQuery: "Escribe un termino para explorar todos los datos de LEVERAGE.",
     noGlobalSearchResults: "No se encontraron resultados globales.",
     noStructuredSearchResults: "Ningun resultado coincide con todos los filtros de busqueda. Abajo se muestran coincidencias relacionadas.",
     dataLoadError: "No se pueden cargar los datos en vivo. Intentalo de nuevo en un momento.",
@@ -1382,7 +1379,6 @@ const translations = {
     matchingResults: "Resultats",
     filteredResults: "Resultats filtres",
     relatedResults: "Resultats lies",
-    noGlobalSearchQuery: "Saisissez un terme pour explorer toutes les donnees LEVERAGE.",
     noGlobalSearchResults: "Aucun resultat global trouve.",
     noStructuredSearchResults: "Aucun resultat ne correspond a tous les filtres de recherche. Les correspondances liees sont affichees ci-dessous.",
     dataLoadError: "Impossible de charger les donnees en direct. Reessayez dans un instant.",
@@ -3791,7 +3787,7 @@ async function renderGlobalSearch() {
       <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
       <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>
     </form>
-    <div id="globalSearchResults">${query ? loadingState() : messageState(t("noGlobalSearchQuery"))}</div>
+    ${query ? `<div id="globalSearchResults">${loadingState()}</div>` : ""}
   `);
   $("#globalSearchPageForm").addEventListener("submit", (event) => {
     event.preventDefault();
