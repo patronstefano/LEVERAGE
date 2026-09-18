@@ -2905,6 +2905,7 @@ Flusso di registrazione USER:
 - chiarita la terminologia del flusso World Gymnastics nei pannelli Admin: `Genera suggerimenti` e diventato `Importa dati dal profilo`, mentre `Suggerimenti Admin` e diventato `Dati in attesa di approvazione`. Aggiornati coerentemente stato vuoto, conferma di importazione, conteggi e traduzioni EN/IT/ES/FR, senza modificare il principio di approvazione obbligatoria prima della scrittura dei dati.
 - rifinita la revisione World Gymnastics nei pannelli Admin: la percentuale di compatibilita e ora allineata sulla stessa riga del comando di selezione, usa cifre tabulari e una larghezza stabile. Il pulsante `Accetta` dei dati in attesa mostra inoltre il solo contorno verde in hover/focus e si riempie di verde esclusivamente durante la pressione.
 - resa piu esplicita la scelta operativa nell'Assistente World Gymnastics: il comando che cerca autonomamente i candidati e ora `Ricerca automatica`, mentre il comando collegato al FIG ID o URL inserito dall'Admin e `Ricerca manuale`. La distinzione e identica per Atleti ed Eventi ed e tradotta in EN/IT/ES/FR.
+- integrato il comando `Ricerca manuale` direttamente nel box FIG ID/URL dell'Assistente World Gymnastics. Campo e pulsante condividono ora un unico contorno, uno stato focus unitario e raggi coerenti con le barre di ricerca LEVERAGE; la soluzione e comune a Scheda Atleta e Scheda Evento e resta responsiva su mobile.
 
 ## 23. Conclusione
 
