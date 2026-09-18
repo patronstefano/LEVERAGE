@@ -329,6 +329,7 @@ Scelte importanti:
 - il DB mantiene separati `first_name` e `last_name`;
 - il Result salva solo `athlete_id`, non copia nome e cognome.
 - `is_profile_verified` e un attributo amministrativo distinto dalla verifica del collegamento World Gymnastics: quando attivo mostra il badge pubblico blu LEVERAGE nella Scheda Atleta; assegnazione e rimozione sono riservate ad Admin/Super Admin e restano tracciate nell'audit.
+- `world_gymnastics_verified_by_admin_id` e un metadato riservato: non compare nelle risposte Athlete pubbliche e viene esposto soltanto nella vista amministrativa protetta della scheda.
 
 ### 8.3 AthleteCountryChange
 

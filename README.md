@@ -222,7 +222,7 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
   `country` rappresenta la nazionalita corrente; `country_changes` registra eventuali cambi con `from_country`, `to_country`, `change_year`
   `discipline`: `MAG` oppure `WAG`
   `world_gymnastics_athlete_id`, `world_gymnastics_profile_url` e `world_gymnastics_status`: opzionali; vengono pensati come metadati ufficiali World Gymnastics e restano `NULL` finche un admin non verifica/approva il profilo tramite il motore World Gymnastics
-  `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`: valorizzati automaticamente quando un admin approva un suggerimento World Gymnastics legato al profilo ufficiale
+  `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`: valorizzati automaticamente quando un admin approva un suggerimento World Gymnastics legato al profilo ufficiale; l'ID dell'Admin verificatore e escluso dalle risposte pubbliche ed esposto soltanto tramite `GET /athletes/{athlete_id}/admin-view`
   `is_profile_verified`: booleano amministrativo indipendente dal collegamento World Gymnastics; governa il badge pubblico di verifica della Scheda Atleta ed e modificabile soltanto tramite endpoint protetti Admin/Super Admin
 - `Event`
   Campi principali: `name`, `location`, `venue`, `start_date`, `end_date`, `year`, `discipline`, `category`, `level`, `image_url`, `world_gymnastics_event_id`, `world_gymnastics_event_url`, `world_gymnastics_status`

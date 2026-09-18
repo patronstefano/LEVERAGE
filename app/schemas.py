@@ -566,12 +566,15 @@ class AthleteRead(AthleteBase):
     world_gymnastics_profile_url: Optional[str] = None
     world_gymnastics_status: Optional[str] = None
     world_gymnastics_verified_at: Optional[datetime] = None
-    world_gymnastics_verified_by_admin_id: Optional[int] = None
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
     deleted_by_admin_id: Optional[int] = None
     country_changes: list[AthleteCountryChangeRead] = []
     model_config = ConfigDict(from_attributes=True)
+
+
+class AthleteAdminRead(AthleteRead):
+    world_gymnastics_verified_by_admin_id: Optional[int] = None
 
 
 class AthleteUpdate(BaseModel):
@@ -835,7 +838,7 @@ class DataSuggestionRead(DataSuggestionBase):
 
 
 class AthleteAdminView(BaseModel):
-    athlete: AthleteRead
+    athlete: AthleteAdminRead
     pending_suggestions: list[DataSuggestionRead]
 
 

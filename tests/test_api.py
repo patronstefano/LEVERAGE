@@ -3916,7 +3916,7 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     assert public_athlete["world_gymnastics_profile_url"] is None
     assert public_athlete["world_gymnastics_status"] is None
     assert public_athlete["world_gymnastics_verified_at"] is None
-    assert public_athlete["world_gymnastics_verified_by_admin_id"] is None
+    assert "world_gymnastics_verified_by_admin_id" not in public_athlete
 
     admin_view = client.get(
         f"/athletes/{athlete['id']}/admin-view",
@@ -3946,7 +3946,13 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     verified_athlete = client.get(f"/athletes/{athlete['id']}").json()
     assert verified_athlete["world_gymnastics_profile_url"].endswith("id=69037")
     assert verified_athlete["world_gymnastics_verified_at"] is not None
-    assert verified_athlete["world_gymnastics_verified_by_admin_id"] is not None
+    assert "world_gymnastics_verified_by_admin_id" not in verified_athlete
+
+    verified_admin_view = client.get(
+        f"/athletes/{athlete['id']}/admin-view",
+        headers=admin_headers,
+    ).json()
+    assert verified_admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] is not None
 
 
 def test_world_gymnastics_event_candidates_are_admin_only(monkeypatch):
