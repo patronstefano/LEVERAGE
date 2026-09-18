@@ -3154,6 +3154,39 @@ button {
   align-items: start;
 }
 
+.account-view-switcher {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 22px;
+}
+
+.account-view-toggle {
+  grid-template-columns: repeat(3, minmax(96px, 1fr));
+  width: min(420px, 100%);
+}
+
+.account-view-toggle .segmented-option {
+  min-width: 0;
+  padding: 0 14px;
+  color: rgba(17, 17, 20, 0.76);
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.account-view-toggle .segmented-option[aria-checked="true"] {
+  color: #fff;
+}
+
+.account-view-thumb {
+  width: calc(100% / 3);
+  transform: translateX(calc(var(--selected-index) * 100%));
+}
+
+.account-view-panel[hidden] {
+  display: none;
+}
+
 .account-favorites-section {
   min-width: 0;
 }
@@ -3163,7 +3196,7 @@ button {
 }
 
 .account-ranking-views {
-  margin-top: 28px;
+  margin-top: 0;
 }
 
 .profile-heading {

@@ -289,6 +289,7 @@ const translations = {
     demoSuperAdmin: "DEMO SUPER ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Your private area for favorite athletes, favorite events and personal shortcuts.",
+    accountContentNavigation: "Choose your saved content",
     favoriteAthletes: "Favorite athletes",
     favoriteEvents: "Favorite events",
     myFavoriteAthletes: "My favorite athletes",
@@ -628,6 +629,7 @@ const translations = {
     demoSuperAdmin: "DEMO SUPER ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "La tua area privata per atleti preferiti, eventi preferiti e scorciatoie personali.",
+    accountContentNavigation: "Scegli i contenuti salvati",
     favoriteAthletes: "Atleti preferiti",
     favoriteEvents: "Eventi preferiti",
     myFavoriteAthletes: "I miei atleti preferiti",
@@ -967,6 +969,7 @@ const translations = {
     demoSuperAdmin: "DEMO SUPER ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Tu area privada para atletas favoritos, eventos favoritos y accesos personales.",
+    accountContentNavigation: "Elige tus contenidos guardados",
     favoriteAthletes: "Atletas favoritos",
     favoriteEvents: "Eventos favoritos",
     myFavoriteAthletes: "Mis atletas favoritos",
@@ -1306,6 +1309,7 @@ const translations = {
     demoSuperAdmin: "DEMO SUPER ADMIN",
     accountHeading: "My LEVERAGE",
     accountIntro: "Votre espace prive pour athletes favoris, evenements favoris et raccourcis personnels.",
+    accountContentNavigation: "Choisissez vos contenus enregistres",
     favoriteAthletes: "Athletes favoris",
     favoriteEvents: "Evenements favoris",
     myFavoriteAthletes: "Mes athletes favoris",
@@ -10540,11 +10544,77 @@ function renderSavedRankingViews(views) {
   }).join("")}</div>`;
 }
 
+function accountViewSection() {
+  const value = currentParams().get("section") || "athletes";
+  if (["events", "favorite-events"].includes(value)) return "events";
+  if (["rankings", "saved-rankings"].includes(value)) return "rankings";
+  return "athletes";
+}
+
+function renderAccountViewControl(selected) {
+  const options = [
+    { value: "athletes", label: t("navAthletes") },
+    { value: "events", label: t("navEvents") },
+    { value: "rankings", label: t("navRankings") },
+  ];
+  const selectedIndex = Math.max(0, options.findIndex((option) => option.value === selected));
+  return `
+    <div class="account-view-switcher">
+      <div
+        class="segmented-control account-view-toggle"
+        role="radiogroup"
+        aria-label="${escapeHtml(t("accountContentNavigation"))}"
+        style="--selected-index: ${selectedIndex};"
+      >
+        ${options.map((option) => `
+          <button
+            class="segmented-option"
+            type="button"
+            role="radio"
+            data-account-view="${option.value}"
+            aria-checked="${String(option.value === selected)}"
+          >${escapeHtml(option.label)}</button>
+        `).join("")}
+        <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
+      </div>
+    </div>
+  `;
+}
+
+function setAccountViewSection(section, { updateRoute = false } = {}) {
+  const selected = ["athletes", "events", "rankings"].includes(section) ? section : "athletes";
+  document.querySelectorAll("[data-account-view]").forEach((button) => {
+    button.setAttribute("aria-checked", String(button.dataset.accountView === selected));
+  });
+  document.querySelectorAll("[data-account-view-panel]").forEach((panel) => {
+    panel.hidden = panel.dataset.accountViewPanel !== selected;
+  });
+  const control = document.querySelector(".account-view-toggle");
+  if (control) {
+    const selectedIndex = ["athletes", "events", "rankings"].indexOf(selected);
+    control.style.setProperty("--selected-index", Math.max(0, selectedIndex));
+  }
+  if (updateRoute) {
+    const route = `/account?section=${encodeURIComponent(selected)}`;
+    state.route = route;
+    window.history.replaceState(null, "", `#${route}`);
+  }
+}
+
+function bindAccountViewControl() {
+  document.querySelectorAll("[data-account-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setAccountViewSection(button.dataset.accountView, { updateRoute: true });
+    });
+  });
+}
+
 async function renderAccount() {
   if (!state.currentUser) {
     authRequiredPage();
     return;
   }
+  const selectedSection = accountViewSection();
   setApp(`
     ${pageHeading("accountHeading", "accountIntro")}
     <section class="panel account-summary">
@@ -10554,8 +10624,9 @@ async function renderAccount() {
       </div>
       <button class="quiet-button" type="button" id="signOutButton">${t("signOut")}</button>
     </section>
+    ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">
-      <section class="account-favorites-section">
+      <section class="account-favorites-section account-view-panel" data-account-view-panel="athletes" ${selectedSection === "athletes" ? "" : "hidden"}>
         <div class="section-header">
           <div>
             <h2>${t("favoriteAthletes")}</h2>
@@ -10564,7 +10635,7 @@ async function renderAccount() {
         </div>
         <div id="accountAthletes">${loadingState()}</div>
       </section>
-      <section class="account-favorites-section">
+      <section class="account-favorites-section account-view-panel" data-account-view-panel="events" ${selectedSection === "events" ? "" : "hidden"}>
         <div class="section-header">
           <div>
             <h2>${t("favoriteEvents")}</h2>
@@ -10573,22 +10644,18 @@ async function renderAccount() {
         </div>
         <div id="accountEvents">${loadingState()}</div>
       </section>
-    </section>
-    <section class="account-favorites-section account-ranking-views" id="accountSavedRankings">
-      <div class="section-header">
-        <div>
-          <h2>${t("savedRankingViews")}</h2>
+      <section class="account-favorites-section account-ranking-views account-view-panel" id="accountSavedRankings" data-account-view-panel="rankings" ${selectedSection === "rankings" ? "" : "hidden"}>
+        <div class="section-header">
+          <div>
+            <h2>${t("savedRankingViews")}</h2>
+          </div>
+          <a class="quiet-button" href="#/rankings">${t("navRankings")}</a>
         </div>
-        <a class="quiet-button" href="#/rankings">${t("navRankings")}</a>
-      </div>
-      <div id="accountRankingViews">${loadingState()}</div>
+        <div id="accountRankingViews">${loadingState()}</div>
+      </section>
     </section>
   `);
-  if (currentParams().get("section") === "saved-rankings") {
-    window.requestAnimationFrame(() => {
-      $("#accountSavedRankings")?.scrollIntoView({ block: "start" });
-    });
-  }
+  bindAccountViewControl();
   $("#signOutButton").addEventListener("click", () => {
     clearAuth();
     window.location.hash = "#/";
