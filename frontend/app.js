@@ -10523,7 +10523,7 @@ function bindEventSuggestionActions(eventId) {
 function renderSavedRankingViews(views) {
   const rankingViews = views.filter((view) => view.view_type === "ranking");
   if (!rankingViews.length) return emptyMessage(t("noSavedRankingViews"));
-  return `<div class="entity-list">${rankingViews.map((view) => {
+  return `<div class="grid-3 athlete-results-list account-saved-ranking-list">${rankingViews.map((view) => {
     const summary = rankingFilterSummary(view.filters || {});
     const meta = `${t("filters")}: ${summary}`;
     const pills = [
@@ -10574,7 +10574,7 @@ async function renderAccount() {
         <div id="accountEvents">${loadingState()}</div>
       </section>
     </section>
-    <section class="panel account-ranking-views" id="accountSavedRankings">
+    <section class="account-favorites-section account-ranking-views" id="accountSavedRankings">
       <div class="section-header">
         <div>
           <h2>${t("savedRankingViews")}</h2>
