@@ -2866,6 +2866,7 @@ Flusso di registrazione USER:
 - l'esito della verifica viene mantenuto nello stato della sessione frontend, evitando che un cambio lingua o un nuovo rendering reinvii un token gia consumato e trasformi falsamente un successo in errore;
 - il link generato nelle email di verifica e stato corretto per usare il router hash effettivo del frontend LEVERAGE;
 - registrazione, verifica e relativi messaggi sono disponibili in inglese, italiano, spagnolo e francese.
+- uniformata la visualizzazione degli atleti preferiti nella sezione `Athletes`: il filtro `Favorites/Preferiti` riutilizza ora la stessa griglia a tre colonne delle card atleta ordinarie e degli eventi preferiti. Quando l'utente ha uno o due preferiti, le card mantengono quindi dimensioni e proporzioni standard invece di dilatarsi sull'intera larghezza disponibile; restano attivi gli adattamenti responsive a due e una colonna.
 
 ## 23. Conclusione
 

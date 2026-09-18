@@ -6506,7 +6506,7 @@ async function renderVerifyEmail() {
 
 function renderFavoriteAthletes(details) {
   if (!details.length) return emptyMessage(t("noFavoriteAthletes"));
-  return `<div class="entity-list athlete-results-list">${details.map((item) => {
+  return `<div class="grid-3 athlete-results-list">${details.map((item) => {
     const athlete = item.athlete || {};
     const name = athleteCardDisplayName(athlete, `${t("athlete")} ${item.athlete_id}`);
     const meta = [
