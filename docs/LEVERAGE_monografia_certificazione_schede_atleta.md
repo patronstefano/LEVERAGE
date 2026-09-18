@@ -2,7 +2,7 @@
 
 ## 1. Finalita della funzionalita
 
-LEVERAGE introduce un meccanismo di certificazione pubblica delle Schede Atleta fondato sul riscontro controllato con una fonte istituzionale, World Gymnastics. La funzionalita e rappresentata nella UI da un badge blu LEVERAGE con spunta bianca, mostrato sotto il nome dell'atleta.
+LEVERAGE introduce un meccanismo di certificazione pubblica delle Schede Atleta fondato sul riscontro controllato con una fonte istituzionale, World Gymnastics. La funzionalita e rappresentata nella UI da un badge blu LEVERAGE con spunta bianca, mostrato nel sottotitolo dell'atleta immediatamente a destra della disciplina MAG/WAG.
 
 Il badge non e un semplice elemento estetico. Esprime uno stato persistente dell'entita `Athlete` e comunica che un utente con ruolo `admin` o `super_admin` ha:
 
@@ -110,6 +110,14 @@ L'elemento innovativo non risiede quindi nella sola icona, ma nell'architettura 
 
 ## 7. Manutenzione e revoca della certificazione
 
+### 7.1 Invariante di sicurezza
+
+LEVERAGE separa strutturalmente i dati World Gymnastics dalla normale anagrafica. Il blocco dedicato compare nella sezione `Modifica atleta` soltanto quando esiste gia un collegamento ufficiale e consente di amministrare FIG ID, URL e status senza esporre il campo booleano della certificazione. Ne deriva il seguente invariante: **il badge non puo essere attribuito o riattribuito mediante modifica manuale, endpoint anagrafico ordinario o semplice inserimento di un URL**. Dopo una revoca o una variazione dell'identita FIG, la certificazione puo essere ripristinata esclusivamente selezionando nuovamente un profilo World Gymnastics riscontrato e confermando `Importa dati`.
+
+Questo vincolo impedisce che un Admin possa trasformare un collegamento scritto manualmente in una certificazione pubblica senza una nuova verifica della fonte. Ricerca, importazione, modifica, revoca e successiva riattivazione rimangono inoltre registrate nel sistema di audit e sottoposte alla governance Admin/Super Admin.
+
+### 7.2 Modifica e revoca controllate
+
 La certificazione non e irreversibile. Dopo il collegamento iniziale, gli utenti Admin e Super Admin possono correggere FIG ID, URL del profilo e status World Gymnastics attraverso campi dedicati nella sezione `Modifica atleta`. La piattaforma applica tuttavia una distinzione semantica precisa: lo status descrive una condizione del profilo e puo cambiare senza alterarne l'identita; FIG ID e URL identificano invece la fonte ufficiale certificata. La modifica manuale di uno di questi ultimi campi revoca pertanto in modo automatico il badge, la data di verifica e il riferimento all'Admin verificatore.
 
 E inoltre disponibile una revoca esplicita del solo badge, che conserva FIG ID, URL e status per non perdere il collegamento informativo. Ogni modifica o revoca genera una voce di audit. Per ripristinare il badge non e sufficiente intervenire manualmente sul booleano: l'Admin deve selezionare nuovamente un profilo ufficiale riscontrato e confermare `Importa dati`. Questo ciclo rende la certificazione correggibile nel tempo senza indebolirne il significato metodologico.
@@ -127,8 +135,10 @@ Commit collegati:
 - `9f62586`: introduzione del campo persistente, migrazione, badge UI e controlli iniziali;
 - `178c531`: protezione del metadato relativo all'Admin verificatore;
 - `39ac359`: rimozione dell'assegnazione manuale e collegamento definitivo del badge all'azione `Importa dati` del flusso World Gymnastics.
+- `8fd7976`: separazione dei dati World Gymnastics dall'anagrafica ordinaria, manutenzione protetta, revoca esplicita e revoca automatica in caso di modifica dell'identita FIG.
+- `452125b`: collocazione pubblica del badge accanto alla disciplina MAG/WAG e aggiornamento degli asset frontend.
 
-Il commit `39ac359` rappresenta la decisione semantica definitiva: nessun badge per la sola ricerca e nessuna assegnazione libera dal form; certificazione soltanto dopo la selezione e l'importazione esplicita di un profilo ufficiale riscontrato.
+I commit `39ac359` e `8fd7976` rappresentano congiuntamente la decisione semantica e di sicurezza definitiva: nessun badge per la sola ricerca, nessuna assegnazione libera dal form e nessuna riattivazione manuale dopo una revoca; certificazione soltanto dopo la selezione e l'importazione esplicita di un profilo ufficiale riscontrato.
 
 ## 9. Formula sintetica utilizzabile nella monografia
 

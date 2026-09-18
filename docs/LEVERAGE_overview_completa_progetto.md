@@ -879,6 +879,8 @@ La scheda atleta puo mostrare il link ufficiale World Gymnastics solo quando ver
 
 Il flusso comprende inoltre una certificazione controllata dell'identita: la sola ricerca di candidati non assegna alcun badge, mentre la selezione esplicita del profilo e il comando `Importa dati` impostano `is_profile_verified`, registrano la decisione nell'audit e mostrano il badge pubblico blu LEVERAGE. I singoli valori proposti restano separatamente soggetti a review Admin. Razionale, limiti e implementazione sono descritti nel capitolo dedicato [LEVERAGE_monografia_certificazione_schede_atleta.md](LEVERAGE_monografia_certificazione_schede_atleta.md).
 
+La manutenzione segue un invariante di sicurezza: i dati World Gymnastics sono separati dalla normale anagrafica e diventano modificabili in un blocco dedicato soltanto dopo il collegamento. Un Admin puo revocare il badge, ma non puo attribuirlo manualmente. Una variazione di FIG ID o URL revoca automaticamente la certificazione; per riattivarla e necessario selezionare nuovamente un profilo ufficiale e confermare `Importa dati`. Ogni passaggio e auditabile e soggetto alla governance Admin/Super Admin.
+
 Una migrazione di riallineamento certifica anche i profili approvati prima dell'introduzione del badge, ma solo quando URL ufficiale, data di verifica e Admin verificatore risultano tutti gia registrati.
 
 ### 15.4 World Gymnastics Event

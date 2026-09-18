@@ -101,6 +101,8 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
   Endpoint admin-only: restituisce la scheda Athlete ufficiale e i suggerimenti pendenti visibili solo agli admin
 - `PATCH /athletes/{athlete_id}/world-gymnastics`
   Endpoint admin-only per correggere FIG ID, URL profilo e status gia importati oppure revocare il badge. La modifica manuale di FIG ID o URL invalida automaticamente la certificazione; per riattivarla occorre confermare nuovamente un profilo tramite `Importa dati`.
+
+  **Invariante di sicurezza:** dati anagrafici, collegamento World Gymnastics e certificazione sono livelli separati. Il badge non e scrivibile dal normale form e non puo essere riattivato manualmente dopo una revoca. Soltanto un nuovo riscontro ufficiale confermato con `Importa dati` puo attribuirlo; tutte le transizioni sono registrate nell'audit Admin/Super Admin.
 - `POST /athletes/{source_athlete_id}/merge-preview`
   Endpoint admin-only per verificare se una scheda atleta duplicata puo essere unita a un atleta canonico indicato tramite `target_athlete_id`
 - `POST /athletes/{source_athlete_id}/merge`
