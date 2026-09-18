@@ -9639,7 +9639,7 @@ function renderAthleteSuggestions(suggestions = []) {
               <input data-athlete-suggestion-value="${suggestion.id}" value="${escapeHtml(suggestion.suggested_value || "")}">
             </label>
             <div>
-              <button class="quiet-button" type="button" data-athlete-suggestion-accept="${suggestion.id}">${t("accept")}</button>
+              <button class="quiet-button admin-accept-button" type="button" data-athlete-suggestion-accept="${suggestion.id}">${t("accept")}</button>
               <button class="quiet-button filter-clear-button" type="button" data-athlete-suggestion-reject="${suggestion.id}">${t("reject")}</button>
             </div>
           </div>
@@ -9671,7 +9671,7 @@ function renderWorldGymnasticsCandidateList(response) {
               <p>${escapeHtml(meta || t("notAvailable"))}</p>
               <a href="${escapeHtml(candidate.profile_url)}" target="_blank" rel="noreferrer">${t("openWorldGymnastics")}</a>
             </div>
-            <div class="admin-review-actions">
+            <div class="admin-review-actions admin-candidate-actions">
               <span>${Math.round(Number(candidate.match_score || 0) * 100)}%</span>
               <button class="quiet-button" type="button" data-athlete-wg-use-profile="${escapeHtml(candidate.fig_id)}">${t("useProfile")}</button>
             </div>
@@ -10472,7 +10472,7 @@ function renderEventSuggestions(suggestions = []) {
               <input data-event-suggestion-value="${suggestion.id}" value="${escapeHtml(suggestion.suggested_value || "")}">
             </label>
             <div>
-              <button class="quiet-button" type="button" data-event-suggestion-accept="${suggestion.id}">${t("accept")}</button>
+              <button class="quiet-button admin-accept-button" type="button" data-event-suggestion-accept="${suggestion.id}">${t("accept")}</button>
               <button class="quiet-button filter-clear-button" type="button" data-event-suggestion-reject="${suggestion.id}">${t("reject")}</button>
             </div>
           </div>
@@ -10513,7 +10513,7 @@ function renderWorldGymnasticsEventCandidateList(response) {
               <p>${escapeHtml(meta || t("notAvailable"))}</p>
               <a href="${escapeHtml(candidate.event_url)}" target="_blank" rel="noreferrer">${t("openWorldGymnastics")}</a>
             </div>
-            <div class="admin-review-actions">
+            <div class="admin-review-actions admin-candidate-actions">
               <span>${Math.round(Number(candidate.match_score || 0) * 100)}%</span>
               <button class="quiet-button" type="button" data-event-wg-use-event="${escapeHtml(candidate.event_id)}">${t("useEvent")}</button>
             </div>

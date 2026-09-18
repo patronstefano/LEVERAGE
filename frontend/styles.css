@@ -5458,6 +5458,19 @@ a:focus-visible > .entity-card-clickable {
   color: #fff;
 }
 
+.athlete-admin-panel .quiet-button.admin-accept-button:hover,
+.athlete-admin-panel .quiet-button.admin-accept-button:focus-visible {
+  border-color: var(--success);
+  background: #fff;
+  color: var(--success);
+}
+
+.athlete-admin-panel .quiet-button.admin-accept-button:active {
+  border-color: var(--success);
+  background: var(--success);
+  color: #fff;
+}
+
 .athlete-admin-panel .auth-message:empty {
   display: none;
 }
@@ -5540,6 +5553,20 @@ a:focus-visible > .entity-card-clickable {
   gap: 8px;
   justify-items: end;
   min-width: 240px;
+}
+
+.admin-candidate-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.admin-candidate-actions > span {
+  width: 44px;
+  color: var(--brand-blue);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .admin-review-actions div {
@@ -5745,6 +5772,10 @@ a:focus-visible > .entity-card-clickable {
   .admin-review-actions {
     justify-items: start;
     min-width: 0;
+  }
+
+  .admin-candidate-actions {
+    justify-content: flex-start;
   }
 
   .admin-review-actions div {
