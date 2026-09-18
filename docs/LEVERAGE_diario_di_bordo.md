@@ -2899,6 +2899,7 @@ Flusso di registrazione USER:
 - semplificato lo stato iniziale della pagina Ricerca globale rimuovendo il suggerimento testuale che invitava a digitare un termine e l'intero box che lo conteneva. In assenza di query la pagina resta ora pulita; il contenitore dei risultati viene creato soltanto quando esiste una ricerca da elaborare.
 - corretta l'intensita del contorno hover delle card Atleta preferite nel selettore Analytics: rimossa la forzatura al blu pieno, le card ereditano ora lo stesso bordo blu attenuato e la medesima transizione delle card interattive nelle Sezioni Atleti ed Eventi.
 - corretta la direzione dell'uniformazione dimensionale delle card: rimossa l'altezza minima condivisa che aveva ingrandito le card ordinarie. Atleti ed Eventi tornano alla loro dimensione naturale originaria, mentre card preferite e Rankings salvati non impongono piu l'altezza maggiorata di 126 px e si compattano in base al contenuto.
+- completata la compattazione delle card preferite e salvate intervenendo sulla causa residua dell'altezza: metadati di salvataggio e badge condividono ora la seconda riga, mentre nome e comando restano nella prima. I metadati eccedenti vengono abbreviati visivamente senza essere rimossi; su mobile la disposizione torna a righe separate per preservare la leggibilita.
 
 ## 23. Conclusione
 
