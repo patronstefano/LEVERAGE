@@ -2760,7 +2760,13 @@ button {
 }
 
 .admin-tools-toggle:not(.delete-button):hover,
-.admin-tools-toggle:not(.delete-button):focus-visible,
+.admin-tools-toggle:not(.delete-button):focus-visible {
+  border-color: var(--brand-blue);
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(25, 23, 71, 0.68);
+}
+
+.admin-tools-toggle:not(.delete-button):active,
 .admin-tools-toggle.is-open {
   border-color: var(--brand-blue);
   background: var(--brand-blue);
