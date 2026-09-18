@@ -9752,10 +9752,8 @@ function renderAthleteWorldGymnasticsAdminTools() {
         <button class="quiet-button admin-world-gymnastics-search-button" type="button" id="findAthleteWorldGymnasticsCandidates">${t("findProfile")}</button>
       </div>
       <form class="admin-inline-form" id="athleteWorldGymnasticsManualForm">
-        <span class="admin-inline-input-shell">
-          <input id="athleteWorldGymnasticsSource" placeholder="${escapeHtml(t("figIdOrUrl"))}">
-          <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
-        </span>
+        <input id="athleteWorldGymnasticsSource" placeholder="${escapeHtml(t("figIdOrUrl"))}">
+        <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
       </form>
       <div class="admin-tool-output" id="athleteWorldGymnasticsOutput"></div>
     </div>
@@ -10592,10 +10590,8 @@ function renderEventWorldGymnasticsAdminTools() {
         <button class="quiet-button admin-world-gymnastics-search-button" type="button" id="findEventWorldGymnasticsCandidates">${t("findEvent")}</button>
       </div>
       <form class="admin-inline-form" id="eventWorldGymnasticsManualForm">
-        <span class="admin-inline-input-shell">
-          <input id="eventWorldGymnasticsSource" placeholder="${escapeHtml(t("figEventIdOrUrl"))}">
-          <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
-        </span>
+        <input id="eventWorldGymnasticsSource" placeholder="${escapeHtml(t("figEventIdOrUrl"))}">
+        <button class="quiet-button admin-world-gymnastics-search-button" type="submit">${t("generateFromProfile")}</button>
       </form>
       <div class="admin-tool-output" id="eventWorldGymnasticsOutput"></div>
     </div>
