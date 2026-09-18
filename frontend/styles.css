@@ -3230,6 +3230,16 @@ button {
   font-size: var(--card-pill-size);
 }
 
+.account-saved-ranking-list .pill.discipline-mag,
+.account-saved-ranking-list .pill.discipline-wag {
+  flex: 0 0 auto;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
 .account-ranking-views {
   margin-top: 0;
 }

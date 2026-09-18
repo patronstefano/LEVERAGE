@@ -10665,7 +10665,7 @@ function savedRankingActiveFilterCount(filters = {}) {
 function savedRankingCategoryLabel(filters = {}) {
   const categories = normalizeSavedFilterArray(filters.category)
     .filter((value) => ["junior", "senior"].includes(value));
-  if (categories.includes("junior") && categories.includes("senior")) {
+  if (!categories.length || (categories.includes("junior") && categories.includes("senior"))) {
     return displayEnumValue("junior and senior");
   }
   if (categories[0] === "junior") return t("junior");
