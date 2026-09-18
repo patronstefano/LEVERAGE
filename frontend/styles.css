@@ -1018,8 +1018,14 @@ button {
 }
 
 .section-favorite-filter:hover,
-.section-favorite-filter:focus-visible,
-.section-favorite-filter[aria-pressed="true"] {
+.section-favorite-filter:focus-visible {
+  border-color: var(--favorite-yellow);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+}
+
+.section-favorite-filter[aria-pressed="true"],
+.section-favorite-filter:active {
   border-color: var(--favorite-yellow);
   background: var(--favorite-yellow);
   color: #fff;
@@ -1033,6 +1039,19 @@ button {
 
 .quiet-button.filter-clear-button:hover,
 .quiet-button.filter-clear-button:focus-visible {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+.quiet-button.filters-reset-button:hover,
+.quiet-button.filters-reset-button:focus-visible {
+  border-color: var(--danger);
+  background: #fff;
+  color: rgba(17, 17, 20, 0.76);
+}
+
+.quiet-button.filters-reset-button:active {
   border-color: var(--danger);
   background: var(--danger);
   color: #fff;

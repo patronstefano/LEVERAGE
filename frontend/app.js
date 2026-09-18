@@ -5932,7 +5932,7 @@ async function renderAthletes() {
           ${athleteSortModeControl()}
           <div class="filter-action-group">
             ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
-            <button class="quiet-button filter-clear-button" type="button" id="clearAthleteFiltersButton">${t("clearRankingFilters")}</button>
+            <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearAthleteFiltersButton">${t("clearRankingFilters")}</button>
           </div>
         </div>
       </div>
@@ -6046,7 +6046,7 @@ async function renderEvents() {
           ${eventViewModeControl()}
           <div class="filter-action-group">
             ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
-            <button class="quiet-button filter-clear-button" type="button" id="clearEventFiltersButton">${t("clearRankingFilters")}</button>
+            <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearEventFiltersButton">${t("clearRankingFilters")}</button>
           </div>
         </div>
       </div>
@@ -6241,7 +6241,7 @@ async function renderRankings() {
             ${renderRankingSavePanel()}
             <div class="ranking-filter-bottom-actions">
               ${state.currentUser ? `<a class="quiet-button ranking-saved-shortcut" href="#/account?section=saved-rankings">${t("savedRankingsShortcut")}</a>` : ""}
-              <button class="quiet-button filter-clear-button" type="button" id="clearRankingFiltersButton">${t("clearRankingFilters")}</button>
+              <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearRankingFiltersButton">${t("clearRankingFilters")}</button>
             </div>
           </div>
         </div>
