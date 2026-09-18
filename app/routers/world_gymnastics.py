@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import models, schemas, world_gymnastics
+from app.audit import add_audit_log, model_snapshot
 from app.database import get_db
 from app.security import get_current_admin_user
 
@@ -475,6 +476,7 @@ def create_world_gymnastics_athlete_suggestions(
 
     requested_fields, skipped_fields = resolve_requested_fields(db, athlete, payload.fields)
     warnings = profile_warnings(athlete, profile)
+    verification_before = model_snapshot(athlete)
 
     suggestion_candidates = []
     created_suggestions = []
@@ -502,7 +504,20 @@ def create_world_gymnastics_athlete_suggestions(
             db.add(suggestion)
             created_suggestions.append(suggestion)
 
-    if created_suggestions:
+    badge_assigned = payload.create_suggestions and not athlete.is_profile_verified
+    if badge_assigned:
+        athlete.is_profile_verified = True
+        add_audit_log(
+            db,
+            current_user,
+            "update",
+            "Athlete",
+            athlete.id,
+            before=verification_before,
+            after=model_snapshot(athlete),
+        )
+
+    if created_suggestions or badge_assigned:
         db.commit()
         for suggestion in created_suggestions:
             db.refresh(suggestion)

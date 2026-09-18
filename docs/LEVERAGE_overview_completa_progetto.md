@@ -328,7 +328,7 @@ Scelte importanti:
 - nella UI gli atleti sono mostrati come `Cognome Nome`;
 - il DB mantiene separati `first_name` e `last_name`;
 - il Result salva solo `athlete_id`, non copia nome e cognome.
-- `is_profile_verified` e un attributo amministrativo distinto dalla verifica del collegamento World Gymnastics: quando attivo mostra il badge pubblico blu LEVERAGE nella Scheda Atleta; assegnazione e rimozione sono riservate ad Admin/Super Admin e restano tracciate nell'audit.
+- `is_profile_verified` mostra il badge pubblico blu LEVERAGE nella Scheda Atleta. La ricerca di candidati World Gymnastics non modifica il campo; l'assegnazione avviene automaticamente e con audit soltanto quando un Admin/Super Admin seleziona un profilo riscontrato e conferma `Importa dati`. Il normale endpoint di modifica anagrafica non puo alterarlo.
 - `world_gymnastics_verified_by_admin_id` e un metadato riservato: non compare nelle risposte Athlete pubbliche e viene esposto soltanto nella vista amministrativa protetta della scheda.
 
 ### 8.3 AthleteCountryChange

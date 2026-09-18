@@ -5410,21 +5410,6 @@ a:focus-visible > .entity-card-clickable {
   line-height: 1.25;
 }
 
-.admin-form-header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.athlete-admin-panel .athlete-verification-toggle.is-active,
-.athlete-admin-panel .athlete-verification-toggle.is-active:hover,
-.athlete-admin-panel .athlete-verification-toggle.is-active:focus-visible {
-  border-color: var(--brand-blue);
-  background: var(--brand-blue);
-  color: #fff;
-}
-
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

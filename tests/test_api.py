@@ -535,21 +535,7 @@ def test_update_and_delete_athlete():
     )
     assert update_response.status_code == 200
     assert update_response.json()["country"] == "France"
-    assert update_response.json()["is_profile_verified"] is True
-
-    public_response = client.get(f"/athletes/{athlete_id}")
-    assert public_response.status_code == 200
-    assert public_response.json()["is_profile_verified"] is True
-
-    client.post("/auth/register", json={"email": "viewer@example.com", "password": TEST_PASSWORD})
-    viewer_token = login_as_user("viewer@example.com")
-    forbidden_response = client.put(
-        f"/athletes/{athlete_id}",
-        json={"is_profile_verified": False},
-        headers={"Authorization": f"Bearer {viewer_token}"},
-    )
-    assert forbidden_response.status_code == 403
-    assert client.get(f"/athletes/{athlete_id}").json()["is_profile_verified"] is True
+    assert update_response.json()["is_profile_verified"] is False
 
     delete_response = client.delete(f"/athletes/{athlete_id}", headers=headers)
     assert delete_response.status_code == 204
@@ -3880,6 +3866,15 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
 
     monkeypatch.setattr(world_gymnastics, "fetch_athlete_profile", fake_fetch_profile)
 
+    preview_response = client.post(
+        f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
+        json={"fig_athlete_id": "69037", "create_suggestions": False},
+        headers=admin_headers,
+    )
+    assert preview_response.status_code == 200
+    assert preview_response.json()["created_suggestions"] == []
+    assert client.get(f"/athletes/{athlete['id']}").json()["is_profile_verified"] is False
+
     response = client.post(
         f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
         json={
@@ -3908,6 +3903,7 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
         "world_gymnastics_profile_url",
         "world_gymnastics_status",
     ]
+    assert client.get(f"/athletes/{athlete['id']}").json()["is_profile_verified"] is True
 
     public_athlete = client.get(f"/athletes/{athlete['id']}").json()
     assert public_athlete["birth_year"] is None

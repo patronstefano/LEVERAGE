@@ -493,11 +493,6 @@ const translations = {
     updateSaved: "Athlete updated.",
     updateError: "Unable to update athlete.",
     verifiedAthleteBadge: "Verified athlete",
-    assignVerificationBadge: "Assign verification badge",
-    removeVerificationBadge: "Remove verification badge",
-    verificationBadgeAssigned: "Verification badge assigned.",
-    verificationBadgeRemoved: "Verification badge removed.",
-    verificationBadgeError: "Unable to update the verification badge.",
     countryChangeYear: "Country change year",
     adminSuggestions: "Data awaiting approval",
     adminSuggestionSingular: "item awaiting approval",
@@ -844,11 +839,6 @@ const translations = {
     updateSaved: "Atleta aggiornato.",
     updateError: "Impossibile aggiornare l'atleta.",
     verifiedAthleteBadge: "Atleta verificato",
-    assignVerificationBadge: "Assegna badge di verifica",
-    removeVerificationBadge: "Rimuovi badge di verifica",
-    verificationBadgeAssigned: "Badge di verifica assegnato.",
-    verificationBadgeRemoved: "Badge di verifica rimosso.",
-    verificationBadgeError: "Impossibile aggiornare il badge di verifica.",
     countryChangeYear: "Anno cambio nazionalità",
     adminSuggestions: "Dati in attesa di approvazione",
     adminSuggestionSingular: "dato in attesa di approvazione",
@@ -1195,11 +1185,6 @@ const translations = {
     updateSaved: "Atleta actualizado.",
     updateError: "No se pudo actualizar el atleta.",
     verifiedAthleteBadge: "Atleta verificado",
-    assignVerificationBadge: "Asignar insignia de verificación",
-    removeVerificationBadge: "Eliminar insignia de verificación",
-    verificationBadgeAssigned: "Insignia de verificación asignada.",
-    verificationBadgeRemoved: "Insignia de verificación eliminada.",
-    verificationBadgeError: "No se pudo actualizar la insignia de verificación.",
     countryChangeYear: "Ano de cambio de nacionalidad",
     adminSuggestions: "Datos pendientes de aprobación",
     adminSuggestionSingular: "dato pendiente de aprobación",
@@ -1546,11 +1531,6 @@ const translations = {
     updateSaved: "Athlete mis a jour.",
     updateError: "Impossible de mettre a jour l'athlete.",
     verifiedAthleteBadge: "Athlete verifie",
-    assignVerificationBadge: "Attribuer le badge de verification",
-    removeVerificationBadge: "Retirer le badge de verification",
-    verificationBadgeAssigned: "Badge de verification attribue.",
-    verificationBadgeRemoved: "Badge de verification retire.",
-    verificationBadgeError: "Impossible de mettre a jour le badge de verification.",
     countryChangeYear: "Annee changement nationalite",
     adminSuggestions: "Données en attente d’approbation",
     adminSuggestionSingular: "donnée en attente d’approbation",
@@ -9757,15 +9737,6 @@ function syncAthleteAdminForm(athlete) {
   syncAdminFormValue(form, "country_change_year", "");
 }
 
-function syncAthleteVerificationControl(athlete) {
-  const button = $("#athleteVerificationToggle");
-  if (!button || !athlete) return;
-  const isVerified = Boolean(athlete.is_profile_verified);
-  button.classList.toggle("is-active", isVerified);
-  button.setAttribute("aria-pressed", String(isVerified));
-  button.textContent = t(isVerified ? "removeVerificationBadge" : "assignVerificationBadge");
-}
-
 async function refreshAthleteAdminState(athleteId, options = {}) {
   const {
     refreshProfile = true,
@@ -9777,7 +9748,6 @@ async function refreshAthleteAdminState(athleteId, options = {}) {
   const athlete = adminView.athlete;
   if (refreshProfile) updateAthleteProfileSummary(athlete);
   if (refreshForm) syncAthleteAdminForm(athlete);
-  syncAthleteVerificationControl(athlete);
   if (refreshSuggestions) {
     const host = $("#athleteSuggestionList");
     if (host) {
@@ -9796,15 +9766,7 @@ function renderAthleteAdminForm(athlete) {
         <div>
           <h2>${t("editAthlete")}</h2>
         </div>
-        <div class="admin-form-header-actions">
-          <button
-            class="quiet-button athlete-verification-toggle ${athlete.is_profile_verified ? "is-active" : ""}"
-            id="athleteVerificationToggle"
-            type="button"
-            aria-pressed="${Boolean(athlete.is_profile_verified)}"
-          >${t(athlete.is_profile_verified ? "removeVerificationBadge" : "assignVerificationBadge")}</button>
-          <button class="quiet-button" type="submit">${t("saveChanges")}</button>
-        </div>
+        <button class="quiet-button" type="submit">${t("saveChanges")}</button>
       </div>
       <div class="admin-form-grid">
         <label>
@@ -9899,6 +9861,24 @@ function renderWorldGymnasticsCandidateList(response) {
   `;
 }
 
+function renderWorldGymnasticsMatchedAthleteProfile(response) {
+  const profile = response?.matched_profile;
+  if (!profile) return emptyMessage(t("noWorldGymnasticsCandidates"));
+  return renderWorldGymnasticsCandidateList({
+    warnings: response.warnings || [],
+    candidates: [{
+      fig_id: profile.fig_id,
+      profile_url: profile.profile_url,
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      country: profile.country,
+      discipline: (profile.disciplines || []).join(", "),
+      status: profile.status,
+      match_score: 1,
+    }],
+  });
+}
+
 function renderAthleteWorldGymnasticsAdminTools() {
   return `
     <div class="admin-tool-block">
@@ -9977,32 +9957,6 @@ function bindAthleteAdminForm(athleteId) {
       submit.disabled = false;
     }
   });
-  const verificationButton = $("#athleteVerificationToggle");
-  verificationButton?.addEventListener("click", async () => {
-    const message = $("#athleteAdminMessage");
-    const shouldVerify = verificationButton.getAttribute("aria-pressed") !== "true";
-    verificationButton.disabled = true;
-    if (message) setAdminSuggestionFeedback(message, "", null);
-    try {
-      const athlete = await sendJson(`/athletes/${athleteId}`, {
-        method: "PUT",
-        body: { is_profile_verified: shouldVerify },
-      });
-      updateAthleteProfileSummary(athlete);
-      syncAthleteVerificationControl(athlete);
-      if (message) {
-        setAdminSuggestionFeedback(
-          message,
-          t(shouldVerify ? "verificationBadgeAssigned" : "verificationBadgeRemoved"),
-          "success",
-        );
-      }
-    } catch (_error) {
-      if (message) setAdminSuggestionFeedback(message, t("verificationBadgeError"), "danger");
-    } finally {
-      verificationButton.disabled = false;
-    }
-  });
 }
 
 async function createWorldGymnasticsAthleteSuggestions(athleteId, payload, outputNode = null) {
@@ -10019,7 +9973,7 @@ async function createWorldGymnasticsAthleteSuggestions(athleteId, payload, outpu
       `;
     }
     await refreshAthleteAdminState(athleteId, {
-      refreshProfile: false,
+      refreshProfile: true,
       refreshForm: false,
       refreshSuggestions: true,
     });
@@ -10047,7 +10001,16 @@ function bindAthleteWorldGymnasticsTools(athleteId) {
     const payload = /^https?:\/\//i.test(value)
       ? { fig_profile_url: value }
       : { fig_athlete_id: value };
-    await createWorldGymnasticsAthleteSuggestions(athleteId, payload, output);
+    if (!output) return;
+    output.innerHTML = loadingState();
+    try {
+      const response = await sendJson(`/world-gymnastics/athletes/${athleteId}/suggestions`, {
+        body: { ...payload, create_suggestions: false },
+      });
+      output.innerHTML = renderWorldGymnasticsMatchedAthleteProfile(response);
+    } catch (_error) {
+      output.innerHTML = errorState(new Error(t("profileSearchError")));
+    }
   });
   output?.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-athlete-wg-use-profile]");
