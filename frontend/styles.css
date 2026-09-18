@@ -408,6 +408,37 @@ button {
   padding-top: clamp(30px, 5vw, 58px);
 }
 
+.main-view.auth-main-view {
+  width: min(520px, calc(100% - 36px));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.auth-main-view .page-heading {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.auth-main-view .page-heading > div {
+  width: 100%;
+}
+
+.auth-main-view .page-heading p:not(.eyebrow) {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.auth-main-view .auth-panel {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .main-view:focus {
   outline: none;
 }
@@ -5211,6 +5242,12 @@ button {
 
   .main-view.primary-section-main-view {
     padding-top: 24px;
+  }
+
+  .main-view.auth-main-view {
+    width: min(100% - 28px, 520px);
+    padding-top: 24px;
+    padding-bottom: 24px;
   }
 
   .home-hero {

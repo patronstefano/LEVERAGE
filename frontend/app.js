@@ -2391,6 +2391,7 @@ function setApp(html) {
   const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
+  app.classList.toggle("auth-main-view", routePath === "/login");
   app.innerHTML = html;
   app.focus({ preventScroll: true });
 }

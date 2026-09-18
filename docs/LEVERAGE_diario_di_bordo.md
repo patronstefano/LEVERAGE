@@ -2841,7 +2841,20 @@ Nuovo perimetro di sviluppo:
 
 La milestone e versionata su GitHub con il tag annotato `v0.4.0-public-frontend`.
 
-## 22. Conclusione
+## 22. Sviluppo autenticazione e aree riservate
+
+Data avvio fase: 18 settembre 2026
+
+Dopo la milestone `v0.4.0-public-frontend`, e iniziata la fase dedicata a login, area personale USER e strumenti ADMIN/SUPER ADMIN.
+
+Prima rifinitura implementata:
+
+- la schermata raggiunta dal comando `Sign in/Accedi` dispone ora di un layout dedicato e centrato, distinto dall'allineamento editoriale delle sezioni pubbliche;
+- intestazione e pannello di autenticazione sono centrati orizzontalmente e verticalmente nello spazio disponibile tra topbar e footer;
+- la larghezza massima resta limitata a `520px`, mantenendo leggibilita, gerarchia e coerenza con i pannelli LEVERAGE;
+- sui dispositivi mobili il pannello conserva margini laterali stabili e riduce la spaziatura verticale senza perdere la centratura.
+
+## 23. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e una piattaforma dati full-stack per la ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione della qualita dato, base storica consistente e un frontend pubblico completo per ricerca, consultazione, classifiche e confronto analitico.
 
