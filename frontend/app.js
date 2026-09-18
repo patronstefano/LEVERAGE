@@ -6693,6 +6693,16 @@ function renderAthleteVerificationBadge(athlete) {
   `;
 }
 
+function renderAthleteProfileMeta(athlete) {
+  const values = [athlete?.country, athlete?.discipline].filter(Boolean);
+  return `
+    <p class="meta athlete-profile-meta">
+      ${values.map((value, index) => `${index ? '<span class="athlete-profile-meta-separator" aria-hidden="true">·</span>' : ""}<span>${escapeHtml(value)}</span>`).join("")}
+      ${renderAthleteVerificationBadge(athlete)}
+    </p>
+  `;
+}
+
 function renderCountryHistory(athlete) {
   const changes = athlete.country_changes || [];
   if (!changes.length) return emptyMessage(t("noCountryHistory"));
@@ -9744,10 +9754,8 @@ function updateAthleteProfileSummary(athlete) {
   if (currentImage) currentImage.outerHTML = renderAthleteProfileImage(athlete);
   const title = panel.querySelector(".athlete-profile-title-copy h2");
   if (title) title.textContent = athleteProfileDisplayName(athlete);
-  const verification = panel.querySelector(".athlete-profile-verification");
-  if (verification) verification.innerHTML = renderAthleteVerificationBadge(athlete);
   const meta = panel.querySelector(".athlete-profile-title-copy .meta");
-  if (meta) meta.textContent = [athlete.country, athlete.discipline].filter(Boolean).join(" · ");
+  if (meta) meta.outerHTML = renderAthleteProfileMeta(athlete);
   const identity = panel.querySelector(".athlete-identity-panel");
   if (identity) identity.outerHTML = renderAthleteIdentityPanel(athlete, { embedded: true, showHeader: true });
 }
@@ -11330,8 +11338,7 @@ async function renderAthleteDetail(athleteId) {
           <div class="athlete-profile-title-copy">
             <p class="eyebrow">${t("athleteProfile")}</p>
             <h2>${escapeHtml(name)}</h2>
-            <div class="athlete-profile-verification">${renderAthleteVerificationBadge(athlete)}</div>
-            <p class="meta">${escapeHtml([athlete.country, athlete.discipline].filter(Boolean).join(" · "))}</p>
+            ${renderAthleteProfileMeta(athlete)}
           </div>
           ${detailProfileActions("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id)))}
         </div>

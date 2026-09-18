@@ -3527,18 +3527,9 @@ a:focus-visible > .entity-card-clickable {
   line-height: 1;
 }
 
-.athlete-profile-verification {
-  display: flex;
-  min-height: 18px;
-  margin-top: 6px;
-}
-
-.athlete-profile-verification:empty {
-  display: none;
-}
-
 .athlete-verification-badge {
   display: inline-grid;
+  flex: 0 0 auto;
   width: 18px;
   height: 18px;
   background: var(--brand-blue);
@@ -3561,12 +3552,19 @@ a:focus-visible > .entity-card-clickable {
   transform: rotate(-45deg);
 }
 
-.athlete-profile-verification:not(:empty) + .meta {
-  margin-top: 5px;
-}
-
 .athlete-profile-title-copy .meta {
   margin-top: 7px;
+}
+
+.athlete-profile-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 18px;
+}
+
+.athlete-profile-meta-separator {
+  color: rgba(25, 23, 71, 0.34);
 }
 
 .event-profile-summary-panel .athlete-profile-title-copy h2 {
