@@ -6526,7 +6526,7 @@ async function renderVerifyEmail() {
 
 function renderFavoriteAthletes(details) {
   if (!details.length) return emptyMessage(t("noFavoriteAthletes"));
-  return `<div class="grid-3 athlete-results-list">${details.map((item) => {
+  return `<div class="grid-3 athlete-results-list account-preference-card-list">${details.map((item) => {
     const athlete = item.athlete || {};
     const name = athleteCardDisplayName(athlete, `${t("athlete")} ${item.athlete_id}`);
     const meta = [
@@ -6553,7 +6553,7 @@ function renderFavoriteEvents(details) {
   if (!details.length) return emptyMessage(t("noFavoriteEvents"));
   const displayDetails = sortFavoriteEventDetails(details);
   const visibleDetails = splitEventListFullRows(displayDetails, false).visible;
-  return `<div class="grid-3 event-results-list">${visibleDetails.map((item) => {
+  return `<div class="grid-3 event-results-list account-preference-card-list">${visibleDetails.map((item) => {
     const event = item.event || {};
     const period = formatReadableDateRange(event);
     const meta = [
@@ -10641,12 +10641,20 @@ function bindEventSuggestionActions(eventId) {
 function renderSavedRankingViews(views) {
   const rankingViews = views.filter((view) => view.view_type === "ranking");
   if (!rankingViews.length) return emptyMessage(t("noSavedRankingViews"));
-  return `<div class="grid-3 athlete-results-list account-saved-ranking-list">${rankingViews.map((view) => {
-    const summary = rankingFilterSummary(view.filters || {});
-    const meta = `${t("filters")}: ${summary}`;
+  return `<div class="grid-3 ranking-results-list account-preference-card-list account-saved-ranking-list">${rankingViews.map((view) => {
+    const filters = view.filters || {};
+    const summary = rankingFilterSummary(filters);
+    const discipline = normalizeSavedFilterArray(filters.discipline)[0] || "MAG";
+    const apparatus = normalizeSavedFilterArray(filters.apparatus)[0] || "AA";
+    const metric = rankingMetricLabel(normalizeRankingMetricValue(normalizeSavedFilterArray(filters.sortBy || filters.sort_by)[0]));
+    const meta = [
+      `${t("filters")}: ${summary}`,
+      view.created_at ? `${t("savedOn")} ${formatReadableDate(String(view.created_at).slice(0, 10))}` : "",
+    ].filter(Boolean).join(" · ");
     const pills = [
-      { label: t("openSavedRanking"), variant: "brand" },
-      ...(view.created_at ? [{ label: `${t("savedOn")} ${formatReadableDate(String(view.created_at).slice(0, 10))}` }] : []),
+      { label: discipline, variant: "brand" },
+      { label: apparatus },
+      { label: metric },
     ];
     return entityCard(
       escapeHtml(view.name),

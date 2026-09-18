@@ -3199,6 +3199,37 @@ button {
   margin-bottom: 14px;
 }
 
+.account-preference-card-list .entity-card {
+  min-height: 126px;
+  align-content: start;
+  gap: var(--card-gap);
+  padding: var(--card-padding);
+}
+
+.account-preference-card-list .entity-card h3 {
+  font-size: var(--card-title-size);
+  font-weight: 690;
+  line-height: 1.24;
+}
+
+.account-preference-card-list .entity-card .meta {
+  margin: 0;
+  font-size: var(--card-meta-size);
+  line-height: 1.36;
+}
+
+.account-preference-card-list .entity-card .pill-row {
+  align-self: end;
+  margin-top: auto;
+  gap: 6px;
+}
+
+.account-preference-card-list .entity-card .pill {
+  min-height: 23px;
+  padding: 0 8px;
+  font-size: var(--card-pill-size);
+}
+
 .account-ranking-views {
   margin-top: 0;
 }
