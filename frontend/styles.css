@@ -5436,7 +5436,7 @@ a:focus-visible > .entity-card-clickable {
   min-height: 34px;
   padding: 7px 10px;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--control-radius);
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -5486,6 +5486,17 @@ a:focus-visible > .entity-card-clickable {
     border-color 160ms ease,
     box-shadow 160ms ease,
     background 160ms ease;
+}
+
+.admin-form-grid input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.admin-form-grid input[type="number"]::-webkit-inner-spin-button,
+.admin-form-grid input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
 }
 
 .admin-form-grid select {
@@ -5587,7 +5598,7 @@ a:focus-visible > .entity-card-clickable {
   min-height: 34px;
   height: 34px;
   margin-right: 3px;
-  border-radius: calc(var(--control-radius) - 3px);
+  border-radius: var(--control-radius);
 }
 
 .admin-tool-output {
