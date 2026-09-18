@@ -380,6 +380,7 @@ button {
 .language-button:hover,
 .language-control.is-open .language-button {
   border-color: rgba(25, 23, 71, 0.34);
+  color: var(--brand-blue);
 }
 
 .language-button:focus-visible,
@@ -1048,14 +1049,23 @@ button {
   text-overflow: ellipsis;
 }
 
-.filter-button[aria-pressed="true"],
-.quiet-button:hover {
+.filter-button[aria-pressed="true"] {
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
 }
 
-.filter-button:active {
+.filter-button:not([aria-pressed="true"]):hover,
+.filter-button:not([aria-pressed="true"]):focus-visible,
+.quiet-button:hover,
+.quiet-button:focus-visible {
+  color: var(--brand-blue);
+  background: #fff;
+  border-color: var(--brand-blue);
+}
+
+.filter-button:active,
+.quiet-button:active {
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
@@ -1065,7 +1075,7 @@ button {
 .section-favorite-filter:focus-visible {
   border-color: var(--favorite-yellow);
   background: #fff;
-  color: rgba(17, 17, 20, 0.76);
+  color: var(--favorite-yellow);
 }
 
 .section-favorite-filter[aria-pressed="true"],
@@ -1092,7 +1102,7 @@ button {
 .quiet-button.filters-reset-button:focus-visible {
   border-color: var(--danger);
   background: #fff;
-  color: rgba(17, 17, 20, 0.76);
+  color: var(--danger);
 }
 
 .quiet-button.filters-reset-button:active {
@@ -2689,6 +2699,12 @@ a:focus-visible > .entity-card-clickable {
 .saved-ranking-submit:hover,
 .saved-ranking-submit:focus-visible {
   border-color: var(--brand-blue);
+  background: #fff;
+  color: var(--brand-blue);
+}
+
+.saved-ranking-submit:active {
+  border-color: var(--brand-blue);
   background: var(--brand-blue);
   color: #fff;
 }
@@ -2779,7 +2795,7 @@ a:focus-visible > .entity-card-clickable {
 .favorite-button[data-favorite-kind]:not(.is-active):focus-visible {
   border-color: var(--favorite-yellow);
   background: rgba(255, 255, 255, 0.9);
-  color: rgba(25, 23, 71, 0.68);
+  color: var(--favorite-yellow);
 }
 
 .favorite-button:active {
@@ -2830,7 +2846,7 @@ a:focus-visible > .entity-card-clickable {
 .admin-tools-toggle:not(.delete-button):focus-visible {
   border-color: var(--brand-blue);
   background: rgba(255, 255, 255, 0.9);
-  color: rgba(25, 23, 71, 0.68);
+  color: var(--brand-blue);
 }
 
 .admin-tools-toggle:not(.delete-button):active,
@@ -2869,6 +2885,12 @@ a:focus-visible > .entity-card-clickable {
 
 .delete-button:hover,
 .delete-button:focus-visible {
+  border-color: var(--danger);
+  background: #fff;
+  color: var(--danger);
+}
+
+.delete-button:active {
   border-color: var(--danger);
   background: var(--danger);
   color: #fff;
@@ -3127,7 +3149,7 @@ a:focus-visible > .entity-card-clickable {
 .quiet-button.ranking-outline-action:focus-visible {
   border-color: var(--brand-blue);
   background: #fff;
-  color: rgba(17, 17, 20, 0.76);
+  color: var(--brand-blue);
 }
 
 .quiet-button.ranking-outline-action:active,
@@ -3185,7 +3207,7 @@ a:focus-visible > .entity-card-clickable {
 .quiet-button.detail-back-button:focus-visible {
   border-color: var(--brand-blue);
   background: #fff;
-  color: rgba(17, 17, 20, 0.76);
+  color: var(--brand-blue);
 }
 
 .quiet-button.detail-back-button:active {
@@ -3409,7 +3431,7 @@ a:focus-visible > .entity-card-clickable {
 .account-saved-ranking-list .delete-button:focus-visible {
   border-color: var(--danger);
   background: #fff;
-  color: rgba(25, 23, 71, 0.68);
+  color: var(--danger);
 }
 
 .account-saved-ranking-list .delete-button:active {
@@ -4344,7 +4366,7 @@ a:focus-visible > .entity-card-clickable {
 .quiet-button.athlete-analytics-apparatus-button:not(.is-active):focus-visible {
   border-color: var(--brand-blue);
   background: #fff;
-  color: rgba(17, 17, 20, 0.76);
+  color: var(--brand-blue);
 }
 
 .quiet-button.athlete-analytics-apparatus-button:not(.is-active):active {
