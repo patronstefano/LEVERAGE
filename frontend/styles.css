@@ -3646,6 +3646,19 @@ a:focus-visible > .entity-card-clickable {
   font-size: 12px;
 }
 
+.athlete-identity-world-gymnastics .timeline-item {
+  grid-template-columns: minmax(92px, max-content) minmax(0, 1fr);
+}
+
+.athlete-identity-world-gymnastics .timeline-item strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.athlete-identity-world-gymnastics .identity-profile-link {
+  font-size: inherit;
+}
+
 .athlete-analytics-panel {
   display: grid;
   gap: 16px;

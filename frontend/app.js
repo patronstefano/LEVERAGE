@@ -476,6 +476,7 @@ const translations = {
     image: "Image",
     imageUrl: "Image URL",
     worldGymnasticsProfile: "World Gymnastics profile",
+    worldGymnasticsData: "World Gymnastics",
     worldGymnasticsEvent: "World Gymnastics event",
     worldGymnasticsId: "World Gymnastics ID",
     worldGymnasticsStatus: "World Gymnastics status",
@@ -820,6 +821,7 @@ const translations = {
     image: "Immagine",
     imageUrl: "URL immagine",
     worldGymnasticsProfile: "Profilo World Gymnastics",
+    worldGymnasticsData: "World Gymnastics",
     worldGymnasticsEvent: "Evento World Gymnastics",
     worldGymnasticsId: "ID World Gymnastics",
     worldGymnasticsStatus: "Status World Gymnastics",
@@ -1164,6 +1166,7 @@ const translations = {
     image: "Imagen",
     imageUrl: "URL imagen",
     worldGymnasticsProfile: "Perfil World Gymnastics",
+    worldGymnasticsData: "World Gymnastics",
     worldGymnasticsEvent: "Evento World Gymnastics",
     worldGymnasticsId: "ID World Gymnastics",
     worldGymnasticsStatus: "Estado World Gymnastics",
@@ -1508,6 +1511,7 @@ const translations = {
     image: "Image",
     imageUrl: "URL image",
     worldGymnasticsProfile: "Profil World Gymnastics",
+    worldGymnasticsData: "World Gymnastics",
     worldGymnasticsEvent: "Evenement World Gymnastics",
     worldGymnasticsId: "ID World Gymnastics",
     worldGymnasticsStatus: "Statut World Gymnastics",
@@ -6679,16 +6683,31 @@ function renderAthleteIdentityPanel(athlete, options = {}) {
     renderDetailFieldIfPresent(t("country"), athlete.country),
     renderDetailFieldIfPresent(t("discipline"), athlete.discipline),
     renderDetailFieldIfPresent(t("birthYear"), athlete.birth_year),
-    renderDetailFieldIfPresent(t("worldGymnasticsStatus"), athlete.world_gymnastics_status),
-    renderDetailFieldIfPresent(t("worldGymnasticsId"), athlete.world_gymnastics_athlete_id),
-    athlete.world_gymnastics_profile_url
-      ? renderDetailFieldIfPresent(t("worldGymnasticsProfile"), athlete.world_gymnastics_profile_url, { html: profileLink })
-      : "",
-    renderDetailFieldIfPresent(t("worldGymnasticsVerified"), verifiedAt),
-    isAdminUser()
-      ? renderDetailFieldIfPresent(t("verifiedByAdminId"), athlete.world_gymnastics_verified_by_admin_id)
-      : "",
   ].filter(Boolean).join("");
+  const worldGymnasticsItems = [
+    [t("worldGymnasticsStatus"), athlete.world_gymnastics_status],
+    [t("worldGymnasticsId"), athlete.world_gymnastics_athlete_id],
+    [t("worldGymnasticsProfile"), athlete.world_gymnastics_profile_url, profileLink],
+    [t("worldGymnasticsVerified"), verifiedAt],
+    isAdminUser()
+      ? [t("verifiedByAdminId"), athlete.world_gymnastics_verified_by_admin_id]
+      : null,
+  ].filter((item) => item && hasDisplayValue(item[1]));
+  const worldGymnasticsData = worldGymnasticsItems.length
+    ? `
+      <div class="athlete-identity-history athlete-identity-world-gymnastics">
+        <span>${escapeHtml(t("worldGymnasticsData"))}</span>
+        <div class="timeline-list">
+          ${worldGymnasticsItems.map(([label, value, html]) => `
+            <div class="timeline-item">
+              <span>${escapeHtml(label)}</span>
+              <strong>${html || escapeHtml(displayValue(value))}</strong>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `
+    : "";
   const countryChanges = athlete.country_changes || [];
   const countryHistory = countryChanges.length
     ? `
@@ -6714,6 +6733,7 @@ function renderAthleteIdentityPanel(athlete, options = {}) {
       <div class="detail-grid athlete-identity-grid">
         ${fields}
       </div>
+      ${worldGymnasticsData}
       ${countryHistory}
     </${tag}>
   `;
