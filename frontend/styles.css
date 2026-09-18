@@ -3521,38 +3521,21 @@ button {
 }
 
 .analytics-favorite-athlete-card {
-  display: grid;
-  gap: var(--card-gap);
   min-width: 0;
-  padding: var(--card-padding);
-  color: inherit;
-  font: inherit;
-  text-align: left;
   cursor: pointer;
-  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.analytics-favorite-athlete-card:hover,
 .analytics-favorite-athlete-card:focus-visible {
-  border-color: color-mix(in srgb, var(--favorite-yellow) 70%, var(--line));
-  box-shadow: 0 16px 38px rgba(16, 16, 20, 0.08);
-  transform: translateY(-1px);
+  outline: 3px solid rgba(25, 23, 71, 0.16);
+  outline-offset: 2px;
 }
 
 .analytics-favorite-athlete-card .entity-row {
   min-width: 0;
 }
 
-.analytics-favorite-athlete-card h3 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.analytics-favorite-card-star {
-  color: var(--favorite-yellow);
-  font-size: 17px;
-  line-height: 1;
+.analytics-favorite-static {
+  pointer-events: none;
 }
 
 .analytics-favorite-picker-status {

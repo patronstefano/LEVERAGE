@@ -8927,22 +8927,28 @@ function renderAnalyticsFavoriteAthletes() {
     return `<div class="analytics-favorite-picker-status">${escapeHtml(t("analyticsCompareFavoriteEmpty"))}</div>`;
   }
   return `
-    <div class="grid-3 analytics-favorite-athlete-grid">
+    <div class="grid-3 athlete-results-list account-preference-card-list analytics-favorite-athlete-grid">
       ${details.map((detail) => {
         const athlete = detail.athlete || {};
         const name = athleteCardDisplayName(athlete, `${t("athlete")} ${detail.athlete_id}`);
+        const meta = [
+          athlete.world_gymnastics_status,
+          `${Number(detail.result_count || 0).toLocaleString()} ${t("results")}`,
+          `${t("savedOn")} ${formatReadableDate(String(detail.created_at || "").slice(0, 10))}`,
+        ].filter(Boolean).join(" · ");
         return `
-          <button class="entity-card analytics-favorite-athlete-card" type="button" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
+          <article class="entity-card analytics-favorite-athlete-card" role="button" tabindex="0" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
             <div class="entity-row">
               <h3>${escapeHtml(name)}</h3>
-              <span class="analytics-favorite-card-star" aria-hidden="true">&#9733;</span>
+              <span class="favorite-button is-active analytics-favorite-static" aria-hidden="true"><span>&#9733;</span></span>
             </div>
-            <p class="meta">${escapeHtml([athlete.country, `${Number(detail.result_count || 0).toLocaleString()} ${t("results")}`].filter(Boolean).join(" · "))}</p>
+            <p class="meta">${escapeHtml(meta)}</p>
             <div class="pill-row">
               ${renderPill({ label: escapeHtml(athlete.discipline || t("discipline")), variant: "brand" })}
+              ${renderPill({ label: escapeHtml(athlete.country || t("country")) })}
               ${renderPill({ label: escapeHtml(compactIdLabel(detail.athlete_id)) })}
             </div>
-          </button>
+          </article>
         `;
       }).join("")}
     </div>
@@ -9421,8 +9427,18 @@ function refreshAnalyticsFavoritePicker() {
   picker.innerHTML = isOpen ? renderAnalyticsFavoriteAthletes() : "";
   toggle.setAttribute("aria-pressed", String(isOpen));
   toggle.setAttribute("aria-expanded", String(isOpen));
-  picker.querySelectorAll("[data-analytics-favorite-athlete-id]").forEach((button) => {
-    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.analyticsFavoriteAthleteId)));
+  bindAnalyticsFavoriteAthleteCards(picker);
+}
+
+function bindAnalyticsFavoriteAthleteCards(root = document) {
+  root.querySelectorAll("[data-analytics-favorite-athlete-id]").forEach((card) => {
+    const selectAthlete = () => selectAnalyticsComparisonAthlete(Number(card.dataset.analyticsFavoriteAthleteId));
+    card.addEventListener("click", selectAthlete);
+    card.addEventListener("keydown", (event) => {
+      if (!["Enter", " "].includes(event.key)) return;
+      event.preventDefault();
+      selectAthlete();
+    });
   });
 }
 
@@ -9531,9 +9547,7 @@ function bindAnalyticsComparisonPickers() {
     refreshAnalyticsFavoritePicker();
     if (comparison.favoritesOpen && !comparison.favoritesLoading) loadAnalyticsFavoriteAthletes();
   });
-  document.querySelectorAll("[data-analytics-favorite-athlete-id]").forEach((button) => {
-    button.addEventListener("click", () => selectAnalyticsComparisonAthlete(Number(button.dataset.analyticsFavoriteAthleteId)));
-  });
+  bindAnalyticsFavoriteAthleteCards();
 }
 
 function renderAnalyticsComparison() {
