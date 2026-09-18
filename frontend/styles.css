@@ -3161,16 +3161,20 @@ button {
 }
 
 .account-view-toggle {
-  grid-template-columns: repeat(3, minmax(96px, 1fr));
-  width: min(420px, 100%);
+  grid-template-columns: repeat(3, minmax(88px, max-content));
+  width: max-content;
+  max-width: 100%;
 }
 
 .account-view-toggle .segmented-option {
-  min-width: 0;
+  min-width: 88px;
+  height: 34px;
   padding: 0 14px;
   color: rgba(17, 17, 20, 0.76);
-  font-size: 13px;
+  font-size: inherit;
   font-weight: 400;
+  letter-spacing: 0;
+  text-align: center;
   white-space: nowrap;
 }
 
