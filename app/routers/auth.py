@@ -56,7 +56,7 @@ def send_verification_email(user: models.User, db: Session) -> None:
     user.email_verification_sent_at = datetime.utcnow()
     db.add(user)
     db.commit()
-    link = f"{settings.frontend_base_url.rstrip('/')}/verify-email?token={token}"
+    link = f"{settings.frontend_base_url.rstrip('/')}/#/verify-email?token={token}"
     if not send_email(
         "Verify your LEVERAGE email",
         f"Verify your LEVERAGE account using this link:\n\n{link}\n\n"

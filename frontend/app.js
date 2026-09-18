@@ -75,6 +75,10 @@ const state = {
   apiBase: initialApiBase(),
   authToken: localStorage.getItem(AUTH_TOKEN_KEY) || "",
   currentUser: null,
+  emailVerification: {
+    token: "",
+    status: "idle",
+  },
   favoriteAthleteIds: new Set(),
   favoriteEventIds: new Set(),
   favoritesLoaded: false,
@@ -260,6 +264,23 @@ const translations = {
     loginAction: "Sign in",
     loginHelp: "Access your private area to save athletes and events.",
     loginError: "Unable to sign in. Check your credentials and email verification.",
+    registerPrompt: "New to LEVERAGE?",
+    registerLink: "Create an account",
+    registerHeading: "Create your account",
+    registerIntro: "Join LEVERAGE to save athletes, events and your personal Ranking configurations.",
+    registerHelp: "Use a valid email address and choose a password with at least 12 characters.",
+    confirmPassword: "Confirm password",
+    registerAction: "Create account",
+    alreadyRegistered: "Already registered?",
+    backToLogin: "Sign in",
+    passwordMismatch: "The passwords do not match.",
+    registrationSuccess: "Check your inbox. If the address can be registered, you will receive a verification link shortly.",
+    registrationError: "Unable to complete registration. Please check the data and try again.",
+    verifyEmailHeading: "Verify your email",
+    verifyEmailIntro: "Complete verification to activate your LEVERAGE account.",
+    verificationChecking: "Verifying your email address...",
+    verificationSuccess: "Email verified. You can now sign in.",
+    verificationError: "This verification link is invalid or has expired.",
     mfaRequired: "Enter your MFA code to complete sign in.",
     mfaSetupRequired: "Admin MFA setup is required before this account can sign in here.",
     demoLoginNote: "Temporary frontend development shortcuts.",
@@ -582,6 +603,23 @@ const translations = {
     loginAction: "Accedi",
     loginHelp: "Accedi alla tua area privata per salvare atleti ed eventi.",
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
+    registerPrompt: "Non sei ancora registrato?",
+    registerLink: "Crea un account",
+    registerHeading: "Crea il tuo account",
+    registerIntro: "Iscriviti a LEVERAGE per salvare atleti, eventi e le tue configurazioni personali di Ranking.",
+    registerHelp: "Usa un indirizzo email valido e scegli una password di almeno 12 caratteri.",
+    confirmPassword: "Conferma password",
+    registerAction: "Crea account",
+    alreadyRegistered: "Sei già registrato?",
+    backToLogin: "Accedi",
+    passwordMismatch: "Le password non coincidono.",
+    registrationSuccess: "Controlla la posta. Se l'indirizzo può essere registrato, riceverai a breve un link di verifica.",
+    registrationError: "Impossibile completare la registrazione. Controlla i dati e riprova.",
+    verifyEmailHeading: "Verifica la tua email",
+    verifyEmailIntro: "Completa la verifica per attivare il tuo account LEVERAGE.",
+    verificationChecking: "Verifica dell'indirizzo email in corso...",
+    verificationSuccess: "Email verificata. Ora puoi accedere.",
+    verificationError: "Il link di verifica non è valido oppure è scaduto.",
     mfaRequired: "Inserisci il codice MFA per completare l'accesso.",
     mfaSetupRequired: "Prima di accedere qui, questo account admin deve completare la configurazione MFA.",
     demoLoginNote: "Scorciatoie temporanee per lo sviluppo frontend.",
@@ -904,6 +942,23 @@ const translations = {
     loginAction: "Entrar",
     loginHelp: "Accede a tu area privada para guardar atletas y eventos.",
     loginError: "No se pudo iniciar sesion. Revisa credenciales y verificacion email.",
+    registerPrompt: "Todavia no tienes una cuenta?",
+    registerLink: "Crear una cuenta",
+    registerHeading: "Crea tu cuenta",
+    registerIntro: "Unete a LEVERAGE para guardar atletas, eventos y tus configuraciones personales de Ranking.",
+    registerHelp: "Utiliza un email valido y elige una contrasena de al menos 12 caracteres.",
+    confirmPassword: "Confirmar contrasena",
+    registerAction: "Crear cuenta",
+    alreadyRegistered: "Ya tienes una cuenta?",
+    backToLogin: "Entrar",
+    passwordMismatch: "Las contrasenas no coinciden.",
+    registrationSuccess: "Revisa tu correo. Si la direccion puede registrarse, recibiras pronto un enlace de verificacion.",
+    registrationError: "No se pudo completar el registro. Revisa los datos e intentalo de nuevo.",
+    verifyEmailHeading: "Verifica tu email",
+    verifyEmailIntro: "Completa la verificacion para activar tu cuenta LEVERAGE.",
+    verificationChecking: "Verificando tu direccion de email...",
+    verificationSuccess: "Email verificado. Ya puedes iniciar sesion.",
+    verificationError: "El enlace de verificacion no es valido o ha caducado.",
     mfaRequired: "Introduce el codigo MFA para completar el acceso.",
     mfaSetupRequired: "Esta cuenta admin debe configurar MFA antes de acceder aqui.",
     demoLoginNote: "Accesos temporales para desarrollo frontend.",
@@ -1226,6 +1281,23 @@ const translations = {
     loginAction: "Connexion",
     loginHelp: "Accedez a votre espace prive pour enregistrer athletes et evenements.",
     loginError: "Connexion impossible. Verifiez identifiants et verification email.",
+    registerPrompt: "Vous n'avez pas encore de compte ?",
+    registerLink: "Creer un compte",
+    registerHeading: "Creez votre compte",
+    registerIntro: "Rejoignez LEVERAGE pour enregistrer athletes, evenements et configurations personnelles de Ranking.",
+    registerHelp: "Utilisez une adresse email valide et choisissez un mot de passe d'au moins 12 caracteres.",
+    confirmPassword: "Confirmer le mot de passe",
+    registerAction: "Creer le compte",
+    alreadyRegistered: "Vous avez deja un compte ?",
+    backToLogin: "Connexion",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
+    registrationSuccess: "Consultez votre messagerie. Si l'adresse peut etre enregistree, vous recevrez bientot un lien de verification.",
+    registrationError: "Impossible de terminer l'inscription. Verifiez les donnees et reessayez.",
+    verifyEmailHeading: "Verifiez votre email",
+    verifyEmailIntro: "Terminez la verification pour activer votre compte LEVERAGE.",
+    verificationChecking: "Verification de votre adresse email...",
+    verificationSuccess: "Email verifie. Vous pouvez maintenant vous connecter.",
+    verificationError: "Ce lien de verification est invalide ou a expire.",
     mfaRequired: "Saisissez le code MFA pour terminer la connexion.",
     mfaSetupRequired: "Ce compte admin doit configurer MFA avant de se connecter ici.",
     demoLoginNote: "Raccourcis temporaires pour le developpement frontend.",
@@ -2391,7 +2463,7 @@ function setApp(html) {
   const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
-  app.classList.toggle("auth-main-view", routePath === "/login");
+  app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email"].includes(routePath));
   app.innerHTML = html;
   app.focus({ preventScroll: true });
 }
@@ -6250,6 +6322,10 @@ function renderLogin() {
         <button class="primary-button" type="submit">${t("loginAction")}</button>
         <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
       </form>
+      <div class="auth-switch-row">
+        <span>${t("registerPrompt")}</span>
+        <a href="#/register">${t("registerLink")}</a>
+      </div>
       <div class="demo-login-block">
         <p>${t("demoLoginNote")}</p>
         <div class="demo-login-actions">
@@ -6321,6 +6397,111 @@ function renderLogin() {
       }
     });
   });
+}
+
+function renderRegister() {
+  if (state.currentUser) {
+    renderAccount();
+    return;
+  }
+  setApp(`
+    ${pageHeading("registerHeading", "registerIntro")}
+    <section class="panel auth-panel">
+      <form class="auth-form" id="registerForm">
+        <p>${t("registerHelp")}</p>
+        <label>
+          <span>${t("email")}</span>
+          <input id="registerEmail" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          <span>${t("password")}</span>
+          <input id="registerPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+        </label>
+        <label>
+          <span>${t("confirmPassword")}</span>
+          <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+        </label>
+        <button class="primary-button" type="submit">${t("registerAction")}</button>
+        <div class="auth-message" id="registerMessage" role="status" aria-live="polite"></div>
+      </form>
+      <div class="auth-switch-row">
+        <span>${t("alreadyRegistered")}</span>
+        <a href="#/login">${t("backToLogin")}</a>
+      </div>
+    </section>
+  `);
+
+  $("#registerForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const message = $("#registerMessage");
+    const submit = form.querySelector("button[type='submit']");
+    const password = $("#registerPassword").value;
+    const passwordConfirm = $("#registerPasswordConfirm").value;
+    message.classList.remove("is-success");
+    message.textContent = "";
+    if (password !== passwordConfirm) {
+      message.textContent = t("passwordMismatch");
+      $("#registerPasswordConfirm").focus();
+      return;
+    }
+    submit.disabled = true;
+    try {
+      await sendJson("/auth/register", {
+        auth: false,
+        body: {
+          email: $("#registerEmail").value.trim(),
+          password,
+          preferred_language: state.language,
+        },
+      });
+      form.querySelectorAll("input, button").forEach((control) => {
+        control.disabled = true;
+      });
+      message.classList.add("is-success");
+      message.textContent = t("registrationSuccess");
+    } catch (_error) {
+      message.textContent = t("registrationError");
+      submit.disabled = false;
+    }
+  });
+}
+
+async function renderVerifyEmail() {
+  const token = currentParams().get("token") || "";
+  const cachedStatus = state.emailVerification.token === token
+    ? state.emailVerification.status
+    : "idle";
+  const initialMessageKey = cachedStatus === "success"
+    ? "verificationSuccess"
+    : (cachedStatus === "error" ? "verificationError" : "verificationChecking");
+  setApp(`
+    ${pageHeading("verifyEmailHeading", "verifyEmailIntro")}
+    <section class="panel auth-panel auth-verification-panel">
+      <div class="auth-message ${cachedStatus === "success" ? "is-success" : ""}" id="verificationMessage" role="status" aria-live="polite">${t(initialMessageKey)}</div>
+      <a class="primary-button auth-primary-link" id="verificationLoginLink" href="#/login" ${["success", "error"].includes(cachedStatus) ? "" : "hidden"}>${t("backToLogin")}</a>
+    </section>
+  `);
+  const message = $("#verificationMessage");
+  const loginLink = $("#verificationLoginLink");
+  if (["success", "error"].includes(cachedStatus)) return;
+  if (!token) {
+    state.emailVerification = { token: "", status: "error" };
+    message.textContent = t("verificationError");
+    loginLink.hidden = false;
+    return;
+  }
+  state.emailVerification = { token, status: "checking" };
+  try {
+    await sendJson("/auth/verify-email", { auth: false, body: { token } });
+    state.emailVerification = { token, status: "success" };
+    message.classList.add("is-success");
+    message.textContent = t("verificationSuccess");
+  } catch (_error) {
+    state.emailVerification = { token, status: "error" };
+    message.textContent = t("verificationError");
+  }
+  loginLink.hidden = false;
 }
 
 function renderFavoriteAthletes(details) {
@@ -10711,6 +10892,10 @@ function render() {
     return renderGlobalSearch();
   } else if (state.route.startsWith("/analytics")) {
     return renderAnalyticsComparison();
+  } else if (state.route.startsWith("/verify-email")) {
+    return renderVerifyEmail();
+  } else if (state.route.startsWith("/register")) {
+    return renderRegister();
   } else if (state.route.startsWith("/login")) {
     return renderLogin();
   } else {

@@ -3069,6 +3069,35 @@ button {
   font-size: 13px;
 }
 
+.auth-message.is-success {
+  color: var(--success);
+}
+
+.auth-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.auth-switch-row a {
+  color: var(--brand-blue);
+  font-weight: 680;
+}
+
+.auth-switch-row a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-verification-panel {
+  justify-items: center;
+  text-align: center;
+}
+
 .demo-login-block {
   display: grid;
   gap: 10px;

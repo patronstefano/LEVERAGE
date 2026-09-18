@@ -2854,6 +2854,19 @@ Prima rifinitura implementata:
 - la larghezza massima resta limitata a `520px`, mantenendo leggibilita, gerarchia e coerenza con i pannelli LEVERAGE;
 - sui dispositivi mobili il pannello conserva margini laterali stabili e riduce la spaziatura verticale senza perdere la centratura.
 
+Flusso di registrazione USER:
+
+- nella schermata `Sign in/Accedi` e stato aggiunto un collegamento esplicito per gli utenti non ancora registrati;
+- la nuova schermata `Create your account/Crea il tuo account` mantiene il layout centrale del login e raccoglie email, password e conferma password;
+- il frontend applica gli stessi vincoli del backend: email valida, password compresa tra 12 e 128 caratteri e conferma coincidente;
+- la lingua selezionata dal visitatore viene salvata come `preferred_language` del nuovo account;
+- la richiesta usa il vero endpoint `POST /auth/register`, che crea sempre un account con ruolo `user`, inattivo all'accesso fino alla verifica email e senza esporre se un indirizzo e gia registrato;
+- dopo l'invio, l'utente riceve un messaggio neutro che lo invita a controllare la posta, coerente con la protezione anti-enumerazione del backend;
+- e stata aggiunta la route frontend `#/verify-email?token=...`, che valida automaticamente il token tramite `POST /auth/verify-email` e propone il ritorno al login;
+- l'esito della verifica viene mantenuto nello stato della sessione frontend, evitando che un cambio lingua o un nuovo rendering reinvii un token gia consumato e trasformi falsamente un successo in errore;
+- il link generato nelle email di verifica e stato corretto per usare il router hash effettivo del frontend LEVERAGE;
+- registrazione, verifica e relativi messaggi sono disponibili in inglese, italiano, spagnolo e francese.
+
 ## 23. Conclusione
 
 LEVERAGE oggi non e piu solo un backend CRUD: e una piattaforma dati full-stack per la ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione della qualita dato, base storica consistente e un frontend pubblico completo per ricerca, consultazione, classifiche e confronto analitico.
