@@ -4874,6 +4874,20 @@ function clearEventTimeFilters() {
   setTimeFilterOpen("events", false);
 }
 
+function clearSectionSearch(section) {
+  const config = {
+    athletes: { inputId: "athleteSearchInput", syncRoute: syncAthleteSearchRoute },
+    events: { inputId: "eventSearchInput", syncRoute: syncEventSearchRoute },
+  }[section];
+  if (!config) return;
+  const input = document.getElementById(config.inputId);
+  if (input) input.value = "";
+  const clearButton = document.querySelector(`[data-search-clear-for="${config.inputId}"]`);
+  if (clearButton) clearButton.hidden = true;
+  config.syncRoute("");
+  closeSearchSuggestions();
+}
+
 function clearEventFilters() {
   Object.assign(scopedFilters("events"), {
     discipline: [],
@@ -4888,6 +4902,7 @@ function clearEventFilters() {
   setTimeFilterOpen("events", false);
   state.eventsCalendarMonthOffset = 0;
   state.eventsFavoriteCalendarAutoFocus = false;
+  clearSectionSearch("events");
   syncSectionFilterButtons("events");
   syncEventLevelFilterMenu();
   syncTimeFilterUi("events");
@@ -4900,6 +4915,7 @@ function clearAthleteFilters() {
     category: [],
     favoritesOnly: "",
   });
+  clearSectionSearch("athletes");
   syncSectionFilterButtons("athletes");
   refreshSectionFiltersAtRecordsTop("athletes");
 }
