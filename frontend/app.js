@@ -9935,6 +9935,14 @@ function bindAthleteWorldGymnasticsTools(athleteId) {
   });
 }
 
+function setAdminSuggestionFeedback(message, text, tone) {
+  if (!message) return;
+  message.classList.remove("is-success", "is-danger");
+  if (tone === "success") message.classList.add("is-success");
+  if (tone === "danger") message.classList.add("is-danger");
+  message.textContent = text;
+}
+
 function bindAthleteSuggestionActions(athleteId) {
   document.querySelectorAll("[data-athlete-suggestion-accept]").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -9947,9 +9955,9 @@ function bindAthleteSuggestionActions(athleteId) {
           body: value ? { value } : {},
         });
         await refreshAthleteAdminState(athleteId, { refreshAnalytics: true });
-        if (message) message.textContent = t("suggestionAccepted");
+        setAdminSuggestionFeedback(message, t("suggestionAccepted"), "success");
       } catch (_error) {
-        if (message) message.textContent = t("suggestionError");
+        setAdminSuggestionFeedback(message, t("suggestionError"), "danger");
       } finally {
         button.disabled = false;
       }
@@ -9967,9 +9975,9 @@ function bindAthleteSuggestionActions(athleteId) {
           refreshForm: false,
           refreshSuggestions: true,
         });
-        if (message) message.textContent = t("suggestionRejected");
+        setAdminSuggestionFeedback(message, t("suggestionRejected"), "danger");
       } catch (_error) {
-        if (message) message.textContent = t("suggestionError");
+        setAdminSuggestionFeedback(message, t("suggestionError"), "danger");
       } finally {
         button.disabled = false;
       }
@@ -10852,9 +10860,9 @@ function bindEventSuggestionActions(eventId) {
           body: value ? { value } : {},
         });
         await refreshEventAdminState(eventId);
-        if (message) message.textContent = t("suggestionAccepted");
+        setAdminSuggestionFeedback(message, t("suggestionAccepted"), "success");
       } catch (_error) {
-        if (message) message.textContent = t("suggestionError");
+        setAdminSuggestionFeedback(message, t("suggestionError"), "danger");
       } finally {
         button.disabled = false;
       }
@@ -10872,9 +10880,9 @@ function bindEventSuggestionActions(eventId) {
           refreshForm: false,
           refreshSuggestions: true,
         });
-        if (message) message.textContent = t("suggestionRejected");
+        setAdminSuggestionFeedback(message, t("suggestionRejected"), "danger");
       } catch (_error) {
-        if (message) message.textContent = t("suggestionError");
+        setAdminSuggestionFeedback(message, t("suggestionError"), "danger");
       } finally {
         button.disabled = false;
       }

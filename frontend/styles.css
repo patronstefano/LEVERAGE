@@ -5651,6 +5651,18 @@ a:focus-visible > .entity-card-clickable {
   line-height: 1.35;
 }
 
+.athlete-admin-panel .auth-message.is-success:not(:empty) {
+  border-color: rgba(22, 101, 52, 0.42);
+  background: transparent;
+  color: var(--success);
+}
+
+.athlete-admin-panel .auth-message.is-danger:not(:empty) {
+  border-color: rgba(180, 35, 24, 0.42);
+  background: transparent;
+  color: var(--danger);
+}
+
 .athlete-admin-panel .admin-tool-block > .empty-state {
   width: fit-content;
   max-width: 100%;

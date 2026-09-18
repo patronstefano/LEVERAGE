@@ -2913,6 +2913,7 @@ Flusso di registrazione USER:
 - riposizionato il comando `Ricerca manuale` all'esterno del campo FIG ID/URL, come pulsante autonomo affiancato. Campo e comando mantengono altezza, arrotondamento, spaziatura e comportamento a contorno coerenti con LEVERAGE; la modifica e condivisa dagli Assistenti World Gymnastics di Atleti ed Eventi.
 - uniformata a `36px` l'altezza di tutti i campi editabili e selettori dei pannelli Admin, rendendola identica a quella dei relativi pulsanti. L'altezza e ora governata da un unico token locale (`--admin-control-height`) condiviso da input testuali, anni, date e menu personalizzati nelle Schede Atleta ed Evento.
 - eliminati i ricaricamenti completi delle Schede Atleta ed Evento durante l'uso degli strumenti Admin. Salvataggio dei campi, importazione dei suggerimenti World Gymnastics, accettazione e rifiuto aggiornano ora esclusivamente profilo pubblico, form e lista dei suggerimenti coinvolti. Pannello Admin, posizione di scroll, filtri, grafici e classifiche restano stabili; le analytics dell'atleta vengono ricalcolate in-place soltanto quando un dato approvato o modificato puo influenzarle.
+- differenziato semanticamente il feedback delle revisioni Admin: `Suggerimento accettato` usa testo e bordo verdi, mentre `Suggerimento rifiutato` ed eventuali errori usano testo e bordo rossi. In entrambi i casi lo sfondo resta neutro, coerentemente con i box di avviso LEVERAGE; la regola e condivisa da Scheda Atleta e Scheda Evento.
 
 ## 23. Conclusione
 
