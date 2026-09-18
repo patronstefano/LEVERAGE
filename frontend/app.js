@@ -10554,8 +10554,8 @@ async function renderAccount() {
       </div>
       <button class="quiet-button" type="button" id="signOutButton">${t("signOut")}</button>
     </section>
-    <section class="content-grid account-grid">
-      <div class="panel">
+    <section class="account-grid">
+      <section class="account-favorites-section">
         <div class="section-header">
           <div>
             <h2>${t("favoriteAthletes")}</h2>
@@ -10563,8 +10563,8 @@ async function renderAccount() {
           <a class="quiet-button" href="#/athletes">${t("navAthletes")}</a>
         </div>
         <div id="accountAthletes">${loadingState()}</div>
-      </div>
-      <div class="panel">
+      </section>
+      <section class="account-favorites-section">
         <div class="section-header">
           <div>
             <h2>${t("favoriteEvents")}</h2>
@@ -10572,7 +10572,7 @@ async function renderAccount() {
           <a class="quiet-button" href="#/events">${t("navEvents")}</a>
         </div>
         <div id="accountEvents">${loadingState()}</div>
-      </div>
+      </section>
     </section>
     <section class="panel account-ranking-views" id="accountSavedRankings">
       <div class="section-header">

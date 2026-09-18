@@ -3148,7 +3148,18 @@ button {
 }
 
 .account-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
   align-items: start;
+}
+
+.account-favorites-section {
+  min-width: 0;
+}
+
+.account-favorites-section .section-header {
+  margin-bottom: 14px;
 }
 
 .account-ranking-views {

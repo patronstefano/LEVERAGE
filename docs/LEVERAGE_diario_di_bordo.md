@@ -2867,6 +2867,7 @@ Flusso di registrazione USER:
 - il link generato nelle email di verifica e stato corretto per usare il router hash effettivo del frontend LEVERAGE;
 - registrazione, verifica e relativi messaggi sono disponibili in inglese, italiano, spagnolo e francese.
 - uniformata la visualizzazione degli atleti preferiti nella sezione `Athletes`: il filtro `Favorites/Preferiti` riutilizza ora la stessa griglia a tre colonne delle card atleta ordinarie e degli eventi preferiti. Quando l'utente ha uno o due preferiti, le card mantengono quindi dimensioni e proporzioni standard invece di dilatarsi sull'intera larghezza disponibile; restano attivi gli adattamenti responsive a due e una colonna.
+- estesa la stessa coerenza all'area riservata `My LEVERAGE`: i blocchi `Favorite Athletes` e `Favorite Events` non sono piu compressi in due pannelli affiancati, che alteravano la larghezza delle card. Sono ora due sezioni a tutta larghezza disposte verticalmente e riutilizzano senza override la griglia pubblica a tre colonne desktop, due tablet e una mobile. Le card preferite mantengono cosi le stesse dimensioni delle corrispondenti card nelle sezioni `Athletes` ed `Events`, anche quando i preferiti sono pochi.
 
 ## 23. Conclusione
 
