@@ -366,3 +366,23 @@ def test_global_search_detail_links_preserve_home_context_and_return_route():
     assert 'label: t("backToGlobalSearch")' in athlete_back
     assert 'label: t("backToGlobalSearch")' in event_back
     assert "routeHasGlobalSearchContext(state.route)" in source
+
+
+def test_global_search_return_reuses_loaded_results_without_refetching():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    state_block = source.split("const state = {", 1)[1].split("const TODAY", 1)[0]
+    global_search = source.split("async function renderGlobalSearch()", 1)[1].split(
+        "function featureCard",
+        1,
+    )[0]
+
+    assert "globalSearch:" in state_block
+    assert "state.globalSearch.query === query" in global_search
+    assert "renderGlobalSearchResults(cachedSearch.payload)" in global_search
+    assert "let searchPayload = cachedSearch?.payload || null" in global_search
+    assert "let searchOffset = cachedSearch?.offset || 0" in global_search
+    assert "state.globalSearch = {" in global_search
+    assert "if (cachedSearch)" in global_search
+    cached_branch = global_search.split("if (cachedSearch)", 1)[1].split("trackSiteSearch(query)", 1)[0]
+    assert "return;" in cached_branch
+    assert 'bindLoadMoreButton("global-search"' in cached_branch

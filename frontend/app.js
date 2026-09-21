@@ -95,6 +95,11 @@ const state = {
   eventsViewMode: "list",
   athleteSortMode: "name",
   eventsFavoriteCalendarAutoFocus: false,
+  globalSearch: {
+    query: "",
+    payload: null,
+    offset: 0,
+  },
   openEventTimeFilter: false,
   openRankingTimeFilter: false,
   openEventDateWheel: "",
@@ -3934,6 +3939,9 @@ function mergeGlobalSearchResults(current, next) {
 async function renderGlobalSearch() {
   const params = currentParams();
   const query = params.get("q") || "";
+  const cachedSearch = query && state.globalSearch.query === query && state.globalSearch.payload
+    ? state.globalSearch
+    : null;
   setApp(`
     <div class="detail-topbar">
       <a class="quiet-button detail-back-button" href="#/">${escapeHtml(t("backToHome"))}</a>
@@ -3944,7 +3952,7 @@ async function renderGlobalSearch() {
       <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
       <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>
     </form>
-    ${query ? `<div id="globalSearchResults">${loadingState()}</div>` : ""}
+    ${query ? `<div id="globalSearchResults">${cachedSearch ? renderGlobalSearchResults(cachedSearch.payload) : loadingState()}</div>` : ""}
   `);
   $("#globalSearchPageForm").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -3955,8 +3963,8 @@ async function renderGlobalSearch() {
   bindSearchClearButtons();
   setupSearchAutocomplete("#globalSearchPageInput", "#globalSearchPageSuggestions");
   if (!query) return;
-  let searchPayload = null;
-  let searchOffset = 0;
+  let searchPayload = cachedSearch?.payload || null;
+  let searchOffset = cachedSearch?.offset || 0;
   let searchRequestId = 0;
   const loadGlobalSearchResults = async ({ append = false } = {}) => {
     const requestId = ++searchRequestId;
@@ -3974,6 +3982,11 @@ async function renderGlobalSearch() {
       searchOffset = append
         ? searchOffset + GLOBAL_SEARCH_SECTION_LIMIT
         : GLOBAL_SEARCH_SECTION_LIMIT;
+      state.globalSearch = {
+        query,
+        payload: searchPayload,
+        offset: searchOffset,
+      };
       node.innerHTML = renderGlobalSearchResults(searchPayload);
       bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
     } catch (error) {
@@ -3986,6 +3999,10 @@ async function renderGlobalSearch() {
       }
     }
   };
+  if (cachedSearch) {
+    bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+    return;
+  }
   trackSiteSearch(query);
   await loadGlobalSearchResults();
 }
