@@ -6688,7 +6688,7 @@ function renderAthleteVerificationBadge(athlete) {
   if (!athlete?.is_profile_verified) return "";
   return `
     <span class="athlete-verification-badge" role="img" aria-label="${escapeHtml(t("verifiedAthleteBadge"))}">
-      <span aria-hidden="true"></span>
+      <span aria-hidden="true">✓</span>
     </span>
   `;
 }
