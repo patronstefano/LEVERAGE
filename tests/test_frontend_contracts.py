@@ -259,3 +259,21 @@ def test_favorite_filter_hover_overrides_the_generic_filter_blue_outline():
     assert "border-color: var(--favorite-yellow)" in favorite_hover_block
     assert "background: #fff" in favorite_hover_block
     assert "color: var(--favorite-yellow)" in favorite_hover_block
+
+
+def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    shell_styles = styles.split(".saved-ranking-form-shell {", 1)[1].split("}", 1)[0]
+    input_styles = styles.split(".saved-ranking-form input {", 1)[1].split("}", 1)[0]
+    action_styles = styles.split(".saved-ranking-submit {", 1)[1].split("}", 1)[0]
+
+    assert 'class="saved-ranking-filter-summary"' in source
+    assert "padding: 12px" in shell_styles
+    assert "border-radius: var(--surface-radius)" in shell_styles
+    assert "box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12)" in shell_styles
+    assert "font-size: 14px" in input_styles
+    assert "min-height: 32px" in action_styles
+    assert "border-radius: var(--data-chip-radius)" in action_styles
+    assert ".saved-ranking-message:empty" in styles
+    assert "@keyframes savedRankingPopupIn" in styles

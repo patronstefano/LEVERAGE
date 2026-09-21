@@ -5818,7 +5818,7 @@ function renderRankingSavePanel() {
           </label>
           <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
         </form>
-        <p>${t("filters")}: ${escapeHtml(rankingFilterSummary())}</p>
+        <p class="saved-ranking-filter-summary"><strong>${t("filters")}</strong><span>${escapeHtml(rankingFilterSummary())}</span></p>
       </section>
     </div>
   `;

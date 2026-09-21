@@ -2645,66 +2645,97 @@ a:focus-visible > .entity-card-clickable {
 
 .saved-ranking-form-shell {
   width: 100%;
-  border-color: rgba(25, 23, 71, 0.1);
+  padding: 12px;
+  border: 1px solid rgba(25, 23, 71, 0.1);
+  border-radius: var(--surface-radius);
   background: #fff;
-  box-shadow: 0 22px 58px rgba(16, 16, 20, 0.12);
+  box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12);
+  animation: savedRankingPopupIn var(--control-expand-motion);
 }
 
-.saved-ranking-panel p {
+.saved-ranking-filter-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.46;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.saved-ranking-filter-summary strong {
+  flex: 0 0 auto;
+  color: rgba(17, 17, 20, 0.68);
+  font-weight: 650;
+}
+
+.saved-ranking-filter-summary span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .saved-ranking-form {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .saved-ranking-form label {
   display: grid;
-  gap: 6px;
+  gap: 7px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 650;
+  line-height: 1.25;
 }
 
 .saved-ranking-input-shell {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   min-height: 42px;
-  padding: 5px;
-  border: 1px solid var(--line);
+  padding: 4px;
+  border: 1px solid rgba(25, 23, 71, 0.12);
   border-radius: var(--control-radius);
   background: #fff;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .saved-ranking-form input {
   flex: 1 1 auto;
   width: 100%;
   min-width: 0;
-  height: 30px;
-  padding: 0 8px;
+  height: 32px;
+  padding: 0 9px;
   border: 0;
   background: transparent;
   color: var(--ink);
-  font: inherit;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
   outline: none;
+}
+
+.saved-ranking-form input::placeholder {
+  color: rgba(17, 17, 20, 0.42);
 }
 
 .saved-ranking-submit {
   flex: 0 0 auto;
-  min-height: 30px;
-  padding: 0 12px;
-  border: 1px solid var(--line);
-  border-radius: calc(var(--control-radius) - 4px);
+  min-height: 32px;
+  padding: 0 13px;
+  border: 1px solid rgba(25, 23, 71, 0.14);
+  border-radius: var(--data-chip-radius);
   background: #fff;
   color: var(--ink);
-  font-size: 13px;
-  font-weight: 500;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 590;
   line-height: 1;
   transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
 }
@@ -2728,13 +2759,31 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .saved-ranking-input-shell:focus-within {
-  border-color: rgba(25, 23, 71, 0.28);
+  border-color: rgba(25, 23, 71, 0.32);
+  box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.08);
 }
 
 .saved-ranking-message {
-  min-height: 20px;
+  display: block;
+  min-height: 0;
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.35;
+}
+
+.saved-ranking-message:empty {
+  display: none;
+}
+
+@keyframes savedRankingPopupIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .ranking-actions-row {
@@ -2762,8 +2811,8 @@ a:focus-visible > .entity-card-clickable {
   top: calc(100% + 8px);
   right: 0;
   z-index: 84;
-  width: min(360px, calc(100vw - 36px));
-  min-width: min(100%, 320px);
+  width: min(382px, calc(100vw - 36px));
+  min-width: min(100%, 340px);
 }
 
 .ranking-save-login-button,
