@@ -269,7 +269,7 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     action_styles = styles.split(".saved-ranking-submit {", 1)[1].split("}", 1)[0]
 
     assert 'class="saved-ranking-filter-summary"' in source
-    assert "padding: 12px" in shell_styles
+    assert "padding: 13px 14px" in shell_styles
     assert "border-radius: var(--surface-radius)" in shell_styles
     assert "box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12)" in shell_styles
     assert "font-size: 14px" in input_styles
@@ -291,5 +291,9 @@ def test_saved_ranking_popup_summarizes_the_number_of_active_filters():
     assert "savedRankingActiveFilterCount(savedRankingFiltersPayload())" in panel
     assert 'activeFilterCount === 1 ? "activeFilterSingular" : "activeFilterPlural"' in panel
     assert "rankingFilterSummary()" not in panel
+    shell_styles = styles.split(".saved-ranking-form-shell {", 1)[1].split("}", 1)[0]
+    assert "display: grid" in shell_styles
+    assert "gap: 11px" in shell_styles
+    assert "padding: 13px 14px" in shell_styles
     assert "font-size: var(--card-meta-size)" in summary_styles
     assert "font-weight: 520" in summary_styles
