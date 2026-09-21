@@ -888,11 +888,16 @@ Una migrazione di riallineamento certifica anche i profili approvati prima dell'
 Il motore World Gymnastics Event e stato impostato in modo analogo:
 
 - ricerca evento;
+- anteprima non mutativa del riscontro ufficiale;
 - collegamento a pagina ufficiale;
 - suggerimenti su campi evento;
 - status World Gymnastics;
 - venue opzionale;
 - verifica admin.
+
+La Scheda Evento adotta ora lo stesso ciclo controllato consolidato per Athlete, adattato alla diversa semantica dell'entita. Ricerca automatica e ricerca manuale producono prima un'anteprima e non modificano dati o audit. Soltanto `Importa dati` certifica il matching con la pagina ufficiale, genera i suggerimenti pending e registra atomicamente data e Admin verificatore. L'approvazione, la modifica o il rifiuto dei singoli suggerimenti resta una decisione separata e non riscrive i metadati della verifica.
+
+Quando esiste un collegamento, gli strumenti Admin mostrano un blocco World Gymnastics dedicato con FIG event ID, URL e status. La modifica manuale dello status non invalida l'identita; la modifica di FIG ID o URL revoca invece automaticamente data e Admin verificatore. La revoca esplicita conserva il collegamento informativo e una nuova verifica richiede un nuovo riscontro ufficiale confermato tramite `Importa dati`. Tutte le operazioni mutative sono registrate nell'audit Admin/Super Admin. L'ID dell'Admin verificatore resta escluso dalle API pubbliche e visibile soltanto nella vista amministrativa. A differenza della Scheda Atleta, la Scheda Evento non introduce un badge pubblico: presenta il collegamento e la verifica nella riga informativa World Gymnastics.
 
 Il campo `image_url` Event e stato mantenuto opzionale per sviluppi futuri, ad esempio immagini standard per Olimpiadi o grandi eventi.
 

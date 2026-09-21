@@ -714,7 +714,6 @@ class EventRead(EventBase):
     world_gymnastics_event_url: Optional[str] = None
     world_gymnastics_status: Optional[str] = None
     world_gymnastics_verified_at: Optional[datetime] = None
-    world_gymnastics_verified_by_admin_id: Optional[int] = None
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
     deleted_by_admin_id: Optional[int] = None
@@ -740,6 +739,42 @@ class EventUpdate(BaseModel):
         return self
 
 
+class EventAdminRead(EventRead):
+    world_gymnastics_verified_by_admin_id: Optional[int] = None
+
+
+class EventWorldGymnasticsUpdate(BaseModel):
+    world_gymnastics_event_id: Optional[str] = None
+    world_gymnastics_event_url: Optional[str] = None
+    world_gymnastics_status: Optional[str] = None
+    remove_world_gymnastics_verification: bool = False
+
+    @model_validator(mode="after")
+    def validate_world_gymnastics_fields(self):
+        event_id = (self.world_gymnastics_event_id or "").strip()
+        if event_id and not event_id.isdigit():
+            raise ValueError("world_gymnastics_event_id must be numeric")
+
+        event_url = (self.world_gymnastics_event_url or "").strip()
+        if event_url:
+            parsed = urlparse(event_url)
+            if parsed.scheme not in {"http", "https"}:
+                raise ValueError("world_gymnastics_event_url must use http or https")
+            hostname = (parsed.hostname or "").lower()
+            if hostname != "gymnastics.sport" and not hostname.endswith(".gymnastics.sport"):
+                raise ValueError("world_gymnastics_event_url must use gymnastics.sport")
+            profile_id = parse_qs(parsed.query).get("id", [None])[0]
+            if not profile_id or not profile_id.isdigit():
+                raise ValueError("world_gymnastics_event_url must include a numeric id")
+            if event_id and profile_id != event_id:
+                raise ValueError("FIG event ID and World Gymnastics event URL id must match")
+
+        status = (self.world_gymnastics_status or "").strip()
+        if len(status) > 100:
+            raise ValueError("world_gymnastics_status must be 100 characters or fewer")
+        return self
+
+
 class EventCalendarItem(EventBase):
     id: Optional[int] = None
     calendar_entry_id: Optional[int] = None
@@ -749,7 +784,6 @@ class EventCalendarItem(EventBase):
     world_gymnastics_event_url: Optional[str] = None
     world_gymnastics_status: Optional[str] = None
     world_gymnastics_verified_at: Optional[datetime] = None
-    world_gymnastics_verified_by_admin_id: Optional[int] = None
     is_deleted: bool = False
     deleted_at: Optional[datetime] = None
     deleted_by_admin_id: Optional[int] = None
@@ -875,7 +909,7 @@ class AthleteAdminView(BaseModel):
 
 
 class EventAdminView(BaseModel):
-    event: EventRead
+    event: EventAdminRead
     pending_suggestions: list[DataSuggestionRead]
 
 

@@ -1503,6 +1503,54 @@ def update_event(
     return event
 
 
+@router.patch("/{event_id}/world-gymnastics", response_model=schemas.EventAdminRead)
+def update_event_world_gymnastics(
+    event_id: int,
+    payload: schemas.EventWorldGymnasticsUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    event = db.query(models.Event).filter(
+        models.Event.id == event_id,
+        models.Event.is_deleted.is_(False),
+    ).first()
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    before = model_snapshot(event)
+    update_data = payload.model_dump(
+        exclude_unset=True,
+        exclude={"remove_world_gymnastics_verification"},
+    )
+    identity_changed = False
+    for field, value in update_data.items():
+        normalized_value = value.strip() if isinstance(value, str) else value
+        normalized_value = normalized_value or None
+        if field in {"world_gymnastics_event_id", "world_gymnastics_event_url"}:
+            identity_changed = identity_changed or getattr(event, field) != normalized_value
+        setattr(event, field, normalized_value)
+
+    verification_removed = payload.remove_world_gymnastics_verification or identity_changed
+    if verification_removed:
+        event.world_gymnastics_verified_at = None
+        event.world_gymnastics_verified_by_admin_id = None
+
+    after = model_snapshot(event)
+    if before != after:
+        add_audit_log(
+            db,
+            current_user,
+            "update_world_gymnastics",
+            "Event",
+            event.id,
+            before=before,
+            after=after,
+        )
+        db.commit()
+        db.refresh(event)
+    return event
+
+
 @router.post("/{event_id}/image", response_model=schemas.EventRead)
 def upload_event_image(
     event_id: int,

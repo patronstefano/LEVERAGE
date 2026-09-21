@@ -272,20 +272,6 @@ def apply_suggestion_to_entity(
     setattr(entity, suggestion.field_name, parsed_value)
 
 
-def mark_world_gymnastics_event_verified(
-    entity: Union[models.Athlete, models.Event],
-    suggestion: models.DataSuggestion,
-    admin_id: int,
-) -> None:
-    if (
-        suggestion.entity_type == models.DataSuggestionEntityTypeEnum.EVENT
-        and suggestion.field_name in WORLD_GYMNASTICS_EVENT_FIELDS
-        and isinstance(entity, models.Event)
-    ):
-        entity.world_gymnastics_verified_at = datetime.utcnow()
-        entity.world_gymnastics_verified_by_admin_id = admin_id
-
-
 @router.get("/", response_model=list[schemas.DataSuggestionRead])
 def list_data_suggestions(
     db: Session = Depends(get_db),
@@ -435,7 +421,6 @@ def accept_data_suggestion(
     )
     value = payload.value if payload.value is not None else suggestion.suggested_value
     apply_suggestion_to_entity(entity, suggestion, value)
-    mark_world_gymnastics_event_verified(entity, suggestion, current_user.id)
 
     if payload.value is not None and payload.value != suggestion.suggested_value:
         suggestion.status = models.DataSuggestionStatusEnum.EDITED

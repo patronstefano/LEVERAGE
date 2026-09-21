@@ -4393,6 +4393,22 @@ def test_world_gymnastics_event_detail_creates_pending_suggestions(monkeypatch):
 
     monkeypatch.setattr(world_gymnastics, "fetch_event_profile", fake_fetch_event_profile)
 
+    preview_response = client.post(
+        f"/world-gymnastics/events/{event['id']}/suggestions",
+        json={"fig_event_id": "18226", "create_suggestions": False},
+        headers=admin_headers,
+    )
+    assert preview_response.status_code == 200
+    assert preview_response.json()["created_suggestions"] == []
+    preview_event = client.get(f"/events/{event['id']}").json()
+    assert preview_event["world_gymnastics_verified_at"] is None
+    preview_admin_view = client.get(
+        f"/events/{event['id']}/admin-view",
+        headers=admin_headers,
+    ).json()
+    assert preview_admin_view["event"]["world_gymnastics_verified_by_admin_id"] is None
+    assert preview_admin_view["pending_suggestions"] == []
+
     response = client.post(
         f"/world-gymnastics/events/{event['id']}/suggestions",
         json={
@@ -4433,8 +4449,8 @@ def test_world_gymnastics_event_detail_creates_pending_suggestions(monkeypatch):
     assert public_event["world_gymnastics_event_id"] is None
     assert public_event["world_gymnastics_event_url"] is None
     assert public_event["world_gymnastics_status"] is None
-    assert public_event["world_gymnastics_verified_at"] is None
-    assert public_event["world_gymnastics_verified_by_admin_id"] is None
+    assert public_event["world_gymnastics_verified_at"] is not None
+    assert "world_gymnastics_verified_by_admin_id" not in public_event
 
     admin_view = client.get(
         f"/events/{event['id']}/admin-view",
@@ -4450,6 +4466,10 @@ def test_world_gymnastics_event_detail_creates_pending_suggestions(monkeypatch):
         "world_gymnastics_event_url",
         "world_gymnastics_status",
     ]
+    verified_at = admin_view["event"]["world_gymnastics_verified_at"]
+    verified_by_admin_id = admin_view["event"]["world_gymnastics_verified_by_admin_id"]
+    assert verified_at is not None
+    assert verified_by_admin_id is not None
 
     event_url_suggestion = next(
         suggestion
@@ -4465,8 +4485,53 @@ def test_world_gymnastics_event_detail_creates_pending_suggestions(monkeypatch):
 
     verified_event = client.get(f"/events/{event['id']}").json()
     assert verified_event["world_gymnastics_event_url"].endswith("id=18226&type=sport")
-    assert verified_event["world_gymnastics_verified_at"] is not None
-    assert verified_event["world_gymnastics_verified_by_admin_id"] is not None
+    assert verified_event["world_gymnastics_verified_at"] == verified_at
+    assert "world_gymnastics_verified_by_admin_id" not in verified_event
+
+    status_update = client.patch(
+        f"/events/{event['id']}/world-gymnastics",
+        json={"world_gymnastics_status": "Active"},
+        headers=admin_headers,
+    )
+    assert status_update.status_code == 200
+    assert status_update.json()["world_gymnastics_status"] == "Active"
+    assert status_update.json()["world_gymnastics_verified_at"] == verified_at
+    assert status_update.json()["world_gymnastics_verified_by_admin_id"] == verified_by_admin_id
+
+    remove_verification = client.patch(
+        f"/events/{event['id']}/world-gymnastics",
+        json={"remove_world_gymnastics_verification": True},
+        headers=admin_headers,
+    )
+    assert remove_verification.status_code == 200
+    assert remove_verification.json()["world_gymnastics_event_url"].endswith("id=18226&type=sport")
+    assert remove_verification.json()["world_gymnastics_verified_at"] is None
+    assert remove_verification.json()["world_gymnastics_verified_by_admin_id"] is None
+
+    reimport_response = client.post(
+        f"/world-gymnastics/events/{event['id']}/suggestions",
+        json={"fig_event_id": "18226"},
+        headers=admin_headers,
+    )
+    assert reimport_response.status_code == 200
+    recertified_view = client.get(
+        f"/events/{event['id']}/admin-view",
+        headers=admin_headers,
+    ).json()["event"]
+    assert recertified_view["world_gymnastics_verified_at"] is not None
+    assert recertified_view["world_gymnastics_verified_by_admin_id"] == verified_by_admin_id
+
+    identity_update = client.patch(
+        f"/events/{event['id']}/world-gymnastics",
+        json={
+            "world_gymnastics_event_id": "19000",
+            "world_gymnastics_event_url": "https://www.gymnastics.sport/site/events/detail.php?id=19000&type=sport",
+        },
+        headers=admin_headers,
+    )
+    assert identity_update.status_code == 200
+    assert identity_update.json()["world_gymnastics_verified_at"] is None
+    assert identity_update.json()["world_gymnastics_verified_by_admin_id"] is None
 
 
 def test_world_gymnastics_and_suggestions_ignore_soft_deleted_entities():

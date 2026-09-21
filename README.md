@@ -216,7 +216,9 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
 - `GET /world-gymnastics/events/{event_id}/candidates`
   Endpoint admin-only per cercare eventi ufficiali World Gymnastics compatibili con la scheda Event
 - `POST /world-gymnastics/events/{event_id}/suggestions`
-  Endpoint admin-only per creare suggerimenti pending dalla scheda evento World Gymnastics scelta dall'admin
+  Endpoint admin-only per mostrare l'anteprima oppure importare suggerimenti pending dalla scheda evento World Gymnastics scelta dall'admin. Solo l'importazione certifica il matching e registra data e Admin verificatore
+- `PATCH /events/{event_id}/world-gymnastics`
+  Endpoint admin-only per la manutenzione controllata di FIG event ID, URL e status oppure per la revoca esplicita della verifica. La modifica manuale di ID o URL invalida automaticamente la verifica
 
 ## Modello dati essenziale
 
@@ -235,7 +237,7 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
   Nei filtri API, `MAG and WAG` corrisponde alla selezione contemporanea di `MAG` e `WAG`
   Nei filtri API, `junior and senior` corrisponde alla selezione contemporanea di `junior` e `senior`
   `world_gymnastics_event_id`, `world_gymnastics_event_url` e `world_gymnastics_status`: opzionali; restano `NULL` finche un admin non verifica/approva l'evento tramite il motore World Gymnastics
-  `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`: valorizzati automaticamente quando un admin approva un suggerimento World Gymnastics legato all'evento ufficiale
+  `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`: valorizzati atomicamente quando un admin conferma `Importa dati` sul riscontro ufficiale. L'ID dell'Admin verificatore e escluso dagli endpoint pubblici ed esposto soltanto tramite `GET /events/{event_id}/admin-view`
 - `Result`
   Campi principali: `athlete_id`, `event_id`, `represented_country`, `discipline`, `category`, `apparatus`, `vt_attempt`, `day`, `format`, `round`, `D_score`, `E_score`, `Penalty`, `Bonus`, `score`, `rank`
   `represented_country`: country rappresentata dall'atleta in quella specifica gara; resta separata da `Athlete.country`, che indica la nazionalita corrente
@@ -484,8 +486,11 @@ Flusso consigliato nella scheda admin Event:
    Cerca candidati World Gymnastics usando nome evento, anno/date, location e disciplina.
 3. L'admin seleziona l'evento ufficiale corretto tra i candidati.
 4. `POST /world-gymnastics/events/{event_id}/suggestions`
-   Con `fig_event_id` oppure `fig_event_url`, legge il dettaglio ufficiale e crea suggerimenti `pending`.
+   Con `fig_event_id` oppure `fig_event_url` e `create_suggestions=false`, legge il dettaglio ufficiale e mostra un'anteprima senza modificare dati o audit. Con `Importa dati`, crea i suggerimenti `pending` e certifica il matching.
 5. L'admin approva, modifica o rifiuta i suggerimenti tramite gli endpoint `data-suggestions`.
+6. Dopo il collegamento, usa `PATCH /events/{event_id}/world-gymnastics` per manutenzione o revoca; tutte le variazioni sono registrate nell'audit amministrativo.
+
+Come per Athlete, ricerca e preview non alterano lo stato. `Importa dati` registra atomicamente data e Admin verificatore; la successiva approvazione dei singoli suggerimenti decide quali valori pubblicare ma non riscrive i metadati della verifica. La modifica manuale del solo status conserva il matching, mentre una variazione di FIG event ID o URL lo invalida. Una nuova verifica richiede un nuovo riscontro ufficiale seguito da `Importa dati`. La Scheda Evento non usa il badge pubblico della Scheda Atleta: espone invece il collegamento e i metadati World Gymnastics nella sezione informativa dedicata.
 
 Campi suggeribili attuali:
 
@@ -501,7 +506,7 @@ Campi suggeribili attuali:
 - `world_gymnastics_status`, dallo status World Gymnastics quando disponibile
 
 `image_url` per `Event` resta volutamente fuori dal motore World Gymnastics Event: in seguito si puo valutare se usare immagini prefissate per tipologia evento, per esempio cerchi olimpici per Olympic Games, oppure eliminare il campo se non serve davvero.
-Quando un admin approva `world_gymnastics_event_id`, `world_gymnastics_event_url` o `world_gymnastics_status`, LEVERAGE registra anche `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`.
+L'approvazione di `world_gymnastics_event_id`, `world_gymnastics_event_url` o `world_gymnastics_status` pubblica il singolo valore ma non modifica `world_gymnastics_verified_at` o `world_gymnastics_verified_by_admin_id`, gia fissati dall'azione certificativa `Importa dati`.
 
 ## Suggerimenti AI/web assistiti
 LEVERAGE supporta una coda admin-only di suggerimenti per completare campi mancanti di `Athlete` e `Event`.

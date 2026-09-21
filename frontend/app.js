@@ -401,6 +401,11 @@ const translations = {
     eventResultWarnings: "Result warnings",
     eventUpdateSaved: "Event updated.",
     eventUpdateError: "Unable to update event.",
+    eventVerificationActive: "World Gymnastics verification active",
+    eventVerificationInactive: "World Gymnastics verification not active",
+    removeEventVerification: "Remove World Gymnastics verification",
+    eventVerificationRemoved: "World Gymnastics verification removed.",
+    eventVerificationRemovalError: "Unable to remove World Gymnastics verification.",
     adminEventTools: "Admin tools",
     adminToolsButton: "Open admin tools",
     editEvent: "Edit event",
@@ -753,6 +758,11 @@ const translations = {
     eventResultWarnings: "Avvisi risultati",
     eventUpdateSaved: "Evento aggiornato.",
     eventUpdateError: "Impossibile aggiornare l'evento.",
+    eventVerificationActive: "Verifica World Gymnastics attiva",
+    eventVerificationInactive: "Verifica World Gymnastics non attiva",
+    removeEventVerification: "Rimuovi verifica World Gymnastics",
+    eventVerificationRemoved: "Verifica World Gymnastics rimossa.",
+    eventVerificationRemovalError: "Impossibile rimuovere la verifica World Gymnastics.",
     adminEventTools: "Strumenti admin",
     adminToolsButton: "Apri strumenti admin",
     editEvent: "Modifica evento",
@@ -1105,6 +1115,11 @@ const translations = {
     eventResultWarnings: "Avisos de resultados",
     eventUpdateSaved: "Evento actualizado.",
     eventUpdateError: "No se pudo actualizar el evento.",
+    eventVerificationActive: "Verificacion de World Gymnastics activa",
+    eventVerificationInactive: "Verificacion de World Gymnastics no activa",
+    removeEventVerification: "Eliminar verificacion de World Gymnastics",
+    eventVerificationRemoved: "Verificacion de World Gymnastics eliminada.",
+    eventVerificationRemovalError: "No se pudo eliminar la verificacion de World Gymnastics.",
     adminEventTools: "Herramientas admin",
     adminToolsButton: "Abrir herramientas admin",
     editEvent: "Editar evento",
@@ -1457,6 +1472,11 @@ const translations = {
     eventResultWarnings: "Alertes resultats",
     eventUpdateSaved: "Evenement mis a jour.",
     eventUpdateError: "Impossible de mettre a jour l'evenement.",
+    eventVerificationActive: "Verification World Gymnastics active",
+    eventVerificationInactive: "Verification World Gymnastics inactive",
+    removeEventVerification: "Retirer la verification World Gymnastics",
+    eventVerificationRemoved: "Verification World Gymnastics retiree.",
+    eventVerificationRemovalError: "Impossible de retirer la verification World Gymnastics.",
     adminEventTools: "Outils admin",
     adminToolsButton: "Ouvrir les outils admin",
     editEvent: "Modifier evenement",
@@ -10245,10 +10265,24 @@ function renderEventDetailsPanel(event, options = {}) {
     renderDetailFieldIfPresent(t("levelFilter"), event.level),
     renderDetailFieldIfPresent(t("status"), calendarStatus),
     resultCount ? renderDetailField(t("results"), resultCount.toLocaleString()) : "",
-    event.world_gymnastics_event_url
-      ? renderDetailFieldIfPresent(t("worldGymnasticsEvent"), event.world_gymnastics_event_url, { html: profileLink })
-      : "",
   ].filter(Boolean).join("");
+  const worldGymnasticsEventItems = [
+    event.world_gymnastics_event_id
+      ? { label: t("worldGymnasticsId"), value: event.world_gymnastics_event_id }
+      : null,
+    event.world_gymnastics_status
+      ? { label: t("worldGymnasticsStatus"), value: displayEnumValue(event.world_gymnastics_status) }
+      : null,
+    event.world_gymnastics_event_url
+      ? { label: t("worldGymnasticsProfile"), value: profileLink, html: true }
+      : null,
+    event.world_gymnastics_verified_at
+      ? { label: t("worldGymnasticsVerified"), value: formatDateTime(event.world_gymnastics_verified_at) }
+      : null,
+    isAdminUser() && event.world_gymnastics_verified_by_admin_id
+      ? { label: t("verifiedByAdminId"), value: event.world_gymnastics_verified_by_admin_id }
+      : null,
+  ].filter((item) => item && item.value);
   const tag = embedded ? "div" : "section";
   const classes = [
     embedded ? "" : "panel athlete-detail-section",
@@ -10266,6 +10300,19 @@ function renderEventDetailsPanel(event, options = {}) {
       <div class="detail-grid athlete-identity-grid event-details-grid">
         ${fields || emptyMessage(t("notAvailable"))}
       </div>
+      ${worldGymnasticsEventItems.length ? `
+        <div class="athlete-identity-history athlete-identity-world-gymnastics">
+          <span>${t("worldGymnasticsEvent")}</span>
+          <div class="athlete-country-history-list">
+            ${worldGymnasticsEventItems.map((item) => `
+              <div class="athlete-country-history-item">
+                <strong>${escapeHtml(item.label)}</strong>
+                ${item.html ? item.value : `<span>${escapeHtml(item.value)}</span>`}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : ""}
     </${tag}>
   `;
 }
@@ -10298,6 +10345,15 @@ function syncEventAdminForm(event) {
     "level",
     "image_url",
   ].forEach((name) => syncAdminFormValue(form, name, event[name]));
+  ["world_gymnastics_event_id", "world_gymnastics_event_url", "world_gymnastics_status"].forEach((name) => {
+    syncAdminFormValue(form, name, event[name]);
+  });
+  const verificationState = $("#eventVerificationState");
+  if (verificationState) {
+    verificationState.textContent = t(event.world_gymnastics_verified_at ? "eventVerificationActive" : "eventVerificationInactive");
+  }
+  const removeVerification = $("#removeEventWorldGymnasticsVerification");
+  if (removeVerification) removeVerification.hidden = !event.world_gymnastics_verified_at;
 }
 
 async function refreshEventAdminState(eventId, options = {}) {
@@ -10782,6 +10838,12 @@ function bindEventClassificationControls(root = document, options = {}) {
 }
 
 function renderEventAdminForm(event) {
+  const hasWorldGymnasticsData = Boolean(
+    event.world_gymnastics_event_id
+    || event.world_gymnastics_event_url
+    || event.world_gymnastics_status
+    || event.world_gymnastics_verified_at
+  );
   return `
     <form class="admin-edit-form" id="eventAdminForm">
       <div class="section-header compact-section-header">
@@ -10833,6 +10895,36 @@ function renderEventAdminForm(event) {
           <input name="image_url" value="${escapeHtml(event.image_url || "")}">
         </label>
       </div>
+      ${hasWorldGymnasticsData ? `
+        <div class="admin-linked-data" data-event-world-gymnastics-fields>
+          <div class="section-header compact-section-header admin-linked-data-header">
+            <div>
+              <h3>${t("editWorldGymnasticsData")}</h3>
+              <p id="eventVerificationState">${t(event.world_gymnastics_verified_at ? "eventVerificationActive" : "eventVerificationInactive")}</p>
+            </div>
+            <button
+              class="quiet-button filter-clear-button"
+              id="removeEventWorldGymnasticsVerification"
+              type="button"
+              ${event.world_gymnastics_verified_at ? "" : "hidden"}
+            >${t("removeEventVerification")}</button>
+          </div>
+          <div class="admin-form-grid">
+            <label>
+              <span>${t("worldGymnasticsId")}</span>
+              <input name="world_gymnastics_event_id" inputmode="numeric" value="${escapeHtml(event.world_gymnastics_event_id || "")}">
+            </label>
+            <label class="admin-form-span-two">
+              <span>${t("worldGymnasticsProfile")}</span>
+              <input name="world_gymnastics_event_url" type="url" value="${escapeHtml(event.world_gymnastics_event_url || "")}">
+            </label>
+            <label>
+              <span>${t("worldGymnasticsStatus")}</span>
+              <input name="world_gymnastics_status" maxlength="100" value="${escapeHtml(event.world_gymnastics_status || "")}">
+            </label>
+          </div>
+        </div>
+      ` : ""}
       <span class="auth-message" id="eventAdminMessage" role="status" aria-live="polite"></span>
     </form>
   `;
@@ -10908,6 +11000,27 @@ function renderWorldGymnasticsEventCandidateList(response) {
   `;
 }
 
+function renderWorldGymnasticsMatchedEventProfile(response) {
+  const profile = response?.matched_event;
+  if (!profile) return emptyMessage(t("noWorldGymnasticsCandidates"));
+  return renderWorldGymnasticsEventCandidateList({
+    warnings: response.warnings || [],
+    candidates: [{
+      event_id: profile.event_id,
+      event_url: profile.event_url,
+      title: profile.title,
+      city: profile.city,
+      country: profile.country,
+      venue: profile.venue,
+      start_date: profile.start_date,
+      end_date: profile.end_date,
+      disciplines: profile.disciplines || [],
+      status: profile.status,
+      match_score: 1,
+    }],
+  });
+}
+
 function renderEventWorldGymnasticsAdminTools() {
   return `
     <div class="admin-tool-block">
@@ -10976,16 +11089,48 @@ function bindEventAdminForm(eventId) {
       level: String(formData.get("level") || "").trim(),
       image_url: String(formData.get("image_url") || "").trim() || null,
     };
-    if (message) message.textContent = "";
+    setAdminSuggestionFeedback(message, "", null);
     submit.disabled = true;
     try {
       await sendJson(`/events/${eventId}`, { method: "PUT", body: payload });
+      if (form.querySelector("[data-event-world-gymnastics-fields]")) {
+        await sendJson(`/events/${eventId}/world-gymnastics`, {
+          method: "PATCH",
+          body: {
+            world_gymnastics_event_id: String(formData.get("world_gymnastics_event_id") || "").trim() || null,
+            world_gymnastics_event_url: String(formData.get("world_gymnastics_event_url") || "").trim() || null,
+            world_gymnastics_status: String(formData.get("world_gymnastics_status") || "").trim() || null,
+          },
+        });
+      }
       await refreshEventAdminState(eventId);
-      if (message) message.textContent = t("eventUpdateSaved");
+      setAdminSuggestionFeedback(message, t("eventUpdateSaved"), "success");
     } catch (_error) {
-      if (message) message.textContent = t("eventUpdateError");
+      setAdminSuggestionFeedback(message, t("eventUpdateError"), "danger");
     } finally {
       submit.disabled = false;
+    }
+  });
+
+  $("#removeEventWorldGymnasticsVerification")?.addEventListener("click", async (event) => {
+    const button = event.currentTarget;
+    const message = $("#eventAdminMessage");
+    setAdminSuggestionFeedback(message, "", null);
+    button.disabled = true;
+    try {
+      await sendJson(`/events/${eventId}/world-gymnastics`, {
+        method: "PATCH",
+        body: { remove_world_gymnastics_verification: true },
+      });
+      await refreshEventAdminState(eventId, {
+        refreshProfile: true,
+        refreshForm: true,
+        refreshSuggestions: false,
+      });
+      setAdminSuggestionFeedback(message, t("eventVerificationRemoved"), "danger");
+    } catch (_error) {
+      setAdminSuggestionFeedback(message, t("eventVerificationRemovalError"), "danger");
+      button.disabled = false;
     }
   });
 }
@@ -11004,7 +11149,7 @@ async function createWorldGymnasticsEventSuggestions(eventId, payload, outputNod
       `;
     }
     await refreshEventAdminState(eventId, {
-      refreshProfile: false,
+      refreshProfile: true,
       refreshForm: false,
       refreshSuggestions: true,
     });
@@ -11032,7 +11177,16 @@ function bindEventWorldGymnasticsTools(eventId) {
     const payload = /^https?:\/\//i.test(value)
       ? { fig_event_url: value }
       : { fig_event_id: value };
-    await createWorldGymnasticsEventSuggestions(eventId, payload, output);
+    if (!output) return;
+    output.innerHTML = loadingState();
+    try {
+      const response = await sendJson(`/world-gymnastics/events/${eventId}/suggestions`, {
+        body: { ...payload, create_suggestions: false },
+      });
+      output.innerHTML = renderWorldGymnasticsMatchedEventProfile(response);
+    } catch (_error) {
+      output.innerHTML = errorState(new Error(t("profileSearchError")));
+    }
   });
   output?.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-event-wg-use-event]");

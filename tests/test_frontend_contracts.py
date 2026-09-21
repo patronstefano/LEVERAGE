@@ -60,3 +60,15 @@ def test_world_gymnastics_identity_fields_have_stable_order_and_status_casing():
     positions = [items_block.index(label) for label in expected_labels]
     assert positions == sorted(positions)
     assert "displayEnumValue(athlete.world_gymnastics_status)" in items_block
+
+
+def test_event_admin_tools_follow_the_controlled_world_gymnastics_flow():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+
+    assert "function renderWorldGymnasticsMatchedEventProfile(response)" in source
+    assert 'body: { ...payload, create_suggestions: false }' in source
+    assert 'data-event-world-gymnastics-fields' in source
+    assert 'removeEventWorldGymnasticsVerification' in source
+    assert 'method: "PATCH"' in source
+    assert 'remove_world_gymnastics_verification: true' in source
+    assert 'isAdminUser() && event.world_gymnastics_verified_by_admin_id' in source

@@ -608,6 +608,7 @@ def create_world_gymnastics_event_suggestions(
 
     requested_fields, skipped_fields = resolve_event_requested_fields(db, event, payload.fields)
     warnings = event_profile_warnings(event, profile)
+    verification_before = model_snapshot(event)
 
     suggestion_candidates = []
     created_suggestions = []
@@ -635,7 +636,27 @@ def create_world_gymnastics_event_suggestions(
             db.add(suggestion)
             created_suggestions.append(suggestion)
 
-    if created_suggestions:
+    verification_assigned = (
+        payload.create_suggestions
+        and (
+            event.world_gymnastics_verified_at is None
+            or event.world_gymnastics_verified_by_admin_id is None
+        )
+    )
+    if verification_assigned:
+        event.world_gymnastics_verified_at = datetime.utcnow()
+        event.world_gymnastics_verified_by_admin_id = current_user.id
+        add_audit_log(
+            db,
+            current_user,
+            "update",
+            "Event",
+            event.id,
+            before=verification_before,
+            after=model_snapshot(event),
+        )
+
+    if created_suggestions or verification_assigned:
         db.commit()
         for suggestion in created_suggestions:
             db.refresh(suggestion)
