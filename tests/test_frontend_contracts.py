@@ -244,3 +244,18 @@ def test_saved_ranking_cards_use_the_compact_event_card_title_structure():
     assert 'class="event-card-date"' in ranking_cards
     assert 'title,\n      "",' in ranking_cards
     assert ".account-view-panel .account-preference-card-list .entity-card" not in styles
+
+
+def test_favorite_filter_hover_overrides_the_generic_filter_blue_outline():
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+
+    assert '.filter-button.section-favorite-filter:not([aria-pressed="true"]):hover' in styles
+    assert '.filter-button.section-favorite-filter:not([aria-pressed="true"]):focus-visible' in styles
+    assert '.quiet-button.section-favorite-filter:not([aria-pressed="true"]):hover' in styles
+    favorite_hover_block = styles.split(
+        '.filter-button.section-favorite-filter:not([aria-pressed="true"]):hover,',
+        1,
+    )[1].split("}", 1)[0]
+    assert "border-color: var(--favorite-yellow)" in favorite_hover_block
+    assert "background: #fff" in favorite_hover_block
+    assert "color: var(--favorite-yellow)" in favorite_hover_block

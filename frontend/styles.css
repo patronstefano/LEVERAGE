@@ -1071,8 +1071,10 @@ button {
   border-color: var(--brand-blue);
 }
 
-.section-favorite-filter:hover,
-.section-favorite-filter:focus-visible {
+.filter-button.section-favorite-filter:not([aria-pressed="true"]):hover,
+.filter-button.section-favorite-filter:not([aria-pressed="true"]):focus-visible,
+.quiet-button.section-favorite-filter:not([aria-pressed="true"]):hover,
+.quiet-button.section-favorite-filter:not([aria-pressed="true"]):focus-visible {
   border-color: var(--favorite-yellow);
   background: #fff;
   color: var(--favorite-yellow);
