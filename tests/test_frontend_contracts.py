@@ -28,3 +28,16 @@ def test_verified_athlete_badge_is_rendered_in_the_profile_metadata():
     assert "width: 16px" in badge_styles
     assert "margin-left: 3px" in badge_styles
     assert "clip-path: polygon(" in badge_styles
+
+
+def test_verification_badge_removal_uses_neutral_danger_feedback():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+
+    assert 'setAdminSuggestionFeedback(message, t("badgeRemoved"), "danger")' in source
+    danger_styles = styles.split(
+        ".athlete-admin-panel .auth-message.is-danger:not(:empty) {",
+        1,
+    )[1].split("}", 1)[0]
+    assert "background: transparent" in danger_styles
+    assert "color: var(--danger)" in danger_styles

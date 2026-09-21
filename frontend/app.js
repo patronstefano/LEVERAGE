@@ -10045,7 +10045,7 @@ function bindAthleteAdminForm(athleteId) {
   $("#removeAthleteVerificationBadge")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;
     const message = $("#athleteAdminMessage");
-    message.textContent = "";
+    setAdminSuggestionFeedback(message, "", null);
     button.disabled = true;
     try {
       await sendJson(`/athletes/${athleteId}/world-gymnastics`, {
@@ -10057,9 +10057,9 @@ function bindAthleteAdminForm(athleteId) {
         refreshForm: true,
         refreshSuggestions: false,
       });
-      message.textContent = t("badgeRemoved");
+      setAdminSuggestionFeedback(message, t("badgeRemoved"), "danger");
     } catch (_error) {
-      message.textContent = t("badgeRemovalError");
+      setAdminSuggestionFeedback(message, t("badgeRemovalError"), "danger");
       button.disabled = false;
     }
   });
