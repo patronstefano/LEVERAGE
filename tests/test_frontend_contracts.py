@@ -30,6 +30,30 @@ def test_verified_athlete_badge_is_rendered_in_the_profile_metadata():
     assert "clip-path: polygon(" in badge_styles
 
 
+def test_verified_event_uses_the_same_badge_and_identity_layout_as_athlete():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+
+    assert "function renderEventVerificationBadge(event)" in source
+    assert "if (!event?.world_gymnastics_verified_at) return \"\";" in source
+    assert 'renderEventVerificationBadge(event)' in source
+    assert 'class="athlete-verification-badge event-verification-badge"' in source
+    event_items_block = source.split("const eventWorldGymnasticsItems = [", 1)[1].split(
+        "].filter((item)",
+        1,
+    )[0]
+    expected_labels = [
+        't("worldGymnasticsId")',
+        't("worldGymnasticsStatus")',
+        't("worldGymnasticsProfile")',
+        't("worldGymnasticsVerified")',
+        't("verifiedByAdminId")',
+    ]
+    positions = [event_items_block.index(label) for label in expected_labels]
+    assert positions == sorted(positions)
+    assert 'class="timeline-list"' in source
+    assert "displayEnumValue(event.world_gymnastics_status)" in event_items_block
+
+
 def test_verification_badge_removal_uses_neutral_danger_feedback():
     source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
     styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
@@ -71,7 +95,7 @@ def test_event_admin_tools_follow_the_controlled_world_gymnastics_flow():
     assert 'removeEventWorldGymnasticsVerification' in source
     assert 'method: "PATCH"' in source
     assert 'remove_world_gymnastics_verification: true' in source
-    assert 'isAdminUser() && event.world_gymnastics_verified_by_admin_id' in source
+    assert 'isAdminUser()\n      ? [t("verifiedByAdminId"), event.world_gymnastics_verified_by_admin_id]' in source
 
 
 def test_event_search_keeps_the_incomplete_final_card_row():

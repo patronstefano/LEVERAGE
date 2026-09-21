@@ -494,6 +494,7 @@ const translations = {
     updateSaved: "Athlete updated.",
     updateError: "Unable to update athlete.",
     verifiedAthleteBadge: "Verified athlete",
+    verifiedEventBadge: "Verified event",
     editWorldGymnasticsData: "World Gymnastics data",
     verificationBadgeActive: "Verification badge active",
     verificationBadgeInactive: "Verification badge not active",
@@ -851,6 +852,7 @@ const translations = {
     updateSaved: "Atleta aggiornato.",
     updateError: "Impossibile aggiornare l'atleta.",
     verifiedAthleteBadge: "Atleta verificato",
+    verifiedEventBadge: "Evento verificato",
     editWorldGymnasticsData: "Dati World Gymnastics",
     verificationBadgeActive: "Badge di verifica attivo",
     verificationBadgeInactive: "Badge di verifica non attivo",
@@ -1208,6 +1210,7 @@ const translations = {
     updateSaved: "Atleta actualizado.",
     updateError: "No se pudo actualizar el atleta.",
     verifiedAthleteBadge: "Atleta verificado",
+    verifiedEventBadge: "Evento verificado",
     editWorldGymnasticsData: "Datos de World Gymnastics",
     verificationBadgeActive: "Insignia de verificación activa",
     verificationBadgeInactive: "Insignia de verificación no activa",
@@ -1565,6 +1568,7 @@ const translations = {
     updateSaved: "Athlete mis a jour.",
     updateError: "Impossible de mettre a jour l'athlete.",
     verifiedAthleteBadge: "Athlete verifie",
+    verifiedEventBadge: "Evenement verifie",
     editWorldGymnasticsData: "Donnees World Gymnastics",
     verificationBadgeActive: "Badge de verification actif",
     verificationBadgeInactive: "Badge de verification inactif",
@@ -10244,12 +10248,32 @@ function renderEventProfileImage(event = {}) {
   return `<div class="athlete-profile-image athlete-profile-initials event-profile-image" aria-hidden="true">${escapeHtml(eventInitials(event))}</div>`;
 }
 
+function renderEventVerificationBadge(event) {
+  if (!event?.world_gymnastics_verified_at) return "";
+  return `
+    <span class="athlete-verification-badge event-verification-badge" role="img" aria-label="${escapeHtml(t("verifiedEventBadge"))}">
+      <span aria-hidden="true">✓</span>
+    </span>
+  `;
+}
+
+function renderEventProfileMeta(event) {
+  const period = formatReadableDateRange(event);
+  return `
+    <p class="meta athlete-profile-meta event-profile-meta">
+      ${period ? `<span>${escapeHtml(period)}</span>` : ""}
+      ${renderEventVerificationBadge(event)}
+    </p>
+  `;
+}
+
 function renderEventDetailsPanel(event, options = {}) {
   const embedded = Boolean(options.embedded);
   const showHeader = options.showHeader !== false;
   const profileLink = event.world_gymnastics_event_url
     ? `<a class="feature-link identity-profile-link" href="${escapeHtml(event.world_gymnastics_event_url)}" target="_blank" rel="noreferrer">${escapeHtml(t("openWorldGymnastics"))}</a>`
     : "";
+  const verifiedAt = formatDateTime(event.world_gymnastics_verified_at);
   const resultCount = Number(event.result_count ?? event.results_count ?? 0);
   const calendarStatus = event.calendar_status && event.calendar_status !== "completed_with_results"
     ? eventCalendarStatusLabel(event.calendar_status)
@@ -10264,23 +10288,33 @@ function renderEventDetailsPanel(event, options = {}) {
     renderDetailFieldIfPresent(t("status"), calendarStatus),
     resultCount ? renderDetailField(t("results"), resultCount.toLocaleString()) : "",
   ].filter(Boolean).join("");
-  const worldGymnasticsEventItems = [
-    event.world_gymnastics_event_id
-      ? { label: t("worldGymnasticsId"), value: event.world_gymnastics_event_id }
+  const eventWorldGymnasticsItems = [
+    [t("worldGymnasticsId"), event.world_gymnastics_event_id],
+    [
+      t("worldGymnasticsStatus"),
+      event.world_gymnastics_status ? displayEnumValue(event.world_gymnastics_status) : null,
+    ],
+    [t("worldGymnasticsProfile"), event.world_gymnastics_event_url, profileLink],
+    [t("worldGymnasticsVerified"), verifiedAt],
+    isAdminUser()
+      ? [t("verifiedByAdminId"), event.world_gymnastics_verified_by_admin_id]
       : null,
-    event.world_gymnastics_status
-      ? { label: t("worldGymnasticsStatus"), value: displayEnumValue(event.world_gymnastics_status) }
-      : null,
-    event.world_gymnastics_event_url
-      ? { label: t("worldGymnasticsProfile"), value: profileLink, html: true }
-      : null,
-    event.world_gymnastics_verified_at
-      ? { label: t("worldGymnasticsVerified"), value: formatDateTime(event.world_gymnastics_verified_at) }
-      : null,
-    isAdminUser() && event.world_gymnastics_verified_by_admin_id
-      ? { label: t("verifiedByAdminId"), value: event.world_gymnastics_verified_by_admin_id }
-      : null,
-  ].filter((item) => item && item.value);
+  ].filter((item) => item && hasDisplayValue(item[1]));
+  const worldGymnasticsData = eventWorldGymnasticsItems.length
+    ? `
+      <div class="athlete-identity-history athlete-identity-world-gymnastics">
+        <span>${escapeHtml(t("worldGymnasticsData"))}</span>
+        <div class="timeline-list">
+          ${eventWorldGymnasticsItems.map(([label, value, html]) => `
+            <div class="timeline-item">
+              <span>${escapeHtml(label)}</span>
+              <strong>${html || escapeHtml(displayValue(value))}</strong>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `
+    : "";
   const tag = embedded ? "div" : "section";
   const classes = [
     embedded ? "" : "panel athlete-detail-section",
@@ -10298,19 +10332,7 @@ function renderEventDetailsPanel(event, options = {}) {
       <div class="detail-grid athlete-identity-grid event-details-grid">
         ${fields || emptyMessage(t("notAvailable"))}
       </div>
-      ${worldGymnasticsEventItems.length ? `
-        <div class="athlete-identity-history athlete-identity-world-gymnastics">
-          <span>${t("worldGymnasticsEvent")}</span>
-          <div class="athlete-country-history-list">
-            ${worldGymnasticsEventItems.map((item) => `
-              <div class="athlete-country-history-item">
-                <strong>${escapeHtml(item.label)}</strong>
-                ${item.html ? item.value : `<span>${escapeHtml(item.value)}</span>`}
-              </div>
-            `).join("")}
-          </div>
-        </div>
-      ` : ""}
+      ${worldGymnasticsData}
     </${tag}>
   `;
 }
@@ -10323,7 +10345,7 @@ function updateEventProfileSummary(event) {
   const title = panel.querySelector(".athlete-profile-title-copy h2");
   if (title) title.textContent = event.name || "";
   const meta = panel.querySelector(".athlete-profile-title-copy .meta");
-  if (meta) meta.textContent = formatReadableDateRange(event);
+  if (meta) meta.outerHTML = renderEventProfileMeta(event);
   const details = panel.querySelector(".event-details-panel");
   if (details) details.outerHTML = renderEventDetailsPanel(event, { embedded: true, showHeader: true });
 }
@@ -11536,8 +11558,6 @@ async function renderEventDetail(eventId) {
     }
     profile.event = event;
     state.eventDetail.profile = profile;
-    const period = formatReadableDateRange(event);
-    const meta = [period].filter(Boolean).join(" · ");
     setApp(`
       <div class="detail-topbar">
         <a class="quiet-button detail-back-button" href="#/events">${escapeHtml(t("backToEvents"))}</a>
@@ -11548,7 +11568,7 @@ async function renderEventDetail(eventId) {
           <div class="athlete-profile-title-copy">
             <p class="eyebrow">${t("eventProfile")}</p>
             <h2>${escapeHtml(event.name)}</h2>
-            <p class="meta">${escapeHtml(meta)}</p>
+            ${renderEventProfileMeta(event)}
           </div>
           ${detailProfileActions("event", event.id, state.favoriteEventIds.has(Number(event.id)))}
         </div>

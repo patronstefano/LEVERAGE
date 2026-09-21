@@ -490,7 +490,7 @@ Flusso consigliato nella scheda admin Event:
 5. L'admin approva, modifica o rifiuta i suggerimenti tramite gli endpoint `data-suggestions`.
 6. Dopo il collegamento, usa `PATCH /events/{event_id}/world-gymnastics` per manutenzione o revoca; tutte le variazioni sono registrate nell'audit amministrativo.
 
-Come per Athlete, ricerca e preview non alterano lo stato. `Importa dati` registra atomicamente data e Admin verificatore; la successiva approvazione dei singoli suggerimenti decide quali valori pubblicare ma non riscrive i metadati della verifica. La modifica manuale del solo status conserva il matching, mentre una variazione di FIG event ID o URL lo invalida. Una nuova verifica richiede un nuovo riscontro ufficiale seguito da `Importa dati`. La Scheda Evento non usa il badge pubblico della Scheda Atleta: espone invece il collegamento e i metadati World Gymnastics nella sezione informativa dedicata.
+Come per Athlete, ricerca e preview non alterano lo stato. `Importa dati` registra atomicamente data e Admin verificatore; la successiva approvazione dei singoli suggerimenti decide quali valori pubblicare ma non riscrive i metadati della verifica. La modifica manuale del solo status conserva il matching, mentre una variazione di FIG event ID o URL lo invalida. Una nuova verifica richiede un nuovo riscontro ufficiale seguito da `Importa dati`. Quando la verifica e attiva, la Scheda Evento mostra lo stesso badge blu LEVERAGE della Scheda Atleta e raccoglie FIG ID, status, profilo, data e, solo per Admin/Super Admin, Admin verificatore nella medesima riga informativa World Gymnastics. Il badge certifica il matching con la pagina evento ufficiale, non ogni singolo dato o risultato della competizione.
 
 Campi suggeribili attuali:
 
