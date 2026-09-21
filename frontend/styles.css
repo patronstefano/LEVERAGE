@@ -2767,6 +2767,12 @@ a:focus-visible > .entity-card-clickable {
   box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.08);
 }
 
+.saved-ranking-input-shell.is-invalid,
+.saved-ranking-input-shell.is-invalid:focus-within {
+  border-color: rgba(184, 52, 52, 0.76);
+  box-shadow: 0 0 0 3px rgba(184, 52, 52, 0.08);
+}
+
 .saved-ranking-message {
   display: block;
   min-height: 0;
@@ -2779,6 +2785,15 @@ a:focus-visible > .entity-card-clickable {
   display: none;
 }
 
+.saved-ranking-message.is-error {
+  color: #a83030;
+  font-weight: 590;
+}
+
+.saved-ranking-form-shell.is-shaking {
+  animation: savedRankingInvalidShake 360ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
 @keyframes savedRankingPopupIn {
   from {
     opacity: 0;
@@ -2787,6 +2802,27 @@ a:focus-visible > .entity-card-clickable {
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes savedRankingInvalidShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .saved-ranking-form-shell.is-shaking {
+    animation: none;
   }
 }
 

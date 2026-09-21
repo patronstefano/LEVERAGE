@@ -319,6 +319,7 @@ const translations = {
     saveRankingView: "Save this Ranking",
     rankingViewName: "Ranking name",
     rankingViewNamePlaceholder: "Example: MAG FX 2025 cycle",
+    rankingViewNameRequired: "Complete this field.",
     rankingViewSaved: "Ranking configuration saved.",
     rankingViewError: "Unable to save this Ranking configuration.",
     openSavedRanking: "Open saved Ranking",
@@ -677,6 +678,7 @@ const translations = {
     saveRankingView: "Salva questo Ranking",
     rankingViewName: "Nome Ranking",
     rankingViewNamePlaceholder: "Esempio: MAG FX ciclo 2025",
+    rankingViewNameRequired: "Completa questo campo.",
     rankingViewSaved: "Configurazione Ranking salvata.",
     rankingViewError: "Impossibile salvare questa configurazione Ranking.",
     openSavedRanking: "Apri Ranking salvato",
@@ -1035,6 +1037,7 @@ const translations = {
     saveRankingView: "Guardar este Ranking",
     rankingViewName: "Nombre Ranking",
     rankingViewNamePlaceholder: "Ejemplo: MAG FX ciclo 2025",
+    rankingViewNameRequired: "Completa este campo.",
     rankingViewSaved: "Configuracion Ranking guardada.",
     rankingViewError: "No se pudo guardar esta configuracion Ranking.",
     openSavedRanking: "Abrir Ranking guardado",
@@ -1393,6 +1396,7 @@ const translations = {
     saveRankingView: "Enregistrer ce Ranking",
     rankingViewName: "Nom Ranking",
     rankingViewNamePlaceholder: "Exemple : MAG FX cycle 2025",
+    rankingViewNameRequired: "Completez ce champ.",
     rankingViewSaved: "Configuration Ranking enregistree.",
     rankingViewError: "Impossible d'enregistrer cette configuration Ranking.",
     openSavedRanking: "Ouvrir Ranking enregistre",
@@ -5269,25 +5273,56 @@ function bindRankingClearFilters() {
 function bindRankingSaveForm() {
   const revealButton = $("#showRankingSaveFormButton");
   const shell = $("#rankingSaveFormShell");
+  const input = $("#rankingViewNameInput");
+  const message = $("#rankingSaveMessage");
+  const inputShell = input?.closest(".saved-ranking-input-shell");
+  const clearValidationError = () => {
+    input?.removeAttribute("aria-invalid");
+    inputShell?.classList.remove("is-invalid");
+    shell?.classList.remove("is-shaking");
+    message?.classList.remove("is-error");
+    if (message?.dataset.validationError === "true") {
+      message.textContent = "";
+      delete message.dataset.validationError;
+    }
+  };
+  const showValidationError = () => {
+    if (!shell || !input || !message) return;
+    input.setAttribute("aria-invalid", "true");
+    inputShell?.classList.add("is-invalid");
+    message.classList.add("is-error");
+    message.dataset.validationError = "true";
+    message.textContent = t("rankingViewNameRequired");
+    shell.classList.remove("is-shaking");
+    void shell.offsetWidth;
+    shell.classList.add("is-shaking");
+    input.focus();
+  };
   revealButton?.addEventListener("click", () => {
     if (!shell) return;
     const shouldShow = shell.hidden;
     shell.hidden = !shouldShow;
     revealButton.setAttribute("aria-expanded", String(shouldShow));
     if (shouldShow) {
-      $("#rankingViewNameInput")?.focus();
+      clearValidationError();
+      input?.focus();
     }
   });
 
   const form = $("#rankingSaveForm");
   if (!form || !state.currentUser) return;
+  input?.addEventListener("input", () => {
+    if (input.value.trim()) clearValidationError();
+  });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const input = $("#rankingViewNameInput");
-    const message = $("#rankingSaveMessage");
     const submit = form.querySelector("button[type='submit']");
     const name = input.value.trim();
-    if (!name) return;
+    if (!name) {
+      showValidationError();
+      return;
+    }
+    clearValidationError();
     message.textContent = "";
     submit.disabled = true;
     try {
@@ -5810,7 +5845,7 @@ function renderRankingSavePanel() {
     <div class="saved-ranking-panel">
       <button class="quiet-button ranking-outline-action ranking-save-toggle" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
       <section class="panel saved-ranking-form-shell" id="rankingSaveFormShell" hidden>
-        <form class="saved-ranking-form" id="rankingSaveForm">
+        <form class="saved-ranking-form" id="rankingSaveForm" novalidate>
           <div class="saved-ranking-field">
             <label for="rankingViewNameInput">${t("rankingViewName")}</label>
             <div class="saved-ranking-input-row">

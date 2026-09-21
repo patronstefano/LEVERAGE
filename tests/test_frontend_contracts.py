@@ -306,3 +306,22 @@ def test_saved_ranking_popup_summarizes_the_number_of_active_filters():
     assert "padding: 13px 14px" in shell_styles
     assert "font-size: var(--card-meta-size)" in summary_styles
     assert "font-weight: 520" in summary_styles
+
+
+def test_saved_ranking_empty_name_uses_inline_validation_and_shake_feedback():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    binding = source.split("function bindRankingSaveForm", 1)[1].split(
+        "async function hydrateEventsCalendar",
+        1,
+    )[0]
+
+    assert 'id="rankingSaveForm" novalidate' in source
+    assert 'input.setAttribute("aria-invalid", "true")' in binding
+    assert 'message.textContent = t("rankingViewNameRequired")' in binding
+    assert 'shell.classList.add("is-shaking")' in binding
+    assert 'input?.addEventListener("input"' in binding
+    assert ".saved-ranking-input-shell.is-invalid" in styles
+    assert ".saved-ranking-message.is-error" in styles
+    assert "@keyframes savedRankingInvalidShake" in styles
+    assert "@media (prefers-reduced-motion: reduce)" in styles
