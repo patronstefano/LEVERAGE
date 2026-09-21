@@ -154,3 +154,36 @@ def test_result_warnings_share_relevance_and_rendering_rules_across_views():
     warning_styles = styles.split(".data-warning-box {", 1)[1].split("}", 1)[0]
     assert "background: transparent" in warning_styles
     assert "border-radius: var(--surface-radius)" in warning_styles
+
+
+def test_entity_cards_keep_verified_profile_data_out_of_list_summaries():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+
+    athlete_cards = source.split("function renderAthleteCards", 1)[1].split(
+        "function renderAthleteResultsPage",
+        1,
+    )[0]
+    event_cards = source.split("function renderEventList", 1)[1].split(
+        "function buildCalendarWeeks",
+        1,
+    )[0]
+    favorite_athletes = source.split("function renderFavoriteAthletes", 1)[1].split(
+        "function renderFavoriteEvents",
+        1,
+    )[0]
+    favorite_events = source.split("function renderFavoriteEvents", 1)[1].split(
+        "function renderAthleteProfileImage",
+        1,
+    )[0]
+
+    assert "athleteCardSummaryPills(athlete)" in athlete_cards
+    assert "world_gymnastics_status" not in athlete_cards
+    assert "birth_year" not in athlete_cards
+    assert 'eventCardSummaryPills(event)' in event_cards
+    assert "event.location" not in event_cards
+    assert "event.venue" not in event_cards
+    assert "calendarOnly" not in event_cards
+    assert 'athleteCardSummaryPills(athlete, item.athlete_id)' in favorite_athletes
+    assert "result_count" not in favorite_athletes
+    assert 'eventCardSummaryPills(event)' in favorite_events
+    assert "result_count" not in favorite_events

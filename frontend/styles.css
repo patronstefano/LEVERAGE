@@ -1962,6 +1962,7 @@ button {
   position: relative;
   display: grid;
   gap: 8px;
+  height: 100%;
   padding: 16px;
 }
 

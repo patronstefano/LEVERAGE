@@ -3823,21 +3823,21 @@ function renderGlobalSearchResults(data) {
     return messageState(t("noGlobalSearchResults"));
   }
   const athleteItems = data.athletes.map((athlete) => {
-    const pills = [
-      { label: athlete.discipline, variant: "brand" },
-      ...(athlete.country ? [{ label: athlete.country }] : []),
-      { label: resultLabel(athlete.result_count) },
-    ];
-    return entityCard(athlete.name, athlete.country || t("country"), pills, `#/athletes/${athlete.id}`);
+    return entityCard(
+      athlete.name,
+      "",
+      athleteCardSummaryPills(athlete),
+      `#/athletes/${athlete.id}`,
+    );
   });
   const eventItems = data.events.map((event) => {
-    const pills = [
-      { label: displayEnumValue(event.discipline), variant: "brand" },
-      { label: displayEnumValue(event.category) },
-      { label: resultLabel(event.result_count) },
-    ];
-    const meta = [event.location, formatDateRange(event) || String(event.year)].filter(Boolean).join(" · ");
-    return entityCard(event.name, meta, pills, `#/events/${event.id}`);
+    const period = formatDateRange(event) || String(event.year || "");
+    return entityCard(
+      eventCardTitle(event, period),
+      "",
+      eventCardSummaryPills(event),
+      `#/events/${event.id}`,
+    );
   });
   const resultItems = data.results.map(searchResultCard);
   const relatedResultItems = (data.related_results || []).map(searchResultCard);
@@ -5498,22 +5498,10 @@ function renderEventList(selector, events, options = {}) {
   }
   node.innerHTML = `<div class="grid-3 event-results-list">${displayEvents.map((event) => {
     const period = formatReadableDateRange(event);
-    const meta = [
-      event.location,
-      event.venue,
-    ].filter(Boolean).join(" · ");
-    const pills = [
-      { label: displayEnumValue(event.discipline) },
-      { label: displayEnumValue(event.category) },
-      { label: event.level },
-    ];
-    if (event.is_calendar_only) {
-      pills.push({ label: t("calendarOnly") });
-    }
     return entityCard(
       eventCardTitle(event, period),
-      meta,
-      pills,
+      "",
+      eventCardSummaryPills(event),
       event.id ? `#/events/${event.id}` : "",
       favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
     );
@@ -5906,19 +5894,29 @@ function compactIdLabel(id) {
   return `ID ${id}`;
 }
 
+function athleteCardSummaryPills(athlete = {}, id = athlete.id) {
+  return [
+    { label: escapeHtml(athlete.discipline || t("discipline")), variant: "brand" },
+    { label: escapeHtml(athlete.country || t("country")) },
+    { label: escapeHtml(compactIdLabel(id)) },
+  ];
+}
+
+function eventCardSummaryPills(event = {}) {
+  return [
+    { label: escapeHtml(event.discipline ? displayEnumValue(event.discipline) : t("discipline")) },
+    { label: escapeHtml(event.category ? displayEnumValue(event.category) : t("category")) },
+    { label: escapeHtml(event.level || t("event")) },
+  ];
+}
+
 function renderAthleteCards(athletes) {
   if (!athletes.length) return emptyState();
   return `<div class="grid-3 athlete-results-list">${athletes.map((athlete) => {
-    const pills = [
-      { label: athlete.discipline, variant: "brand" },
-      { label: athlete.country || t("country") },
-      { label: compactIdLabel(athlete.id) },
-      ...(athlete.birth_year ? [{ label: String(athlete.birth_year) }] : []),
-    ];
     return entityCard(
       escapeHtml(athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`)),
-      athlete.world_gymnastics_status || "",
-      pills,
+      "",
+      athleteCardSummaryPills(athlete),
       athleteSectionProfileHref(athlete.id),
       favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
     );
@@ -6654,20 +6652,10 @@ function renderFavoriteAthletes(details) {
   return `<div class="grid-3 athlete-results-list account-preference-card-list">${details.map((item) => {
     const athlete = item.athlete || {};
     const name = athleteCardDisplayName(athlete, `${t("athlete")} ${item.athlete_id}`);
-    const meta = [
-      athlete.world_gymnastics_status,
-      `${Number(item.result_count || 0).toLocaleString()} ${t("results")}`,
-      `${t("savedOn")} ${formatReadableDate(String(item.created_at || "").slice(0, 10))}`,
-    ].filter(Boolean).join(" · ");
-    const pills = [
-      { label: athlete.discipline || t("discipline"), variant: "brand" },
-      { label: athlete.country || t("country") },
-      { label: compactIdLabel(item.athlete_id) },
-    ];
     return entityCard(
       escapeHtml(name),
-      escapeHtml(meta),
-      pills.map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
+      "",
+      athleteCardSummaryPills(athlete, item.athlete_id),
       `#/athletes/${item.athlete_id}`,
       favoriteButton("athlete", item.athlete_id, true),
     );
@@ -6681,21 +6669,10 @@ function renderFavoriteEvents(details) {
   return `<div class="grid-3 event-results-list account-preference-card-list">${visibleDetails.map((item) => {
     const event = item.event || {};
     const period = formatReadableDateRange(event);
-    const meta = [
-      event.location,
-      event.venue,
-      `${Number(event.result_count || 0).toLocaleString()} ${t("results")}`,
-      `${t("savedOn")} ${formatReadableDate(String(item.created_at || "").slice(0, 10))}`,
-    ].filter(Boolean).join(" · ");
-    const pills = [
-      { label: event.discipline ? displayEnumValue(event.discipline) : t("discipline") },
-      { label: event.category ? displayEnumValue(event.category) : t("category") },
-      { label: event.level || t("event") },
-    ];
     return entityCard(
       eventCardTitle({ ...event, id: item.event_id }, period),
-      escapeHtml(meta),
-      pills.filter((pill) => pill.label).map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
+      "",
+      eventCardSummaryPills(event),
       item.event_id ? `#/events/${item.event_id}` : "",
       favoriteButton("event", item.event_id, true),
     );
@@ -9070,22 +9047,15 @@ function renderAnalyticsFavoriteAthletes() {
       ${details.map((detail) => {
         const athlete = detail.athlete || {};
         const name = athleteCardDisplayName(athlete, `${t("athlete")} ${detail.athlete_id}`);
-        const meta = [
-          athlete.world_gymnastics_status,
-          `${Number(detail.result_count || 0).toLocaleString()} ${t("results")}`,
-          `${t("savedOn")} ${formatReadableDate(String(detail.created_at || "").slice(0, 10))}`,
-        ].filter(Boolean).join(" · ");
         return `
           <article class="entity-card entity-card-clickable analytics-favorite-athlete-card" role="button" tabindex="0" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
             <div class="entity-row">
               <h3>${escapeHtml(name)}</h3>
               <span class="favorite-button is-active analytics-favorite-static" aria-hidden="true"><span>&#9733;</span></span>
             </div>
-            <p class="meta">${escapeHtml(meta)}</p>
+            <p class="meta"></p>
             <div class="pill-row">
-              ${renderPill({ label: escapeHtml(athlete.discipline || t("discipline")), variant: "brand" })}
-              ${renderPill({ label: escapeHtml(athlete.country || t("country")) })}
-              ${renderPill({ label: escapeHtml(compactIdLabel(detail.athlete_id)) })}
+              ${athleteCardSummaryPills(athlete, detail.athlete_id).map((pill) => renderPill(pill)).join("")}
             </div>
           </article>
         `;
