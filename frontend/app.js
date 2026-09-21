@@ -5811,13 +5811,15 @@ function renderRankingSavePanel() {
       <button class="quiet-button ranking-outline-action ranking-save-toggle" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
       <section class="panel saved-ranking-form-shell" id="rankingSaveFormShell" hidden>
         <form class="saved-ranking-form" id="rankingSaveForm">
-          <label>
-            <span>${t("rankingViewName")}</span>
+          <div class="saved-ranking-field">
+            <label for="rankingViewNameInput">${t("rankingViewName")}</label>
+            <div class="saved-ranking-input-row">
             <span class="saved-ranking-input-shell">
               <input id="rankingViewNameInput" type="text" maxlength="120" required placeholder="${t("rankingViewNamePlaceholder")}">
-              <button class="saved-ranking-submit" type="submit">${t("save")}</button>
             </span>
-          </label>
+              <button class="saved-ranking-submit" type="submit">${t("save")}</button>
+            </div>
+          </div>
           <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
         </form>
         <p class="saved-ranking-filter-summary">${escapeHtml(activeFilterLabel)}</p>

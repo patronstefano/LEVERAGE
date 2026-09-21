@@ -2676,19 +2676,28 @@ a:focus-visible > .entity-card-clickable {
   gap: 9px;
 }
 
-.saved-ranking-form label {
+.saved-ranking-field {
   display: grid;
   gap: 7px;
+}
+
+.saved-ranking-field > label {
   color: var(--muted);
   font-size: 13px;
   font-weight: 650;
   line-height: 1.25;
 }
 
+.saved-ranking-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 7px;
+}
+
 .saved-ranking-input-shell {
   display: flex;
   align-items: center;
-  gap: 6px;
   width: 100%;
   min-height: 42px;
   padding: 4px;
@@ -2722,10 +2731,10 @@ a:focus-visible > .entity-card-clickable {
 
 .saved-ranking-submit {
   flex: 0 0 auto;
-  min-height: 32px;
-  padding: 0 13px;
+  min-height: 42px;
+  padding: 0 15px;
   border: 1px solid rgba(25, 23, 71, 0.14);
-  border-radius: var(--data-chip-radius);
+  border-radius: var(--control-radius);
   background: #fff;
   color: var(--ink);
   font-family: inherit;

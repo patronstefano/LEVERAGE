@@ -267,6 +267,8 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     shell_styles = styles.split(".saved-ranking-form-shell {", 1)[1].split("}", 1)[0]
     input_styles = styles.split(".saved-ranking-form input {", 1)[1].split("}", 1)[0]
     action_styles = styles.split(".saved-ranking-submit {", 1)[1].split("}", 1)[0]
+    input_row_styles = styles.split(".saved-ranking-input-row {", 1)[1].split("}", 1)[0]
+    input_shell_markup = source.split('class="saved-ranking-input-shell"', 1)[1].split("</span>", 1)[0]
 
     assert 'class="saved-ranking-filter-summary"' in source
     assert "padding: 13px 14px" in shell_styles
@@ -274,8 +276,11 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     assert "box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12)" in shell_styles
     assert ".saved-ranking-form-shell[hidden]" in styles
     assert "font-size: 14px" in input_styles
-    assert "min-height: 32px" in action_styles
-    assert "border-radius: var(--data-chip-radius)" in action_styles
+    assert "grid-template-columns: minmax(0, 1fr) auto" in input_row_styles
+    assert "gap: 7px" in input_row_styles
+    assert 'class="saved-ranking-submit"' not in input_shell_markup
+    assert "min-height: 42px" in action_styles
+    assert "border-radius: var(--control-radius)" in action_styles
     assert ".saved-ranking-message:empty" in styles
     assert "@keyframes savedRankingPopupIn" in styles
 
