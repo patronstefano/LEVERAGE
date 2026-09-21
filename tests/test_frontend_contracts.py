@@ -130,3 +130,27 @@ def test_athlete_search_keeps_every_card_in_the_final_page():
     assert "splitEventListFullRows" not in card_block
     assert "slice(0, ATHLETE_SECTION_LIMIT)" in load_block
     assert "athleteHasMore = athletes.length > ATHLETE_SECTION_LIMIT" in load_block
+
+
+def test_result_warnings_share_relevance_and_rendering_rules_across_views():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+
+    helper = source.split("function relevantResultDataWarnings", 1)[1].split(
+        "function localizedWorldGymnasticsWarning",
+        1,
+    )[0]
+    event_block = source.split("function eventResultWarningMessages", 1)[1].split(
+        "function renderEventResultWarnings",
+        1,
+    )[0]
+
+    assert 'selectedMetric === "execution_estimate"' in helper
+    assert 'selectedApparatuses.has("VT") || selectedApparatuses.has("VT AVG")' in helper
+    assert "return localizedBackendWarnings(warnings)" in helper
+    assert 't("analyticsEEstimateNotice")' in event_block
+    assert "relevantResultDataWarnings(results, selectedMetric, [selectedApparatus])" in event_block
+    assert 'renderDataWarningStack(eventResultWarningMessages(results, payload), "event-result-warning-stack")' in source
+    warning_styles = styles.split(".data-warning-box {", 1)[1].split("}", 1)[0]
+    assert "background: transparent" in warning_styles
+    assert "border-radius: var(--surface-radius)" in warning_styles

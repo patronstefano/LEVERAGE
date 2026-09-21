@@ -1855,6 +1855,25 @@ function warningIsMultipleScoringCycles(message) {
     normalized.includes("plusieurs cycles olympiques");
 }
 
+function relevantResultDataWarnings(entries = [], metric = "score", apparatuses = []) {
+  const selectedMetric = normalizeRankingMetricValue(metric);
+  const selectedApparatuses = new Set(
+    apparatuses.map((value) => String(value || "").trim().toUpperCase()).filter(Boolean),
+  );
+  const warnings = entries
+    .flatMap((entry) => entry?.data_warnings || [])
+    .filter((warning) => {
+      if (executionEstimateWarningFlags(warning)) {
+        return selectedMetric === "execution_estimate";
+      }
+      if (warningIsVaultAttemptOrder(warning)) {
+        return selectedApparatuses.has("VT") || selectedApparatuses.has("VT AVG");
+      }
+      return true;
+    });
+  return localizedBackendWarnings(warnings);
+}
+
 function localizedWorldGymnasticsWarning(warning = {}) {
   const typeKeyByType = {
     no_candidates: "wgWarningTypeNoCandidates",
@@ -5717,17 +5736,11 @@ function rankingWarningMessages(payload = {}) {
   const selectedMetric = rankingSortBy();
   const selectedApparatuses = filterValues("apparatus", "rankings");
   const payloadWarnings = (payload?.warnings || []).filter((warning) => !warningIsMultipleScoringCycles(warning));
-  const rankingWarnings = (payload.ranking || [])
-    .flatMap((entry) => entry.data_warnings || [])
-    .filter((warning) => {
-      if (executionEstimateWarningFlags(warning)) {
-        return selectedMetric === "execution_estimate";
-      }
-      if (warningIsVaultAttemptOrder(warning)) {
-        return selectedApparatuses.includes("VT") || selectedApparatuses.includes("VT AVG");
-      }
-      return true;
-    });
+  const rankingWarnings = relevantResultDataWarnings(
+    payload.ranking || [],
+    selectedMetric,
+    selectedApparatuses,
+  );
   return [
     ...(selectedMetric === "execution_estimate" ? [t("estimatedEScoreRankingNotice")] : []),
     ...localizedBackendWarnings([
@@ -8455,7 +8468,7 @@ function athleteAnalyticsPreparedData(payload) {
   const summary = athleteAnalyticsSummary(includedPoints, metric);
   const vertices = athleteAnalyticsBuildVertices(points, discipline, metric, mode, range.startDate, range.endDate);
   const availableValues = vertices.some((vertex) => vertex.value !== null && vertex.value !== undefined);
-  const uniqueWarnings = localizedBackendWarnings(includedPoints.flatMap((point) => point.data_warnings || []));
+  const uniqueWarnings = relevantResultDataWarnings(includedPoints, metric, selectedApparatuses);
   const scoringCycles = athleteAnalyticsScoringCycles(includedPoints);
   const eventPeriodPoints = includedPoints.filter(athleteAnalyticsPointUsesEventPeriod);
   const multiDayPoints = includedPoints.filter(athleteAnalyticsPointIsMultiDayEvent);
@@ -8983,7 +8996,7 @@ function analyticsComparisonPreparedData() {
       trend,
       contextTrend,
       summary: athleteAnalyticsSummary(includedPoints, comparison.metric),
-      warnings: localizedBackendWarnings(includedPoints.flatMap((point) => point.data_warnings || [])),
+      warnings: relevantResultDataWarnings(includedPoints, comparison.metric, selectedApparatuses),
     };
   });
   const radarValues = athleteData.flatMap((item) => item.vertices.map((vertex) => vertex.value));
@@ -10717,9 +10730,10 @@ function renderEventResultGroups(profile = state.eventDetail.profile) {
 
 function eventResultWarningMessages(results = [], payload = {}) {
   const selectedMetric = normalizeRankingMetricValue(payload?.applied_filters?.sort_by || eventDetailSortBy());
+  const selectedApparatus = payload?.applied_filters?.apparatus || selectedEventClassification()?.apparatus || "";
   return [
-    ...(selectedMetric === "execution_estimate" ? [t("estimatedEScoreRankingNotice")] : []),
-    ...localizedBackendWarnings(results.flatMap((entry) => entry.data_warnings || [])),
+    ...(selectedMetric === "execution_estimate" ? [t("analyticsEEstimateNotice")] : []),
+    ...relevantResultDataWarnings(results, selectedMetric, [selectedApparatus]),
   ];
 }
 
