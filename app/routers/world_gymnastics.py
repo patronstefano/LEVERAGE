@@ -1,4 +1,5 @@
 from difflib import SequenceMatcher
+from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -507,6 +508,8 @@ def create_world_gymnastics_athlete_suggestions(
     badge_assigned = payload.create_suggestions and not athlete.is_profile_verified
     if badge_assigned:
         athlete.is_profile_verified = True
+        athlete.world_gymnastics_verified_at = datetime.utcnow()
+        athlete.world_gymnastics_verified_by_admin_id = current_user.id
         add_audit_log(
             db,
             current_user,

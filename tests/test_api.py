@@ -4094,13 +4094,14 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     assert public_athlete["world_gymnastics_athlete_id"] is None
     assert public_athlete["world_gymnastics_profile_url"] is None
     assert public_athlete["world_gymnastics_status"] is None
-    assert public_athlete["world_gymnastics_verified_at"] is None
+    assert public_athlete["world_gymnastics_verified_at"] is not None
     assert "world_gymnastics_verified_by_admin_id" not in public_athlete
 
     admin_view = client.get(
         f"/athletes/{athlete['id']}/admin-view",
         headers=admin_headers,
     ).json()
+    assert admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] is not None
     pending_fields = sorted(suggestion["field_name"] for suggestion in admin_view["pending_suggestions"])
     assert pending_fields == [
         "birth_year",
@@ -4132,6 +4133,31 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
         headers=admin_headers,
     ).json()
     assert verified_admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] is not None
+
+    revoke_response = client.patch(
+        f"/athletes/{athlete['id']}/world-gymnastics",
+        json={"remove_verification_badge": True},
+        headers=admin_headers,
+    )
+    assert revoke_response.status_code == 200
+    assert revoke_response.json()["is_profile_verified"] is False
+    assert revoke_response.json()["world_gymnastics_verified_at"] is None
+    assert revoke_response.json()["world_gymnastics_verified_by_admin_id"] is None
+
+    reimport_response = client.post(
+        f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
+        json={"fig_athlete_id": "69037"},
+        headers=admin_headers,
+    )
+    assert reimport_response.status_code == 200
+
+    reverified_admin_view = client.get(
+        f"/athletes/{athlete['id']}/admin-view",
+        headers=admin_headers,
+    ).json()["athlete"]
+    assert reverified_admin_view["is_profile_verified"] is True
+    assert reverified_admin_view["world_gymnastics_verified_at"] is not None
+    assert reverified_admin_view["world_gymnastics_verified_by_admin_id"] is not None
 
 
 def test_world_gymnastics_event_candidates_are_admin_only(monkeypatch):
