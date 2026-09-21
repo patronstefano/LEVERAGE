@@ -44,7 +44,14 @@ function contextualAthleteSourceSection(route) {
   return "";
 }
 
+function routeHasGlobalSearchContext(route) {
+  const [routePath, query = ""] = String(route || "/").split("?");
+  if (!/^\/(athletes|events)\/\d+$/.test(routePath)) return false;
+  return new URLSearchParams(query).get("from") === "search";
+}
+
 function activeRouteSection(route) {
+  if (routeHasGlobalSearchContext(route)) return "";
   return contextualAthleteSourceSection(route) || routeSection(route);
 }
 
@@ -590,6 +597,7 @@ const translations = {
     backToClassification: "Back to Standings",
     backToEvents: "Back to Events",
     backToHome: "Back to Home",
+    backToGlobalSearch: "Back to Global search",
     comingSoon: "Coming soon",
   },
   it: {
@@ -950,6 +958,7 @@ const translations = {
     backToClassification: "Torna alla Classifica",
     backToEvents: "Torna agli Eventi",
     backToHome: "Torna alla Home",
+    backToGlobalSearch: "Torna alla Ricerca globale",
     comingSoon: "In arrivo",
   },
   es: {
@@ -1310,6 +1319,7 @@ const translations = {
     backToClassification: "Volver a la clasificación",
     backToEvents: "Volver a Eventos",
     backToHome: "Volver a Home",
+    backToGlobalSearch: "Volver a la Busqueda global",
     comingSoon: "Proximamente",
   },
   fr: {
@@ -1670,6 +1680,7 @@ const translations = {
     backToClassification: "Retour au classement",
     backToEvents: "Retour aux Evenements",
     backToHome: "Retour a l'accueil",
+    backToGlobalSearch: "Retour a la Recherche globale",
     comingSoon: "Bientot",
   },
 };
@@ -2577,7 +2588,7 @@ function setActiveNav() {
     if (section) {
       active = currentSection === section;
     } else if (route === "/") {
-      active = state.route === "/" || state.route.startsWith("/search");
+      active = state.route === "/" || state.route.startsWith("/search") || routeHasGlobalSearchContext(state.route);
     } else {
       active = state.route === route || state.route.startsWith(`${route}/`) || state.route.startsWith(`${route}?`);
     }
@@ -3129,6 +3140,16 @@ function resultSuggestion(result) {
   };
 }
 
+function globalSearchDetailHref(href, returnRoute = state.route) {
+  const normalizedHref = String(href || "").replace(/^#/, "");
+  const [path, query = ""] = normalizedHref.split("?");
+  if (!/^\/(athletes|events)\/\d+$/.test(path)) return href;
+  const params = new URLSearchParams(query);
+  params.set("from", "search");
+  params.set("return_to", String(returnRoute || "/search"));
+  return `#${path}?${params.toString()}`;
+}
+
 function appendUniqueSuggestions(target, source, key) {
   const existing = new Set(target.map(key));
   source.forEach((item) => {
@@ -3197,7 +3218,9 @@ function renderSearchSuggestions(container, items) {
     button.addEventListener("click", () => {
       closeSearchSuggestions();
       if (button.dataset.suggestionHref) {
-        window.location.hash = button.dataset.suggestionHref;
+        window.location.hash = state.route.startsWith("/search")
+          ? globalSearchDetailHref(button.dataset.suggestionHref)
+          : button.dataset.suggestionHref;
         return;
       }
       window.location.hash = `#/search?q=${encodeURIComponent(button.dataset.suggestionQuery || "")}`;
@@ -3827,7 +3850,12 @@ function searchResultCard(result) {
     ...(result.country ? [{ label: result.country }] : []),
   ];
   const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
-  return entityCard(result.athlete_name, meta, pills, `#/events/${result.event_id}`);
+  return entityCard(
+    result.athlete_name,
+    meta,
+    pills,
+    globalSearchDetailHref(`#/events/${result.event_id}`),
+  );
 }
 
 function renderGlobalSearchResults(data) {
@@ -3840,7 +3868,7 @@ function renderGlobalSearchResults(data) {
       athleteCardTitle(athlete, athlete.name),
       "",
       athleteCardSummaryPills(athlete),
-      `#/athletes/${athlete.id}`,
+      globalSearchDetailHref(`#/athletes/${athlete.id}`),
     );
   });
   const eventItems = data.events.map((event) => {
@@ -3849,7 +3877,7 @@ function renderGlobalSearchResults(data) {
       eventCardTitle(event, period),
       "",
       eventCardSummaryPills(event),
-      `#/events/${event.id}`,
+      globalSearchDetailHref(`#/events/${event.id}`),
     );
   });
   const resultItems = data.results.map(searchResultCard);
@@ -11569,6 +11597,10 @@ function athleteDetailBackDestination() {
   const params = new URLSearchParams(query);
   const source = params.get("from") || "";
   const returnRoute = params.get("return_to") || "";
+  if (source === "search") {
+    const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
+    return { href: `#${searchRoute}`, label: t("backToGlobalSearch") };
+  }
   if (source === "athletes") {
     const athleteRoute = routeSection(returnRoute) === "athletes"
       ? returnRoute
@@ -11591,6 +11623,17 @@ function athleteDetailBackDestination() {
     }
   }
   return { href: "#/athletes", label: t("backToAthletes") };
+}
+
+function eventDetailBackDestination() {
+  const [, query = ""] = state.route.split("?");
+  const params = new URLSearchParams(query);
+  const returnRoute = params.get("return_to") || "";
+  if (params.get("from") === "search") {
+    const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
+    return { href: `#${searchRoute}`, label: t("backToGlobalSearch") };
+  }
+  return { href: "#/events", label: t("backToEvents") };
 }
 
 async function renderAthleteDetail(athleteId) {
@@ -11674,9 +11717,10 @@ async function renderEventDetail(eventId) {
     }
     profile.event = event;
     state.eventDetail.profile = profile;
+    const backDestination = eventDetailBackDestination();
     setApp(`
       <div class="detail-topbar">
-        <a class="quiet-button detail-back-button" href="#/events">${escapeHtml(t("backToEvents"))}</a>
+        <a class="quiet-button detail-back-button" href="${escapeHtml(backDestination.href)}">${escapeHtml(backDestination.label)}</a>
       </div>
       <section class="panel profile-panel athlete-profile-summary-panel event-profile-summary-panel" id="eventProfileSummary">
         <div class="athlete-profile-title-row">

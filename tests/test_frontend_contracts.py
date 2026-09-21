@@ -339,3 +339,30 @@ def test_global_search_supports_progressive_loading_without_duplicates():
     assert "offset: append ? searchOffset : 0" in global_search
     assert "searchOffset + GLOBAL_SEARCH_SECTION_LIMIT" in global_search
     assert 'bindLoadMoreButton("global-search"' in global_search
+
+
+def test_global_search_detail_links_preserve_home_context_and_return_route():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    global_results = source.split("function searchResultCard", 1)[1].split(
+        "async function renderGlobalSearch",
+        1,
+    )[0]
+    athlete_back = source.split("function athleteDetailBackDestination", 1)[1].split(
+        "async function renderAthleteDetail",
+        1,
+    )[0]
+    event_back = source.split("function eventDetailBackDestination", 1)[1].split(
+        "async function renderAthleteDetail",
+        1,
+    )[0]
+
+    assert 'params.set("from", "search")' in source
+    assert 'params.set("return_to", String(returnRoute || "/search"))' in source
+    assert 'globalSearchDetailHref(`#/athletes/${athlete.id}`)' in global_results
+    assert 'globalSearchDetailHref(`#/events/${event.id}`)' in global_results
+    assert 'globalSearchDetailHref(`#/events/${result.event_id}`)' in global_results
+    assert 'source === "search"' in athlete_back
+    assert 'params.get("from") === "search"' in event_back
+    assert 'label: t("backToGlobalSearch")' in athlete_back
+    assert 'label: t("backToGlobalSearch")' in event_back
+    assert "routeHasGlobalSearchContext(state.route)" in source
