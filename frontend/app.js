@@ -5455,11 +5455,13 @@ function eventListDisplayItems(events = []) {
 
 function splitEventListFullRows(events = [], hasMore = false) {
   const remainder = events.length % EVENT_CARD_COLUMN_COUNT;
-  if (!remainder || events.length <= EVENT_CARD_COLUMN_COUNT) return { visible: events, pending: [] };
+  if (!hasMore || !remainder || events.length <= EVENT_CARD_COLUMN_COUNT) {
+    return { visible: events, pending: [] };
+  }
   const visibleCount = events.length - remainder;
   return {
     visible: events.slice(0, visibleCount),
-    pending: hasMore ? events.slice(visibleCount) : [],
+    pending: events.slice(visibleCount),
   };
 }
 
@@ -5467,13 +5469,11 @@ function renderEventList(selector, events, options = {}) {
   const node = $(selector);
   if (!node) return;
   const displayEvents = eventListDisplayItems(events);
-  const rowSplit = splitEventListFullRows(displayEvents, true);
-  const visibleEvents = rowSplit.visible.length ? rowSplit.visible : displayEvents;
-  if (!visibleEvents.length) {
+  if (!displayEvents.length) {
     node.innerHTML = emptyState();
     return;
   }
-  node.innerHTML = `<div class="grid-3 event-results-list">${visibleEvents.map((event) => {
+  node.innerHTML = `<div class="grid-3 event-results-list">${displayEvents.map((event) => {
     const period = formatReadableDateRange(event);
     const meta = [
       event.location,
@@ -6199,14 +6199,12 @@ async function renderEvents() {
       availableItems = eventListDisplayItems(mergeUniqueBy(availableItems, displayBatch, eventListItemKey));
     }
     let takeCount = Math.min(EVENT_SECTION_LIMIT, availableItems.length);
-    if (takeCount > EVENT_CARD_COLUMN_COUNT) {
+    if (!eventRawExhausted && takeCount > EVENT_CARD_COLUMN_COUNT) {
       takeCount -= takeCount % EVENT_CARD_COLUMN_COUNT;
     }
     const pageItems = availableItems.slice(0, takeCount);
     const leftoverItems = availableItems.slice(takeCount);
-    eventPendingItems = eventRawExhausted && leftoverItems.length < EVENT_CARD_COLUMN_COUNT
-      ? []
-      : leftoverItems;
+    eventPendingItems = leftoverItems;
     eventHasMore = eventPendingItems.length > 0 || !eventRawExhausted;
     return pageItems;
   };

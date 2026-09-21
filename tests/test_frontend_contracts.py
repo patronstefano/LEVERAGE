@@ -72,3 +72,19 @@ def test_event_admin_tools_follow_the_controlled_world_gymnastics_flow():
     assert 'method: "PATCH"' in source
     assert 'remove_world_gymnastics_verification: true' in source
     assert 'isAdminUser() && event.world_gymnastics_verified_by_admin_id' in source
+
+
+def test_event_search_keeps_the_incomplete_final_card_row():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    split_block = source.split("function splitEventListFullRows", 1)[1].split(
+        "function renderEventList",
+        1,
+    )[0]
+    render_block = source.split("function renderEventList", 1)[1].split(
+        "function buildCalendarWeeks",
+        1,
+    )[0]
+
+    assert "if (!hasMore || !remainder" in split_block
+    assert "pending: events.slice(visibleCount)" in split_block
+    assert "splitEventListFullRows(displayEvents, true)" not in render_block

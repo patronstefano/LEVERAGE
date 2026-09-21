@@ -2941,6 +2941,7 @@ Flusso di registrazione USER:
 - protetta la riservatezza dell'Admin verificatore anche per Event: `world_gymnastics_verified_by_admin_id` e stato rimosso dagli schemi pubblici e resta disponibile soltanto nella risposta protetta `GET /events/{event_id}/admin-view`. La Scheda Evento mostra FIG ID, status, profilo e data di verifica in una riga World Gymnastics separata; l'Admin ID compare solo ad Admin/Super Admin.
 - mantenuta una distinzione semantica esplicita: Event condivide workflow, stile, controlli e audit della Scheda Atleta, ma non riceve il badge pubblico dell'atleta. Il matching ufficiale viene comunicato attraverso i dettagli World Gymnastics dell'evento.
 - aggiunti test di regressione per preview non mutativa, importazione certificativa, stabilita dei metadati durante l'approvazione dei suggerimenti, manutenzione dello status, revoca, ri-certificazione, invalidazione automatica al cambio dell'identita FIG e privacy dell'Admin verificatore.
+- corretta una perdita di risultati nella lista Eventi: la regola visiva delle card in righe da tre scartava erroneamente una riga finale incompleta quando una ricerca restituiva, per esempio, cinque eventi. I blocchi intermedi della paginazione restano multipli di tre, mentre l'ultima pagina mostra ora sempre tutti i risultati residui. La ricerca `Olympic Games` espone quindi tutti e cinque gli eventi restituiti dal backend invece di fermarsi alle prime tre card.
 
 ## 23. Conclusione
 
