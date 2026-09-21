@@ -232,11 +232,15 @@ def test_analytics_favorites_loading_message_is_delayed_to_avoid_flashing():
     assert "window.clearTimeout(analyticsFavoritesLoadingTimer)" in load_block
 
 
-def test_account_favorite_and_saved_cards_share_a_stable_minimum_height():
+def test_saved_ranking_cards_use_the_compact_event_card_title_structure():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
     styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
-    account_card_styles = styles.split(
-        ".account-view-panel .account-preference-card-list .entity-card {",
+    ranking_cards = source.split("function renderSavedRankingViews", 1)[1].split(
+        "function accountViewSection",
         1,
-    )[1].split("}", 1)[0]
+    )[0]
 
-    assert "min-height: 104px" in account_card_styles
+    assert 'class="event-card-title saved-ranking-card-title"' in ranking_cards
+    assert 'class="event-card-date"' in ranking_cards
+    assert 'title,\n      "",' in ranking_cards
+    assert ".account-view-panel .account-preference-card-list .entity-card" not in styles

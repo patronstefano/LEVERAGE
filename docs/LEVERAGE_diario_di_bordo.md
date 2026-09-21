@@ -2954,6 +2954,7 @@ Con il tag GitHub `v0.5.0-world-gymnastics-certification` viene fissata una mile
 
 - eliminato il lampeggio del messaggio `Caricamento` all'apertura dei Preferiti nella Sezione Analytics. Lo stato testuale viene ora mostrato soltanto se la richiesta supera 250 ms; per risposte rapide il contenitore resta visivamente stabile, mentre durante aggiornamenti successivi le card gia disponibili rimangono visibili. La soluzione conserva un feedback accessibile per i caricamenti reali senza trasformare la normale latenza di rete in uno sfarfallio percepito come lag.
 - uniformato l'ingombro verticale delle card nell'Area Personale. Atleti preferiti, Eventi preferiti e Ranking salvati condividono ora un'altezza minima di 104 px, sufficiente ad allineare le griglie senza reintrodurre nelle prime due tipologie metadati rimossi per ragioni di pulizia. L'altezza resta minima e non rigida, cosi nomi o traduzioni piu lunghi possono espandersi senza essere tagliati.
+- corretta la diagnosi sull'altezza delle card dell'Area Personale: non erano Atleti ed Eventi preferiti a essere troppo bassi, ma i Ranking salvati a essere troppo alti. Rimossa quindi l'altezza minima comune di 104 px. Soltanto le card Ranking sono state compattate, integrando numero di filtri attivi e data di salvataggio nella stessa struttura secondaria grigia usata per la data delle card Evento; i contenuti restano invariati, mentre viene eliminata una riga strutturale e l'ingombro torna coerente con le altre card.
 
 ## 23. Conclusione
 

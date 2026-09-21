@@ -11321,9 +11321,15 @@ function renderSavedRankingViews(views) {
       ...(category ? [{ label: category }] : []),
       { label: metric },
     ];
+    const title = `
+      <span class="event-card-title saved-ranking-card-title">
+        <span class="event-card-name">${escapeHtml(view.name)}</span>
+        ${meta ? `<span class="event-card-date">${escapeHtml(meta)}</span>` : ""}
+      </span>
+    `;
     return entityCard(
-      escapeHtml(view.name),
-      escapeHtml(meta),
+      title,
+      "",
       pills.map((pill) => ({ ...pill, label: escapeHtml(pill.label) })),
       `#/rankings?savedView=${view.id}`,
       deleteSavedRankingButton(view.id),

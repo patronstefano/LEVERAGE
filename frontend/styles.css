@@ -3404,10 +3404,6 @@ a:focus-visible > .entity-card-clickable {
   padding: var(--card-padding);
 }
 
-.account-view-panel .account-preference-card-list .entity-card {
-  min-height: 104px;
-}
-
 .account-preference-card-list .entity-card h3 {
   font-size: var(--card-title-size);
   font-weight: 690;
@@ -3440,6 +3436,12 @@ a:focus-visible > .entity-card-clickable {
   min-width: 0;
   padding-right: 4px;
   padding-left: 4px;
+}
+
+.saved-ranking-card-title .event-card-date {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
 }
 
 .account-saved-ranking-list .delete-button:hover,
