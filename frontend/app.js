@@ -5804,6 +5804,8 @@ function renderRankingSavePanel() {
   if (!state.currentUser) {
     return "";
   }
+  const activeFilterCount = savedRankingActiveFilterCount(savedRankingFiltersPayload());
+  const activeFilterLabel = `${activeFilterCount} ${t(activeFilterCount === 1 ? "activeFilterSingular" : "activeFilterPlural")}`;
   return `
     <div class="saved-ranking-panel">
       <button class="quiet-button ranking-outline-action ranking-save-toggle" type="button" id="showRankingSaveFormButton" aria-controls="rankingSaveFormShell" aria-expanded="false">${t("saveRankingView")}</button>
@@ -5818,7 +5820,7 @@ function renderRankingSavePanel() {
           </label>
           <span class="saved-ranking-message" id="rankingSaveMessage" role="status" aria-live="polite"></span>
         </form>
-        <p class="saved-ranking-filter-summary"><strong>${t("filters")}</strong><span>${escapeHtml(rankingFilterSummary())}</span></p>
+        <p class="saved-ranking-filter-summary">${escapeHtml(activeFilterLabel)}</p>
       </section>
     </div>
   `;

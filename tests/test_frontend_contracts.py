@@ -277,3 +277,19 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     assert "border-radius: var(--data-chip-radius)" in action_styles
     assert ".saved-ranking-message:empty" in styles
     assert "@keyframes savedRankingPopupIn" in styles
+
+
+def test_saved_ranking_popup_summarizes_the_number_of_active_filters():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    panel = source.split("function renderRankingSavePanel", 1)[1].split(
+        "function renderRankingList",
+        1,
+    )[0]
+    summary_styles = styles.split(".saved-ranking-filter-summary {", 1)[1].split("}", 1)[0]
+
+    assert "savedRankingActiveFilterCount(savedRankingFiltersPayload())" in panel
+    assert 'activeFilterCount === 1 ? "activeFilterSingular" : "activeFilterPlural"' in panel
+    assert "rankingFilterSummary()" not in panel
+    assert "font-size: var(--card-meta-size)" in summary_styles
+    assert "font-weight: 520" in summary_styles
