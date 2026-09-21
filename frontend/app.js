@@ -108,6 +108,7 @@ const state = {
     favoriteDetails: [],
     favoritesOpen: false,
     favoritesLoading: false,
+    favoritesLoadingVisible: false,
     favoritesError: "",
     metric: "score",
     mode: "period",
@@ -2101,7 +2102,10 @@ function clearAuth() {
   state.analyticsComparison.favoriteDetails = [];
   state.analyticsComparison.favoritesOpen = false;
   state.analyticsComparison.favoritesLoading = false;
+  state.analyticsComparison.favoritesLoadingVisible = false;
   state.analyticsComparison.favoritesError = "";
+  window.clearTimeout(analyticsFavoritesLoadingTimer);
+  analyticsFavoritesLoadingTimer = null;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   updateAuthUi();
 }
@@ -8873,6 +8877,8 @@ async function loadAthleteAnalytics(athleteId, { preserveControls = false } = {}
 
 let analyticsComparisonSearchRequestId = 0;
 let analyticsComparisonProfileRequestId = 0;
+let analyticsFavoritesLoadingTimer = null;
+const ANALYTICS_FAVORITES_LOADING_DELAY_MS = 250;
 
 function analyticsComparisonDiscipline() {
   return state.analyticsComparison.athletes.find(Boolean)?.discipline || "MAG";
@@ -9045,9 +9051,10 @@ function analyticsCompatibleFavoriteDetails() {
 
 function renderAnalyticsFavoriteAthletes() {
   const comparison = state.analyticsComparison;
-  if (comparison.favoritesLoading) {
+  if (comparison.favoritesLoading && comparison.favoritesLoadingVisible && !comparison.favoriteDetails.length) {
     return `<div class="analytics-favorite-picker-status">${escapeHtml(t("loading"))}</div>`;
   }
+  if (comparison.favoritesLoading && !comparison.favoriteDetails.length) return "";
   if (comparison.favoritesError) {
     return `<div class="analytics-favorite-picker-status">${escapeHtml(t("analyticsCompareFavoriteError"))}</div>`;
   }
@@ -9566,9 +9573,16 @@ function bindAnalyticsFavoriteAthleteCards(root = document) {
 
 async function loadAnalyticsFavoriteAthletes() {
   const comparison = state.analyticsComparison;
+  window.clearTimeout(analyticsFavoritesLoadingTimer);
   comparison.favoritesLoading = true;
+  comparison.favoritesLoadingVisible = false;
   comparison.favoritesError = "";
   refreshAnalyticsFavoritePicker();
+  analyticsFavoritesLoadingTimer = window.setTimeout(() => {
+    if (!comparison.favoritesLoading || !comparison.favoritesOpen) return;
+    comparison.favoritesLoadingVisible = true;
+    refreshAnalyticsFavoritePicker();
+  }, ANALYTICS_FAVORITES_LOADING_DELAY_MS);
   try {
     const details = await getJson("/preferences/athletes/followed/details", {}, { auth: true });
     comparison.favoriteDetails = details;
@@ -9578,7 +9592,10 @@ async function loadAnalyticsFavoriteAthletes() {
     comparison.favoriteDetails = [];
     comparison.favoritesError = "load_failed";
   } finally {
+    window.clearTimeout(analyticsFavoritesLoadingTimer);
+    analyticsFavoritesLoadingTimer = null;
     comparison.favoritesLoading = false;
+    comparison.favoritesLoadingVisible = false;
     refreshAnalyticsFavoritePicker();
   }
 }
@@ -9666,8 +9683,11 @@ function bindAnalyticsComparisonPickers() {
     const comparison = state.analyticsComparison;
     comparison.favoritesOpen = !comparison.favoritesOpen;
     closeSearchSuggestions();
+    if (comparison.favoritesOpen && !comparison.favoritesLoading) {
+      loadAnalyticsFavoriteAthletes();
+      return;
+    }
     refreshAnalyticsFavoritePicker();
-    if (comparison.favoritesOpen && !comparison.favoritesLoading) loadAnalyticsFavoriteAthletes();
   });
   bindAnalyticsFavoriteAthleteCards();
 }

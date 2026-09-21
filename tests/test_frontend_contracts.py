@@ -210,3 +210,23 @@ def test_verified_entity_cards_show_badges_and_keep_event_dates_on_a_second_line
     event_date_styles = styles.split(".event-card-date {", 1)[1].split("}", 1)[0]
     assert "display: grid" in event_title_styles
     assert "display: block" in event_date_styles
+
+
+def test_analytics_favorites_loading_message_is_delayed_to_avoid_flashing():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    render_block = source.split("function renderAnalyticsFavoriteAthletes", 1)[1].split(
+        "function renderAnalyticsComparisonSelection",
+        1,
+    )[0]
+    load_block = source.split("async function loadAnalyticsFavoriteAthletes", 1)[1].split(
+        "async function selectAnalyticsComparisonAthlete",
+        1,
+    )[0]
+
+    assert "const ANALYTICS_FAVORITES_LOADING_DELAY_MS = 250" in source
+    assert "comparison.favoritesLoading && comparison.favoritesLoadingVisible" in render_block
+    assert 'comparison.favoritesLoading && !comparison.favoriteDetails.length) return ""' in render_block
+    assert "comparison.favoritesLoadingVisible = false" in load_block
+    assert "analyticsFavoritesLoadingTimer = window.setTimeout" in load_block
+    assert "ANALYTICS_FAVORITES_LOADING_DELAY_MS" in load_block
+    assert "window.clearTimeout(analyticsFavoritesLoadingTimer)" in load_block
