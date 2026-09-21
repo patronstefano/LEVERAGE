@@ -466,7 +466,7 @@ Campi suggeribili attuali:
 - `image_url`, solo se il profilo espone una immagine chiara e riusabile
 - `world_gymnastics_athlete_id`, dal profilo selezionato
 - `world_gymnastics_profile_url`, link diretto al profilo ufficiale selezionato
-- `world_gymnastics_status`, dallo status World Gymnastics quando disponibile
+- `world_gymnastics_status`, dallo status World Gymnastics quando disponibile. Poiche la pagina HTML del profilo non espone sempre questo dato, il backend lo integra dall'endpoint ufficiale di ricerca atleti e lo accetta soltanto dalla riga con FIG ID esattamente coincidente con il profilo selezionato. Un'indisponibilita del servizio di ricerca non blocca l'importazione degli altri dati.
 
 `first_name`, `last_name` e `discipline` non vengono modificati automaticamente: se differiscono dal profilo World Gymnastics, il backend restituisce warning per revisione admin.
 Quando un admin approva `world_gymnastics_athlete_id`, `world_gymnastics_profile_url` o `world_gymnastics_status`, LEVERAGE registra anche `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`.

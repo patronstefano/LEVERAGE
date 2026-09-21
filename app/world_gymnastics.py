@@ -377,6 +377,36 @@ def request_athlete_search(params: dict[str, str]) -> list[dict]:
     return payload
 
 
+def fetch_athlete_status(
+    fig_id: str,
+    profile: WorldGymnasticsAthleteProfile,
+) -> Optional[str]:
+    """Read status from the official search API and require an exact FIG ID match."""
+    if not profile.last_name:
+        return None
+
+    params = {
+        "function": "searchBios",
+        "lastname": profile.last_name,
+    }
+    if profile.disciplines and len(profile.disciplines) == 1:
+        params["discipline"] = profile.disciplines[0]
+    if profile.country:
+        params["country"] = profile.country
+
+    queries = [params]
+    if "country" in params:
+        queries.append({key: value for key, value in params.items() if key != "country"})
+
+    for query in queries:
+        raw_candidates = request_athlete_search(query)
+        for item in raw_candidates:
+            if str(item.get("id") or "").strip() != fig_id:
+                continue
+            return str(item.get("gymnaststatus") or "").strip() or None
+    return None
+
+
 def fetch_athlete_profile(fig_id: str) -> WorldGymnasticsAthleteProfile:
     try:
         response = httpx.get(
@@ -387,7 +417,14 @@ def fetch_athlete_profile(fig_id: str) -> WorldGymnasticsAthleteProfile:
         response.raise_for_status()
     except httpx.HTTPError as exc:
         raise WorldGymnasticsError("World Gymnastics athlete profile request failed") from exc
-    return parse_profile_html(fig_id, response.text)
+    profile = parse_profile_html(fig_id, response.text)
+    if not profile.status:
+        try:
+            profile.status = fetch_athlete_status(fig_id, profile)
+        except WorldGymnasticsError:
+            # Status is optional: a search-service failure must not hide a valid profile.
+            pass
+    return profile
 
 
 def parse_event_candidate(item: dict, event: models.Event) -> Optional[WorldGymnasticsEventCandidate]:

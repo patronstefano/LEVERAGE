@@ -3891,6 +3891,78 @@ def test_ai_data_suggestion_generation_handles_missing_provider(monkeypatch):
     assert response.json()["detail"] == "AI provider is not configured"
 
 
+def test_world_gymnastics_profile_enriches_status_by_exact_fig_id(monkeypatch):
+    class FakeResponse:
+        text = "official profile html"
+
+        @staticmethod
+        def raise_for_status():
+            return None
+
+    profile = world_gymnastics.WorldGymnasticsAthleteProfile(
+        fig_id="58489",
+        profile_url="https://www.gymnastics.sport/site/athletes/bio_detail.php?id=58489",
+        first_name="Asia",
+        last_name="D'AMATO",
+        country="ITA",
+        disciplines=["WAG"],
+    )
+    observed_queries = []
+
+    monkeypatch.setattr(world_gymnastics.httpx, "get", lambda *args, **kwargs: FakeResponse())
+    monkeypatch.setattr(world_gymnastics, "parse_profile_html", lambda fig_id, raw_html: profile)
+
+    def fake_search(params):
+        observed_queries.append(params)
+        return [
+            {"id": "58490", "gymnaststatus": "inactive"},
+            {"id": "58489", "gymnaststatus": "active"},
+        ]
+
+    monkeypatch.setattr(world_gymnastics, "request_athlete_search", fake_search)
+
+    fetched = world_gymnastics.fetch_athlete_profile("58489")
+
+    assert fetched.status == "active"
+    assert observed_queries == [
+        {
+            "function": "searchBios",
+            "lastname": "D'AMATO",
+            "discipline": "WAG",
+            "country": "ITA",
+        }
+    ]
+
+
+def test_world_gymnastics_profile_remains_available_when_status_lookup_fails(monkeypatch):
+    class FakeResponse:
+        text = "official profile html"
+
+        @staticmethod
+        def raise_for_status():
+            return None
+
+    profile = world_gymnastics.WorldGymnasticsAthleteProfile(
+        fig_id="58489",
+        profile_url="https://www.gymnastics.sport/site/athletes/bio_detail.php?id=58489",
+        last_name="D'AMATO",
+        country="ITA",
+        disciplines=["WAG"],
+    )
+
+    monkeypatch.setattr(world_gymnastics.httpx, "get", lambda *args, **kwargs: FakeResponse())
+    monkeypatch.setattr(world_gymnastics, "parse_profile_html", lambda fig_id, raw_html: profile)
+    monkeypatch.setattr(
+        world_gymnastics,
+        "request_athlete_search",
+        lambda params: (_ for _ in ()).throw(world_gymnastics.WorldGymnasticsError("unavailable")),
+    )
+
+    fetched = world_gymnastics.fetch_athlete_profile("58489")
+
+    assert fetched.status is None
+
+
 def test_world_gymnastics_athlete_candidates_are_admin_only(monkeypatch):
     client.post("/auth/register", json={"email": "wg_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("wg_admin@example.com")
