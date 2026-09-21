@@ -1116,10 +1116,13 @@ def test_global_search_outputs_only_athletes_events_and_results():
     assert athlete_search.status_code == 200
     assert athlete_search.json()["structured_result_search"] is False
     assert athlete_search.json()["athletes"][0]["id"] == athlete["id"]
+    assert athlete_search.json()["athletes"][0]["is_profile_verified"] is False
 
     event_search = client.get("/search", params={"q": "Pacific", "limit": 5})
     assert event_search.status_code == 200
     assert event_search.json()["events"][0]["id"] == event["id"]
+    assert event_search.json()["events"][0]["level"] == "International Event"
+    assert event_search.json()["events"][0]["world_gymnastics_verified_at"] is None
     assert event_search.json()["results"][0]["result_id"] == result["id"]
 
     country_search = client.get("/search", params={"q": "USA", "limit": 5})

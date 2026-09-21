@@ -1412,10 +1412,19 @@ button {
 }
 
 .event-card-title {
+  display: grid;
+  align-items: start;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+}
+
+.entity-card-name-line {
   display: inline-flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 7px;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  max-width: 100%;
   min-width: 0;
 }
 
@@ -1424,6 +1433,7 @@ button {
 }
 
 .event-card-date {
+  display: block;
   color: var(--muted);
   font-size: 11.5px;
   font-weight: 610;

@@ -3824,14 +3824,14 @@ function renderGlobalSearchResults(data) {
   }
   const athleteItems = data.athletes.map((athlete) => {
     return entityCard(
-      athlete.name,
+      athleteCardTitle(athlete, athlete.name),
       "",
       athleteCardSummaryPills(athlete),
       `#/athletes/${athlete.id}`,
     );
   });
   const eventItems = data.events.map((event) => {
-    const period = formatDateRange(event) || String(event.year || "");
+    const period = formatReadableDateRange(event);
     return entityCard(
       eventCardTitle(event, period),
       "",
@@ -5894,6 +5894,16 @@ function compactIdLabel(id) {
   return `ID ${id}`;
 }
 
+function athleteCardTitle(athlete = {}, fallback = "") {
+  const name = athleteCardDisplayName(athlete, fallback || `${t("athlete")} ${athlete.id || ""}`.trim());
+  return `
+    <span class="entity-card-name-line athlete-card-title">
+      <span class="athlete-card-name">${escapeHtml(name)}</span>
+      ${renderAthleteVerificationBadge(athlete)}
+    </span>
+  `;
+}
+
 function athleteCardSummaryPills(athlete = {}, id = athlete.id) {
   return [
     { label: escapeHtml(athlete.discipline || t("discipline")), variant: "brand" },
@@ -5914,7 +5924,7 @@ function renderAthleteCards(athletes) {
   if (!athletes.length) return emptyState();
   return `<div class="grid-3 athlete-results-list">${athletes.map((athlete) => {
     return entityCard(
-      escapeHtml(athleteCardDisplayName(athlete, `${t("athlete")} ${athlete.id}`)),
+      athleteCardTitle(athlete, `${t("athlete")} ${athlete.id}`),
       "",
       athleteCardSummaryPills(athlete),
       athleteSectionProfileHref(athlete.id),
@@ -5946,7 +5956,10 @@ function eventCardTitle(event = {}, period = "") {
   const name = event.name || fallbackName;
   return `
     <span class="event-card-title">
-      <span class="event-card-name">${escapeHtml(name)}</span>
+      <span class="entity-card-name-line">
+        <span class="event-card-name">${escapeHtml(name)}</span>
+        ${renderEventVerificationBadge(event)}
+      </span>
       ${period ? `<span class="event-card-date">${escapeHtml(period)}</span>` : ""}
     </span>
   `;
@@ -6653,7 +6666,7 @@ function renderFavoriteAthletes(details) {
     const athlete = item.athlete || {};
     const name = athleteCardDisplayName(athlete, `${t("athlete")} ${item.athlete_id}`);
     return entityCard(
-      escapeHtml(name),
+      athleteCardTitle(athlete, name),
       "",
       athleteCardSummaryPills(athlete, item.athlete_id),
       `#/athletes/${item.athlete_id}`,
@@ -9050,7 +9063,7 @@ function renderAnalyticsFavoriteAthletes() {
         return `
           <article class="entity-card entity-card-clickable analytics-favorite-athlete-card" role="button" tabindex="0" data-analytics-favorite-athlete-id="${Number(detail.athlete_id)}">
             <div class="entity-row">
-              <h3>${escapeHtml(name)}</h3>
+              <h3>${athleteCardTitle(athlete, name)}</h3>
               <span class="favorite-button is-active analytics-favorite-static" aria-hidden="true"><span>&#9733;</span></span>
             </div>
             <p class="meta"></p>

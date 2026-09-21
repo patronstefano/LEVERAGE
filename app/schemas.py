@@ -1476,6 +1476,7 @@ class GlobalSearchAthlete(BaseModel):
     name: str
     country: Optional[str] = None
     discipline: DisciplineEnum
+    is_profile_verified: bool = False
     result_count: int = 0
 
 
@@ -1488,6 +1489,8 @@ class GlobalSearchEvent(BaseModel):
     end_date: Optional[Date] = None
     discipline: EventDisciplineEnum
     category: EventCategoryEnum
+    level: LevelEnum
+    world_gymnastics_verified_at: Optional[datetime] = None
     result_count: int = 0
 
 

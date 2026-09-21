@@ -187,3 +187,26 @@ def test_entity_cards_keep_verified_profile_data_out_of_list_summaries():
     assert "result_count" not in favorite_athletes
     assert 'eventCardSummaryPills(event)' in favorite_events
     assert "result_count" not in favorite_events
+
+
+def test_verified_entity_cards_show_badges_and_keep_event_dates_on_a_second_line():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+
+    athlete_title = source.split("function athleteCardTitle", 1)[1].split(
+        "function athleteCardSummaryPills",
+        1,
+    )[0]
+    event_title = source.split("function eventCardTitle", 1)[1].split(
+        "function currentParams",
+        1,
+    )[0]
+
+    assert "renderAthleteVerificationBadge(athlete)" in athlete_title
+    assert 'class="entity-card-name-line athlete-card-title"' in athlete_title
+    assert "renderEventVerificationBadge(event)" in event_title
+    assert event_title.index('class="entity-card-name-line"') < event_title.index('class="event-card-date"')
+    event_title_styles = styles.split(".event-card-title {", 1)[1].split("}", 1)[0]
+    event_date_styles = styles.split(".event-card-date {", 1)[1].split("}", 1)[0]
+    assert "display: grid" in event_title_styles
+    assert "display: block" in event_date_styles

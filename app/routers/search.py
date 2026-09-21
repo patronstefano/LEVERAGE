@@ -593,6 +593,7 @@ def global_search(
             name=athlete_display_name(athlete),
             country=athlete.country,
             discipline=athlete.discipline,
+            is_profile_verified=athlete.is_profile_verified,
             result_count=athlete_counts.get(athlete.id, 0),
         )
         for athlete in athletes
@@ -607,6 +608,8 @@ def global_search(
             end_date=event.end_date,
             discipline=event.discipline,
             category=event.category,
+            level=event.level,
+            world_gymnastics_verified_at=event.world_gymnastics_verified_at,
             result_count=event_counts.get(event.id, 0),
         )
         for event in events
