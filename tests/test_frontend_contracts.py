@@ -279,8 +279,11 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     assert "grid-template-columns: minmax(0, 1fr) auto" in input_row_styles
     assert "gap: 7px" in input_row_styles
     assert 'class="saved-ranking-submit"' not in input_shell_markup
-    assert "min-height: 42px" in action_styles
+    assert "min-height: 36px" in action_styles
     assert "border-radius: var(--control-radius)" in action_styles
+    input_shell_styles = styles.split(".saved-ranking-input-shell {", 1)[1].split("}", 1)[0]
+    assert "min-height: 36px" in input_shell_styles
+    assert "height: 30px" in input_styles
     assert ".saved-ranking-message:empty" in styles
     assert "@keyframes savedRankingPopupIn" in styles
 
