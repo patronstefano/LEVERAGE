@@ -3141,8 +3141,27 @@ function resultSuggestion(result) {
   return {
     label: result.athlete_name,
     meta: suggestionMeta([t("matchingResults"), result.event_name, result.apparatus, scoreLabel(result.score)]),
-    href: `#/events/${result.event_id}`,
+    href: searchResultEventHref(result),
   };
+}
+
+function searchResultEventHref(result = {}) {
+  const params = new URLSearchParams();
+  const classification = {
+    discipline: result.discipline,
+    category: result.category,
+    format: result.format,
+    round: result.round,
+    apparatus: result.apparatus,
+    day: result.day,
+  };
+  Object.entries(classification).forEach(([field, value]) => {
+    if (value === null || value === undefined || value === "") return;
+    params.set(`classification_${field}`, String(value));
+  });
+  if (result.result_id) params.set("classification_result_id", String(result.result_id));
+  const query = params.toString();
+  return `#/events/${result.event_id}${query ? `?${query}` : ""}`;
 }
 
 function globalSearchDetailHref(href, returnRoute = state.route) {
@@ -3859,7 +3878,7 @@ function searchResultCard(result) {
     result.athlete_name,
     meta,
     pills,
-    globalSearchDetailHref(`#/events/${result.event_id}`),
+    globalSearchDetailHref(searchResultEventHref(result)),
   );
 }
 
@@ -10607,10 +10626,25 @@ function selectedEventClassification(profile = state.eventDetail.profile) {
   return groups.find((group) => eventClassificationKey(group) === state.eventDetail.selectedClassificationKey) || groups[0];
 }
 
+function eventClassificationRequestedByRoute(profile) {
+  const params = currentParams();
+  const requestedFields = eventClassificationFields()
+    .map((field) => [field, params.get(`classification_${field}`)])
+    .filter(([, value]) => value !== null && value !== "");
+  if (!requestedFields.length) return null;
+  return officialEventClassificationGroups(profile).find((group) => (
+    requestedFields.every(([field, value]) => (
+      eventClassificationValueKey(group?.[field]) === eventClassificationValueKey(value)
+    ))
+  )) || null;
+}
+
 function prepareEventDetailState(eventId, profile) {
   const numericId = Number(eventId);
   const groups = officialEventClassificationGroups(profile);
-  const defaultKey = groups.length ? eventClassificationKey(groups[0]) : "";
+  const requestedGroup = eventClassificationRequestedByRoute(profile);
+  const defaultGroup = requestedGroup || groups[0] || null;
+  const defaultKey = defaultGroup ? eventClassificationKey(defaultGroup) : "";
   if (state.eventDetail.eventId !== numericId) {
     state.eventDetail.eventId = numericId;
     state.eventDetail.profile = profile;
@@ -10619,6 +10653,11 @@ function prepareEventDetailState(eventId, profile) {
     return;
   }
   state.eventDetail.profile = profile;
+  if (requestedGroup) {
+    state.eventDetail.selectedClassificationKey = eventClassificationKey(requestedGroup);
+    state.eventDetail.sortBy = "score";
+    return;
+  }
   if (!groups.some((group) => eventClassificationKey(group) === state.eventDetail.selectedClassificationKey)) {
     state.eventDetail.selectedClassificationKey = defaultKey;
   }

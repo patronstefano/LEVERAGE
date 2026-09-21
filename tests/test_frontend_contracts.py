@@ -360,7 +360,7 @@ def test_global_search_detail_links_preserve_home_context_and_return_route():
     assert 'params.set("return_to", String(returnRoute || "/search"))' in source
     assert 'globalSearchDetailHref(`#/athletes/${athlete.id}`)' in global_results
     assert 'globalSearchDetailHref(`#/events/${event.id}`)' in global_results
-    assert 'globalSearchDetailHref(`#/events/${result.event_id}`)' in global_results
+    assert "globalSearchDetailHref(searchResultEventHref(result))" in global_results
     assert 'source === "search"' in athlete_back
     assert 'params.get("from") === "search"' in event_back
     assert 'label: t("backToGlobalSearch")' in athlete_back
@@ -399,3 +399,23 @@ def test_home_and_global_search_page_share_the_same_search_bar_geometry():
     assert "gap: 8px" in form_styles
     assert "padding: 5px" in form_styles
     assert "height: 44px" in control_styles
+
+
+def test_global_search_result_opens_its_exact_event_classification():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    result_href = source.split("function searchResultEventHref", 1)[1].split(
+        "function globalSearchDetailHref",
+        1,
+    )[0]
+    event_selection = source.split("function eventClassificationRequestedByRoute", 1)[1].split(
+        "function eventClassificationCategoryLabel",
+        1,
+    )[0]
+
+    for field in ("discipline", "category", "format", "round", "apparatus", "day"):
+        assert f"{field}: result.{field}" in result_href
+    assert "classification_result_id" in result_href
+    assert "globalSearchDetailHref(searchResultEventHref(result))" in source
+    assert "eventClassificationRequestedByRoute(profile)" in event_selection
+    assert "requestedFields.every" in event_selection
+    assert 'state.eventDetail.sortBy = "score"' in event_selection

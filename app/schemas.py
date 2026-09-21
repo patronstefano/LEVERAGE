@@ -1508,6 +1508,7 @@ class GlobalSearchResult(BaseModel):
     apparatus: Optional[str] = None
     format: FormatEnum
     round: RoundEnum
+    day: Optional[int] = None
     score: Optional[float] = None
     D_score: Optional[float] = None
 

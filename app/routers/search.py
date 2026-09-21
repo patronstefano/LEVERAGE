@@ -515,6 +515,7 @@ def build_global_results(
             apparatus=result.apparatus,
             format=result.format,
             round=result.round,
+            day=result.day,
             score=result.score,
             D_score=result.D_score,
         )
