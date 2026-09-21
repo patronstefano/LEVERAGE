@@ -3,10 +3,6 @@ const LANGUAGE_KEY = "leverage.language";
 const AUTH_TOKEN_KEY = "leverage.authToken";
 const SECTION_ROUTE_MEMORY_KEY = "leverage.sectionRoutes";
 const API_FALLBACK_BASES = [
-  "http://127.0.0.1:8002",
-  "http://localhost:8002",
-  "http://127.0.0.1:8001",
-  "http://localhost:8001",
   "http://127.0.0.1:8000",
   "http://localhost:8000",
 ];
@@ -15,7 +11,7 @@ function initialApiBase() {
   const storedApiBase = localStorage.getItem(API_BASE_KEY) || "";
   const isLocalPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
     && window.location.port.startsWith("517");
-  if (isLocalPreview && (!storedApiBase || /:800[01]\/?$/.test(storedApiBase))) {
+  if (isLocalPreview && (!storedApiBase || /^https?:\/\/(127\.0\.0\.1|localhost):800[0-2]\/?$/.test(storedApiBase))) {
     localStorage.setItem(API_BASE_KEY, API_FALLBACK_BASES[0]);
     return API_FALLBACK_BASES[0];
   }
