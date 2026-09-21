@@ -325,3 +325,17 @@ def test_saved_ranking_empty_name_uses_inline_validation_and_shake_feedback():
     assert ".saved-ranking-message.is-error" in styles
     assert "@keyframes savedRankingInvalidShake" in styles
     assert "@media (prefers-reduced-motion: reduce)" in styles
+
+
+def test_global_search_supports_progressive_loading_without_duplicates():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    global_search = source.split("async function renderGlobalSearch()", 1)[1].split(
+        "function featureCard",
+        1,
+    )[0]
+
+    assert 'renderLoadMoreButton("global-search", t("loadMoreSearchResults"))' in source
+    assert "function mergeGlobalSearchResults" in source
+    assert "offset: append ? searchOffset : 0" in global_search
+    assert "searchOffset + GLOBAL_SEARCH_SECTION_LIMIT" in global_search
+    assert 'bindLoadMoreButton("global-search"' in global_search

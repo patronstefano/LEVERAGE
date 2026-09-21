@@ -163,6 +163,7 @@ const ATHLETE_SECTION_LIMIT = 96;
 const EVENT_CARD_COLUMN_COUNT = 3;
 const EVENT_SECTION_LIMIT = 60;
 const RANKING_SECTION_LIMIT = 60;
+const GLOBAL_SEARCH_SECTION_LIMIT = 8;
 const RANKING_APPARATUS_BY_DISCIPLINE = {
   MAG: ["AA", "FX", "PH", "SR", "VT", "PB", "HB", "VT AVG"],
   WAG: ["AA", "VT", "UB", "BB", "FX", "VT AVG"],
@@ -333,6 +334,7 @@ const translations = {
     loadMoreAthletes: "Load more Athletes",
     loadMoreEvents: "Load more Events",
     loadMoreScores: "Load more Scores",
+    loadMoreSearchResults: "Load more results",
     language: "Language",
     save: "Save",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -692,6 +694,7 @@ const translations = {
     loadMoreAthletes: "Carica altri Atleti",
     loadMoreEvents: "Carica altri Eventi",
     loadMoreScores: "Carica altri Scores",
+    loadMoreSearchResults: "Carica altri risultati",
     language: "Lingua",
     save: "Salva",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -1051,6 +1054,7 @@ const translations = {
     loadMoreAthletes: "Cargar mas Atletas",
     loadMoreEvents: "Cargar mas Eventos",
     loadMoreScores: "Cargar mas Scores",
+    loadMoreSearchResults: "Cargar mas resultados",
     language: "Idioma",
     save: "Guardar",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -1410,6 +1414,7 @@ const translations = {
     loadMoreAthletes: "Charger plus d'Athletes",
     loadMoreEvents: "Charger plus d'Evenements",
     loadMoreScores: "Charger plus de Scores",
+    loadMoreSearchResults: "Charger plus de resultats",
     language: "Langue",
     save: "Enregistrer",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -3857,12 +3862,14 @@ function renderGlobalSearchResults(data) {
           ${searchSection(t("relatedResults"), relatedResultItems)}
           ${searchSection(t("matchingAthletes"), athleteItems)}
           ${searchSection(t("matchingEvents"), eventItems)}
+          ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
         </div>
       `;
     }
     return `
       <div class="search-results">
         ${searchSection(t("filteredResults"), resultItems)}
+        ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
       </div>
     `;
   }
@@ -3871,8 +3878,29 @@ function renderGlobalSearchResults(data) {
       ${searchSection(t("matchingAthletes"), athleteItems)}
       ${searchSection(t("matchingEvents"), eventItems)}
       ${searchSection(t("matchingResults"), resultItems)}
+      ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
     </div>
   `;
+}
+
+function mergeGlobalSearchResults(current, next) {
+  const merged = {
+    ...current,
+    ...next,
+    athletes: mergeUniqueBy(current.athletes || [], next.athletes || [], (item) => item.id),
+    events: mergeUniqueBy(current.events || [], next.events || [], (item) => item.id),
+    results: mergeUniqueBy(current.results || [], next.results || [], (item) => item.result_id),
+    related_results: mergeUniqueBy(
+      current.related_results || [],
+      next.related_results || [],
+      (item) => item.result_id,
+    ),
+  };
+  merged.total_count = merged.athletes.length
+    + merged.events.length
+    + merged.results.length
+    + merged.related_results.length;
+  return merged;
 }
 
 async function renderGlobalSearch() {
@@ -3899,13 +3927,39 @@ async function renderGlobalSearch() {
   bindSearchClearButtons();
   setupSearchAutocomplete("#globalSearchPageInput", "#globalSearchPageSuggestions");
   if (!query) return;
-  try {
-    trackSiteSearch(query);
-    const results = await getJson("/search/", { q: query, limit: 8 });
-    $("#globalSearchResults").innerHTML = renderGlobalSearchResults(results);
-  } catch (error) {
-    $("#globalSearchResults").innerHTML = errorState(error);
-  }
+  let searchPayload = null;
+  let searchOffset = 0;
+  let searchRequestId = 0;
+  const loadGlobalSearchResults = async ({ append = false } = {}) => {
+    const requestId = ++searchRequestId;
+    const node = $("#globalSearchResults");
+    try {
+      const nextPayload = await getJson("/search/", {
+        q: query,
+        limit: GLOBAL_SEARCH_SECTION_LIMIT,
+        offset: append ? searchOffset : 0,
+      });
+      if (requestId !== searchRequestId) return;
+      searchPayload = append && searchPayload
+        ? mergeGlobalSearchResults(searchPayload, nextPayload)
+        : nextPayload;
+      searchOffset = append
+        ? searchOffset + GLOBAL_SEARCH_SECTION_LIMIT
+        : GLOBAL_SEARCH_SECTION_LIMIT;
+      node.innerHTML = renderGlobalSearchResults(searchPayload);
+      bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+    } catch (error) {
+      if (requestId !== searchRequestId) return;
+      if (!append) {
+        node.innerHTML = errorState(error);
+      } else if (searchPayload) {
+        node.innerHTML = renderGlobalSearchResults(searchPayload);
+        bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+      }
+    }
+  };
+  trackSiteSearch(query);
+  await loadGlobalSearchResults();
 }
 
 function featureCard(title, text, href, options = {}) {

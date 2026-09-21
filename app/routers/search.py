@@ -466,6 +466,7 @@ def build_global_results(
     parts: SearchParts,
     apparatus_codes: set[str],
     limit: int,
+    offset: int = 0,
     filter_groups: Optional[list] = None,
 ) -> list[schemas.GlobalSearchResult]:
     represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
@@ -497,7 +498,7 @@ def build_global_results(
         models.Event.start_date.desc(),
         models.Result.score.desc(),
         models.Result.id.desc(),
-    ).limit(limit).all()
+    ).offset(offset).limit(limit).all()
 
     return [
         schemas.GlobalSearchResult(
@@ -525,6 +526,7 @@ def build_global_results(
 def global_search(
     q: str = Query(..., min_length=1, max_length=100, description="Global search query"),
     limit: int = Query(6, ge=1, le=20, description="Maximum items per result group"),
+    offset: int = Query(0, ge=0, description="Number of items to skip in each result group"),
     db: Session = Depends(get_db),
 ):
     query = q.strip()
@@ -533,20 +535,26 @@ def global_search(
     parts = parse_search_query(query)
     apparatus_codes = parts.apparatus_codes
     structured_result_search = is_structured_result_search(db, parts)
+    fetch_limit = limit + 1
 
     athlete_conditions = athlete_search_conditions(parts)
     athletes = []
     if athlete_conditions:
-        athletes = (
+        athlete_candidates = (
             db.query(models.Athlete)
             .filter(
                 models.Athlete.is_deleted.is_(False),
                 or_(*athlete_conditions),
             )
             .order_by(models.Athlete.last_name, models.Athlete.first_name, models.Athlete.id)
-            .limit(limit)
+            .offset(offset)
+            .limit(fetch_limit)
             .all()
         )
+        athlete_has_more = len(athlete_candidates) > limit
+        athletes = athlete_candidates[:limit]
+    else:
+        athlete_has_more = False
     athlete_counts = athlete_result_counts(db, [athlete.id for athlete in athletes])
 
     event_conditions_for_query = event_search_conditions(parts)
@@ -558,7 +566,7 @@ def global_search(
     event_order_by_items = []
     if event_priority is not None:
         event_order_by_items.append(event_priority)
-    events = (
+    event_candidates = (
         events_query.order_by(
             *event_order_by_items,
             models.Event.year.desc(),
@@ -566,26 +574,38 @@ def global_search(
             models.Event.name,
             models.Event.id,
         )
-        .limit(limit)
+        .offset(offset)
+        .limit(fetch_limit)
         .all()
         if event_conditions_for_query or parts.years
         else []
     )
+    event_has_more = len(event_candidates) > limit
+    events = event_candidates[:limit]
     event_counts = event_result_counts(db, [event.id for event in events])
 
-    results = build_global_results(db, parts, apparatus_codes, limit)
+    result_candidates = build_global_results(db, parts, apparatus_codes, fetch_limit, offset)
+    result_has_more = len(result_candidates) > limit
+    results = result_candidates[:limit]
+    exact_results_exist = bool(result_candidates)
+    if structured_result_search and offset > 0 and not exact_results_exist:
+        exact_results_exist = bool(build_global_results(db, parts, apparatus_codes, 1))
     related_results = []
-    if structured_result_search and not results:
+    related_has_more = False
+    if structured_result_search and not exact_results_exist:
         represented_country = func.coalesce(models.Result.represented_country, models.Athlete.country)
         related_filter_groups = build_related_result_filter_groups(db, parts, represented_country)
         if related_filter_groups:
-            related_results = build_global_results(
+            related_candidates = build_global_results(
                 db,
                 parts,
                 apparatus_codes,
-                limit,
+                fetch_limit,
+                offset,
                 filter_groups=related_filter_groups,
             )
+            related_has_more = len(related_candidates) > limit
+            related_results = related_candidates[:limit]
 
     athlete_items = [
         schemas.GlobalSearchAthlete(
@@ -620,9 +640,16 @@ def global_search(
         + len(results)
         + len(related_results)
     )
+    if structured_result_search:
+        has_more = result_has_more if exact_results_exist else (
+            related_has_more or athlete_has_more or event_has_more
+        )
+    else:
+        has_more = athlete_has_more or event_has_more or result_has_more
     return schemas.GlobalSearchResponse(
         query=query,
         total_count=total_count,
+        has_more=has_more,
         structured_result_search=structured_result_search,
         athletes=athlete_items,
         events=event_items,

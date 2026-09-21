@@ -1430,6 +1430,20 @@ def test_global_search_outputs_only_athletes_events_and_results():
     assert any(athlete["id"] == italian_athlete["id"] for athlete in country_code_search.json()["athletes"])
     assert any(event["id"] == serie_a_event["id"] for event in country_code_search.json()["events"])
 
+    first_global_page = client.get("/search", params={"q": "Italy", "limit": 1, "offset": 0})
+    second_global_page = client.get("/search", params={"q": "Italy", "limit": 1, "offset": 1})
+    assert first_global_page.status_code == 200
+    assert second_global_page.status_code == 200
+    first_global_payload = first_global_page.json()
+    second_global_payload = second_global_page.json()
+    assert first_global_payload["has_more"] is True
+    assert {
+        athlete["id"] for athlete in first_global_payload["athletes"]
+    }.isdisjoint({athlete["id"] for athlete in second_global_payload["athletes"]})
+    assert {
+        event["id"] for event in first_global_payload["events"]
+    }.isdisjoint({event["id"] for event in second_global_payload["events"]})
+
     structured_search = client.get(
         "/search",
         params={"q": "Stefano Patron, Serie A 2026, volteggio", "limit": 10},
