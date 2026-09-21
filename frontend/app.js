@@ -3087,7 +3087,7 @@ async function renderHome() {
         <p class="home-subtitle">${t("heroSubtitle")}</p>
         <p class="home-body">${t("heroBody")}</p>
         <div class="search-panel">
-          <form class="search-form" id="globalSearchForm">
+          <form class="search-form global-search-form" id="globalSearchForm">
             ${searchInputControl("globalSearchInput", "", t("searchPlaceholder"))}
             <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
             <div class="search-suggestions" id="globalSearchSuggestions" role="listbox" hidden></div>
@@ -3947,7 +3947,7 @@ async function renderGlobalSearch() {
       <a class="quiet-button detail-back-button" href="#/">${escapeHtml(t("backToHome"))}</a>
     </div>
     ${pageHeading("globalSearchHeading", "globalSearchIntro")}
-    <form class="search-form search-page-form" id="globalSearchPageForm">
+    <form class="search-form search-page-form global-search-form" id="globalSearchPageForm">
       ${searchInputControl("globalSearchPageInput", query, t("searchPlaceholder"))}
       <button class="primary-button outline-command-button" type="submit">${t("search")}</button>
       <div class="search-suggestions" id="globalSearchPageSuggestions" role="listbox" hidden></div>

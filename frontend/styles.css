@@ -540,13 +540,13 @@ button {
   margin-top: 20px;
 }
 
-.home-hero .search-form {
+.global-search-form {
   gap: 8px;
   padding: 5px;
 }
 
-.home-hero .search-input,
-.home-hero .primary-button {
+.global-search-form .search-input,
+.global-search-form .primary-button {
   height: 44px;
 }
 

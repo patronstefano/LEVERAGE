@@ -386,3 +386,16 @@ def test_global_search_return_reuses_loaded_results_without_refetching():
     cached_branch = global_search.split("if (cachedSearch)", 1)[1].split("trackSiteSearch(query)", 1)[0]
     assert "return;" in cached_branch
     assert 'bindLoadMoreButton("global-search"' in cached_branch
+
+
+def test_home_and_global_search_page_share_the_same_search_bar_geometry():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    form_styles = styles.split(".global-search-form {", 1)[1].split("}", 1)[0]
+    control_styles = styles.split(".global-search-form .primary-button {", 1)[1].split("}", 1)[0]
+
+    assert 'class="search-form global-search-form" id="globalSearchForm"' in source
+    assert 'class="search-form search-page-form global-search-form" id="globalSearchPageForm"' in source
+    assert "gap: 8px" in form_styles
+    assert "padding: 5px" in form_styles
+    assert "height: 44px" in control_styles
