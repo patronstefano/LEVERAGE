@@ -272,18 +272,11 @@ def apply_suggestion_to_entity(
     setattr(entity, suggestion.field_name, parsed_value)
 
 
-def mark_world_gymnastics_verified(
+def mark_world_gymnastics_event_verified(
     entity: Union[models.Athlete, models.Event],
     suggestion: models.DataSuggestion,
     admin_id: int,
 ) -> None:
-    if (
-        suggestion.entity_type == models.DataSuggestionEntityTypeEnum.ATHLETE
-        and suggestion.field_name in WORLD_GYMNASTICS_ATHLETE_FIELDS
-        and isinstance(entity, models.Athlete)
-    ):
-        entity.world_gymnastics_verified_at = datetime.utcnow()
-        entity.world_gymnastics_verified_by_admin_id = admin_id
     if (
         suggestion.entity_type == models.DataSuggestionEntityTypeEnum.EVENT
         and suggestion.field_name in WORLD_GYMNASTICS_EVENT_FIELDS
@@ -442,7 +435,7 @@ def accept_data_suggestion(
     )
     value = payload.value if payload.value is not None else suggestion.suggested_value
     apply_suggestion_to_entity(entity, suggestion, value)
-    mark_world_gymnastics_verified(entity, suggestion, current_user.id)
+    mark_world_gymnastics_event_verified(entity, suggestion, current_user.id)
 
     if payload.value is not None and payload.value != suggestion.suggested_value:
         suggestion.status = models.DataSuggestionStatusEnum.EDITED

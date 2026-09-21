@@ -328,7 +328,7 @@ Scelte importanti:
 - nella UI gli atleti sono mostrati come `Cognome Nome`;
 - il DB mantiene separati `first_name` e `last_name`;
 - il Result salva solo `athlete_id`, non copia nome e cognome.
-- `is_profile_verified` mostra il badge pubblico blu LEVERAGE nella Scheda Atleta. La ricerca di candidati World Gymnastics non modifica il campo; l'assegnazione avviene automaticamente e con audit soltanto quando un Admin/Super Admin seleziona un profilo riscontrato e conferma `Importa dati`. Il normale endpoint di modifica anagrafica non puo alterarlo.
+- `is_profile_verified` mostra il badge pubblico blu LEVERAGE nella Scheda Atleta. La ricerca di candidati World Gymnastics non modifica il campo; l'assegnazione avviene automaticamente e con audit soltanto quando un Admin/Super Admin seleziona un profilo riscontrato e conferma `Importa dati`. Nella stessa transazione vengono registrati timestamp e Admin verificatore. Il normale endpoint di modifica anagrafica non puo alterarlo e la successiva approvazione dei singoli suggerimenti non ridefinisce i metadati della certificazione.
 - `world_gymnastics_verified_by_admin_id` e un metadato riservato: non compare nelle risposte Athlete pubbliche e viene esposto soltanto nella vista amministrativa protetta della scheda.
 
 ### 8.3 AthleteCountryChange
@@ -877,9 +877,9 @@ Il motore World Gymnastics Athlete:
 
 La scheda atleta puo mostrare il link ufficiale World Gymnastics solo quando verificato.
 
-Il flusso comprende inoltre una certificazione controllata dell'identita: la sola ricerca di candidati non assegna alcun badge, mentre la selezione esplicita del profilo e il comando `Importa dati` impostano `is_profile_verified`, registrano la decisione nell'audit e mostrano il badge pubblico blu LEVERAGE. I singoli valori proposti restano separatamente soggetti a review Admin. Razionale, limiti e implementazione sono descritti nel capitolo dedicato [LEVERAGE_monografia_certificazione_schede_atleta.md](LEVERAGE_monografia_certificazione_schede_atleta.md).
+Il flusso comprende inoltre una certificazione controllata dell'identita: la sola ricerca di candidati non assegna alcun badge, mentre la selezione esplicita del profilo e il comando `Importa dati` impostano atomicamente `is_profile_verified`, data e Admin verificatore, registrano la decisione nell'audit e mostrano il badge pubblico blu LEVERAGE. I singoli valori proposti restano separatamente soggetti a review Admin e la loro approvazione non modifica i metadati del matching certificato. Razionale, limiti e implementazione sono descritti nel capitolo dedicato [LEVERAGE_monografia_certificazione_schede_atleta.md](LEVERAGE_monografia_certificazione_schede_atleta.md).
 
-La manutenzione segue un invariante di sicurezza: i dati World Gymnastics sono separati dalla normale anagrafica e diventano modificabili in un blocco dedicato soltanto dopo il collegamento. Un Admin puo revocare il badge, ma non puo attribuirlo manualmente. Una variazione di FIG ID o URL revoca automaticamente la certificazione; per riattivarla e necessario selezionare nuovamente un profilo ufficiale e confermare `Importa dati`. Ogni passaggio e auditabile e soggetto alla governance Admin/Super Admin.
+La manutenzione segue un invariante di sicurezza: i dati World Gymnastics sono separati dalla normale anagrafica e diventano modificabili in un blocco dedicato soltanto dopo il collegamento. Un Admin puo revocare il badge, ma non puo attribuirlo manualmente. Una variazione di FIG ID o URL revoca automaticamente la certificazione; per riattivarla e necessario selezionare nuovamente un profilo ufficiale e confermare `Importa dati`. Le operazioni che modificano certificazione o dati World Gymnastics sono auditabili e soggette alla governance Admin/Super Admin; ricerca e preview sono protette dai ruoli ma non producono log mutativi artificiali.
 
 Una migrazione di riallineamento certifica anche i profili approvati prima dell'introduzione del badge, ma solo quando URL ufficiale, data di verifica e Admin verificatore risultano tutti gia registrati.
 

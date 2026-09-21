@@ -51,9 +51,12 @@ Quando l'Admin seleziona il profilo e preme `Importa dati`, il backend:
 - verifica nuovamente il profilo World Gymnastics indicato;
 - crea i suggerimenti disponibili con stato pending;
 - imposta `Athlete.is_profile_verified = true`;
+- imposta contestualmente `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`;
 - registra l'operazione nell'audit amministrativo;
 - aggiorna la Scheda Atleta senza ricaricare l'intera pagina;
-- mostra pubblicamente il badge blu LEVERAGE sotto il nome.
+- mostra pubblicamente il badge blu LEVERAGE nel sottotitolo della Scheda Atleta, accanto alla disciplina MAG/WAG.
+
+Questa e la transizione che certifica il matching dell'identita. La successiva accettazione, modifica o esclusione dei singoli suggerimenti decide soltanto quali valori entrano nella Scheda Atleta e non ridefinisce ne la data ne l'Admin della certificazione.
 
 Il normale endpoint di modifica anagrafica non accetta il campo di certificazione. Il badge non puo quindi essere attribuito liberamente dal form di editing o da un pulsante indipendente dal riscontro ufficiale.
 
@@ -69,11 +72,14 @@ Il campo e stato introdotto dalla migrazione Alembic `0037_add_athlete_profile_v
 
 Per le schede collegate e approvate prima dell'introduzione del booleano e stata aggiunta la migrazione dati `0038_backfill_verified_athlete_profiles`. Il riallineamento assegna il badge soltanto se la scheda contiene congiuntamente URL del profilo ufficiale, data di verifica e identificativo dell'Admin verificatore. Il solo URL non e considerato sufficiente per inferire retroattivamente una certificazione.
 
+La migrazione correttiva `0039_repair_verified_athlete_audit` interviene esclusivamente sulle certificazioni gia attive ma prive di timestamp o Admin. I valori vengono ricostruiti soltanto quando il log storico contiene una transizione documentata `is_profile_verified: false -> true`; in assenza di tale evidenza, la migrazione non attribuisce informazioni.
+
 Le responsabilita sono distribuite come segue:
 
 - `app/models.py`: persistenza del booleano sull'entita `Athlete`;
 - `app/schemas.py`: esposizione pubblica dello stato, esclusione dal normale payload di modifica;
 - `app/routers/world_gymnastics.py`: assegnazione esclusiva durante l'importazione del profilo ufficiale;
+- `app/routers/data_suggestions.py`: approvazione separata dei valori proposti, senza modifica dei metadati della certificazione atleta;
 - `app/audit.py`: registrazione della variazione e supporto alla revisione Super Admin;
 - `frontend/app.js`: flusso ricerca-preview-importazione e rendering condizionale del badge;
 - `frontend/styles.css`: rappresentazione del contrassegno nel blu identificativo LEVERAGE;
@@ -86,7 +92,9 @@ La funzionalita applica diversi controlli:
 - ricerca e importazione World Gymnastics sono riservate ad Admin e Super Admin;
 - la ricerca senza importazione lascia il badge disattivato;
 - il form anagrafico ordinario non puo impostare `is_profile_verified`;
+- badge, timestamp e Admin verificatore sono assegnati atomicamente da `Importa dati`;
 - l'assegnazione e registrata nell'audit con stato coerente al ruolo dell'operatore;
+- l'approvazione dei singoli suggerimenti non sovrascrive i metadati del matching certificato;
 - una certificazione gia presente viene preservata se una scheda duplicata e incorporata nella scheda canonica tramite merge;
 - `world_gymnastics_verified_by_admin_id` non e esposto nelle API pubbliche;
 - l'identificativo dell'Admin verificatore e disponibile soltanto nella vista protetta `admin-view` e nel relativo box riservato ad Admin/Super Admin.
@@ -114,7 +122,7 @@ L'elemento innovativo non risiede quindi nella sola icona, ma nell'architettura 
 
 LEVERAGE separa strutturalmente i dati World Gymnastics dalla normale anagrafica. Il blocco dedicato compare nella sezione `Modifica atleta` soltanto quando esiste gia un collegamento ufficiale e consente di amministrare FIG ID, URL e status senza esporre il campo booleano della certificazione. Ne deriva il seguente invariante: **il badge non puo essere attribuito o riattribuito mediante modifica manuale, endpoint anagrafico ordinario o semplice inserimento di un URL**. Dopo una revoca o una variazione dell'identita FIG, la certificazione puo essere ripristinata esclusivamente selezionando nuovamente un profilo World Gymnastics riscontrato e confermando `Importa dati`.
 
-Questo vincolo impedisce che un Admin possa trasformare un collegamento scritto manualmente in una certificazione pubblica senza una nuova verifica della fonte. Ricerca, importazione, modifica, revoca e successiva riattivazione rimangono inoltre registrate nel sistema di audit e sottoposte alla governance Admin/Super Admin.
+Questo vincolo impedisce che un Admin possa trasformare un collegamento scritto manualmente in una certificazione pubblica senza una nuova verifica della fonte. Le operazioni amministrative che modificano lo stato della certificazione o dei dati World Gymnastics sono registrate nell'audit; le operazioni di sola ricerca e preview sono protette dai ruoli ma non producono una voce `AuditLog`.
 
 ### 7.2 Modifica e revoca controllate
 
@@ -137,6 +145,7 @@ Commit collegati:
 - `39ac359`: rimozione dell'assegnazione manuale e collegamento definitivo del badge all'azione `Importa dati` del flusso World Gymnastics.
 - `8fd7976`: separazione dei dati World Gymnastics dall'anagrafica ordinaria, manutenzione protetta, revoca esplicita e revoca automatica in caso di modifica dell'identita FIG.
 - `452125b`: collocazione pubblica del badge accanto alla disciplina MAG/WAG e aggiornamento degli asset frontend.
+- `c9f6fc2`: registrazione atomica e recupero da audit di data e Admin della ri-certificazione.
 
 I commit `39ac359` e `8fd7976` rappresentano congiuntamente la decisione semantica e di sicurezza definitiva: nessun badge per la sola ricerca, nessuna assegnazione libera dal form e nessuna riattivazione manuale dopo una revoca; certificazione soltanto dopo la selezione e l'importazione esplicita di un profilo ufficiale riscontrato.
 

@@ -581,6 +581,8 @@ def test_admin_can_edit_world_gymnastics_data_and_revoke_verification_badge():
         stored_athlete.is_profile_verified = True
         stored_athlete.world_gymnastics_verified_at = datetime.utcnow()
         stored_athlete.world_gymnastics_verified_by_admin_id = admin.id
+        verification_timestamp = stored_athlete.world_gymnastics_verified_at
+        verification_admin_id = admin.id
         db.commit()
     finally:
         db.close()
@@ -593,6 +595,8 @@ def test_admin_can_edit_world_gymnastics_data_and_revoke_verification_badge():
     assert status_response.status_code == 200
     assert status_response.json()["world_gymnastics_status"] == "Retired"
     assert status_response.json()["is_profile_verified"] is True
+    assert datetime.fromisoformat(status_response.json()["world_gymnastics_verified_at"]) == verification_timestamp
+    assert status_response.json()["world_gymnastics_verified_by_admin_id"] == verification_admin_id
 
     removal_response = client.patch(
         f"/athletes/{athlete_id}/world-gymnastics",
@@ -603,6 +607,21 @@ def test_admin_can_edit_world_gymnastics_data_and_revoke_verification_badge():
     assert removal_response.json()["is_profile_verified"] is False
     assert removal_response.json()["world_gymnastics_athlete_id"] == "12345"
     assert removal_response.json()["world_gymnastics_profile_url"].endswith("id=12345")
+
+    db = SessionLocal()
+    try:
+        removal_log = db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete_id,
+            models.AuditLog.action == "update_world_gymnastics",
+        ).order_by(models.AuditLog.id.desc()).first()
+        assert removal_log is not None
+        assert json.loads(removal_log.before_json)["is_profile_verified"] is True
+        assert json.loads(removal_log.after_json)["is_profile_verified"] is False
+        assert json.loads(removal_log.after_json)["world_gymnastics_verified_at"] is None
+        assert json.loads(removal_log.after_json)["world_gymnastics_verified_by_admin_id"] is None
+    finally:
+        db.close()
 
     db = SessionLocal()
     try:
@@ -627,6 +646,22 @@ def test_admin_can_edit_world_gymnastics_data_and_revoke_verification_badge():
     assert identity_response.json()["is_profile_verified"] is False
     assert identity_response.json()["world_gymnastics_verified_at"] is None
     assert identity_response.json()["world_gymnastics_verified_by_admin_id"] is None
+
+    db = SessionLocal()
+    try:
+        identity_change_log = db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete_id,
+            models.AuditLog.action == "update_world_gymnastics",
+        ).order_by(models.AuditLog.id.desc()).first()
+        assert identity_change_log is not None
+        assert json.loads(identity_change_log.before_json)["is_profile_verified"] is True
+        assert json.loads(identity_change_log.after_json)["is_profile_verified"] is False
+        assert json.loads(identity_change_log.after_json)["world_gymnastics_athlete_id"] == "67890"
+        assert json.loads(identity_change_log.after_json)["world_gymnastics_verified_at"] is None
+        assert json.loads(identity_change_log.after_json)["world_gymnastics_verified_by_admin_id"] is None
+    finally:
+        db.close()
 
     invalid_response = client.patch(
         f"/athletes/{athlete_id}/world-gymnastics",
@@ -4000,6 +4035,15 @@ def test_world_gymnastics_athlete_candidates_are_admin_only(monkeypatch):
 
     monkeypatch.setattr(world_gymnastics, "search_athlete_candidates", fake_search_candidates)
 
+    db = SessionLocal()
+    try:
+        audit_count_before = db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+        ).count()
+    finally:
+        db.close()
+
     user_response = client.get(
         f"/world-gymnastics/athletes/{athlete['id']}/candidates",
         headers=user_headers,
@@ -4016,6 +4060,15 @@ def test_world_gymnastics_athlete_candidates_are_admin_only(monkeypatch):
     assert payload["query"]["last_name"] == "Hashimoto"
     assert payload["candidates"][0]["fig_id"] == "69037"
     assert payload["candidates"][0]["profile_url"].endswith("id=69037")
+
+    db = SessionLocal()
+    try:
+        assert db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+        ).count() == audit_count_before
+    finally:
+        db.close()
 
 
 def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatch):
@@ -4049,6 +4102,15 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
 
     monkeypatch.setattr(world_gymnastics, "fetch_athlete_profile", fake_fetch_profile)
 
+    db = SessionLocal()
+    try:
+        audit_count_before_preview = db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+        ).count()
+    finally:
+        db.close()
+
     preview_response = client.post(
         f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
         json={"fig_athlete_id": "69037", "create_suggestions": False},
@@ -4057,6 +4119,15 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     assert preview_response.status_code == 200
     assert preview_response.json()["created_suggestions"] == []
     assert client.get(f"/athletes/{athlete['id']}").json()["is_profile_verified"] is False
+
+    db = SessionLocal()
+    try:
+        assert db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+        ).count() == audit_count_before_preview
+    finally:
+        db.close()
 
     response = client.post(
         f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
@@ -4101,7 +4172,29 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
         f"/athletes/{athlete['id']}/admin-view",
         headers=admin_headers,
     ).json()
-    assert admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] is not None
+    initial_verified_at = admin_view["athlete"]["world_gymnastics_verified_at"]
+    initial_verified_by_admin_id = admin_view["athlete"]["world_gymnastics_verified_by_admin_id"]
+    assert initial_verified_at is not None
+    assert initial_verified_by_admin_id is not None
+
+    db = SessionLocal()
+    try:
+        certification_logs = []
+        for audit_log in db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+            models.AuditLog.action == "update",
+        ).all():
+            before = json.loads(audit_log.before_json or "{}")
+            after = json.loads(audit_log.after_json or "{}")
+            if before.get("is_profile_verified") is False and after.get("is_profile_verified") is True:
+                certification_logs.append((audit_log, after))
+        assert len(certification_logs) == 1
+        assert certification_logs[0][0].admin_id == initial_verified_by_admin_id
+        assert certification_logs[0][1]["world_gymnastics_verified_at"] == initial_verified_at
+        assert certification_logs[0][1]["world_gymnastics_verified_by_admin_id"] == initial_verified_by_admin_id
+    finally:
+        db.close()
     pending_fields = sorted(suggestion["field_name"] for suggestion in admin_view["pending_suggestions"])
     assert pending_fields == [
         "birth_year",
@@ -4132,7 +4225,8 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
         f"/athletes/{athlete['id']}/admin-view",
         headers=admin_headers,
     ).json()
-    assert verified_admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] is not None
+    assert verified_admin_view["athlete"]["world_gymnastics_verified_at"] == initial_verified_at
+    assert verified_admin_view["athlete"]["world_gymnastics_verified_by_admin_id"] == initial_verified_by_admin_id
 
     revoke_response = client.patch(
         f"/athletes/{athlete['id']}/world-gymnastics",
@@ -4143,6 +4237,26 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     assert revoke_response.json()["is_profile_verified"] is False
     assert revoke_response.json()["world_gymnastics_verified_at"] is None
     assert revoke_response.json()["world_gymnastics_verified_by_admin_id"] is None
+
+    clear_url_response = client.patch(
+        f"/athletes/{athlete['id']}/world-gymnastics",
+        json={"world_gymnastics_profile_url": None},
+        headers=admin_headers,
+    )
+    assert clear_url_response.status_code == 200
+    assert clear_url_response.json()["is_profile_verified"] is False
+
+    manual_url_response = client.patch(
+        f"/athletes/{athlete['id']}/world-gymnastics",
+        json={
+            "world_gymnastics_profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=69037",
+        },
+        headers=admin_headers,
+    )
+    assert manual_url_response.status_code == 200
+    assert manual_url_response.json()["is_profile_verified"] is False
+    assert manual_url_response.json()["world_gymnastics_verified_at"] is None
+    assert manual_url_response.json()["world_gymnastics_verified_by_admin_id"] is None
 
     reimport_response = client.post(
         f"/world-gymnastics/athletes/{athlete['id']}/suggestions",
@@ -4158,6 +4272,28 @@ def test_world_gymnastics_athlete_profile_creates_pending_suggestions(monkeypatc
     assert reverified_admin_view["is_profile_verified"] is True
     assert reverified_admin_view["world_gymnastics_verified_at"] is not None
     assert reverified_admin_view["world_gymnastics_verified_by_admin_id"] is not None
+    assert reverified_admin_view["world_gymnastics_verified_at"] != initial_verified_at
+
+    db = SessionLocal()
+    try:
+        certification_logs = []
+        revocation_logs = []
+        for audit_log in db.query(models.AuditLog).filter(
+            models.AuditLog.entity_type == "Athlete",
+            models.AuditLog.entity_id == athlete["id"],
+        ).order_by(models.AuditLog.id).all():
+            before = json.loads(audit_log.before_json or "{}")
+            after = json.loads(audit_log.after_json or "{}")
+            if before.get("is_profile_verified") is False and after.get("is_profile_verified") is True:
+                certification_logs.append(audit_log)
+            if before.get("is_profile_verified") is True and after.get("is_profile_verified") is False:
+                revocation_logs.append(audit_log)
+        assert len(certification_logs) == 2
+        assert certification_logs[-1].admin_id == reverified_admin_view["world_gymnastics_verified_by_admin_id"]
+        assert len(revocation_logs) == 1
+        assert revocation_logs[0].action == "update_world_gymnastics"
+    finally:
+        db.close()
 
 
 def test_world_gymnastics_event_candidates_are_admin_only(monkeypatch):

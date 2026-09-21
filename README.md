@@ -459,6 +459,8 @@ Flusso consigliato nella scheda admin Athlete:
 5. L'admin approva, modifica o rifiuta i suggerimenti tramite gli endpoint `data-suggestions`.
 6. Dopo il primo collegamento, usa `PATCH /athletes/{athlete_id}/world-gymnastics` soltanto per manutenzione controllata o revoca; tutte le variazioni sono registrate nell'audit amministrativo.
 
+`Importa dati` certifica il matching dell'identita e registra atomicamente badge, data e Admin verificatore. La successiva approvazione dei singoli suggerimenti stabilisce separatamente quali valori entrano nella Scheda Atleta e non modifica i metadati della certificazione. Ricerca e preview sono protette dai ruoli ma, non modificando lo stato, non producono una voce `AuditLog`.
+
 Campi suggeribili attuali:
 
 - `birth_year`, da `Year of birth`
@@ -469,7 +471,7 @@ Campi suggeribili attuali:
 - `world_gymnastics_status`, dallo status World Gymnastics quando disponibile. Poiche la pagina HTML del profilo non espone sempre questo dato, il backend lo integra dall'endpoint ufficiale di ricerca atleti e lo accetta soltanto dalla riga con FIG ID esattamente coincidente con il profilo selezionato. Un'indisponibilita del servizio di ricerca non blocca l'importazione degli altri dati.
 
 `first_name`, `last_name` e `discipline` non vengono modificati automaticamente: se differiscono dal profilo World Gymnastics, il backend restituisce warning per revisione admin.
-Quando un admin approva `world_gymnastics_athlete_id`, `world_gymnastics_profile_url` o `world_gymnastics_status`, LEVERAGE registra anche `world_gymnastics_verified_at` e `world_gymnastics_verified_by_admin_id`.
+L'approvazione di `world_gymnastics_athlete_id`, `world_gymnastics_profile_url` o `world_gymnastics_status` pubblica il singolo valore ma non modifica `world_gymnastics_verified_at` o `world_gymnastics_verified_by_admin_id`, gia fissati dall'azione certificativa `Importa dati`.
 
 ## World Gymnastics Event
 LEVERAGE espone anche un motore leggero admin-only per collegare una scheda `Event` a una pagina evento ufficiale World Gymnastics, usando l'endpoint pubblico `sportevents` del sito ufficiale.
