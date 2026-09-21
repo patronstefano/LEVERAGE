@@ -272,6 +272,7 @@ def test_saved_ranking_popup_uses_the_leverage_popup_and_control_tokens():
     assert "padding: 13px 14px" in shell_styles
     assert "border-radius: var(--surface-radius)" in shell_styles
     assert "box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12)" in shell_styles
+    assert ".saved-ranking-form-shell[hidden]" in styles
     assert "font-size: 14px" in input_styles
     assert "min-height: 32px" in action_styles
     assert "border-radius: var(--data-chip-radius)" in action_styles

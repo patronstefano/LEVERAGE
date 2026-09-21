@@ -2655,6 +2655,10 @@ a:focus-visible > .entity-card-clickable {
   animation: savedRankingPopupIn var(--control-expand-motion);
 }
 
+.saved-ranking-form-shell[hidden] {
+  display: none;
+}
+
 .saved-ranking-filter-summary {
   margin: 0;
   padding: 0 1px;
