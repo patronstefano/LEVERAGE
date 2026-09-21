@@ -3404,6 +3404,10 @@ a:focus-visible > .entity-card-clickable {
   padding: var(--card-padding);
 }
 
+.account-view-panel .account-preference-card-list .entity-card {
+  min-height: 104px;
+}
+
 .account-preference-card-list .entity-card h3 {
   font-size: var(--card-title-size);
   font-weight: 690;

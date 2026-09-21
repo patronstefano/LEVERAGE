@@ -230,3 +230,13 @@ def test_analytics_favorites_loading_message_is_delayed_to_avoid_flashing():
     assert "analyticsFavoritesLoadingTimer = window.setTimeout" in load_block
     assert "ANALYTICS_FAVORITES_LOADING_DELAY_MS" in load_block
     assert "window.clearTimeout(analyticsFavoritesLoadingTimer)" in load_block
+
+
+def test_account_favorite_and_saved_cards_share_a_stable_minimum_height():
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    account_card_styles = styles.split(
+        ".account-view-panel .account-preference-card-list .entity-card {",
+        1,
+    )[1].split("}", 1)[0]
+
+    assert "min-height: 104px" in account_card_styles
