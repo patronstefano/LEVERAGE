@@ -88,3 +88,21 @@ def test_event_search_keeps_the_incomplete_final_card_row():
     assert "if (!hasMore || !remainder" in split_block
     assert "pending: events.slice(visibleCount)" in split_block
     assert "splitEventListFullRows(displayEvents, true)" not in render_block
+
+
+def test_athlete_search_keeps_every_card_in_the_final_page():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    card_block = source.split("function renderAthleteCards", 1)[1].split(
+        "function renderAthleteResultsPage",
+        1,
+    )[0]
+    load_block = source.split("const loadAthletes = async", 1)[1].split(
+        "const refreshAthleteResults",
+        1,
+    )[0]
+
+    assert "athletes.map((athlete)" in card_block
+    assert "slice(" not in card_block
+    assert "splitEventListFullRows" not in card_block
+    assert "slice(0, ATHLETE_SECTION_LIMIT)" in load_block
+    assert "athleteHasMore = athletes.length > ATHLETE_SECTION_LIMIT" in load_block

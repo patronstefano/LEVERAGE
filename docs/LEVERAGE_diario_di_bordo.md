@@ -2942,6 +2942,7 @@ Flusso di registrazione USER:
 - mantenuta una distinzione semantica esplicita: Event condivide workflow, stile, controlli e audit della Scheda Atleta, ma non riceve il badge pubblico dell'atleta. Il matching ufficiale viene comunicato attraverso i dettagli World Gymnastics dell'evento.
 - aggiunti test di regressione per preview non mutativa, importazione certificativa, stabilita dei metadati durante l'approvazione dei suggerimenti, manutenzione dello status, revoca, ri-certificazione, invalidazione automatica al cambio dell'identita FIG e privacy dell'Admin verificatore.
 - corretta una perdita di risultati nella lista Eventi: la regola visiva delle card in righe da tre scartava erroneamente una riga finale incompleta quando una ricerca restituiva, per esempio, cinque eventi. I blocchi intermedi della paginazione restano multipli di tre, mentre l'ultima pagina mostra ora sempre tutti i risultati residui. La ricerca `Olympic Games` espone quindi tutti e cinque gli eventi restituiti dal backend invece di fermarsi alle prime tre card.
+- verificata per confronto l'intera paginazione della Sezione Atleti. Le card atleta non adottano la logica di completamento delle righe usata dagli Eventi: ogni blocco intermedio contiene al massimo 96 elementi, mentre l'ultima pagina e le ricerche con un numero non multiplo di tre renderizzano tutti gli atleti ricevuti. Non era presente alcuna perdita analoga; un test frontend dedicato impedisce l'introduzione futura di troncamenti sulle righe finali.
 
 ## 23. Conclusione
 
