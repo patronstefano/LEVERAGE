@@ -24,3 +24,7 @@ def test_verified_athlete_badge_is_rendered_in_the_profile_metadata():
     assert 'aria-hidden="true">✓</span>' in source
     assert ".athlete-profile-meta" in styles
     assert ".athlete-verification-badge" in styles
+    badge_styles = styles.split(".athlete-verification-badge {", 1)[1].split("}", 1)[0]
+    assert "width: 16px" in badge_styles
+    assert "margin-left: 3px" in badge_styles
+    assert "clip-path: polygon(" in badge_styles
