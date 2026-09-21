@@ -41,3 +41,22 @@ def test_verification_badge_removal_uses_neutral_danger_feedback():
     )[1].split("}", 1)[0]
     assert "background: transparent" in danger_styles
     assert "color: var(--danger)" in danger_styles
+
+
+def test_world_gymnastics_identity_fields_have_stable_order_and_status_casing():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    items_block = source.split("const worldGymnasticsItems = [", 1)[1].split(
+        "].filter((item)",
+        1,
+    )[0]
+
+    expected_labels = [
+        't("worldGymnasticsId")',
+        't("worldGymnasticsStatus")',
+        't("worldGymnasticsProfile")',
+        't("worldGymnasticsVerified")',
+        't("verifiedByAdminId")',
+    ]
+    positions = [items_block.index(label) for label in expected_labels]
+    assert positions == sorted(positions)
+    assert "displayEnumValue(athlete.world_gymnastics_status)" in items_block

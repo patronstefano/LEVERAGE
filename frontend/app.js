@@ -6728,8 +6728,11 @@ function renderAthleteIdentityPanel(athlete, options = {}) {
     renderDetailFieldIfPresent(t("birthYear"), athlete.birth_year),
   ].filter(Boolean).join("");
   const worldGymnasticsItems = [
-    [t("worldGymnasticsStatus"), athlete.world_gymnastics_status],
     [t("worldGymnasticsId"), athlete.world_gymnastics_athlete_id],
+    [
+      t("worldGymnasticsStatus"),
+      athlete.world_gymnastics_status ? displayEnumValue(athlete.world_gymnastics_status) : null,
+    ],
     [t("worldGymnasticsProfile"), athlete.world_gymnastics_profile_url, profileLink],
     [t("worldGymnasticsVerified"), verifiedAt],
     isAdminUser()
