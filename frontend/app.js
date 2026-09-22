@@ -6727,10 +6727,13 @@ function renderLogin() {
   }
   const previousLogo = document.querySelector(".auth-brand-logo")?.getBoundingClientRect();
   setApp(`
-    <div class="auth-brand auth-brand-form"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="64" height="64"><h1 class="sr-only">${t("loginHeading")}</h1></div>
+    <div class="auth-brand auth-brand-form">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="64" height="64">
+      <h1 class="sr-only">${t("loginHeading")}</h1>
+      <p class="home-body auth-login-subtitle">${t("loginHelp")}</p>
+    </div>
     <section class="panel auth-panel auth-login-panel">
       <form class="auth-form" id="loginForm">
-        <p>${t("loginHelp")}</p>
         <label>
           <span>${t("email")}</span>
           <input id="loginEmail" type="email" autocomplete="email" required>

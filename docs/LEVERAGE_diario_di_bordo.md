@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Spostato il sottotitolo del login fuori dal box del modulo, sotto il logo. Riutilizzata la classe `home-body` del testo descrittivo della Home, condividendo colore, dimensioni, interlinea e adattamenti responsive, senza duplicare regole tipografiche.
+
 Testo introduttivo italiano del login aggiornato su indicazione dell'utente alla formulazione esatta: "La tua area privata dove salvare atleti, eventi e rankings".
 
 Semplificata la schermata Accedi per eliminare la ripetizione visiva tra intestazione, introduzione e comando: titolo mantenuto solo per gli screen reader, logo come riferimento visivo e testo "Il tuo spazio per salvare atleti, eventi e rankings.". Aggiornate anche EN/ES/FR; invariati il pulsante di invio e la navigazione principale.
