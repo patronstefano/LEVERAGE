@@ -334,11 +334,14 @@ def test_global_search_supports_progressive_loading_without_duplicates():
         1,
     )[0]
 
-    assert 'renderLoadMoreButton("global-search", t("loadMoreSearchResults"))' in source
+    assert 'renderGlobalSearchLoadMore("athletes", data.athlete_has_more, t("loadMoreAthletes"))' in source
+    assert 'renderGlobalSearchLoadMore("events", data.event_has_more, t("loadMoreEvents"))' in source
+    assert 'renderGlobalSearchLoadMore("results", data.result_has_more, t("loadMoreSearchResults"))' in source
     assert "function mergeGlobalSearchResults" in source
-    assert "offset: append ? searchOffset : 0" in global_search
-    assert "searchOffset + GLOBAL_SEARCH_SECTION_LIMIT" in global_search
-    assert 'bindLoadMoreButton("global-search"' in global_search
+    assert "function globalSearchOffsetsForPayload" in source
+    assert "offset: appendGroup ? searchOffsets[appendGroup] : 0" in global_search
+    assert "searchOffsets[appendGroup] + receivedCount" in global_search
+    assert 'bindLoadMoreButton(`global-search-${group}`' in global_search
 
 
 def test_global_search_detail_links_preserve_home_context_and_return_route():
@@ -406,12 +409,12 @@ def test_global_search_return_reuses_loaded_results_without_refetching():
     assert "state.globalSearch.query === query" in global_search
     assert "renderGlobalSearchResults(cachedSearch.payload)" in global_search
     assert "let searchPayload = cachedSearch?.payload || null" in global_search
-    assert "let searchOffset = cachedSearch?.offset || 0" in global_search
+    assert "let searchOffsets = cachedSearch?.offsets || globalSearchOffsetsForPayload" in global_search
     assert "state.globalSearch = {" in global_search
     assert "if (cachedSearch)" in global_search
     cached_branch = global_search.split("if (cachedSearch)", 1)[1].split("trackSiteSearch(query)", 1)[0]
     assert "return;" in cached_branch
-    assert 'bindLoadMoreButton("global-search"' in cached_branch
+    assert "bindGlobalSearchLoadMoreButtons();" in cached_branch
 
 
 def test_home_and_global_search_page_share_the_same_search_bar_geometry():

@@ -1502,6 +1502,10 @@ class GlobalSearchResponse(BaseModel):
     query: str
     total_count: int
     has_more: bool = False
+    athlete_has_more: bool = False
+    event_has_more: bool = False
+    result_has_more: bool = False
+    related_result_has_more: bool = False
     structured_result_search: bool = False
     athletes: list[GlobalSearchAthlete] = Field(default_factory=list)
     events: list[GlobalSearchEvent] = Field(default_factory=list)

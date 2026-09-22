@@ -1442,6 +1442,10 @@ def test_global_search_outputs_only_athletes_events_and_results():
     first_global_payload = first_global_page.json()
     second_global_payload = second_global_page.json()
     assert first_global_payload["has_more"] is True
+    assert first_global_payload["athlete_has_more"] is True
+    assert first_global_payload["event_has_more"] is True
+    assert isinstance(first_global_payload["result_has_more"], bool)
+    assert isinstance(first_global_payload["related_result_has_more"], bool)
     assert {
         athlete["id"] for athlete in first_global_payload["athletes"]
     }.isdisjoint({athlete["id"] for athlete in second_global_payload["athletes"]})

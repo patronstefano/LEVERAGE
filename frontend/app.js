@@ -98,7 +98,11 @@ const state = {
   globalSearch: {
     query: "",
     payload: null,
-    offset: 0,
+    offsets: {
+      athletes: 0,
+      events: 0,
+      results: 0,
+    },
   },
   openEventTimeFilter: false,
   openRankingTimeFilter: false,
@@ -707,7 +711,7 @@ const translations = {
     loadMoreAthletes: "Carica altri Atleti",
     loadMoreEvents: "Carica altri Eventi",
     loadMoreScores: "Carica altri Scores",
-    loadMoreSearchResults: "Carica altri risultati",
+    loadMoreSearchResults: "Carica altri Risultati",
     language: "Lingua",
     save: "Salva",
     footerTagline: "Artistic Gymnastics Analytics",
@@ -3906,6 +3910,10 @@ function renderGlobalSearchResultList(results = []) {
   });
 }
 
+function renderGlobalSearchLoadMore(group, hasMore, label) {
+  return hasMore ? renderLoadMoreButton(`global-search-${group}`, label) : "";
+}
+
 function renderGlobalSearchResults(data) {
   const structuredResultSearch = Boolean(data.structured_result_search);
   if (!data.total_count) {
@@ -3915,53 +3923,89 @@ function renderGlobalSearchResults(data) {
   const eventCards = renderGlobalSearchEventCards(data.events);
   const resultList = renderGlobalSearchResultList(data.results);
   const relatedResultList = renderGlobalSearchResultList(data.related_results || []);
+  const athleteContent = athleteCards
+    ? `${athleteCards}${renderGlobalSearchLoadMore("athletes", data.athlete_has_more, t("loadMoreAthletes"))}`
+    : "";
+  const eventContent = eventCards
+    ? `${eventCards}${renderGlobalSearchLoadMore("events", data.event_has_more, t("loadMoreEvents"))}`
+    : "";
+  const resultContent = resultList
+    ? `${resultList}${renderGlobalSearchLoadMore("results", data.result_has_more, t("loadMoreSearchResults"))}`
+    : "";
+  const relatedResultContent = relatedResultList
+    ? `${relatedResultList}${renderGlobalSearchLoadMore("results", data.related_result_has_more, t("loadMoreSearchResults"))}`
+    : "";
   if (structuredResultSearch) {
     if (!data.results.length) {
       return `
         <div class="search-results">
           ${messageState(t("noStructuredSearchResults"))}
-          ${searchSection(t("relatedResults"), relatedResultList, "global-search-result-ranking-section")}
-          ${searchSection(t("matchingAthletes"), athleteCards)}
-          ${searchSection(t("matchingEvents"), eventCards)}
-          ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
+          ${searchSection(t("relatedResults"), relatedResultContent, "global-search-result-ranking-section")}
+          ${searchSection(t("matchingAthletes"), athleteContent)}
+          ${searchSection(t("matchingEvents"), eventContent)}
         </div>
       `;
     }
     return `
       <div class="search-results">
-        ${searchSection(t("filteredResults"), resultList, "global-search-result-ranking-section")}
-        ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
+        ${searchSection(t("filteredResults"), resultContent, "global-search-result-ranking-section")}
       </div>
     `;
   }
   return `
     <div class="search-results">
-      ${searchSection(t("matchingAthletes"), athleteCards)}
-      ${searchSection(t("matchingEvents"), eventCards)}
-      ${searchSection(t("matchingResults"), resultList, "global-search-result-ranking-section")}
-      ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
+      ${searchSection(t("matchingAthletes"), athleteContent)}
+      ${searchSection(t("matchingEvents"), eventContent)}
+      ${searchSection(t("matchingResults"), resultContent, "global-search-result-ranking-section")}
     </div>
   `;
 }
 
-function mergeGlobalSearchResults(current, next) {
+function mergeGlobalSearchResults(current, next, group = "all") {
   const merged = {
     ...current,
-    ...next,
-    athletes: mergeUniqueBy(current.athletes || [], next.athletes || [], (item) => item.id),
-    events: mergeUniqueBy(current.events || [], next.events || [], (item) => item.id),
-    results: mergeUniqueBy(current.results || [], next.results || [], (item) => item.result_id),
-    related_results: mergeUniqueBy(
+    ...(group === "all" ? next : {}),
+  };
+  if (["all", "athletes"].includes(group)) {
+    merged.athletes = mergeUniqueBy(current.athletes || [], next.athletes || [], (item) => item.id);
+    merged.athlete_has_more = next.athlete_has_more;
+  }
+  if (["all", "events"].includes(group)) {
+    merged.events = mergeUniqueBy(current.events || [], next.events || [], (item) => item.id);
+    merged.event_has_more = next.event_has_more;
+  }
+  if (["all", "results"].includes(group)) {
+    merged.results = mergeUniqueBy(current.results || [], next.results || [], (item) => item.result_id);
+    merged.related_results = mergeUniqueBy(
       current.related_results || [],
       next.related_results || [],
       (item) => item.result_id,
-    ),
-  };
+    );
+    merged.result_has_more = next.result_has_more;
+    merged.related_result_has_more = next.related_result_has_more;
+  }
   merged.total_count = merged.athletes.length
     + merged.events.length
     + merged.results.length
     + merged.related_results.length;
+  merged.has_more = Boolean(
+    merged.athlete_has_more
+    || merged.event_has_more
+    || merged.result_has_more
+    || merged.related_result_has_more
+  );
   return merged;
+}
+
+function globalSearchOffsetsForPayload(payload = {}) {
+  return {
+    athletes: (payload.athletes || []).length,
+    events: (payload.events || []).length,
+    results: Math.max(
+      (payload.results || []).length,
+      (payload.related_results || []).length,
+    ),
+  };
 }
 
 async function renderGlobalSearch() {
@@ -3993,46 +4037,60 @@ async function renderGlobalSearch() {
   setupSearchAutocomplete("#globalSearchPageInput", "#globalSearchPageSuggestions");
   if (!query) return;
   let searchPayload = cachedSearch?.payload || null;
-  let searchOffset = cachedSearch?.offset || 0;
-  let searchRequestId = 0;
-  const loadGlobalSearchResults = async ({ append = false } = {}) => {
-    const requestId = ++searchRequestId;
+  let searchOffsets = cachedSearch?.offsets || globalSearchOffsetsForPayload(searchPayload || {});
+  const searchRequestIds = { all: 0, athletes: 0, events: 0, results: 0 };
+  const bindGlobalSearchLoadMoreButtons = () => {
+    ["athletes", "events", "results"].forEach((group) => {
+      bindLoadMoreButton(`global-search-${group}`, () => loadGlobalSearchResults({ appendGroup: group }));
+    });
+  };
+  const loadGlobalSearchResults = async ({ appendGroup = "" } = {}) => {
+    const requestGroup = appendGroup || "all";
+    const requestId = ++searchRequestIds[requestGroup];
     const node = $("#globalSearchResults");
     try {
       const nextPayload = await getJson("/search/", {
         q: query,
         limit: GLOBAL_SEARCH_SECTION_LIMIT,
-        offset: append ? searchOffset : 0,
+        offset: appendGroup ? searchOffsets[appendGroup] : 0,
       });
-      if (requestId !== searchRequestId) return;
-      searchPayload = append && searchPayload
-        ? mergeGlobalSearchResults(searchPayload, nextPayload)
+      if (requestId !== searchRequestIds[requestGroup]) return;
+      searchPayload = appendGroup && searchPayload
+        ? mergeGlobalSearchResults(searchPayload, nextPayload, appendGroup)
         : nextPayload;
-      searchOffset = append
-        ? searchOffset + GLOBAL_SEARCH_SECTION_LIMIT
-        : GLOBAL_SEARCH_SECTION_LIMIT;
+      if (appendGroup) {
+        const receivedCount = appendGroup === "results"
+          ? Math.max(nextPayload.results?.length || 0, nextPayload.related_results?.length || 0)
+          : (nextPayload[appendGroup]?.length || 0);
+        searchOffsets = {
+          ...searchOffsets,
+          [appendGroup]: searchOffsets[appendGroup] + receivedCount,
+        };
+      } else {
+        searchOffsets = globalSearchOffsetsForPayload(nextPayload);
+      }
       state.globalSearch = {
         query,
         payload: searchPayload,
-        offset: searchOffset,
+        offsets: searchOffsets,
       };
       node.innerHTML = renderGlobalSearchResults(searchPayload);
       bindFavoriteButtons();
-      bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+      bindGlobalSearchLoadMoreButtons();
     } catch (error) {
-      if (requestId !== searchRequestId) return;
-      if (!append) {
+      if (requestId !== searchRequestIds[requestGroup]) return;
+      if (!appendGroup) {
         node.innerHTML = errorState(error);
       } else if (searchPayload) {
         node.innerHTML = renderGlobalSearchResults(searchPayload);
         bindFavoriteButtons();
-        bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+        bindGlobalSearchLoadMoreButtons();
       }
     }
   };
   if (cachedSearch) {
     bindFavoriteButtons();
-    bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
+    bindGlobalSearchLoadMoreButtons();
     return;
   }
   trackSiteSearch(query);

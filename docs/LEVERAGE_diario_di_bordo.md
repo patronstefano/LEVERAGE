@@ -2983,3 +2983,4 @@ Con la chiusura delle sezioni `Home`, `Athletes`, `Events`, `Rankings` e `Analyt
 - Il rango non viene mostrato nella Ricerca globale, poiche l'ordinamento della ricerca non costituisce una classifica sportiva ufficiale.
 - Esteso il contratto API `GlobalSearchResult` al modello completo `ResultRankingEntry`, includendo D Score, E Score o stima, Penalty, Bonus, stati di disponibilita, avvisi qualitativi e componenti per AA/VT AVG.
 - Aggiunti contratti automatici frontend e API per garantire che la Ricerca globale continui a riusare i componenti canonici delle sezioni dedicate.
+- Separata la paginazione progressiva della Ricerca globale per tipo di entita: i pulsanti **Carica altri Atleti**, **Carica altri Eventi** e **Carica altri Risultati** compaiono al termine del rispettivo gruppo e mantengono offset, disponibilita e cache indipendenti.
