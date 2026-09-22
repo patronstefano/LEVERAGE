@@ -6755,7 +6755,6 @@ function renderLogin() {
       </div>
       <div class="auth-switch-row">
           <a href="#/forgot-password">${accountText(state.language, "forgot")}</a>
-          <a href="#/resend-verification">${accountText(state.language, "resend")}</a>
       </div>
       <div class="demo-login-block">
         <p>${t("demoLoginNote")}</p>

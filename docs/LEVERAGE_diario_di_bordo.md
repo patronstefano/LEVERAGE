@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Semplificati i collegamenti nel box Accedi: mantenuto soltanto "Password dimenticata?", rimuovendo "Reinvia email di verifica" su richiesta dell'utente. La rimozione riguarda il link nel login, non l'endpoint backend o il percorso di reinvio, che restano funzionalita distinte dal recupero password.
+
 Uniformato il pulsante Accedi nel modulo ai comandi standard LEVERAGE: classe quiet-button, altezza 36 px, larghezza secondo il testo anziche estesa a tutto il modulo, centratura, arrotondamento condiviso e comportamento contorno al passaggio del mouse. Aggiunto controllo browser sull'altezza.
 
 Rinominata l'etichetta italiana del campo MFA in "Codice di Autenticazione", senza modificare il funzionamento del secondo fattore.
