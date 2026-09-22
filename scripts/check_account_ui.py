@@ -70,6 +70,17 @@ def main():
         page.locator('[data-account-view="settings"]').click()
         assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
         assert page.locator('.account-view-toggle').get_attribute('data-account-content-active') == 'false'
+        for content in ['athletes', 'events', 'rankings']:
+            page.locator(f'[data-account-view="{content}"]').click()
+            for tool in ['notifications', 'settings']:
+                button = page.locator(f'[data-account-view="{tool}"]')
+                button.click()
+                assert button.get_attribute('aria-pressed') == 'true'
+                button.click()
+                assert button.get_attribute('aria-pressed') == 'false'
+                assert page.locator(f'[data-account-view="{content}"]').get_attribute('aria-checked') == 'true'
+                assert page.locator(f'[data-account-view-panel="{content}"]').is_visible()
+        page.locator('[data-account-view="settings"]').click()
         page.locator('#accountSettings summary').click()
         page.locator('[data-admin-select-value="fr"]').click()
         page.wait_for_timeout(300)

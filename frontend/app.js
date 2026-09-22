@@ -11704,9 +11704,14 @@ function setAccountViewSection(section, { updateRoute = false } = {}) {
 }
 
 function bindAccountViewControl() {
+  const contentViews = ["athletes", "events", "rankings"];
+  let lastContentView = contentViews.includes(accountViewSection()) ? accountViewSection() : "athletes";
   document.querySelectorAll("[data-account-view]").forEach((button) => {
     button.addEventListener("click", () => {
-      setAccountViewSection(button.dataset.accountView, { updateRoute: true });
+      const closeTool = button.classList.contains("account-tool-button") && button.getAttribute("aria-pressed") === "true";
+      const selected = closeTool ? lastContentView : button.dataset.accountView;
+      if (contentViews.includes(selected)) lastContentView = selected;
+      setAccountViewSection(selected, { updateRoute: true });
     });
   });
 }

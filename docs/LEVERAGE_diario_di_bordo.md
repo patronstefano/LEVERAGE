@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Corretto il comportamento di chiusura dei pulsanti personali: un secondo clic su Notifiche o Impostazioni gia attive ripristina l'ultima lista consultata nello stesso pannello (Atleti, Eventi o Rankings), senza ricaricare i record. In apertura diretta di una vista strumenti, la lista di ritorno predefinita e Atleti. Test browser esteso a entrambi i pulsanti per ciascuna delle tre liste.
+
 Su successiva richiesta sono stati rimossi i tooltip visivi Notifiche e Impostazioni al passaggio del mouse. Restano le etichette aria-label per gli screen reader, gli stati di selezione e il contatore delle notifiche.
 
 Alla segnalazione di popup ancora visibili, verificati i file serviti dalla preview e aggiornati gli identificativi di versione di JavaScript e CSS per evitare il riuso della versione precedente. Aggiunto controllo browser su entrambi i pulsanti dopo hover: assenza di tooltip e di attributi title nativi.
