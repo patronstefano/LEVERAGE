@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Testo introduttivo italiano del login aggiornato su indicazione dell'utente alla formulazione esatta: "La tua area privata dove salvare atleti, eventi e rankings".
+
 Semplificata la schermata Accedi per eliminare la ripetizione visiva tra intestazione, introduzione e comando: titolo mantenuto solo per gli screen reader, logo come riferimento visivo e testo "Il tuo spazio per salvare atleti, eventi e rankings.". Aggiornate anche EN/ES/FR; invariati il pulsante di invio e la navigazione principale.
 
 Aggiornato il testo italiano del modulo Accedi: "Accedi alla tua area privata per salvare atleti, eventi e rankings.", includendo esplicitamente le configurazioni Ranking salvabili.
