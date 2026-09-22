@@ -3052,6 +3052,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 Su successiva richiesta sono stati rimossi i tooltip visivi Notifiche e Impostazioni al passaggio del mouse. Restano le etichette aria-label per gli screen reader, gli stati di selezione e il contatore delle notifiche.
 
+Alla segnalazione di popup ancora visibili, verificati i file serviti dalla preview e aggiornati gli identificativi di versione di JavaScript e CSS per evitare il riuso della versione precedente. Aggiunto controllo browser su entrambi i pulsanti dopo hover: assenza di tooltip e di attributi title nativi.
+
 I pulsanti campanella e ingranaggio sono stati successivamente spostati nel riquadro dell'account (email e ruolo), accanto ai comandi di sessione. Condividono la classe dei pulsanti della Scheda Atleta: 36 x 36 px, raggio 12 px e icona da 18 px. Le regole tipografiche di email/ruolo sono isolate per non alterare colori, icone e contatore. Test browser esteso per verificare posizione nel riquadro e dimensioni.
 
 Su richiesta dell'utente, Notifiche e Impostazioni sono state separate dallo slider, che conserva esclusivamente Atleti, Eventi e Rankings. Due pulsanti quadrati arrotondati, con icone Lucide campanella e ingranaggio distribuite localmente con relativa licenza, riutilizzano dimensioni e comportamento dei pulsanti strumenti Admin. Sono presenti etichette accessibili, tooltip, stato attivo blu LEVERAGE e contatore delle notifiche non lette. Quando si apre una di queste due viste, nessuna voce dello slider viene mostrata come selezionata. Verificata la navigazione nel test browser dell'Area Personale, senza modifiche ai dati reali.

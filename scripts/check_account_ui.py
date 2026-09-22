@@ -46,6 +46,11 @@ def main():
         assert page.locator('.account-view-toggle [data-account-view]').count() == 3
         assert page.locator('.account-tool-actions button').count() == 2
         assert page.locator('.account-summary .account-tool-actions button').count() == 2
+        for control in page.locator('.account-tool-actions button').all():
+            control.hover()
+            page.wait_for_timeout(600)
+            assert control.get_attribute('title') is None
+            assert control.locator('[role=tooltip], .account-tool-tooltip').count() == 0
         for box in page.locator('.account-tool-actions button').all():
             rect = box.bounding_box()
             assert rect['width'] == 36 and rect['height'] == 36
