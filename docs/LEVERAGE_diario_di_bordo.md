@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Rifinita la schermata di accesso richiesto quando l'Area Personale viene aperta senza sessione: layout centrale analogo ad Accedi, testo e pulsante su righe separate con spaziatura esplicita, comando con contorno e arrotondamenti standard. Aggiornate le versioni degli asset e aggiunto test browser sulla distanza effettiva tra messaggio e pulsante.
+
 Corretto il comportamento di chiusura dei pulsanti personali: un secondo clic su Notifiche o Impostazioni gia attive ripristina l'ultima lista consultata nello stesso pannello (Atleti, Eventi o Rankings), senza ricaricare i record. In apertura diretta di una vista strumenti, la lista di ritorno predefinita e Atleti. Test browser esteso a entrambi i pulsanti per ciascuna delle tre liste.
 
 Su successiva richiesta sono stati rimossi i tooltip visivi Notifiche e Impostazioni al passaggio del mouse. Restano le etichette aria-label per gli screen reader, gli stati di selezione e il contatore delle notifiche.

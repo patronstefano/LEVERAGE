@@ -2650,7 +2650,7 @@ function setApp(html) {
   const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
-  app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath));
+  app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath) || (routePath === "/account" && !state.currentUser));
   app.innerHTML = html;
   app.focus({ preventScroll: true });
 }
@@ -6713,9 +6713,9 @@ async function renderRankings() {
 function authRequiredPage() {
   setApp(`
     ${pageHeading("loginHeading", "loginIntro")}
-    <section class="panel auth-panel">
+    <section class="panel auth-panel auth-required-panel">
       <p>${t("loginRequiredFavorites")}</p>
-      <a class="primary-button auth-primary-link" href="#/login">${t("signIn")}</a>
+      <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
     </section>
   `);
 }

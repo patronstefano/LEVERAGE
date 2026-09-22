@@ -114,6 +114,14 @@ def main():
         page.wait_for_timeout(200)
         assert "/auth/password/reset" in writes
         assert "token=" not in page.url
+        page.evaluate("location.hash = '/account'")
+        prompt = page.locator('.auth-required-panel')
+        prompt.wait_for()
+        message = prompt.locator('p').bounding_box()
+        action = prompt.locator('a').bounding_box()
+        assert action['y'] - (message['y'] + message['height']) >= 18
+        assert page.locator('#app').evaluate("node => node.classList.contains('auth-main-view')")
+        page.screenshot(path='/tmp/leverage-account-signed-out.png', full_page=True)
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")
