@@ -432,6 +432,26 @@ def test_global_search_return_reuses_loaded_results_without_refetching():
     assert "bindGlobalSearchLoadMoreButtons();" in cached_branch
 
 
+def test_home_navigation_remembers_the_global_search_view():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    index = (PROJECT_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
+    base_routes = source.split("const SECTION_BASE_ROUTES = {", 1)[1].split("};", 1)[0]
+    route_section = source.split("function routeSection", 1)[1].split(
+        "function contextualAthleteSourceSection",
+        1,
+    )[0]
+    active_section = source.split("function activeRouteSection", 1)[1].split(
+        "function isAthleteSectionDetailRoute",
+        1,
+    )[0]
+
+    assert 'home: "/"' in base_routes
+    assert 'routePath === "/" || routePath === "/search"' in route_section
+    assert 'if (routeHasGlobalSearchContext(route)) return "home"' in active_section
+    assert 'data-section-nav="home"' in index
+    assert 'href="#/"' in index
+
+
 def test_home_and_global_search_page_share_the_same_search_bar_geometry():
     source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
     styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")

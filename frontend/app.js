@@ -19,6 +19,7 @@ function initialApiBase() {
 }
 
 const SECTION_BASE_ROUTES = {
+  home: "/",
   athletes: "/athletes",
   events: "/events",
   rankings: "/rankings",
@@ -27,6 +28,7 @@ const SECTION_BASE_ROUTES = {
 
 function routeSection(route) {
   const routePath = String(route || "/").split("?")[0];
+  if (routePath === "/" || routePath === "/search") return "home";
   if (routePath === "/athletes" || routePath.startsWith("/athletes/")) return "athletes";
   if (routePath === "/events" || routePath.startsWith("/events/")) return "events";
   if (routePath === "/rankings" || routePath.startsWith("/rankings/")) return "rankings";
@@ -51,7 +53,7 @@ function routeHasGlobalSearchContext(route) {
 }
 
 function activeRouteSection(route) {
-  if (routeHasGlobalSearchContext(route)) return "";
+  if (routeHasGlobalSearchContext(route)) return "home";
   return contextualAthleteSourceSection(route) || routeSection(route);
 }
 
