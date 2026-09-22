@@ -3404,6 +3404,8 @@ a:focus-visible > .entity-card-clickable {
   gap: 14px;
 }
 
+.auth-login-submit { justify-self: center; }
+
 .auth-form p {
   margin: 0;
   color: var(--muted);

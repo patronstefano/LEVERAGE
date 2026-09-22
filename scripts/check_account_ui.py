@@ -125,6 +125,7 @@ def main():
         before_logo = page.locator('.auth-brand-logo').bounding_box()
         prompt.locator('a').click()
         page.locator('#loginForm').wait_for()
+        assert page.locator('#loginForm button[type=submit]').bounding_box()['height'] == 36
         assert page.locator('.auth-brand-form .auth-login-subtitle').count() == 1
         assert page.locator('.auth-login-panel .auth-login-subtitle').count() == 0
         page.wait_for_timeout(650)

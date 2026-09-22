@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Uniformato il pulsante Accedi nel modulo ai comandi standard LEVERAGE: classe quiet-button, altezza 36 px, larghezza secondo il testo anziche estesa a tutto il modulo, centratura, arrotondamento condiviso e comportamento contorno al passaggio del mouse. Aggiunto controllo browser sull'altezza.
+
 Rinominata l'etichetta italiana del campo MFA in "Codice di Autenticazione", senza modificare il funzionamento del secondo fattore.
 
 Corretto il campo MFA nel login: la regola `display: grid` delle etichette sovrascriveva la visibilita nativa di `hidden`. Una regola CSS mirata mantiene nascosto il campo inizialmente; resta visibile e obbligatorio solo dopo la risposta `mfa_required` del backend. Nessuna modifica ai controlli di sicurezza backend. Test browser aggiunto per stato iniziale nascosto, apertura su richiesta MFA, obbligatorieta e focus.

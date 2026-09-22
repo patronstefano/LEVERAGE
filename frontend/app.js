@@ -6746,7 +6746,7 @@ function renderLogin() {
           <span>${t("mfaCode")}</span>
           <input id="loginMfaCode" type="text" inputmode="numeric" autocomplete="one-time-code">
         </label>
-        <button class="primary-button" type="submit">${t("loginAction")}</button>
+        <button class="quiet-button outline-command-button auth-login-submit" type="submit">${t("loginAction")}</button>
         <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
       </form>
       <div class="auth-switch-row">
