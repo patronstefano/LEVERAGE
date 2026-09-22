@@ -5,6 +5,11 @@ from playwright.sync_api import sync_playwright
 
 
 def main():
+    def check_input(locator):
+        assert locator.bounding_box()['height'] == 36
+        style = locator.evaluate("node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.borderRadius]; }")
+        assert style == ['14px', '400', '12px'], style
+
     errors, writes = [], []
     user = {"id": 999, "email": "user@example.test", "role": "user", "preferred_language": "it"}
     notices = [{"id": n, "message": "Notifica personale " + str(n), "is_read": False,
@@ -103,6 +108,7 @@ def main():
         for mode, endpoint in [("forgot-password", "/auth/password/forgot"), ("resend-verification", "/auth/resend-verification")]:
             page.evaluate("mode => location.hash = '/' + mode", mode)
             page.locator('#accountRecoveryForm input[name=email]').fill("user@example.test")
+            check_input(page.locator('#accountRecoveryForm input[name=email]'))
             page.locator('#accountRecoveryForm button').click()
             page.wait_for_timeout(200)
             assert endpoint in writes
@@ -125,6 +131,8 @@ def main():
         before_logo = page.locator('.auth-brand-logo').bounding_box()
         prompt.locator('a').click()
         page.locator('#loginForm').wait_for()
+        check_input(page.locator('#loginEmail'))
+        check_input(page.locator('#loginPassword'))
         assert page.locator('.auth-login-panel a[href="#/forgot-password"]').count() == 1
         assert page.locator('.auth-login-panel a[href="#/resend-verification"]').count() == 0
         assert page.locator('#loginForm button[type=submit]').bounding_box()['height'] == 36
@@ -143,6 +151,7 @@ def main():
         page.locator('#loginPassword').fill('ExistingPassword123!')
         page.locator('#loginForm button[type=submit]').click()
         page.locator('#mfaField').wait_for(state='visible')
+        check_input(page.locator('#loginMfaCode'))
         assert page.locator('#loginMfaCode').evaluate('node => node.required')
         assert page.locator('#loginMfaCode').evaluate('node => document.activeElement === node')
         assert not errors, errors
