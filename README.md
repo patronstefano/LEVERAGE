@@ -2,7 +2,7 @@
 
 Piattaforma full-stack per la raccolta, la governance, la consultazione e l'analisi dei dati della ginnastica artistica.
 
-**Milestone corrente (`v0.4.0-public-frontend`)**: completato il frontend pubblico USER nelle sezioni Home, Athletes, Events, Rankings e Analytics, incluse Scheda Atleta e Scheda Evento. La fase successiva riguarda autenticazione reale, area personale e strumenti Admin/Super Admin.
+**Milestone corrente (`v0.6.0-public-sections-complete`)**: concluso lo sviluppo strutturale delle sezioni Home, Athletes, Events, Rankings e Analytics, incluse Scheda Atleta, Scheda Evento, Ricerca globale, navigazione persistente, paginazione progressiva e confronto analitico. La fase successiva riguarda il consolidamento dei flussi autenticati e degli strumenti Admin/Super Admin, il collaudo end-to-end e la preparazione al deploy.
 
 ## Stack
 - Python 3.10+

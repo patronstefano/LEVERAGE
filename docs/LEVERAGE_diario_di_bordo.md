@@ -2987,3 +2987,21 @@ Con la chiusura delle sezioni `Home`, `Athletes`, `Events`, `Rankings` e `Analyt
 - Allineata la paginazione delle card Athlete ed Event alla griglia desktop a tre colonne: caricamento iniziale e incrementale avvengono in blocchi da 9 record; soltanto l'ultimo blocco puo contenere 1 o 2 card residue.
 - Uniformata la terminologia della Sezione Rankings sostituendo **Carica altri Scores** con **Carica altri Risultati** nelle quattro lingue supportate. Ripristinata inoltre l'identita LEVERAGE nella barra del browser mediante favicon PNG dedicata da 64 px, riferimento `shortcut icon`, icona Apple Touch da 180 px e versione URL esplicita contro la cache obsoleta.
 - Estesa alla sezione Home la memoria di navigazione gia adottata nelle altre aree: una Ricerca globale, o una scheda aperta nel suo contesto, resta memorizzata quando l'utente visita un'altra sezione e viene ripristinata cliccando nuovamente Home. Il comando esplicito **Torna alla Home** continua invece ad aprire la homepage iniziale.
+
+## Milestone - Sviluppo delle sezioni principali concluso
+
+- **Data:** 22 settembre 2026
+- **Versione:** `v0.6.0-public-sections-complete`
+- **Stato:** completata
+
+Con questa milestone viene dichiarato concluso lo sviluppo strutturale delle cinque sezioni principali di LEVERAGE:
+
+1. **Home**, con identita di brand, ricerca globale congiunta di Athlete, Event e Result, risultati coerenti con le sezioni dedicate, paginazione indipendente e memoria della vista;
+2. **Atleti**, con ricerca dinamica, filtri, preferiti, ordinamento, Scheda Atleta, certificazione World Gymnastics e analytics individuali interattive;
+3. **Eventi**, con ricerca intelligente, filtri, preferiti, viste Lista/Calendario, Scheda Evento e classifiche ufficiali disponibili per la gara;
+4. **Rankings**, con composizione configurabile, vincoli semantici tra filtri, metriche di punteggio, cicli olimpici, periodo, dettagli AA/VT AVG e salvataggio delle configurazioni;
+5. **Analytics**, con ricerca e selezione degli atleti, confronto MAG/WAG vincolato, grafici poligonali e trend performance affiancati o sovrapposti, metriche e periodo condivisi.
+
+Sono compresi nel perimetro concluso anche la navigazione contestuale, il mantenimento della vista aperta quando si cambia sezione, i collegamenti tra risultati e classifiche, i caricamenti progressivi, la localizzazione EN/IT/ES/FR, il comportamento responsive e la grammatica UI condivisa di card, pulsanti, slider, popup, riepiloghi e avvisi.
+
+Questa milestone costituisce la baseline funzionale e visiva delle sezioni pubbliche. Eventuali interventi successivi su queste aree saranno trattati come rifiniture, correzioni o ampliamenti, non come completamento della loro struttura fondamentale. La fase successiva del progetto riguarda il consolidamento dell'autenticazione e dell'Area Personale, il completamento operativo delle interfacce Admin/Super Admin, il collaudo end-to-end e la preparazione del deployment di produzione.
