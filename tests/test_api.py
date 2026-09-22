@@ -1125,6 +1125,10 @@ def test_global_search_outputs_only_athletes_events_and_results():
     assert event_search.json()["events"][0]["world_gymnastics_verified_at"] is None
     assert event_search.json()["results"][0]["result_id"] == result["id"]
     assert event_search.json()["results"][0]["day"] is None
+    assert event_search.json()["results"][0]["computed_rank"] == 1
+    assert event_search.json()["results"][0]["E_score"] is None
+    assert event_search.json()["results"][0]["execution_estimate"] == 8.1
+    assert event_search.json()["results"][0]["apparatus_scores"] == []
 
     country_search = client.get("/search", params={"q": "USA", "limit": 5})
     assert country_search.status_code == 200

@@ -3299,14 +3299,14 @@ function setupSearchAutocomplete(inputSelector, suggestionsSelector) {
   });
 }
 
-function searchSection(title, items) {
-  if (!items.length) return "";
+function searchSection(title, content, className = "") {
+  if (!content) return "";
   return `
-    <section class="panel search-result-section">
+    <section class="search-result-section ${className}">
       <div class="section-header">
         <h2>${title}</h2>
       </div>
-      <div class="entity-list">${items.join("")}</div>
+      ${content}
     </section>
   `;
 }
@@ -3787,8 +3787,10 @@ function leaderboardAthleteHref(href, options = {}) {
 
 function renderLeaderboardList(entries = [], options = {}) {
   const selectedMetric = options.selectedMetric || rankingSortBy();
+  const showRank = options.showRank !== false;
+  const listClasses = [options.className || "", showRank ? "" : "is-rankless"].filter(Boolean).join(" ");
   return `
-    <div class="leaderboard-list ${options.className || ""}">
+    <div class="leaderboard-list ${listClasses}">
       ${entries.map((entry) => {
         const rank = options.rankForEntry ? options.rankForEntry(entry) : entry.computed_rank;
         const primaryValue = leaderboardPrimaryValue(entry, selectedMetric);
@@ -3805,7 +3807,7 @@ function renderLeaderboardList(entries = [], options = {}) {
           primaryDetailRows.length || scoreCells.some((cell) => (cell.detailRows || []).length)
         );
         const rowContent = `
-            <span class="leaderboard-rank">#${escapeHtml(String(rank || ""))}</span>
+            ${showRank ? `<span class="leaderboard-rank">#${escapeHtml(String(rank || ""))}</span>` : ""}
             <span class="leaderboard-athlete">
               ${expandable
                 ? `<a class="leaderboard-athlete-link" href="${escapeHtml(href)}">${escapeHtml(entry.athlete_name || t("athlete"))}</a>`
@@ -3866,20 +3868,42 @@ function bindLeaderboardExpansionEvents() {
   });
 }
 
-function searchResultCard(result) {
-  const pills = [
-    { label: `${t("score")} ${scoreLabel(result.score)}`, variant: "brand" },
-    ...(result.apparatus ? [{ label: result.apparatus }] : []),
-    { label: result.discipline },
-    ...(result.country ? [{ label: result.country }] : []),
-  ];
-  const meta = [result.event_name, result.date || String(result.year)].filter(Boolean).join(" · ");
-  return entityCard(
-    result.athlete_name,
-    meta,
-    pills,
-    globalSearchDetailHref(searchResultEventHref(result)),
-  );
+function renderGlobalSearchAthleteCards(athletes = []) {
+  if (!athletes.length) return "";
+  return `<div class="grid-3 athlete-results-list">${athletes.map((athlete) => entityCard(
+    athleteCardTitle(athlete, athlete.name),
+    "",
+    athleteCardSummaryPills(athlete),
+    globalSearchDetailHref(`#/athletes/${athlete.id}`),
+    favoriteButton("athlete", athlete.id, state.favoriteAthleteIds.has(Number(athlete.id))),
+  )).join("")}</div>`;
+}
+
+function renderGlobalSearchEventCards(events = []) {
+  if (!events.length) return "";
+  return `<div class="grid-3 event-results-list">${events.map((event) => entityCard(
+    eventCardTitle(event, formatReadableDateRange(event)),
+    "",
+    eventCardSummaryPills(event),
+    globalSearchDetailHref(`#/events/${event.id}`),
+    favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
+  )).join("")}</div>`;
+}
+
+function renderGlobalSearchResultList(results = []) {
+  if (!results.length) return "";
+  return renderLeaderboardList(results, {
+    className: "ranking-results-list global-search-ranking-list",
+    selectedMetric: "score",
+    showRank: false,
+    showTags: false,
+    hrefForEntry: (result) => globalSearchDetailHref(searchResultEventHref(result)),
+    metaForEntry: (result) => [
+      result.country,
+      result.event_name,
+      result.date ? formatReadableDate(result.date) : String(result.year || ""),
+    ],
+  });
 }
 
 function renderGlobalSearchResults(data) {
@@ -3887,49 +3911,34 @@ function renderGlobalSearchResults(data) {
   if (!data.total_count) {
     return messageState(t("noGlobalSearchResults"));
   }
-  const athleteItems = data.athletes.map((athlete) => {
-    return entityCard(
-      athleteCardTitle(athlete, athlete.name),
-      "",
-      athleteCardSummaryPills(athlete),
-      globalSearchDetailHref(`#/athletes/${athlete.id}`),
-    );
-  });
-  const eventItems = data.events.map((event) => {
-    const period = formatReadableDateRange(event);
-    return entityCard(
-      eventCardTitle(event, period),
-      "",
-      eventCardSummaryPills(event),
-      globalSearchDetailHref(`#/events/${event.id}`),
-    );
-  });
-  const resultItems = data.results.map(searchResultCard);
-  const relatedResultItems = (data.related_results || []).map(searchResultCard);
+  const athleteCards = renderGlobalSearchAthleteCards(data.athletes);
+  const eventCards = renderGlobalSearchEventCards(data.events);
+  const resultList = renderGlobalSearchResultList(data.results);
+  const relatedResultList = renderGlobalSearchResultList(data.related_results || []);
   if (structuredResultSearch) {
     if (!data.results.length) {
       return `
         <div class="search-results">
           ${messageState(t("noStructuredSearchResults"))}
-          ${searchSection(t("relatedResults"), relatedResultItems)}
-          ${searchSection(t("matchingAthletes"), athleteItems)}
-          ${searchSection(t("matchingEvents"), eventItems)}
+          ${searchSection(t("relatedResults"), relatedResultList, "global-search-result-ranking-section")}
+          ${searchSection(t("matchingAthletes"), athleteCards)}
+          ${searchSection(t("matchingEvents"), eventCards)}
           ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
         </div>
       `;
     }
     return `
       <div class="search-results">
-        ${searchSection(t("filteredResults"), resultItems)}
+        ${searchSection(t("filteredResults"), resultList, "global-search-result-ranking-section")}
         ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
       </div>
     `;
   }
   return `
     <div class="search-results">
-      ${searchSection(t("matchingAthletes"), athleteItems)}
-      ${searchSection(t("matchingEvents"), eventItems)}
-      ${searchSection(t("matchingResults"), resultItems)}
+      ${searchSection(t("matchingAthletes"), athleteCards)}
+      ${searchSection(t("matchingEvents"), eventCards)}
+      ${searchSection(t("matchingResults"), resultList, "global-search-result-ranking-section")}
       ${data.has_more ? renderLoadMoreButton("global-search", t("loadMoreSearchResults")) : ""}
     </div>
   `;
@@ -3958,6 +3967,7 @@ function mergeGlobalSearchResults(current, next) {
 async function renderGlobalSearch() {
   const params = currentParams();
   const query = params.get("q") || "";
+  await ensureFavoritesLoaded().catch(() => {});
   const cachedSearch = query && state.globalSearch.query === query && state.globalSearch.payload
     ? state.globalSearch
     : null;
@@ -4007,6 +4017,7 @@ async function renderGlobalSearch() {
         offset: searchOffset,
       };
       node.innerHTML = renderGlobalSearchResults(searchPayload);
+      bindFavoriteButtons();
       bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
     } catch (error) {
       if (requestId !== searchRequestId) return;
@@ -4014,11 +4025,13 @@ async function renderGlobalSearch() {
         node.innerHTML = errorState(error);
       } else if (searchPayload) {
         node.innerHTML = renderGlobalSearchResults(searchPayload);
+        bindFavoriteButtons();
         bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
       }
     }
   };
   if (cachedSearch) {
+    bindFavoriteButtons();
     bindLoadMoreButton("global-search", () => loadGlobalSearchResults({ append: true }));
     return;
   }

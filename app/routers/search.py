@@ -16,7 +16,7 @@ from app.event_search import (
     event_search_tokens,
     semantic_event_search_variants,
 )
-from app.result_ranking import result_represented_country
+from app.result_ranking import build_ranking_entries
 
 router = APIRouter()
 
@@ -501,25 +501,12 @@ def build_global_results(
     ).offset(offset).limit(limit).all()
 
     return [
-        schemas.GlobalSearchResult(
-            result_id=result.id,
-            athlete_id=result.athlete_id,
-            athlete_name=athlete_display_name(result.athlete),
-            country=result_represented_country(result),
-            event_id=result.event_id,
-            event_name=result.event.name,
-            year=result.event.year,
-            date=result.event.start_date,
-            discipline=result.discipline,
-            category=result.category,
-            apparatus=result.apparatus,
-            format=result.format,
-            round=result.round,
-            day=result.day,
-            score=result.score,
-            D_score=result.D_score,
+        schemas.GlobalSearchResult(**entry.model_dump())
+        for entry in build_ranking_entries(
+            results,
+            schemas.ResultRankingMetricEnum.SCORE,
+            rank_offset=offset,
         )
-        for result in results
     ]
 
 

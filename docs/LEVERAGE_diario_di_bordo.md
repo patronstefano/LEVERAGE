@@ -2974,3 +2974,12 @@ Con il tag GitHub `v0.5.0-world-gymnastics-certification` viene fissata una mile
 LEVERAGE oggi non e piu solo un backend CRUD: e una piattaforma dati full-stack per la ginnastica artistica, con modello semantico forte, import assistito, validazioni sportive, gestione della qualita dato, base storica consistente e un frontend pubblico completo per ricerca, consultazione, classifiche e confronto analitico.
 
 Con la chiusura delle sezioni `Home`, `Athletes`, `Events`, `Rankings` e `Analytics`, il progetto entra nella fase dedicata agli utenti autenticati e all'operativita amministrativa. I prossimi sviluppi riguarderanno login e sessioni reali, area personale, strumenti Admin/Super Admin, sicurezza end-to-end e preparazione del deploy di produzione.
+## 22 settembre 2026 - Uniformazione della Ricerca globale
+
+- Eliminata la rappresentazione generica e autonoma dei record nella pagina **Ricerca globale**.
+- Le entità Athlete usano ora la stessa griglia a tre colonne, la stessa gerarchia tipografica, gli stessi badge informativi, il badge di verifica e lo stesso controllo Preferiti della Sezione Atleti.
+- Le entità Event usano ora la stessa griglia a tre colonne, la stessa data sotto il nome, gli stessi badge informativi, il badge di verifica e lo stesso controllo Preferiti della Sezione Eventi.
+- I Result sono presentati con la stessa graduatoria compatta della Sezione Rankings: Final Score principale, composizione del punteggio, dettagli AA e VT AVG espandibili e collegamento alla classifica esatta dell'evento.
+- Il rango non viene mostrato nella Ricerca globale, poiche l'ordinamento della ricerca non costituisce una classifica sportiva ufficiale.
+- Esteso il contratto API `GlobalSearchResult` al modello completo `ResultRankingEntry`, includendo D Score, E Score o stima, Penalty, Bonus, stati di disponibilita, avvisi qualitativi e componenti per AA/VT AVG.
+- Aggiunti contratti automatici frontend e API per garantire che la Ricerca globale continui a riusare i componenti canonici delle sezioni dedicate.

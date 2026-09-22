@@ -1494,23 +1494,8 @@ class GlobalSearchEvent(BaseModel):
     result_count: int = 0
 
 
-class GlobalSearchResult(BaseModel):
-    result_id: int
-    athlete_id: int
-    athlete_name: str
-    country: Optional[str] = None
-    event_id: int
-    event_name: str
-    year: int
-    date: Optional[Date] = None
-    discipline: DisciplineEnum
-    category: ResultCategoryEnum
-    apparatus: Optional[str] = None
-    format: FormatEnum
-    round: RoundEnum
-    day: Optional[int] = None
-    score: Optional[float] = None
-    D_score: Optional[float] = None
+class GlobalSearchResult(ResultRankingEntry):
+    """A search result with the same score detail contract used by rankings."""
 
 
 class GlobalSearchResponse(BaseModel):

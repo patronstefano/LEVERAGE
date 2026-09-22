@@ -343,7 +343,7 @@ def test_global_search_supports_progressive_loading_without_duplicates():
 
 def test_global_search_detail_links_preserve_home_context_and_return_route():
     source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
-    global_results = source.split("function searchResultCard", 1)[1].split(
+    global_results = source.split("function renderGlobalSearchAthleteCards", 1)[1].split(
         "async function renderGlobalSearch",
         1,
     )[0]
@@ -366,6 +366,32 @@ def test_global_search_detail_links_preserve_home_context_and_return_route():
     assert 'label: t("backToGlobalSearch")' in athlete_back
     assert 'label: t("backToGlobalSearch")' in event_back
     assert "routeHasGlobalSearchContext(state.route)" in source
+
+
+def test_global_search_reuses_section_cards_and_ranking_rows():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    styles = (PROJECT_ROOT / "frontend" / "styles.css").read_text(encoding="utf-8")
+    global_results = source.split("function renderGlobalSearchAthleteCards", 1)[1].split(
+        "function mergeGlobalSearchResults",
+        1,
+    )[0]
+    global_search = source.split("async function renderGlobalSearch()", 1)[1].split(
+        "function featureCard",
+        1,
+    )[0]
+
+    assert 'class="grid-3 athlete-results-list"' in global_results
+    assert "athleteCardSummaryPills(athlete)" in global_results
+    assert 'favoriteButton("athlete"' in global_results
+    assert 'class="grid-3 event-results-list"' in global_results
+    assert "eventCardSummaryPills(event)" in global_results
+    assert 'favoriteButton("event"' in global_results
+    assert 'className: "ranking-results-list global-search-ranking-list"' in global_results
+    assert "showRank: false" in global_results
+    assert "showTags: false" in global_results
+    assert "await ensureFavoritesLoaded().catch(() => {})" in global_search
+    assert "bindFavoriteButtons();" in global_search
+    assert ".leaderboard-list.is-rankless .leaderboard-row" in styles
 
 
 def test_global_search_return_reuses_loaded_results_without_refetching():
