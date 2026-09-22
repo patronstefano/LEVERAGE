@@ -346,6 +346,19 @@ def test_global_search_supports_progressive_loading_without_duplicates():
     assert "GLOBAL_SEARCH_SECTION_LIMIT % EVENT_CARD_COLUMN_COUNT" not in source
 
 
+def test_rankings_use_results_wording_and_browser_brand_icons():
+    source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
+    index = (PROJECT_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
+
+    assert 'loadMoreResults: "Load more Results"' in source
+    assert 'loadMoreResults: "Carica altri Risultati"' in source
+    assert 't("loadMoreResults")' in source
+    assert "loadMoreScores" not in source
+    assert 'rel="icon" type="image/png" sizes="64x64"' in index
+    assert "leverage-favicon-64.png?v=20260922" in index
+    assert 'rel="apple-touch-icon" sizes="180x180"' in index
+
+
 def test_global_search_detail_links_preserve_home_context_and_return_route():
     source = (PROJECT_ROOT / "frontend" / "app.js").read_text(encoding="utf-8")
     global_results = source.split("function renderGlobalSearchAthleteCards", 1)[1].split(

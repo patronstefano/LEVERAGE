@@ -349,7 +349,7 @@ const translations = {
     backToFilters: "Back to filters",
     loadMoreAthletes: "Load more Athletes",
     loadMoreEvents: "Load more Events",
-    loadMoreScores: "Load more Scores",
+    loadMoreResults: "Load more Results",
     loadMoreSearchResults: "Load more results",
     language: "Language",
     save: "Save",
@@ -710,7 +710,7 @@ const translations = {
     backToFilters: "Torna ai filtri",
     loadMoreAthletes: "Carica altri Atleti",
     loadMoreEvents: "Carica altri Eventi",
-    loadMoreScores: "Carica altri Scores",
+    loadMoreResults: "Carica altri Risultati",
     loadMoreSearchResults: "Carica altri Risultati",
     language: "Lingua",
     save: "Salva",
@@ -1071,7 +1071,7 @@ const translations = {
     backToFilters: "Volver a los filtros",
     loadMoreAthletes: "Cargar mas Atletas",
     loadMoreEvents: "Cargar mas Eventos",
-    loadMoreScores: "Cargar mas Scores",
+    loadMoreResults: "Cargar mas Resultados",
     loadMoreSearchResults: "Cargar mas resultados",
     language: "Idioma",
     save: "Guardar",
@@ -1432,7 +1432,7 @@ const translations = {
     backToFilters: "Retour aux filtres",
     loadMoreAthletes: "Charger plus d'Athletes",
     loadMoreEvents: "Charger plus d'Evenements",
-    loadMoreScores: "Charger plus de Scores",
+    loadMoreResults: "Charger plus de Resultats",
     loadMoreSearchResults: "Charger plus de resultats",
     language: "Langue",
     save: "Enregistrer",
@@ -6086,7 +6086,7 @@ function renderRankingList(selector, payloadOrRankings) {
         return [entry.country, entry.event_name, eventDate || eventYear];
       },
     })}
-    ${pagination.hasMore ? renderLoadMoreButton("rankings", t("loadMoreScores")) : ""}
+    ${pagination.hasMore ? renderLoadMoreButton("rankings", t("loadMoreResults")) : ""}
     ${warningStack}
   `;
 }
