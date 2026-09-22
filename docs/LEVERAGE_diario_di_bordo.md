@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Su richiesta, il solo pulsante Accedi del modulo adotta il riempimento blu LEVERAGE con testo bianco anche a riposo. Conservate dimensioni compatte e arrotondamenti; gli altri comandi restano invariati. Verificato il colore calcolato nel test browser.
+
 Uniformati i campi dei moduli di autenticazione (email, password, recupero/reimpostazione password e Codice di Autenticazione) a 36 px di altezza, testo 14 px con peso normale e raggio condiviso 12 px. La regola comune copre anche registrazione e cambio password nell'Area Personale, senza modificare validazioni o sicurezza. Test browser esteso alle dimensioni e allo stile calcolato dei campi login, recupero e MFA.
 
 Semplificati i collegamenti nel box Accedi: mantenuto soltanto "Password dimenticata?", rimuovendo "Reinvia email di verifica" su richiesta dell'utente. La rimozione riguarda il link nel login, non l'endpoint backend o il percorso di reinvio, che restano funzionalita distinte dal recupero password.
