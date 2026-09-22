@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Semplificata la schermata Accedi per eliminare la ripetizione visiva tra intestazione, introduzione e comando: titolo mantenuto solo per gli screen reader, logo come riferimento visivo e testo "Il tuo spazio per salvare atleti, eventi e rankings.". Aggiornate anche EN/ES/FR; invariati il pulsante di invio e la navigazione principale.
+
 Aggiornato il testo italiano del modulo Accedi: "Accedi alla tua area privata per salvare atleti, eventi e rankings.", includendo esplicitamente le configurazioni Ranking salvabili.
 
 Aggiunto il logo originale centrato nella schermata di accesso richiesto (112 px) e nel modulo Accedi (64 px). Nel passaggio al modulo viene animata la posizione e la scala del logo usando le sue coordinate reali prima e dopo il cambio vista; il modulo compare con una breve transizione. La preferenza di sistema per movimento ridotto disabilita l'animazione. Il logo mantiene dimensioni stabili su desktop e mobile; il test browser verifica riduzione e spostamento verso l'alto.

@@ -290,7 +290,7 @@ const translations = {
     password: "Password",
     mfaCode: "MFA code",
     loginAction: "Sign in",
-    loginHelp: "Access your private area to save athletes and events.",
+    loginHelp: "Your space to save athletes, events and rankings.",
     loginError: "Unable to sign in. Check your credentials and email verification.",
     registerPrompt: "New to LEVERAGE?",
     registerLink: "Create an account",
@@ -651,7 +651,7 @@ const translations = {
     password: "Password",
     mfaCode: "Codice MFA",
     loginAction: "Accedi",
-    loginHelp: "Accedi alla tua area privata per salvare atleti, eventi e rankings.",
+    loginHelp: "Il tuo spazio per salvare atleti, eventi e rankings.",
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
     registerPrompt: "Non sei ancora registrato?",
     registerLink: "Crea un account",
@@ -1012,7 +1012,7 @@ const translations = {
     password: "Password",
     mfaCode: "Codigo MFA",
     loginAction: "Entrar",
-    loginHelp: "Accede a tu area privada para guardar atletas y eventos.",
+    loginHelp: "Tu espacio para guardar atletas, eventos y rankings.",
     loginError: "No se pudo iniciar sesion. Revisa credenciales y verificacion email.",
     registerPrompt: "Todavia no tienes una cuenta?",
     registerLink: "Crear una cuenta",
@@ -1373,7 +1373,7 @@ const translations = {
     password: "Password",
     mfaCode: "Code MFA",
     loginAction: "Connexion",
-    loginHelp: "Accedez a votre espace prive pour enregistrer athletes et evenements.",
+    loginHelp: "Votre espace pour enregistrer athlètes, événements et rankings.",
     loginError: "Connexion impossible. Verifiez identifiants et verification email.",
     registerPrompt: "Vous n'avez pas encore de compte ?",
     registerLink: "Creer un compte",
@@ -6712,7 +6712,7 @@ async function renderRankings() {
 
 function authRequiredPage() {
   setApp(`
-    <div class="auth-brand auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="112" height="112"><h1>${t("loginHeading")}</h1></div>
+    <div class="auth-brand auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="112" height="112"><h1 class="sr-only">${t("loginHeading")}</h1></div>
     <section class="panel auth-panel auth-required-panel">
       <p>${t("loginRequiredFavorites")}</p>
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
@@ -6727,7 +6727,7 @@ function renderLogin() {
   }
   const previousLogo = document.querySelector(".auth-brand-logo")?.getBoundingClientRect();
   setApp(`
-    <div class="auth-brand auth-brand-form"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="64" height="64"><h1>${t("loginHeading")}</h1></div>
+    <div class="auth-brand auth-brand-form"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="64" height="64"><h1 class="sr-only">${t("loginHeading")}</h1></div>
     <section class="panel auth-panel auth-login-panel">
       <form class="auth-form" id="loginForm">
         <p>${t("loginHelp")}</p>
