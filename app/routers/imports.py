@@ -394,6 +394,8 @@ def commit_calendar_import(
 @router.post("/gymternet/preview", response_model=schemas.GymternetImportPreview)
 def preview_gymternet_import(
     file: UploadFile = File(...),
+    orphan_dscore_decisions: Optional[str] = Form(None),
+    athlete_match_decisions: Optional[str] = Form(None),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -408,6 +410,8 @@ def preview_gymternet_import(
         year_hint,
         csv_discipline,
         csv_score_kind,
+        orphan_dscore_decisions=parse_orphan_dscore_decisions(orphan_dscore_decisions),
+        athlete_match_decisions=parse_athlete_match_decisions(athlete_match_decisions),
         orphan_review_limit=orphan_review_limit,
         athlete_review_limit=athlete_review_limit,
     )

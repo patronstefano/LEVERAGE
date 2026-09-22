@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -14,11 +14,13 @@ def get_notifications(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
     unread_only: bool = False,
+    limit: int = Query(100, ge=1, le=500),
+    offset: int = Query(0, ge=0),
 ):
     query = db.query(models.Notification).filter(models.Notification.user_id == current_user.id)
     if unread_only:
         query = query.filter(models.Notification.is_read == False)
-    notifications = query.order_by(models.Notification.created_at.desc()).all()
+    notifications = query.order_by(models.Notification.created_at.desc(), models.Notification.id.desc()).offset(offset).limit(limit).all()
     return notifications
 
 

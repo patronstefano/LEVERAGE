@@ -9867,6 +9867,42 @@ def test_gymternet_import_reviews_possible_existing_athlete_match_before_commit(
     assert result["athlete_id"] == existing_athlete_id
 
 
+def test_gymternet_preview_applies_review_decisions_without_writing():
+    client.post("/auth/register", json={"email": "preview_decisions@example.com", "password": TEST_PASSWORD})
+    headers = {"Authorization": f"Bearer {login_as_admin('preview_decisions@example.com')}"}
+    client.post("/athletes/", json={"first_name": "Daiki", "last_name": "Hashimoto", "discipline": "MAG", "country": "JPN"}, headers=headers)
+    files = {"file": ("gymternet_typo.csv", gymternet_athlete_typo_csv_bytes(), "text/csv")}
+    first = client.post("/imports/gymternet/preview?year_hint=2024", files=files, headers=headers).json()
+    review = first["athlete_match_review"][0]
+    decision = {"review_id": review["review_id"], "action": "accept_suggestion", "suggestion_id": review["suggestions"][0]["suggestion_id"]}
+    response = client.post("/imports/gymternet/preview?year_hint=2024", files=files,
+                           data={"athlete_match_decisions": json.dumps([decision])}, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["athlete_match_decision_stats"]["unresolved"] == 0
+    assert response.json()["would_create_athletes"] == 0
+    assert client.get("/results/").json() == []
+    assert client.get("/events/").json() == []
+    assert len(client.get("/athletes/").json()) == 1
+
+
+def test_notifications_pagination_is_stable_and_user_scoped():
+    client.post("/auth/register", json={"email": "notice_page@example.com", "password": TEST_PASSWORD})
+    headers = {"Authorization": f"Bearer {login_as_user('notice_page@example.com')}"}
+    user_id = client.get("/auth/me", headers=headers).json()["id"]
+    with SessionLocal() as db:
+        for number in range(5):
+            db.add(models.Notification(user_id=user_id, type=models.NotificationTypeEnum.IMPORT_SUMMARY,
+                                       message=str(number), created_at=datetime(2026, 1, 1)))
+        db.commit()
+    pages = [client.get(f"/notifications/?limit=2&offset={offset}", headers=headers).json() for offset in (0, 2, 4)]
+    ids = [item["id"] for page in pages for item in page]
+    assert len(ids) == len(set(ids)) == 5
+    assert ids == sorted(ids, reverse=True)
+    assert client.get("/notifications/?limit=0", headers=headers).status_code == 422
+    assert client.get("/notifications/?offset=-1", headers=headers).status_code == 422
+    assert client.get("/notifications/").status_code == 401
+
+
 def test_gymternet_import_memory_recommends_keep_separate_for_same_context_score_conflict():
     client.post(
         "/auth/register",

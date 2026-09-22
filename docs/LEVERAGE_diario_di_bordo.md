@@ -1,7 +1,35 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
-Data documento: 24 giugno 2026  
-Stato del progetto: backend locale avanzato, audit pre-Git completato, pre-popolamento massivo definitivo, pre-deploy online  
+## 22 settembre 2026 - Prima integrazione del Centro Admin
+
+Avviata la fase amministrativa dopo la milestone delle sezioni pubbliche.
+Il perimetro concordato e ora un MVP privato: non e prevista pubblicazione
+online in questa fase.
+
+- Creato Centro Admin unificato, accessibile dall'Area personale.
+- Collegate le funzioni backend di data entry, gestione record, import
+  Gymternet/Calendar, revisioni, calendario, notifiche, merge e statistiche.
+- Riservate a SUPER ADMIN gestione ruoli, audit, approvazione delle modifiche,
+  annullamento degli update e ripristino delle entita eliminate.
+- Riutilizzati strumenti World Gymnastics delle schede, controlli e stile UI.
+- La preview Gymternet ora riceve le decisioni amministrative prima del
+  commit, senza scritture. Preservata la distinzione fra country history e
+  correzione della nazionalita rappresentata.
+- Paginazione notifiche con ordine stabile; bozze import e risultati in
+  memoria durante la navigazione, senza persistenza dei file nel browser.
+- Completata la configurazione MFA al primo login con token temporaneo e
+  visualizzazione dei codici di recupero; cambio password richiede nuovo login.
+- Verifica: 165 test automatici superati; controllo Chromium delle aree,
+  dei form, invio bulk simulato, cambio disciplina e layout desktop/mobile.
+- Nessun import o intervento sui dati storici durante il collaudo UI.
+- Il centro e una prima integrazione operativa da rifinire e validare
+  insieme all'utente, non una dichiarazione di collaudo finale di ogni
+  operazione amministrativa sul DB reale.
+
+Dettagli, copertura e limiti: `docs/LEVERAGE_admin_center.md`.
+
+Data ultimo aggiornamento: 22 settembre 2026  
+Stato del progetto: dati storici popolati, sezioni pubbliche completate, prima integrazione del Centro Admin; MVP privato locale  
 Ambiente di lavoro: workspace LEVERAGE in VS Code; percorso operativo rilevato durante l'audit: `/Users/patronstefano/Sviluppo/LEVERAGE`  
 Scopo del documento: ricostruire ordinatamente il lavoro svolto dall'inizio del progetto LEVERAGE fino allo stato attuale, come diario di bordo utile per sviluppo, tesi magistrale e futura messa online.
 

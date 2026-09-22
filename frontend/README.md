@@ -46,6 +46,13 @@ You can change it from the UI footer during local testing.
 
 ## Scope
 
+- Unified Admin center at `#/admin`, accessible from the personal area.
+- Manual batches, Gymternet/Calendar review, notifications and data completion.
+- Athlete merges, site statistics, super-admin roles, audit and restore.
+- First-login MFA enrollment and password change.
+
+See [Admin center](../docs/LEVERAGE_admin_center.md) for permissions and validation.
+
 - Public home screen
 - Minimal routing
 - Athlete search

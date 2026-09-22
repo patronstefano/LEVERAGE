@@ -1,3 +1,5 @@
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
+
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
 const AUTH_TOKEN_KEY = "leverage.authToken";
@@ -2942,6 +2944,8 @@ function bindAdminToolsToggles() {
       }, 220);
       panel.dataset.closeTimer = String(closeTimer);
     });
+    const query = new URLSearchParams(state.route.split("?")[1] || "");
+    if (query.get("admin_tools") === "1" && isAdminUser()) button.click();
   });
 }
 
@@ -6750,7 +6754,7 @@ function renderLogin() {
         return;
       }
       if (payload.mfa_setup_required) {
-        message.textContent = t("mfaSetupRequired");
+        await renderAdminMfaSetup({ state, setApp, fetchApi, escapeHtml, completeLoginWithToken }, payload.mfa_setup_token);
         return;
       }
       if (!payload.access_token) {
@@ -9980,6 +9984,7 @@ function bindAdminSelectControls(rootNode = document) {
         const input = control.querySelector("[data-admin-select-input]");
         const label = control.querySelector("[data-admin-select-label]");
         if (input) input.value = value;
+        if (input) input.dispatchEvent(new Event("change", { bubbles: true }));
         if (label) label.textContent = option.textContent.trim();
         control.querySelectorAll("[role='option']").forEach((item) => {
           item.setAttribute("aria-selected", String(item === option));
@@ -11666,6 +11671,7 @@ async function renderAccount() {
         <span>${escapeHtml(state.currentUser.role)}</span>
       </div>
       <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
+      ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
     </section>
     ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">
@@ -11726,6 +11732,9 @@ function athleteDetailBackDestination() {
   const params = new URLSearchParams(query);
   const source = params.get("from") || "";
   const returnRoute = params.get("return_to") || "";
+  if (source === "admin" && returnRoute.startsWith("/admin")) {
+    return { href: "#" + returnRoute, label: adminLabel(state.language, "center") };
+  }
   if (source === "search") {
     const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
     return { href: `#${searchRoute}`, label: t("backToGlobalSearch") };
@@ -11758,6 +11767,9 @@ function eventDetailBackDestination() {
   const [, query = ""] = state.route.split("?");
   const params = new URLSearchParams(query);
   const returnRoute = params.get("return_to") || "";
+  if (params.get("from") === "admin" && returnRoute.startsWith("/admin")) {
+    return { href: "#" + returnRoute, label: adminLabel(state.language, "center") };
+  }
   if (params.get("from") === "search") {
     const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
     return { href: `#${searchRoute}`, label: t("backToGlobalSearch") };
@@ -11999,7 +12011,11 @@ function render() {
   syncTopbarHeight();
   const athleteDetailMatch = state.route.match(/^\/athletes\/(\d+)/);
   const eventDetailMatch = state.route.match(/^\/events\/(\d+)/);
-  if (state.route.startsWith("/account")) {
+  if (state.route.startsWith("/admin")) {
+    return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml,
+      renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t,
+      setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });
+  } else if (state.route.startsWith("/account")) {
     return renderAccount();
   } else if (athleteDetailMatch) {
     return renderAthleteDetail(athleteDetailMatch[1]);
