@@ -649,7 +649,7 @@ const translations = {
     signOut: "Esci",
     email: "Email",
     password: "Password",
-    mfaCode: "Codice MFA",
+    mfaCode: "Codice di Autenticazione",
     loginAction: "Accedi",
     loginHelp: "La tua area privata dove salvare atleti, eventi e rankings",
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
