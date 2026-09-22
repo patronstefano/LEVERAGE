@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Ripristinato, su richiesta, il comportamento standard del solo pulsante Accedi interno al modulo: neutro a riposo, bordo e testo blu in hover/focus, riempimento durante la pressione. Rimossa l'eccezione CSS del blu permanente; resta invariata l'evidenziazione della pagina corrente nella topbar. Test browser aggiornato per verificare hover e sfondo neutro.
+
 Aggiunto lo stato attivo blu LEVERAGE con testo bianco al pulsante della topbar Area Personale/Accedi quando viene mostrata la rispettiva schermata, compresa la richiesta di accesso all'area privata senza sessione. Lo stato segue la navigazione e torna neutro nelle altre pagine; usa aria-current per comunicare la pagina corrente. Test browser aggiunti per area personale, login e uscita verso il recupero password.
 
 Su richiesta, il solo pulsante Accedi del modulo adotta il riempimento blu LEVERAGE con testo bianco anche a riposo. Conservate dimensioni compatte e arrotondamenti; gli altri comandi restano invariati. Verificato il colore calcolato nel test browser.

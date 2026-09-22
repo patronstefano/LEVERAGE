@@ -143,7 +143,13 @@ def main():
         assert page.locator('.auth-login-panel a[href="#/forgot-password"]').count() == 1
         assert page.locator('.auth-login-panel a[href="#/resend-verification"]').count() == 0
         assert page.locator('#loginForm button[type=submit]').bounding_box()['height'] == 36
-        assert page.locator('#loginForm button[type=submit]').evaluate("node => getComputedStyle(node).backgroundColor") == 'rgb(25, 23, 71)'
+        submit = page.locator('#loginForm button[type=submit]')
+        assert submit.evaluate("node => getComputedStyle(node).backgroundColor") == 'rgb(255, 255, 255)'
+        submit.hover()
+        page.wait_for_timeout(200)
+        assert submit.evaluate("node => getComputedStyle(node).backgroundColor") == 'rgb(255, 255, 255)'
+        assert submit.evaluate("node => getComputedStyle(node).borderTopColor") == 'rgb(25, 23, 71)'
+        assert submit.evaluate("node => getComputedStyle(node).color") == 'rgb(25, 23, 71)'
         assert page.locator('.auth-brand-form .auth-login-subtitle').count() == 1
         assert page.locator('.auth-login-panel .auth-login-subtitle').count() == 0
         page.wait_for_timeout(650)
