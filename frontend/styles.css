@@ -3382,6 +3382,12 @@ a:focus-visible > .entity-card-clickable {
   max-width: 520px;
 }
 
+.auth-brand { display: grid; justify-items: center; gap: 12px; margin: 0 0 24px; text-align: center; }
+.auth-brand h1 { margin: 0; font-size: 28px; line-height: 1.2; }
+.auth-brand-logo { display: block; object-fit: contain; transform-origin: top left; position: relative; z-index: 1; }
+.auth-brand-welcome .auth-brand-logo { width: 112px; height: 112px; }
+.auth-brand-form .auth-brand-logo { width: 64px; height: 64px; }
+
 .auth-panel.auth-required-panel {
   display: flex;
   flex-direction: column;

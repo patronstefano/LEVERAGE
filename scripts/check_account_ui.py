@@ -122,6 +122,14 @@ def main():
         assert action['y'] - (message['y'] + message['height']) >= 18
         assert page.locator('#app').evaluate("node => node.classList.contains('auth-main-view')")
         page.screenshot(path='/tmp/leverage-account-signed-out.png', full_page=True)
+        before_logo = page.locator('.auth-brand-logo').bounding_box()
+        prompt.locator('a').click()
+        page.locator('#loginForm').wait_for()
+        page.wait_for_timeout(650)
+        after_logo = page.locator('.auth-brand-logo').bounding_box()
+        assert before_logo['width'] == 112 and after_logo['width'] == 64
+        assert after_logo['y'] < before_logo['y']
+        page.screenshot(path='/tmp/leverage-login-logo.png', full_page=True)
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")

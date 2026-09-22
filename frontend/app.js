@@ -6712,7 +6712,7 @@ async function renderRankings() {
 
 function authRequiredPage() {
   setApp(`
-    ${pageHeading("loginHeading", "loginIntro")}
+    <div class="auth-brand auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="112" height="112"><h1>${t("loginHeading")}</h1></div>
     <section class="panel auth-panel auth-required-panel">
       <p>${t("loginRequiredFavorites")}</p>
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
@@ -6725,9 +6725,10 @@ function renderLogin() {
     renderAccount();
     return;
   }
+  const previousLogo = document.querySelector(".auth-brand-logo")?.getBoundingClientRect();
   setApp(`
-    ${pageHeading("loginHeading", "loginIntro")}
-    <section class="panel auth-panel">
+    <div class="auth-brand auth-brand-form"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="64" height="64"><h1>${t("loginHeading")}</h1></div>
+    <section class="panel auth-panel auth-login-panel">
       <form class="auth-form" id="loginForm">
         <p>${t("loginHelp")}</p>
         <label>
@@ -6763,6 +6764,19 @@ function renderLogin() {
       </div>
     </section>
   `);
+
+  if (previousLogo && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const logo = document.querySelector(".auth-brand-logo");
+    const next = logo.getBoundingClientRect();
+    logo.animate([
+      { transform: `translate(${previousLogo.left - next.left}px, ${previousLogo.top - next.top}px) scale(${previousLogo.width / next.width})` },
+      { transform: "translate(0, 0) scale(1)" },
+    ], { duration: 520, easing: "cubic-bezier(.22,1,.36,1)" });
+    document.querySelector(".auth-login-panel").animate([
+      { opacity: 0, transform: "translateY(24px)" },
+      { opacity: 1, transform: "translateY(0)" },
+    ], { duration: 460, delay: 80, fill: "backwards", easing: "cubic-bezier(.22,1,.36,1)" });
+  }
 
   $("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
