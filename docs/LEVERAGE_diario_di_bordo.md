@@ -2984,3 +2984,4 @@ Con la chiusura delle sezioni `Home`, `Athletes`, `Events`, `Rankings` e `Analyt
 - Esteso il contratto API `GlobalSearchResult` al modello completo `ResultRankingEntry`, includendo D Score, E Score o stima, Penalty, Bonus, stati di disponibilita, avvisi qualitativi e componenti per AA/VT AVG.
 - Aggiunti contratti automatici frontend e API per garantire che la Ricerca globale continui a riusare i componenti canonici delle sezioni dedicate.
 - Separata la paginazione progressiva della Ricerca globale per tipo di entita: i pulsanti **Carica altri Atleti**, **Carica altri Eventi** e **Carica altri Risultati** compaiono al termine del rispettivo gruppo e mantengono offset, disponibilita e cache indipendenti.
+- Allineata la paginazione delle card Athlete ed Event alla griglia desktop a tre colonne: caricamento iniziale e incrementale avvengono in blocchi da 9 record; soltanto l'ultimo blocco puo contenere 1 o 2 card residue.

@@ -342,6 +342,8 @@ def test_global_search_supports_progressive_loading_without_duplicates():
     assert "offset: appendGroup ? searchOffsets[appendGroup] : 0" in global_search
     assert "searchOffsets[appendGroup] + receivedCount" in global_search
     assert 'bindLoadMoreButton(`global-search-${group}`' in global_search
+    assert "const GLOBAL_SEARCH_SECTION_LIMIT = 9;" in source
+    assert "GLOBAL_SEARCH_SECTION_LIMIT % EVENT_CARD_COLUMN_COUNT" not in source
 
 
 def test_global_search_detail_links_preserve_home_context_and_return_route():
