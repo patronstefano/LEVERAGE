@@ -651,7 +651,7 @@ const translations = {
     password: "Password",
     mfaCode: "Codice MFA",
     loginAction: "Accedi",
-    loginHelp: "Accedi alla tua area privata per salvare atleti ed eventi.",
+    loginHelp: "Accedi alla tua area privata per salvare atleti, eventi e rankings.",
     loginError: "Accesso non riuscito. Controlla credenziali e verifica email.",
     registerPrompt: "Non sei ancora registrato?",
     registerLink: "Crea un account",
