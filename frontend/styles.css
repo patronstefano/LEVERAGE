@@ -3552,8 +3552,6 @@ a:focus-visible > .entity-card-clickable {
 .account-tool-icon { width: 18px; height: 18px; background: currentColor; mask: var(--account-icon) center / contain no-repeat; -webkit-mask: var(--account-icon) center / contain no-repeat; }
 .account-tool-icon-notifications { --account-icon: url("./assets/lucide-bell.svg"); }
 .account-tool-icon-settings { --account-icon: url("./assets/lucide-settings.svg"); }
-.account-tool-tooltip { display: none; position: absolute; top: calc(100% + 8px); right: 0; z-index: 20; padding: 6px 10px; border: 1px solid var(--line); border-radius: var(--control-radius); background: var(--page-bg); color: var(--ink); font-size: 13px; white-space: nowrap; pointer-events: none; }
-.account-tool-button:hover .account-tool-tooltip, .account-tool-button:focus-visible .account-tool-tooltip { display: block; }
 .account-unread-count { position: absolute; top: -7px; right: -7px; padding: 1px 4px; min-width: 16px; border-radius: 6px; background: var(--brand-blue); color: white; font-size: 10px; line-height: 16px; }
 .account-unread-count[hidden] { display: none; }
 

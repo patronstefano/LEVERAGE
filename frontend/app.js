@@ -11672,7 +11672,6 @@ function renderAccountToolActions(selected) {
             data-account-view="${view}" aria-pressed="${selected === view}"
             aria-label="${escapeHtml(accountText(state.language, view))}" aria-controls="${view === "notifications" ? "accountNotifications" : "accountSettings"}">
             <span class="account-tool-icon account-tool-icon-${view}" aria-hidden="true"></span>
-            <span class="account-tool-tooltip" role="tooltip">${escapeHtml(accountText(state.language, view))}</span>
             ${view === "notifications" ? '<span id="accountUnreadCount" class="account-unread-count" hidden></span>' : ""}
           </button>`).join("")}
       </div>
