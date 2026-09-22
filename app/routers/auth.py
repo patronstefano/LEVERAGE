@@ -77,7 +77,7 @@ def send_password_reset_email(user: models.User, db: Session) -> None:
     user.password_reset_sent_at = datetime.utcnow()
     db.add(user)
     db.commit()
-    link = f"{settings.frontend_base_url.rstrip('/')}/reset-password?token={token}"
+    link = f"{settings.frontend_base_url.rstrip('/')}/#/reset-password?token={token}"
     if not send_email(
         "Reset your LEVERAGE password",
         f"Reset your LEVERAGE password using this link:\n\n{link}\n\n"

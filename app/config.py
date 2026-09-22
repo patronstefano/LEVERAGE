@@ -19,7 +19,7 @@ class Settings:
         DEFAULT_SECRET_KEY,
     )
     access_token_expire_minutes: int = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
-    frontend_base_url: str = os.environ.get("FRONTEND_BASE_URL", "http://localhost:3000")
+    frontend_base_url: str = os.environ.get("FRONTEND_BASE_URL", "http://localhost:5173")
     cors_origins: str = os.environ.get(
         "CORS_ORIGINS",
         "http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:5176,http://localhost:5177,http://localhost:5178,http://localhost:5179,"

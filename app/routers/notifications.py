@@ -24,6 +24,18 @@ def get_notifications(
     return notifications
 
 
+@router.get("/unread-count")
+def unread_notification_count(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    count = db.query(models.Notification).filter(
+        models.Notification.user_id == current_user.id,
+        models.Notification.is_read.is_(False),
+    ).count()
+    return {"count": count}
+
+
 @router.put("/{notification_id}/read")
 def mark_notification_as_read(
     notification_id: int,

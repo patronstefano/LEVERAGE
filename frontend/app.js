@@ -1,4 +1,5 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -1950,13 +1951,34 @@ const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => (
   "'": "&#39;",
 }[character]));
 
+let languageSaveQueue = Promise.resolve();
 function setLanguage(language) {
+  if (!["en", "it", "es", "fr"].includes(language)) return;
+  const user = state.currentUser;
+  const token = state.authToken;
   state.language = language;
   localStorage.setItem(LANGUAGE_KEY, language);
   document.documentElement.lang = language;
   applyTranslations();
   syncLanguageControl();
   render();
+  if (user && token) {
+    languageSaveQueue = languageSaveQueue.catch(() => {}).then(async () => {
+      if (state.authToken !== token || state.currentUser?.id !== user.id) return;
+      const response = await fetchApi("/preferences/language", {}, {
+        method: "PUT", headers: { Accept: "application/json", "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ preferred_language: language }),
+      });
+      if (!response.ok) throw new Error("Language preference unavailable");
+      if (state.currentUser?.id === user.id) state.currentUser.preferred_language = language;
+    }).catch(() => {
+      if (state.authToken !== token || state.language !== language) return;
+      const node = document.createElement("p");
+      node.className = "account-feedback is-error"; node.setAttribute("role", "alert");
+      node.textContent = accountText(language, "languageFailed");
+      document.getElementById("app")?.prepend(node);
+    });
+  }
 }
 
 function applyTranslations() {
@@ -2179,6 +2201,13 @@ async function hydrateCurrentUser() {
   }
   try {
     state.currentUser = await getJson("/auth/me", {}, { auth: true });
+    const language = state.currentUser.preferred_language;
+    if (["en", "it", "es", "fr"].includes(language)) {
+      state.language = language;
+      localStorage.setItem(LANGUAGE_KEY, language);
+      document.documentElement.lang = language;
+      syncLanguageControl(); applyTranslations();
+    }
     updateAuthUi();
     return state.currentUser;
   } catch (_error) {
@@ -2621,7 +2650,7 @@ function setApp(html) {
   const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
-  app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email"].includes(routePath));
+  app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath));
   app.innerHTML = html;
   app.focus({ preventScroll: true });
 }
@@ -6719,6 +6748,10 @@ function renderLogin() {
       <div class="auth-switch-row">
         <span>${t("registerPrompt")}</span>
         <a href="#/register">${t("registerLink")}</a>
+      </div>
+      <div class="auth-switch-row">
+          <a href="#/forgot-password">${accountText(state.language, "forgot")}</a>
+          <a href="#/resend-verification">${accountText(state.language, "resend")}</a>
       </div>
       <div class="demo-login-block">
         <p>${t("demoLoginNote")}</p>
@@ -11594,6 +11627,7 @@ function renderSavedRankingViews(views) {
 
 function accountViewSection() {
   const value = currentParams().get("section") || "athletes";
+  if (["notifications", "settings"].includes(value)) return value;
   if (["events", "favorite-events"].includes(value)) return "events";
   if (["rankings", "saved-rankings"].includes(value)) return "rankings";
   return "athletes";
@@ -11604,6 +11638,8 @@ function renderAccountViewControl(selected) {
     { value: "athletes", label: t("navAthletes") },
     { value: "events", label: t("navEvents") },
     { value: "rankings", label: t("navRankings") },
+    { value: "notifications", label: accountText(state.language, "notifications") },
+    { value: "settings", label: accountText(state.language, "settings") },
   ];
   const selectedIndex = Math.max(0, options.findIndex((option) => option.value === selected));
   return `
@@ -11621,7 +11657,7 @@ function renderAccountViewControl(selected) {
             role="radio"
             data-account-view="${option.value}"
             aria-checked="${String(option.value === selected)}"
-          >${escapeHtml(option.label)}</button>
+          >${escapeHtml(option.label)}${option.value === "notifications" ? '<span id="accountUnreadCount"></span>' : ""}</button>
         `).join("")}
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
       </div>
@@ -11630,7 +11666,7 @@ function renderAccountViewControl(selected) {
 }
 
 function setAccountViewSection(section, { updateRoute = false } = {}) {
-  const selected = ["athletes", "events", "rankings"].includes(section) ? section : "athletes";
+  const selected = ["athletes", "events", "rankings", "notifications", "settings"].includes(section) ? section : "athletes";
   document.querySelectorAll("[data-account-view]").forEach((button) => {
     button.setAttribute("aria-checked", String(button.dataset.accountView === selected));
   });
@@ -11639,7 +11675,7 @@ function setAccountViewSection(section, { updateRoute = false } = {}) {
   });
   const control = document.querySelector(".account-view-toggle");
   if (control) {
-    const selectedIndex = ["athletes", "events", "rankings"].indexOf(selected);
+    const selectedIndex = ["athletes", "events", "rankings", "notifications", "settings"].indexOf(selected);
     control.style.setProperty("--selected-index", Math.max(0, selectedIndex));
   }
   if (updateRoute) {
@@ -11699,9 +11735,12 @@ async function renderAccount() {
         </div>
         <div id="accountRankingViews">${loadingState()}</div>
       </section>
+      <section class="account-view-panel" data-account-view-panel="notifications" ${selectedSection === "notifications" ? "" : "hidden"}><div id="accountNotifications"></div></section>
+      <section class="account-view-panel" data-account-view-panel="settings" ${selectedSection === "settings" ? "" : "hidden"}><div id="accountSettings"></div></section>
     </section>
   `);
   bindAccountViewControl();
+  mountAccountTools(accountToolsHost());
   $("#signOutButton").addEventListener("click", () => {
     clearAuth();
     window.location.hash = "#/";
@@ -11712,6 +11751,7 @@ async function renderAccount() {
       getJson("/preferences/events/saved/details", {}, { auth: true }),
       getJson("/preferences/dashboard-views", {}, { auth: true }),
     ]);
+    if (!$("#accountAthletes")) return;
     state.favoriteAthleteIds = new Set(athletes.map((item) => Number(item.athlete_id)));
     state.favoriteEventIds = new Set(events.map((item) => Number(item.event_id)));
     state.favoritesLoaded = true;
@@ -11721,6 +11761,7 @@ async function renderAccount() {
     bindFavoriteButtons();
     bindSavedRankingDeleteButtons();
   } catch (error) {
+    if (!$("#accountAthletes")) return;
     $("#accountAthletes").innerHTML = errorState(error);
     $("#accountEvents").innerHTML = errorState(error);
     $("#accountRankingViews").innerHTML = errorState(error);
@@ -12004,6 +12045,11 @@ function renderAfterFilterChange(options = {}) {
   return refreshListFromFilter(render(), "", options);
 }
 
+function accountToolsHost() {
+  return { state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml, t, setLanguage,
+    renderAdminSelectControl, bindAdminSelectControls };
+}
+
 function render() {
   normalizeRoute();
   setActiveNav();
@@ -12011,7 +12057,9 @@ function render() {
   syncTopbarHeight();
   const athleteDetailMatch = state.route.match(/^\/athletes\/(\d+)/);
   const eventDetailMatch = state.route.match(/^\/events\/(\d+)/);
-  if (state.route.startsWith("/admin")) {
+  if (["/forgot-password", "/reset-password", "/resend-verification"].includes(state.route.split("?")[0])) {
+    return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
+  } else if (state.route.startsWith("/admin")) {
     return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml,
       renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t,
       setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });

@@ -9901,6 +9901,16 @@ def test_notifications_pagination_is_stable_and_user_scoped():
     assert client.get("/notifications/?limit=0", headers=headers).status_code == 422
     assert client.get("/notifications/?offset=-1", headers=headers).status_code == 422
     assert client.get("/notifications/").status_code == 401
+    assert client.get("/notifications/unread-count").status_code == 401
+    assert client.get("/notifications/unread-count", headers=headers).json() == {"count": 5}
+    client.post("/auth/register", json={"email": "other_notice@example.com", "password": TEST_PASSWORD})
+    other = {"Authorization": f"Bearer {login_as_user('other_notice@example.com')}"}
+    assert client.get("/notifications/unread-count", headers=other).json() == {"count": 0}
+    assert client.put(f"/notifications/{ids[0]}/read", headers=other).status_code == 404
+    assert client.put(f"/notifications/{ids[0]}/read", headers=headers).status_code == 200
+    assert client.get("/notifications/unread-count", headers=headers).json() == {"count": 4}
+    assert client.put("/notifications/read-all", headers=headers).status_code == 200
+    assert client.get("/notifications/unread-count", headers=headers).json() == {"count": 0}
 
 
 def test_gymternet_import_memory_recommends_keep_separate_for_same_context_score_conflict():
