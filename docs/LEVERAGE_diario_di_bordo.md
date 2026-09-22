@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Corretto il campo MFA nel login: la regola `display: grid` delle etichette sovrascriveva la visibilita nativa di `hidden`. Una regola CSS mirata mantiene nascosto il campo inizialmente; resta visibile e obbligatorio solo dopo la risposta `mfa_required` del backend. Nessuna modifica ai controlli di sicurezza backend. Test browser aggiunto per stato iniziale nascosto, apertura su richiesta MFA, obbligatorieta e focus.
+
 Spostato il sottotitolo del login fuori dal box del modulo, sotto il logo. Riutilizzata la classe `home-body` del testo descrittivo della Home, condividendo colore, dimensioni, interlinea e adattamenti responsive, senza duplicare regole tipografiche.
 
 Testo introduttivo italiano del login aggiornato su indicazione dell'utente alla formulazione esatta: "La tua area privata dove salvare atleti, eventi e rankings".

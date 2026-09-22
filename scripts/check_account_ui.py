@@ -132,6 +132,16 @@ def main():
         assert before_logo['width'] == 112 and after_logo['width'] == 64
         assert after_logo['y'] < before_logo['y']
         page.screenshot(path='/tmp/leverage-login-logo.png', full_page=True)
+        assert not page.locator('#mfaField').is_visible()
+        assert not page.locator('#loginMfaCode').evaluate('node => node.required')
+        page.route('**:8000/auth/login', lambda route: route.fulfill(
+            json={'mfa_required': True}, headers={'Access-Control-Allow-Origin': '*'}))
+        page.locator('#loginEmail').fill('admin@example.test')
+        page.locator('#loginPassword').fill('ExistingPassword123!')
+        page.locator('#loginForm button[type=submit]').click()
+        page.locator('#mfaField').wait_for(state='visible')
+        assert page.locator('#loginMfaCode').evaluate('node => node.required')
+        assert page.locator('#loginMfaCode').evaluate('node => document.activeElement === node')
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")
