@@ -3481,7 +3481,7 @@ a:focus-visible > .entity-card-clickable {
   margin-bottom: 18px;
 }
 
-.account-summary div {
+.account-summary .account-user-identity {
   display: grid;
   gap: 4px;
 }
@@ -3490,11 +3490,14 @@ a:focus-visible > .entity-card-clickable {
   font-size: 18px;
 }
 
-.account-summary span {
+.account-user-identity > span {
   color: var(--muted);
   font-size: 13px;
   text-transform: uppercase;
 }
+
+.account-user-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.account-user-identity { min-width: 0; overflow-wrap: anywhere; }
 
 .account-grid {
   display: grid;

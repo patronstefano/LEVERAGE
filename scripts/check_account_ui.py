@@ -45,6 +45,10 @@ def main():
         page.locator(".account-notification").first.wait_for()
         assert page.locator('.account-view-toggle [data-account-view]').count() == 3
         assert page.locator('.account-tool-actions button').count() == 2
+        assert page.locator('.account-summary .account-tool-actions button').count() == 2
+        for box in page.locator('.account-tool-actions button').all():
+            rect = box.bounding_box()
+            assert rect['width'] == 36 and rect['height'] == 36
         assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
         assert page.locator("html").get_attribute("lang") == "it"

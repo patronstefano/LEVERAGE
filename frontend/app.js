@@ -11660,6 +11660,12 @@ function renderAccountViewControl(selected) {
         `).join("")}
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
       </div>
+    </div>
+  `;
+}
+
+function renderAccountToolActions(selected) {
+  return `
       <div class="account-tool-actions">
         ${["notifications", "settings"].map((view) => `
           <button type="button" class="favorite-button admin-tools-toggle account-tool-button ${selected === view ? "is-open" : ""}"
@@ -11670,7 +11676,6 @@ function renderAccountViewControl(selected) {
             ${view === "notifications" ? '<span id="accountUnreadCount" class="account-unread-count" hidden></span>' : ""}
           </button>`).join("")}
       </div>
-    </div>
   `;
 }
 
@@ -11716,12 +11721,15 @@ async function renderAccount() {
   setApp(`
     ${pageHeading("accountHeading", "accountIntro")}
     <section class="panel account-summary">
-      <div>
+      <div class="account-user-identity">
         <strong>${escapeHtml(state.currentUser.email)}</strong>
         <span>${escapeHtml(state.currentUser.role)}</span>
       </div>
+      <div class="account-user-actions">
+      ${renderAccountToolActions(selectedSection)}
       <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
       ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
+      </div>
     </section>
     ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">
