@@ -43,6 +43,9 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
+        assert page.locator('.account-view-toggle [data-account-view]').count() == 3
+        assert page.locator('.account-tool-actions button').count() == 2
+        assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
         assert page.locator("html").get_attribute("lang") == "it"
         page.locator("#accountMoreNotifications").click()
@@ -56,6 +59,8 @@ def main():
         page.wait_for_timeout(200)
         assert page.locator(".account-notification").count() == 0
         page.locator('[data-account-view="settings"]').click()
+        assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
+        assert page.locator('.account-view-toggle').get_attribute('data-account-content-active') == 'false'
         page.locator('#accountSettings summary').click()
         page.locator('[data-admin-select-value="fr"]').click()
         page.wait_for_timeout(300)

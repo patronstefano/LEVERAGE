@@ -63,9 +63,6 @@ export function mountAccountTools(host) {
   const notifications = document.getElementById("accountNotifications");
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
-  const switcher = document.querySelector(".account-view-switcher");
-  const selectedTab = switcher.querySelector('[aria-checked="true"]');
-  switcher.scrollLeft = Math.max(0, selectedTab.offsetLeft - switcher.offsetLeft - switcher.clientWidth / 2 + selectedTab.clientWidth / 2);
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
   settings.innerHTML = '<h2>' + t("settings") + '</h2><div class="account-settings-language">' +
     host.renderAdminSelectControl("account_language", t("language"), state.language, [
@@ -103,7 +100,8 @@ export function mountAccountTools(host) {
       const data = await request("/notifications/unread-count");
       if (!live()) return;
       const badge = document.getElementById("accountUnreadCount");
-      badge.textContent = data.count ? " (" + data.count + ")" : "";
+      badge.textContent = data.count > 99 ? "99+" : String(data.count || "");
+      badge.hidden = !data.count;
       badge.setAttribute("aria-label", String(data.count));
     } catch (_) { /* The notification list reports request failures. */ }
   };

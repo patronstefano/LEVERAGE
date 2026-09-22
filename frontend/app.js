@@ -11638,8 +11638,6 @@ function renderAccountViewControl(selected) {
     { value: "athletes", label: t("navAthletes") },
     { value: "events", label: t("navEvents") },
     { value: "rankings", label: t("navRankings") },
-    { value: "notifications", label: accountText(state.language, "notifications") },
-    { value: "settings", label: accountText(state.language, "settings") },
   ];
   const selectedIndex = Math.max(0, options.findIndex((option) => option.value === selected));
   return `
@@ -11649,6 +11647,7 @@ function renderAccountViewControl(selected) {
         role="radiogroup"
         aria-label="${escapeHtml(t("accountContentNavigation"))}"
         style="--selected-index: ${selectedIndex};"
+        data-account-content-active="${options.some((option) => option.value === selected)}"
       >
         ${options.map((option) => `
           <button
@@ -11657,9 +11656,19 @@ function renderAccountViewControl(selected) {
             role="radio"
             data-account-view="${option.value}"
             aria-checked="${String(option.value === selected)}"
-          >${escapeHtml(option.label)}${option.value === "notifications" ? '<span id="accountUnreadCount"></span>' : ""}</button>
+          >${escapeHtml(option.label)}</button>
         `).join("")}
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
+      </div>
+      <div class="account-tool-actions">
+        ${["notifications", "settings"].map((view) => `
+          <button type="button" class="favorite-button admin-tools-toggle account-tool-button ${selected === view ? "is-open" : ""}"
+            data-account-view="${view}" aria-pressed="${selected === view}"
+            aria-label="${escapeHtml(accountText(state.language, view))}" aria-controls="${view === "notifications" ? "accountNotifications" : "accountSettings"}">
+            <span class="account-tool-icon account-tool-icon-${view}" aria-hidden="true"></span>
+            <span class="account-tool-tooltip" role="tooltip">${escapeHtml(accountText(state.language, view))}</span>
+            ${view === "notifications" ? '<span id="accountUnreadCount" class="account-unread-count" hidden></span>' : ""}
+          </button>`).join("")}
       </div>
     </div>
   `;
@@ -11668,15 +11677,20 @@ function renderAccountViewControl(selected) {
 function setAccountViewSection(section, { updateRoute = false } = {}) {
   const selected = ["athletes", "events", "rankings", "notifications", "settings"].includes(section) ? section : "athletes";
   document.querySelectorAll("[data-account-view]").forEach((button) => {
-    button.setAttribute("aria-checked", String(button.dataset.accountView === selected));
+    const active = button.dataset.accountView === selected;
+    if (button.classList.contains("account-tool-button")) {
+      button.setAttribute("aria-pressed", String(active));
+      button.classList.toggle("is-open", active);
+    } else button.setAttribute("aria-checked", String(active));
   });
   document.querySelectorAll("[data-account-view-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.accountViewPanel !== selected;
   });
   const control = document.querySelector(".account-view-toggle");
   if (control) {
-    const selectedIndex = ["athletes", "events", "rankings", "notifications", "settings"].indexOf(selected);
-    control.style.setProperty("--selected-index", Math.max(0, selectedIndex));
+    const selectedIndex = ["athletes", "events", "rankings"].indexOf(selected);
+    control.dataset.accountContentActive = String(selectedIndex >= 0);
+    if (selectedIndex >= 0) control.style.setProperty("--selected-index", selectedIndex);
   }
   if (updateRoute) {
     const route = `/account?section=${encodeURIComponent(selected)}`;
