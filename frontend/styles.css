@@ -963,6 +963,14 @@ button {
   transform: scale(0.98);
 }
 
+.signin-link.outline-command-button[aria-current="page"],
+.signin-link.outline-command-button[aria-current="page"]:hover,
+.signin-link.outline-command-button[aria-current="page"]:focus-visible {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  color: #fff;
+}
+
 .toolbar,
 .metric-row {
   display: flex;

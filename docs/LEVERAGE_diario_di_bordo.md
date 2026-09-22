@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+Aggiunto lo stato attivo blu LEVERAGE con testo bianco al pulsante della topbar Area Personale/Accedi quando viene mostrata la rispettiva schermata, compresa la richiesta di accesso all'area privata senza sessione. Lo stato segue la navigazione e torna neutro nelle altre pagine; usa aria-current per comunicare la pagina corrente. Test browser aggiunti per area personale, login e uscita verso il recupero password.
+
 Su richiesta, il solo pulsante Accedi del modulo adotta il riempimento blu LEVERAGE con testo bianco anche a riposo. Conservate dimensioni compatte e arrotondamenti; gli altri comandi restano invariati. Verificato il colore calcolato nel test browser.
 
 Uniformati i campi dei moduli di autenticazione (email, password, recupero/reimpostazione password e Codice di Autenticazione) a 36 px di altezza, testo 14 px con peso normale e raggio condiviso 12 px. La regola comune copre anche registrazione e cambio password nell'Area Personale, senza modificare validazioni o sicurezza. Test browser esteso alle dimensioni e allo stile calcolato dei campi login, recupero e MFA.

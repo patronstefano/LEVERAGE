@@ -2018,6 +2018,10 @@ function updateAuthUi() {
     authLink.dataset.i18n = "signIn";
     authLink.textContent = t("signIn");
   }
+  const path = state.route.split("?")[0];
+  const active = ["/account", "/login"].includes(path);
+  if (active) authLink.setAttribute("aria-current", "page");
+  else authLink.removeAttribute("aria-current");
 }
 
 function closeLanguageMenu() {

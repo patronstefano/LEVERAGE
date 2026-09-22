@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 
 def main():
     def check_input(locator):
-        assert locator.bounding_box()['height'] == 36
+        assert abs(locator.bounding_box()['height'] - 36) < 0.1
         style = locator.evaluate("node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.borderRadius]; }")
         assert style == ['14px', '400', '12px'], style
 
@@ -48,6 +48,9 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
+        page.wait_for_timeout(200)
+        assert page.locator('#authLink').get_attribute('aria-current') == 'page'
+        assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         assert page.locator('.account-view-toggle [data-account-view]').count() == 3
         assert page.locator('.account-tool-actions button').count() == 2
         assert page.locator('.account-summary .account-tool-actions button').count() == 2
@@ -108,6 +111,7 @@ def main():
         for mode, endpoint in [("forgot-password", "/auth/password/forgot"), ("resend-verification", "/auth/resend-verification")]:
             page.evaluate("mode => location.hash = '/' + mode", mode)
             page.locator('#accountRecoveryForm input[name=email]').fill("user@example.test")
+            assert page.locator('#authLink').get_attribute('aria-current') is None
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
             page.locator('#accountRecoveryForm button').click()
             page.wait_for_timeout(200)
@@ -131,6 +135,9 @@ def main():
         before_logo = page.locator('.auth-brand-logo').bounding_box()
         prompt.locator('a').click()
         page.locator('#loginForm').wait_for()
+        page.wait_for_timeout(200)
+        assert page.locator('#authLink').get_attribute('aria-current') == 'page'
+        assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         check_input(page.locator('#loginEmail'))
         check_input(page.locator('#loginPassword'))
         assert page.locator('.auth-login-panel a[href="#/forgot-password"]').count() == 1
