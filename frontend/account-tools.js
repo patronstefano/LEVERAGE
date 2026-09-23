@@ -162,8 +162,8 @@ export function renderAccountRecovery(host, mode) {
     (!reset && !resend ? '<p class="home-body account-recovery-intro">' + esc(t("forgotHelp")) + '</p>' : '') + '</div><section class="panel auth-panel account-recovery"><form class="auth-form" id="accountRecoveryForm">' +
     (reset ? input("new_password", "new") + input("repeat_password", "repeat") : input("email", "Email", "email")) +
     '<button type="submit" class="quiet-button outline-command-button">' + t(reset ? "save" : "request") +
-    '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div><div class="auth-switch-row"><a href="#/login">' +
-    esc(host.t("backToLogin")) + '</a>' + (reset || resend ? '<a href="#/forgot-password">' + t("forgot") + '</a>' : '') + '</div></section>');
+    '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div></section><div class="auth-login-links"><div class="auth-switch-row"><a href="#/login">' +
+    esc(host.t("backToLogin")) + '</a>' + (reset || resend ? '<a href="#/forgot-password">' + t("forgot") + '</a>' : '') + '</div></div>');
   const form = document.getElementById("accountRecoveryForm"), message = document.getElementById("accountRecoveryFeedback");
   if (reset && token.length < 20) { form.hidden = true; feedback(message, "invalid", true); return; }
   form.onsubmit = async (e) => {

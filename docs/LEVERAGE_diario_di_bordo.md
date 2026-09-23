@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: spostato il collegamento Accedi della schermata Password dimenticata fuori dal box, nel blocco centrato condiviso con login e registrazione. Anche le altre viste del componente recupero mantengono i collegamenti di navigazione esterni al modulo. Aggiornati versioni dei moduli e test browser.
+
 23 settembre 2026: spostato anche "Sei gia registrato? Accedi" fuori dal box di registrazione, riutilizzando il blocco centrato e la spaziatura dei collegamenti esterni della schermata Accedi. Aggiornato il test browser sulla posizione del collegamento.
 
 23 settembre 2026: spostati "Non sei ancora registrato? Crea un account" e "Password dimenticata?" fuori dal box Accedi, in un blocco centrato sottostante con distanze coerenti. Conservati link e flussi; aggiornato il controllo browser della collocazione.

@@ -1,5 +1,5 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=auth-small-logo-20260923";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=recovery-external-links-20260923";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";

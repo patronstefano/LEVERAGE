@@ -117,7 +117,8 @@ def main():
                 assert page.locator('.account-recovery-intro').inner_text()
                 page.screenshot(path='/tmp/leverage-recovery-help.png', full_page=True)
                 assert page.locator('.account-recovery a[href="#/forgot-password"]').count() == 0
-                assert page.locator('.account-recovery a[href="#/login"]').count() == 1
+                assert page.locator('.account-recovery a[href="#/login"]').count() == 0
+                assert page.locator('.auth-login-links a[href="#/login"]').count() == 1
             assert page.locator('#authLink').get_attribute('aria-current') is None
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
             recovery_button = page.locator('#accountRecoveryForm button')
