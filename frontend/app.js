@@ -6852,8 +6852,12 @@ function renderRegister() {
     return;
   }
   setApp(`
-    ${pageHeading("registerHeading", "registerIntro")}
-    <section class="panel auth-panel">
+    <div class="auth-brand auth-brand-form">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="48" height="48">
+      <h1>${t("registerHeading")}</h1>
+      <p class="home-body">${t("registerIntro")}</p>
+    </div>
+    <section class="panel auth-panel auth-register-panel">
       <form class="auth-form" id="registerForm">
         <p>${t("registerHelp")}</p>
         <label>
@@ -6868,7 +6872,7 @@ function renderRegister() {
           <span>${t("confirmPassword")}</span>
           <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
         </label>
-        <button class="primary-button" type="submit">${t("registerAction")}</button>
+        <button class="quiet-button outline-command-button auth-login-submit" type="submit">${t("registerAction")}</button>
         <div class="auth-message" id="registerMessage" role="status" aria-live="polite"></div>
       </form>
       <div class="auth-switch-row">

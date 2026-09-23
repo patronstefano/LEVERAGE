@@ -496,6 +496,7 @@ button {
 }
 
 .auth-main-view .auth-login-panel,
+.auth-main-view .auth-register-panel,
 .auth-main-view .auth-required-panel,
 .auth-main-view .account-recovery {
   max-width: 420px;

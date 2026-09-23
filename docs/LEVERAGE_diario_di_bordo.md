@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: uniformata Crea il tuo account alla schermata Accedi: stesso blocco logo da 48 px, titolo e sottotitolo esterno, box centrale da massimo 420 px, campi da 36 px e comando compatto con comportamento contorno. Conservate istruzioni e validazioni della registrazione. Test browser esteso a dimensioni desktop, campi e assenza di overflow mobile, con screenshot dedicati.
+
 23 settembre 2026: ripristinato il titolo visibile Accedi sopra il modulo con peso e interlinea coerenti ai titoli LEVERAGE (36 px desktop, 30 px mobile). Ridotto il logo del modulo da 64 a 48 px e spostato leggermente verso l'alto il blocco introduttivo e il logo. Conservata la transizione dalla schermata di accesso richiesto, aggiornata la verifica browser delle dimensioni.
 
 23 settembre 2026: aggiornato il sottotitolo italiano della registrazione alla frase richiesta: "Iscriviti a LEVERAGE per salvare atleti, eventi e rankings preferiti.".

@@ -187,6 +187,18 @@ def main():
         page.locator('#accountRecoveryForm').wait_for()
         assert page.locator('.account-recovery').bounding_box()['width'] == 420
         page.screenshot(path='/tmp/leverage-recovery-compact.png', full_page=True)
+        page.evaluate("location.hash = '/register'")
+        page.locator('#registerForm').wait_for()
+        assert page.locator('.auth-register-panel').bounding_box()['width'] == 420
+        assert page.locator('.auth-brand-logo').bounding_box()['width'] == 48
+        assert page.locator('.auth-brand-form .home-body').is_visible()
+        assert page.locator('#registerForm button[type=submit]').bounding_box()['height'] == 36
+        for field in page.locator('#registerForm input').all():
+            check_input(field)
+        page.screenshot(path='/tmp/leverage-register-desktop.png', full_page=True)
+        page.set_viewport_size({'width': 390, 'height': 844})
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        page.screenshot(path='/tmp/leverage-register-mobile.png', full_page=True)
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")
