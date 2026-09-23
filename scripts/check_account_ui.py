@@ -200,6 +200,12 @@ def main():
         page.screenshot(path='/tmp/leverage-recovery-compact.png', full_page=True)
         page.evaluate("location.hash = '/register'")
         page.locator('#registerForm').wait_for()
+        assert page.locator('#registerForm > p').count() == 0
+        for field_id in ['registerPassword', 'registerPasswordConfirm']:
+            field = page.locator('#' + field_id)
+            assert field.get_attribute('minlength') == '6'
+            field.fill('Six12!')
+            assert field.evaluate('node => node.checkValidity()')
         assert not page.locator('#registerMessage').is_visible()
         bottom_gap = page.locator('.auth-register-panel').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
         assert 19 <= bottom_gap <= 22, bottom_gap

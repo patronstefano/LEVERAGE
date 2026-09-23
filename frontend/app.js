@@ -1,5 +1,5 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=recovery-heading-20260923";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=password-minimum-20260923";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -296,7 +296,6 @@ const translations = {
     registerLink: "Create an account",
     registerHeading: "Create your account",
     registerIntro: "Join LEVERAGE to save athletes, events and your personal Ranking configurations.",
-    registerHelp: "Use a valid email address and choose a password with at least 12 characters.",
     confirmPassword: "Confirm password",
     registerAction: "Create account",
     alreadyRegistered: "Already registered?",
@@ -657,7 +656,6 @@ const translations = {
     registerLink: "Crea un account",
     registerHeading: "Registrati",
     registerIntro: "Crea il tuo account per salvare atleti, eventi e rankings preferiti.",
-    registerHelp: "Usa un indirizzo email valido e scegli una password di almeno 12 caratteri.",
     confirmPassword: "Conferma password",
     registerAction: "Crea account",
     alreadyRegistered: "Sei già registrato?",
@@ -1018,7 +1016,6 @@ const translations = {
     registerLink: "Crear una cuenta",
     registerHeading: "Crea tu cuenta",
     registerIntro: "Unete a LEVERAGE para guardar atletas, eventos y tus configuraciones personales de Ranking.",
-    registerHelp: "Utiliza un email valido y elige una contrasena de al menos 12 caracteres.",
     confirmPassword: "Confirmar contrasena",
     registerAction: "Crear cuenta",
     alreadyRegistered: "Ya tienes una cuenta?",
@@ -1379,7 +1376,6 @@ const translations = {
     registerLink: "Creer un compte",
     registerHeading: "Creez votre compte",
     registerIntro: "Rejoignez LEVERAGE pour enregistrer athletes, evenements et configurations personnelles de Ranking.",
-    registerHelp: "Utilisez une adresse email valide et choisissez un mot de passe d'au moins 12 caracteres.",
     confirmPassword: "Confirmer le mot de passe",
     registerAction: "Creer le compte",
     alreadyRegistered: "Vous avez deja un compte ?",
@@ -6842,18 +6838,17 @@ function renderRegister() {
     </div>
     <section class="panel auth-panel auth-register-panel">
       <form class="auth-form" id="registerForm">
-        <p>${t("registerHelp")}</p>
         <label>
           <span>${t("email")}</span>
           <input id="registerEmail" type="email" autocomplete="email" required>
         </label>
         <label>
           <span>${t("password")}</span>
-          <input id="registerPassword" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+          <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" maxlength="128" required>
         </label>
         <label>
           <span>${t("confirmPassword")}</span>
-          <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+          <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="6" maxlength="128" required>
         </label>
         <button class="quiet-button outline-command-button auth-login-submit" type="submit">${t("registerAction")}</button>
         <div class="auth-message" id="registerMessage" role="status" aria-live="polite"></div>

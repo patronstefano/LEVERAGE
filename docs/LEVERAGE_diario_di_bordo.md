@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: su richiesta esplicita, eliminata l'istruzione introduttiva nel box Registrati e abbassata la lunghezza minima delle nuove password da 12 a 6 caratteri. Allineati schemi API per registrazione/cambio/reset, vincoli HTML e comando bootstrap Admin; massimo invariato a 128. Nessuna migrazione o modifica delle password esistenti. Restano hashing, MFA amministrativa, rate limiting e revoca sessioni. Registrato il compromesso di sicurezza: sei caratteri costituiscono una soglia meno robusta, scelta per l'attuale MVP privato, da rivalutare prima di un'esposizione pubblica. Test aggiunti per accettazione a sei, rifiuto sotto soglia e oltre massimo, login, cambio/reset e invalidazione delle sessioni.
+
 23 settembre 2026: rinominato il titolo italiano "Password dimenticata?" in "Recupera password", mantenendo invariati sottotitolo e procedura di recupero.
 
 23 settembre 2026: rinominato il titolo italiano della pagina di registrazione in "Registrati" e aggiornato il sottotitolo in "Crea il tuo account per salvare atleti, eventi e rankings preferiti.". Nessuna modifica al modulo o al flusso di iscrizione.

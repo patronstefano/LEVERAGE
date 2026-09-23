@@ -102,6 +102,28 @@ def make_calendar_workbook(rows_by_year: dict[int, list[tuple[str, str]]]) -> By
     return buffer
 
 
+def test_password_minimum_is_six_characters():
+    from app.schemas import UserRegister, PasswordResetConfirm, PasswordChangeRequest
+    from pydantic import ValidationError
+
+    for schema, payload, field in [
+        (UserRegister, {"email": "six@example.com"}, "password"),
+        (PasswordResetConfirm, {"token": TEST_RESET_TOKEN}, "new_password"),
+        (PasswordChangeRequest, {"current_password": TEST_PASSWORD}, "new_password"),
+    ]:
+        assert getattr(schema(**dict(payload, **{field: "Six12!"})), field) == "Six12!"
+        for invalid in ["Five!", "x" * 129]:
+            with pytest.raises(ValidationError):
+                schema(**dict(payload, **{field: invalid}))
+    response = client.post("/auth/register", json={"email": "six@example.com", "password": "Six12!"})
+    assert response.status_code == 202
+    with SessionLocal() as db:
+        user = db.query(User).filter(User.email == "six@example.com").one()
+        user.is_verified = True
+        db.commit()
+    assert client.post("/auth/login", json={"email": "six@example.com", "password": "Six12!"}).status_code == 200
+
+
 def test_register_and_login():
     register_response = client.post(
         "/auth/register",
@@ -262,7 +284,10 @@ def test_admin_wrong_mfa_attempts_temporarily_lock_account():
     assert locked_response.status_code == 429
 
 
-def test_password_reset_and_change_invalidate_existing_sessions():
+@pytest.mark.parametrize("TEST_NEW_PASSWORD,TEST_CHANGED_PASSWORD", [
+    (TEST_NEW_PASSWORD, TEST_CHANGED_PASSWORD), ("New12!", "Next3!"),
+])
+def test_password_reset_and_change_invalidate_existing_sessions(TEST_NEW_PASSWORD, TEST_CHANGED_PASSWORD):
     client.post(
         "/auth/register",
         json={"email": "password_user@example.com", "password": TEST_PASSWORD},
