@@ -500,7 +500,13 @@ button {
 .auth-main-view .auth-required-panel,
 .auth-main-view .account-recovery {
   max-width: 420px;
+  padding: 20px;
 }
+
+.auth-panel .auth-message:empty,
+.auth-panel #accountRecoveryFeedback:empty { display: none; }
+
+.account-recovery #accountRecoveryFeedback:not(:empty) { margin: 0; }
 
 .main-view:focus {
   outline: none;

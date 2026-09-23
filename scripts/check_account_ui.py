@@ -122,6 +122,8 @@ def main():
             assert page.locator('#authLink').get_attribute('aria-current') is None
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
             recovery_button = page.locator('#accountRecoveryForm button')
+            bottom_gap = page.locator('.account-recovery').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
+            assert 19 <= bottom_gap <= 22, bottom_gap
             assert recovery_button.bounding_box()['width'] < page.locator('#accountRecoveryForm').bounding_box()['width']
             assert recovery_button.evaluate('node => getComputedStyle(node).justifySelf') == 'center'
             page.locator('#accountRecoveryForm button').click()
@@ -159,6 +161,9 @@ def main():
         assert page.locator('.auth-login-links a[href="#/register"]').count() == 1
         assert page.locator('.auth-login-panel a[href="#/resend-verification"]').count() == 0
         assert page.locator('#loginForm button[type=submit]').bounding_box()['height'] == 36
+        assert not page.locator('#loginMessage').is_visible()
+        bottom_gap = page.locator('.auth-login-panel').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
+        assert 19 <= bottom_gap <= 22, bottom_gap
         submit = page.locator('#loginForm button[type=submit]')
         assert submit.evaluate("node => getComputedStyle(node).backgroundColor") == 'rgb(255, 255, 255)'
         submit.hover()
@@ -195,6 +200,9 @@ def main():
         page.screenshot(path='/tmp/leverage-recovery-compact.png', full_page=True)
         page.evaluate("location.hash = '/register'")
         page.locator('#registerForm').wait_for()
+        assert not page.locator('#registerMessage').is_visible()
+        bottom_gap = page.locator('.auth-register-panel').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
+        assert 19 <= bottom_gap <= 22, bottom_gap
         assert page.locator('.auth-register-panel a[href="#/login"]').count() == 0
         assert page.locator('.auth-login-links a[href="#/login"]').count() == 1
         assert page.locator('.auth-register-panel').bounding_box()['width'] == 420
