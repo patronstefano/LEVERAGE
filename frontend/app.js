@@ -656,7 +656,7 @@ const translations = {
     registerPrompt: "Non sei ancora registrato?",
     registerLink: "Crea un account",
     registerHeading: "Crea il tuo account",
-    registerIntro: "Iscriviti a LEVERAGE per salvare atleti, eventi e le tue configurazioni personali di Ranking.",
+    registerIntro: "Iscriviti a LEVERAGE per salvare atleti, eventi e rankings preferiti.",
     registerHelp: "Usa un indirizzo email valido e scegli una password di almeno 12 caratteri.",
     confirmPassword: "Conferma password",
     registerAction: "Crea account",

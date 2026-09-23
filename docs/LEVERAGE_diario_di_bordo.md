@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: aggiornato il sottotitolo italiano della registrazione alla frase richiesta: "Iscriviti a LEVERAGE per salvare atleti, eventi e rankings preferiti.".
+
 23 settembre 2026: precisato il sottotitolo dell'Area Personale autenticata in "La tua area privata dove visualizzare atleti, eventi e rankings preferiti.". Aggiornati il controllo browser e la versione frontend.
 
 23 settembre 2026: confermato che la nuova frase riguarda accountIntro, sotto il titolo Area personale dopo il login, non loginHelp nella schermata Accedi. Aggiornata la versione frontend e aggiunto controllo browser sul testo effettivamente mostrato nell'area autenticata.
