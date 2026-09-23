@@ -2007,6 +2007,8 @@ function syncLanguageControl() {
 }
 
 function updateAuthUi() {
+  const demoAccess = $("#footerDemoAccess");
+  if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
   const authLink = $("#authLink");
   if (!authLink) return;
   if (state.currentUser) {
@@ -6760,14 +6762,6 @@ function renderLogin() {
       <div class="auth-switch-row">
           <a href="#/forgot-password">${accountText(state.language, "forgot")}</a>
       </div>
-      <div class="demo-login-block">
-        <p>${t("demoLoginNote")}</p>
-        <div class="demo-login-actions">
-          <button class="quiet-button demo-login-button" type="button" data-demo-role="user">${t("demoUser")}</button>
-          <button class="quiet-button demo-login-button" type="button" data-demo-role="admin">${t("demoAdmin")}</button>
-          <button class="quiet-button demo-login-button" type="button" data-demo-role="super_admin">${t("demoSuperAdmin")}</button>
-        </div>
-      </div>
     </section>
   `);
 
@@ -6822,11 +6816,15 @@ function renderLogin() {
     }
   });
 
+}
+
+function bindDemoLoginButtons() {
   document.querySelectorAll("[data-demo-role]").forEach((button) => {
     button.addEventListener("click", async () => {
-      const message = $("#loginMessage");
+      const message = $("#footerDemoMessage");
       message.textContent = "";
-      button.disabled = true;
+      const buttons = document.querySelectorAll("[data-demo-role]");
+      buttons.forEach((item) => { item.disabled = true; });
       try {
         const payload = await sendJson("/auth/demo-login", {
           auth: false,
@@ -6840,7 +6838,7 @@ function renderLogin() {
       } catch (_error) {
         message.textContent = t("loginError");
       } finally {
-        button.disabled = false;
+        buttons.forEach((item) => { item.disabled = false; });
       }
     });
   });
@@ -12143,6 +12141,7 @@ function render() {
 async function init() {
   setupIntroSplash();
   bindSectionNavLinks();
+  bindDemoLoginButtons();
   syncLanguageControl();
   $("#languageButton").addEventListener("click", (event) => {
     event.stopPropagation();

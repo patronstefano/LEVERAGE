@@ -145,6 +145,9 @@ def main():
         before_logo = page.locator('.auth-brand-logo').bounding_box()
         prompt.locator('a').click()
         page.locator('#loginForm').wait_for()
+        assert page.locator('.auth-login-panel [data-demo-role]').count() == 0
+        assert page.locator('footer [data-demo-role]').count() == 3
+        assert page.locator('#footerDemoAccess').is_visible()
         page.wait_for_timeout(200)
         assert page.locator('#authLink').get_attribute('aria-current') == 'page'
         assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
@@ -199,6 +202,10 @@ def main():
         page.set_viewport_size({'width': 390, 'height': 844})
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.screenshot(path='/tmp/leverage-register-mobile.png', full_page=True)
+        page.locator('footer [data-demo-role="user"]').click()
+        page.wait_for_timeout(200)
+        assert '/auth/demo-login' in writes
+        assert page.locator('#footerDemoMessage').inner_text()
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")

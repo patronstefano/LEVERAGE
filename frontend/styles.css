@@ -3517,6 +3517,11 @@ a:focus-visible > .entity-card-clickable {
   border-style: dashed;
 }
 
+.footer-demo-access { justify-content: flex-end; }
+.footer-demo-access[hidden] { display: none; }
+#footerDemoMessage:empty { display: none; }
+#footerDemoMessage { flex-basis: 100%; color: var(--warning); }
+
 .auth-primary-link {
   width: max-content;
   text-decoration: none;
