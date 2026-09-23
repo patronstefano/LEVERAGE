@@ -22,7 +22,6 @@ export function bindAuthValidation(form, message, getLanguage) {
   const shell = form.closest('.auth-panel') || form;
   const main = shell.closest('.auth-main-view');
   if (main) {
-    shell.setAttribute('data-auth-feedback-reserve', '');
     main.style.setProperty('--auth-feedback-growth', '0px');
   }
   const anchorLayout = () => {
@@ -31,6 +30,9 @@ export function bindAuthValidation(form, message, getLanguage) {
     // Preserve the initially centered position while feedback expands below it.
     const top = shell.getBoundingClientRect().top;
     const padding = parseFloat(getComputedStyle(main).paddingTop);
+    main.style.setProperty('--auth-bottom-space', getComputedStyle(main).paddingBottom);
+    const links = main.querySelector('.auth-login-links');
+    main.style.setProperty('--auth-links-space', links ? getComputedStyle(links).marginTop : '0px');
     main.style.setProperty('--auth-content-top', `${padding}px`);
     shell.setAttribute('data-auth-anchored', '');
     const shift = top - shell.getBoundingClientRect().top;

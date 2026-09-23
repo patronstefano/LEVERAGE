@@ -136,13 +136,19 @@ def main():
             page.reload()
             form = page.locator('#registerForm')
             form.wait_for()
+            # No extra bottom spacing may be introduced before an error.
+            assert page.locator('.auth-main-view').evaluate('node => parseFloat(getComputedStyle(node).paddingBottom)') == (24 if width <= 600 else 32)
             submit_with_stable_position(form)
             page.locator('#registerEmail').fill('invalid')
             page.locator('#registerPassword').fill('short')
             before_footer = page.locator('.footer').bounding_box()['y'] + page.evaluate('scrollY')
             form.locator('button[type=submit]').click()
             after_footer = page.locator('.footer').bounding_box()['y'] + page.evaluate('scrollY')
-            assert abs(after_footer - before_footer) < 1
+            if width == 1440:
+                assert abs(after_footer - before_footer) < 1
+            # Multiple long errors can exhaust a short viewport: never overlap content.
+            links_bottom = page.locator('.auth-login-links').evaluate('node => node.getBoundingClientRect().bottom + scrollY')
+            assert after_footer >= links_bottom - 1
         assert not errors, errors
         browser.close()
     print('Authentication validation passed: missing/invalid fields, credentials, MFA, verification, rate limits, email delivery, network, mismatch, success and reduced motion.')
