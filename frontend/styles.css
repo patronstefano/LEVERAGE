@@ -3440,6 +3440,7 @@ a:focus-visible > .entity-card-clickable {
 #accountRecoveryForm > button[type="submit"] { justify-self: center; }
 
 .auth-login-links { display: grid; gap: 12px; margin-top: 20px; }
+.auth-login-links .auth-entry-links { gap: 12px 24px; }
 
 .account-recovery .account-recovery-intro { margin: 0; }
 

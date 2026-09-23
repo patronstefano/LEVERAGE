@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: semplificati i collegamenti sotto il login in "Registrati" e "Recupera password", affiancati con spaziatura dedicata e ritorno a capo sui display stretti. Rimossa la domanda introduttiva; etichette equivalenti in EN/ES/FR, senza cambiare i titoli delle pagine di destinazione.
+
 23 settembre 2026: eliminato lo spazio riservato ai messaggi vuoti nei box di autenticazione, che sommava altezza minima e gap sotto ai pulsanti. I messaggi restano presenti e visibili quando contengono errori o conferme. Uniformato a 20 px il padding dei box login, registrazione, recupero e accesso richiesto; rimosso il margine aggiuntivo del feedback recupero. Test browser verifica lo spazio reale sotto i comandi dei tre moduli.
 
 23 settembre 2026: unificata l'animazione del logo in Accedi, recupero password, registrazione e accesso richiesto dopo disconnessione. Una singola animazione CSS condivisa dura 520 ms, parte 18 px sopra la posizione finale e rallenta progressivamente con comparsa in dissolvenza. Rimossa la transizione speciale del login basata sulla posizione della schermata precedente. Nessuno spostamento del layout; rispettata la preferenza di movimento ridotto. Test browser verifica tutte e quattro le viste e la disattivazione accessibile.

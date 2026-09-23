@@ -1,5 +1,5 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=recovery-external-links-20260923";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=auth-short-links-20260923";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6756,12 +6756,9 @@ function renderLogin() {
       </form>
     </section>
     <div class="auth-login-links">
-      <div class="auth-switch-row">
-        <span>${t("registerPrompt")}</span>
-        <a href="#/register">${t("registerLink")}</a>
-      </div>
-      <div class="auth-switch-row">
-          <a href="#/forgot-password">${accountText(state.language, "forgot")}</a>
+      <div class="auth-switch-row auth-entry-links">
+        <a href="#/register">${accountText(state.language, "registerLink")}</a>
+        <a href="#/forgot-password">${accountText(state.language, "recoverLink")}</a>
       </div>
     </div>
   `);

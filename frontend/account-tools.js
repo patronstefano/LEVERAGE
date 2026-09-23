@@ -1,4 +1,6 @@
 const labels = {
+  registerLink: ["Sign up", "Registrati", "Regístrate", "S’inscrire"],
+  recoverLink: ["Recover password", "Recupera password", "Recuperar contraseña", "Récupérer le mot de passe"],
   forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
