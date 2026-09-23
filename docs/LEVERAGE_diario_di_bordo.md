@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: ridotto a 28 px il logo nelle schermate Accedi, recupero password, registrazione e accesso richiesto dopo la disconnessione. Logo e titolo ora condividono una distanza di 6 px, senza spostamenti verticali aggiuntivi del logo. Recupero password adotta lo stesso blocco introduttivo esterno al modulo. Conservata la transizione di posizione all'apertura del login, con dimensione finale uniforme.
+
 23 settembre 2026: uniformata Crea il tuo account alla schermata Accedi: stesso blocco logo da 48 px, titolo e sottotitolo esterno, box centrale da massimo 420 px, campi da 36 px e comando compatto con comportamento contorno. Conservate istruzioni e validazioni della registrazione. Test browser esteso a dimensioni desktop, campi e assenza di overflow mobile, con screenshot dedicati.
 
 23 settembre 2026: ripristinato il titolo visibile Accedi sopra il modulo con peso e interlinea coerenti ai titoli LEVERAGE (36 px desktop, 30 px mobile). Ridotto il logo del modulo da 64 a 48 px e spostato leggermente verso l'alto il blocco introduttivo e il logo. Conservata la transizione dalla schermata di accesso richiesto, aggiornata la verifica browser delle dimensioni.

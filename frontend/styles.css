@@ -3397,13 +3397,12 @@ a:focus-visible > .entity-card-clickable {
   max-width: 520px;
 }
 
-.auth-brand { display: grid; justify-items: center; gap: 12px; margin: 0 0 24px; text-align: center; }
+.auth-brand { display: grid; justify-items: center; gap: 6px; margin: 0 0 24px; text-align: center; }
 .auth-brand h1 { margin: 0; font-size: 28px; line-height: 1.2; }
 .auth-brand-logo { display: block; object-fit: contain; transform-origin: top left; position: relative; z-index: 1; }
-.auth-brand-welcome .auth-brand-logo { width: 112px; height: 112px; }
 .auth-brand-form { margin-top: -12px; }
 .auth-brand-form h1 { font-size: 36px; font-weight: 700; line-height: 1.06; letter-spacing: 0; }
-.auth-brand-form .auth-brand-logo { width: 48px; height: 48px; top: -8px; }
+.auth-brand .auth-brand-logo { width: 28px; height: 28px; }
 @media (max-width: 600px) {
   .auth-brand-form h1 { font-size: 30px; }
 }

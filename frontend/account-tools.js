@@ -158,8 +158,8 @@ export function renderAccountRecovery(host, mode) {
   const reset = mode === "reset", resend = mode === "resend";
   const title = reset ? "reset" : resend ? "resend" : "forgot";
   const token = new URLSearchParams(host.state.route.split("?")[1] || "").get("token") || "";
-  host.setApp('<section class="panel auth-panel account-recovery"><h1>' + t(title) + '</h1>' +
-    (!reset && !resend ? '<p class="home-body account-recovery-intro">' + esc(t("forgotHelp")) + '</p>' : '') + '<form class="auth-form" id="accountRecoveryForm">' +
+  host.setApp('<div class="auth-brand auth-brand-form"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28"><h1>' + t(title) + '</h1>' +
+    (!reset && !resend ? '<p class="home-body account-recovery-intro">' + esc(t("forgotHelp")) + '</p>' : '') + '</div><section class="panel auth-panel account-recovery"><form class="auth-form" id="accountRecoveryForm">' +
     (reset ? input("new_password", "new") + input("repeat_password", "repeat") : input("email", "Email", "email")) +
     '<button type="submit" class="quiet-button outline-command-button">' + t(reset ? "save" : "request") +
     '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div><div class="auth-switch-row"><a href="#/login">' +

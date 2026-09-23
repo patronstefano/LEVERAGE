@@ -164,7 +164,7 @@ def main():
         assert page.locator('.auth-login-panel .auth-login-subtitle').count() == 0
         page.wait_for_timeout(650)
         after_logo = page.locator('.auth-brand-logo').bounding_box()
-        assert before_logo['width'] == 112 and after_logo['width'] == 48
+        assert before_logo['width'] == 28 and after_logo['width'] == 28
         assert page.locator('.auth-brand-form h1').is_visible()
         assert 'sr-only' not in (page.locator('.auth-brand-form h1').get_attribute('class') or '')
         assert after_logo['y'] < before_logo['y']
@@ -190,7 +190,7 @@ def main():
         page.evaluate("location.hash = '/register'")
         page.locator('#registerForm').wait_for()
         assert page.locator('.auth-register-panel').bounding_box()['width'] == 420
-        assert page.locator('.auth-brand-logo').bounding_box()['width'] == 48
+        assert page.locator('.auth-brand-logo').bounding_box()['width'] == 28
         assert page.locator('.auth-brand-form .home-body').is_visible()
         assert page.locator('#registerForm button[type=submit]').bounding_box()['height'] == 36
         for field in page.locator('#registerForm input').all():

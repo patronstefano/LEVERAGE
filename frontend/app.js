@@ -1,5 +1,5 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=recovery-help-20260923";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=auth-small-logo-20260923";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6716,7 +6716,7 @@ async function renderRankings() {
 
 function authRequiredPage() {
   setApp(`
-    <div class="auth-brand auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="112" height="112"><h1 class="sr-only">${t("loginHeading")}</h1></div>
+    <div class="auth-brand auth-brand-form auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28"><h1>${t("loginHeading")}</h1></div>
     <section class="panel auth-panel auth-required-panel">
       <p>${t("loginRequiredFavorites")}</p>
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
@@ -6732,7 +6732,7 @@ function renderLogin() {
   const previousLogo = document.querySelector(".auth-brand-logo")?.getBoundingClientRect();
   setApp(`
     <div class="auth-brand auth-brand-form">
-      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="48" height="48">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28">
       <h1>${t("loginHeading")}</h1>
       <p class="home-body auth-login-subtitle">${t("loginHelp")}</p>
     </div>
@@ -6853,7 +6853,7 @@ function renderRegister() {
   }
   setApp(`
     <div class="auth-brand auth-brand-form">
-      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="48" height="48">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28">
       <h1>${t("registerHeading")}</h1>
       <p class="home-body">${t("registerIntro")}</p>
     </div>
