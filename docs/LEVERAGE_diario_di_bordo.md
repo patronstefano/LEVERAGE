@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: confermato che la nuova frase riguarda accountIntro, sotto il titolo Area personale dopo il login, non loginHelp nella schermata Accedi. Aggiornata la versione frontend e aggiunto controllo browser sul testo effettivamente mostrato nell'area autenticata.
+
 23 settembre 2026: aggiornato il sottotitolo italiano dell'Area Personale alla formulazione richiesta: "La tua area privata per salvare atleti, eventi e rankings preferiti.".
 
 23 settembre 2026: ridotta da 520 a 420 px la larghezza massima dei box Accedi, accesso richiesto e recupero password. Conservati centratura, tipografia, altezza dei campi e adattamento agli schermi piccoli. Test browser esteso alla misura effettiva dei box su desktop.
