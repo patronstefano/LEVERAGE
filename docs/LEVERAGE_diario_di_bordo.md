@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: rinominato il titolo italiano della pagina di registrazione in "Registrati" e aggiornato il sottotitolo in "Crea il tuo account per salvare atleti, eventi e rankings preferiti.". Nessuna modifica al modulo o al flusso di iscrizione.
+
 23 settembre 2026: semplificati i collegamenti sotto il login in "Registrati" e "Recupera password", affiancati con spaziatura dedicata e ritorno a capo sui display stretti. Rimossa la domanda introduttiva; etichette equivalenti in EN/ES/FR, senza cambiare i titoli delle pagine di destinazione.
 
 23 settembre 2026: eliminato lo spazio riservato ai messaggi vuoti nei box di autenticazione, che sommava altezza minima e gap sotto ai pulsanti. I messaggi restano presenti e visibili quando contengono errori o conferme. Uniformato a 20 px il padding dei box login, registrazione, recupero e accesso richiesto; rimosso il margine aggiuntivo del feedback recupero. Test browser verifica lo spazio reale sotto i comandi dei tre moduli.
