@@ -485,6 +485,11 @@ button {
   padding-top: var(--auth-content-top, 32px);
 }
 
+/* Feedback consumes space below the form instead of pushing the footer. */
+.main-view.auth-main-view:has(.auth-panel[data-auth-feedback-reserve]) {
+  padding-bottom: max(24px, calc(104px - var(--auth-feedback-growth, 0px)));
+}
+
 .auth-main-view .page-heading > div {
   width: 100%;
 }

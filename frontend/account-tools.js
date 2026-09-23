@@ -1,4 +1,4 @@
-import { bindAuthValidation } from "./auth-validation.js?v=downward-feedback-20260923";
+import { bindAuthValidation } from "./auth-validation.js?v=stable-auth-footer-20260923";
 
 const labels = {
   registerLink: ["Sign up", "Registrati", "Regístrate", "S’inscrire"],

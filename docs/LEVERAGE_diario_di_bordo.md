@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- Stabilizzata la barra inferiore durante gli errori di registrazione: uno spazio esterno di riserva sotto il modulo viene consumato dall'espansione dell'avviso, mantenendo invariata la posizione del footer e senza aggiungere vuoto dentro al box. Esteso il test geometrico a login, registrazione, recupero e a viewport desktop/mobile, anche con avvisi multipli.
+
 - Corretto il movimento dei moduli di accesso, registrazione e recupero password quando compaiono avvisi: il centraggio iniziale viene conservato e, al primo invio, il contenuto viene ancorato alla posizione superiore corrente. Il box cresce verso il basso senza spostare campi e pulsanti verso l'alto. Test browser sulle coordinate del pannello e del pulsante nelle tre schermate; nessuna modifica ai dati o alla validazione.
 
 - Uniformato il focus dei campi di autenticazione al popup Salva questo ranking: eliminato il contorno azzurro nativo del browser, mantenendo bordo e alone tenui condivisi e l'evidenziazione rossa dei campi errati. Aggiunto un controllo browser sullo stile effettivo del focus; nessuna modifica alla validazione o ai dati.

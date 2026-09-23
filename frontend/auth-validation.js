@@ -20,6 +20,11 @@ const messages = {
 export function bindAuthValidation(form, message, getLanguage) {
   form.noValidate = true;
   const shell = form.closest('.auth-panel') || form;
+  const main = shell.closest('.auth-main-view');
+  if (main) {
+    shell.setAttribute('data-auth-feedback-reserve', '');
+    main.style.setProperty('--auth-feedback-growth', '0px');
+  }
   const anchorLayout = () => {
     const main = shell.closest('.auth-main-view');
     if (!main || shell.hasAttribute('data-auth-anchored')) return;
@@ -45,14 +50,17 @@ export function bindAuthValidation(form, message, getLanguage) {
       message.classList.remove('auth-validation-message', 'is-error');
       delete message.dataset.authError;
     }
+    main?.style.setProperty('--auth-feedback-growth', '0px');
   };
   const show = (issues) => {
     anchorLayout();
     clear();
+    const initialHeight = shell.offsetHeight;
     message.classList.remove('is-success', 'account-feedback');
     message.classList.add('auth-validation-message', 'is-error');
     message.dataset.authError = 'true';
     message.textContent = [...new Set(issues.map((issue) => text(issue.key)))].join(' ');
+    main?.style.setProperty('--auth-feedback-growth', `${Math.max(0, shell.offsetHeight - initialHeight)}px`);
     const fields = [...new Set(issues.flatMap((issue) => issue.fields || []))];
     fields.forEach((input) => {
       input.setAttribute('aria-invalid', 'true');

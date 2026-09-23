@@ -6,11 +6,14 @@ def submit_with_stable_position(form):
     panel = form.locator('xpath=ancestor::section[contains(@class,"auth-panel")]')
     button = form.locator('button[type=submit]')
     before_panel, before_button = panel.bounding_box(), button.bounding_box()
+    footer = form.page.locator('.footer')
+    before_footer = footer.bounding_box()
     button.click()
     after_panel, after_button = panel.bounding_box(), button.bounding_box()
     assert abs(after_panel['y'] - before_panel['y']) < 1
     assert abs(after_button['y'] - before_button['y']) < 1
     assert after_panel['height'] > before_panel['height']
+    assert abs(footer.bounding_box()['y'] - before_footer['y']) < 1
 
 
 def main():
@@ -127,6 +130,19 @@ def main():
         page.set_viewport_size({'width': 390, 'height': 844})
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.screenshot(path='/tmp/leverage-recovery-validation.png', full_page=True)
+        for width, height in [(1280, 720), (1440, 900), (390, 844)]:
+            page.set_viewport_size({'width': width, 'height': height})
+            page.goto('http://127.0.0.1:5173/#/register')
+            page.reload()
+            form = page.locator('#registerForm')
+            form.wait_for()
+            submit_with_stable_position(form)
+            page.locator('#registerEmail').fill('invalid')
+            page.locator('#registerPassword').fill('short')
+            before_footer = page.locator('.footer').bounding_box()['y'] + page.evaluate('scrollY')
+            form.locator('button[type=submit]').click()
+            after_footer = page.locator('.footer').bounding_box()['y'] + page.evaluate('scrollY')
+            assert abs(after_footer - before_footer) < 1
         assert not errors, errors
         browser.close()
     print('Authentication validation passed: missing/invalid fields, credentials, MFA, verification, rate limits, email delivery, network, mismatch, success and reduced motion.')
