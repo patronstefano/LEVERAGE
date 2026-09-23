@@ -3412,7 +3412,8 @@ a:focus-visible > .entity-card-clickable {
   gap: 14px;
 }
 
-.auth-login-submit { justify-self: center; }
+.auth-login-submit,
+#accountRecoveryForm > button[type="submit"] { justify-self: center; }
 
 .auth-form p {
   margin: 0;

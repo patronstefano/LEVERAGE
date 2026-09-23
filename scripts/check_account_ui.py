@@ -113,6 +113,9 @@ def main():
             page.locator('#accountRecoveryForm input[name=email]').fill("user@example.test")
             assert page.locator('#authLink').get_attribute('aria-current') is None
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
+            recovery_button = page.locator('#accountRecoveryForm button')
+            assert recovery_button.bounding_box()['width'] < page.locator('#accountRecoveryForm').bounding_box()['width']
+            assert recovery_button.evaluate('node => getComputedStyle(node).justifySelf') == 'center'
             page.locator('#accountRecoveryForm button').click()
             page.wait_for_timeout(200)
             assert endpoint in writes

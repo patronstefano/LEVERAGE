@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: reso compatto e centrato il pulsante Invia link nei moduli di recupero/reinvio email, eliminando l'estensione automatica alla larghezza del form. Lo stesso allineamento vale per Salva nella reimpostazione password; altezza, contorno e tipografia restano quelli condivisi.
+
 Ripristinato, su richiesta, il comportamento standard del solo pulsante Accedi interno al modulo: neutro a riposo, bordo e testo blu in hover/focus, riempimento durante la pressione. Rimossa l'eccezione CSS del blu permanente; resta invariata l'evidenziazione della pagina corrente nella topbar. Test browser aggiornato per verificare hover e sfondo neutro.
 
 Aggiunto lo stato attivo blu LEVERAGE con testo bianco al pulsante della topbar Area Personale/Accedi quando viene mostrata la rispettiva schermata, compresa la richiesta di accesso all'area privata senza sessione. Lo stato segue la navigazione e torna neutro nelle altre pagine; usa aria-current per comunicare la pagina corrente. Test browser aggiunti per area personale, login e uscita verso il recupero password.
