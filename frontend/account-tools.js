@@ -1,3 +1,5 @@
+import { bindAuthValidation } from "./auth-validation.js";
+
 const labels = {
   registerLink: ["Sign up", "Registrati", "Regístrate", "S’inscrire"],
   recoverLink: ["Recover password", "Recupera password", "Recuperar contraseña", "Récupérer le mot de passe"],
@@ -51,6 +53,7 @@ function context(host) {
     if (!response.ok) {
       const error = new Error("Request failed");
       error.status = response.status;
+      error.detail = data?.detail;
       if (auth && response.status === 401) host.clearAuth();
       throw error;
     }
@@ -76,12 +79,12 @@ export function mountAccountTools(host) {
     '<button class="quiet-button outline-command-button" type="submit">' + t("save") + '</button><div role="status" aria-live="polite" id="accountPasswordFeedback"></div></form>';
   host.bindAdminSelectControls(settings);
   settings.querySelector('[name="account_language"]').addEventListener("change", (e) => host.setLanguage(e.target.value));
+  const passwordValidation = bindAuthValidation(settings.querySelector("form"), settings.querySelector("#accountPasswordFeedback"), () => state.language);
   settings.querySelector("form").onsubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget, submit = form.querySelector("button[type=submit]");
-    if (submit.disabled) return;
+    if (submit.disabled || !passwordValidation.validate()) return;
     const values = Object.fromEntries(new FormData(form)), message = document.getElementById("accountPasswordFeedback");
-    if (values.new_password !== values.repeat_password) { feedback(message, "mismatch", true); return; }
     submit.disabled = true; message.textContent = "";
     try {
       await request("/auth/password/change", "POST", { current_password: values.current_password, new_password: values.new_password });
@@ -89,7 +92,7 @@ export function mountAccountTools(host) {
       host.clearAuth(); form.reset(); form.hidden = true;
       feedback(message, "success"); settings.append(message);
       settings.insertAdjacentHTML("beforeend", '<a class="quiet-button outline-command-button" href="#/login">' + host.t("signIn") + '</a>');
-    } catch (error) { feedback(message, error.status === 400 ? "wrongPassword" : errorKey(error), true); }
+    } catch (error) { passwordValidation.serverError(error, "change"); }
     finally { submit.disabled = false; }
   };
   notifications.innerHTML = '<h2>' + t("notifications") + '</h2><div class="account-notification-actions"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
@@ -167,12 +170,12 @@ export function renderAccountRecovery(host, mode) {
     '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div></section><div class="auth-login-links"><div class="auth-switch-row"><a href="#/login">' +
     esc(host.t("backToLogin")) + '</a>' + (reset || resend ? '<a href="#/forgot-password">' + t("forgot") + '</a>' : '') + '</div></div>');
   const form = document.getElementById("accountRecoveryForm"), message = document.getElementById("accountRecoveryFeedback");
+  const validation = bindAuthValidation(form, message, () => host.state.language);
   if (reset && token.length < 20) { form.hidden = true; feedback(message, "invalid", true); return; }
   form.onsubmit = async (e) => {
     e.preventDefault(); const submit = form.querySelector("button");
-    if (submit.disabled) return;
+    if (submit.disabled || !validation.validate()) return;
     const values = Object.fromEntries(new FormData(form));
-    if (reset && values.new_password !== values.repeat_password) { feedback(message, "mismatch", true); return; }
     submit.disabled = true; message.textContent = "";
     try {
       await request(reset ? "/auth/password/reset" : resend ? "/auth/resend-verification" : "/auth/password/forgot", "POST",
@@ -185,7 +188,7 @@ export function renderAccountRecovery(host, mode) {
         host.state.route = "/reset-password";
       }
       feedback(message, reset ? "success" : "sent");
-    } catch (error) { if (form.isConnected) feedback(message, reset && error.status === 400 ? "invalid" : errorKey(error), true); }
+    } catch (error) { if (form.isConnected) validation.serverError(error, mode); }
     finally { submit.disabled = false; }
   };
 }

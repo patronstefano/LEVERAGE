@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: introdotta validazione condivisa per login, registrazione, recupero/reset e cambio password, allineata al popup Salva questo Ranking. Disattivate le nuvolette native; riutilizzati keyframe dello scossone da 360 ms, colore/bordo rosso, testo di errore e azzeramento dell'avviso alla digitazione. Campi invalidi associati al messaggio tramite aria-invalid/aria-describedby, focus sul primo errore e rispetto del movimento ridotto.
+
+Avvisi localizzati EN/IT/ES/FR per campi obbligatori, email malformata, password fuori dai limiti 6-128, conferma diversa, codice mancante/non valido o errato, credenziali errate, verifica email richiesta, troppi tentativi, invio email indisponibile, rete, link scaduto e sessione scaduta. Piu problemi locali sono descritti insieme senza ripetere lo stesso messaggio. Email/password errate mantengono un avviso unico per evitare enumerazione degli account; il recupero conserva la conferma generica del backend. Nessuna modifica ai controlli di sicurezza server.
+
+Test browser dedicato `scripts/check_auth_validation_ui.py` con API simulate: nessun invio per dati localmente invalidi, risposta per ciascuna classe di errore, riutilizzo del form dopo correzione, successo, MFA, focus e movimento ridotto. Eseguito anche il collaudo completo dell'Area Personale. Nessun account reale modificato e nessuna email reale inviata.
+
 23 settembre 2026: su richiesta esplicita, eliminata l'istruzione introduttiva nel box Registrati e abbassata la lunghezza minima delle nuove password da 12 a 6 caratteri. Allineati schemi API per registrazione/cambio/reset, vincoli HTML e comando bootstrap Admin; massimo invariato a 128. Nessuna migrazione o modifica delle password esistenti. Restano hashing, MFA amministrativa, rate limiting e revoca sessioni. Registrato il compromesso di sicurezza: sei caratteri costituiscono una soglia meno robusta, scelta per l'attuale MVP privato, da rivalutare prima di un'esposizione pubblica. Test aggiunti per accettazione a sei, rifiuto sotto soglia e oltre massimo, login, cambio/reset e invalidazione delle sessioni.
 
 23 settembre 2026: rinominato il titolo italiano "Password dimenticata?" in "Recupera password", mantenendo invariati sottotitolo e procedura di recupero.

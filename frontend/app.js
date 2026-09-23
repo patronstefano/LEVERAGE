@@ -1,5 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=password-minimum-20260923";
+import { bindAuthValidation } from "./auth-validation.js";
+import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=auth-validation-20260923";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -2190,7 +2191,11 @@ async function sendJson(path, { method = "POST", body = null, auth = true } = {}
   });
   if (!response.ok) {
     if (auth && response.status === 401) clearAuth();
-    throw new Error(`${response.status} ${response.statusText}`);
+    const error = new Error(`${response.status} ${response.statusText}`);
+    error.status = response.status;
+    const payload = await response.json().catch(() => null);
+    error.detail = payload?.detail;
+    throw error;
   }
   if (response.status === 204) return null;
   return response.json();
@@ -6759,10 +6764,12 @@ function renderLogin() {
     </div>
   `);
 
+  const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
   $("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = $("#loginMessage");
     const submit = event.currentTarget.querySelector("button[type='submit']");
+    if (submit.disabled || !validation.validate()) return;
     message.textContent = "";
     submit.disabled = true;
     try {
@@ -6786,12 +6793,12 @@ function renderLogin() {
         return;
       }
       if (!payload.access_token) {
-        message.textContent = t("loginError");
+        validation.serverError({ status: 500 }, "login");
         return;
       }
       await completeLoginWithToken(payload.access_token);
-    } catch (_error) {
-      message.textContent = t("loginError");
+    } catch (error) {
+      validation.serverError(error, "login");
     } finally {
       submit.disabled = false;
     }
@@ -6862,20 +6869,16 @@ function renderRegister() {
     </div>
   `);
 
+  const validation = bindAuthValidation($("#registerForm"), $("#registerMessage"), () => state.language);
   $("#registerForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const message = $("#registerMessage");
     const submit = form.querySelector("button[type='submit']");
+    if (submit.disabled || !validation.validate()) return;
     const password = $("#registerPassword").value;
-    const passwordConfirm = $("#registerPasswordConfirm").value;
     message.classList.remove("is-success");
     message.textContent = "";
-    if (password !== passwordConfirm) {
-      message.textContent = t("passwordMismatch");
-      $("#registerPasswordConfirm").focus();
-      return;
-    }
     submit.disabled = true;
     try {
       await sendJson("/auth/register", {
@@ -6891,8 +6894,8 @@ function renderRegister() {
       });
       message.classList.add("is-success");
       message.textContent = t("registrationSuccess");
-    } catch (_error) {
-      message.textContent = t("registrationError");
+    } catch (error) {
+      validation.serverError(error, "register");
       submit.disabled = false;
     }
   });
