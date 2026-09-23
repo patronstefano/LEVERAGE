@@ -2843,7 +2843,9 @@ a:focus-visible > .entity-card-clickable {
   pointer-events: none;
 }
 
-.saved-ranking-input-shell:focus-within {
+.saved-ranking-input-shell:focus-within,
+.auth-form input:focus {
+  outline: none;
   border-color: rgba(25, 23, 71, 0.32);
   box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.08);
 }
@@ -3469,7 +3471,11 @@ a:focus-visible > .entity-card-clickable {
   display: none;
 }
 
-.auth-form input.is-invalid:focus { outline: none; }
+.auth-form input.is-invalid:focus {
+  outline: none;
+  border-color: rgba(184, 52, 52, 0.76);
+  box-shadow: 0 0 0 3px rgba(184, 52, 52, 0.08);
+}
 
 .auth-form input {
   width: 100%;

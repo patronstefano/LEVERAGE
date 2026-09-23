@@ -26,6 +26,10 @@ def main():
         form = page.locator('#loginForm')
         form.wait_for()
         assert form.evaluate('node => node.noValidate')
+        page.locator('#loginEmail').focus()
+        assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).outlineStyle') == 'none'
+        assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).borderTopColor') == 'rgba(25, 23, 71, 0.32)'
+        assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).boxShadow') == 'rgba(25, 23, 71, 0.08) 0px 0px 0px 3px'
         form.locator('button[type=submit]').click()
         assert not requests
         assert page.locator('#loginMessage').inner_text() == 'Completa i campi obbligatori.'
