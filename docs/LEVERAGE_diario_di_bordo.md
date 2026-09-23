@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: aggiornato il sottotitolo italiano dell'Area Personale alla formulazione richiesta: "La tua area privata per salvare atleti, eventi e rankings preferiti.".
+
 23 settembre 2026: ridotta da 520 a 420 px la larghezza massima dei box Accedi, accesso richiesto e recupero password. Conservati centratura, tipografia, altezza dei campi e adattamento agli schermi piccoli. Test browser esteso alla misura effettiva dei box su desktop.
 
 23 settembre 2026: verificata la presenza del sottotitolo recupero nei file serviti dalla preview. Aggiornati gli URL di versione di CSS, app.js e soprattutto del modulo importato account-tools.js, precedentemente senza versione, per evitare il riuso della copia precedente. Test browser e screenshot dedicato verificano la visibilita del testo.
