@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: unificata l'animazione del logo in Accedi, recupero password, registrazione e accesso richiesto dopo disconnessione. Una singola animazione CSS condivisa dura 520 ms, parte 18 px sopra la posizione finale e rallenta progressivamente con comparsa in dissolvenza. Rimossa la transizione speciale del login basata sulla posizione della schermata precedente. Nessuno spostamento del layout; rispettata la preferenza di movimento ridotto. Test browser verifica tutte e quattro le viste e la disattivazione accessibile.
+
 23 settembre 2026: spostato il collegamento Accedi della schermata Password dimenticata fuori dal box, nel blocco centrato condiviso con login e registrazione. Anche le altre viste del componente recupero mantengono i collegamenti di navigazione esterni al modulo. Aggiornati versioni dei moduli e test browser.
 
 23 settembre 2026: spostato anche "Sei gia registrato? Accedi" fuori dal box di registrazione, riutilizzando il blocco centrato e la spaziatura dei collegamenti esterni della schermata Accedi. Aggiornato il test browser sulla posizione del collegamento.

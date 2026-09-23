@@ -3399,7 +3399,14 @@ a:focus-visible > .entity-card-clickable {
 
 .auth-brand { display: grid; justify-items: center; gap: 6px; margin: 0 0 24px; text-align: center; }
 .auth-brand h1 { margin: 0; font-size: 28px; line-height: 1.2; }
-.auth-brand-logo { display: block; object-fit: contain; transform-origin: top left; position: relative; z-index: 1; }
+.auth-brand-logo { display: block; object-fit: contain; position: relative; z-index: 1; animation: authLogoArrival 520ms cubic-bezier(.22,1,.36,1) both; }
+@keyframes authLogoArrival {
+  from { opacity: 0; transform: translateY(-18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-brand-logo { animation: none; }
+}
 .auth-brand-form { margin-top: -12px; }
 .auth-brand-form h1 { font-size: 36px; font-weight: 700; line-height: 1.06; letter-spacing: 0; }
 .auth-brand .auth-brand-logo { width: 28px; height: 28px; }

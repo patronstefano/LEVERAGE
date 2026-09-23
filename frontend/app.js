@@ -6731,7 +6731,6 @@ function renderLogin() {
     renderAccount();
     return;
   }
-  const previousLogo = document.querySelector(".auth-brand-logo")?.getBoundingClientRect();
   setApp(`
     <div class="auth-brand auth-brand-form">
       <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28">
@@ -6766,19 +6765,6 @@ function renderLogin() {
       </div>
     </div>
   `);
-
-  if (previousLogo && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    const logo = document.querySelector(".auth-brand-logo");
-    const next = logo.getBoundingClientRect();
-    logo.animate([
-      { transform: `translate(${previousLogo.left - next.left}px, ${previousLogo.top - next.top}px) scale(${previousLogo.width / next.width})` },
-      { transform: "translate(0, 0) scale(1)" },
-    ], { duration: 520, easing: "cubic-bezier(.22,1,.36,1)" });
-    document.querySelector(".auth-login-panel").animate([
-      { opacity: 0, transform: "translateY(24px)" },
-      { opacity: 1, transform: "translateY(0)" },
-    ], { duration: 460, delay: 80, fill: "backwards", easing: "cubic-bezier(.22,1,.36,1)" });
-  }
 
   $("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();

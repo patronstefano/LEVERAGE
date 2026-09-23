@@ -207,6 +207,15 @@ def main():
         page.set_viewport_size({'width': 390, 'height': 844})
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.screenshot(path='/tmp/leverage-register-mobile.png', full_page=True)
+        for route in ['/login', '/forgot-password', '/register', '/account']:
+            page.evaluate('route => location.hash = route', route)
+            page.wait_for_timeout(100)
+            logo = page.locator('.auth-brand-logo')
+            assert logo.evaluate('node => getComputedStyle(node).animationName') == 'authLogoArrival'
+            assert logo.evaluate('node => getComputedStyle(node).animationDuration') == '0.52s'
+        page.emulate_media(reduced_motion='reduce')
+        assert page.locator('.auth-brand-logo').evaluate('node => getComputedStyle(node).animationName') == 'none'
+        page.emulate_media(reduced_motion='no-preference')
         page.locator('footer [data-demo-role="user"]').click()
         page.wait_for_timeout(200)
         assert '/auth/demo-login' in writes
