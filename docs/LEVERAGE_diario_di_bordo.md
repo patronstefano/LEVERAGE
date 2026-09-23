@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- Corretto il movimento dei moduli di accesso, registrazione e recupero password quando compaiono avvisi: il centraggio iniziale viene conservato e, al primo invio, il contenuto viene ancorato alla posizione superiore corrente. Il box cresce verso il basso senza spostare campi e pulsanti verso l'alto. Test browser sulle coordinate del pannello e del pulsante nelle tre schermate; nessuna modifica ai dati o alla validazione.
+
 - Uniformato il focus dei campi di autenticazione al popup Salva questo ranking: eliminato il contorno azzurro nativo del browser, mantenendo bordo e alone tenui condivisi e l'evidenziazione rossa dei campi errati. Aggiunto un controllo browser sullo stile effettivo del focus; nessuna modifica alla validazione o ai dati.
 
 23 settembre 2026: introdotta validazione condivisa per login, registrazione, recupero/reset e cambio password, allineata al popup Salva questo Ranking. Disattivate le nuvolette native; riutilizzati keyframe dello scossone da 360 ms, colore/bordo rosso, testo di errore e azzeramento dell'avviso alla digitazione. Campi invalidi associati al messaggio tramite aria-invalid/aria-describedby, focus sul primo errore e rispetto del movimento ridotto.

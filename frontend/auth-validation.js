@@ -20,6 +20,17 @@ const messages = {
 export function bindAuthValidation(form, message, getLanguage) {
   form.noValidate = true;
   const shell = form.closest('.auth-panel') || form;
+  const anchorLayout = () => {
+    const main = shell.closest('.auth-main-view');
+    if (!main || shell.hasAttribute('data-auth-anchored')) return;
+    // Preserve the initially centered position while feedback expands below it.
+    const top = shell.getBoundingClientRect().top;
+    const padding = parseFloat(getComputedStyle(main).paddingTop);
+    main.style.setProperty('--auth-content-top', `${padding}px`);
+    shell.setAttribute('data-auth-anchored', '');
+    const shift = top - shell.getBoundingClientRect().top;
+    main.style.setProperty('--auth-content-top', `${Math.max(padding, padding + shift)}px`);
+  };
   const inputs = () => [...form.querySelectorAll('input')].filter((input) => !input.disabled && input.type !== 'hidden' && !input.closest('[hidden]'));
   const text = (key) => messages[key][Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(getLanguage()))];
   const clear = () => {
@@ -36,6 +47,7 @@ export function bindAuthValidation(form, message, getLanguage) {
     }
   };
   const show = (issues) => {
+    anchorLayout();
     clear();
     message.classList.remove('is-success', 'account-feedback');
     message.classList.add('auth-validation-message', 'is-error');
@@ -53,6 +65,7 @@ export function bindAuthValidation(form, message, getLanguage) {
   };
   form.addEventListener('input', clear);
   const validate = () => {
+    anchorLayout();
     clear();
     const fields = inputs(), issues = [];
     for (const input of fields) {

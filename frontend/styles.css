@@ -480,6 +480,11 @@ button {
   text-align: center;
 }
 
+.main-view.auth-main-view:has(.auth-panel[data-auth-anchored]) {
+  justify-content: flex-start;
+  padding-top: var(--auth-content-top, 32px);
+}
+
 .auth-main-view .page-heading > div {
   width: 100%;
 }

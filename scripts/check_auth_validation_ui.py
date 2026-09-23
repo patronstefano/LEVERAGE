@@ -2,6 +2,17 @@
 from playwright.sync_api import sync_playwright
 
 
+def submit_with_stable_position(form):
+    panel = form.locator('xpath=ancestor::section[contains(@class,"auth-panel")]')
+    button = form.locator('button[type=submit]')
+    before_panel, before_button = panel.bounding_box(), button.bounding_box()
+    button.click()
+    after_panel, after_button = panel.bounding_box(), button.bounding_box()
+    assert abs(after_panel['y'] - before_panel['y']) < 1
+    assert abs(after_button['y'] - before_button['y']) < 1
+    assert after_panel['height'] > before_panel['height']
+
+
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -30,7 +41,7 @@ def main():
         assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).outlineStyle') == 'none'
         assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).borderTopColor') == 'rgba(25, 23, 71, 0.32)'
         assert page.locator('#loginEmail').evaluate('node => getComputedStyle(node).boxShadow') == 'rgba(25, 23, 71, 0.08) 0px 0px 0px 3px'
-        form.locator('button[type=submit]').click()
+        submit_with_stable_position(form)
         assert not requests
         assert page.locator('#loginMessage').inner_text() == 'Completa i campi obbligatori.'
         assert form.locator('[aria-invalid=true]').count() == 2
@@ -77,7 +88,7 @@ def main():
 
         page.evaluate("location.hash = '/register'")
         form = page.locator('#registerForm')
-        form.locator('button[type=submit]').click()
+        submit_with_stable_position(form)
         assert form.locator('[aria-invalid=true]').count() == 3
         page.locator('#registerEmail').fill('user@example.test')
         page.locator('#registerPassword').fill('Valid6!')
@@ -95,7 +106,7 @@ def main():
 
         page.evaluate("location.hash = '/forgot-password'")
         form = page.locator('#accountRecoveryForm')
-        form.locator('button').click()
+        submit_with_stable_position(form)
         assert page.locator('#accountRecoveryFeedback').inner_text() == 'Completa i campi obbligatori.'
         form.locator('input').fill('bad-email')
         form.locator('button').click()
