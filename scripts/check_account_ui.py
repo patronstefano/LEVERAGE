@@ -111,6 +111,9 @@ def main():
         for mode, endpoint in [("forgot-password", "/auth/password/forgot"), ("resend-verification", "/auth/resend-verification")]:
             page.evaluate("mode => location.hash = '/' + mode", mode)
             page.locator('#accountRecoveryForm input[name=email]').fill("user@example.test")
+            if mode == 'forgot-password':
+                assert page.locator('.account-recovery a[href="#/forgot-password"]').count() == 0
+                assert page.locator('.account-recovery a[href="#/login"]').count() == 1
             assert page.locator('#authLink').get_attribute('aria-current') is None
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
             recovery_button = page.locator('#accountRecoveryForm button')

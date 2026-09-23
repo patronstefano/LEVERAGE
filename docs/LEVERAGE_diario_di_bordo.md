@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: rimosso il collegamento ridondante "Password dimenticata?" dalla stessa schermata di recupero. Rimane il ritorno ad Accedi; il collegamento al recupero e conservato nelle altre viste dove serve, inclusa la reimpostazione con token scaduto.
+
 23 settembre 2026: reso compatto e centrato il pulsante Invia link nei moduli di recupero/reinvio email, eliminando l'estensione automatica alla larghezza del form. Lo stesso allineamento vale per Salva nella reimpostazione password; altezza, contorno e tipografia restano quelli condivisi.
 
 Ripristinato, su richiesta, il comportamento standard del solo pulsante Accedi interno al modulo: neutro a riposo, bordo e testo blu in hover/focus, riempimento durante la pressione. Rimossa l'eccezione CSS del blu permanente; resta invariata l'evidenziazione della pagina corrente nella topbar. Test browser aggiornato per verificare hover e sfondo neutro.

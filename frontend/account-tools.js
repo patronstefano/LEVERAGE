@@ -161,7 +161,7 @@ export function renderAccountRecovery(host, mode) {
     (reset ? input("new_password", "new") + input("repeat_password", "repeat") : input("email", "Email", "email")) +
     '<button type="submit" class="quiet-button outline-command-button">' + t(reset ? "save" : "request") +
     '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div><div class="auth-switch-row"><a href="#/login">' +
-    esc(host.t("backToLogin")) + '</a><a href="#/forgot-password">' + t("forgot") + '</a></div></section>');
+    esc(host.t("backToLogin")) + '</a>' + (reset || resend ? '<a href="#/forgot-password">' + t("forgot") + '</a>' : '') + '</div></section>');
   const form = document.getElementById("accountRecoveryForm"), message = document.getElementById("accountRecoveryFeedback");
   if (reset && token.length < 20) { form.hidden = true; feedback(message, "invalid", true); return; }
   form.onsubmit = async (e) => {
