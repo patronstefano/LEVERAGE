@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: verificata la presenza del sottotitolo recupero nei file serviti dalla preview. Aggiornati gli URL di versione di CSS, app.js e soprattutto del modulo importato account-tools.js, precedentemente senza versione, per evitare il riuso della copia precedente. Test browser e screenshot dedicato verificano la visibilita del testo.
+
 23 settembre 2026: aggiunto sotto il titolo Password dimenticata un testo esplicativo che invita a inserire l'email dell'account per ricevere il link di reimpostazione. Disponibile in EN/IT/ES/FR, con tipografia condivisa con i sottotitoli descrittivi della Home e senza modifiche al flusso di recupero.
 
 23 settembre 2026: rimosso il collegamento ridondante "Password dimenticata?" dalla stessa schermata di recupero. Rimane il ritorno ad Accedi; il collegamento al recupero e conservato nelle altre viste dove serve, inclusa la reimpostazione con token scaduto.
