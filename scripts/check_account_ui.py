@@ -164,7 +164,9 @@ def main():
         assert page.locator('.auth-login-panel .auth-login-subtitle').count() == 0
         page.wait_for_timeout(650)
         after_logo = page.locator('.auth-brand-logo').bounding_box()
-        assert before_logo['width'] == 112 and after_logo['width'] == 64
+        assert before_logo['width'] == 112 and after_logo['width'] == 48
+        assert page.locator('.auth-brand-form h1').is_visible()
+        assert 'sr-only' not in (page.locator('.auth-brand-form h1').get_attribute('class') or '')
         assert after_logo['y'] < before_logo['y']
         page.screenshot(path='/tmp/leverage-login-logo.png', full_page=True)
         assert not page.locator('#mfaField').is_visible()

@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: ripristinato il titolo visibile Accedi sopra il modulo con peso e interlinea coerenti ai titoli LEVERAGE (36 px desktop, 30 px mobile). Ridotto il logo del modulo da 64 a 48 px e spostato leggermente verso l'alto il blocco introduttivo e il logo. Conservata la transizione dalla schermata di accesso richiesto, aggiornata la verifica browser delle dimensioni.
+
 23 settembre 2026: aggiornato il sottotitolo italiano della registrazione alla frase richiesta: "Iscriviti a LEVERAGE per salvare atleti, eventi e rankings preferiti.".
 
 23 settembre 2026: precisato il sottotitolo dell'Area Personale autenticata in "La tua area privata dove visualizzare atleti, eventi e rankings preferiti.". Aggiornati il controllo browser e la versione frontend.
