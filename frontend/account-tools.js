@@ -15,7 +15,7 @@ const labels = {
   new: ["New password", "Nuova password", "Nueva contraseña", "Nouveau mot de passe"],
   repeat: ["Confirm new password", "Conferma nuova password", "Confirmar contraseña", "Confirmer le nouveau mot de passe"],
   save: ["Save", "Salva", "Guardar", "Enregistrer"],
-  forgot: ["Forgot password?", "Password dimenticata?", "¿Olvidaste tu contraseña?", "Mot de passe oublié ?"],
+  forgot: ["Forgot password?", "Recupera password", "¿Olvidaste tu contraseña?", "Mot de passe oublié ?"],
   reset: ["Reset password", "Reimposta password", "Restablecer contraseña", "Réinitialiser le mot de passe"],
   resend: ["Resend verification email", "Reinvia email di verifica", "Reenviar correo de verificación", "Renvoyer l’email de vérification"],
   request: ["Send link", "Invia link", "Enviar enlace", "Envoyer le lien"],

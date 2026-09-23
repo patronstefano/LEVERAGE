@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: rinominato il titolo italiano "Password dimenticata?" in "Recupera password", mantenendo invariati sottotitolo e procedura di recupero.
+
 23 settembre 2026: rinominato il titolo italiano della pagina di registrazione in "Registrati" e aggiornato il sottotitolo in "Crea il tuo account per salvare atleti, eventi e rankings preferiti.". Nessuna modifica al modulo o al flusso di iscrizione.
 
 23 settembre 2026: semplificati i collegamenti sotto il login in "Registrati" e "Recupera password", affiancati con spaziatura dedicata e ritorno a capo sui display stretti. Rimossa la domanda introduttiva; etichette equivalenti in EN/ES/FR, senza cambiare i titoli delle pagine di destinazione.
