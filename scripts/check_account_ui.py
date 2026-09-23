@@ -177,6 +177,13 @@ def main():
         check_input(page.locator('#loginMfaCode'))
         assert page.locator('#loginMfaCode').evaluate('node => node.required')
         assert page.locator('#loginMfaCode').evaluate('node => document.activeElement === node')
+        page.set_viewport_size({'width': 1440, 'height': 1000})
+        assert page.locator('.auth-login-panel').bounding_box()['width'] == 420
+        page.screenshot(path='/tmp/leverage-login-compact.png', full_page=True)
+        page.evaluate("location.hash = '/forgot-password'")
+        page.locator('#accountRecoveryForm').wait_for()
+        assert page.locator('.account-recovery').bounding_box()['width'] == 420
+        page.screenshot(path='/tmp/leverage-recovery-compact.png', full_page=True)
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")
