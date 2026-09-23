@@ -3415,6 +3415,8 @@ a:focus-visible > .entity-card-clickable {
 .auth-login-submit,
 #accountRecoveryForm > button[type="submit"] { justify-self: center; }
 
+.account-recovery .account-recovery-intro { margin: 0; }
+
 .auth-form p {
   margin: 0;
   color: var(--muted);

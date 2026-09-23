@@ -1,4 +1,5 @@
 const labels = {
+  forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
   unread: ["Unread only", "Solo non lette", "Solo sin leer", "Non lues uniquement"],
@@ -157,7 +158,8 @@ export function renderAccountRecovery(host, mode) {
   const reset = mode === "reset", resend = mode === "resend";
   const title = reset ? "reset" : resend ? "resend" : "forgot";
   const token = new URLSearchParams(host.state.route.split("?")[1] || "").get("token") || "";
-  host.setApp('<section class="panel auth-panel account-recovery"><h1>' + t(title) + '</h1><form class="auth-form" id="accountRecoveryForm">' +
+  host.setApp('<section class="panel auth-panel account-recovery"><h1>' + t(title) + '</h1>' +
+    (!reset && !resend ? '<p class="home-body account-recovery-intro">' + esc(t("forgotHelp")) + '</p>' : '') + '<form class="auth-form" id="accountRecoveryForm">' +
     (reset ? input("new_password", "new") + input("repeat_password", "repeat") : input("email", "Email", "email")) +
     '<button type="submit" class="quiet-button outline-command-button">' + t(reset ? "save" : "request") +
     '</button></form><div id="accountRecoveryFeedback" role="status" aria-live="polite"></div><div class="auth-switch-row"><a href="#/login">' +

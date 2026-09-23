@@ -112,6 +112,8 @@ def main():
             page.evaluate("mode => location.hash = '/' + mode", mode)
             page.locator('#accountRecoveryForm input[name=email]').fill("user@example.test")
             if mode == 'forgot-password':
+                assert page.locator('.account-recovery-intro').is_visible()
+                assert page.locator('.account-recovery-intro').inner_text()
                 assert page.locator('.account-recovery a[href="#/forgot-password"]').count() == 0
                 assert page.locator('.account-recovery a[href="#/login"]').count() == 1
             assert page.locator('#authLink').get_attribute('aria-current') is None
