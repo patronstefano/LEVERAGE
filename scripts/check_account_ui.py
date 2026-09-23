@@ -194,6 +194,8 @@ def main():
         page.screenshot(path='/tmp/leverage-recovery-compact.png', full_page=True)
         page.evaluate("location.hash = '/register'")
         page.locator('#registerForm').wait_for()
+        assert page.locator('.auth-register-panel a[href="#/login"]').count() == 0
+        assert page.locator('.auth-login-links a[href="#/login"]').count() == 1
         assert page.locator('.auth-register-panel').bounding_box()['width'] == 420
         assert page.locator('.auth-brand-logo').bounding_box()['width'] == 28
         assert page.locator('.auth-brand-form .home-body').is_visible()

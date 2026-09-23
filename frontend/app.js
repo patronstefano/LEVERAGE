@@ -6875,11 +6875,13 @@ function renderRegister() {
         <button class="quiet-button outline-command-button auth-login-submit" type="submit">${t("registerAction")}</button>
         <div class="auth-message" id="registerMessage" role="status" aria-live="polite"></div>
       </form>
+    </section>
+    <div class="auth-login-links">
       <div class="auth-switch-row">
         <span>${t("alreadyRegistered")}</span>
         <a href="#/login">${t("backToLogin")}</a>
       </div>
-    </section>
+    </div>
   `);
 
   $("#registerForm").addEventListener("submit", async (event) => {

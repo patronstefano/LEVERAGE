@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: spostato anche "Sei gia registrato? Accedi" fuori dal box di registrazione, riutilizzando il blocco centrato e la spaziatura dei collegamenti esterni della schermata Accedi. Aggiornato il test browser sulla posizione del collegamento.
+
 23 settembre 2026: spostati "Non sei ancora registrato? Crea un account" e "Password dimenticata?" fuori dal box Accedi, in un blocco centrato sottostante con distanze coerenti. Conservati link e flussi; aggiornato il controllo browser della collocazione.
 
 23 settembre 2026: spostati i tre accessi temporanei DEMO USER/ADMIN/SUPER ADMIN dal modulo Accedi al footer. Binding indipendente dalla pagina login, messaggio di errore locale al footer e blocco dei tre pulsanti durante una richiesta per evitare accessi concorrenti. Visibili senza sessione e nascosti dopo il login. Restano scorciatoie di sviluppo da rimuovere a conclusione del frontend; invariati endpoint e vincoli backend.
