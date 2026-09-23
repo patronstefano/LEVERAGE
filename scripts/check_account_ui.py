@@ -153,7 +153,9 @@ def main():
         assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         check_input(page.locator('#loginEmail'))
         check_input(page.locator('#loginPassword'))
-        assert page.locator('.auth-login-panel a[href="#/forgot-password"]').count() == 1
+        assert page.locator('.auth-login-panel a[href="#/forgot-password"]').count() == 0
+        assert page.locator('.auth-login-links a[href="#/forgot-password"]').count() == 1
+        assert page.locator('.auth-login-links a[href="#/register"]').count() == 1
         assert page.locator('.auth-login-panel a[href="#/resend-verification"]').count() == 0
         assert page.locator('#loginForm button[type=submit]').bounding_box()['height'] == 36
         submit = page.locator('#loginForm button[type=submit]')

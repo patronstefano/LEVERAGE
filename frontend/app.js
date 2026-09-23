@@ -6755,6 +6755,8 @@ function renderLogin() {
         <button class="quiet-button outline-command-button auth-login-submit" type="submit">${t("loginAction")}</button>
         <div class="auth-message" id="loginMessage" role="status" aria-live="polite"></div>
       </form>
+    </section>
+    <div class="auth-login-links">
       <div class="auth-switch-row">
         <span>${t("registerPrompt")}</span>
         <a href="#/register">${t("registerLink")}</a>
@@ -6762,7 +6764,7 @@ function renderLogin() {
       <div class="auth-switch-row">
           <a href="#/forgot-password">${accountText(state.language, "forgot")}</a>
       </div>
-    </section>
+    </div>
   `);
 
   if (previousLogo && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {

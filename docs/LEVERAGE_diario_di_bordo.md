@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+23 settembre 2026: spostati "Non sei ancora registrato? Crea un account" e "Password dimenticata?" fuori dal box Accedi, in un blocco centrato sottostante con distanze coerenti. Conservati link e flussi; aggiornato il controllo browser della collocazione.
+
 23 settembre 2026: spostati i tre accessi temporanei DEMO USER/ADMIN/SUPER ADMIN dal modulo Accedi al footer. Binding indipendente dalla pagina login, messaggio di errore locale al footer e blocco dei tre pulsanti durante una richiesta per evitare accessi concorrenti. Visibili senza sessione e nascosti dopo il login. Restano scorciatoie di sviluppo da rimuovere a conclusione del frontend; invariati endpoint e vincoli backend.
 
 23 settembre 2026: ridotto a 28 px il logo nelle schermate Accedi, recupero password, registrazione e accesso richiesto dopo la disconnessione. Logo e titolo ora condividono una distanza di 6 px, senza spostamenti verticali aggiuntivi del logo. Recupero password adotta lo stesso blocco introduttivo esterno al modulo. Conservata la transizione di posizione all'apertura del login, con dimensione finale uniforme.
