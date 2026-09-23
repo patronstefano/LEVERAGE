@@ -48,7 +48,7 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
-        assert 'La tua area privata per salvare atleti, eventi e rankings preferiti.' in page.locator('.page-heading').inner_text()
+        assert 'La tua area privata dove visualizzare atleti, eventi e rankings preferiti.' in page.locator('.page-heading').inner_text()
         page.wait_for_timeout(200)
         assert page.locator('#authLink').get_attribute('aria-current') == 'page'
         assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'

@@ -677,7 +677,7 @@ const translations = {
     demoAdmin: "DEMO ADMIN",
     demoSuperAdmin: "DEMO SUPER ADMIN",
     accountHeading: "Area personale",
-    accountIntro: "La tua area privata per salvare atleti, eventi e rankings preferiti.",
+    accountIntro: "La tua area privata dove visualizzare atleti, eventi e rankings preferiti.",
     accountContentNavigation: "Scegli i contenuti salvati",
     favoriteAthletes: "Atleti preferiti",
     favoriteEvents: "Eventi preferiti",
