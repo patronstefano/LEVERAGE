@@ -1,6 +1,7 @@
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
   center: ["Admin center", "Centro Admin", "Centro Admin", "Centre Admin"],
+  backToAccount: ["Back to Personal Area", "Torna all’Area Personale", "Volver al Área Personal", "Retour à l’Espace personnel"],
   entities: ["Manage records", "Gestione record", "Gestionar registros", "Gérer les fiches"],
   delete: ["Delete", "Elimina", "Eliminar", "Supprimer"],
   image: ["Upload image", "Carica immagine", "Subir imagen", "Importer une image"],
@@ -195,7 +196,7 @@ export async function renderAdminCenter(host) {
     options.map((o) => typeof o === "string" ? { value: o, label: text(o) } : o));
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
-  host.setApp(`<section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
+  host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
     <nav class="admin-center-nav" aria-label="${text("center")}">${tabs.map((key) => `<a class="quiet-button outline-command-button ${key === tab ? "is-active" : ""}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}</nav>
     <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" aria-label="${text(tab)}"></section></section>`);
   const root = document.getElementById("adminWorkspace");

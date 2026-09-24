@@ -59,6 +59,13 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
+        back = page.locator('.detail-topbar .detail-back-button')
+        assert back.inner_text() == 'Torna all’Area Personale'
+        assert back.get_attribute('href') == '#/account'
+        back.click()
+        page.locator('.account-view-switcher').wait_for()
+        page.goto("http://127.0.0.1:5173/#/admin")
+        page.locator(".admin-center").wait_for()
         for tab in ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
             page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
             page.wait_for_timeout(500)

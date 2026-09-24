@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: aggiunto in alto a sinistra nel Centro Admin il collegamento Torna all'Area Personale, con componente detail-back-button condiviso dalle schede e testo localizzato nelle quattro lingue. Disponibile in tutte le viste del centro per ADMIN e SUPER ADMIN.
+
 - 24 settembre 2026: corretto il conflitto di specificita CSS che rendeva bianchi i pulsanti Notifiche/Impostazioni attivi al passaggio del mouse. Lo stato selezionato mantiene sfondo blu e icona bianca anche in hover/focus, senza alterare il comportamento neutro dei pulsanti non attivi. Test browser su entrambe le azioni.
 
 - 24 settembre 2026: uniformati anche Nessuna notifica e Nessuna notifica da leggere allo stile empty-state condiviso con le altre sezioni, rimuovendo la precedente regola grafica dedicata.
