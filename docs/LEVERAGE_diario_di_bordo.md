@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: Impostazioni uniformate agli strumenti admin delle schede Atleta/Evento riutilizzando pannello, sezioni, griglia responsive, controlli e pulsanti esistenti. Dati account (email/ruolo in sola lettura e lingua) sopra al modulo cambio password, con Salva nell'intestazione. Rimossi gli stili specifici precedenti incompatibili con quelli condivisi; nessuna estensione dei permessi USER. Verificati flussi lingua/password e screenshot desktop/mobile tramite test browser con API simulate.
+
 - 24 settembre 2026: uniformata a 8px la distanza tra Notifiche, Impostazioni ed Esci nell'Area Personale, correggendo la differenza tra il gruppo icone e il pulsante di uscita. Dimensioni e allineamento invariati; test sulle distanze effettive nel browser.
 
 - 24 settembre 2026: aggiunto in downbar il Generatore notifiche USER (DEMO), temporaneo e visibile solo in localhost all'account demo.user. Genera 35 notifiche simulate in memoria (32 non lette), apre Notifiche e consente di provare paginazione, lettura e conteggio senza chiamate di scrittura al backend. I messaggi sono marcati DEMO e tradotti; un reload ripristina la vista dei dati reali. Da rimuovere assieme alle scorciatoie demo a fine sviluppo frontend.

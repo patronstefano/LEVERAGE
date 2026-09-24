@@ -112,11 +112,13 @@ def main():
         assert page.locator('#accountReadAll').is_disabled()
         page.locator('[data-account-view="settings"]').click()
         for field in page.locator('#accountPasswordForm input').all():
-            check_input(field)
+            assert field.bounding_box()['height'] == 36
+            assert field.evaluate('node => getComputedStyle(node).fontSize') == '15px'
+        assert page.locator('#accountSettings').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
         assert page.locator('#accountPasswordForm button[type=submit]').bounding_box()['width'] < 150
         assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
         identity = page.locator('.account-settings-identity')
-        assert identity.is_visible()
+        assert identity.locator('dd').first.is_visible()
         assert identity.locator('dd').all_text_contents() == ['user@example.test', 'USER']
         assert identity.locator('dt').all_text_contents() == ['Email', 'Ruolo']
         assert identity.locator('input, select, button').count() == 0

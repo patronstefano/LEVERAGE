@@ -3672,20 +3672,11 @@ a:focus-visible > .entity-card-clickable {
 .account-unread-count[hidden] { display: none; }
 
 #accountSettings, #accountNotifications { min-width: 0; }
-.account-settings-identity { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 0 0 28px; }
+.account-settings-identity { display: contents; }
 .account-settings-identity > div { min-width: 0; }
-.account-settings-identity dt { color: var(--muted); font-size: 13px; line-height: 1.4; margin-bottom: 6px; }
-.account-settings-identity dd { margin: 0; color: var(--ink); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
-.account-settings-grid { display: grid; grid-template-columns: minmax(200px, 320px) minmax(240px, 420px); gap: 32px 48px; align-items: start; }
-.account-settings-language .admin-form-field { display: grid; gap: 16px; }
-.account-settings-language .admin-form-field > span { font-size: 16px; line-height: 1.4; font-weight: 650; color: var(--ink); }
-.account-settings-language .admin-custom-select > summary {
-  height: 36px; min-height: 36px; padding: 0 14px; box-sizing: border-box;
-  border-radius: var(--control-radius); font-size: 14px; font-weight: 400;
-}
-#accountSettings h2, #accountNotifications h2 { margin: 0; font-size: 20px; line-height: 1.18; }
-#accountSettings h3 { margin: 0 0 16px; font-size: 16px; line-height: 1.4; font-weight: 650; }
-#accountPasswordForm > button { justify-self: start; }
+.account-settings-identity dt { color: var(--muted); font-size: var(--card-meta-size); font-weight: 650; line-height: 1.25; margin-bottom: 7px; }
+.account-settings-identity dd { margin: 0; min-height: 36px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--control-radius); color: var(--ink); font-size: 15px; font-weight: 480; line-height: 18px; overflow-wrap: anywhere; }
+#accountNotifications h2 { margin: 0; font-size: 20px; line-height: 1.18; }
 #accountPasswordFeedback:empty, #accountNotificationFeedback:empty { display: none; }
 .account-notification-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .account-notification-toolbar label { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink); cursor: pointer; }
@@ -3706,7 +3697,6 @@ a:focus-visible > .entity-card-clickable {
 #accountMoreNotifications, #accountNotificationRetry { margin-top: 16px; }
 #accountNotificationRetry { margin-bottom: 16px; }
 @media (max-width: 700px) {
-  .account-settings-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .account-notification-actions { gap: 8px; }
 }
 .account-feedback:not(:empty) {

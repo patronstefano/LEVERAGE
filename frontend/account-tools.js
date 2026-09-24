@@ -10,6 +10,7 @@ const labels = {
   demoResult: ["New results for a followed athlete at an example competition.", "Nuovi risultati di un atleta seguito in una gara di esempio.", "Nuevos resultados de un atleta seguido en una competición de ejemplo.", "Nouveaux résultats d’un athlète suivi dans une compétition fictive."],
   demoEvent: ["Results are available for a favorite event.", "Sono disponibili i risultati di un evento preferito.", "Los resultados de un evento favorito están disponibles.", "Les résultats d’un événement favori sont disponibles."],
   role: ["Role", "Ruolo", "Rol", "Rôle"],
+  accountData: ["Account details", "Dati account", "Datos de la cuenta", "Informations du compte"],
   unread: ["Unread only", "Solo non lette", "Solo sin leer", "Non lues uniquement"],
   read: ["Mark as read", "Segna come letta", "Marcar como leída", "Marquer comme lue"],
   readAll: ["Mark all as read", "Segna tutte come lette", "Marcar todas como leídas", "Tout marquer comme lu"],
@@ -100,16 +101,18 @@ export function mountAccountTools(host) {
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
-  settings.innerHTML = '<div class="section-header"><h2>' + t("settings") + '</h2></div>' +
+  settings.className = 'panel athlete-admin-panel account-settings-panel';
+  settings.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("settings") + '</h2></div>' +
+    '<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>' + t("accountData") + '</h2></div><div class="admin-form-grid account-settings-details">' +
     '<dl class="account-settings-identity"><div><dt>Email</dt><dd>' + esc(state.currentUser.email) + '</dd></div>' +
     '<div><dt>' + esc(t("role")) + '</dt><dd>' + esc(String(state.currentUser.role || '').replaceAll('_', ' ').toUpperCase()) + '</dd></div></dl>' +
-    '<div class="account-settings-grid"><section class="account-settings-language">' +
     host.renderAdminSelectControl("account_language", t("language"), state.language, [
       { value: "en", label: "English" }, { value: "it", label: "Italiano" },
       { value: "es", label: "Español" }, { value: "fr", label: "Français" },
-    ]) + '</section><section class="account-settings-password"><h3>' + t("change") + '</h3><form id="accountPasswordForm" class="auth-form">' +
+    ]) + '</div></section><form id="accountPasswordForm" class="auth-form admin-edit-form">' +
+    '<div class="section-header compact-section-header"><h2>' + t("change") + '</h2><button class="quiet-button outline-command-button" type="submit">' + t("save") + '</button></div><div class="admin-form-grid">' +
     input("current_password", "current") + input("new_password", "new") + input("repeat_password", "repeat") +
-    '<button class="quiet-button outline-command-button" type="submit">' + t("save") + '</button><div role="status" aria-live="polite" id="accountPasswordFeedback"></div></form></section></div>';
+    '</div><div role="status" aria-live="polite" id="accountPasswordFeedback"></div></form>';
   host.bindAdminSelectControls(settings);
   settings.querySelector('[name="account_language"]').addEventListener("change", (e) => host.setLanguage(e.target.value));
   const passwordValidation = bindAuthValidation(settings.querySelector("form"), settings.querySelector("#accountPasswordFeedback"), () => state.language);
