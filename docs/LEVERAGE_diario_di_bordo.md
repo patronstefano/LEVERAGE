@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: Solo non lette diventa un pulsante filtro con aria-pressed, affiancato a Segna tutte come lette nell'intestazione Notifiche. Lettura cumulativa con comportamento condiviso di Pulisci filtri: contorno/testo rossi al passaggio e riempimento rosso durante la pressione. Conservati paginazione, filtro e stato disabilitato in assenza di notifiche da leggere.
+
 - 24 settembre 2026: Notifiche uniformate al pannello Impostazioni e agli strumenti admin, riutilizzando contenitore, intestazione compatta, separatori e pulsanti condivisi. Lettura cumulativa nell'intestazione; messaggi in righe ordinate con indicatore blu delle non lette, senza riquadri annidati. Conservati filtro, paginazione, retry e generatore demo.
 
 - 24 settembre 2026: Impostazioni uniformate agli strumenti admin delle schede Atleta/Evento riutilizzando pannello, sezioni, griglia responsive, controlli e pulsanti esistenti. Dati account (email/ruolo in sola lettura e lingua) sopra al modulo cambio password, con Salva nell'intestazione. Rimossi gli stili specifici precedenti incompatibili con quelli condivisi; nessuna estensione dei permessi USER. Verificati flussi lingua/password e screenshot desktop/mobile tramite test browser con API simulate.

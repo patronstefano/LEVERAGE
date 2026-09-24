@@ -132,12 +132,15 @@ export function mountAccountTools(host) {
     finally { submit.disabled = false; }
   };
   notifications.className = 'panel athlete-admin-panel account-notifications-panel';
-  notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2>' + button("readAll", 'id="accountReadAll"') + '</div><section class="admin-tool-block"><div class="account-notification-toolbar"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
-    '</label></div><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
+  notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2><div class="account-notification-toolbar">' +
+    '<button class="filter-button" type="button" id="accountUnreadOnly" aria-pressed="false">' + esc(t("unread")) + '</button>' +
+    '<button class="quiet-button filter-clear-button" type="button" id="accountReadAll">' + esc(t("readAll")) + '</button>' +
+    '</div></div><section class="admin-tool-block"><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
     button("more", 'id="accountMoreNotifications" hidden') + '</section>';
   let offset = 0, revision = 0, loaded = false, busy = false;
   const list = notifications.querySelector("#accountNotificationList"), more = notifications.querySelector("#accountMoreNotifications");
   const unreadOnly = notifications.querySelector("#accountUnreadOnly");
+  const isUnreadOnly = () => unreadOnly.getAttribute('aria-pressed') === 'true';
   const retry = notifications.querySelector("#accountNotificationRetry");
   const readAll = notifications.querySelector("#accountReadAll");
   let unreadCount = 0, failedReset = true;
@@ -162,7 +165,7 @@ export function mountAccountTools(host) {
     retry.hidden = true;
     notifications.querySelector("#accountNotificationFeedback").textContent = "";
     try {
-      const items = await request("/notifications/", "GET", null, true, { limit: 30, offset, unread_only: unreadOnly.checked });
+      const items = await request("/notifications/", "GET", null, true, { limit: 30, offset, unread_only: isUnreadOnly() });
       if (!live() || current !== revision) return;
       if (reset) list.innerHTML = "";
       const existingIds = new Set([...list.querySelectorAll('[data-notification-id]')].map((item) => item.dataset.notificationId));
@@ -183,14 +186,14 @@ export function mountAccountTools(host) {
             await request("/notifications/" + item.id + "/read", "PUT");
             if (!live()) return;
             article.classList.remove("is-unread"); read.remove();
-            if (unreadOnly.checked) await load(true);
+            if (isUnreadOnly()) await load(true);
             await updateCount();
           } catch (error) { if (live()) feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); read.disabled = false; }
         };
         list.append(article);
       }
       offset += items.length; more.hidden = items.length < 30; loaded = true;
-      if (!list.children.length) list.innerHTML = '<p class="account-notification-empty">' + esc(t(unreadOnly.checked ? "emptyUnread" : "empty")) + '</p>';
+      if (!list.children.length) list.innerHTML = '<p class="account-notification-empty">' + esc(t(isUnreadOnly() ? "emptyUnread" : "empty")) + '</p>';
     } catch (error) {
       if (live() && current === revision) {
         feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true);
@@ -200,7 +203,10 @@ export function mountAccountTools(host) {
   };
   retry.onclick = () => load(failedReset);
   more.onclick = () => load();
-  unreadOnly.onchange = () => load(true);
+  unreadOnly.onclick = () => {
+    unreadOnly.setAttribute('aria-pressed', String(!isUnreadOnly()));
+    load(true);
+  };
   notifications.querySelector("#accountReadAll").onclick = async (e) => {
     const b = e.currentTarget; b.disabled = true;
     try { await request("/notifications/read-all", "PUT"); if (!live()) return; await load(true); await updateCount(); }

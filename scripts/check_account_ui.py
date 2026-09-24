@@ -89,9 +89,14 @@ def main():
         assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
         assert page.locator("html").get_attribute("lang") == "it"
+        page.locator('#accountReadAll').hover()
+        page.wait_for_timeout(200)
+        assert page.locator('#accountReadAll').evaluate('node => getComputedStyle(node).color') == 'rgb(180, 35, 24)'
+        assert page.locator('#accountReadAll').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(255, 255, 255)'
         page.screenshot(path='/tmp/leverage-notifications-desktop.png', full_page=True)
         failures['notifications'] = True
-        page.locator('#accountUnreadOnly').check()
+        page.locator('#accountUnreadOnly').click()
+        assert page.locator('#accountUnreadOnly').get_attribute('aria-pressed') == 'true'
         page.locator('#accountNotificationRetry').wait_for(state='visible')
         assert page.locator('.account-notification').count() == 30
         assert page.locator('#accountNotificationList').get_attribute('aria-busy') == 'false'
@@ -99,7 +104,8 @@ def main():
         page.locator('#accountNotificationRetry').click()
         page.locator('#accountNotificationRetry').wait_for(state='hidden')
         page.wait_for_timeout(150)
-        page.locator('#accountUnreadOnly').uncheck()
+        page.locator('#accountUnreadOnly').click()
+        assert page.locator('#accountUnreadOnly').get_attribute('aria-pressed') == 'false'
         page.wait_for_timeout(150)
         page.locator("#accountMoreNotifications").click()
         page.wait_for_timeout(150)
@@ -108,7 +114,7 @@ def main():
         page.wait_for_timeout(150)
         assert "30" in page.locator("#accountUnreadCount").inner_text()
         page.locator("#accountReadAll").click()
-        page.locator("#accountUnreadOnly").check()
+        page.locator("#accountUnreadOnly").click()
         page.wait_for_timeout(200)
         assert page.locator(".account-notification").count() == 0
         assert page.locator('.account-notification-empty').inner_text() == 'Nessuna notifica da leggere.'
