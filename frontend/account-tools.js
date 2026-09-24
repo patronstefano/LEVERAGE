@@ -131,9 +131,10 @@ export function mountAccountTools(host) {
     } catch (error) { if (form.isConnected) passwordValidation.serverError(error, "change"); }
     finally { submit.disabled = false; }
   };
-  notifications.innerHTML = '<div class="section-header"><h2>' + t("notifications") + '</h2></div><div class="account-notification-toolbar"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
-    '</label>' + button("readAll", 'id="accountReadAll"') + '</div><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
-    button("more", 'id="accountMoreNotifications" hidden');
+  notifications.className = 'panel athlete-admin-panel account-notifications-panel';
+  notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2>' + button("readAll", 'id="accountReadAll"') + '</div><section class="admin-tool-block"><div class="account-notification-toolbar"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
+    '</label></div><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
+    button("more", 'id="accountMoreNotifications" hidden') + '</section>';
   let offset = 0, revision = 0, loaded = false, busy = false;
   const list = notifications.querySelector("#accountNotificationList"), more = notifications.querySelector("#accountMoreNotifications");
   const unreadOnly = notifications.querySelector("#accountUnreadOnly");

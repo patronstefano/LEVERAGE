@@ -52,6 +52,9 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
+        assert page.locator('#accountNotifications').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
+        assert page.locator('#accountNotifications > .compact-section-header h2').evaluate('node => getComputedStyle(node).fontSize') == '17px'
+        assert page.locator('#accountReadAll').bounding_box()['height'] == 36
         assert page.locator('#app').evaluate("node => node.classList.contains('primary-section-main-view')")
         assert page.locator('#app').evaluate("node => getComputedStyle(node).paddingTop") == '58px'
         assert 'La tua area privata dove visualizzare atleti, eventi e rankings preferiti.' in page.locator('.page-heading').inner_text()
