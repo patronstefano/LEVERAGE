@@ -2018,7 +2018,7 @@ function updateAuthUi() {
     authLink.textContent = t("signIn");
   }
   const path = state.route.split("?")[0];
-  const active = ["/account", "/login"].includes(path);
+  const active = ["/account", "/login", "/register", "/forgot-password", "/reset-password", "/resend-verification", "/verify-email"].includes(path);
   if (active) authLink.setAttribute("aria-current", "page");
   else authLink.removeAttribute("aria-current");
 }

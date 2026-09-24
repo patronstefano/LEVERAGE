@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: esteso lo stato attivo blu del pulsante Accedi nella topbar all'intero percorso di autenticazione (registrazione, recupero/reset password, verifica email e area personale disconnessa per riaccesso). Riutilizzato lo stile esistente, senza modificare login o permessi. Test browser sullo stato attivo e sul ritorno allo stato neutro nelle sezioni pubbliche.
+
 - Rettifica del layout degli avvisi su richiesta dell'utente: eliminata la riserva aggiuntiva sotto i moduli, che alterava la posizione iniziale del footer. L'avviso ora consuma esclusivamente gli spazi inferiori gia presenti. Verificata la posizione invariata del footer per l'errore di campi mancanti su desktop/mobile e l'assenza di sovrapposizioni quando avvisi multipli esauriscono lo spazio di una finestra bassa.
 
 - Stabilizzata la barra inferiore durante gli errori di registrazione: uno spazio esterno di riserva sotto il modulo viene consumato dall'espansione dell'avviso, mantenendo invariata la posizione del footer e senza aggiungere vuoto dentro al box. Esteso il test geometrico a login, registrazione, recupero e a viewport desktop/mobile, anche con avvisi multipli.

@@ -150,6 +150,12 @@ def main():
             links_bottom = page.locator('.auth-login-links').evaluate('node => node.getBoundingClientRect().bottom + scrollY')
             assert after_footer >= links_bottom - 1
         assert not errors, errors
+        for route in ['/login', '/register', '/forgot-password', '/reset-password?token=test', '/resend-verification', '/verify-email?token=test', '/account']:
+            page.goto('http://127.0.0.1:5173/#' + route)
+            page.wait_for_function("document.querySelector('#authLink')?.getAttribute('aria-current') === 'page'")
+            assert page.locator('#authLink').get_attribute('href') == '#/login'
+        page.goto('http://127.0.0.1:5173/#/athletes')
+        page.wait_for_function("!document.querySelector('#authLink')?.hasAttribute('aria-current')")
         browser.close()
     print('Authentication validation passed: missing/invalid fields, credentials, MFA, verification, rate limits, email delivery, network, mismatch, success and reduced motion.')
 
