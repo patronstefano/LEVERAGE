@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: rimossi i titoli ridondanti Atleti preferiti, Eventi preferiti e Rankings salvati dall'Area Personale. Lo slider mantiene l'indicazione della vista attiva; rimossi anche i relativi contenitori per non lasciare spazi vuoti.
+
 - 24 settembre 2026: email e ruolo riportati nelle Impostazioni come dati in sola lettura, in una riga compatta sopra lingua e cambio password. Etichetta del ruolo localizzata; nessuna modifica dei permessi o dell'anagrafica account.
 
 - 24 settembre 2026: rimosso il riquadro email/ruolo dall'Area Personale. Slider e azioni restano disponibili sotto l'intestazione; per gli amministratori il collegamento al Centro Admin si sposta nella riga delle azioni, senza modifiche ai permessi.

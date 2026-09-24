@@ -11759,27 +11759,12 @@ async function renderAccount() {
     ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">
       <section class="account-favorites-section account-view-panel" data-account-view-panel="athletes" ${selectedSection === "athletes" ? "" : "hidden"}>
-        <div class="section-header">
-          <div>
-            <h2>${t("favoriteAthletes")}</h2>
-          </div>
-        </div>
         <div id="accountAthletes">${loadingState()}</div>
       </section>
       <section class="account-favorites-section account-view-panel" data-account-view-panel="events" ${selectedSection === "events" ? "" : "hidden"}>
-        <div class="section-header">
-          <div>
-            <h2>${t("favoriteEvents")}</h2>
-          </div>
-        </div>
         <div id="accountEvents">${loadingState()}</div>
       </section>
       <section class="account-favorites-section account-ranking-views account-view-panel" id="accountSavedRankings" data-account-view-panel="rankings" ${selectedSection === "rankings" ? "" : "hidden"}>
-        <div class="section-header">
-          <div>
-            <h2>${t("savedRankingViews")}</h2>
-          </div>
-        </div>
         <div id="accountRankingViews">${loadingState()}</div>
       </section>
       <section class="account-view-panel" data-account-view-panel="notifications" ${selectedSection === "notifications" ? "" : "hidden"}><div id="accountNotifications"></div></section>
