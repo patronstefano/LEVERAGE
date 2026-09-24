@@ -3672,6 +3672,10 @@ a:focus-visible > .entity-card-clickable {
 .account-unread-count[hidden] { display: none; }
 
 #accountSettings, #accountNotifications { min-width: 0; }
+.athlete-admin-panel.account-settings-panel,
+.athlete-admin-panel.account-notifications-panel { margin-top: 0; }
+.account-settings-panel > .compact-section-header,
+.account-notifications-panel > .compact-section-header { min-height: 50px; }
 .account-settings-identity { display: contents; }
 .account-settings-identity > div { min-width: 0; }
 .account-settings-identity dt { color: var(--muted); font-size: var(--card-meta-size); font-weight: 650; line-height: 1.25; margin-bottom: 7px; }

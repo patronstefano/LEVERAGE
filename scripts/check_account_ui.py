@@ -55,6 +55,8 @@ def main():
         assert page.locator('#accountNotifications').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
         assert page.locator('#accountNotifications > .compact-section-header h2').evaluate('node => getComputedStyle(node).fontSize') == '17px'
         assert page.locator('#accountReadAll').bounding_box()['height'] == 36
+        notification_top = page.locator('#accountNotifications').bounding_box()['y']
+        notification_header_height = page.locator('#accountNotifications > .compact-section-header').bounding_box()['height']
         assert page.locator('#app').evaluate("node => node.classList.contains('primary-section-main-view')")
         assert page.locator('#app').evaluate("node => getComputedStyle(node).paddingTop") == '58px'
         assert 'La tua area privata dove visualizzare atleti, eventi e rankings preferiti.' in page.locator('.page-heading').inner_text()
@@ -126,6 +128,8 @@ def main():
         assert page.locator('#accountSettings').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
         assert page.locator('#accountPasswordForm button[type=submit]').bounding_box()['width'] < 150
         assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
+        assert abs(page.locator('#accountSettings').bounding_box()['y'] - notification_top) < 1
+        assert page.locator('#accountSettings > .compact-section-header').bounding_box()['height'] == notification_header_height
         identity = page.locator('.account-settings-identity')
         assert identity.locator('dd').first.is_visible()
         assert identity.locator('dd').all_text_contents() == ['user@example.test', 'USER']
