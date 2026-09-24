@@ -70,6 +70,11 @@ def main():
         actions = page.locator('.account-navigation-actions').bounding_box()
         assert abs((slider['y'] + slider['height'] / 2) - (actions['y'] + actions['height'] / 2)) < 1
         assert actions['x'] > slider['x'] + slider['width']
+        notification_button = page.locator('.account-tool-actions button').nth(0).bounding_box()
+        settings_button = page.locator('.account-tool-actions button').nth(1).bounding_box()
+        logout_button = page.locator('#signOutButton').bounding_box()
+        assert abs(settings_button['x'] - notification_button['x'] - notification_button['width'] - 8) < 1
+        assert abs(logout_button['x'] - settings_button['x'] - settings_button['width'] - 8) < 1
         for control in page.locator('.account-tool-actions button').all():
             control.hover()
             page.wait_for_timeout(600)
