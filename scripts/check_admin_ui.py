@@ -73,6 +73,9 @@ def main():
             page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
+            assert page.locator('#authLink').get_attribute('aria-current') == 'page'
+            assert page.locator('#authLink').get_attribute('href') == '#/account'
+            assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
             feedback = page.locator("#adminFeedback").inner_text()
             assert not feedback, (tab, feedback)
             if tab == "entry":

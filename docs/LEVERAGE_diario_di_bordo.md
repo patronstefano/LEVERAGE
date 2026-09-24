@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: il pulsante Area Personale nella topbar mantiene lo stato attivo blu anche nel Centro Admin e nelle sue sottosezioni, con destinazione invariata all'account. Verificato lo stato nelle viste del centro tramite test browser.
+
 - 24 settembre 2026: spostato Centro Admin a sinistra di Notifiche nella riga azioni dell'Area Personale; ordine risultante Centro Admin, Notifiche, Impostazioni, Esci. Visibilita riservata agli amministratori invariata.
 
 - 24 settembre 2026: aggiunto in alto a sinistra nel Centro Admin il collegamento Torna all'Area Personale, con componente detail-back-button condiviso dalle schede e testo localizzato nelle quattro lingue. Disponibile in tutte le viste del centro per ADMIN e SUPER ADMIN.

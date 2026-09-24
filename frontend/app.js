@@ -2023,7 +2023,8 @@ function updateAuthUi() {
     authLink.textContent = t("signIn");
   }
   const path = state.route.split("?")[0];
-  const active = ["/account", "/login", "/register", "/forgot-password", "/reset-password", "/resend-verification", "/verify-email"].includes(path);
+  const active = ["/account", "/login", "/register", "/forgot-password", "/reset-password", "/resend-verification", "/verify-email"].includes(path)
+    || (Boolean(state.currentUser) && (path === "/admin" || path.startsWith("/admin/")));
   if (active) authLink.setAttribute("aria-current", "page");
   else authLink.removeAttribute("aria-current");
 }
