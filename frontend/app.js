@@ -6740,9 +6740,9 @@ function authRequiredPage() {
       <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="80" height="80">
       <p class="home-body">${t("loginRequiredFavorites")}</p>
     </div>
-    <section class="panel auth-panel auth-required-panel">
+    <div class="auth-required-actions">
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
-    </section>
+    </div>
   `);
 }
 

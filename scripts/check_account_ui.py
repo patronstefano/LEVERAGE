@@ -119,7 +119,7 @@ def main():
                 assert page.locator('.account-recovery a[href="#/forgot-password"]').count() == 0
                 assert page.locator('.account-recovery a[href="#/login"]').count() == 0
                 assert page.locator('.auth-login-links a[href="#/login"]').count() == 1
-            assert page.locator('#authLink').get_attribute('aria-current') is None
+            assert page.locator('#authLink').get_attribute('aria-current') == 'page'
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
             recovery_button = page.locator('#accountRecoveryForm button')
             bottom_gap = page.locator('.account-recovery').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
@@ -138,9 +138,9 @@ def main():
         assert "/auth/password/reset" in writes
         assert "token=" not in page.url
         page.evaluate("location.hash = '/account'")
-        prompt = page.locator('.auth-required-panel')
+        prompt = page.locator('.auth-required-actions')
         prompt.wait_for()
-        message = prompt.locator('p').bounding_box()
+        message = page.locator('.auth-brand-welcome p').bounding_box()
         action = prompt.locator('a').bounding_box()
         assert action['y'] - (message['y'] + message['height']) >= 18
         assert page.locator('#app').evaluate("node => node.classList.contains('auth-main-view')")
@@ -175,7 +175,7 @@ def main():
         assert page.locator('.auth-login-panel .auth-login-subtitle').count() == 0
         page.wait_for_timeout(650)
         after_logo = page.locator('.auth-brand-logo').bounding_box()
-        assert before_logo['width'] == 28 and after_logo['width'] == 28
+        assert before_logo['width'] == 80 and after_logo['width'] == 28
         assert page.locator('.auth-brand-form h1').is_visible()
         assert 'sr-only' not in (page.locator('.auth-brand-form h1').get_attribute('class') or '')
         assert after_logo['y'] < before_logo['y']

@@ -165,7 +165,8 @@ def main():
             page.wait_for_timeout(600)
             assert welcome.locator('h1').count() == 0
             assert welcome.locator('p').inner_text() == 'Accedi per salvare atleti, eventi e rankings preferiti.'
-            assert page.locator('.auth-required-panel p').count() == 0
+            assert page.locator('.auth-panel').count() == 0
+            assert page.locator('.auth-required-actions').evaluate('node => getComputedStyle(node).borderTopWidth') == '0px'
             assert welcome.locator('img').bounding_box()['width'] == 80
             page.screenshot(path=f'/tmp/leverage-reentry-{width}.png', full_page=True)
             page.locator('.auth-primary-link').click()

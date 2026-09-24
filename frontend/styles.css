@@ -511,7 +511,6 @@ button {
 
 .auth-main-view .auth-login-panel,
 .auth-main-view .auth-register-panel,
-.auth-main-view .auth-required-panel,
 .auth-main-view .account-recovery {
   max-width: 420px;
   padding: 20px;
@@ -3447,16 +3446,12 @@ a:focus-visible > .entity-card-clickable {
   .auth-brand-form h1 { font-size: 30px; }
 }
 
-.auth-panel.auth-required-panel {
+.auth-required-actions {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  text-align: center;
+  justify-content: center;
 }
-.auth-required-panel > p { margin: 0; color: var(--muted); line-height: 1.5; }
-.auth-required-panel > .auth-primary-link { min-width: 120px; min-height: 40px; margin: 0; }
+.auth-required-actions > .auth-primary-link { min-width: 120px; min-height: 40px; margin: 0; }
 
 .auth-form {
   display: grid;
