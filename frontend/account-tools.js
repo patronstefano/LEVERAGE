@@ -193,7 +193,7 @@ export function mountAccountTools(host) {
         list.append(article);
       }
       offset += items.length; more.hidden = items.length < 30; loaded = true;
-      if (!list.children.length) list.innerHTML = '<p class="account-notification-empty">' + esc(t(isUnreadOnly() ? "emptyUnread" : "empty")) + '</p>';
+      if (!list.children.length) list.innerHTML = '<div class="empty-state">' + esc(t(isUnreadOnly() ? "emptyUnread" : "empty")) + '</div>';
     } catch (error) {
       if (live() && current === revision) {
         feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true);

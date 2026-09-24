@@ -134,7 +134,7 @@ def main():
         page.locator("#accountUnreadOnly").click()
         page.wait_for_timeout(200)
         assert page.locator(".account-notification").count() == 0
-        assert page.locator('.account-notification-empty').inner_text() == 'Nessuna notifica da leggere.'
+        assert page.locator('#accountNotificationList .empty-state').inner_text() == 'Nessuna notifica da leggere.'
         assert page.locator('#accountReadAll').is_disabled()
         page.locator('[data-account-view="settings"]').click()
         for field in page.locator('#accountPasswordForm input').all():
