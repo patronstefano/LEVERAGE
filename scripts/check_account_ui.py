@@ -106,6 +106,11 @@ def main():
             check_input(field)
         assert page.locator('#accountPasswordForm button[type=submit]').bounding_box()['width'] < 150
         assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
+        identity = page.locator('.account-settings-identity')
+        assert identity.is_visible()
+        assert identity.locator('dd').all_text_contents() == ['user@example.test', 'USER']
+        assert identity.locator('dt').all_text_contents() == ['Email', 'Ruolo']
+        assert identity.locator('input, select, button').count() == 0
         assert page.locator('.account-view-toggle').get_attribute('data-account-content-active') == 'false'
         for content in ['athletes', 'events', 'rankings']:
             page.locator(f'[data-account-view="{content}"]').click()

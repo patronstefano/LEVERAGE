@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: email e ruolo riportati nelle Impostazioni come dati in sola lettura, in una riga compatta sopra lingua e cambio password. Etichetta del ruolo localizzata; nessuna modifica dei permessi o dell'anagrafica account.
+
 - 24 settembre 2026: rimosso il riquadro email/ruolo dall'Area Personale. Slider e azioni restano disponibili sotto l'intestazione; per gli amministratori il collegamento al Centro Admin si sposta nella riga delle azioni, senza modifiche ai permessi.
 
 - 24 settembre 2026: allineata la posizione superiore dell'Area Personale autenticata alle sezioni Atleti, Eventi, Rankings e Analytics riutilizzandone la spaziatura responsive. Invariati tipografia e layout delle schermate disconnesse; verificati padding desktop e mobile.

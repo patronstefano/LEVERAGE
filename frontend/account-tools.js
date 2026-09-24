@@ -6,6 +6,7 @@ const labels = {
   forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
+  role: ["Role", "Ruolo", "Rol", "Rôle"],
   unread: ["Unread only", "Solo non lette", "Solo sin leer", "Non lues uniquement"],
   read: ["Mark as read", "Segna come letta", "Marcar como leída", "Marquer comme lue"],
   readAll: ["Mark all as read", "Segna tutte come lette", "Marcar todas como leídas", "Tout marquer comme lu"],
@@ -72,7 +73,10 @@ export function mountAccountTools(host) {
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
-  settings.innerHTML = '<div class="section-header"><h2>' + t("settings") + '</h2></div><div class="account-settings-grid"><section class="account-settings-language">' +
+  settings.innerHTML = '<div class="section-header"><h2>' + t("settings") + '</h2></div>' +
+    '<dl class="account-settings-identity"><div><dt>Email</dt><dd>' + esc(state.currentUser.email) + '</dd></div>' +
+    '<div><dt>' + esc(t("role")) + '</dt><dd>' + esc(String(state.currentUser.role || '').replaceAll('_', ' ').toUpperCase()) + '</dd></div></dl>' +
+    '<div class="account-settings-grid"><section class="account-settings-language">' +
     host.renderAdminSelectControl("account_language", t("language"), state.language, [
       { value: "en", label: "English" }, { value: "it", label: "Italiano" },
       { value: "es", label: "Español" }, { value: "fr", label: "Français" },
