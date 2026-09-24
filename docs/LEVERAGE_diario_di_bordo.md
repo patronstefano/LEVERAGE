@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: allineata la posizione superiore dell'Area Personale autenticata alle sezioni Atleti, Eventi, Rankings e Analytics riutilizzandone la spaziatura responsive. Invariati tipografia e layout delle schermate disconnesse; verificati padding desktop e mobile.
+
 - 24 settembre 2026: spostati Notifiche, Impostazioni ed Esci sotto il riepilogo account, allineati a destra nella stessa riga dello slider Atleti/Eventi/Rankings. Su finestre strette la riga si adatta senza sovrapposizioni; accesso al centro Admin lasciato nel riepilogo account.
 
 - 24 settembre 2026: rifinitura di Notifiche e Impostazioni nell'Area Personale, mantenendo campanella/ingranaggio separati dai preferiti. Notifiche con righe compatte, checkbox non lette, azioni di lettura singola/cumulativa, data semantica, paginazione e stato vuoto specifico. Aggiunto Riprova dopo errori di caricamento mantenendo i record visibili; ignorati errori di richieste superate e deduplicati gli ID nelle pagine successive. Disabilitata la lettura cumulativa quando il conteggio delle non lette e zero. Impostazioni organizzate in due colonne non incorniciate (lingua e password), impilate su mobile: campi da 36px, pulsante Salva compatto, avvisi neutri e validazione condivisa. Migliorata la gestione di risposte non JSON e dei ritorni asincroni dopo navigazione. Test con API simulate per non modificare dati reali, inclusi errore/riprova, paginazione, lingua, password e screenshot desktop/mobile.

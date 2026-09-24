@@ -2656,7 +2656,8 @@ function setApp(html) {
   const routePath = state.route.split("?")[0];
   const welcomeLogo = routePath === "/login" ? app.querySelector('.auth-brand-welcome .auth-brand-logo') : null;
   const welcomeLogoRect = welcomeLogo?.getBoundingClientRect();
-  const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
+  const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath)
+    || (routePath === "/account" && Boolean(state.currentUser));
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
   app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath) || (routePath === "/account" && !state.currentUser));

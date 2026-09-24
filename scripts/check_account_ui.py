@@ -52,6 +52,8 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
+        assert page.locator('#app').evaluate("node => node.classList.contains('primary-section-main-view')")
+        assert page.locator('#app').evaluate("node => getComputedStyle(node).paddingTop") == '58px'
         assert 'La tua area privata dove visualizzare atleti, eventi e rankings preferiti.' in page.locator('.page-heading').inner_text()
         page.wait_for_timeout(200)
         assert page.locator('#authLink').get_attribute('aria-current') == 'page'
@@ -123,6 +125,7 @@ def main():
         assert page.locator("html").get_attribute("lang") == "fr"
         page.screenshot(path="/tmp/leverage-account-desktop.png", full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
+        assert page.locator('#app').evaluate("node => getComputedStyle(node).paddingTop") == '24px'
         page.screenshot(path="/tmp/leverage-account-mobile.png", full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "Mobile overflow"
         page.locator('[name="current_password"]').fill("ExistingPassword123!")
