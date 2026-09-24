@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: aggiunta una singola linea divisoria grigia a tutta larghezza sotto slider e pulsanti dell'Area Personale, prima dei contenuti. Spessore e colore condivisi con i separatori delle altre sezioni; nessuna modifica al comportamento dei comandi.
+
 - 24 settembre 2026: rimossi i titoli ridondanti Atleti preferiti, Eventi preferiti e Rankings salvati dall'Area Personale. Lo slider mantiene l'indicazione della vista attiva; rimossi anche i relativi contenitori per non lasciare spazi vuoti.
 
 - 24 settembre 2026: email e ruolo riportati nelle Impostazioni come dati in sola lettura, in una riga compatta sopra lingua e cambio password. Etichetta del ruolo localizzata; nessuna modifica dei permessi o dell'anagrafica account.

@@ -3605,12 +3605,26 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .account-view-switcher {
+  position: relative;
   display: flex;
   justify-content: flex-start;
   margin-bottom: 22px;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+  padding-bottom: 12px;
+}
+
+.account-view-switcher::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  border-bottom: 1px solid rgba(25, 23, 71, 0.06);
+  pointer-events: none;
 }
 
 .account-view-toggle {
