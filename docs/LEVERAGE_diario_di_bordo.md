@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: Solo non lette usa ora gli stessi stili base del pulsante adiacente Segna tutte come lette (altezza, font, peso, padding e bordi), mantenendo la selezione persistente blu Leverage e il comportamento toggle. Test browser di equivalenza degli stili e dello stato attivo.
+
 - 24 settembre 2026: avvicinati i pannelli Notifiche/Impostazioni al separatore dell'Area Personale eliminando i 14px di margine superiore ereditati dagli strumenti admin. Uniformata l'altezza minima delle intestazioni a 50px (comandi da 36px e spazio inferiore da 14px), mantenendo adattamento mobile e stili delle schede admin invariati.
 
 - 24 settembre 2026: Solo non lette diventa un pulsante filtro con aria-pressed, affiancato a Segna tutte come lette nell'intestazione Notifiche. Lettura cumulativa con comportamento condiviso di Pulisci filtri: contorno/testo rossi al passaggio e riempimento rosso durante la pressione. Conservati paginazione, filtro e stato disabilitato in assenza di notifiche da leggere.

@@ -133,7 +133,7 @@ export function mountAccountTools(host) {
   };
   notifications.className = 'panel athlete-admin-panel account-notifications-panel';
   notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2><div class="account-notification-toolbar">' +
-    '<button class="filter-button" type="button" id="accountUnreadOnly" aria-pressed="false">' + esc(t("unread")) + '</button>' +
+    '<button class="quiet-button account-unread-filter" type="button" id="accountUnreadOnly" aria-pressed="false">' + esc(t("unread")) + '</button>' +
     '<button class="quiet-button filter-clear-button" type="button" id="accountReadAll">' + esc(t("readAll")) + '</button>' +
     '</div></div><section class="admin-tool-block"><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
     button("more", 'id="accountMoreNotifications" hidden') + '</section>';

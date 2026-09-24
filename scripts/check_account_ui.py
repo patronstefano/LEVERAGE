@@ -55,6 +55,8 @@ def main():
         assert page.locator('#accountNotifications').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
         assert page.locator('#accountNotifications > .compact-section-header h2').evaluate('node => getComputedStyle(node).fontSize') == '17px'
         assert page.locator('#accountReadAll').bounding_box()['height'] == 36
+        button_style = "node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.borderRadius, s.paddingLeft, s.paddingRight]; }"
+        assert page.locator('#accountUnreadOnly').evaluate(button_style) == page.locator('#accountReadAll').evaluate(button_style)
         notification_top = page.locator('#accountNotifications').bounding_box()['y']
         notification_header_height = page.locator('#accountNotifications > .compact-section-header').bounding_box()['height']
         assert page.locator('#app').evaluate("node => node.classList.contains('primary-section-main-view')")
@@ -99,6 +101,8 @@ def main():
         failures['notifications'] = True
         page.locator('#accountUnreadOnly').click()
         assert page.locator('#accountUnreadOnly').get_attribute('aria-pressed') == 'true'
+        page.wait_for_timeout(200)
+        assert page.locator('#accountUnreadOnly').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         page.locator('#accountNotificationRetry').wait_for(state='visible')
         assert page.locator('.account-notification').count() == 30
         assert page.locator('#accountNotificationList').get_attribute('aria-busy') == 'false'

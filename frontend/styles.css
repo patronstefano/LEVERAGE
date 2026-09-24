@@ -6041,6 +6041,12 @@ a:focus-visible > .entity-card-clickable {
   transform: scale(0.98);
 }
 
+.athlete-admin-panel .quiet-button.account-unread-filter[aria-pressed="true"] {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
+
 .athlete-admin-panel .quiet-button.filter-clear-button:hover,
 .athlete-admin-panel .quiet-button.filter-clear-button:focus-visible {
   border-color: var(--danger);
