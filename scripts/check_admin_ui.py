@@ -64,6 +64,9 @@ def main():
         assert back.get_attribute('href') == '#/account'
         back.click()
         page.locator('.account-view-switcher').wait_for()
+        admin_link = page.locator('.account-navigation-actions a[href="#/admin"]').bounding_box()
+        notifications_button = page.locator('[data-account-view="notifications"]').bounding_box()
+        assert admin_link['x'] + admin_link['width'] < notifications_button['x']
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
         for tab in ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:

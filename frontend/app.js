@@ -11699,9 +11699,9 @@ function renderAccountViewControl(selected) {
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
       </div>
       <div class="account-user-actions account-navigation-actions">
+        ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
         ${renderAccountToolActions(selected)}
         <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
-        ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
       </div>
     </div>
   `;
