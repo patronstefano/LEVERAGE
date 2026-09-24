@@ -11,6 +11,8 @@ const labels = {
   readAll: ["Mark all as read", "Segna tutte come lette", "Marcar todas como leídas", "Tout marquer comme lu"],
   more: ["Load more notifications", "Carica altre notifiche", "Cargar más notificaciones", "Charger plus de notifications"],
   empty: ["No notifications.", "Nessuna notifica.", "No hay notificaciones.", "Aucune notification."],
+  emptyUnread: ["No unread notifications.", "Nessuna notifica da leggere.", "No hay notificaciones sin leer.", "Aucune notification non lue."],
+  retry: ["Try again", "Riprova", "Reintentar", "Réessayer"],
   language: ["Preferred language", "Lingua preferita", "Idioma preferido", "Langue préférée"],
   change: ["Change password", "Cambia password", "Cambiar contraseña", "Changer le mot de passe"],
   current: ["Current password", "Password attuale", "Contraseña actual", "Mot de passe actuel"],
@@ -49,7 +51,7 @@ function context(host) {
       method, headers: auth ? host.authHeaders(Boolean(body)) : { "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : undefined,
     });
-    const data = response.status === 204 ? null : await response.json();
+    const data = response.status === 204 ? null : await response.json().catch(() => null);
     if (!response.ok) {
       const error = new Error("Request failed");
       error.status = response.status;
@@ -59,7 +61,7 @@ function context(host) {
     }
     return data;
   };
-  const errorKey = (e) => e.status === 429 ? "cooldown" : e.status === 503 ? "delivery" : e.status === 401 ? "expired" : "failed";
+  const errorKey = (e) => e.status === 429 ? "cooldown" : e.status === 401 ? "expired" : "failed";
   return { t, esc, button, input, feedback, request, errorKey };
 }
 
@@ -70,13 +72,13 @@ export function mountAccountTools(host) {
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
-  settings.innerHTML = '<h2>' + t("settings") + '</h2><div class="account-settings-language">' +
+  settings.innerHTML = '<div class="section-header"><h2>' + t("settings") + '</h2></div><div class="account-settings-grid"><section class="account-settings-language">' +
     host.renderAdminSelectControl("account_language", t("language"), state.language, [
       { value: "en", label: "English" }, { value: "it", label: "Italiano" },
       { value: "es", label: "Español" }, { value: "fr", label: "Français" },
-    ]) + '</div><h3>' + t("change") + '</h3><form id="accountPasswordForm" class="auth-form">' +
+    ]) + '</section><section class="account-settings-password"><h3>' + t("change") + '</h3><form id="accountPasswordForm" class="auth-form">' +
     input("current_password", "current") + input("new_password", "new") + input("repeat_password", "repeat") +
-    '<button class="quiet-button outline-command-button" type="submit">' + t("save") + '</button><div role="status" aria-live="polite" id="accountPasswordFeedback"></div></form>';
+    '<button class="quiet-button outline-command-button" type="submit">' + t("save") + '</button><div role="status" aria-live="polite" id="accountPasswordFeedback"></div></form></section></div>';
   host.bindAdminSelectControls(settings);
   settings.querySelector('[name="account_language"]').addEventListener("change", (e) => host.setLanguage(e.target.value));
   const passwordValidation = bindAuthValidation(settings.querySelector("form"), settings.querySelector("#accountPasswordFeedback"), () => state.language);
@@ -90,22 +92,27 @@ export function mountAccountTools(host) {
       await request("/auth/password/change", "POST", { current_password: values.current_password, new_password: values.new_password });
       if (!live()) return;
       host.clearAuth(); form.reset(); form.hidden = true;
-      feedback(message, "success"); settings.append(message);
-      settings.insertAdjacentHTML("beforeend", '<a class="quiet-button outline-command-button" href="#/login">' + host.t("signIn") + '</a>');
-    } catch (error) { passwordValidation.serverError(error, "change"); }
+      feedback(message, "success"); form.parentElement.append(message);
+      form.parentElement.insertAdjacentHTML("beforeend", '<a class="quiet-button outline-command-button" href="#/login">' + host.t("signIn") + '</a>');
+    } catch (error) { if (form.isConnected) passwordValidation.serverError(error, "change"); }
     finally { submit.disabled = false; }
   };
-  notifications.innerHTML = '<h2>' + t("notifications") + '</h2><div class="account-notification-actions"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
-    '</label>' + button("readAll", 'id="accountReadAll"') + '</div><div id="accountNotificationFeedback" role="status" aria-live="polite"></div><div id="accountNotificationList"></div>' +
+  notifications.innerHTML = '<div class="section-header"><h2>' + t("notifications") + '</h2></div><div class="account-notification-toolbar"><label><input id="accountUnreadOnly" type="checkbox"> ' + t("unread") +
+    '</label>' + button("readAll", 'id="accountReadAll"') + '</div><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
     button("more", 'id="accountMoreNotifications" hidden');
   let offset = 0, revision = 0, loaded = false, busy = false;
   const list = notifications.querySelector("#accountNotificationList"), more = notifications.querySelector("#accountMoreNotifications");
   const unreadOnly = notifications.querySelector("#accountUnreadOnly");
+  const retry = notifications.querySelector("#accountNotificationRetry");
+  const readAll = notifications.querySelector("#accountReadAll");
+  let unreadCount = 0, failedReset = true;
   const updateCount = async () => {
     try {
       const data = await request("/notifications/unread-count");
       if (!live()) return;
       const badge = document.getElementById("accountUnreadCount");
+      unreadCount = data.count || 0;
+      readAll.disabled = !unreadCount;
       badge.textContent = data.count > 99 ? "99+" : String(data.count || "");
       badge.hidden = !data.count;
       badge.setAttribute("aria-label", String(data.count));
@@ -116,42 +123,54 @@ export function mountAccountTools(host) {
     const current = ++revision;
     if (reset) offset = 0;
     busy = true; more.disabled = true;
+    list.setAttribute('aria-busy', 'true');
+    retry.hidden = true;
     notifications.querySelector("#accountNotificationFeedback").textContent = "";
     try {
       const items = await request("/notifications/", "GET", null, true, { limit: 30, offset, unread_only: unreadOnly.checked });
       if (!live() || current !== revision) return;
       if (reset) list.innerHTML = "";
+      const existingIds = new Set([...list.querySelectorAll('[data-notification-id]')].map((item) => item.dataset.notificationId));
       for (const item of items) {
+        if (existingIds.has(String(item.id))) continue;
+        existingIds.add(String(item.id));
         const article = document.createElement("article");
+        article.dataset.notificationId = String(item.id);
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(host.t(key === "athlete" ? "navAthletes" : "navEvents")) + '</a>').join("");
-        article.innerHTML = '<div><p>' + esc(item.message) + '</p><time>' + esc(new Date(item.created_at).toLocaleString(state.language)) +
+        article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
           '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? button("read", 'data-read') : "") + '</div>';
         const read = article.querySelector("[data-read]");
         if (read) read.onclick = async () => {
           read.disabled = true;
           try {
             await request("/notifications/" + item.id + "/read", "PUT");
+            if (!live()) return;
             article.classList.remove("is-unread"); read.remove();
             if (unreadOnly.checked) await load(true);
             await updateCount();
-          } catch (error) { feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); read.disabled = false; }
+          } catch (error) { if (live()) feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); read.disabled = false; }
         };
         list.append(article);
       }
       offset += items.length; more.hidden = items.length < 30; loaded = true;
-      if (!list.children.length) list.textContent = t("empty");
-    } catch (error) { if (live()) feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); }
-    finally { if (current === revision) { busy = false; more.disabled = false; } }
+      if (!list.children.length) list.innerHTML = '<p class="account-notification-empty">' + esc(t(unreadOnly.checked ? "emptyUnread" : "empty")) + '</p>';
+    } catch (error) {
+      if (live() && current === revision) {
+        feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true);
+        failedReset = reset; retry.hidden = false;
+      }
+    } finally { if (current === revision) { busy = false; more.disabled = false; list.setAttribute('aria-busy', 'false'); } }
   };
+  retry.onclick = () => load(failedReset);
   more.onclick = () => load();
   unreadOnly.onchange = () => load(true);
   notifications.querySelector("#accountReadAll").onclick = async (e) => {
     const b = e.currentTarget; b.disabled = true;
-    try { await request("/notifications/read-all", "PUT"); await load(true); await updateCount(); }
-    catch (error) { feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); }
-    finally { b.disabled = false; }
+    try { await request("/notifications/read-all", "PUT"); if (!live()) return; await load(true); await updateCount(); }
+    catch (error) { if (live()) feedback(notifications.querySelector("#accountNotificationFeedback"), errorKey(error), true); }
+    finally { b.disabled = !unreadCount; }
   };
   const activate = () => { if (!notifications.closest("[data-account-view-panel]").hidden && !loaded) load(true); };
   document.querySelectorAll("[data-account-view]").forEach((b) => b.addEventListener("click", activate));

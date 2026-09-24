@@ -11,6 +11,7 @@ def main():
         assert style == ['14px', '400', '12px'], style
 
     errors, writes = [], []
+    failures = {"notifications": False}
     user = {"id": 999, "email": "user@example.test", "role": "user", "preferred_language": "it"}
     notices = [{"id": n, "message": "Notifica personale " + str(n), "is_read": False,
                 "created_at": "2026-09-22T12:00:00Z"} for n in range(31)]
@@ -30,6 +31,9 @@ def main():
             elif path == "/notifications/unread-count":
                 payload = {"count": sum(not n["is_read"] for n in notices)}
             elif path == "/notifications/":
+                if failures['notifications']:
+                    route.fulfill(status=503, body='Service unavailable')
+                    return
                 items = [n for n in notices if not n["is_read"]] if params.get("unread_only") == ["true"] else notices
                 offset = int(params.get("offset", [0])[0])
                 payload = items[offset:offset + 30]
@@ -66,6 +70,18 @@ def main():
         assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
         assert page.locator("html").get_attribute("lang") == "it"
+        page.screenshot(path='/tmp/leverage-notifications-desktop.png', full_page=True)
+        failures['notifications'] = True
+        page.locator('#accountUnreadOnly').check()
+        page.locator('#accountNotificationRetry').wait_for(state='visible')
+        assert page.locator('.account-notification').count() == 30
+        assert page.locator('#accountNotificationList').get_attribute('aria-busy') == 'false'
+        failures['notifications'] = False
+        page.locator('#accountNotificationRetry').click()
+        page.locator('#accountNotificationRetry').wait_for(state='hidden')
+        page.wait_for_timeout(150)
+        page.locator('#accountUnreadOnly').uncheck()
+        page.wait_for_timeout(150)
         page.locator("#accountMoreNotifications").click()
         page.wait_for_timeout(150)
         assert page.locator(".account-notification").count() == 31
@@ -76,7 +92,12 @@ def main():
         page.locator("#accountUnreadOnly").check()
         page.wait_for_timeout(200)
         assert page.locator(".account-notification").count() == 0
+        assert page.locator('.account-notification-empty').inner_text() == 'Nessuna notifica da leggere.'
+        assert page.locator('#accountReadAll').is_disabled()
         page.locator('[data-account-view="settings"]').click()
+        for field in page.locator('#accountPasswordForm input').all():
+            check_input(field)
+        assert page.locator('#accountPasswordForm button[type=submit]').bounding_box()['width'] < 150
         assert page.locator('[data-account-view="settings"]').get_attribute("aria-pressed") == "true"
         assert page.locator('.account-view-toggle').get_attribute('data-account-content-active') == 'false'
         for content in ['athletes', 'events', 'rankings']:
