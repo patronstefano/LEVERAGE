@@ -3439,6 +3439,10 @@ a:focus-visible > .entity-card-clickable {
 .auth-brand-form { margin-top: -12px; }
 .auth-brand-form h1 { font-size: 36px; font-weight: 700; line-height: 1.06; letter-spacing: 0; }
 .auth-brand .auth-brand-logo { width: 28px; height: 28px; }
+.auth-brand-welcome { gap: 20px; }
+.auth-brand-welcome .auth-brand-logo { width: 80px; height: 80px; }
+.auth-brand-logo { transform-origin: top left; }
+.auth-brand-welcome .home-body { margin: 0; }
 @media (max-width: 600px) {
   .auth-brand-form h1 { font-size: 30px; }
 }

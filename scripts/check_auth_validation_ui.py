@@ -156,6 +156,26 @@ def main():
             assert page.locator('#authLink').get_attribute('href') == '#/login'
         page.goto('http://127.0.0.1:5173/#/athletes')
         page.wait_for_function("!document.querySelector('#authLink')?.hasAttribute('aria-current')")
+        for width in [1280, 390]:
+            page.set_viewport_size({'width': width, 'height': 900})
+            page.emulate_media(reduced_motion='no-preference')
+            page.goto('http://127.0.0.1:5173/#/account')
+            welcome = page.locator('.auth-brand-welcome')
+            welcome.wait_for()
+            page.wait_for_timeout(600)
+            assert welcome.locator('h1').count() == 0
+            assert welcome.locator('p').inner_text() == 'Accedi per salvare atleti, eventi e rankings preferiti.'
+            assert page.locator('.auth-required-panel p').count() == 0
+            assert welcome.locator('img').bounding_box()['width'] == 80
+            page.screenshot(path=f'/tmp/leverage-reentry-{width}.png', full_page=True)
+            page.locator('.auth-primary-link').click()
+            page.locator('#loginForm').wait_for()
+            assert page.locator('.auth-brand-logo').evaluate('node => node.getAnimations().length') > 0
+            page.wait_for_timeout(650)
+            assert page.locator('.auth-brand-logo').bounding_box()['width'] == 28
+            page.screenshot(path=f'/tmp/leverage-reentry-login-{width}.png', full_page=True)
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        assert not errors, errors
         browser.close()
     print('Authentication validation passed: missing/invalid fields, credentials, MFA, verification, rate limits, email delivery, network, mismatch, success and reduced motion.')
 

@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: schermata di riaccesso senza titolo Accedi, con logo da 80px e sottotitolo esterno al box del pulsante. Al passaggio al login, il logo si sposta e si riduce in continuita fino ai 28px sopra il titolo Accedi; titolo e modulo appaiono gradualmente. Animazione disabilitata con preferenza di movimento ridotto. Test e screenshot desktop/mobile; nessuna modifica alla gestione delle sessioni.
+
 - 24 settembre 2026: aggiornato il testo di riaccesso ad "Accedi per salvare atleti, eventi e rankings preferiti.", con traduzioni coerenti in inglese, spagnolo e francese.
 
 - 24 settembre 2026: esteso lo stato attivo blu del pulsante Accedi nella topbar all'intero percorso di autenticazione (registrazione, recupero/reset password, verifica email e area personale disconnessa per riaccesso). Riutilizzato lo stile esistente, senza modificare login o permessi. Test browser sullo stato attivo e sul ritorno allo stato neutro nelle sezioni pubbliche.

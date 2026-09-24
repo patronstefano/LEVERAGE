@@ -2654,11 +2654,28 @@ function setApp(html) {
   cleanupStickySummaries();
   const app = $("#app");
   const routePath = state.route.split("?")[0];
+  const welcomeLogo = routePath === "/login" ? app.querySelector('.auth-brand-welcome .auth-brand-logo') : null;
+  const welcomeLogoRect = welcomeLogo?.getBoundingClientRect();
   const isPrimarySection = ["/athletes", "/events", "/rankings", "/analytics"].includes(routePath);
   app.classList.toggle("home-main-view", state.route === "/");
   app.classList.toggle("primary-section-main-view", isPrimarySection);
   app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath) || (routePath === "/account" && !state.currentUser));
   app.innerHTML = html;
+  if (welcomeLogoRect && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const logo = app.querySelector('.auth-brand-logo');
+    if (logo) {
+      logo.style.animation = 'none';
+      const target = logo.getBoundingClientRect();
+      logo.animate([
+        { transform: `translate(${welcomeLogoRect.left - target.left}px, ${welcomeLogoRect.top - target.top}px) scale(${welcomeLogoRect.width / target.width})` },
+        { transform: 'translate(0, 0) scale(1)' },
+      ], { duration: 560, easing: 'cubic-bezier(.22,1,.36,1)' });
+      app.querySelectorAll('.auth-brand h1, .auth-brand p, .auth-login-panel, .auth-login-links').forEach((element) => {
+        element.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+          { duration: 420, delay: 100, fill: 'backwards', easing: 'ease-out' });
+      });
+    }
+  }
   app.focus({ preventScroll: true });
 }
 
@@ -6719,9 +6736,11 @@ async function renderRankings() {
 
 function authRequiredPage() {
   setApp(`
-    <div class="auth-brand auth-brand-form auth-brand-welcome"><img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28"><h1>${t("loginHeading")}</h1></div>
+    <div class="auth-brand auth-brand-form auth-brand-welcome">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="80" height="80">
+      <p class="home-body">${t("loginRequiredFavorites")}</p>
+    </div>
     <section class="panel auth-panel auth-required-panel">
-      <p>${t("loginRequiredFavorites")}</p>
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
     </section>
   `);
