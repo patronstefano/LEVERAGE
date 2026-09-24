@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: uniformati tutti i pulsanti Segna come letta all'azione cumulativa Segna tutte come lette, riutilizzando le medesime classi per dimensioni, tipografia, contorno/testo rossi al passaggio e riempimento rosso alla pressione. Funzione di lettura singola invariata e verificata con test browser.
+
 - 24 settembre 2026: Solo non lette usa ora gli stessi stili base del pulsante adiacente Segna tutte come lette (altezza, font, peso, padding e bordi), mantenendo la selezione persistente blu Leverage e il comportamento toggle. Test browser di equivalenza degli stili e dello stato attivo.
 
 - 24 settembre 2026: avvicinati i pannelli Notifiche/Impostazioni al separatore dell'Area Personale eliminando i 14px di margine superiore ereditati dagli strumenti admin. Uniformata l'altezza minima delle intestazioni a 50px (comandi da 36px e spazio inferiore da 14px), mantenendo adattamento mobile e stili delle schede admin invariati.

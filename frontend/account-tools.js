@@ -178,7 +178,7 @@ export function mountAccountTools(host) {
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(host.t(key === "athlete" ? "navAthletes" : "navEvents")) + '</a>').join("");
         article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
-          '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? button("read", 'data-read') : "") + '</div>';
+          '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? '<button class="quiet-button filter-clear-button" type="button" data-read>' + esc(t("read")) + '</button>' : "") + '</div>';
         const read = article.querySelector("[data-read]");
         if (read) read.onclick = async () => {
           read.disabled = true;

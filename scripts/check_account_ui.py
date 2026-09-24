@@ -57,6 +57,7 @@ def main():
         assert page.locator('#accountReadAll').bounding_box()['height'] == 36
         button_style = "node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.borderRadius, s.paddingLeft, s.paddingRight]; }"
         assert page.locator('#accountUnreadOnly').evaluate(button_style) == page.locator('#accountReadAll').evaluate(button_style)
+        assert page.locator('[data-read]').first.evaluate(button_style) == page.locator('#accountReadAll').evaluate(button_style)
         notification_top = page.locator('#accountNotifications').bounding_box()['y']
         notification_header_height = page.locator('#accountNotifications > .compact-section-header').bounding_box()['height']
         assert page.locator('#app').evaluate("node => node.classList.contains('primary-section-main-view')")
@@ -93,6 +94,10 @@ def main():
         assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
         assert page.locator("html").get_attribute("lang") == "it"
+        page.locator('[data-read]').first.hover()
+        page.wait_for_timeout(200)
+        assert page.locator('[data-read]').first.evaluate('node => getComputedStyle(node).color') == 'rgb(180, 35, 24)'
+        assert page.locator('[data-read]').first.evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(255, 255, 255)'
         page.locator('#accountReadAll').hover()
         page.wait_for_timeout(200)
         assert page.locator('#accountReadAll').evaluate('node => getComputedStyle(node).color') == 'rgb(180, 35, 24)'
