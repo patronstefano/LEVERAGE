@@ -11690,6 +11690,7 @@ function renderAccountViewControl(selected) {
       <div class="account-user-actions account-navigation-actions">
         ${renderAccountToolActions(selected)}
         <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
+        ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
       </div>
     </div>
   `;
@@ -11755,15 +11756,6 @@ async function renderAccount() {
   const selectedSection = accountViewSection();
   setApp(`
     ${pageHeading("accountHeading", "accountIntro")}
-    <section class="panel account-summary">
-      <div class="account-user-identity">
-        <strong>${escapeHtml(state.currentUser.email)}</strong>
-        <span>${escapeHtml(state.currentUser.role)}</span>
-      </div>
-      <div class="account-user-actions">
-      ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
-      </div>
-    </section>
     ${renderAccountViewControl(selectedSection)}
     <section class="account-grid">
       <section class="account-favorites-section account-view-panel" data-account-view-panel="athletes" ${selectedSection === "athletes" ? "" : "hidden"}>

@@ -60,7 +60,7 @@ def main():
         assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         assert page.locator('.account-view-toggle [data-account-view]').count() == 3
         assert page.locator('.account-tool-actions button').count() == 2
-        assert page.locator('.account-summary .account-tool-actions button').count() == 0
+        assert page.locator('.account-summary').count() == 0
         assert page.locator('.account-view-switcher .account-tool-actions button').count() == 2
         slider = page.locator('.account-view-toggle').bounding_box()
         actions = page.locator('.account-navigation-actions').bounding_box()

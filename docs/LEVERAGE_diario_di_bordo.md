@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: rimosso il riquadro email/ruolo dall'Area Personale. Slider e azioni restano disponibili sotto l'intestazione; per gli amministratori il collegamento al Centro Admin si sposta nella riga delle azioni, senza modifiche ai permessi.
+
 - 24 settembre 2026: allineata la posizione superiore dell'Area Personale autenticata alle sezioni Atleti, Eventi, Rankings e Analytics riutilizzandone la spaziatura responsive. Invariati tipografia e layout delle schermate disconnesse; verificati padding desktop e mobile.
 
 - 24 settembre 2026: spostati Notifiche, Impostazioni ed Esci sotto il riepilogo account, allineati a destra nella stessa riga dello slider Atleti/Eventi/Rankings. Su finestre strette la riga si adatta senza sovrapposizioni; accesso al centro Admin lasciato nel riepilogo account.
