@@ -3565,6 +3565,7 @@ a:focus-visible > .entity-card-clickable {
 
 .footer-demo-access { justify-content: flex-end; }
 .footer-demo-access[hidden] { display: none; }
+#demoUserNotifications[hidden] { display: none; }
 #footerDemoMessage:empty { display: none; }
 #footerDemoMessage { flex-basis: 100%; color: var(--warning); }
 

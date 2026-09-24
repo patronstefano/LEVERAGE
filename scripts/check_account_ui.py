@@ -59,6 +59,7 @@ def main():
         assert page.locator('#authLink').get_attribute('aria-current') == 'page'
         assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
         assert page.locator('.account-view-toggle [data-account-view]').count() == 3
+        assert page.locator('#demoUserNotifications').is_hidden()
         assert page.locator('.account-favorites-section .section-header').count() == 0
         assert page.locator('.account-view-switcher').evaluate("node => getComputedStyle(node, '::after').borderBottomColor") == 'rgba(25, 23, 71, 0.06)'
         assert page.locator('.account-view-switcher').evaluate("node => getComputedStyle(node, '::after').borderBottomWidth") == '1px'
@@ -271,6 +272,26 @@ def main():
         page.wait_for_timeout(200)
         assert '/auth/demo-login' in writes
         assert page.locator('#footerDemoMessage').inner_text()
+        user['email'] = 'demo.user@leverage-demo.com'
+        page.goto('http://127.0.0.1:5173/#/account')
+        page.reload()
+        page.locator('#demoUserNotifications').wait_for(state='visible')
+        write_count = len(writes)
+        page.locator('#demoUserNotifications').click()
+        page.locator('.account-notification').first.wait_for()
+        assert page.locator('.account-notification').count() == 30
+        assert 'DEMO' in page.locator('.account-notification').first.inner_text()
+        page.locator('#accountMoreNotifications').click()
+        page.wait_for_timeout(100)
+        assert page.locator('.account-notification').count() == 35
+        page.locator('#accountReadAll').click()
+        page.wait_for_timeout(100)
+        assert page.locator('#accountUnreadCount').is_hidden()
+        assert len(writes) == write_count
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        page.reload()
+        page.locator('.account-notification').first.wait_for()
+        assert 'DEMO' not in page.locator('.account-notification').first.inner_text()
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")

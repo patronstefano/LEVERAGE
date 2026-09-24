@@ -6,6 +6,9 @@ const labels = {
   forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
+  demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
+  demoResult: ["New results for a followed athlete at an example competition.", "Nuovi risultati di un atleta seguito in una gara di esempio.", "Nuevos resultados de un atleta seguido en una competición de ejemplo.", "Nouveaux résultats d’un athlète suivi dans une compétition fictive."],
+  demoEvent: ["Results are available for a favorite event.", "Sono disponibili i risultati di un evento preferito.", "Los resultados de un evento favorito están disponibles.", "Les résultats d’un événement favori sont disponibles."],
   role: ["Role", "Ruolo", "Rol", "Rôle"],
   unread: ["Unread only", "Solo non lette", "Solo sin leer", "Non lues uniquement"],
   read: ["Mark as read", "Segna come letta", "Marcar como leída", "Marquer comme lue"],
@@ -37,6 +40,18 @@ const labels = {
 };
 export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "fr"].indexOf(language)] || labels[key]?.[0] || key;
 
+// Development-only, in-memory inbox: never writes simulated data to the API.
+const demoInboxes = new Map();
+export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
+  && user?.email === 'demo.user@leverage-demo.com' && user?.role === 'user';
+export function generateDemoNotifications(user) {
+  if (!canGenerateDemoNotifications(user)) return;
+  demoInboxes.set(user.id, Array.from({ length: 35 }, (_, index) => ({
+    id: index + 1, is_read: index >= 32, key: index % 2 ? 'demoEvent' : 'demoResult',
+    created_at: new Date(Date.now() - index * 3600000).toISOString(),
+  })));
+}
+
 function context(host) {
   const { state, escapeHtml: esc } = host;
   const t = (key) => accountText(state.language, key);
@@ -48,6 +63,18 @@ function context(host) {
     node.textContent = t(key);
   };
   const request = async (path, method = "GET", body, auth = true, params = {}) => {
+    const inbox = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(state.currentUser.id);
+    if (inbox && path.startsWith('/notifications/')) {
+      if (path === '/notifications/unread-count') return { count: inbox.filter((item) => !item.is_read).length };
+      if (path === '/notifications/read-all' && method === 'PUT') inbox.forEach((item) => { item.is_read = true; });
+      else if (method === 'PUT') {
+        const item = inbox.find((entry) => entry.id === Number(path.split('/')[2]));
+        if (item) item.is_read = true;
+      } else return inbox.filter((item) => !params.unread_only || !item.is_read)
+        .slice(params.offset || 0, (params.offset || 0) + (params.limit || 30))
+        .map((item) => ({ ...item, message: `DEMO ${item.id} · ${t(item.key)}` }));
+      return { message: 'OK' };
+    }
     const response = await host.fetchApi(path, params, {
       method, headers: auth ? host.authHeaders(Boolean(body)) : { "Content-Type": "application/json" },
       body: body ? JSON.stringify(body) : undefined,

@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: aggiunto in downbar il Generatore notifiche USER (DEMO), temporaneo e visibile solo in localhost all'account demo.user. Genera 35 notifiche simulate in memoria (32 non lette), apre Notifiche e consente di provare paginazione, lettura e conteggio senza chiamate di scrittura al backend. I messaggi sono marcati DEMO e tradotti; un reload ripristina la vista dei dati reali. Da rimuovere assieme alle scorciatoie demo a fine sviluppo frontend.
+
 - 24 settembre 2026: aggiunta una singola linea divisoria grigia a tutta larghezza sotto slider e pulsanti dell'Area Personale, prima dei contenuti. Spessore e colore condivisi con i separatori delle altre sezioni; nessuna modifica al comportamento dei comandi.
 
 - 24 settembre 2026: rimossi i titoli ridondanti Atleti preferiti, Eventi preferiti e Rankings salvati dall'Area Personale. Lo slider mantiene l'indicazione della vista attiva; rimossi anche i relativi contenitori per non lasciare spazi vuoti.

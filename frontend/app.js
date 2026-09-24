@@ -1,6 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery } from "./account-tools.js?v=settings-identity-20260924";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=demo-notifications-20260924";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -2004,6 +2004,11 @@ function syncLanguageControl() {
 }
 
 function updateAuthUi() {
+  const demoNotifications = $('#demoUserNotifications');
+  if (demoNotifications) {
+    demoNotifications.hidden = !canGenerateDemoNotifications(state.currentUser);
+    demoNotifications.textContent = accountText(state.language, 'demoGenerator');
+  }
   const demoAccess = $("#footerDemoAccess");
   if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
   const authLink = $("#authLink");
@@ -6827,6 +6832,12 @@ function renderLogin() {
 }
 
 function bindDemoLoginButtons() {
+  $('#demoUserNotifications')?.addEventListener('click', () => {
+    if (!canGenerateDemoNotifications(state.currentUser)) return;
+    generateDemoNotifications(state.currentUser);
+    if (state.route === '/account?section=notifications') renderAccount();
+    else window.location.hash = '#/account?section=notifications';
+  });
   document.querySelectorAll("[data-demo-role]").forEach((button) => {
     button.addEventListener("click", async () => {
       const message = $("#footerDemoMessage");
