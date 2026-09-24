@@ -3619,6 +3619,9 @@ a:focus-visible > .entity-card-clickable {
   max-width: 100%;
 }
 
+.account-navigation-actions { margin-left: auto; }
+.account-summary .account-user-actions:empty { display: none; }
+
 .account-view-toggle .segmented-option {
   min-width: 0;
   height: 34px;

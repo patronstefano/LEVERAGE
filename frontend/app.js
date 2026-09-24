@@ -11686,6 +11686,10 @@ function renderAccountViewControl(selected) {
         `).join("")}
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
       </div>
+      <div class="account-user-actions account-navigation-actions">
+        ${renderAccountToolActions(selected)}
+        <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
+      </div>
     </div>
   `;
 }
@@ -11756,8 +11760,6 @@ async function renderAccount() {
         <span>${escapeHtml(state.currentUser.role)}</span>
       </div>
       <div class="account-user-actions">
-      ${renderAccountToolActions(selectedSection)}
-      <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
       ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
       </div>
     </section>
