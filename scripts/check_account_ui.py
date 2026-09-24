@@ -157,6 +157,10 @@ def main():
                 button = page.locator(f'[data-account-view="{tool}"]')
                 button.click()
                 assert button.get_attribute('aria-pressed') == 'true'
+                button.hover()
+                page.wait_for_timeout(200)
+                assert button.evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
+                assert button.evaluate('node => getComputedStyle(node).color') == 'rgb(255, 255, 255)'
                 button.click()
                 assert button.get_attribute('aria-pressed') == 'false'
                 assert page.locator(f'[data-account-view="{content}"]').get_attribute('aria-checked') == 'true'

@@ -3665,6 +3665,13 @@ a:focus-visible > .entity-card-clickable {
 .account-view-toggle[data-account-content-active="false"] .account-view-thumb { opacity: 0; }
 .account-tool-actions { display: flex; gap: 8px; }
 .account-tool-button { position: relative; }
+.admin-tools-toggle.account-tool-button[aria-pressed="true"],
+.admin-tools-toggle.account-tool-button[aria-pressed="true"]:hover,
+.admin-tools-toggle.account-tool-button[aria-pressed="true"]:focus-visible {
+  border-color: var(--brand-blue);
+  background: var(--brand-blue);
+  color: #fff;
+}
 .account-tool-icon { width: 18px; height: 18px; background: currentColor; mask: var(--account-icon) center / contain no-repeat; -webkit-mask: var(--account-icon) center / contain no-repeat; }
 .account-tool-icon-notifications { --account-icon: url("./assets/lucide-bell.svg"); }
 .account-tool-icon-settings { --account-icon: url("./assets/lucide-settings.svg"); }
