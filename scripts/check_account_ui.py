@@ -50,6 +50,12 @@ def main():
             route.fulfill(json=payload, headers={"Access-Control-Allow-Origin": "*"})
 
         page.route("**:8000/**", api)
+        page.goto('http://127.0.0.1:5173/#/analytics')
+        page.locator('[data-analytics-favorites-toggle]').click()
+        analytics_empty = page.locator('#analyticsFavoritePicker .empty-state')
+        analytics_empty.wait_for()
+        assert analytics_empty.inner_text() == 'Nessun atleta preferito compatibile disponibile.'
+        assert page.locator('#analyticsFavoritePicker .analytics-favorite-picker-status').count() == 0
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
         assert page.locator('#accountNotifications').evaluate('node => getComputedStyle(node).borderRadius') == '12px'

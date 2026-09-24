@@ -9365,7 +9365,7 @@ function renderAnalyticsFavoriteAthletes() {
   }
   const details = analyticsCompatibleFavoriteDetails();
   if (!details.length) {
-    return `<div class="analytics-favorite-picker-status">${escapeHtml(t("analyticsCompareFavoriteEmpty"))}</div>`;
+    return emptyMessage(escapeHtml(t("analyticsCompareFavoriteEmpty")));
   }
   return `
     <div class="grid-3 athlete-results-list account-preference-card-list analytics-favorite-athlete-grid">

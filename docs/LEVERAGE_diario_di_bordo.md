@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 24 settembre 2026: uniformato il messaggio di assenza di atleti preferiti compatibili in Analytics al componente empty-state condiviso dalle liste atleti/eventi. Conservata la specifica semantica di compatibilita, modificata soltanto la presentazione.
+
 - 24 settembre 2026: uniformati tutti i pulsanti Segna come letta all'azione cumulativa Segna tutte come lette, riutilizzando le medesime classi per dimensioni, tipografia, contorno/testo rossi al passaggio e riempimento rosso alla pressione. Funzione di lettura singola invariata e verificata con test browser.
 
 - 24 settembre 2026: Solo non lette usa ora gli stessi stili base del pulsante adiacente Segna tutte come lette (altezza, font, peso, padding e bordi), mantenendo la selezione persistente blu Leverage e il comportamento toggle. Test browser di equivalenza degli stili e dello stato attivo.
