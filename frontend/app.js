@@ -6,6 +6,7 @@ const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
 const AUTH_TOKEN_KEY = "leverage.authToken";
 const SECTION_ROUTE_MEMORY_KEY = "leverage.sectionRoutes";
+const PRIVATE_ROUTE_MEMORY_KEY = "leverage.privateRoute";
 const API_FALLBACK_BASES = [
   "http://127.0.0.1:8000",
   "http://localhost:8000",
@@ -2003,6 +2004,26 @@ function syncLanguageControl() {
   });
 }
 
+function privateNavigationRoute() {
+  const user = state.currentUser;
+  if (!user) return '/login';
+  const allowed = (route) => {
+    const path = String(route || '').split('?')[0];
+    if (path === '/account') return true;
+    if (!['admin', 'super_admin'].includes(user.role) || !/^\/admin(?:\/|$)/.test(path)) return false;
+    return !['/admin/users', '/admin/audit'].includes(path) || user.role === 'super_admin';
+  };
+  try {
+    if (allowed(state.route)) {
+      sessionStorage.setItem(PRIVATE_ROUTE_MEMORY_KEY, JSON.stringify({ userId: user.id, route: state.route }));
+      return state.route;
+    }
+    const saved = JSON.parse(sessionStorage.getItem(PRIVATE_ROUTE_MEMORY_KEY) || 'null');
+    if (saved?.userId === user.id && allowed(saved.route)) return saved.route;
+  } catch (_) { /* Navigation remains available when session storage is unavailable. */ }
+  return '/account';
+}
+
 function updateAuthUi() {
   document.querySelectorAll('[data-demo-notifications]').forEach((button) => {
     const role = button.dataset.demoNotifications;
@@ -2014,7 +2035,7 @@ function updateAuthUi() {
   const authLink = $("#authLink");
   if (!authLink) return;
   if (state.currentUser) {
-    authLink.href = "#/account";
+    authLink.href = '#' + privateNavigationRoute();
     authLink.textContent = t("account");
     authLink.removeAttribute("data-i18n");
   } else {
@@ -2156,6 +2177,7 @@ function authHeaders(includeJson = false) {
 }
 
 function clearAuth() {
+  try { sessionStorage.removeItem(PRIVATE_ROUTE_MEMORY_KEY); } catch (_) { /* Storage may be unavailable. */ }
   state.authToken = "";
   state.currentUser = null;
   state.favoriteAthleteIds = new Set();

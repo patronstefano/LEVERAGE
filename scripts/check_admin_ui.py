@@ -74,7 +74,7 @@ def main():
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
             assert page.locator('#authLink').get_attribute('aria-current') == 'page'
-            assert page.locator('#authLink').get_attribute('href') == '#/account'
+            assert page.locator('#authLink').get_attribute('href') == '#/admin/' + tab
             assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
             feedback = page.locator("#adminFeedback").inner_text()
             assert not feedback, (tab, feedback)
@@ -116,6 +116,20 @@ def main():
                 assert "accept_suggestion" in writes[-1]["body"]
                 assert "s1" in writes[-1]["body"]
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
+        page.evaluate("location.hash = '/admin/review'")
+        page.wait_for_timeout(300)
+        page.locator('[data-section-nav="home"]').click()
+        page.wait_for_timeout(300)
+        assert page.locator('#authLink').get_attribute('href') == '#/admin/review'
+        page.reload()
+        page.wait_for_timeout(300)
+        assert page.locator('#authLink').get_attribute('href') == '#/admin/review'
+        page.locator('#authLink').click()
+        page.locator('.admin-center').wait_for()
+        assert page.url.endswith('#/admin/review')
+        page.locator('.detail-back-button').click()
+        page.locator('.account-view-switcher').wait_for()
+        assert page.locator('#authLink').get_attribute('href') == '#/account'
         page.evaluate("location.hash = '/admin'")
         page.wait_for_timeout(300)
         page.screenshot(path="/tmp/leverage-admin-desktop.png", full_page=True)
@@ -131,6 +145,7 @@ def main():
         page.reload()
         page.locator('[role="alert"]').wait_for()
         assert not page.locator(".admin-center").count()
+        assert page.locator('#authLink').get_attribute('href') == '#/account'
         assert not errors, errors
         browser.close()
     print("Admin views, creation forms, desktop/mobile layout: passed")
