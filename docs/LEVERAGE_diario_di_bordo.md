@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **28 settembre 2026 - Allineamento verticale globale:** adottata la Panoramica Centro Admin come riferimento per l'inizio delle pagine. Pulsanti "Torna a..." allineati allo stesso livello in schede, ricerca globale e sottosezioni amministrative; titoli delle sezioni principali, Area Personale, Home e pagine di autenticazione allineati al titolo Centro Admin. Variabili CSS condivise con adattamento alle finestre basse e mobile, senza modificare dimensioni dei controlli o la struttura interna di filtri e grafici.
+
 - **28 settembre 2026 - Panoramica Admin compatta:** ridotti padding verticale delle schede e spazi tra i collegamenti, mantenendo carattere e bordi invariati. Ridotto lo spazio superiore/inferiore della sola Panoramica sui desktop, con ulteriore adattamento per finestre basse, per mostrare subito il footer. Le altre sottosezioni non cambiano; su mobile resta lo scorrimento naturale senza comprimere i controlli.
 
 - **28 settembre 2026 - Superfici delle sottosezioni Centro Admin:** uniformate tutte le sottosezioni al pannello Impostazioni dell'Area Personale, riutilizzando panel/athlete-admin-panel e admin-tool-block: superficie bianca, bordo arrotondato, titolo di sezione da 17 px, intestazione e divisore coerenti, contenuti ordinati con titoli secondari da 15 px. Rimossi i titoli duplicati di Inserimento dati e Sicurezza. Campi e pulsanti portati a 36 px; menu opzioni bianchi e spaziature dei moduli condivise. La sezione Notifiche mantiene il componente condiviso e non mostra un secondo contenitore vuoto. Nessuna modifica alle operazioni backend.

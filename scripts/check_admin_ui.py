@@ -62,6 +62,7 @@ def main():
         back = page.locator('.detail-topbar .detail-back-button')
         assert back.inner_text() == 'Torna all’Area Personale'
         assert back.get_attribute('href') == '#/account'
+        admin_back_top = back.bounding_box()['y']
         back.click()
         page.locator('.account-view-switcher').wait_for()
         account_option_style = page.locator('.account-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }')
@@ -76,6 +77,7 @@ def main():
             page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
+            assert abs(page.locator('.detail-back-button').bounding_box()['y'] - admin_back_top) < 1
             if tab != 'notifications':
                 assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style

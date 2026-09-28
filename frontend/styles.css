@@ -5734,10 +5734,10 @@ a:focus-visible > .entity-card-clickable {
 .admin-workspace-panel .admin-center-row > div { overflow-wrap: anywhere; }
 
 @media (min-width: 721px) {
-  .main-view:has(.admin-overview-links) { padding-top: 48px; padding-bottom: 24px; }
+  .main-view:has(.admin-overview-links) { padding-bottom: 24px; }
 }
 @media (min-width: 721px) and (max-height: 800px) {
-  .main-view:has(.admin-overview-links) { padding-top: 32px; padding-bottom: 16px; }
+  .main-view:has(.admin-overview-links) { padding-bottom: 16px; }
 }
 
 .athlete-admin-panel > .compact-section-header {
@@ -6816,3 +6816,25 @@ a:focus-visible > .entity-card-clickable {
     height: 44px;
   }
 }
+
+/* Shared vertical anchors, based on the compact Admin overview. */
+:root { --page-start: 48px; --page-title-offset: 52px; }
+@media (min-width: 721px) and (max-height: 800px) {
+  :root { --page-start: 32px; }
+}
+@media (max-width: 720px) {
+  :root { --page-start: 34px; }
+}
+.main-view { padding-top: var(--page-start); }
+.main-view.primary-section-main-view { padding-top: calc(var(--page-start) + var(--page-title-offset) - 26px); }
+.main-view.primary-section-main-view > .page-heading .eyebrow { margin: 0 0 10px; line-height: 16px; }
+.main-view.home-main-view { padding-top: calc(var(--page-start) + var(--page-title-offset)); }
+.home-main-view .home-hero { padding-top: 0; }
+.main-view.auth-main-view,
+.main-view.auth-main-view:has(.auth-panel[data-auth-anchored]) {
+  justify-content: flex-start;
+  padding-top: calc(var(--page-start) + var(--page-title-offset) - 34px);
+}
+.auth-main-view .auth-brand-form { margin-top: 0; }
+.main-view.auth-main-view:has(.auth-brand-welcome) { padding-top: calc(var(--page-start) + var(--page-title-offset)); }
+.main-view:has(> .detail-topbar) { padding-top: var(--page-start); }
