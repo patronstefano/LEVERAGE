@@ -2688,6 +2688,38 @@ def test_notifications():
     assert len(unread_response.json()) == 0
 
 
+@pytest.mark.parametrize("role", [models.RoleEnum.USER, models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN])
+def test_notification_scopes_keep_personal_and_admin_inboxes_independent(role):
+    email = "scoped_notifications@example.com"
+    client.post("/auth/register", json={"email": email, "password": TEST_PASSWORD})
+    headers = {"Authorization": f"Bearer {login_as_user(email)}"}
+    with SessionLocal() as db:
+        user = db.query(models.User).filter_by(email=email).one()
+        user.role = role
+        for kind in models.NotificationTypeEnum:
+            db.add(models.Notification(user_id=user.id, type=kind, message=kind.value))
+        db.commit()
+    personal = client.get("/notifications?scope=personal", headers=headers).json()
+    assert {n["type"] for n in personal} == {"new_result", "new_event", "admin_promotion", "admin_demotion"}
+    assert client.get("/notifications/unread-count?scope=personal", headers=headers).json()["count"] == 4
+    admin_response = client.get("/notifications?scope=admin", headers=headers)
+    if role == models.RoleEnum.USER:
+        assert admin_response.status_code == 403
+        assert client.put("/notifications/read-all?scope=admin", headers=headers).status_code == 403
+        assert len(client.get("/notifications", headers=headers).json()) == 4
+        return
+    assert admin_response.status_code == 200
+    administrative = admin_response.json()
+    assert len(administrative) == (4 if role == models.RoleEnum.SUPER_ADMIN else 3)
+    assert ("security_alert" in {n["type"] for n in administrative}) == (role == models.RoleEnum.SUPER_ADMIN)
+    assert client.put(f"/notifications/{administrative[0]['id']}/read?scope=personal", headers=headers).status_code == 404
+    assert client.put("/notifications/read-all?scope=admin", headers=headers).status_code == 200
+    assert client.get("/notifications/unread-count?scope=admin", headers=headers).json()["count"] == 0
+    assert client.get("/notifications/unread-count?scope=personal", headers=headers).json()["count"] == 4
+    assert client.put("/notifications/read-all?scope=personal", headers=headers).status_code == 200
+    assert client.get("/notifications/unread-count?scope=personal", headers=headers).json()["count"] == 0
+
+
 def test_notifications_ignore_soft_deleted_result_counts_and_saved_event_sources():
     client.post("/auth/register", json={"email": "notification_soft_delete_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("notification_soft_delete_admin@example.com")
@@ -9953,7 +9985,7 @@ def test_notifications_pagination_is_stable_and_user_scoped():
     user_id = client.get("/auth/me", headers=headers).json()["id"]
     with SessionLocal() as db:
         for number in range(5):
-            db.add(models.Notification(user_id=user_id, type=models.NotificationTypeEnum.IMPORT_SUMMARY,
+            db.add(models.Notification(user_id=user_id, type=models.NotificationTypeEnum.NEW_RESULT,
                                        message=str(number), created_at=datetime(2026, 1, 1)))
         db.commit()
     pages = [client.get(f"/notifications/?limit=2&offset={offset}", headers=headers).json() for offset in (0, 2, 4)]

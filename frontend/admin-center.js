@@ -1,3 +1,5 @@
+import { mountNotificationInbox } from './account-tools.js?v=notification-scopes-20260928';
+
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
   center: ["Admin center", "Centro Admin", "Centro Admin", "Centre Admin"],
@@ -197,8 +199,11 @@ export async function renderAdminCenter(host) {
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
   host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
-    <nav class="admin-center-nav" aria-label="${text("center")}">${tabs.map((key) => `<a class="quiet-button outline-command-button ${key === tab ? "is-active" : ""}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}</nav>
-    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" aria-label="${text(tab)}"></section></section>`);
+    <nav class="admin-center-nav" aria-label="${text("center")}">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="quiet-button outline-command-button ${key === tab ? "is-active" : ""}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}
+      <button type="button" id="adminNotificationsToggle" class="favorite-button admin-tools-toggle account-tool-button ${tab === 'notifications' ? 'is-open' : ''}" aria-label="${esc(text('notifications'))}" aria-pressed="${tab === 'notifications'}" aria-controls="accountNotifications"><span class="account-tool-icon account-tool-icon-notifications" aria-hidden="true"></span><span id="accountUnreadCount" class="account-unread-count" hidden></span></button></nav>
+    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" aria-label="${text(tab)}"></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
+  document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? '#/admin' : '#/admin/notifications'; };
+  mountNotificationInbox({ ...host, notificationScope: 'admin' });
   const root = document.getElementById("adminWorkspace");
   const feedback = (message, error = false) => {
     if (!active()) return;
@@ -445,19 +450,6 @@ export async function renderAdminCenter(host) {
         const id = Number(b.dataset[action]); await api(`/data-suggestions/${id}/${action}`, { method: "POST", body: action === "accept" ? { value: root.querySelector(`[name="suggestion_${id}"]`).value } : {} });
         b.closest("article").remove(); feedback(text("success"));
       })));
-    }
-    if (tab === "notifications") {
-      paint(button("readAll", 'id="adminReadAll"') + '<div id="adminNotices"></div>' + button("more", 'id="adminMoreNotices"'));
-      let offset = 0;
-      const load = async () => {
-        const items = await api("/notifications/", { params: { limit: 50, offset } }); if (!active()) return;
-        const area = document.getElementById("adminNotices");
-        area.insertAdjacentHTML("beforeend", items.map((n) => `<article class="admin-center-row"><div><p>${esc(n.message)}</p><small>${esc(n.created_at)}</small>${n.related_event_id ? entityLink("events", n.related_event_id) : ""}${n.related_athlete_id ? entityLink("athletes", n.related_athlete_id) : ""}</div>${!n.is_read ? button("markRead", `data-read="${n.id}"`) : ""}</article>`).join(""));
-        offset += items.length; document.getElementById("adminMoreNotices").hidden = items.length < 50;
-        area.querySelectorAll("[data-read]").forEach((b) => b.onclick = guard(async () => { await api(`/notifications/${b.dataset.read}/read`, { method: "PUT" }); b.remove(); }));
-      };
-      document.getElementById("adminReadAll").onclick = guard(async () => { await api("/notifications/read-all", { method: "PUT" }); root.querySelectorAll("[data-read]").forEach((b) => b.remove()); });
-      document.getElementById("adminMoreNotices").onclick = guard(load); await load();
     }
     if (tab === "statistics") {
       paint(form("adminStatsForm", field("start_date", host.t("startDate"), "date") + field("end_date", host.t("endDate"), "date")) + '<div id="adminStats"></div>');

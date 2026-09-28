@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **Verifica caselle separate, 28 settembre 2026:** 183 test backend superati, inclusi accessi per ruolo, contatori e lettura indipendenti; superati i controlli browser di Area Personale e Centro Admin su desktop/mobile. Nessuna migrazione o spostamento fisico delle notifiche: la separazione avviene per tipo e ambito autorizzato.
+
+- **28 settembre 2026 - Caselle notifiche separate per ambito:** Area Personale riservata a nuovi risultati/eventi e cambi di ruolo. Centro Admin con campanella quadrata arrotondata e contatore rosso, stesso componente UI (testo non letto in grassetto, ordinamento, filtro e lettura) per import_summary, data_entry_summary ed event_results_reminder; security_alert solo per SUPER ADMIN. API con scope personal/admin per elenco, contatore, lettura singola e collettiva; controlli del ruolo applicati dal backend. "Segna tutte come lette" non modifica l'altra casella. I generatori DEMO amministrativi aprono il Centro Admin mostrando 3 tipi per ADMIN e 4 per SUPER ADMIN, mentre i 4 esempi personali rimangono nella rispettiva Area Personale. Dati simulati sempre temporanei e senza scritture API.
+
 - **28 settembre 2026 - Stato di lettura e ordinamento notifiche:** sostituito il grassetto selettivo con il grassetto sull'intero messaggio non letto; dopo la lettura il testo torna normale. Notifiche non lette sempre prima delle lette, ordinate per data decrescente all'interno di ciascun gruppo. Ordinamento applicato dal backend prima della paginazione e replicato nelle DEMO. La lettura aggiorna soltanto l'elenco notifiche e il contatore, non l'intera pagina.
 
 - **28 settembre 2026 - Gerarchia visiva notifiche:** evidenziati in grassetto i nomi iniziali di atleta/evento nelle notifiche nuovi risultati/nuovo evento e il ruolo di destinazione nelle notifiche di promozione (ADMIN o SUPER ADMIN) e declassamento (USER). Stessa resa per notifiche API ed esempi temporanei, senza cambiare i testi salvati; contenuti sempre sottoposti a escaping HTML.

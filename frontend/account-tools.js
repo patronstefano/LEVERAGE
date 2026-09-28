@@ -55,6 +55,7 @@ export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "
 
 // Development-only, in-memory inbox: never writes simulated data to the API.
 const demoInboxes = new Map();
+const adminNotificationTypes = new Set(['import_summary', 'data_entry_summary', 'event_results_reminder', 'security_alert']);
 const demoEmails = { user: 'demo.user@leverage-demo.com', admin: 'demo.admin@leverage-demo.com', super_admin: 'demo.superadmin@leverage-demo.com' };
 export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
   && Boolean(user && demoEmails[user.role] && user.email === demoEmails[user.role]);
@@ -93,7 +94,10 @@ function context(host) {
     node.textContent = t(key);
   };
   const request = async (path, method = "GET", body, auth = true, params = {}) => {
-    const inbox = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(state.currentUser.id);
+    const scope = host.notificationScope || 'personal';
+    if (path.startsWith('/notifications/')) params = { ...params, scope };
+    const generated = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(state.currentUser.id);
+    const inbox = generated && generated.filter((item) => adminNotificationTypes.has(item.type) === (scope === 'admin'));
     if (inbox && path.startsWith('/notifications/')) {
       if (path === '/notifications/unread-count') return { count: inbox.filter((item) => !item.is_read).length };
       if (path === '/notifications/read-all' && method === 'PUT') inbox.forEach((item) => { item.is_read = true; });
@@ -164,6 +168,15 @@ export function mountAccountTools(host) {
     } catch (error) { if (form.isConnected) passwordValidation.serverError(error, "change"); }
     finally { submit.disabled = false; }
   };
+  mountNotificationInbox(host);
+}
+
+export function mountNotificationInbox(host) {
+  const { state } = host;
+  const { t, esc, button, feedback, request, errorKey } = context(host);
+  const notifications = document.getElementById('accountNotifications');
+  const userId = state.currentUser.id;
+  const live = () => notifications.isConnected && state.currentUser?.id === userId;
   notifications.className = 'panel athlete-admin-panel account-notifications-panel';
   notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2><div class="account-notification-toolbar">' +
     '<button class="quiet-button account-unread-filter" type="button" id="accountUnreadOnly" aria-pressed="false">' + esc(t("unread")) + '</button>' +

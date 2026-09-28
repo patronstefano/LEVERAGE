@@ -1,6 +1,6 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=back-to-account-20260924";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=notification-scopes-20260928";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=unread-first-20260928";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-scopes-20260928";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6851,8 +6851,9 @@ function bindDemoLoginButtons() {
       }
       if (state.currentUser?.id !== user.id) return;
       generateDemoNotifications(user, athletes, events, resultEvents);
-      if (state.route === '/account?section=notifications') renderAccount();
-      else window.location.hash = '#/account?section=notifications';
+      const target = user.role === 'user' ? '/account?section=notifications' : '/admin/notifications';
+      if (state.route === target) render();
+      else window.location.hash = '#' + target;
     } catch (_) {
       button.textContent = accountText(state.language, 'failed');
     } finally { button.disabled = false; }
