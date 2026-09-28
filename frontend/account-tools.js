@@ -6,6 +6,8 @@ const labels = {
   forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
+  goToAthlete: ["Go to Athlete", "Vai all’Atleta", "Ir al Atleta", "Voir l’Athlète"],
+  goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
   demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
   demoResult: ["New results for a followed athlete at an example competition.", "Nuovi risultati di un atleta seguito in una gara di esempio.", "Nuevos resultados de un atleta seguido en una competición de ejemplo.", "Nouveaux résultats d’un athlète suivi dans une compétition fictive."],
   demoEvent: ["Results are available for a favorite event.", "Sono disponibili i risultati di un evento preferito.", "Los resultados de un evento favorito están disponibles.", "Les résultats d’un événement favori sont disponibles."],
@@ -184,7 +186,7 @@ export function mountAccountTools(host) {
         article.dataset.notificationId = String(item.id);
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
-          '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(host.t(key === "athlete" ? "navAthletes" : "navEvents")) + '</a>').join("");
+          '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("");
         article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
           '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? '<button class="quiet-button filter-clear-button" type="button" data-read>' + esc(t("read")) + '</button>' : "") + '</div>';
         const read = article.querySelector("[data-read]");
