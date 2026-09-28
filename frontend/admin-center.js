@@ -71,6 +71,36 @@ const COPY = {
   Penalty: ["Penalty", "Penalità", "Penalización", "Pénalité"],
   countryMismatch: ["Select an athlete with the same discipline.", "Seleziona un atleta della stessa disciplina.", "Selecciona un atleta de la misma disciplina.", "Sélectionnez un athlète de la même discipline."],
   overview: ["Overview", "Panoramica", "Resumen", "Vue d’ensemble"],
+  activityPeriod: ["Activity period", "Periodo di attività", "Periodo de actividad", "Période d’activité"],
+  activity7: ["Last 7 days", "Ultimi 7 giorni", "Últimos 7 días", "7 derniers jours"],
+  activity30: ["Last 30 days", "Ultimi 30 giorni", "Últimos 30 días", "30 derniers jours"],
+  activity90: ["Last 90 days", "Ultimi 90 giorni", "Últimos 90 días", "90 derniers jours"],
+  activityAll: ["Entire audit history", "Intero storico audit", "Todo el historial", "Tout l’historique"],
+  activityTotal: ["Logged operations", "Operazioni registrate", "Operaciones registradas", "Opérations enregistrées"],
+  activityActions: ["By operation", "Per operazione", "Por operación", "Par opération"],
+  activityEntities: ["Data involved", "Dati coinvolti", "Datos afectados", "Données concernées"],
+  activityActors: ["Most active authors · up to 10", "Autori più attivi · fino a 10", "Autores más activos · hasta 10", "Auteurs les plus actifs · jusqu’à 10"],
+  activityRecent: ["Latest operations · up to 20", "Ultime operazioni · fino a 20", "Últimas operaciones · hasta 20", "Dernières opérations · jusqu’à 20"],
+  activityAuthor: ["Author", "Autore", "Autor", "Auteur"],
+  activityUnknown: ["Unattributed author", "Autore non attribuito", "Autor no atribuido", "Auteur non attribué"],
+  activityDate: ["Date and time", "Data e ora", "Fecha y hora", "Date et heure"],
+  activityLast: ["Last activity", "Ultima attività", "Última actividad", "Dernière activité"],
+  activityOperation: ["Operation", "Operazione", "Operación", "Opération"],
+  activityAudit: ["Open audit and restore", "Apri audit e ripristino", "Abrir auditoría y restauración", "Ouvrir audit et restauration"],
+  activityNote: [
+    "Audit entries for the selected period, including SUPER ADMIN operations. Counts refer to log entries, not unique modified records. Review status is current; SUPER ADMIN operations are automatically approved. Actions not recorded in the audit are not included.",
+    "Voci di audit nel periodo selezionato, incluse le operazioni SUPER ADMIN. I conteggi indicano voci del registro, non record distinti modificati. Lo stato di revisione è quello attuale; le operazioni SUPER ADMIN sono approvate automaticamente. Le azioni non tracciate nell’audit non sono incluse.",
+    "Entradas de auditoría del periodo, incluidas las operaciones SUPER ADMIN. Los recuentos son entradas, no registros distintos modificados. El estado de revisión es el actual; SUPER ADMIN se aprueba automáticamente. Las acciones no registradas no se incluyen.",
+    "Entrées d’audit de la période, y compris les opérations SUPER ADMIN. Les compteurs portent sur les entrées, non les fiches distinctes modifiées. L’état de révision est actuel ; SUPER ADMIN est approuvé automatiquement. Les actions non tracées sont exclues."
+  ],
+  approved: ["Approved", "Approvate", "Aprobadas", "Approuvées"],
+  reverted: ["Reverted", "Annullate", "Revertidas", "Annulées"],
+  create: ["Creation", "Inserimento", "Creación", "Création"],
+  update: ["Update", "Aggiornamento", "Actualización", "Mise à jour"],
+  soft_delete: ["Deletion", "Eliminazione", "Eliminación", "Suppression"],
+  role_update: ["Role change", "Cambio ruolo", "Cambio de rol", "Changement de rôle"],
+  revert_update: ["Update reversal", "Annullamento modifica", "Reversión de cambio", "Annulation de modification"],
+  update_world_gymnastics: ["World Gymnastics update", "Aggiornamento World Gymnastics", "Actualización World Gymnastics", "Mise à jour World Gymnastics"],
   dataAthletes: ["Athletes", "Atleti", "Atletas", "Athlètes"],
   dataEvents: ["Events", "Eventi", "Eventos", "Événements"],
   dataResults: ["Results and scores", "Risultati e punteggi", "Resultados y puntuaciones", "Résultats et notes"],
@@ -381,7 +411,34 @@ export async function renderAdminCenter(host) {
   try {
     if (tab === "overview") {
       if (superCenter) {
-        paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#${baseRoute}/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
+        const loadActivity = async () => {
+          const data = await api("/admin/activity-overview", { params: { days: session.activityDays ?? 30 } });
+          const number = new Intl.NumberFormat(state.language);
+          const date = (value) => new Intl.DateTimeFormat(state.language, { dateStyle: "short", timeStyle: "short" }).format(new Date(value.endsWith("Z") ? value : `${value}Z`));
+          const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
+          const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
+          const summary = (title, rows) => `<section class="admin-data-group"><h3>${esc(text(title))}</h3><dl>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
+          const table = (title, headers, rows) => `<section class="admin-activity-section"><h3>${esc(text(title))}</h3>${rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : `<p class="empty-state">${esc(text("empty"))}</p>`}</section>`;
+          paint(`${form("adminActivityPeriod", select("days", "activityPeriod", [
+            { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
+            { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
+          ], String(session.activityDays ?? 30)))}
+          <div class="admin-data-overview admin-activity-summary">
+            ${summary("activityTotal", [[text("dataTotal"), data.total], [text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
+            ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
+            ${summary("activityEntities", data.by_entity.map((row) => [entity(row.key), row.count]))}
+          </div>
+          ${table("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
+          ${table("activityRecent", ["ID", "activityDate", "activityAuthor", "activityOperation", "entity_type", "status"], data.recent.map((row) => [`#${row.id}`, date(row.created_at), author(row), text(row.action), `${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, text(row.review_status)]))}
+          <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>
+          <p class="admin-data-note">${esc(text("activityNote"))}</p>`);
+          if (!active()) return;
+          document.getElementById("adminActivityPeriod").onsubmit = guard(async (event) => {
+            session.activityDays = Number(new FormData(event.currentTarget).get("days"));
+            await loadActivity();
+          });
+        };
+        await loadActivity();
       } else {
         const data = await api("/admin/data-overview");
         const groups = [

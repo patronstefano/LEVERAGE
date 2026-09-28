@@ -37,6 +37,12 @@ def main():
                     "events": {"total": 500, "verified": 20, "incomplete": 480, "missing_dates": 10, "with_results": 400, "without_results": 100},
                     "results": {"total": 40000, "with_final_score": 39000, "without_final_score": 1000, "with_d_score": 20000, "with_e_score": 100, "with_penalty": 100, "with_bonus": 100},
                 }
+            elif path == "/admin/activity-overview":
+                payload = {"total": 3, "pending": 1, "approved": 2, "reverted": 0,
+                    "by_action": [{"key": "create", "count": 3}], "by_entity": [{"key": "Athlete", "count": 3}],
+                    "actors": [{"admin_id": 7, "email": "actor@example.test", "count": 3, "pending": 1, "last_activity": "2026-09-28T10:00:00"}],
+                    "recent": [{"id": 15, "admin_id": 7, "email": "actor@example.test", "action": "create", "entity_type": "Athlete", "entity_id": 2, "review_status": "pending", "created_at": "2026-09-28T10:00:00"}],
+                }
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [], "events": [], "total_athletes": 0, "total_events": 0}
             elif path == "/admin/calendar":
@@ -177,6 +183,18 @@ def main():
         page.screenshot(path="/tmp/leverage-data-overview-mobile.png", full_page=True)
         page.goto("http://127.0.0.1:5173/#/super-admin")
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
+        page.locator('#adminActivityPeriod').wait_for()
+        assert page.locator('.admin-activity-table').count() == 2
+        assert 'actor@example.test' in page.locator('#adminWorkspace').inner_text()
+        page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => node.value = '7'")
+        page.locator('#adminActivityPeriod button[type="submit"]').click()
+        page.wait_for_timeout(300)
+        assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        page.screenshot(path="/tmp/leverage-super-activity-mobile.png", full_page=True)
+        page.set_viewport_size({"width": 1440, "height": 1000})
+        page.screenshot(path="/tmp/leverage-super-activity-desktop.png", full_page=True)
+        page.set_viewport_size({"width": 390, "height": 844})
         assert 'Super Admin' in page.locator('.admin-center h1').inner_text()
         assert page.locator('.detail-back-button').get_attribute('href') == '#/account'
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').click()

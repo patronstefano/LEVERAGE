@@ -2034,6 +2034,44 @@ class AuditLogRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AdminActivityCount(BaseModel):
+    key: str
+    count: int
+
+
+class AdminActivityActor(BaseModel):
+    admin_id: Optional[int]
+    email: Optional[str]
+    count: int
+    pending: int
+    last_activity: datetime
+
+
+class AdminActivityEntry(BaseModel):
+    id: int
+    admin_id: Optional[int]
+    email: Optional[str]
+    action: str
+    entity_type: str
+    entity_id: Optional[int]
+    review_status: str
+    created_at: datetime
+
+
+class AdminActivityOverview(BaseModel):
+    days: Optional[int]
+    since: Optional[datetime]
+    until: datetime
+    total: int
+    pending: int
+    approved: int
+    reverted: int
+    by_action: list[AdminActivityCount]
+    by_entity: list[AdminActivityCount]
+    actors: list[AdminActivityActor]
+    recent: list[AdminActivityEntry]
+
+
 class AuditLogReviewDecision(BaseModel):
     note: Optional[str] = None
 

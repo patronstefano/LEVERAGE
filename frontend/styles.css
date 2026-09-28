@@ -60,6 +60,16 @@
 .admin-data-group .admin-data-total { margin-bottom: 4px; padding-top: 0; border-bottom: 1px solid var(--line); }
 .admin-data-total dd { font-size: 24px; font-weight: 600; color: var(--brand-blue); }
 .admin-center .admin-data-note { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.admin-activity-section { min-width: 0; }
+.admin-workspace-content .admin-activity-section h3 { margin: 0 0 12px; font-size: 15px; }
+.admin-activity-summary { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.admin-activity-table-scroll { overflow-x: auto; }
+.admin-activity-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; text-align: left; }
+.admin-activity-table th { color: var(--muted); font-weight: 500; }
+.admin-activity-table th, .admin-activity-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.admin-activity-table th:first-child, .admin-activity-table td:first-child { padding-left: 0; }
+.admin-activity-table td { overflow-wrap: anywhere; min-width: 90px; }
+.admin-activity-table tr:last-child td { border-bottom: 0; }
 @media (max-width: 720px) {
   .admin-data-overview { grid-template-columns: 1fr; gap: 18px; }
   .admin-data-group + .admin-data-group { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }

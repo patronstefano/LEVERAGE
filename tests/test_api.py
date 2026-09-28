@@ -5159,6 +5159,51 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
     assert invalid_response.status_code == 400
 
 
+def test_super_admin_activity_overview_scope_counts_and_permissions():
+    client.post("/auth/register", json={"email": "activity_super@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("activity_super@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+    empty = client.get("/admin/activity-overview", headers=headers)
+    assert empty.status_code == 200
+    assert empty.json()["total"] == 0
+    assert empty.json()["recent"] == []
+    with SessionLocal() as db:
+        actor = db.query(User).filter_by(email="activity_super@example.com").one()
+        for action, entity, status, days, admin_id in [
+            ("create", "Athlete", "pending", 1, actor.id),
+            ("update", "Event", "approved", 2, actor.id),
+            ("soft_delete", "Result", "reverted", 3, None),
+            ("restore", "Result", "approved", 40, actor.id),
+            ("update", "Event", "pending", -1, actor.id),
+        ]:
+            db.add(models.AuditLog(admin_id=admin_id, action=action, entity_type=entity, entity_id=42,
+                review_status=status, created_at=datetime.utcnow() - timedelta(days=days),
+                before_json='{"secret": "never in overview"}', after_json='{"secret": "private"}'))
+        db.commit()
+    response = client.get("/admin/activity-overview", headers=headers)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert (data["total"], data["pending"], data["approved"], data["reverted"]) == (3, 1, 1, 1)
+    assert {row["key"]: row["count"] for row in data["by_action"]} == {"create": 1, "update": 1, "soft_delete": 1}
+    assert [row["action"] for row in data["recent"]] == ["create", "update", "soft_delete"]
+    assert data["actors"][0]["count"] == 2
+    assert data["actors"][1]["admin_id"] is None
+    assert "secret" not in response.text and "before_json" not in response.text
+    all_data = client.get("/admin/activity-overview?days=0", headers=headers).json()
+    assert all_data["total"] == 4 and all_data["since"] is None
+    assert client.get("/admin/activity-overview?days=1", headers=headers).json()["total"] == 0
+    assert client.get("/admin/activity-overview?days=-1", headers=headers).status_code == 422
+    with SessionLocal() as db:
+        actor = db.query(User).filter_by(email="activity_super@example.com").one()
+        actor.role = RoleEnum.ADMIN
+        db.commit()
+    assert client.get("/admin/activity-overview", headers=headers).status_code == 403
+    client.post("/auth/register", json={"email": "activity_user@example.com", "password": TEST_PASSWORD})
+    user_token = login_as_user("activity_user@example.com")
+    assert client.get("/admin/activity-overview", headers={"Authorization": f"Bearer {user_token}"}).status_code == 403
+    assert client.get("/admin/activity-overview").status_code == 401
+
+
 def test_admin_data_overview_counts_active_records_and_recorded_scores():
     client.post("/auth/register", json={"email": "overview@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("overview@example.com")

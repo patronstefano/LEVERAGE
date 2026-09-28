@@ -1,5 +1,5 @@
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Any, Optional
 
@@ -485,6 +485,48 @@ def notify_admins_about_event_result_reminders(
     return {
         "created_notifications": created_notifications,
         "reminders": reminders,
+    }
+
+
+@router.get("/activity-overview", response_model=schemas.AdminActivityOverview)
+def get_activity_overview(
+    days: Optional[int] = Query(30, ge=0, le=365),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_super_admin_user),
+):
+    until = datetime.utcnow()
+    since = until - timedelta(days=days) if days else None
+    log = models.AuditLog
+    query = db.query(log).filter(log.created_at <= until)
+    if since:
+        query = query.filter(log.created_at >= since)
+    counts = query.with_entities(
+        func.count(log.id),
+        *[func.coalesce(func.sum(case((log.review_status == status, 1), else_=0)), 0)
+          for status in models.AuditReviewStatusEnum],
+    ).one()
+    statuses = dict(zip((status.value for status in models.AuditReviewStatusEnum), counts[1:]))
+
+    def grouped(column):
+        return [{"key": key, "count": count} for key, count in query.with_entities(
+            column, func.count(log.id),
+        ).group_by(column).order_by(func.count(log.id).desc(), column).all()]
+
+    actors = query.outerjoin(models.User, models.User.id == log.admin_id).with_entities(
+        log.admin_id, models.User.email, func.count(log.id).label("count"),
+        func.sum(case((log.review_status == models.AuditReviewStatusEnum.PENDING, 1), else_=0)).label("pending"),
+        func.max(log.created_at).label("last_activity"),
+    ).group_by(log.admin_id, models.User.email).order_by(func.count(log.id).desc(), log.admin_id).limit(10).all()
+    # Do not expose potentially sensitive before/after snapshots in the overview.
+    recent = query.outerjoin(models.User, models.User.id == log.admin_id).with_entities(
+        log.id, log.admin_id, models.User.email, log.action, log.entity_type,
+        log.entity_id, log.review_status, log.created_at,
+    ).order_by(log.created_at.desc(), log.id.desc()).limit(20).all()
+    return {
+        "days": days or None, "since": since, "until": until, "total": counts[0], **statuses,
+        "by_action": grouped(log.action), "by_entity": grouped(log.entity_type),
+        "actors": [dict(row._mapping) for row in actors],
+        "recent": [dict(row._mapping) for row in recent],
     }
 
 

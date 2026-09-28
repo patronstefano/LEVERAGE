@@ -3050,6 +3050,18 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 28 settembre 2026 - Panoramica delle attivita amministrative
+
+- La Panoramica del Centro Super Admin non mostra piu scorciatoie: presenta un riepilogo del registro audit, distinto dalla panoramica quantitativa dei dati del Centro Admin.
+- Nuovo endpoint `GET /admin/activity-overview`, protetto dal controllo SUPER ADMIN. Periodo predefinito: ultimi 30 giorni; selezioni disponibili: 7, 30, 90 giorni oppure intero storico (`days=0`). Gli intervalli si riferiscono alla data di esecuzione delle operazioni, calcolata in UTC, e non alla data di revisione.
+- Conteggi delle operazioni per azione e tipo di entita, con stati attuali pending/approved/reverted. Inclusi inserimenti, aggiornamenti, eliminazioni logiche, ripristini, fusioni, cambi ruolo e aggiornamenti World Gymnastics, quando presenti nel registro. Le operazioni SUPER ADMIN sono incluse; l'approvazione automatica gia prevista dal sistema e dichiarata nella nota della panoramica.
+- Tabelle con i primi 10 autori per numero di operazioni (email, ID, totale, verifiche pendenti e ultima attivita) e le 20 operazioni piu recenti (ID audit, data/ora locale, autore, azione, entita/ID e stato). Un autore non piu disponibile rimane non attribuito: la sua attivita non viene eliminata dal riepilogo. Non si deduce il ruolo storico dal ruolo attuale dell'account.
+- Conteggi SQL sull'intero periodo selezionato; i limiti 10/20 riguardano solo le tabelle di dettaglio. Nessuna esposizione degli snapshot prima/dopo nella risposta sintetica, nessuna modifica dei dati o degli stati audit dalla panoramica. Approfondimenti e decisioni restano in Audit e ripristino, raggiungibile tramite pulsante.
+- Limite semantico esplicito: sono contate le voci effettivamente tracciate, non record distinti modificati o tutte le azioni storiche della piattaforma. Nessuna ricostruzione retroattiva di operazioni non registrate e nessuna promessa di copertura integrale dei vecchi import.
+- UI condivisa con il Centro Admin: pannello neutro, controlli standard, tipografia e spaziature coerenti, tabelle scorrevoli su mobile e localizzazione nelle quattro lingue. La modifica del periodo aggiorna solo il contenuto della panoramica.
+- Test: registro vuoto, conteggi e ordine cronologico, intervalli temporali, autori non attribuiti, esclusione degli snapshot, accesso negato ad ADMIN/USER/anonimi; controlli Playwright su desktop e mobile e cambio periodo.
+
+
 #### 28 settembre 2026 - Panoramica dei dati nel Centro Admin
 
 - Sostituite le scorciatoie delle sottosezioni con un riepilogo quantitativo in tre gruppi: Atleti, Eventi, Risultati e punteggi. Il Centro Super Admin mantiene la propria panoramica di accesso agli strumenti esclusivi.
