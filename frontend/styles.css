@@ -48,7 +48,7 @@
 .admin-lookup-option { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 12px; border: 0; border-bottom: 1px solid var(--line); background: var(--page-bg); color: var(--ink); text-align: left; font: inherit; }
 .admin-lookup-option:hover, .admin-lookup-option:focus-visible { color: var(--brand-blue); outline: 1px solid var(--brand-blue); border-radius: var(--control-radius); }
 .admin-lookup-option span { color: var(--muted); }
-.admin-overview-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.admin-overview-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .admin-overview-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: var(--surface-radius); color: var(--ink); padding: 18px; }
 .admin-overview-link h2 { font-size: 17px; margin: 0; }
 .admin-overview-link:hover { border-color: var(--brand-blue); }
@@ -5726,12 +5726,19 @@ a:focus-visible > .entity-card-clickable {
 .admin-workspace-panel .admin-form-grid { gap: 12px; margin: 0; }
 .admin-workspace-panel .admin-form-grid label,
 .admin-workspace-panel .admin-form-field > span { font-size: var(--card-meta-size); font-weight: 650; gap: 7px; }
-.admin-workspace-panel .admin-overview-link { padding: 14px 16px; border-radius: var(--control-radius); }
+.admin-workspace-panel .admin-overview-link { padding: 9px 14px; min-height: 40px; border-radius: var(--control-radius); }
 .admin-workspace-panel .admin-overview-link h2 { margin: 0; font-size: 15px; }
 .admin-workspace-panel input[type="file"] { padding: 5px 8px; font-size: 14px; }
 .admin-workspace-panel .admin-report { margin: 0; }
 .admin-workspace-panel .admin-center-row:last-child { border-bottom: 0; }
 .admin-workspace-panel .admin-center-row > div { overflow-wrap: anywhere; }
+
+@media (min-width: 721px) {
+  .main-view:has(.admin-overview-links) { padding-top: 48px; padding-bottom: 24px; }
+}
+@media (min-width: 721px) and (max-height: 800px) {
+  .main-view:has(.admin-overview-links) { padding-top: 32px; padding-bottom: 16px; }
+}
 
 .athlete-admin-panel > .compact-section-header {
   margin-bottom: 0;

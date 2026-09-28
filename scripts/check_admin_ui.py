@@ -150,6 +150,11 @@ def main():
         page.evaluate("location.hash = '/admin'")
         page.wait_for_timeout(300)
         page.screenshot(path="/tmp/leverage-admin-desktop.png", full_page=True)
+        for width, height in [(1366, 768), (1280, 720), (1440, 900)]:
+            page.set_viewport_size({'width': width, 'height': height})
+            page.wait_for_timeout(100)
+            assert page.evaluate('document.querySelector(".footer").getBoundingClientRect().bottom <= innerHeight + 1'), (width, height)
+            assert page.evaluate('document.documentElement.scrollHeight <= innerHeight + 1'), (width, height)
         page.set_viewport_size({"width": 390, "height": 844})
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').click()
         page.wait_for_timeout(500)
