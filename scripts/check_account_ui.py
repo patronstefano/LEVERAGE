@@ -322,14 +322,18 @@ def main():
         write_count = len(writes)
         page.locator('#demoUserNotifications').click()
         page.locator('.account-notification').first.wait_for()
-        assert page.locator('.account-notification').count() == 30
+        assert page.locator('.account-notification').count() == 4
         assert 'DEMO' in page.locator('.account-notification').first.inner_text()
         assert 'Test Ada' in page.locator('.account-notification').first.inner_text()
         assert 'Favorite Test Event' in page.locator('.account-notification').nth(1).inner_text()
         assert page.locator('.account-notification').first.locator('a').get_attribute('href') == '#/athletes/42'
-        page.locator('#accountMoreNotifications').click()
+        assert page.locator('#accountMoreNotifications').is_hidden()
+        assert 'ADMIN' in page.locator('.account-notification').nth(2).inner_text()
+        assert 'USER' in page.locator('.account-notification').nth(3).inner_text()
+        page.locator('#demoUserNotifications').click()
         page.wait_for_timeout(100)
-        assert page.locator('.account-notification').count() == 35
+        assert page.locator('.account-notification').count() == 4
+        assert user['role'] == 'user'
         page.locator('#accountReadAll').click()
         page.wait_for_timeout(100)
         assert page.locator('#accountUnreadCount').is_hidden()

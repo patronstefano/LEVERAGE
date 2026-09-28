@@ -10,7 +10,9 @@ const labels = {
   goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
   demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
   demoResult: ["New results for a followed athlete at an example competition.", "Nuovi risultati di un atleta seguito in una gara di esempio.", "Nuevos resultados de un atleta seguido en una competición de ejemplo.", "Nouveaux résultats d’un athlète suivi dans une compétition fictive."],
-  demoEvent: ["Results are available for a favorite event.", "Sono disponibili i risultati di un evento preferito.", "Los resultados de un evento favorito están disponibles.", "Les résultats d’un événement favori sont disponibles."],
+  demoEvent: ["Example: a new event has been added at the same level as a favorite event.", "Esempio: aggiunto un nuovo evento dello stesso livello di un evento preferito.", "Ejemplo: se ha añadido un nuevo evento del mismo nivel que un evento favorito.", "Exemple : un nouvel événement du même niveau qu’un événement favori a été ajouté."],
+  demoPromotion: ["You have been promoted to ADMIN. Two-factor authentication is required to use the administration tools.", "Hai ottenuto la promozione ad ADMIN. Per utilizzare gli strumenti di amministrazione è richiesta l’autenticazione a due fattori.", "Has obtenido la promoción a ADMIN. Se requiere autenticación de dos factores para utilizar las herramientas de administración.", "Vous avez été promu ADMIN. L’authentification à deux facteurs est requise pour utiliser les outils d’administration."],
+  demoDemotion: ["Your role has changed to USER. Administration tools are no longer available.", "Il tuo ruolo è stato modificato in USER. Gli strumenti di amministrazione non sono più disponibili.", "Tu rol ha cambiado a USER. Las herramientas de administración ya no están disponibles.", "Votre rôle est devenu USER. Les outils d’administration ne sont plus disponibles."],
   role: ["Role", "Ruolo", "Rol", "Rôle"],
   accountData: ["Account details", "Dati account", "Datos de la cuenta", "Informations du compte"],
   unread: ["Unread only", "Solo non lette", "Solo sin leer", "Non lues uniquement"],
@@ -49,16 +51,16 @@ export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1',
   && user?.email === 'demo.user@leverage-demo.com' && user?.role === 'user';
 export function generateDemoNotifications(user, athletes = [], events = []) {
   if (!canGenerateDemoNotifications(user)) return;
+  const athlete = athletes.find((detail) => detail.athlete?.id)?.athlete;
+  const event = events.find((detail) => detail.event?.id)?.event;
   const examples = [
-    ...athletes.filter((detail) => detail.athlete?.id).map(({ athlete }) => ({
-      key: 'demoResult', name: [athlete.last_name, athlete.first_name].filter(Boolean).join(' '), related_athlete_id: athlete.id,
-    })),
-    ...events.filter((detail) => detail.event?.id).map(({ event }) => ({
-      key: 'demoEvent', name: event.name, related_event_id: event.id,
-    })),
+    { type: 'new_result', key: 'demoResult', name: [athlete?.last_name, athlete?.first_name].filter(Boolean).join(' '), related_athlete_id: athlete?.id },
+    { type: 'new_event', key: 'demoEvent', name: event?.name, related_event_id: event?.id },
+    { type: 'admin_promotion', key: 'demoPromotion' },
+    { type: 'admin_demotion', key: 'demoDemotion' },
   ];
-  demoInboxes.set(user.id, Array.from({ length: examples.length ? Math.max(35, examples.length) : 0 }, (_, index) => ({
-    ...examples[index % examples.length], id: index + 1, is_read: index >= 32,
+  demoInboxes.set(user.id, examples.map((example, index) => ({
+    ...example, id: index + 1, is_read: false,
     created_at: new Date(Date.now() - index * 3600000).toISOString(),
   })));
 }
@@ -83,7 +85,7 @@ function context(host) {
         if (item) item.is_read = true;
       } else return inbox.filter((item) => !params.unread_only || !item.is_read)
         .slice(params.offset || 0, (params.offset || 0) + (params.limit || 30))
-        .map((item) => ({ ...item, message: `DEMO ${item.id} · ${item.name} · ${t(item.key)}` }));
+        .map((item) => ({ ...item, message: [`DEMO ${item.id}`, item.name, t(item.key)].filter(Boolean).join(' · ') }));
       return { message: 'OK' };
     }
     const response = await host.fetchApi(path, params, {
