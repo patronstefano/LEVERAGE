@@ -133,10 +133,10 @@ TRANSLATIONS = {
         models.LanguageEnum.FR: "Nouvelles notes de {athlete_name} pendant la {context_label} à {event_name} : {result_count} resultats disponibles.",
     },
     "notification.new_event": {
-        models.LanguageEnum.EN: "New event '{event_name}' at {level} level has been added.",
-        models.LanguageEnum.IT: "Nuovo evento '{event_name}' di livello {level} aggiunto.",
-        models.LanguageEnum.ES: "Nuevo evento '{event_name}' de nivel {level} anadido.",
-        models.LanguageEnum.FR: "Nouvel evenement '{event_name}' de niveau {level} ajoute.",
+        models.LanguageEnum.EN: "{event_name} · New event at {level} level.",
+        models.LanguageEnum.IT: "{event_name} · Nuovo evento di livello {level}.",
+        models.LanguageEnum.ES: "{event_name} · Nuevo evento de nivel {level}.",
+        models.LanguageEnum.FR: "{event_name} · Nouvel événement de niveau {level}.",
     },
     "notification.admin_promotion": {
         models.LanguageEnum.EN: "You have been promoted to ADMIN. On your next login, you must configure two-factor authentication to use LEVERAGE admin tools.",

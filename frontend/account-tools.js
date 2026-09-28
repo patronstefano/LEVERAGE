@@ -12,7 +12,7 @@ const labels = {
   demoResult: ["New results in {count} competitions: {events}.", "Nuovi risultati in {count} gare: {events}.", "Nuevos resultados en {count} competiciones: {events}.", "Nouveaux résultats dans {count} compétitions : {events}."],
   demoResultSingle: ["New results in 1 competition: {events}.", "Nuovi risultati in 1 gara: {events}.", "Nuevos resultados en 1 competición: {events}.", "Nouveaux résultats dans 1 compétition : {events}."],
   demoCompetition: ["Example competition", "Gara di esempio", "Competición de ejemplo", "Compétition fictive"],
-  demoEvent: ["Example: a new event has been added at the same level as a favorite event.", "Esempio: aggiunto un nuovo evento dello stesso livello di un evento preferito.", "Ejemplo: se ha añadido un nuevo evento del mismo nivel que un evento favorito.", "Exemple : un nouvel événement du même niveau qu’un événement favori a été ajouté."],
+  demoEvent: ["New event at {level} level.", "Nuovo evento di livello {level}.", "Nuevo evento de nivel {level}.", "Nouvel événement de niveau {level}."],
   demoPromotion: ["You have been promoted to ADMIN. Two-factor authentication is required to use the administration tools.", "Hai ottenuto la promozione ad ADMIN. Per utilizzare gli strumenti di amministrazione è richiesta l’autenticazione a due fattori.", "Has obtenido la promoción a ADMIN. Se requiere autenticación de dos factores para utilizar las herramientas de administración.", "Vous avez été promu ADMIN. L’authentification à deux facteurs est requise pour utiliser les outils d’administration."],
   demoDemotion: ["Your role has changed to USER. Administration tools are no longer available.", "Il tuo ruolo è stato modificato in USER. Gli strumenti di amministrazione non sono più disponibili.", "Tu rol ha cambiado a USER. Las herramientas de administración ya no están disponibles.", "Votre rôle est devenu USER. Les outils d’administration ne sont plus disponibles."],
   role: ["Role", "Ruolo", "Rol", "Rôle"],
@@ -57,7 +57,7 @@ export function generateDemoNotifications(user, athletes = [], events = [], resu
   const event = events.find((detail) => detail.event?.id)?.event;
   const examples = [
     { type: 'new_result', key: resultEvents.length > 1 ? 'demoResult' : 'demoResultSingle', events: resultEvents, name: [athlete?.last_name, athlete?.first_name].filter(Boolean).join(' '), related_athlete_id: athlete?.id },
-    { type: 'new_event', key: 'demoEvent', name: event?.name, related_event_id: event?.id },
+    { type: 'new_event', key: 'demoEvent', name: event ? (event.name.includes(String(event.year)) ? event.name : `${event.name} ${event.year}`) : 'World Cup Paris 2026', level: event?.level || 'World Cup', related_event_id: event?.id },
     { type: 'admin_promotion', key: 'demoPromotion' },
     { type: 'admin_demotion', key: 'demoDemotion' },
   ];
@@ -88,7 +88,7 @@ function context(host) {
       } else return inbox.filter((item) => !params.unread_only || !item.is_read)
         .slice(params.offset || 0, (params.offset || 0) + (params.limit || 30))
         .map((item) => ({ ...item, message: [`DEMO ${item.id}`, item.name,
-          t(item.key).replace('{count}', item.events?.length || 1).replace('{events}', item.events?.length
+          t(item.key).replace('{level}', item.level || '').replace('{count}', item.events?.length || 1).replace('{events}', item.events?.length
             ? item.events.map((event) => event.name.includes(String(event.year)) ? event.name : `${event.name} (${event.year})`).join('; ')
             : t('demoCompetition'))].filter(Boolean).join(' · ') }));
       return { message: 'OK' };

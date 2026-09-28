@@ -2590,11 +2590,20 @@ def test_notifications():
         headers=user_headers,
     )
 
-    # Create another event of same level
+    # A broad level alone must not notify followers of an unrelated competition.
+    unrelated_response = client.post(
+        "/events/",
+        json={"name": "Unrelated Championships", "year": 2023, "discipline": "MAG", "category": "senior", "level": "National Event"},
+        headers=admin_headers,
+    )
+    assert unrelated_response.status_code == 200
+    assert client.get("/notifications", headers=user_headers).json() == []
+
+    # Create another event of the same level and competition family.
     event2_response = client.post(
         "/events/",
         json={
-            "name": "Another Event",
+            "name": "Test Event Final",
             "year": 2023,
             "discipline": "MAG",
             "category": "senior",
@@ -2610,7 +2619,7 @@ def test_notifications():
     notifications = notifications_response.json()
     assert len(notifications) == 1
     assert notifications[0]["type"] == "new_event"
-    assert "Another Event" in notifications[0]["message"]
+    assert "Test Event Final 2023 · New event at National Event level." == notifications[0]["message"]
 
     # Create result for followed athlete
     client.post(

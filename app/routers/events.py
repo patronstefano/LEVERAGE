@@ -13,6 +13,7 @@ from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
 from app.display_names import athlete_display_name, athlete_display_name_from_parts
+from app.event_notification_matching import should_notify_saved_event
 from app.event_search import (
     EVENT_YEAR_PATTERN,
     compact_event_search_text,
@@ -482,13 +483,15 @@ def create_event(
     db.commit()
     db.refresh(event)
     
-    # Create notifications for users who saved events of the same level
-    saved_events = db.query(models.SavedEvent).join(models.Event).filter(
+    # Broad levels require a matching competition family as well.
+    saved_events = db.query(models.SavedEvent).options(joinedload(models.SavedEvent.event)).join(models.Event).filter(
         models.Event.level == event.level,
         models.Event.is_deleted.is_(False),
     ).all()
     notified_user_ids = set()
     for saved_event in saved_events:
+        if not should_notify_saved_event(event, saved_event.event):
+            continue
         if saved_event.user_id in notified_user_ids:
             continue
         notified_user_ids.add(saved_event.user_id)
@@ -498,7 +501,7 @@ def create_event(
             message=translate(
                 "notification.new_event",
                 saved_event.user.preferred_language if saved_event.user else models.LanguageEnum.EN,
-                event_name=event.name,
+                event_name=event.name if str(event.year) in event.name else f"{event.name} {event.year}",
                 level=event.level.value,
             ),
             related_event_id=event.id
