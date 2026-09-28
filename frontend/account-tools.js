@@ -45,10 +45,18 @@ export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "
 const demoInboxes = new Map();
 export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
   && user?.email === 'demo.user@leverage-demo.com' && user?.role === 'user';
-export function generateDemoNotifications(user) {
+export function generateDemoNotifications(user, athletes = [], events = []) {
   if (!canGenerateDemoNotifications(user)) return;
-  demoInboxes.set(user.id, Array.from({ length: 35 }, (_, index) => ({
-    id: index + 1, is_read: index >= 32, key: index % 2 ? 'demoEvent' : 'demoResult',
+  const examples = [
+    ...athletes.filter((detail) => detail.athlete?.id).map(({ athlete }) => ({
+      key: 'demoResult', name: [athlete.last_name, athlete.first_name].filter(Boolean).join(' '), related_athlete_id: athlete.id,
+    })),
+    ...events.filter((detail) => detail.event?.id).map(({ event }) => ({
+      key: 'demoEvent', name: event.name, related_event_id: event.id,
+    })),
+  ];
+  demoInboxes.set(user.id, Array.from({ length: examples.length ? Math.max(35, examples.length) : 0 }, (_, index) => ({
+    ...examples[index % examples.length], id: index + 1, is_read: index >= 32,
     created_at: new Date(Date.now() - index * 3600000).toISOString(),
   })));
 }
@@ -73,7 +81,7 @@ function context(host) {
         if (item) item.is_read = true;
       } else return inbox.filter((item) => !params.unread_only || !item.is_read)
         .slice(params.offset || 0, (params.offset || 0) + (params.limit || 30))
-        .map((item) => ({ ...item, message: `DEMO ${item.id} · ${t(item.key)}` }));
+        .map((item) => ({ ...item, message: `DEMO ${item.id} · ${item.name} · ${t(item.key)}` }));
       return { message: 'OK' };
     }
     const response = await host.fetchApi(path, params, {

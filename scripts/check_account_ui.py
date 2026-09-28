@@ -28,6 +28,10 @@ def main():
             payload = []
             if path == "/auth/me":
                 payload = user
+            elif user['email'] == 'demo.user@leverage-demo.com' and path == '/preferences/athletes/followed/details':
+                payload = [{'athlete_id': 42, 'athlete': {'id': 42, 'first_name': 'Ada', 'last_name': 'Test', 'country': 'ITA', 'discipline': 'WAG'}}]
+            elif user['email'] == 'demo.user@leverage-demo.com' and path == '/preferences/events/saved/details':
+                payload = [{'event_id': 43, 'event': {'id': 43, 'name': 'Favorite Test Event', 'year': 2026, 'discipline': 'WAG', 'category': 'senior', 'level': 'International Event'}}]
             elif path == "/notifications/unread-count":
                 payload = {"count": sum(not n["is_read"] for n in notices)}
             elif path == "/notifications/":
@@ -320,6 +324,9 @@ def main():
         page.locator('.account-notification').first.wait_for()
         assert page.locator('.account-notification').count() == 30
         assert 'DEMO' in page.locator('.account-notification').first.inner_text()
+        assert 'Test Ada' in page.locator('.account-notification').first.inner_text()
+        assert 'Favorite Test Event' in page.locator('.account-notification').nth(1).inner_text()
+        assert page.locator('.account-notification').first.locator('a').get_attribute('href') == '#/athletes/42'
         page.locator('#accountMoreNotifications').click()
         page.wait_for_timeout(100)
         assert page.locator('.account-notification').count() == 35

@@ -1,6 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=back-to-account-20260924";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notifications-empty-state-20260924";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=demo-favorites-20260928";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6833,11 +6833,21 @@ function renderLogin() {
 }
 
 function bindDemoLoginButtons() {
-  $('#demoUserNotifications')?.addEventListener('click', () => {
+  $('#demoUserNotifications')?.addEventListener('click', async (event) => {
     if (!canGenerateDemoNotifications(state.currentUser)) return;
-    generateDemoNotifications(state.currentUser);
-    if (state.route === '/account?section=notifications') renderAccount();
-    else window.location.hash = '#/account?section=notifications';
+    const user = state.currentUser, button = event.currentTarget;
+    if (button.disabled) return;
+    button.disabled = true;
+    try {
+      const athletes = await getJson('/preferences/athletes/followed/details', {}, { auth: true });
+      const events = await getJson('/preferences/events/saved/details', {}, { auth: true });
+      if (state.currentUser?.id !== user.id) return;
+      generateDemoNotifications(user, athletes, events);
+      if (state.route === '/account?section=notifications') renderAccount();
+      else window.location.hash = '#/account?section=notifications';
+    } catch (_) {
+      button.textContent = accountText(state.language, 'failed');
+    } finally { button.disabled = false; }
   });
   document.querySelectorAll("[data-demo-role]").forEach((button) => {
     button.addEventListener("click", async () => {

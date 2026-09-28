@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- 28 settembre 2026: il generatore notifiche DEMO legge i preferiti attuali tramite le API di sola lettura e usa cognome/nome degli atleti e nomi degli eventi salvati, con collegamenti alle rispettive schede. Resta una simulazione marcata DEMO, esclusivamente in memoria: nessuna notifica reale creata o modificata, cancellazione al refresh. Nessun esempio generato senza preferiti. Test con preferiti simulati, verifica dei nomi/link e assenza di scritture API.
+
 - 24 settembre 2026: il pulsante Area Personale nella topbar mantiene lo stato attivo blu anche nel Centro Admin e nelle sue sottosezioni, con destinazione invariata all'account. Verificato lo stato nelle viste del centro tramite test browser.
 
 - 24 settembre 2026: spostato Centro Admin a sinistra di Notifiche nella riga azioni dell'Area Personale; ordine risultante Centro Admin, Notifiche, Impostazioni, Esci. Visibilita riservata agli amministratori invariata.
