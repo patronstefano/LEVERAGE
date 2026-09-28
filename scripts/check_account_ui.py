@@ -32,6 +32,10 @@ def main():
                 payload = [{'athlete_id': 42, 'athlete': {'id': 42, 'first_name': 'Ada', 'last_name': 'Test', 'country': 'ITA', 'discipline': 'WAG'}}]
             elif user['email'] == 'demo.user@leverage-demo.com' and path == '/preferences/events/saved/details':
                 payload = [{'event_id': 43, 'event': {'id': 43, 'name': 'Favorite Test Event', 'year': 2026, 'discipline': 'WAG', 'category': 'senior', 'level': 'International Event'}}]
+            elif path == '/athletes/42/results':
+                payload = [{'event_id': 43}, {'event_id': 43}, {'event_id': 44}]
+            elif path in ('/events/43', '/events/44'):
+                payload = {'id': int(path.split('/')[-1]), 'name': 'Test Cup ' + path.split('/')[-1], 'year': 2026}
             elif path == "/notifications/unread-count":
                 payload = {"count": sum(not n["is_read"] for n in notices)}
             elif path == "/notifications/":
@@ -326,6 +330,8 @@ def main():
         assert page.locator('.account-notification').count() == 4
         assert 'DEMO' in page.locator('.account-notification').first.inner_text()
         assert 'Test Ada' in page.locator('.account-notification').first.inner_text()
+        assert '2 compétitions' in page.locator('.account-notification').first.inner_text()
+        assert 'Test Cup 43 (2026); Test Cup 44 (2026)' in page.locator('.account-notification').first.inner_text()
         assert 'Favorite Test Event' in page.locator('.account-notification').nth(1).inner_text()
         assert page.locator('.account-notification').first.locator('a').get_attribute('href') == '#/athletes/42'
         assert page.locator('#accountMoreNotifications').is_hidden()

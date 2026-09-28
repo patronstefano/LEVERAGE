@@ -1970,6 +1970,7 @@ class NotificationBase(BaseModel):
     related_event_id: Optional[int] = None
     related_athlete_id: Optional[int] = None
     related_result_id: Optional[int] = None
+    related_event_ids: Optional[list[int]] = None
 
 
 class NotificationCreate(NotificationBase):

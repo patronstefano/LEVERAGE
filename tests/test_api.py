@@ -2651,10 +2651,9 @@ def test_notifications():
     assert len(notifications) == 2  # 1 event + 1 result
     result_notifications = [n for n in notifications if n["type"] == "new_result"]
     assert len(result_notifications) == 1
-    assert "New scores for Rossi Luca" in result_notifications[0]["message"]
-    assert "individual final" in result_notifications[0]["message"]
+    assert "Rossi Luca · New results in 1 competition:" in result_notifications[0]["message"]
     assert "Test Event" in result_notifications[0]["message"]
-    assert "2 results available" in result_notifications[0]["message"]
+    assert result_notifications[0]["related_event_ids"] == [event_id]
 
     # Mark notification as read
     notification_id = result_notifications[0]["id"]
@@ -2750,7 +2749,7 @@ def test_notifications_ignore_soft_deleted_result_counts_and_saved_event_sources
     ]
     assert len(result_notifications) == 1
     assert result_notifications[0]["related_result_id"] == second_result["id"]
-    assert "New score for Delete Soft" in result_notifications[0]["message"]
+    assert "Delete Soft · New results in 1 competition:" in result_notifications[0]["message"]
     assert "2 results available" not in result_notifications[0]["message"]
 
     saved_source_event = client.post(
@@ -2903,8 +2902,8 @@ def test_user_language_preference_supports_supported_languages_and_localized_not
     )
     notifications = client.get("/notifications", headers=user_headers).json()
     result_notification = next(notification for notification in notifications if notification["type"] == "new_result")
-    assert "Nuovo punteggio di Utente Lingua" in result_notification["message"]
-    assert "finale individuale" in result_notification["message"]
+    assert "Utente Lingua · Nuovi risultati in 1 gara:" in result_notification["message"]
+    assert "Language Cup (2024)" in result_notification["message"]
 
 
 def test_user_preference_details_include_followed_athletes_and_saved_future_events():
@@ -3296,7 +3295,7 @@ def test_event_profile_view_supports_ranking_and_future_empty_state():
     assert future_profile["empty_state"] == "upcoming"
 
 
-def test_new_result_notifications_are_cumulative_by_athlete_event_round_and_format():
+def test_new_result_notifications_are_cumulative_by_athlete_and_distinct_events_until_read():
     client.post("/auth/register", json={"email": "cumulative_result_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("cumulative_result_admin@example.com")
     admin_headers = {"Authorization": f"Bearer {admin_token}"}
@@ -3372,10 +3371,9 @@ def test_new_result_notifications_are_cumulative_by_athlete_event_round_and_form
         if notification["type"] == "new_result"
     ]
     assert len(result_notifications) == 1
-    assert "New scores for Rossi Bruno" in result_notifications[0]["message"]
-    assert "individual qualification" in result_notifications[0]["message"]
+    assert "Rossi Bruno · New results in 1 competition:" in result_notifications[0]["message"]
     assert "World Cup 2026" in result_notifications[0]["message"]
-    assert "2 results available" in result_notifications[0]["message"]
+    assert result_notifications[0]["related_event_ids"] == [event["id"]]
 
     client.post(
         "/results/",
@@ -3400,9 +3398,34 @@ def test_new_result_notifications_are_cumulative_by_athlete_event_round_and_form
         notification for notification in notifications_response.json()
         if notification["type"] == "new_result"
     ]
-    assert len(result_notifications) == 2
-    assert any("individual qualification" in notification["message"] for notification in result_notifications)
-    assert any("individual final" in notification["message"] for notification in result_notifications)
+    assert len(result_notifications) == 1
+    assert result_notifications[0]["related_event_ids"] == [event["id"]]
+
+    second_event = client.post("/events/", json={
+        "name": "Second Cup", "year": 2026, "discipline": "MAG",
+        "category": "senior", "level": "World Cup",
+    }, headers=admin_headers).json()
+    payload = {
+        "athlete_id": athlete["id"], "event_id": second_event["id"],
+        "discipline": "MAG", "category": "senior", "apparatus": "FX",
+        "format": "individual", "round": "final", "D_score": 6.0,
+        "E_score": 8.2, "score": 14.2,
+    }
+    assert client.post("/results/", json=payload, headers=admin_headers).status_code == 200
+    pending = client.get("/notifications?unread_only=true", headers=user_headers).json()
+    assert len(pending) == 1
+    assert set(pending[0]["related_event_ids"]) == {event["id"], second_event["id"]}
+    assert "New results in 2 competitions:" in pending[0]["message"]
+    assert "Second Cup (2026)" in pending[0]["message"]
+    assert pending[0]["related_event_id"] is None
+    client.put(f"/notifications/{pending[0]['id']}/read", headers=user_headers)
+    payload["apparatus"] = "PH"
+    assert client.post("/results/", json=payload, headers=admin_headers).status_code == 200
+    pending = client.get("/notifications?unread_only=true", headers=user_headers).json()
+    assert len(pending) == 1
+    assert pending[0]["related_event_ids"] == [second_event["id"]]
+    assert "New results in 1 competition:" in pending[0]["message"]
+    assert len(client.get("/notifications", headers=user_headers).json()) == 2
 
 
 def test_user_can_save_dashboard_views_and_default_view_is_private():

@@ -194,28 +194,15 @@ def format_result_context_label(
 
 def build_new_result_notification_message(
     athlete: models.Athlete,
-    event: models.Event,
-    result: models.Result,
-    result_count: int,
+    events: list[models.Event],
     language: models.LanguageEnum = models.LanguageEnum.EN,
 ) -> str:
-    athlete_name = athlete_display_name(athlete)
-    context_label = format_result_context_label(result.round, result.format, language)
-    if result_count == 1:
-        return translate(
-            "notification.new_result.single",
-            language,
-            athlete_name=athlete_name,
-            context_label=context_label,
-            event_name=event.name,
-        )
     return translate(
-        "notification.new_result.plural",
+        "notification.new_result.events.single" if len(events) == 1 else "notification.new_result.events.plural",
         language,
-        athlete_name=athlete_name,
-        context_label=context_label,
-        event_name=event.name,
-        result_count=result_count,
+        athlete_name=athlete_display_name(athlete),
+        event_names="; ".join(event.name if str(event.year) in event.name else f"{event.name} ({event.year})" for event in events),
+        event_count=len(events),
     )
 
 
@@ -231,43 +218,42 @@ def notify_followers_about_result_context(
     if not followed_athletes:
         return
 
-    result_count = db.query(models.Result).filter(
-        models.Result.athlete_id == athlete.id,
-        models.Result.event_id == event.id,
-        models.Result.round == result.round,
-        models.Result.format == result.format,
-        models.Result.is_deleted.is_(False),
-    ).count()
     for followed_athlete in followed_athletes:
         language = followed_athlete.user.preferred_language if followed_athlete.user else models.LanguageEnum.EN
-        message = build_new_result_notification_message(athlete, event, result, result_count, language)
-        existing = (
+        pending = (
             db.query(models.Notification)
-            .join(models.Result, models.Notification.related_result_id == models.Result.id)
             .filter(
                 models.Notification.user_id == followed_athlete.user_id,
                 models.Notification.type == models.NotificationTypeEnum.NEW_RESULT,
                 models.Notification.related_athlete_id == athlete.id,
-                models.Notification.related_event_id == event.id,
-                models.Result.round == result.round,
-                models.Result.format == result.format,
+                models.Notification.is_read.is_(False),
             )
-            .first()
+            .order_by(models.Notification.id)
+            .all()
         )
-        if existing:
-            existing.message = message
-            existing.related_result_id = result.id
-            existing.is_read = False
-            db.add(existing)
-        else:
-            db.add(models.Notification(
-                user_id=followed_athlete.user_id,
-                type=models.NotificationTypeEnum.NEW_RESULT,
-                message=message,
-                related_event_id=event.id,
-                related_athlete_id=athlete.id,
-                related_result_id=result.id,
-            ))
+        # Include legacy unread notifications without deriving events from translated text.
+        event_ids = {event.id}
+        for notification in pending:
+            event_ids.update(notification.related_event_ids or [])
+            if notification.related_event_id:
+                event_ids.add(notification.related_event_id)
+        events = db.query(models.Event).filter(
+            models.Event.id.in_(event_ids), models.Event.is_deleted.is_(False),
+        ).order_by(models.Event.year, models.Event.name, models.Event.id).all()
+        notification = pending[0] if pending else models.Notification(
+            user_id=followed_athlete.user_id,
+            type=models.NotificationTypeEnum.NEW_RESULT,
+            related_athlete_id=athlete.id,
+        )
+        notification.message = build_new_result_notification_message(athlete, events, language)
+        notification.related_event_ids = [entry.id for entry in events]
+        notification.related_event_id = events[0].id if len(events) == 1 else None
+        notification.related_result_id = result.id
+        notification.is_read = False
+        notification.created_at = datetime.utcnow()
+        db.add(notification)
+        for duplicate in pending[1:]:
+            db.delete(duplicate)
     db.flush()
 
 

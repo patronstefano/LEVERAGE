@@ -9,6 +9,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    JSON,
     String,
     Text,
     UniqueConstraint,
@@ -502,6 +503,7 @@ class Notification(Base):
     related_event_id = Column(Integer, ForeignKey("events.id", ondelete="SET NULL"), nullable=True)
     related_athlete_id = Column(Integer, ForeignKey("athletes.id", ondelete="SET NULL"), nullable=True)
     related_result_id = Column(Integer, ForeignKey("results.id", ondelete="SET NULL"), nullable=True)
+    related_event_ids = Column(JSON, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User")

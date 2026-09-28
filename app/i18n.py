@@ -108,6 +108,18 @@ RESULT_CONTEXT_LABELS = {
 
 
 TRANSLATIONS = {
+    "notification.new_result.events.single": {
+        models.LanguageEnum.EN: "{athlete_name} · New results in 1 competition: {event_names}.",
+        models.LanguageEnum.IT: "{athlete_name} · Nuovi risultati in 1 gara: {event_names}.",
+        models.LanguageEnum.ES: "{athlete_name} · Nuevos resultados en 1 competición: {event_names}.",
+        models.LanguageEnum.FR: "{athlete_name} · Nouveaux résultats dans 1 compétition : {event_names}.",
+    },
+    "notification.new_result.events.plural": {
+        models.LanguageEnum.EN: "{athlete_name} · New results in {event_count} competitions: {event_names}.",
+        models.LanguageEnum.IT: "{athlete_name} · Nuovi risultati in {event_count} gare: {event_names}.",
+        models.LanguageEnum.ES: "{athlete_name} · Nuevos resultados en {event_count} competiciones: {event_names}.",
+        models.LanguageEnum.FR: "{athlete_name} · Nouveaux résultats dans {event_count} compétitions : {event_names}.",
+    },
     "notification.new_result.single": {
         models.LanguageEnum.EN: "New score for {athlete_name} during the {context_label} at {event_name}.",
         models.LanguageEnum.IT: "Nuovo punteggio di {athlete_name} durante la {context_label} alla {event_name}.",

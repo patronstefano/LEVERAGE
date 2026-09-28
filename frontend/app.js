@@ -1,6 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=back-to-account-20260924";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-types-20260928";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=cumulative-events-20260928";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6841,8 +6841,16 @@ function bindDemoLoginButtons() {
     try {
       const athletes = await getJson('/preferences/athletes/followed/details', {}, { auth: true });
       const events = await getJson('/preferences/events/saved/details', {}, { auth: true });
+      const athlete = athletes.find((detail) => detail.athlete?.id)?.athlete;
+      const resultEvents = [];
+      if (athlete) {
+        const results = await getJson(`/athletes/${athlete.id}/results`, { limit: 100 });
+        for (const id of [...new Set(results.map((result) => result.event_id))].slice(0, 3)) {
+          resultEvents.push(await getJson(`/events/${id}`));
+        }
+      }
       if (state.currentUser?.id !== user.id) return;
-      generateDemoNotifications(user, athletes, events);
+      generateDemoNotifications(user, athletes, events, resultEvents);
       if (state.route === '/account?section=notifications') renderAccount();
       else window.location.hash = '#/account?section=notifications';
     } catch (_) {
