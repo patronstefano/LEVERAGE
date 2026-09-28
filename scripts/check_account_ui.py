@@ -339,6 +339,8 @@ def main():
         assert page.locator('#accountMoreNotifications').is_hidden()
         assert 'ADMIN' in page.locator('.account-notification').nth(2).inner_text()
         assert 'USER' in page.locator('.account-notification').nth(3).inner_text()
+        assert page.locator('.account-notification-copy p strong').all_text_contents() == ['Test Ada', 'Favorite Test Event 2026', 'ADMIN', 'USER']
+        assert page.locator('.account-notification-copy p strong').first.evaluate('node => Number(getComputedStyle(node).fontWeight)') >= 600
         page.locator('#demoUserNotifications').click()
         page.wait_for_timeout(100)
         assert page.locator('.account-notification').count() == 4

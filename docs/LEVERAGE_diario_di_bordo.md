@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **28 settembre 2026 - Gerarchia visiva notifiche:** evidenziati in grassetto i nomi iniziali di atleta/evento nelle notifiche nuovi risultati/nuovo evento e il ruolo di destinazione nelle notifiche di promozione (ADMIN o SUPER ADMIN) e declassamento (USER). Stessa resa per notifiche API ed esempi temporanei, senza cambiare i testi salvati; contenuti sempre sottoposti a escaping HTML.
+
 - **28 settembre 2026 - Testo notifiche di esempio:** rimosso il prefisso "DEMO N" dai messaggi generati per USER, ADMIN e SUPER ADMIN. L'indicazione DEMO resta sui pulsanti generatori; invariate le protezioni locali, l'assenza di scritture nel database e la rimozione degli esempi al refresh.
 
 - **28 settembre 2026 - Generatori notifiche ADMIN e SUPER ADMIN:** aggiunti nella downbar i generatori per i rispettivi account DEMO locali. Ogni account vede soltanto il proprio pulsante. ADMIN genera 7 tipi distinti: i 4 esempi personali e import_summary, data_entry_summary, event_results_reminder. SUPER ADMIN genera gli stessi 7 più security_alert, riservato a tale ruolo nel backend. Testi disponibili in quattro lingue, sempre marcati DEMO; nessuna scrittura API/database o modifica di ruolo. Rigenerare sostituisce gli esempi e il refresh ripristina la casella reale. Comandi temporanei da rimuovere al termine dello sviluppo frontend.

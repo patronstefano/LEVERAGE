@@ -53,6 +53,18 @@ const labels = {
 };
 export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "fr"].indexOf(language)] || labels[key]?.[0] || key;
 
+function notificationMessageHtml(item, escapeHtml) {
+  const message = String(item.message || '');
+  if (['new_result', 'new_event'].includes(item.type)) {
+    const separator = message.indexOf(' · ');
+    if (separator > 0) return '<strong>' + escapeHtml(message.slice(0, separator)) + '</strong>' + escapeHtml(message.slice(separator));
+  }
+  const rolePattern = item.type === 'admin_promotion' ? /\b(?:SUPER ADMIN|ADMIN)\b/ : item.type === 'admin_demotion' ? /\bUSER\b/ : null;
+  const role = rolePattern && message.match(rolePattern);
+  if (role) return escapeHtml(message.slice(0, role.index)) + '<strong>' + escapeHtml(role[0]) + '</strong>' + escapeHtml(message.slice(role.index + role[0].length));
+  return escapeHtml(message);
+}
+
 // Development-only, in-memory inbox: never writes simulated data to the API.
 const demoInboxes = new Map();
 const demoEmails = { user: 'demo.user@leverage-demo.com', admin: 'demo.admin@leverage-demo.com', super_admin: 'demo.superadmin@leverage-demo.com' };
@@ -210,7 +222,7 @@ export function mountAccountTools(host) {
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("");
-        article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
+        article.innerHTML = '<div class="account-notification-copy"><p>' + notificationMessageHtml(item, esc) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
           '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? '<button class="quiet-button filter-clear-button" type="button" data-read>' + esc(t("read")) + '</button>' : "") + '</div>';
         const read = article.querySelector("[data-read]");
         if (read) read.onclick = async () => {
