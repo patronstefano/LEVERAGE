@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **28 settembre 2026 - Contatore notifiche:** badge delle notifiche non lette con sfondo rosso del sistema UI e numero bianco, mantenendo dimensioni e posizione precedenti. Aggiunta verifica automatica del colore.
+
 - **28 settembre 2026 - Generatore notifiche USER:** limitati gli esempi temporanei a quattro notifiche, una per tipo previsto per l'utente: `new_result`, `new_event`, `admin_promotion`, `admin_demotion`. Nessuna notifica amministrativa di importazione, sicurezza o promemoria risultati. Gli esempi usano il primo atleta/evento preferito disponibile, altrimenti testo generico senza collegamenti fittizi. Corretto il significato di nuovo evento: stesso livello di un evento preferito, non nuovi risultati dell'evento. Promozione e declassamento sono solo simulazioni marcate DEMO, senza modificare il ruolo. Ogni generazione sostituisce la precedente; il refresh elimina gli esempi, mai salvati nel database.
 
 - 28 settembre 2026: rinominati i collegamenti delle notifiche in Vai all'Atleta e Vai all'Evento, con etichette dedicate nelle quattro lingue e destinazioni invariate, anche per gli esempi DEMO.

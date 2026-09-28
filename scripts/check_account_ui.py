@@ -103,6 +103,7 @@ def main():
             assert rect['width'] == 36 and rect['height'] == 36
         assert page.locator('[data-account-view="notifications"]').get_attribute("aria-pressed") == "true"
         assert page.locator(".account-notification").count() == 30
+        assert page.locator('#accountUnreadCount').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(180, 35, 24)'
         assert page.locator("html").get_attribute("lang") == "it"
         page.locator('[data-read]').first.hover()
         page.wait_for_timeout(200)

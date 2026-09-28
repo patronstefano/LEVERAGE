@@ -3675,7 +3675,7 @@ a:focus-visible > .entity-card-clickable {
 .account-tool-icon { width: 18px; height: 18px; background: currentColor; mask: var(--account-icon) center / contain no-repeat; -webkit-mask: var(--account-icon) center / contain no-repeat; }
 .account-tool-icon-notifications { --account-icon: url("./assets/lucide-bell.svg"); }
 .account-tool-icon-settings { --account-icon: url("./assets/lucide-settings.svg"); }
-.account-unread-count { position: absolute; top: -7px; right: -7px; padding: 1px 4px; min-width: 16px; border-radius: 6px; background: var(--brand-blue); color: white; font-size: 10px; line-height: 16px; }
+.account-unread-count { position: absolute; top: -7px; right: -7px; padding: 1px 4px; min-width: 16px; border-radius: 6px; background: var(--danger); color: white; font-size: 10px; line-height: 16px; }
 .account-unread-count[hidden] { display: none; }
 
 #accountSettings, #accountNotifications { min-width: 0; }
