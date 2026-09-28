@@ -350,6 +350,36 @@ def main():
         page.reload()
         page.locator('.account-notification').first.wait_for()
         assert 'DEMO' not in page.locator('.account-notification').first.inner_text()
+        for role, email, button_id, count in (
+            ('admin', 'demo.admin@leverage-demo.com', 'demoAdminNotifications', 7),
+            ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 8),
+        ):
+            user.update(role=role, email=email)
+            page.reload()
+            page.locator('#' + button_id).wait_for(state='visible')
+            assert page.locator('[data-demo-notifications]:visible').count() == 1
+            write_count = len(writes)
+            page.locator('#' + button_id).click()
+            page.wait_for_timeout(200)
+            items = page.locator('.account-notification')
+            assert items.count() == count
+            types = items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')
+            assert len(set(types)) == count
+            assert {'import_summary', 'data_entry_summary', 'event_results_reminder'} <= set(types)
+            assert ('security_alert' in types) == (role == 'super_admin')
+            page.locator('#accountReadAll').click()
+            page.wait_for_timeout(100)
+            assert page.locator('#accountUnreadCount').is_hidden()
+            assert len(writes) == write_count
+            assert user['role'] == role
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            page.reload()
+            page.locator('.account-notification').first.wait_for()
+            assert 'DEMO' not in page.locator('.account-notification').first.inner_text()
+        user['email'] = 'real.superadmin@example.com'
+        page.reload()
+        page.locator('.account-notification').first.wait_for()
+        assert page.locator('[data-demo-notifications]:visible').count() == 0
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")

@@ -9,6 +9,12 @@ const labels = {
   goToAthlete: ["Go to Athlete", "Vai all’Atleta", "Ir al Atleta", "Voir l’Athlète"],
   goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
   demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
+  demoAdminGenerator: ["Generate ADMIN notifications (DEMO)", "Generatore notifiche ADMIN (DEMO)", "Generar notificaciones ADMIN (DEMO)", "Générer des notifications ADMIN (DEMO)"],
+  demoSuperAdminGenerator: ["Generate SUPER ADMIN notifications (DEMO)", "Generatore notifiche SUPER ADMIN (DEMO)", "Generar notificaciones SUPER ADMIN (DEMO)", "Générer des notifications SUPER ADMIN (DEMO)"],
+  demoImport: ["Import completed: 3 new athletes, 2 new events, 24 results; 2 duplicates skipped. Check the new entities’ details.", "Importazione completata: 3 nuovi atleti, 2 nuovi eventi, 24 risultati; 2 duplicati ignorati. Verifica i dati delle nuove entità.", "Importación completada: 3 nuevos atletas, 2 nuevos eventos, 24 resultados; 2 duplicados omitidos. Revisa los datos de las nuevas entidades.", "Import terminé : 3 nouveaux athlètes, 2 nouveaux événements, 24 résultats ; 2 doublons ignorés. Vérifiez les données des nouvelles entités."],
+  demoDataEntry: ["Manual entry completed: 12 results and 2 new athletes. Complete the new athletes’ profiles.", "Inserimento manuale completato: 12 risultati e 2 nuovi atleti. Completa le schede dei nuovi atleti.", "Entrada manual completada: 12 resultados y 2 nuevos atletas. Completa los perfiles de los nuevos atletas.", "Saisie manuelle terminée : 12 résultats et 2 nouveaux athlètes. Complétez les profils des nouveaux athlètes."],
+  demoReminder: ["An event has ended but has no results yet. Check whether results need to be entered.", "Un evento è terminato ma non ha ancora risultati. Verifica se occorre inserirli.", "Un evento ha terminado pero aún no tiene resultados. Comprueba si deben registrarse.", "Un événement est terminé mais n’a pas encore de résultats. Vérifiez s’il faut les saisir."],
+  demoSecurity: ["Security alert: another administrator deleted a result. Review the operation in the audit log.", "Avviso di sicurezza: un altro amministratore ha eliminato un risultato. Verifica l’operazione nel registro di audit.", "Alerta de seguridad: otro administrador ha eliminado un resultado. Revisa la operación en el registro de auditoría.", "Alerte de sécurité : un autre administrateur a supprimé un résultat. Vérifiez l’opération dans le journal d’audit."],
   demoResult: ["New results in {count} competitions: {events}.", "Nuovi risultati in {count} gare: {events}.", "Nuevos resultados en {count} competiciones: {events}.", "Nouveaux résultats dans {count} compétitions : {events}."],
   demoResultSingle: ["New results in 1 competition: {events}.", "Nuovi risultati in 1 gara: {events}.", "Nuevos resultados en 1 competición: {events}.", "Nouveaux résultats dans 1 compétition : {events}."],
   demoCompetition: ["Example competition", "Gara di esempio", "Competición de ejemplo", "Compétition fictive"],
@@ -49,8 +55,9 @@ export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "
 
 // Development-only, in-memory inbox: never writes simulated data to the API.
 const demoInboxes = new Map();
+const demoEmails = { user: 'demo.user@leverage-demo.com', admin: 'demo.admin@leverage-demo.com', super_admin: 'demo.superadmin@leverage-demo.com' };
 export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
-  && user?.email === 'demo.user@leverage-demo.com' && user?.role === 'user';
+  && Boolean(user && demoEmails[user.role] && user.email === demoEmails[user.role]);
 export function generateDemoNotifications(user, athletes = [], events = [], resultEvents = []) {
   if (!canGenerateDemoNotifications(user)) return;
   const athlete = athletes.find((detail) => detail.athlete?.id)?.athlete;
@@ -61,6 +68,14 @@ export function generateDemoNotifications(user, athletes = [], events = [], resu
     { type: 'admin_promotion', key: 'demoPromotion' },
     { type: 'admin_demotion', key: 'demoDemotion' },
   ];
+  if (['admin', 'super_admin'].includes(user.role)) {
+    examples.push(
+      { type: 'import_summary', key: 'demoImport' },
+      { type: 'data_entry_summary', key: 'demoDataEntry' },
+      { type: 'event_results_reminder', key: 'demoReminder' },
+    );
+  }
+  if (user.role === 'super_admin') examples.push({ type: 'security_alert', key: 'demoSecurity' });
   demoInboxes.set(user.id, examples.map((example, index) => ({
     ...example, id: index + 1, is_read: false,
     created_at: new Date(Date.now() - index * 3600000).toISOString(),
@@ -191,6 +206,7 @@ export function mountAccountTools(host) {
         existingIds.add(String(item.id));
         const article = document.createElement("article");
         article.dataset.notificationId = String(item.id);
+        article.dataset.notificationType = item.type || '';
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("");

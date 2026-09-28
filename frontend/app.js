@@ -1,6 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=back-to-account-20260924";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=event-family-notices-20260928";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=admin-demo-notices-20260928";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -2004,11 +2004,11 @@ function syncLanguageControl() {
 }
 
 function updateAuthUi() {
-  const demoNotifications = $('#demoUserNotifications');
-  if (demoNotifications) {
-    demoNotifications.hidden = !canGenerateDemoNotifications(state.currentUser);
-    demoNotifications.textContent = accountText(state.language, 'demoGenerator');
-  }
+  document.querySelectorAll('[data-demo-notifications]').forEach((button) => {
+    const role = button.dataset.demoNotifications;
+    button.hidden = !canGenerateDemoNotifications(state.currentUser) || state.currentUser.role !== role;
+    button.textContent = accountText(state.language, { user: 'demoGenerator', admin: 'demoAdminGenerator', super_admin: 'demoSuperAdminGenerator' }[role]);
+  });
   const demoAccess = $("#footerDemoAccess");
   if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
   const authLink = $("#authLink");
@@ -6833,8 +6833,8 @@ function renderLogin() {
 }
 
 function bindDemoLoginButtons() {
-  $('#demoUserNotifications')?.addEventListener('click', async (event) => {
-    if (!canGenerateDemoNotifications(state.currentUser)) return;
+  document.querySelectorAll('[data-demo-notifications]').forEach((control) => control.addEventListener('click', async (event) => {
+    if (!canGenerateDemoNotifications(state.currentUser) || control.dataset.demoNotifications !== state.currentUser.role) return;
     const user = state.currentUser, button = event.currentTarget;
     if (button.disabled) return;
     button.disabled = true;
@@ -6856,7 +6856,7 @@ function bindDemoLoginButtons() {
     } catch (_) {
       button.textContent = accountText(state.language, 'failed');
     } finally { button.disabled = false; }
-  });
+  }));
   document.querySelectorAll("[data-demo-role]").forEach((button) => {
     button.addEventListener("click", async () => {
       const message = $("#footerDemoMessage");
