@@ -328,7 +328,8 @@ def main():
         page.locator('#demoUserNotifications').click()
         page.locator('.account-notification').first.wait_for()
         assert page.locator('.account-notification').count() == 4
-        assert 'DEMO' in page.locator('.account-notification').first.inner_text()
+        assert all('DEMO' not in text for text in page.locator('.account-notification-copy p').all_text_contents())
+        assert page.locator('.account-notification-copy p').first.inner_text().startswith('Test Ada · ')
         assert 'Test Ada' in page.locator('.account-notification').first.inner_text()
         assert '2 compétitions' in page.locator('.account-notification').first.inner_text()
         assert 'Test Cup 43 (2026); Test Cup 44 (2026)' in page.locator('.account-notification').first.inner_text()
@@ -349,7 +350,7 @@ def main():
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.reload()
         page.locator('.account-notification').first.wait_for()
-        assert 'DEMO' not in page.locator('.account-notification').first.inner_text()
+        assert page.locator('.account-notification-copy p').first.inner_text() == 'Notifica personale 0'
         for role, email, button_id, count in (
             ('admin', 'demo.admin@leverage-demo.com', 'demoAdminNotifications', 7),
             ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 8),
@@ -363,6 +364,7 @@ def main():
             page.wait_for_timeout(200)
             items = page.locator('.account-notification')
             assert items.count() == count
+            assert all('DEMO' not in text for text in page.locator('.account-notification-copy p').all_text_contents())
             types = items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')
             assert len(set(types)) == count
             assert {'import_summary', 'data_entry_summary', 'event_results_reminder'} <= set(types)
@@ -375,7 +377,7 @@ def main():
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
             page.reload()
             page.locator('.account-notification').first.wait_for()
-            assert 'DEMO' not in page.locator('.account-notification').first.inner_text()
+            assert page.locator('.account-notification-copy p').first.inner_text() == 'Notifica personale 0'
         user['email'] = 'real.superadmin@example.com'
         page.reload()
         page.locator('.account-notification').first.wait_for()

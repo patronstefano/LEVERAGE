@@ -102,7 +102,7 @@ function context(host) {
         if (item) item.is_read = true;
       } else return inbox.filter((item) => !params.unread_only || !item.is_read)
         .slice(params.offset || 0, (params.offset || 0) + (params.limit || 30))
-        .map((item) => ({ ...item, message: [`DEMO ${item.id}`, item.name,
+        .map((item) => ({ ...item, message: [item.name,
           t(item.key).replace('{level}', item.level || '').replace('{count}', item.events?.length || 1).replace('{events}', item.events?.length
             ? item.events.map((event) => event.name.includes(String(event.year)) ? event.name : `${event.name} (${event.year})`).join('; ')
             : t('demoCompetition'))].filter(Boolean).join(' · ') }));
