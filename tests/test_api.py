@@ -2668,6 +2668,11 @@ def test_notifications():
     notification_id = result_notifications[0]["id"]
     mark_response = client.put(f"/notifications/{notification_id}/read", headers=user_headers)
     assert mark_response.status_code == 200
+    ordered = client.get("/notifications", headers=user_headers).json()
+    assert [item["is_read"] for item in ordered] == [False, True]
+    assert ordered[-1]["id"] == notification_id
+    assert client.get("/notifications?limit=1", headers=user_headers).json()[0]["is_read"] is False
+    assert client.get("/notifications?limit=1&offset=1", headers=user_headers).json()[0]["id"] == notification_id
 
     # Check unread only
     unread_response = client.get("/notifications?unread_only=true", headers=user_headers)

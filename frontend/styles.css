@@ -3698,7 +3698,8 @@ a:focus-visible > .entity-card-clickable {
 .account-notification:last-child { border-bottom: 0; }
 .account-notification-copy { flex: 1 1 320px; min-width: 0; }
 .account-notification.is-unread p::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; vertical-align: middle; border-radius: 50%; background: var(--brand-blue); }
-.account-notification p { margin: 0 0 6px; overflow-wrap: anywhere; font-size: 15px; line-height: 1.5; }
+.account-notification p { margin: 0 0 6px; overflow-wrap: anywhere; font-size: 15px; line-height: 1.5; font-weight: 400; }
+.account-notification.is-unread p { font-weight: 600; }
 .account-notification time { font-size: 13px; color: var(--muted); }
 #accountMoreNotifications, #accountNotificationRetry { justify-self: start; }
 @media (max-width: 700px) {

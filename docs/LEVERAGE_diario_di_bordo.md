@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **28 settembre 2026 - Stato di lettura e ordinamento notifiche:** sostituito il grassetto selettivo con il grassetto sull'intero messaggio non letto; dopo la lettura il testo torna normale. Notifiche non lette sempre prima delle lette, ordinate per data decrescente all'interno di ciascun gruppo. Ordinamento applicato dal backend prima della paginazione e replicato nelle DEMO. La lettura aggiorna soltanto l'elenco notifiche e il contatore, non l'intera pagina.
+
 - **28 settembre 2026 - Gerarchia visiva notifiche:** evidenziati in grassetto i nomi iniziali di atleta/evento nelle notifiche nuovi risultati/nuovo evento e il ruolo di destinazione nelle notifiche di promozione (ADMIN o SUPER ADMIN) e declassamento (USER). Stessa resa per notifiche API ed esempi temporanei, senza cambiare i testi salvati; contenuti sempre sottoposti a escaping HTML.
 
 - **28 settembre 2026 - Testo notifiche di esempio:** rimosso il prefisso "DEMO N" dai messaggi generati per USER, ADMIN e SUPER ADMIN. L'indicazione DEMO resta sui pulsanti generatori; invariate le protezioni locali, l'assenza di scritture nel database e la rimozione degli esempi al refresh.

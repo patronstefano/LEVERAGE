@@ -1,6 +1,6 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=back-to-account-20260924";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-emphasis-20260928";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=unread-first-20260928";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";

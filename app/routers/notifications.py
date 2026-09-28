@@ -20,7 +20,7 @@ def get_notifications(
     query = db.query(models.Notification).filter(models.Notification.user_id == current_user.id)
     if unread_only:
         query = query.filter(models.Notification.is_read == False)
-    notifications = query.order_by(models.Notification.created_at.desc(), models.Notification.id.desc()).offset(offset).limit(limit).all()
+    notifications = query.order_by(models.Notification.is_read.asc(), models.Notification.created_at.desc(), models.Notification.id.desc()).offset(offset).limit(limit).all()
     return notifications
 
 
