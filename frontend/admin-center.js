@@ -202,7 +202,7 @@ export async function renderAdminCenter(host) {
   host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
     <nav class="admin-center-nav" aria-label="${text("center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
       <button type="button" id="adminNotificationsToggle" class="favorite-button admin-tools-toggle account-tool-button ${tab === 'notifications' ? 'is-open' : ''}" aria-label="${esc(text('notifications'))}" aria-pressed="${tab === 'notifications'}" aria-controls="accountNotifications"><span class="account-tool-icon account-tool-icon-notifications" aria-hidden="true"></span><span id="accountUnreadCount" class="account-unread-count" hidden></span></button></nav>
-    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" aria-label="${text(tab)}"></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
+    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" class="panel athlete-admin-panel admin-workspace-panel" aria-label="${text(tab)}" ${tab === 'notifications' ? 'hidden' : ''}><div class="section-header compact-section-header"><h2>${esc(text(tab))}</h2></div></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
   document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? '#/admin' : '#/admin/notifications'; };
   const control = document.querySelector('.admin-view-toggle');
   const scroll = document.querySelector('.admin-nav-scroll');
@@ -280,7 +280,12 @@ export async function renderAdminCenter(host) {
   };
   const onSubmit = (id, fn) => document.getElementById(id)?.addEventListener("submit", guard((e) => fn(Object.fromEntries(new FormData(e.currentTarget)), e.currentTarget)));
   const bind = () => host.bindAdminSelectControls(root);
-  const paint = (html) => { if (active()) { root.innerHTML = html; bind(); } };
+  const paint = (html) => {
+    if (active()) {
+      root.innerHTML = `<div class="section-header compact-section-header"><h2>${esc(text(tab))}</h2></div><section class="admin-tool-block admin-workspace-content">${html}</section>`;
+      bind();
+    }
+  };
   const report = (value) => {
     if (value === null || value === undefined) return "<span>—</span>";
     if (typeof value !== "object") return esc(String(value));
@@ -347,7 +352,7 @@ export async function renderAdminCenter(host) {
       paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#/admin/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
     }
     if (tab === "entry") {
-      paint(`<h2>${text("entry")}</h2><div class="admin-center-actions">${button("newEvent", 'id="adminNewEvent"')}${button("newAthlete", 'id="adminNewAthlete"')}</div><div id="adminCreate"></div>
+      paint(`<div class="admin-center-actions">${button("newEvent", 'id="adminNewEvent"')}${button("newAthlete", 'id="adminNewAthlete"')}</div><div id="adminCreate"></div>
         <div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);
       const create = async (kind) => {
         const schema = kind === "events" ? "EventCreate" : "AthleteCreate";
@@ -517,7 +522,7 @@ export async function renderAdminCenter(host) {
       onSubmit("adminRestoreForm", async (v) => confirm("restore", () => api(`/admin/${v.type}/${Number(v.id)}/restore`, { method: "PUT" })));
     }
     if (tab === "security") {
-      paint(`<h2>${text("security")}</h2><div id="adminSecurityForms"></div>`);
+      paint('<div id="adminSecurityForms"></div>');
       const target = document.getElementById("adminSecurityForms");
       const openapi = await api("/openapi.json"); schemas = openapi.components.schemas;
       for (const path of ["/auth/password/change"]) {

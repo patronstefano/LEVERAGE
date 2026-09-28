@@ -65,6 +65,8 @@ def main():
         back.click()
         page.locator('.account-view-switcher').wait_for()
         account_option_style = page.locator('.account-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }')
+        panel_style = page.locator('#accountSettings').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }')
+        title_style = page.locator('#accountSettings > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }')
         admin_link = page.locator('.account-navigation-actions a[href="#/admin"]').bounding_box()
         notifications_button = page.locator('[data-account-view="notifications"]').bounding_box()
         assert admin_link['x'] + admin_link['width'] < notifications_button['x']
@@ -74,6 +76,14 @@ def main():
             page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
+            if tab != 'notifications':
+                assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
+                assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
+                assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
+                for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):visible, #adminWorkspace .admin-custom-select > summary:visible').all():
+                    assert abs(control.bounding_box()['height'] - 36) < 1
+            else:
+                assert page.locator('#adminWorkspace').is_hidden()
             assert page.locator('.admin-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }') == account_option_style
             assert page.locator('.admin-view-toggle #adminNotificationsToggle').count() == 0
             if tab != 'notifications':
