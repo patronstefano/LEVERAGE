@@ -31,6 +31,12 @@ def main():
                 payload = {"id": 999, "email": "admin@example.test", "role": current_role[0], "preferred_language": "it"}
             elif path == "/openapi.json":
                 payload = schema
+            elif path == "/admin/data-overview":
+                payload = {
+                    "athletes": {"total": 1250, "verified": 50, "incomplete": 1200, "missing_birth_year": 1000, "mag": 650, "wag": 600},
+                    "events": {"total": 500, "verified": 20, "incomplete": 480, "missing_dates": 10, "with_results": 400, "without_results": 100},
+                    "results": {"total": 40000, "with_final_score": 39000, "without_final_score": 1000, "with_d_score": 20000, "with_e_score": 100, "with_penalty": 100, "with_bonus": 100},
+                }
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [], "events": [], "total_athletes": 0, "total_events": 0}
             elif path == "/admin/calendar":
@@ -100,6 +106,11 @@ def main():
             assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
             feedback = page.locator("#adminFeedback").inner_text()
             assert not feedback, (tab, feedback)
+            if tab == 'overview':
+                assert page.locator('.admin-data-group').count() == 3
+                assert page.locator('[data-overview-count="athletes.total"]').inner_text().replace('.', '') == '1250'
+                assert page.locator('[data-overview-count="results.total"]').inner_text() == '40.000'
+                assert not page.locator('.admin-overview-link').count()
             if tab == "entry":
                 page.locator("#adminNewEvent").click()
                 page.locator("#adminCreateForm").wait_for()
@@ -158,9 +169,12 @@ def main():
         for width, height in [(1366, 768), (1280, 720), (1440, 900)]:
             page.set_viewport_size({'width': width, 'height': height})
             page.wait_for_timeout(100)
-            assert page.evaluate('document.querySelector(".footer").getBoundingClientRect().bottom <= innerHeight + 1'), (width, height)
-            assert page.evaluate('document.documentElement.scrollHeight <= innerHeight + 1'), (width, height)
+            assert page.locator('#adminWorkspace').bounding_box()['height'] < 450, (width, height)
+            assert page.evaluate('document.documentElement.scrollHeight <= innerHeight + 180'), (width, height)
         page.set_viewport_size({"width": 390, "height": 844})
+        assert page.locator('.admin-data-group').count() == 3
+        assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+        page.screenshot(path="/tmp/leverage-data-overview-mobile.png", full_page=True)
         page.goto("http://127.0.0.1:5173/#/super-admin")
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
         assert 'Super Admin' in page.locator('.admin-center h1').inner_text()

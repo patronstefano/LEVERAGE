@@ -5159,6 +5159,61 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
     assert invalid_response.status_code == 400
 
 
+def test_admin_data_overview_counts_active_records_and_recorded_scores():
+    client.post("/auth/register", json={"email": "overview@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("overview@example.com")
+    headers = {"Authorization": f"Bearer {token}"}
+    empty = client.get("/admin/data-overview", headers=headers)
+    assert empty.status_code == 200
+    assert all(value == 0 for group in empty.json().values() for value in group.values())
+    with SessionLocal() as db:
+        complete = models.Athlete(first_name="One", last_name="Test", discipline="MAG", country="ITA",
+            birth_year=2000, image_url="image", world_gymnastics_profile_url="profile",
+            world_gymnastics_status="Active", is_profile_verified=True)
+        incomplete = models.Athlete(first_name="Two", last_name="Test", discipline="WAG", country="",
+            world_gymnastics_verified_at=datetime.utcnow(), is_profile_verified=False)
+        deleted = models.Athlete(first_name="Deleted", last_name="Test", discipline="MAG", is_deleted=True)
+        event = models.Event(name="Complete", year=2026, discipline="MAG and WAG", category="senior",
+            level="International Event", location="Rome", venue="Arena", start_date=date(2026, 1, 1),
+            end_date=date(2026, 1, 2), image_url="image", world_gymnastics_event_url="profile",
+            world_gymnastics_status="Active", world_gymnastics_verified_at=datetime.utcnow())
+        future = models.Event(name="Future", year=2027, discipline="MAG", category="senior", level="National Event")
+        removed = models.Event(name="Deleted", year=2026, discipline="MAG", category="senior", level="National Event", is_deleted=True)
+        db.add_all([complete, incomplete, deleted, event, future, removed])
+        db.flush()
+        for person, competition, apparatus, values in [
+            (complete, event, "FX", {"score": 14, "D_score": 5, "E_score": 9, "Penalty": 0, "Bonus": 0}),
+            (complete, event, "AA", {"score": 80}),
+            (incomplete, event, "VT", {"D_score": 4}),
+            (complete, event, "PH", {"score": 13, "is_deleted": True}),
+            (deleted, future, "FX", {"score": 13}),
+            (complete, removed, "FX", {"score": 13}),
+        ]:
+            db.add(models.Result(athlete_id=person.id, event_id=competition.id, discipline=person.discipline,
+                category="senior", apparatus=apparatus, format="individual", round="final", **values))
+        db.commit()
+    response = client.get("/admin/data-overview", headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.json() == {
+        "athletes": {"total": 2, "verified": 1, "incomplete": 1, "missing_birth_year": 1, "mag": 1, "wag": 1},
+        "events": {"total": 2, "verified": 1, "incomplete": 1, "missing_dates": 1, "with_results": 1, "without_results": 1},
+        "results": {"total": 3, "with_final_score": 2, "without_final_score": 1, "with_d_score": 2,
+                    "with_e_score": 1, "with_penalty": 1, "with_bonus": 1},
+    }
+    queue = client.get("/admin/entities-to-complete", headers=headers).json()
+    assert queue["total_athletes"] == response.json()["athletes"]["incomplete"]
+    assert queue["total_events"] == response.json()["events"]["incomplete"]
+    with SessionLocal() as db:
+        user = db.query(User).filter_by(email="overview@example.com").one()
+        user.role = RoleEnum.ADMIN
+        db.commit()
+    assert client.get("/admin/data-overview", headers=headers).status_code == 200
+    client.post("/auth/register", json={"email": "overview_user@example.com", "password": TEST_PASSWORD})
+    user_token = login_as_user("overview_user@example.com")
+    assert client.get("/admin/data-overview", headers={"Authorization": f"Bearer {user_token}"}).status_code == 403
+    assert client.get("/admin/data-overview").status_code == 401
+
+
 def test_event_bulk_results_can_create_missing_athlete_from_result_row():
     client.post("/auth/register", json={"email": "bulk_new_athlete_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("bulk_new_athlete_admin@example.com")

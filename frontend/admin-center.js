@@ -71,6 +71,28 @@ const COPY = {
   Penalty: ["Penalty", "Penalità", "Penalización", "Pénalité"],
   countryMismatch: ["Select an athlete with the same discipline.", "Seleziona un atleta della stessa disciplina.", "Selecciona un atleta de la misma disciplina.", "Sélectionnez un athlète de la même discipline."],
   overview: ["Overview", "Panoramica", "Resumen", "Vue d’ensemble"],
+  dataAthletes: ["Athletes", "Atleti", "Atletas", "Athlètes"],
+  dataEvents: ["Events", "Eventi", "Eventos", "Événements"],
+  dataResults: ["Results and scores", "Risultati e punteggi", "Resultados y puntuaciones", "Résultats et notes"],
+  dataTotal: ["Total", "Totali", "Total", "Total"],
+  dataVerified: ["World Gymnastics verified", "Verificati World Gymnastics", "Verificados World Gymnastics", "Vérifiés World Gymnastics"],
+  dataIncomplete: ["To complete", "Da completare", "Por completar", "À compléter"],
+  dataBirthMissing: ["Missing birth year", "Senza anno di nascita", "Sin año de nacimiento", "Sans année de naissance"],
+  dataDatesMissing: ["Missing event dates", "Date gara incomplete", "Fechas incompletas", "Dates incomplètes"],
+  dataWithResults: ["With results", "Con risultati", "Con resultados", "Avec résultats"],
+  dataWithoutResults: ["Without results", "Senza risultati", "Sin resultados", "Sans résultats"],
+  dataFinal: ["Final Score recorded", "Final Score registrato", "Final Score registrado", "Final Score enregistré"],
+  dataNoFinal: ["Final Score unavailable", "Final Score non disponibile", "Final Score no disponible", "Final Score indisponible"],
+  dataD: ["D Score recorded", "D Score registrato", "D Score registrado", "D Score enregistré"],
+  dataE: ["E Score recorded", "E Score registrato", "E Score registrado", "E Score enregistré"],
+  dataP: ["Penalty recorded", "Penalty registrata", "Penalty registrada", "Penalty enregistrée"],
+  dataB: ["Bonus recorded", "Bonus registrato", "Bonus registrado", "Bonus enregistré"],
+  dataOverviewNote: [
+    "Active records only. To complete includes optional fields, even on verified profiles. Events without results include future events. Score counts include recorded values (including zero), not estimates or derived totals.",
+    "Solo record attivi. Da completare include campi facoltativi, anche nei profili verificati. Gli eventi senza risultati comprendono quelli futuri. I conteggi dei punteggi includono valori registrati (anche zero), non stime o totali derivati.",
+    "Solo registros activos. Por completar incluye campos opcionales, también en perfiles verificados. Los eventos sin resultados incluyen eventos futuros. Las puntuaciones cuentan valores registrados (incluido cero), no estimaciones ni totales derivados.",
+    "Enregistrements actifs uniquement. À compléter inclut les champs facultatifs, même pour les profils vérifiés. Les événements sans résultats incluent ceux à venir. Les notes comptent les valeurs enregistrées (y compris zéro), sans estimations ni totaux calculés."
+  ],
   entry: ["Data entry", "Inserimento dati", "Entrada de datos", "Saisie des données"],
   imports: ["Imports", "Importazioni", "Importaciones", "Importations"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
@@ -358,7 +380,18 @@ export async function renderAdminCenter(host) {
   };
   try {
     if (tab === "overview") {
-      paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#${baseRoute}/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
+      if (superCenter) {
+        paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#${baseRoute}/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
+      } else {
+        const data = await api("/admin/data-overview");
+        const groups = [
+          ["athletes", "dataAthletes", [["verified", "dataVerified"], ["incomplete", "dataIncomplete"], ["missing_birth_year", "dataBirthMissing"], ["mag", "MAG"], ["wag", "WAG"]]],
+          ["events", "dataEvents", [["verified", "dataVerified"], ["incomplete", "dataIncomplete"], ["missing_dates", "dataDatesMissing"], ["with_results", "dataWithResults"], ["without_results", "dataWithoutResults"]]],
+          ["results", "dataResults", [["with_final_score", "dataFinal"], ["without_final_score", "dataNoFinal"], ["with_d_score", "dataD"], ["with_e_score", "dataE"], ["with_penalty", "dataP"], ["with_bonus", "dataB"]]],
+        ];
+        const number = new Intl.NumberFormat(state.language);
+        paint(`<div class="admin-data-overview">${groups.map(([key, title, rows]) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd data-overview-count="${key}.total">${number.format(data[key].total)}</dd></div>${rows.map(([field, label]) => `<div><dt>${esc(text(label))}</dt><dd data-overview-count="${key}.${field}">${number.format(data[key][field])}</dd></div>`).join("")}</dl></section>`).join("")}</div><p class="admin-data-note">${esc(text("dataOverviewNote"))}</p>`);
+      }
     }
     if (tab === "entry") {
       paint(`<div class="admin-center-actions">${button("newEvent", 'id="adminNewEvent"')}${button("newAthlete", 'id="adminNewAthlete"')}</div><div id="adminCreate"></div>

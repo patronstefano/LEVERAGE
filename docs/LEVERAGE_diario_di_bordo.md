@@ -3050,6 +3050,19 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 28 settembre 2026 - Panoramica dei dati nel Centro Admin
+
+- Sostituite le scorciatoie delle sottosezioni con un riepilogo quantitativo in tre gruppi: Atleti, Eventi, Risultati e punteggi. Il Centro Super Admin mantiene la propria panoramica di accesso agli strumenti esclusivi.
+- Nuovo endpoint protetto `GET /admin/data-overview`, disponibile solo ad ADMIN e SUPER ADMIN: aggregazioni SQL senza scaricare le entita nel browser, con esclusione dei record eliminati e dei risultati collegati ad atleti o eventi eliminati.
+- Atleti: totale, badge World Gymnastics attivo, profili da completare, anno di nascita mancante, MAG e WAG. Eventi: totale, verifica World Gymnastics, dati da completare, date incomplete, presenza/assenza di risultati.
+- La voce "Da completare" segue esattamente i campi della coda esistente `entities-to-complete`, inclusi immagine e informazioni facoltative World Gymnastics. Non equivale a dato errato e puo sovrapporsi alla verifica ufficiale. Gli eventi senza risultati comprendono anche quelli futuri: non sono automaticamente gare con risultati mancanti.
+- Risultati: numero di record, Final Score registrato/non disponibile, D ed E registrati, Penalty e Bonus registrati. Gli zeri sono valori registrati; stime e totali AA derivati non sono contati come valori salvati. Non vengono sommati i diversi conteggi dei punteggi, che possono riferirsi agli stessi record.
+- Rilevazione locale in sola lettura: 27.918 atleti, 1.759 eventi e 819.739 risultati; 814.952 Final Score presenti e 4.787 non disponibili. Nessuna modifica ai dati sportivi.
+- Ottimizzata la verifica della presenza di risultati negli eventi mediante un insieme distinto degli eventi associati a risultati attivi, evitando scansioni correlate ripetute: circa 0,4 secondi sul database locale contro circa 6 secondi della prima versione. Tempi indicativi, non garanzia prestazionale.
+- UI coerente al pannello Admin, tre colonne su desktop e gruppi verticali su mobile, numeri localizzati e testi nelle quattro lingue. Sui viewport bassi lo scorrimento rimane disponibile per non comprimere eccessivamente i dati.
+- Test dedicati su database vuoto, completamento, verifica revocata, valori nulli e zero, eliminazioni logiche e permessi; regressione API e verifiche browser desktop/mobile.
+
+
 #### 28 settembre 2026 - Centro Super Admin dedicato
 
 - Aggiunta la pagina `#/super-admin`, accessibile esclusivamente al ruolo SUPER ADMIN, con pulsante nell'Area Personale a sinistra di Centro Admin.

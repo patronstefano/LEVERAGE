@@ -49,6 +49,21 @@
 .admin-lookup-option:hover, .admin-lookup-option:focus-visible { color: var(--brand-blue); outline: 1px solid var(--brand-blue); border-radius: var(--control-radius); }
 .admin-lookup-option span { color: var(--muted); }
 .admin-overview-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.admin-data-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.admin-data-group { min-width: 0; }
+.admin-data-group + .admin-data-group { border-left: 1px solid var(--line); padding-left: 24px; }
+.admin-workspace-content .admin-data-group h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+.admin-data-group dl { margin: 0; font-size: 14px; }
+.admin-data-group dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 4px 0; }
+.admin-data-group dt { color: var(--muted); }
+.admin-data-group dd { margin: 0; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.admin-data-group .admin-data-total { margin-bottom: 4px; padding-top: 0; border-bottom: 1px solid var(--line); }
+.admin-data-total dd { font-size: 24px; font-weight: 600; color: var(--brand-blue); }
+.admin-center .admin-data-note { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+@media (max-width: 720px) {
+  .admin-data-overview { grid-template-columns: 1fr; gap: 18px; }
+  .admin-data-group + .admin-data-group { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }
+}
 .admin-overview-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: var(--surface-radius); color: var(--ink); padding: 18px; }
 .admin-overview-link h2 { font-size: 17px; margin: 0; }
 .admin-overview-link:hover { border-color: var(--brand-blue); }

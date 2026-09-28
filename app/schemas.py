@@ -850,6 +850,40 @@ class AdminIncompleteEvent(BaseModel):
     missing_fields: list[str]
 
 
+class AdminAthleteOverview(BaseModel):
+    total: int
+    verified: int
+    incomplete: int
+    missing_birth_year: int
+    mag: int
+    wag: int
+
+
+class AdminEventOverview(BaseModel):
+    total: int
+    verified: int
+    incomplete: int
+    missing_dates: int
+    with_results: int
+    without_results: int
+
+
+class AdminResultOverview(BaseModel):
+    total: int
+    with_final_score: int
+    without_final_score: int
+    with_d_score: int
+    with_e_score: int
+    with_penalty: int
+    with_bonus: int
+
+
+class AdminDataOverview(BaseModel):
+    athletes: AdminAthleteOverview
+    events: AdminEventOverview
+    results: AdminResultOverview
+
+
 class AdminEntitiesToCompleteResponse(BaseModel):
     athletes: list[AdminIncompleteAthlete]
     events: list[AdminIncompleteEvent]

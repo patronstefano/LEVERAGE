@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, or_
+from sqlalchemy import String, case, func, or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
@@ -19,6 +19,7 @@ from app.event_calendar import (
 )
 from app.i18n import translate
 from app.security import get_current_admin_user, get_current_super_admin_user
+from app.soft_delete import active_result_query
 
 router = APIRouter()
 
@@ -254,6 +255,54 @@ def list_result_duplicate_groups(
             ],
         })
     return response
+
+
+@router.get("/data-overview", response_model=schemas.AdminDataOverview)
+def get_data_overview(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    def counted(condition, name):
+        return func.coalesce(func.sum(case((condition, 1), else_=0)), 0).label(name)
+
+    def incomplete(model, fields):
+        # Match the existing completion queue, including optional enrichment fields.
+        return or_(*[
+            or_(getattr(model, field).is_(None), getattr(model, field) == "")
+            if isinstance(getattr(model, field).type, String)
+            else getattr(model, field).is_(None)
+            for field in fields
+        ])
+
+    athlete, event, result = models.Athlete, models.Event, models.Result
+    athletes = db.query(
+        func.count(athlete.id).label("total"),
+        counted(athlete.is_profile_verified.is_(True), "verified"),
+        counted(incomplete(athlete, ATHLETE_COMPLETION_FIELDS), "incomplete"),
+        counted(athlete.birth_year.is_(None), "missing_birth_year"),
+        counted(athlete.discipline == models.DisciplineEnum.MAG, "mag"),
+        counted(athlete.discipline == models.DisciplineEnum.WAG, "wag"),
+    ).filter(athlete.is_deleted.is_(False)).one()
+    events_with_results = active_result_query(db).with_entities(result.event_id).distinct().subquery()
+    has_results = events_with_results.c.event_id.is_not(None)
+    events = db.query(
+        func.count(event.id).label("total"),
+        counted(event.world_gymnastics_verified_at.is_not(None), "verified"),
+        counted(incomplete(event, EVENT_COMPLETION_FIELDS), "incomplete"),
+        counted(or_(event.start_date.is_(None), event.end_date.is_(None)), "missing_dates"),
+        counted(has_results, "with_results"),
+        counted(~has_results, "without_results"),
+    ).outerjoin(events_with_results, events_with_results.c.event_id == event.id).filter(event.is_deleted.is_(False)).one()
+    results = active_result_query(db).with_entities(
+        func.count(result.id).label("total"),
+        counted(result.score.is_not(None), "with_final_score"),
+        counted(result.score.is_(None), "without_final_score"),
+        counted(result.D_score.is_not(None), "with_d_score"),
+        counted(result.E_score.is_not(None), "with_e_score"),
+        counted(result.Penalty.is_not(None), "with_penalty"),
+        counted(result.Bonus.is_not(None), "with_bonus"),
+    ).one()
+    return {"athletes": dict(athletes._mapping), "events": dict(events._mapping), "results": dict(results._mapping)}
 
 
 @router.get("/entities-to-complete", response_model=schemas.AdminEntitiesToCompleteResponse)
