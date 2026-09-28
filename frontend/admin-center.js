@@ -178,6 +178,7 @@ export async function renderAdminMfaSetup(host, token) {
 
 let session = null;
 let generation = 0;
+let navigationObserver;
 export async function renderAdminCenter(host) {
   const { state, escapeHtml: esc } = host;
   const text = (key) => COPY[key] ? adminLabel(state.language, key) : host.t(key) !== key ? host.t(key) : adminLabel(state.language, key);
@@ -199,10 +200,40 @@ export async function renderAdminCenter(host) {
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
   host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
-    <nav class="admin-center-nav" aria-label="${text("center")}">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="quiet-button outline-command-button ${key === tab ? "is-active" : ""}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}
+    <nav class="admin-center-nav" aria-label="${text("center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
       <button type="button" id="adminNotificationsToggle" class="favorite-button admin-tools-toggle account-tool-button ${tab === 'notifications' ? 'is-open' : ''}" aria-label="${esc(text('notifications'))}" aria-pressed="${tab === 'notifications'}" aria-controls="accountNotifications"><span class="account-tool-icon account-tool-icon-notifications" aria-hidden="true"></span><span id="accountUnreadCount" class="account-unread-count" hidden></span></button></nav>
     <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" aria-label="${text(tab)}"></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
   document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? '#/admin' : '#/admin/notifications'; };
+  const control = document.querySelector('.admin-view-toggle');
+  const scroll = document.querySelector('.admin-nav-scroll');
+  const thumb = control.querySelector('.admin-view-thumb');
+  const positionThumb = (key) => {
+    const option = control.querySelector(`[data-admin-tab="${key}"]`);
+    thumb.hidden = !option;
+    if (!option) return;
+    thumb.style.width = `${option.offsetWidth}px`;
+    thumb.style.transform = `translateX(${option.offsetLeft}px)`;
+  };
+  thumb.style.transition = 'none';
+  positionThumb(session.navigationTab || tab);
+  scroll.scrollLeft = session.navigationScroll || 0;
+  // Establish the previous position before animating the newly selected section.
+  thumb.getBoundingClientRect();
+  thumb.style.transition = '';
+  positionThumb(tab);
+  session.navigationTab = tab;
+  const revealSelected = () => {
+    positionThumb(tab);
+    const option = control.querySelector('[aria-current="page"]');
+    if (!option) return;
+    if (option.offsetLeft < scroll.scrollLeft) scroll.scrollLeft = option.offsetLeft;
+    else if (option.offsetLeft + option.offsetWidth > scroll.scrollLeft + scroll.clientWidth) scroll.scrollLeft = option.offsetLeft + option.offsetWidth - scroll.clientWidth;
+  };
+  revealSelected();
+  scroll.addEventListener('scroll', () => { session.navigationScroll = scroll.scrollLeft; });
+  navigationObserver?.disconnect();
+  navigationObserver = new ResizeObserver(revealSelected);
+  navigationObserver.observe(scroll);
   mountNotificationInbox({ ...host, notificationScope: 'admin' });
   const root = document.getElementById("adminWorkspace");
   const feedback = (message, error = false) => {

@@ -64,6 +64,7 @@ def main():
         assert back.get_attribute('href') == '#/account'
         back.click()
         page.locator('.account-view-switcher').wait_for()
+        account_option_style = page.locator('.account-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }')
         admin_link = page.locator('.account-navigation-actions a[href="#/admin"]').bounding_box()
         notifications_button = page.locator('[data-account-view="notifications"]').bounding_box()
         assert admin_link['x'] + admin_link['width'] < notifications_button['x']
@@ -73,6 +74,12 @@ def main():
             page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
+            assert page.locator('.admin-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }') == account_option_style
+            assert page.locator('.admin-view-toggle #adminNotificationsToggle').count() == 0
+            if tab != 'notifications':
+                option = page.locator('.admin-view-toggle [aria-current="page"]').bounding_box()
+                thumb = page.locator('.admin-view-thumb').bounding_box()
+                assert abs(option['x'] - thumb['x']) < 1 and abs(option['width'] - thumb['width']) < 1
             assert page.locator('#authLink').get_attribute('aria-current') == 'page'
             assert page.locator('#authLink').get_attribute('href') == '#/admin/' + tab
             assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
@@ -134,6 +141,13 @@ def main():
         page.wait_for_timeout(300)
         page.screenshot(path="/tmp/leverage-admin-desktop.png", full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
+        page.locator('.admin-view-toggle [data-admin-tab="audit"]').click()
+        page.wait_for_timeout(500)
+        assert page.url.endswith('#/admin/audit')
+        assert page.locator('#adminNotificationsToggle').is_visible()
+        page.locator('#adminNotificationsToggle').click()
+        page.wait_for_timeout(300)
+        assert page.locator('.admin-view-thumb').is_hidden()
         page.screenshot(path="/tmp/leverage-admin-mobile.png", full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "Horizontal overflow"
         current_role[0] = "admin"

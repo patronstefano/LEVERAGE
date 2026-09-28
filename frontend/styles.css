@@ -5,8 +5,15 @@
 .admin-center label:has(> input[type="checkbox"]) { flex-direction: row; align-items: center; margin: 14px 0; }
 .admin-center .section-heading h1 { font-size: 30px; margin-bottom: 10px; }
 .admin-center .section-heading p { color: var(--muted); }
-.admin-center-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
-.admin-center .admin-center-nav .quiet-button.is-active { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
+.admin-center-nav { display: flex; align-items: center; gap: 8px; margin: 24px 0; padding-bottom: 12px; border-bottom: 1px solid rgba(25, 23, 71, 0.06); }
+.admin-nav-scroll { min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.admin-center-nav .account-tool-button { flex: 0 0 36px; margin-left: auto; }
+.segmented-control.admin-view-toggle { display: inline-flex; width: max-content; vertical-align: top; }
+.admin-view-toggle .segmented-option { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.admin-view-toggle .segmented-option[aria-current="page"] { color: #fff; }
+.admin-view-toggle .admin-view-thumb { transition: transform var(--control-expand-motion), width var(--control-expand-motion); pointer-events: none; }
+.admin-view-thumb[hidden] { display: none; }
+@media (prefers-reduced-motion: reduce) { .admin-view-toggle .admin-view-thumb { transition: none; } }
 .admin-center h2, .admin-confirm h2 { font-size: 20px; margin: 24px 0 16px; }
 .admin-center h3 { font-size: 17px; margin: 22px 0 12px; }
 .admin-center .admin-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 20px 0; align-items: end; }
@@ -3637,7 +3644,8 @@ a:focus-visible > .entity-card-clickable {
 .account-navigation-actions { margin-left: auto; gap: 8px; }
 .account-summary .account-user-actions:empty { display: none; }
 
-.account-view-toggle .segmented-option {
+.account-view-toggle .segmented-option,
+.admin-view-toggle .segmented-option {
   min-width: 0;
   height: 34px;
   padding: 0 14px;

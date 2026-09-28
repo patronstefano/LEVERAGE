@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=notification-scopes-20260928";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-navigation-slider-20260928";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-scopes-20260928";
 

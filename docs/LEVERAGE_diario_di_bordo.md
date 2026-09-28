@@ -3050,6 +3050,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+- **28 settembre 2026 - Navigazione Centro Admin a slider:** sostituiti i pulsanti indipendenti delle sottosezioni con un unico controllo segmentato e indicatore blu animato, condividendo altezza, carattere, peso e spaziatura interna dello slider dell'Area Personale. La campanella resta separata a destra, con contatore autonomo. Su schermi stretti scorre orizzontalmente soltanto il controllo, mantenendo tutte le opzioni accessibili senza ridurne il carattere né allargare la pagina; selezione resa visibile automaticamente. Nessuna opzione aggiuntiva esposta agli ADMIN ordinari e animazione disattivata con preferenza di movimento ridotto.
+
 - **28 settembre 2026 - Ripresa della navigazione privata:** il pulsante Area Personale della topbar ricorda l'ultima schermata privata aperta, compresa la sottosezione del Centro Admin. Passando alle sezioni pubbliche e ritornando, si riapre quella schermata anziché la pagina iniziale dell'account. Memoria di sessione associata all'utente, validata rispetto al ruolo e rimossa al logout. Il comando esplicito "Torna all'Area Personale" continua a tornare all'account e aggiorna la destinazione memorizzata. La memoria riguarda la rotta, non campi di moduli non salvati.
 
 - **Verifica caselle separate, 28 settembre 2026:** 183 test backend superati, inclusi accessi per ruolo, contatori e lettura indipendenti; superati i controlli browser di Area Personale e Centro Admin su desktop/mobile. Nessuna migrazione o spostamento fisico delle notifiche: la separazione avviene per tipo e ambito autorizzato.
