@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 28 settembre 2026 - Centro Super Admin dedicato
+
+- Aggiunta la pagina `#/super-admin`, accessibile esclusivamente al ruolo SUPER ADMIN, con pulsante nell'Area Personale a sinistra di Centro Admin.
+- Riutilizzati struttura, slider animato, pannelli, tipografia, spaziature e pulsante di ritorno del Centro Admin. Titoli e descrizioni disponibili nelle quattro lingue.
+- Spostate nel centro dedicato le funzioni esclusive Utenti e ruoli e Audit e ripristino; gli strumenti operativi restano nel Centro Admin, accessibile anche al SUPER ADMIN. I vecchi collegamenti alle due funzioni reindirizzano alla nuova sede.
+- La campanella riutilizza le notifiche amministrative esistenti, senza copie o nuove notifiche; i controlli backend sui ruoli restano invariati. Il ripristino riguarda le operazioni supportate dall'audit, non un ripristino completo del database.
+- Estesa la memoria di navigazione privata alla nuova pagina: passando ad altre sezioni, Area Personale riapre l'ultima sottosezione visitata. Mantenuta l'evidenziazione blu della voce in topbar.
+- Verifica automatizzata con Playwright su desktop e mobile: ordine dei pulsanti, componenti condivisi, navigazione, allineamento slider e accesso negato agli altri ruoli. Nessuna modifica ai dati sportivi.
+
+
 - **28 settembre 2026 - Allineamento verticale globale:** adottata la Panoramica Centro Admin come riferimento per l'inizio delle pagine. Pulsanti "Torna a..." allineati allo stesso livello in schede, ricerca globale e sottosezioni amministrative; titoli delle sezioni principali, Area Personale, Home e pagine di autenticazione allineati al titolo Centro Admin. Variabili CSS condivise con adattamento alle finestre basse e mobile, senza modificare dimensioni dei controlli o la struttura interna di filtri e grafici.
 
 - **28 settembre 2026 - Panoramica Admin compatta:** ridotti padding verticale delle schede e spazi tra i collegamenti, mantenendo carattere e bordi invariati. Ridotto lo spazio superiore/inferiore della sola Panoramica sui desktop, con ulteriore adattamento per finestre basse, per mostrare subito il footer. Le altre sottosezioni non cambiano; su mobile resta lo scorrimento naturale senza comprimere i controlli.

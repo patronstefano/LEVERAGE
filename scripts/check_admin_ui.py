@@ -69,12 +69,15 @@ def main():
         panel_style = page.locator('#accountSettings').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }')
         title_style = page.locator('#accountSettings > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }')
         admin_link = page.locator('.account-navigation-actions a[href="#/admin"]').bounding_box()
+        super_link = page.locator('.account-navigation-actions a[href="#/super-admin"]').bounding_box()
+        assert super_link['x'] + super_link['width'] < admin_link['x']
         notifications_button = page.locator('[data-account-view="notifications"]').bounding_box()
         assert admin_link['x'] + admin_link['width'] < notifications_button['x']
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
         for tab in ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
-            page.evaluate("(tab) => location.hash = '/admin/' + tab", tab)
+            base = '/super-admin/' if tab in ['users', 'audit'] else '/admin/'
+            page.evaluate("(route) => location.hash = route", base + tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
             assert abs(page.locator('.detail-back-button').bounding_box()['y'] - admin_back_top) < 1
@@ -93,7 +96,7 @@ def main():
                 thumb = page.locator('.admin-view-thumb').bounding_box()
                 assert abs(option['x'] - thumb['x']) < 1 and abs(option['width'] - thumb['width']) < 1
             assert page.locator('#authLink').get_attribute('aria-current') == 'page'
-            assert page.locator('#authLink').get_attribute('href') == '#/admin/' + tab
+            assert page.locator('#authLink').get_attribute('href') == '#' + base + tab
             assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
             feedback = page.locator("#adminFeedback").inner_text()
             assert not feedback, (tab, feedback)
@@ -158,9 +161,18 @@ def main():
             assert page.evaluate('document.querySelector(".footer").getBoundingClientRect().bottom <= innerHeight + 1'), (width, height)
             assert page.evaluate('document.documentElement.scrollHeight <= innerHeight + 1'), (width, height)
         page.set_viewport_size({"width": 390, "height": 844})
+        page.goto("http://127.0.0.1:5173/#/super-admin")
+        page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
+        assert 'Super Admin' in page.locator('.admin-center h1').inner_text()
+        assert page.locator('.detail-back-button').get_attribute('href') == '#/account'
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').click()
         page.wait_for_timeout(500)
-        assert page.url.endswith('#/admin/audit')
+        assert page.url.endswith('#/super-admin/audit')
+        page.goto("http://127.0.0.1:5173/#/home")
+        page.wait_for_timeout(300)
+        assert page.locator('#authLink').get_attribute('href') == '#/super-admin/audit'
+        page.locator('#authLink').click()
+        page.locator('#adminWorkspace').wait_for()
         assert page.locator('#adminNotificationsToggle').is_visible()
         page.locator('#adminNotificationsToggle').click()
         page.wait_for_timeout(300)
@@ -169,6 +181,12 @@ def main():
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "Horizontal overflow"
         current_role[0] = "admin"
         page.reload()
+        page.locator('[role="alert"]').wait_for()
+        assert not page.locator('.admin-center').count()
+        page.goto("http://127.0.0.1:5173/#/account")
+        page.locator('.account-navigation-actions').wait_for()
+        assert not page.locator('.account-navigation-actions a[href="#/super-admin"]').count()
+        page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
         assert not page.locator('.admin-center-nav a[href="#/admin/users"]').count()
         assert not page.locator('.admin-center-nav a[href="#/admin/audit"]').count()

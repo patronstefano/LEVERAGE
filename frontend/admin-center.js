@@ -3,6 +3,8 @@ import { mountNotificationInbox } from './account-tools.js?v=notification-scopes
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
   center: ["Admin center", "Centro Admin", "Centro Admin", "Centre Admin"],
+  superCenter: ["Super Admin center", "Centro Super Admin", "Centro Super Admin", "Centre Super Admin"],
+  superIntro: ["Manage access roles, review the audit trail and restore changes.", "Gestisci i ruoli di accesso, verifica lo storico delle operazioni e ripristina le modifiche.", "Gestiona los roles de acceso, revisa el historial y restaura los cambios.", "Gérez les rôles, consultez l’historique et restaurez les modifications."],
   backToAccount: ["Back to Personal Area", "Torna all’Area Personale", "Volver al Área Personal", "Retour à l’Espace personnel"],
   entities: ["Manage records", "Gestione record", "Gestionar registros", "Gérer les fiches"],
   delete: ["Delete", "Elimina", "Eliminar", "Supprimer"],
@@ -181,17 +183,23 @@ let generation = 0;
 let navigationObserver;
 export async function renderAdminCenter(host) {
   const { state, escapeHtml: esc } = host;
+  const superCenter = /^\/super-admin(?:\/|$)/.test(state.route);
+  const baseRoute = superCenter ? "/super-admin" : "/admin";
   const text = (key) => COPY[key] ? adminLabel(state.language, key) : host.t(key) !== key ? host.t(key) : adminLabel(state.language, key);
-  if (!["admin", "super_admin"].includes(state.currentUser?.role)) {
+  if (!["admin", "super_admin"].includes(state.currentUser?.role) || (superCenter && state.currentUser?.role !== "super_admin")) {
     host.setApp(`<p role="alert">${text("denied")}</p><a class="quiet-button" href="#/login">${host.t("signIn")}</a>`);
     return;
   }
   if (session?.user !== state.currentUser.id) session = { user: state.currentUser.id, rows: [], import: null };
   const run = ++generation;
-  const active = () => run === generation && state.route.startsWith("/admin");
+  const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security", ...(superAdmin ? ["users", "audit"] : [])];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security"];
   const requested = state.route.split("?")[0].split("/")[2];
+  if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
+    window.location.replace(`#/super-admin/${requested}`);
+    return;
+  }
   const tab = tabs.includes(requested) ? requested : "overview";
   const button = (label, attributes = "") => `<button type="button" class="quiet-button outline-command-button" ${attributes}>${esc(text(label))}</button>`;
   const field = (name, label, type = "text", value = "", required = false) => `<label>${esc(text(label))}<input name="${esc(name)}" type="${type}" value="${esc(value ?? "")}" ${required ? "required" : ""} ${type === "number" ? 'step="any"' : ""}></label>`;
@@ -199,11 +207,11 @@ export async function renderAdminCenter(host) {
     options.map((o) => typeof o === "string" ? { value: o, label: text(o) } : o));
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
-  host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text("center")}</h1><p>${text("intro")}</p></div>
-    <nav class="admin-center-nav" aria-label="${text("center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#/admin/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
+  host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text(superCenter ? "superCenter" : "center")}</h1><p>${text(superCenter ? "superIntro" : "intro")}</p></div>
+    <nav class="admin-center-nav" aria-label="${text(superCenter ? "superCenter" : "center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#${baseRoute}/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
       <button type="button" id="adminNotificationsToggle" class="favorite-button admin-tools-toggle account-tool-button ${tab === 'notifications' ? 'is-open' : ''}" aria-label="${esc(text('notifications'))}" aria-pressed="${tab === 'notifications'}" aria-controls="accountNotifications"><span class="account-tool-icon account-tool-icon-notifications" aria-hidden="true"></span><span id="accountUnreadCount" class="account-unread-count" hidden></span></button></nav>
     <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" class="panel athlete-admin-panel admin-workspace-panel" aria-label="${text(tab)}" ${tab === 'notifications' ? 'hidden' : ''}><div class="section-header compact-section-header"><h2>${esc(text(tab))}</h2></div></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
-  document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? '#/admin' : '#/admin/notifications'; };
+  document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? `#${baseRoute}` : `#${baseRoute}/notifications`; };
   const control = document.querySelector('.admin-view-toggle');
   const scroll = document.querySelector('.admin-nav-scroll');
   const thumb = control.querySelector('.admin-view-thumb');
@@ -215,13 +223,14 @@ export async function renderAdminCenter(host) {
     thumb.style.transform = `translateX(${option.offsetLeft}px)`;
   };
   thumb.style.transition = 'none';
-  positionThumb(session.navigationTab || tab);
-  scroll.scrollLeft = session.navigationScroll || 0;
+  positionThumb(session.navigationCenter === baseRoute ? session.navigationTab || tab : tab);
+  scroll.scrollLeft = session.navigationCenter === baseRoute ? session.navigationScroll || 0 : 0;
   // Establish the previous position before animating the newly selected section.
   thumb.getBoundingClientRect();
   thumb.style.transition = '';
   positionThumb(tab);
   session.navigationTab = tab;
+  session.navigationCenter = baseRoute;
   const revealSelected = () => {
     positionThumb(tab);
     const option = control.querySelector('[aria-current="page"]');
@@ -349,7 +358,7 @@ export async function renderAdminCenter(host) {
   };
   try {
     if (tab === "overview") {
-      paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#/admin/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
+      paint(`<div class="admin-overview-links">${tabs.filter((v) => v !== "overview").map((v) => `<a class="admin-overview-link" href="#${baseRoute}/${v}"><h2>${text(v)}</h2><span aria-hidden="true">›</span></a>`).join("")}</div>`);
     }
     if (tab === "entry") {
       paint(`<div class="admin-center-actions">${button("newEvent", 'id="adminNewEvent"')}${button("newAthlete", 'id="adminNewAthlete"')}</div><div id="adminCreate"></div>

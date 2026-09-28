@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-panels-20260928";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=super-center-20260928";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-scopes-20260928";
 
@@ -2010,6 +2010,7 @@ function privateNavigationRoute() {
   const allowed = (route) => {
     const path = String(route || '').split('?')[0];
     if (path === '/account') return true;
+    if (/^\/super-admin(?:\/|$)/.test(path)) return user.role === 'super_admin';
     if (!['admin', 'super_admin'].includes(user.role) || !/^\/admin(?:\/|$)/.test(path)) return false;
     return !['/admin/users', '/admin/audit'].includes(path) || user.role === 'super_admin';
   };
@@ -2045,7 +2046,7 @@ function updateAuthUi() {
   }
   const path = state.route.split("?")[0];
   const active = ["/account", "/login", "/register", "/forgot-password", "/reset-password", "/resend-verification", "/verify-email"].includes(path)
-    || (Boolean(state.currentUser) && (path === "/admin" || path.startsWith("/admin/")));
+    || (Boolean(state.currentUser) && /^\/(?:admin|super-admin)(?:\/|$)/.test(path));
   if (active) authLink.setAttribute("aria-current", "page");
   else authLink.removeAttribute("aria-current");
 }
@@ -11741,6 +11742,7 @@ function renderAccountViewControl(selected) {
         <span class="segmented-thumb account-view-thumb" aria-hidden="true"></span>
       </div>
       <div class="account-user-actions account-navigation-actions">
+        ${state.currentUser?.role === "super_admin" ? `<a class="quiet-button outline-command-button" href="#/super-admin">${adminLabel(state.language, "superCenter")}</a>` : ""}
         ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
         ${renderAccountToolActions(selected)}
         <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
@@ -11858,8 +11860,8 @@ function athleteDetailBackDestination() {
   const params = new URLSearchParams(query);
   const source = params.get("from") || "";
   const returnRoute = params.get("return_to") || "";
-  if (source === "admin" && returnRoute.startsWith("/admin")) {
-    return { href: "#" + returnRoute, label: adminLabel(state.language, "center") };
+  if (source === "admin" && /^\/(?:admin|super-admin)(?:\/|$)/.test(returnRoute)) {
+    return { href: "#" + returnRoute, label: adminLabel(state.language, returnRoute.startsWith("/super-admin") ? "superCenter" : "center") };
   }
   if (source === "search") {
     const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
@@ -11893,8 +11895,8 @@ function eventDetailBackDestination() {
   const [, query = ""] = state.route.split("?");
   const params = new URLSearchParams(query);
   const returnRoute = params.get("return_to") || "";
-  if (params.get("from") === "admin" && returnRoute.startsWith("/admin")) {
-    return { href: "#" + returnRoute, label: adminLabel(state.language, "center") };
+  if (params.get("from") === "admin" && /^\/(?:admin|super-admin)(?:\/|$)/.test(returnRoute)) {
+    return { href: "#" + returnRoute, label: adminLabel(state.language, returnRoute.startsWith("/super-admin") ? "superCenter" : "center") };
   }
   if (params.get("from") === "search") {
     const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
@@ -12144,7 +12146,7 @@ function render() {
   const eventDetailMatch = state.route.match(/^\/events\/(\d+)/);
   if (["/forgot-password", "/reset-password", "/resend-verification"].includes(state.route.split("?")[0])) {
     return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
-  } else if (state.route.startsWith("/admin")) {
+  } else if (/^\/(?:admin|super-admin)(?:\/|$)/.test(state.route)) {
     return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml,
       renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t,
       setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });
