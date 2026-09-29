@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 29 settembre 2026 - Eventi dal piu recente al meno recente
+
+- La lista della sezione Eventi richiede ora l'ordine cronologico decrescente, per data di inizio della gara; in assenza di data si usa il primo gennaio dell'anno registrato come riferimento di ordinamento, senza mostrarlo come data reale.
+- Il parametro `sort_order` dell'endpoint calendario viene applicato prima di offset/limit all'insieme di eventi e voci calendario: anche Carica altri Eventi continua nell'ordine corretto. Ricerca e filtri mantengono questo criterio; gli eventi futuri sono inclusi.
+- Anche le card filtrate come Preferiti nella sezione Eventi seguono l'ordine decrescente. Nessuna modifica all'ordinamento del calendario, alla navigazione tra eventi o ai preferiti dell'Area Personale.
+- Test di regressione con eventi datati, senza date, voci calendario senza risultati, ricerca per anno e paginazione.
+
+
 #### 28 settembre 2026 - Panoramica delle attivita amministrative
 
 - La Panoramica del Centro Super Admin non mostra piu scorciatoie: presenta un riepilogo del registro audit, distinto dalla panoramica quantitativa dei dati del Centro Admin.

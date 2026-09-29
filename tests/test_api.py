@@ -5159,6 +5159,27 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
     assert invalid_response.status_code == 400
 
 
+def test_calendar_newest_first_order_is_applied_before_pagination():
+    with SessionLocal() as db:
+        for name, year, start in [
+            ("Old", 2024, date(2024, 7, 1)),
+            ("New", 2026, date(2026, 9, 1)),
+            ("Undated", 2025, None),
+            ("Middle", 2025, date(2025, 5, 1)),
+        ]:
+            db.add(models.Event(name=name, year=year, start_date=start, end_date=start,
+                discipline="MAG", category="senior", level="National Event"))
+        db.add(models.EventCalendarEntry(name="Future calendar only", year=2027,
+            start_date=date(2027, 1, 1), end_date=date(2027, 1, 2), discipline="MAG"))
+        db.commit()
+    newest = client.get("/events/calendar?sort_order=desc&limit=3").json()
+    older = client.get("/events/calendar?sort_order=desc&limit=3&offset=3").json()
+    assert [row["name"] for row in newest + older] == ["Future calendar only", "New", "Middle", "Undated", "Old"]
+    assert client.get("/events/calendar").json()[0]["name"] == "Old"
+    assert client.get("/events/calendar?sort_order=desc&year=2025").json()[0]["name"] == "Middle"
+    assert client.get("/events/calendar?sort_order=invalid").status_code == 422
+
+
 def test_super_admin_activity_overview_scope_counts_and_permissions():
     client.post("/auth/register", json={"email": "activity_super@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("activity_super@example.com")

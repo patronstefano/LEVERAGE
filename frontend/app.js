@@ -6534,6 +6534,7 @@ async function renderEvents() {
       as_of: formatLocalIso(TODAY),
       limit: EVENT_SECTION_LIMIT,
       offset: eventPageOffset,
+      sort_order: "desc",
     });
     eventPageOffset += events.length;
     if (events.length < EVENT_SECTION_LIMIT) {
@@ -6574,7 +6575,7 @@ async function renderEvents() {
           state.eventsFavoriteCalendarAutoFocus = false;
         }
         resetEventPagination();
-        resultsNode.innerHTML = renderFavoriteEvents(favoriteDetails);
+        resultsNode.innerHTML = renderFavoriteEvents(favoriteDetails, { newestFirst: true });
         bindFavoriteButtons();
         return;
       }
@@ -7027,9 +7028,16 @@ function renderFavoriteAthletes(details) {
   }).join("")}</div>`;
 }
 
-function renderFavoriteEvents(details) {
+function renderFavoriteEvents(details, { newestFirst = false } = {}) {
   if (!details.length) return emptyMessage(t("noFavoriteEvents"));
-  const displayDetails = sortFavoriteEventDetails(details);
+  const displayDetails = newestFirst ? [...details].sort((left, right) => {
+    const a = left.event || {};
+    const b = right.event || {};
+    return String(b.start_date || `${b.year}-01-01`).localeCompare(String(a.start_date || `${a.year}-01-01`))
+      || String(b.end_date || `${b.year}-12-31`).localeCompare(String(a.end_date || `${a.year}-12-31`))
+      || String(b.name || "").localeCompare(String(a.name || ""))
+      || Number(b.id || 0) - Number(a.id || 0);
+  }) : sortFavoriteEventDetails(details);
   const visibleDetails = splitEventListFullRows(displayDetails, false).visible;
   return `<div class="grid-3 event-results-list account-preference-card-list">${visibleDetails.map((item) => {
     const event = item.event || {};

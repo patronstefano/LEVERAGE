@@ -2,7 +2,7 @@ from datetime import date, datetime
 from pathlib import Path
 from uuid import uuid4
 
-from typing import Optional
+from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from sqlalchemy import and_, func, or_
@@ -576,6 +576,7 @@ def list_events(
 @router.get("/calendar", response_model=list[schemas.EventCalendarItem])
 def get_events_calendar(
     db: Session = Depends(get_db),
+    sort_order: Literal["asc", "desc"] = Query("asc", description="Chronological order, applied before pagination"),
     search: Optional[str] = Query(None, description="Search calendar competition name, year, location or semantic alias"),
     start_date: Optional[date] = Query(None, description="Include events ending on or after this date"),
     end_date: Optional[date] = Query(None, description="Include events starting on or before this date"),
@@ -736,7 +737,7 @@ def get_events_calendar(
         item["name"],
         item["calendar_entry_id"] or 0,
         item["id"] or 0,
-    ))
+    ), reverse=sort_order == "desc")
     return calendar_items[offset:offset + limit]
 
 
