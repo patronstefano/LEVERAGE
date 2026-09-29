@@ -577,6 +577,7 @@ def list_events(
 def get_events_calendar(
     db: Session = Depends(get_db),
     sort_order: Literal["asc", "desc"] = Query("asc", description="Chronological order, applied before pagination"),
+    completed_only: bool = Query(False, description="Only events that ended before the reference date, with or without results"),
     search: Optional[str] = Query(None, description="Search calendar competition name, year, location or semantic alias"),
     start_date: Optional[date] = Query(None, description="Include events ending on or after this date"),
     end_date: Optional[date] = Query(None, description="Include events starting on or before this date"),
@@ -731,6 +732,10 @@ def get_events_calendar(
             continue
         calendar_items.append(item)
 
+    if completed_only:
+        calendar_items = [item for item in calendar_items if item["calendar_status"] in {
+            "completed_with_results", "completed_no_results",
+        }]
     calendar_items.sort(key=lambda item: (
         item["start_date"] or date(item["year"], 1, 1),
         item["end_date"] or date(item["year"], 12, 31),

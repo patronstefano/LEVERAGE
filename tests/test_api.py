@@ -5178,6 +5178,10 @@ def test_calendar_newest_first_order_is_applied_before_pagination():
     assert client.get("/events/calendar").json()[0]["name"] == "Old"
     assert client.get("/events/calendar?sort_order=desc&year=2025").json()[0]["name"] == "Middle"
     assert client.get("/events/calendar?sort_order=invalid").status_code == 422
+    completed = client.get("/events/calendar?completed_only=true&as_of=2026-09-01&sort_order=desc&limit=2").json()
+    assert [row["name"] for row in completed] == ["Middle", "Undated"]
+    assert [row["name"] for row in client.get("/events/calendar?completed_only=true&as_of=2026-09-01&sort_order=desc&limit=2&offset=2").json()] == ["Old"]
+    assert len(client.get("/events/calendar?completed_only=true&as_of=2027-01-03").json()) == 5
 
 
 def test_super_admin_activity_overview_scope_counts_and_permissions():

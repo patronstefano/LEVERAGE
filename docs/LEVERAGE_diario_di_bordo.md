@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 29 settembre 2026 - Filtro Solo conclusi nella sezione Eventi
+
+- Aggiunto un pulsante filtro standard accanto allo slider Lista/Calendario, tradotto nelle quattro lingue. Si combina con ricerca, periodo, level, disciplina, categoria e preferiti; Pulisci filtri lo disattiva.
+- Il filtro include eventi conclusi con o senza risultati, escludendo quelli futuri e in corso. Il giorno finale e incluso nella durata della gara: un evento che termina oggi non e ancora classificato come concluso.
+- L'endpoint calendario applica `completed_only` prima della paginazione; il parametro vale anche per vista calendario e navigazione tra eventi filtrati. Per date incomplete resta valida la convenzione del calendario esistente (fine, oppure inizio se manca la fine, oppure 31 dicembre dell'anno se entrambe assenti).
+- Nessuna modifica ai dati salvati. Test su limite temporale del giorno di fine, eventi futuri, voci calendario e paginazione.
+
+
 #### 29 settembre 2026 - Eventi dal piu recente al meno recente
 
 - La lista della sezione Eventi richiede ora l'ordine cronologico decrescente, per data di inizio della gara; in assenza di data si usa il primo gennaio dell'anno registrato come riferimento di ordinamento, senza mostrarlo come data reale.

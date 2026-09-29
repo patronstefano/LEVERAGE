@@ -415,6 +415,7 @@ const translations = {
     eventsIntro: "Find competitions in list or calendar view, filter by level, period, discipline and category, then open event records.",
     eventSearchPlaceholder: "Search events by competition, year or place...",
     eventViewList: "List",
+    eventsCompletedOnly: "Completed only",
     eventViewCalendar: "Calendar",
     eventProfile: "Event profile",
     eventDetails: "Information",
@@ -775,6 +776,7 @@ const translations = {
     eventsIntro: "Trova gare in lista o calendario, filtra per level, periodo, disciplina e categoria, poi apri la scheda evento.",
     eventSearchPlaceholder: "Cerca eventi per competizione, anno o luogo...",
     eventViewList: "Lista",
+    eventsCompletedOnly: "Solo conclusi",
     eventViewCalendar: "Calendario",
     eventProfile: "Scheda evento",
     eventDetails: "Informazioni",
@@ -1135,6 +1137,7 @@ const translations = {
     eventsIntro: "Encuentra competiciones en lista o calendario, filtra por level, periodo, disciplina y categoria, y abre la ficha del evento.",
     eventSearchPlaceholder: "Buscar eventos por competicion, ano o lugar...",
     eventViewList: "Lista",
+    eventsCompletedOnly: "Solo finalizados",
     eventViewCalendar: "Calendario",
     eventProfile: "Ficha de evento",
     eventDetails: "Informacion",
@@ -1495,6 +1498,7 @@ const translations = {
     eventsIntro: "Trouvez les competitions en liste ou calendrier, filtrez par level, periode, discipline et categorie, puis ouvrez la fiche evenement.",
     eventSearchPlaceholder: "Rechercher evenements par competition, annee ou lieu...",
     eventViewList: "Liste",
+    eventsCompletedOnly: "Terminés uniquement",
     eventViewCalendar: "Calendrier",
     eventProfile: "Fiche evenement",
     eventDetails: "Informations",
@@ -4419,6 +4423,10 @@ function sortFavoriteAthleteDetails(details) {
 
 function favoriteEventDetailMatches(detail, query) {
   const event = detail.event || {};
+  if (filterIsActive("completedOnly", "true", "events")) {
+    const end = event.end_date || event.start_date || `${event.year}-12-31`;
+    if (end >= formatLocalIso(new Date())) return false;
+  }
   if (!eventValueIncludesFilter(event.discipline, filterValues("discipline", "events"))) return false;
   if (!eventValueIncludesFilter(event.category, filterValues("category", "events"))) return false;
   if (filterValues("level", "events").length && !filterValues("level", "events").includes(event.level)) return false;
@@ -4722,6 +4730,7 @@ function focusEventsCalendarOnFirstFavorite(details) {
 
 function eventCalendarHasNavigationScope(query = "") {
   return Boolean(
+    filterIsActive("completedOnly", "true", "events") ||
     query.trim() ||
     filterValues("discipline", "events").length ||
     filterValues("category", "events").length ||
@@ -4733,10 +4742,11 @@ function eventCalendarHasNavigationScope(query = "") {
 
 function eventCalendarQueryParams(query = "", options = {}) {
   return {
+    completed_only: filterIsActive("completedOnly", "true", "events"),
     search: query,
     start_date: options.startDate || "",
     end_date: options.endDate || "",
-    as_of: formatLocalIso(TODAY),
+    as_of: formatLocalIso(new Date()),
     limit: options.limit || 1000,
     offset: options.offset || 0,
     discipline: multiFilterParam("discipline", "events"),
@@ -5283,6 +5293,7 @@ function clearSectionSearch(section) {
 
 function clearEventFilters() {
   Object.assign(scopedFilters("events"), {
+    completedOnly: "",
     discipline: [],
     category: [],
     level: [],
@@ -6495,6 +6506,7 @@ async function renderEvents() {
         </div>
         <div class="toolbar section-filter-row event-view-row">
           ${eventViewModeControl()}
+          ${filterButton(t("eventsCompletedOnly"), "completedOnly", "true", "events")}
           <div class="filter-action-group">
             ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "events", "section-favorite-filter") : ""}
             <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearEventFiltersButton">${t("clearRankingFilters")}</button>
@@ -6531,10 +6543,11 @@ async function renderEvents() {
       level: filterValues("level", "events"),
       start_date: timeFilters.startDate,
       end_date: timeFilters.endDate,
-      as_of: formatLocalIso(TODAY),
+      as_of: formatLocalIso(new Date()),
       limit: EVENT_SECTION_LIMIT,
       offset: eventPageOffset,
       sort_order: "desc",
+      completed_only: filterIsActive("completedOnly", "true", "events"),
     });
     eventPageOffset += events.length;
     if (events.length < EVENT_SECTION_LIMIT) {
