@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Coerenza delle sezioni Centro Super Admin
+
+Uniformate gestione utenti e audit alle righe delle Notifiche: tipografia, dati secondari, spaziature e azioni separate. Ripristino in blocco dedicato analogo alle Impostazioni; approvazione con contorno verde e annullamento modifica con contorno rosso. Tabelle della panoramica inserite nei blocchi condivisi, mantenendo conteggi, filtri e riepilogo attivita. Date audit localizzate, stati tradotti, risultati vuoti in riquadro uniforme. Notifiche mantiene il componente gia condiviso. Invariati autorizzazioni, conferme, divieto di approvare le proprie modifiche e contratti backend. Test browser esteso a righe utenti, audit popolato e layout mobile.
+
 #### 2026-09-30 - Uniformita di Statistiche sito
 
 Sostituito il report tecnico generico con blocchi coerenti a Revisioni, Notifiche e Impostazioni: traffico, account, ricerche frequenti, atleti ed eventi piu visualizzati. Pannello bianco, titoli compatti, divisori leggeri e stati vuoti condivisi; metriche disposte in griglia responsive, liste con conteggi allineati. Etichette tradotte nelle quattro lingue e numeri localizzati. Mostrato il periodo effettivamente restituito dal backend e indicata separatamente la finestra di attivita degli account; durata media assente rappresentata con trattino, non zero. Conservati endpoint, autorizzazioni e dati raccolti. Test browser esteso a metriche, date, liste, assenza dati e viewport mobile.

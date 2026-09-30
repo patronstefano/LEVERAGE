@@ -45,6 +45,10 @@ def main():
                 }
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
+            elif path == "/admin/users":
+                payload = [{"id": 77, "email": "review@example.test", "role": "admin"}]
+            elif path == "/admin/audit-logs":
+                payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
             elif path == "/data-suggestions/":
                 payload = [{"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "source_url": "https://example.org/profile"}]
             elif path == "/admin/calendar":
@@ -172,6 +176,21 @@ def main():
                 page.locator('#adminContext [data-admin-select-value="WAG"]').click()
                 assert page.locator('#adminResultForm [name="apparatus"]').input_value() == "VT"
                 page.screenshot(path="/tmp/leverage-admin-entry.png", full_page=True)
+            if tab == "users":
+                page.locator('#adminUsersForm button[type=submit]').click()
+                page.locator('#adminUsers .account-notification').wait_for()
+                assert 'review@example.test' in page.locator('#adminUsers').inner_text()
+                assert page.locator('.admin-user-role-actions').is_visible()
+            if tab == "audit":
+                page.locator('#adminAuditForm button[type=submit]').click()
+                page.locator('#adminAudit .account-notification').wait_for()
+                assert page.locator('[data-action=approve].admin-accept-button').count() == 1
+                assert page.locator('[data-action=revert].filter-clear-button').count() == 1
+                assert page.locator('#adminRestoreForm').locator('..').get_attribute('class') == 'admin-tool-block'
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                page.screenshot(path='/tmp/leverage-super-audit-mobile.png', full_page=True)
+                page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "statistics":
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'

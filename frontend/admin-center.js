@@ -125,6 +125,11 @@ const COPY = {
   ],
   entry: ["Data entry", "Inserimento dati", "Entrada de datos", "Saisie des données"],
   results: ["Results", "Risultati", "Resultados", "Résultats"],
+  athletes: ["Athletes", "Atleti", "Atletas", "Athlètes"],
+  events: ["Events", "Eventi", "Eventos", "Événements"],
+  Athlete: ["Athlete", "Atleta", "Atleta", "Athlète"],
+  Event: ["Event", "Evento", "Evento", "Événement"],
+  Result: ["Result", "Risultato", "Resultado", "Résultat"],
   duplicateResults: ["Possible duplicate results", "Possibili risultati duplicati", "Posibles resultados duplicados", "Résultats potentiellement en double"],
   imports: ["Imports", "Importazioni", "Importaciones", "Importations"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
@@ -279,6 +284,8 @@ export async function renderAdminCenter(host) {
   const select = (name, label, options, value = "") => host.renderAdminSelectControl(name, text(label), value,
     options.map((o) => typeof o === "string" ? { value: o, label: text(o) } : o));
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
+  const toolBlock = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(text(title))}</h2></div>${content}</section>`;
+  const emptyState = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
   host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text(superCenter ? "superCenter" : "center")}</h1><p>${text(superCenter ? "superIntro" : "intro")}</p></div>
     <nav class="admin-center-nav" aria-label="${text(superCenter ? "superCenter" : "center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#${baseRoute}/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
@@ -439,7 +446,7 @@ export async function renderAdminCenter(host) {
           const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
           const summary = (title, rows) => `<section class="admin-data-group"><h3>${esc(text(title))}</h3><dl>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
-          const table = (title, headers, rows) => `<section class="admin-activity-section"><h3>${esc(text(title))}</h3>${rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : `<p class="empty-state">${esc(text("empty"))}</p>`}</section>`;
+          const table = (title, headers, rows) => toolBlock(title, rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : emptyState());
           paint(`${form("adminActivityPeriod", select("days", "activityPeriod", [
             { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
             { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
@@ -640,15 +647,17 @@ export async function renderAdminCenter(host) {
       paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers"></div>');
       onSubmit("adminUsersForm", async (params) => {
         const users = await api("/admin/users", { params }); if (!active()) return;
-        document.getElementById("adminUsers").innerHTML = users.map((u) => `<div class="admin-center-row"><span>${esc(u.email)} · ${esc(u.role)}</span>${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div>`).join("") || text("empty"); bind();
+        document.getElementById("adminUsers").innerHTML = users.map((u) => `<article class="account-notification"><div class="account-notification-copy"><p>${esc(u.email)}</p><p class="admin-revision-meta">${esc(u.role.replaceAll('_', ' ').toUpperCase())}</p></div><div class="account-notification-actions admin-user-role-actions">${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div></article>`).join("") || emptyState(); bind();
         root.querySelectorAll("[data-role]").forEach((b) => b.onclick = () => confirm("save", async () => { await api(`/admin/users/${b.dataset.role}/role`, { method: "PUT", body: { role: root.querySelector(`[name="role_${b.dataset.role}"]`).value } }); }));
       });
     }
     if (tab === "audit") {
-      paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit"></div>' + `<h2>${text("restore")}</h2>` + form("adminRestoreForm", select("type", "entity_type", ["athletes", "events", "results"]) + field("id", "ID", "number", "", true), "restore"));
+      paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit"></div>' + toolBlock("restore", form("adminRestoreForm", select("type", "entity_type", ["athletes", "events", "results"]) + field("id", "ID", "number", "", true), "restore")));
       onSubmit("adminAuditForm", async (params) => {
         const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
-        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="admin-center-row"><div><strong>#${log.id} · ${esc(log.entity_type)} #${log.entity_id} · ${esc(log.action)}</strong><p>${esc(log.created_at)} · ${esc(log.review_status)}</p><details><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${log.review_status === "pending" && log.admin_id !== state.currentUser.id ? `<div class="admin-center-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || text("empty");
+        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${log.review_status === "pending" && log.admin_id !== state.currentUser.id ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
+        root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
+        root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));
         root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); }));
       });
       onSubmit("adminRestoreForm", async (v) => confirm("restore", () => api(`/admin/${v.type}/${Number(v.id)}/restore`, { method: "PUT" })));
