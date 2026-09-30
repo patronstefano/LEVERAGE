@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Formato email nella registrazione
+
+Il campo email della registrazione mostra l'esempio generico `name@example.com`, richiede nome locale, @ e dominio con suffisso e mantiene la validazione backend EmailStr. Nessuna restrizione al provider (Gmail, Outlook, domini personali, ecc.). Aggiunti tastiera email mobile, disattivazione maiuscole automatiche e correttore. Gli errori continuano a usare l'avviso inline localizzato del form, non popup nativi. Il controllo del formato non prova che la casella esista: resta distinto dalla futura verifica via email.
+
 #### 2026-09-30 - Visualizzazione della password
 
 Rifinitura successiva: rimosso il contorno visibile del pulsante occhio. Hover e stato attivo evidenziano soltanto l'icona in blu LEVERAGE, senza sfondo o riquadro; il focus da tastiera distingue l'icona con una lieve evidenziazione. Invariati dimensioni del campo e comportamento mostra/nascondi.

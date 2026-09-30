@@ -7009,7 +7009,7 @@ function renderRegister() {
       <form class="auth-form" id="registerForm">
         <label>
           <span>${t("email")}</span>
-          <input id="registerEmail" type="email" autocomplete="email" required>
+          <input id="registerEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="name@example.com" pattern="[^\\s@]+@[^\\s@]+\\.[^\\s@]+" required>
         </label>
         <label>
           <span>${t("password")}</span>
