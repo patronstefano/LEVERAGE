@@ -5159,6 +5159,43 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
     assert invalid_response.status_code == 400
 
 
+def test_national_athlete_filter_and_favorites():
+    client.post("/auth/register", json={"email": "national_filter@example.com", "password": TEST_PASSWORD})
+    token = login_as_user("national_filter@example.com")
+    with SessionLocal() as db:
+        user = db.query(User).filter_by(email="national_filter@example.com").one()
+        eligible = []
+        for i, level in enumerate(models.LevelEnum):
+            athlete = models.Athlete(first_name="Test", last_name=f"Athlete{i}", discipline="MAG", country="ITA")
+            event = models.Event(name=f"Event{i}", year=2026, discipline="MAG", category="junior", level=level)
+            db.add_all([athlete, event])
+            db.flush()
+            if i < 5:
+                eligible.append(athlete.id)
+            db.add(models.FollowedAthlete(user_id=user.id, athlete_id=athlete.id))
+            for apparatus in ["FX", "PH"]:
+                db.add(models.Result(athlete_id=athlete.id, event_id=event.id, discipline="MAG",
+                    category="junior", apparatus=apparatus, format="individual", round="final", score=12))
+        db.commit()
+        removed_event = db.query(models.Event).filter_by(name="Event0").one()
+        removed_event.is_deleted = True
+        for result in db.query(models.Result).filter_by(athlete_id=eligible[1]):
+            result.is_deleted = True
+        db.commit()
+    expected = eligible[2:]
+    response = client.get("/athletes/?national_only=true&category=junior&search=Italy&limit=2")
+    assert response.status_code == 200, response.text
+    assert [row["id"] for row in response.json()] == expected[:2]
+    assert [row["id"] for row in client.get("/athletes/?national_only=true&offset=2").json()] == expected[2:]
+    assert client.get("/athletes/?national_only=true&discipline=WAG").json() == []
+    assert len(client.get("/athletes/").json()) == 7
+    headers = {"Authorization": f"Bearer {token}"}
+    favorites = client.get("/preferences/athletes/followed/details?national_only=true", headers=headers)
+    assert favorites.status_code == 200, favorites.text
+    assert {row["athlete_id"] for row in favorites.json()} == set(expected)
+    assert len(client.get("/preferences/athletes/followed/details", headers=headers).json()) == 7
+
+
 def test_calendar_newest_first_order_is_applied_before_pagination():
     with SessionLocal() as db:
         for name, year, start in [

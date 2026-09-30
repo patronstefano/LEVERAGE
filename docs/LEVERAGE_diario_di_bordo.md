@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Filtro Solo nazionali negli Atleti
+
+- Aggiunto il pulsante Solo nazionali accanto allo slider Nome/Nazione, con stile standard e testi nelle quattro lingue. Disattivato di default, reversibile e azzerato da Pulisci filtri.
+- Criterio esplicito richiesto: almeno un risultato attivo in un evento attivo di livello Olympic Games, World Championships, Continental Championships, World Cup o World Challenge Cup. Non si tratta di attestazione di appartenenza attuale a una squadra nazionale; nessun nuovo campo anagrafico.
+- Partecipazione valutata sull'intera carriera, senza restrizioni Junior/Senior o di anno. I filtri categoria e disciplina rimangono ulteriori condizioni sulla selezione degli atleti. National Event e International Event non bastano a soddisfare il criterio.
+- Predicato SQL EXISTS condiviso tra elenco atleti e dettagli preferiti, applicato prima della paginazione, senza duplicare gli atleti con piu risultati. Ricerca, ordinamento e caricamento progressivo restano combinabili.
+- I preferiti filtrati non sostituiscono l'insieme globale dei preferiti in memoria, evitando di perdere le stelline degli atleti esclusi temporaneamente. Nessuna modifica ai dati o alle altre sezioni.
+- Test API per livelli, risultati ed eventi eliminati, combinazione con ricerca/categoria, paginazione, esclusione WAG in campione MAG e preferiti.
+
+
 #### 30 settembre 2026 - Correzione del nome All-Japan 2026
 
 - Su richiesta esplicita del responsabile del progetto, rinominato l'evento 1761 (2026) da `All-Japan Team & Event Championships (Aiko Arena, Yokkaichi City)` a `All-Japan Team & Event Championships`.

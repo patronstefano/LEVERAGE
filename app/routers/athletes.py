@@ -8,6 +8,7 @@ from sqlalchemy import and_, case, or_
 from sqlalchemy.orm import Session
 
 from app import models, schemas
+from app.athlete_filters import national_athlete_condition
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms, resolve_exact_country_codes
 from app.database import get_db
@@ -342,6 +343,7 @@ def create_athlete(
 @router.get("/", response_model=list[schemas.AthleteRead])
 def list_athletes(
     db: Session = Depends(get_db),
+    national_only: bool = Query(False, description="At least one active result at OG, WCH, CC, World Cup or World Challenge Cup"),
     search: Optional[str] = Query(None, description="Search in first name, last name, country, or athlete id"),
     discipline: Optional[models.DisciplineEnum] = Query(None),
     category: Optional[list[models.ResultCategoryEnum]] = Query(None, description="Filter athletes with at least one result in the selected category"),
@@ -353,6 +355,8 @@ def list_athletes(
     current_user: Optional[models.User] = Depends(get_optional_current_user),
 ):
     query = db.query(models.Athlete).filter(models.Athlete.is_deleted.is_(False))
+    if national_only:
+        query = query.filter(national_athlete_condition())
     if favorite_only:
         if current_user is None:
             raise HTTPException(status_code=401, detail="Authentication required for favorite filters")

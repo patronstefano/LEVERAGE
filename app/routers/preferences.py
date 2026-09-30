@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app import models, schemas
+from app.athlete_filters import national_athlete_condition
 from app.database import get_db
 from app.event_calendar import build_event_calendar_item
 from app.i18n import SUPPORTED_LANGUAGE_OPTIONS, resolve_public_language
@@ -161,11 +162,15 @@ def get_followed_athletes(
 def get_followed_athletes_details(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
+    national_only: bool = Query(False),
 ):
     followed_athletes = db.query(models.FollowedAthlete).join(models.Athlete).filter(
         models.FollowedAthlete.user_id == current_user.id,
         models.Athlete.is_deleted.is_(False),
-    ).order_by(models.FollowedAthlete.created_at.desc()).all()
+    )
+    if national_only:
+        followed_athletes = followed_athletes.filter(national_athlete_condition())
+    followed_athletes = followed_athletes.order_by(models.FollowedAthlete.created_at.desc()).all()
 
     details = []
     for followed in followed_athletes:

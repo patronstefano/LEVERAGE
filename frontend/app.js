@@ -416,6 +416,7 @@ const translations = {
     eventSearchPlaceholder: "Search events by competition, year or place...",
     eventViewList: "List",
     eventsCompletedOnly: "Completed only",
+    athletesNationalOnly: "National athletes only",
     eventViewCalendar: "Calendar",
     eventProfile: "Event profile",
     eventDetails: "Information",
@@ -777,6 +778,7 @@ const translations = {
     eventSearchPlaceholder: "Cerca eventi per competizione, anno o luogo...",
     eventViewList: "Lista",
     eventsCompletedOnly: "Solo conclusi",
+    athletesNationalOnly: "Solo nazionali",
     eventViewCalendar: "Calendario",
     eventProfile: "Scheda evento",
     eventDetails: "Informazioni",
@@ -1138,6 +1140,7 @@ const translations = {
     eventSearchPlaceholder: "Buscar eventos por competicion, ano o lugar...",
     eventViewList: "Lista",
     eventsCompletedOnly: "Solo finalizados",
+    athletesNationalOnly: "Solo atletas nacionales",
     eventViewCalendar: "Calendario",
     eventProfile: "Ficha de evento",
     eventDetails: "Informacion",
@@ -1499,6 +1502,7 @@ const translations = {
     eventSearchPlaceholder: "Rechercher evenements par competition, annee ou lieu...",
     eventViewList: "Liste",
     eventsCompletedOnly: "Terminés uniquement",
+    athletesNationalOnly: "Athlètes nationaux uniquement",
     eventViewCalendar: "Calendrier",
     eventProfile: "Fiche evenement",
     eventDetails: "Informations",
@@ -4444,9 +4448,12 @@ function favoriteEventDetailMatches(detail, query) {
 }
 
 async function getFavoriteAthleteDetailsForSection(query = "") {
-  const details = await getJson("/preferences/athletes/followed/details", {}, { auth: true });
-  state.favoriteAthleteIds = new Set(details.map((item) => Number(item.athlete_id)));
-  state.favoritesLoaded = true;
+  const nationalOnly = filterIsActive("nationalOnly", "true", "athletes");
+  const details = await getJson("/preferences/athletes/followed/details", { national_only: nationalOnly }, { auth: true });
+  if (!nationalOnly) {
+    state.favoriteAthleteIds = new Set(details.map((item) => Number(item.athlete_id)));
+    state.favoritesLoaded = true;
+  }
   return sortFavoriteAthleteDetails(details.filter((detail) => favoriteAthleteDetailMatches(detail, query)));
 }
 
@@ -5315,6 +5322,7 @@ function clearEventFilters() {
 
 function clearAthleteFilters() {
   Object.assign(scopedFilters("athletes"), {
+    nationalOnly: "",
     discipline: [],
     category: [],
     favoritesOnly: "",
@@ -6401,6 +6409,7 @@ async function renderAthletes() {
         </div>
         <div class="toolbar section-filter-row athlete-sort-row">
           ${athleteSortModeControl()}
+          ${filterButton(t("athletesNationalOnly"), "nationalOnly", "true", "athletes")}
           <div class="filter-action-group">
             ${state.currentUser ? filterButton(t("favoritesFilter"), "favoritesOnly", "true", "athletes", "section-favorite-filter") : ""}
             <button class="quiet-button filter-clear-button filters-reset-button" type="button" id="clearAthleteFiltersButton">${t("clearRankingFilters")}</button>
@@ -6438,6 +6447,7 @@ async function renderAthletes() {
       }
       const offset = append ? athletePageOffset : 0;
       const athletes = await getJson("/athletes/", {
+        national_only: filterIsActive("nationalOnly", "true", "athletes"),
         search: query,
         discipline: singleFilterParam("discipline", "athletes"),
         category: filterValues("category", "athletes"),
