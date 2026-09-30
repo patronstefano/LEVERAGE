@@ -311,6 +311,7 @@ const translations = {
     verificationSuccess: "Email verified. You can now sign in.",
     verificationError: "This verification link is invalid or has expired.",
     mfaRequired: "Enter your MFA code to complete sign in.",
+    mfaEmailRequired: "Enter the code received by email to complete sign in.",
     mfaSetupRequired: "Admin MFA setup is required before this account can sign in here.",
     demoLoginNote: "Temporary frontend development shortcuts.",
     demoUser: "DEMO USER",
@@ -673,6 +674,7 @@ const translations = {
     verificationSuccess: "Email verificata. Ora puoi accedere.",
     verificationError: "Il link di verifica non è valido oppure è scaduto.",
     mfaRequired: "Inserisci il codice MFA per completare l'accesso.",
+    mfaEmailRequired: "Inserisci il codice ricevuto via mail per completare l'accesso.",
     mfaSetupRequired: "Prima di accedere qui, questo account admin deve completare la configurazione MFA.",
     demoLoginNote: "Scorciatoie temporanee per lo sviluppo frontend.",
     demoUser: "DEMO USER",
@@ -1035,6 +1037,7 @@ const translations = {
     verificationSuccess: "Email verificado. Ya puedes iniciar sesion.",
     verificationError: "El enlace de verificacion no es valido o ha caducado.",
     mfaRequired: "Introduce el codigo MFA para completar el acceso.",
+    mfaEmailRequired: "Introduce el c\u00f3digo recibido por correo para completar el acceso.",
     mfaSetupRequired: "Esta cuenta admin debe configurar MFA antes de acceder aqui.",
     demoLoginNote: "Accesos temporales para desarrollo frontend.",
     demoUser: "DEMO USER",
@@ -1397,6 +1400,7 @@ const translations = {
     verificationSuccess: "Email verifie. Vous pouvez maintenant vous connecter.",
     verificationError: "Ce lien de verification est invalide ou a expire.",
     mfaRequired: "Saisissez le code MFA pour terminer la connexion.",
+    mfaEmailRequired: "Saisissez le code re\u00e7u par email pour terminer la connexion.",
     mfaSetupRequired: "Ce compte admin doit configurer MFA avant de se connecter ici.",
     demoLoginNote: "Raccourcis temporaires pour le developpement frontend.",
     demoUser: "DEMO USER",
@@ -6878,7 +6882,7 @@ function renderLogin() {
           $("#mfaField").hidden = false;
           $("#loginMfaCode").required = true;
           $("#loginMfaCode").focus();
-          message.textContent = t("mfaRequired");
+          message.textContent = t("mfaEmailRequired");
         } else if ($("#loginMfaCode").value.trim() !== "123456") {
           validation.serverError({ status: 401, detail: "Invalid authentication credentials" }, "login");
         } else {

@@ -296,6 +296,14 @@ Se le variabili SMTP non sono configurate in locale, il backend continua a funzi
 In `production` e `staging`, `SECRET_KEY`, SMTP e `FRONTEND_BASE_URL` HTTPS devono essere configurati esplicitamente.
 
 ## Admin bootstrap
+### Decisione per l'MVP privato e autenticazione futura
+
+Decisione confermata il 30 settembre 2026: fino alla tesi l'MVP privato verra utilizzato soltanto con utenti DEMO. Dopo il completamento dell'MVP, il secondo fattore ADMIN/SUPER ADMIN passera dall'app di autenticazione al codice inviato all'email verificata dell'account (destinatario distinto dal mittente SMTP LEVERAGE).
+
+L'invio del codice via email **non e ancora implementato ne attivato**. La simulazione locale `?auth_demo=mfa#/login` anticipa il messaggio relativo al codice ricevuto via mail, ma usa soltanto il codice fittizio `123456`, non invia email e non crea sessioni. Il backend reale conserva TOTP e codici di recupero fino alla migrazione collaudata. `admin@example.test` e un indirizzo dimostrativo, non una casella da configurare per la consegna.
+
+Prima dell'attivazione: configurare SMTP e mittente verificato, implementare challenge a scadenza e monouso con limiti di invio/tentativi, testare consegna ed errori, definire recupero accesso e migrazione degli account esistenti. L'accesso alla casella email diventera una dipendenza di sicurezza del secondo fattore. Rimuovere/disabilitare le scorciatoie e simulazioni DEMO prima di qualsiasi uso non dimostrativo.
+
 Il primo `super_admin` va creato da terminale, non tramite auto-promozione pubblica:
 
 ```bash
