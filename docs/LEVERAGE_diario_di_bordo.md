@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Riquadro della legenda calendario
+
+- Aggiunto uno sfondo bianco alla legenda, con bordo sottile neutro, arrotondamento standard dei controlli e spaziatura compatta. Il contrasto con lo sfondo rende piu distinguibili i colori pastello senza modificarli.
+- Conservati testi, disposizione flessibile e comportamento responsive della legenda. Nessuna modifica ai dati o ai filtri.
+
+
 #### 30 settembre 2026 - Palette tenue degli stati evento
 
 - Resi pastello i quattro stati evento, con sfondo chiaro, bordo leggero e testo leggibile, coerentemente ai badge MAG/WAG. Eliminato il riempimento blu pieno di Risultati disponibili.

@@ -1828,6 +1828,12 @@ button {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 8px 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
   color: var(--muted);
   font-size: 12px;
   line-height: 1.2;
