@@ -446,7 +446,7 @@ export async function renderAdminCenter(host) {
           const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
           const summary = (title, rows) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd>${number.format(data.total)}</dd></div>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
-          const table = (title, headers, rows) => `<details class="admin-activity-details"><summary>${esc(text(title))}</summary>${rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : emptyState()}</details>`;
+          const activityList = (title, headers, rows) => `<details class="admin-activity-details admin-revision-group"><summary>${esc(text(title))}<span class="admin-revision-count">${number.format(rows.length)}</span></summary><div class="admin-revision-list">${rows.length ? rows.map((cells) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(cells[0])}</strong></p><dl class="admin-activity-row-details">${cells.slice(1).map((cell, index) => `<div><dt>${esc(text(headers[index + 1]))}</dt><dd>${esc(cell)}</dd></div>`).join("")}</dl></div></article>`).join("") : emptyState()}</div></details>`;
           paint(`<div class="admin-data-overview">
             ${summary("activityTotal", [[text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
             ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
@@ -457,8 +457,8 @@ export async function renderAdminCenter(host) {
             { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
             { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
           ], String(session.activityDays ?? 30)))}
-          ${table("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
-          ${table("activityRecent", ["ID", "activityDate", "activityAuthor", "activityOperation", "entity_type", "status"], data.recent.map((row) => [`#${row.id}`, date(row.created_at), author(row), text(row.action), `${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, text(row.review_status)]))}
+          ${activityList("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
+          ${activityList("activityRecent", ["ID", "activityDate", "activityAuthor", "status"], data.recent.map((row) => [`#${row.id} · ${text(row.action)} · ${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, date(row.created_at), author(row), text(row.review_status)]))}
           <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>`);
           if (!active()) return;
           document.getElementById("adminActivityPeriod").onsubmit = guard(async (event) => {
@@ -644,21 +644,21 @@ export async function renderAdminCenter(host) {
       });
     }
     if (tab === "users") {
-      paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers"></div>');
+      paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers" class="admin-revision-list"></div>');
       onSubmit("adminUsersForm", async (params) => {
         const users = await api("/admin/users", { params }); if (!active()) return;
-        document.getElementById("adminUsers").innerHTML = users.map((u) => `<article class="account-notification"><div class="account-notification-copy"><p>${esc(u.email)}</p><p class="admin-revision-meta">${esc(u.role.replaceAll('_', ' ').toUpperCase())}</p></div><div class="account-notification-actions admin-user-role-actions">${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div></article>`).join("") || emptyState(); bind();
+        document.getElementById("adminUsers").innerHTML = users.map((u) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(u.email)}</strong></p><p class="admin-revision-meta">${esc(u.role.replaceAll('_', ' ').toUpperCase())}</p></div><div class="account-notification-actions admin-user-role-actions">${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div></article>`).join("") || emptyState(); bind();
         root.querySelectorAll("[data-role]").forEach((b) => b.onclick = () => confirm("save", async () => { await api(`/admin/users/${b.dataset.role}/role`, { method: "PUT", body: { role: root.querySelector(`[name="role_${b.dataset.role}"]`).value } }); }));
       });
     }
     if (tab === "audit") {
-      paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit"></div>' + toolBlock("restore", form("adminRestoreForm", select("type", "entity_type", ["athletes", "events", "results"]) + field("id", "ID", "number", "", true), "restore")));
+      paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit" class="admin-revision-list"></div>' + toolBlock("restore", form("adminRestoreForm", select("type", "entity_type", ["athletes", "events", "results"]) + field("id", "ID", "number", "", true), "restore")));
       onSubmit("adminAuditForm", async (params) => {
         const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${log.review_status === "pending" && log.admin_id !== state.currentUser.id ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
         root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));
-        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); }));
+        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); if (!document.querySelector('#adminAudit article')) document.getElementById('adminAudit').innerHTML = emptyState(); }));
       });
       onSubmit("adminRestoreForm", async (v) => confirm("restore", () => api(`/admin/${v.type}/${Number(v.id)}/restore`, { method: "PUT" })));
     }

@@ -64,13 +64,6 @@
 .admin-center .admin-activity-details { margin: 0; border-top: 1px solid var(--line); padding-top: 12px; }
 .admin-activity-details > summary { font-size: 15px; font-weight: 480; line-height: 1.5; }
 .admin-activity-details[open] > summary { margin-bottom: 12px; }
-.admin-activity-table-scroll { overflow-x: auto; }
-.admin-activity-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; text-align: left; }
-.admin-activity-table th { color: var(--muted); font-weight: 500; }
-.admin-activity-table th, .admin-activity-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.admin-activity-table th:first-child, .admin-activity-table td:first-child { padding-left: 0; }
-.admin-activity-table td { overflow-wrap: anywhere; min-width: 90px; }
-.admin-activity-table tr:last-child td { border-bottom: 0; }
 @media (max-width: 720px) {
   .admin-data-overview { grid-template-columns: 1fr; gap: 18px; }
   .admin-data-group + .admin-data-group { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }
@@ -5817,7 +5810,11 @@ a:focus-visible > .entity-card-clickable {
 .admin-revision-count { margin-left: 10px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 .admin-revisions .admin-revision-meta { color: var(--muted); font-size: 13px; }
 .admin-revision-source { display: block; margin: 0 0 10px; overflow-wrap: anywhere; font-size: 13px; }
-.admin-revisions .account-notification-copy label { margin-top: 10px; }
+.admin-revisions .account-notification-copy label,
+.admin-revision-list .account-notification-copy label { margin-top: 10px; }
+.admin-activity-row-details { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.admin-activity-row-details > div { display: flex; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
+.admin-activity-row-details dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .admin-revisions .account-notification-actions { flex-shrink: 0; }
 .admin-stats-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; margin: 0; }
 .admin-stats-metrics > div { min-width: 0; }
@@ -6245,6 +6242,7 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .athlete-admin-panel .admin-tool-block > .empty-state,
+.athlete-admin-panel .admin-revision-list .empty-state,
 .athlete-admin-panel .admin-revisions .empty-state {
   width: fit-content;
   max-width: 100%;

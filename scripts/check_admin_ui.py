@@ -252,7 +252,8 @@ def main():
         page.goto("http://127.0.0.1:5173/#/super-admin")
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
         page.locator('#adminActivityPeriod').wait_for()
-        assert page.locator('.admin-activity-table').count() == 2
+        assert page.locator('.admin-activity-details .admin-revision-list').count() == 2
+        assert page.locator('.admin-activity-details .account-notification').count() == 2
         assert page.locator('.admin-data-total').count() == 3
         assert not page.locator('.admin-activity-details[open]').count()
         page.locator('.admin-activity-details > summary').first.click()
@@ -262,6 +263,8 @@ def main():
         page.locator('#adminActivityPeriod button[type="submit"]').click()
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'
+        page.locator('.admin-activity-details > summary').first.click()
+        page.locator('.admin-activity-details > summary').last.click()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.screenshot(path="/tmp/leverage-super-activity-mobile.png", full_page=True)
         page.set_viewport_size({"width": 1440, "height": 1000})

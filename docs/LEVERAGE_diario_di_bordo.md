@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Liste Super Admin coerenti con Revisioni
+
+Convertite le tabelle espandibili della panoramica in liste a righe dello stesso stile di Revisioni: intestazione principale, metadati secondari con etichette, conteggi e divisori leggeri. Conservati tutti i dati su autori, operazioni, entita, date e stati. Uniformati anche enfasi dei titoli, distanza dei campi e stati vuoti nelle liste utenti e audit; dopo l'ultima operazione verificata compare lo stato vuoto. Le tre colonne della panoramica, il periodo e i controlli autorizzativi non cambiano. Test browser aggiornato per liste espanse e assenza di overflow mobile.
+
 #### 2026-09-30 - Panoramiche Admin e Super Admin allineate
 
 La Panoramica Super Admin adotta la stessa griglia a tre colonne della Panoramica Admin, con totali evidenziati e identici caratteri, divisori e spaziature. Mantiene il proprio significato: stato delle revisioni, tipi di operazioni e tipi di entita modificate. Il periodo e selezionabile sotto al riepilogo; attivita per amministratore e operazioni recenti sono espandibili e inizialmente chiuse. Dati e accesso all'audit restano disponibili, senza confondere le statistiche operative con i conteggi delle entita. Test browser aggiornato per totali e apertura dei dettagli.
