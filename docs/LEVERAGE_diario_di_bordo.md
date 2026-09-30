@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Uniformita della sezione Revisioni
+
+Riorganizzata Revisioni usando il pannello bianco condiviso e i blocchi con separatori leggeri delle Impostazioni. Dati da completare raggruppati per Atleti/Eventi con conteggi, suggerimenti in righe analoghe alle Notifiche, controllo duplicati risultati in blocco dedicato. Uniformati titoli, testi secondari, sorgenti, spaziature e stati vuoti. Accetta usa il contorno verde e Rifiuta il rosso condivisi; dopo l'ultima revisione appare lo stato vuoto. Nessuna modifica alle API o ai criteri di approvazione. Test browser esteso a dati da completare, suggerimento presente, approvazione e stato vuoto finale.
+
 #### 2026-09-30 - Rimossa Sicurezza dal Centro Admin
 
 Eliminati tab Sicurezza e modulo duplicato di cambio password nel Centro Admin. La password resta gestibile nelle Impostazioni dell'Area Personale e recuperabile dalla schermata di accesso. Restano invariati backend di autenticazione, autorizzazioni, MFA e audit: la modifica riguarda esclusivamente la navigazione e la duplicazione del modulo. Il vecchio percorso admin/security ricade nella panoramica tramite il fallback esistente.

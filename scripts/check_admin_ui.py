@@ -44,7 +44,9 @@ def main():
                     "recent": [{"id": 15, "admin_id": 7, "email": "actor@example.test", "action": "create", "entity_type": "Athlete", "entity_id": 2, "review_status": "pending", "created_at": "2026-09-28T10:00:00"}],
                 }
             elif path == "/admin/entities-to-complete":
-                payload = {"athletes": [], "events": [], "total_athletes": 0, "total_events": 0}
+                payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
+            elif path == "/data-suggestions/":
+                payload = [{"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "source_url": "https://example.org/profile"}]
             elif path == "/admin/calendar":
                 payload = {"events": [], "summary": {"total_events": 0}, "reminders": []}
             elif path == "/site-analytics/admin/summary":
@@ -63,6 +65,8 @@ def main():
                     route.fulfill(json=[{"id": 1}], headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/imports/gymternet/preview":
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == "/data-suggestions/12/accept":
+                    route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -161,6 +165,15 @@ def main():
                 page.locator('#adminContext [data-admin-select-value="WAG"]').click()
                 assert page.locator('#adminResultForm [name="apparatus"]').input_value() == "VT"
                 page.screenshot(path="/tmp/leverage-admin-entry.png", full_page=True)
+            if tab == "review":
+                assert page.locator('.admin-revisions > .admin-tool-block').count() == 3
+                page.locator('.admin-revision-group summary').first.click()
+                assert page.locator('.admin-revisions .account-notification').count() == 2
+                assert page.locator('[data-accept]').evaluate('el => el.classList.contains("admin-accept-button")')
+                page.locator('[data-accept]').click()
+                page.locator('#adminRevisionSuggestions .empty-state').wait_for()
+                assert json.loads(writes[-1]['body']) == {'value': '2001'}
+                page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
             if tab == "imports":
                 page.locator('input[name="file"]').set_input_files({"name": "test.csv", "mimeType": "text/csv", "buffer": b"test"})
                 page.locator('#adminImportForm button[type="submit"]').click()

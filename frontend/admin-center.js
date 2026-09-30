@@ -125,6 +125,7 @@ const COPY = {
   ],
   entry: ["Data entry", "Inserimento dati", "Entrada de datos", "Saisie des données"],
   results: ["Results", "Risultati", "Resultados", "Résultats"],
+  duplicateResults: ["Possible duplicate results", "Possibili risultati duplicati", "Posibles resultados duplicados", "Résultats potentiellement en double"],
   imports: ["Imports", "Importazioni", "Importaciones", "Importations"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
   review: ["Review", "Revisioni", "Revisión", "Révision"],
@@ -565,11 +566,19 @@ export async function renderAdminCenter(host) {
     if (tab === "imports") await imports();
     if (tab === "review") {
       const [incomplete, suggestions, duplicates] = await Promise.all([api("/admin/entities-to-complete", { params: { limit: 500 } }), api("/data-suggestions/", { params: { status: "pending" } }), api("/admin/result-duplicate-groups")]);
-      paint(`<h2>${text("complete")}</h2>${report({ total_athletes: incomplete.total_athletes, total_events: incomplete.total_events })}${["athletes", "events"].map((kind) => `<details><summary>${host.t(kind === "athletes" ? "navAthletes" : "navEvents")} (${incomplete[kind].length})</summary>${incomplete[kind].map((e) => `<div class="admin-center-row"><span>${esc(nameOf(e))} · ${esc((e.missing_fields || []).join(", "))}</span>${entityLink(kind, e.id)}</div>`).join("")}</details>`).join("")}
-        <h2>${text("suggestions")}</h2>${suggestions.map((s) => `<article class="admin-review-row"><div><strong>${esc(s.entity_type)} #${s.entity_id} · ${esc(s.field_name)}</strong><p>${esc(s.evidence || "")}</p>${s.source_url && /^https?:\/\//.test(s.source_url) ? `<a href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title || s.source_url)}</a>` : ""}${field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="admin-center-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("") || text("empty")}<details><summary>${text("result")} · ${text("review")}</summary>${report(duplicates)}</details>`);
+      const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
+      const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
+      paint(`<div class="admin-revisions">${block(text("complete"), ["athletes", "events"].map((kind) => `<details class="admin-revision-group"><summary>${esc(host.t(kind === "athletes" ? "navAthletes" : "navEvents"))}<span class="admin-revision-count">${incomplete[`total_${kind}`] ?? incomplete[kind].length}</span></summary>${incomplete[kind].map((e) => `<div class="account-notification"><div class="account-notification-copy"><p><strong>${esc(nameOf(e))}</strong></p><p class="admin-revision-meta">${esc((e.missing_fields || []).map((key) => text(key)).join(", "))}</p></div><div class="account-notification-actions">${entityLink(kind, e.id)}</div></div>`).join("") || empty()}</details>`).join(""))}
+        ${block(text("suggestions"), `<div id="adminRevisionSuggestions">${suggestions.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.entity_type))} #${s.entity_id} · ${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}${s.source_url && /^https?:\/\//.test(s.source_url) ? `<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title || s.source_url)}</a>` : ""}${field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("") || empty()}</div>`)}
+        ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty())}</div>`);
+      root.querySelectorAll('[data-accept]').forEach((b) => b.classList.add('admin-accept-button'));
+      root.querySelectorAll('[data-reject]').forEach((b) => b.classList.add('filter-clear-button'));
       ["accept", "reject"].forEach((action) => root.querySelectorAll(`[data-${action}]`).forEach((b) => b.onclick = guard(async () => {
         const id = Number(b.dataset[action]); await api(`/data-suggestions/${id}/${action}`, { method: "POST", body: action === "accept" ? { value: root.querySelector(`[name="suggestion_${id}"]`).value } : {} });
-        b.closest("article").remove(); feedback(text("success"));
+        b.closest("article").remove();
+        const list = document.getElementById("adminRevisionSuggestions");
+        if (!list.querySelector("article")) list.innerHTML = empty();
+        feedback(text("success"));
       })));
     }
     if (tab === "statistics") {

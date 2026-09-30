@@ -5803,6 +5803,15 @@ a:focus-visible > .entity-card-clickable {
 .admin-workspace-content { min-width: 0; }
 .admin-workspace-content h2, .admin-workspace-content h3 { font-size: 15px; font-weight: 690; line-height: 1.25; margin: 12px 0 0; }
 .admin-workspace-content > h2:first-child { margin-top: 0; }
+.admin-revisions .compact-section-header h2 { margin: 0; }
+.admin-revisions > .admin-tool-block:first-child { border-top: 0; }
+.admin-center .admin-revision-group { margin: 0; min-width: 0; }
+.admin-revision-group > summary { padding: 10px 0; color: var(--ink); font-size: 15px; font-weight: 480; line-height: 1.5; }
+.admin-revision-count { margin-left: 10px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.admin-revisions .admin-revision-meta { color: var(--muted); font-size: 13px; }
+.admin-revision-source { display: block; margin: 0 0 10px; overflow-wrap: anywhere; font-size: 13px; }
+.admin-revisions .account-notification-copy label { margin-top: 10px; }
+.admin-revisions .account-notification-actions { flex-shrink: 0; }
 .admin-workspace-panel .admin-form-grid { gap: 12px; margin: 0; }
 .admin-workspace-panel .admin-form-grid label,
 .admin-workspace-panel .admin-form-field > span { font-size: var(--card-meta-size); font-weight: 650; gap: 7px; }
@@ -6217,7 +6226,8 @@ a:focus-visible > .entity-card-clickable {
   color: var(--danger);
 }
 
-.athlete-admin-panel .admin-tool-block > .empty-state {
+.athlete-admin-panel .admin-tool-block > .empty-state,
+.athlete-admin-panel .admin-revisions .empty-state {
   width: fit-content;
   max-width: 100%;
   padding: 9px 12px;
