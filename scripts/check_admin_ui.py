@@ -113,7 +113,7 @@ def main():
                 assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
-                for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):visible, #adminWorkspace .admin-custom-select > summary:visible').all():
+                for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):not(#adminImportFile):visible, #adminWorkspace .admin-custom-select > summary:visible, #adminChooseFile').all():
                     assert abs(control.bounding_box()['height'] - 36) < 1
             else:
                 assert page.locator('#adminWorkspace').is_hidden()
@@ -212,7 +212,13 @@ def main():
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
             if tab == "imports":
-                page.locator('input[name="file"]').set_input_files({"name": "test.csv", "mimeType": "text/csv", "buffer": b"test"})
+                assert page.locator('#adminImportFilename').inner_text() == 'Nessun file selezionato'
+                assert page.locator('#adminImportForm [name=kind]').input_value() == 'gymternet'
+                assert 'Risultati (The Gymternet)' in page.locator('#adminImportForm').inner_text()
+                with page.expect_file_chooser() as chooser:
+                    page.locator('#adminChooseFile').click()
+                chooser.value.set_files({"name": "test.csv", "mimeType": "text/csv", "buffer": b"test"})
+                assert page.locator('#adminImportFilename').inner_text() == 'test.csv'
                 page.locator('#adminImportForm button[type="submit"]').click()
                 row = page.locator("[data-review-type=athlete]")
                 row.wait_for()
