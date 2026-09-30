@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Conferma recupero password senza contorno
+
+Il messaggio positivo del modulo di recupero password usa ora testo semplice da 13 px, senza bordo, sfondo o padding interno aggiuntivo, analogamente al suggerimento MFA. Conservato il colore verde esistente. Modifica circoscritta alle conferme del modulo recupero, senza alterare gli avvisi delle impostazioni e delle altre sezioni.
+
 #### 2026-09-30 - Contatore sul collegamento Centro Admin
 
 Il pulsante Centro Admin nell'Area Personale mostra ora il numero di notifiche amministrative non lette, riutilizzando il badge rosso della campanella. Richiesta dedicata con scope admin, distinta dalle notifiche personali, compatibile anche con le caselle demo separate. Visibile solo per conteggi positivi, con limite visuale 99+; aggiornamento al rientro nell'Area Personale dopo lettura delle notifiche. Disponibile per ADMIN e SUPER ADMIN, senza nuove autorizzazioni o scritture. Risposte asincrone ignorate se account o schermata sono cambiati.

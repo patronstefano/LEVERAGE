@@ -3785,6 +3785,15 @@ a:focus-visible > .entity-card-clickable {
 }
 .account-feedback.is-error { color: #a53c42; }
 .account-feedback.is-success { color: #327451; }
+.account-recovery #accountRecoveryFeedback.account-feedback.is-success {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 13px;
+  line-height: normal;
+  min-height: 20px;
+}
 .account-recovery [hidden], #accountSettings [hidden], #accountNotifications [hidden] { display: none !important; }
 
 .account-favorites-section {
