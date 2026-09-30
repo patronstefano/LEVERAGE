@@ -3058,6 +3058,8 @@ Aggiunto pulsante occhio Lucide nel campo password tramite il componente condivi
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Rimossa la compensazione negativa di 14 px prima del messaggio MFA: rendeva il suggerimento troppo vicino ad Accedi. Ripristinata la spaziatura standard del form, senza alterare link o dimensioni del footer. Quando l'altezza disponibile non basta, la pagina puo scorrere leggermente anziche comprimere gli avvisi o sovrapporre elementi.
+
 Ulteriore correzione: eliminata la riduzione del padding della downbar durante MFA, che ne spostava il bordo superiore. La downbar mantiene ora dimensioni iniziali; si consuma lo spazio libero sotto i link. Nei desktop bassi (fino a 760 px) viene inoltre ridotto di 14 px il solo spazio prima del messaggio MFA, necessario per contenere form, margine link da 20 px e footer originale senza sovrapposizioni.
 
 Ripristinata la distanza invariabile di 20 px tra box di accesso e link Registrati/Recupera password anche durante MFA e avvisi: l'espansione non consuma piu tale margine. Sui desktop con altezza ridotta, il campo MFA aperto riduce soltanto il padding inferiore della downbar per mantenerne visibile il contenuto senza avvicinare i link al form.
