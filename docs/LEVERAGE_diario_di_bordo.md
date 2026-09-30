@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Contatore sul collegamento Centro Admin
+
+Il pulsante Centro Admin nell'Area Personale mostra ora il numero di notifiche amministrative non lette, riutilizzando il badge rosso della campanella. Richiesta dedicata con scope admin, distinta dalle notifiche personali, compatibile anche con le caselle demo separate. Visibile solo per conteggi positivi, con limite visuale 99+; aggiornamento al rientro nell'Area Personale dopo lettura delle notifiche. Disponibile per ADMIN e SUPER ADMIN, senza nuove autorizzazioni o scritture. Risposte asincrone ignorate se account o schermata sono cambiati.
+
 #### 2026-09-30 - Generatori notifiche DEMO ADMIN separati
 
 La downbar dell'ADMIN demo espone due comandi: Notifiche Centro Admin e Notifiche Area Personale. Il primo genera soltanto riepilogo import, riepilogo data entry e reminder risultati e apre le notifiche amministrative; il secondo genera nuovi risultati, nuovo evento consigliato, promozione e declassamento e apre le notifiche personali. Le due caselle demo sono ora memorizzate separatamente per utente e ambito: rigenerarne una non cancella o rimette come non lette le notifiche dell'altra. Il generatore amministrativo non richiede il caricamento dei preferiti. Nessuna scrittura nel DB; dati fittizi eliminati al reload. Invariati generatori USER e SUPER ADMIN e limitazione agli account demo su localhost. Test UI aggiornato per pulsanti, tipi di notifica, navigazione, conservazione dello stato di lettura tra ambiti e assenza di scritture API.

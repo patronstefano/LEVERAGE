@@ -1,6 +1,6 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=demo-inbox-scopes-20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-unread-badge-20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=demo-inbox-scopes-20260930";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=admin-unread-badge-20260930";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -11837,7 +11837,7 @@ function renderAccountViewControl(selected) {
       </div>
       <div class="account-user-actions account-navigation-actions">
         ${state.currentUser?.role === "super_admin" ? `<a class="quiet-button outline-command-button" href="#/super-admin">${adminLabel(state.language, "superCenter")}</a>` : ""}
-        ${isAdminUser() ? `<a class="quiet-button outline-command-button" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
+        ${isAdminUser() ? `<a class="quiet-button outline-command-button account-admin-center-link" href="#/admin">${adminLabel(state.language, "center")}<span id="accountAdminUnreadCount" class="account-unread-count" hidden></span></a>` : ""}
         ${renderAccountToolActions(selected)}
         <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
       </div>

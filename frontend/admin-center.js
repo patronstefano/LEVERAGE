@@ -1,4 +1,4 @@
-import { mountNotificationInbox } from './account-tools.js?v=demo-inbox-scopes-20260930';
+import { mountNotificationInbox } from './account-tools.js?v=admin-unread-badge-20260930';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {

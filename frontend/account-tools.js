@@ -144,6 +144,17 @@ export function mountAccountTools(host) {
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
+  const adminBadge = document.getElementById('accountAdminUnreadCount');
+  if (adminBadge && ['admin', 'super_admin'].includes(state.currentUser.role)) {
+    const adminRequest = context({ ...host, notificationScope: 'admin' }).request;
+    adminRequest('/notifications/unread-count').then((data) => {
+      if (!live() || !adminBadge.isConnected) return;
+      const count = Math.max(0, Number(data.count) || 0);
+      adminBadge.textContent = count > 99 ? '99+' : String(count);
+      adminBadge.hidden = count === 0;
+      adminBadge.setAttribute('aria-label', `${t('unread')}: ${count}`);
+    }).catch(() => { /* Do not display an unverified count when loading fails. */ });
+  }
   settings.className = 'panel athlete-admin-panel account-settings-panel';
   settings.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("settings") + '</h2></div>' +
     '<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>' + t("accountData") + '</h2></div><div class="admin-form-grid account-settings-details">' +

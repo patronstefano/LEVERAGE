@@ -390,6 +390,14 @@ def main():
             assert ('security_alert' in types) == (role == 'super_admin')
             assert page.locator('#adminNotificationsToggle').get_attribute('aria-pressed') == 'true'
             assert page.locator('#adminNotificationsToggle').bounding_box()['width'] == 36
+            if role == 'admin':
+                page.evaluate("location.hash = '#/account'")
+                page.locator('#accountAdminUnreadCount').wait_for(state='visible')
+                assert page.locator('#accountAdminUnreadCount').inner_text() == '3'
+                page.locator('.account-admin-center-link').click()
+                page.evaluate("location.hash = '#/admin/notifications'")
+                page.locator('#accountReadAll').wait_for(state='visible')
+                page.wait_for_timeout(200)
             page.locator('#accountReadAll').click()
             page.wait_for_timeout(100)
             assert page.locator('#accountUnreadCount').is_hidden()
@@ -400,6 +408,7 @@ def main():
                 page.locator('#demoAdminPersonalNotifications').click()
                 page.wait_for_timeout(200)
                 assert '#/account?section=notifications' in page.url
+                assert page.locator('#accountAdminUnreadCount').is_hidden()
             else:
                 page.goto('http://127.0.0.1:5173/#/account?section=notifications')
             page.locator('.account-notification').first.wait_for()
