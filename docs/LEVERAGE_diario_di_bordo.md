@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Uniformita di Statistiche sito
+
+Sostituito il report tecnico generico con blocchi coerenti a Revisioni, Notifiche e Impostazioni: traffico, account, ricerche frequenti, atleti ed eventi piu visualizzati. Pannello bianco, titoli compatti, divisori leggeri e stati vuoti condivisi; metriche disposte in griglia responsive, liste con conteggi allineati. Etichette tradotte nelle quattro lingue e numeri localizzati. Mostrato il periodo effettivamente restituito dal backend e indicata separatamente la finestra di attivita degli account; durata media assente rappresentata con trattino, non zero. Conservati endpoint, autorizzazioni e dati raccolti. Test browser esteso a metriche, date, liste, assenza dati e viewport mobile.
+
 #### 2026-09-30 - Uniformita della sezione Revisioni
 
 Riorganizzata Revisioni usando il pannello bianco condiviso e i blocchi con separatori leggeri delle Impostazioni. Dati da completare raggruppati per Atleti/Eventi con conteggi, suggerimenti in righe analoghe alle Notifiche, controllo duplicati risultati in blocco dedicato. Uniformati titoli, testi secondari, sorgenti, spaziature e stati vuoti. Accetta usa il contorno verde e Rifiuta il rosso condivisi; dopo l'ultima revisione appare lo stato vuoto. Nessuna modifica alle API o ai criteri di approvazione. Test browser esteso a dati da completare, suggerimento presente, approvazione e stato vuoto finale.

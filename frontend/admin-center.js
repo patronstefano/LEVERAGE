@@ -131,6 +131,26 @@ const COPY = {
   review: ["Review", "Revisioni", "Revisión", "Révision"],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   statistics: ["Site statistics", "Statistiche sito", "Estadísticas", "Statistiques"],
+  statsTraffic: ["Traffic", "Traffico", "Tráfico", "Trafic"],
+  statsAccounts: ["Accounts", "Account", "Cuentas", "Comptes"],
+  visitors: ["Visitors", "Visitatori", "Visitantes", "Visiteurs"],
+  sessions: ["Sessions", "Sessioni", "Sesiones", "Sessions"],
+  page_views: ["Page views", "Pagine visualizzate", "Vistas de páginas", "Pages vues"],
+  searches: ["Searches", "Ricerche", "Búsquedas", "Recherches"],
+  athlete_views: ["Athlete profile views", "Schede atleta visualizzate", "Vistas de atletas", "Profils athlètes consultés"],
+  event_views: ["Event profile views", "Schede evento visualizzate", "Vistas de eventos", "Fiches événements consultées"],
+  dashboard_views: ["Dashboard views", "Dashboard visualizzate", "Vistas del panel", "Tableaux de bord consultés"],
+  trackedActions: ["Tracked actions", "Azioni registrate", "Acciones registradas", "Actions enregistrées"],
+  average_session_seconds: ["Average session (seconds)", "Sessione media (secondi)", "Sesión media (segundos)", "Session moyenne (secondes)"],
+  registered_users: ["Registered", "Registrati", "Registrados", "Inscrits"],
+  verified_users: ["Verified", "Verificati", "Verificados", "Vérifiés"],
+  unverified_users: ["Unverified", "Non verificati", "Sin verificar", "Non vérifiés"],
+  active_users: ["Active", "Attivi", "Activos", "Actifs"],
+  inactive_users: ["Inactive", "Inattivi", "Inactivos", "Inactifs"],
+  statsWindow: ["Activity in the last {days} days", "Attività negli ultimi {days} giorni", "Actividad en los últimos {days} días", "Activité des {days} derniers jours"],
+  top_searches: ["Most frequent searches", "Ricerche più frequenti", "Búsquedas más frecuentes", "Recherches les plus fréquentes"],
+  top_athletes: ["Most viewed athletes", "Atleti più visualizzati", "Atletas más vistos", "Athlètes les plus consultés"],
+  top_events: ["Most viewed events", "Eventi più visualizzati", "Eventos más vistos", "Événements les plus consultés"],
   users: ["Users and roles", "Utenti e ruoli", "Usuarios y roles", "Utilisateurs et rôles"],
   merge: ["Merge athletes", "Unisci atleti", "Fusionar atletas", "Fusionner les athlètes"],
   audit: ["Audit and restore", "Audit e ripristino", "Auditoría y restauración", "Audit et restauration"],
@@ -582,8 +602,26 @@ export async function renderAdminCenter(host) {
       })));
     }
     if (tab === "statistics") {
-      paint(form("adminStatsForm", field("start_date", host.t("startDate"), "date") + field("end_date", host.t("endDate"), "date")) + '<div id="adminStats"></div>');
-      const load = async (params = {}) => { const data = await api("/site-analytics/admin/summary", { params }); if (active()) document.getElementById("adminStats").innerHTML = report(data); };
+      paint(form("adminStatsForm", field("start_date", "start_date", "date") + field("end_date", "end_date", "date")) + '<div id="adminStats"></div>');
+      const start = root.querySelector('[name="start_date"]');
+      const end = root.querySelector('[name="end_date"]');
+      start.onchange = () => { end.min = start.value; };
+      const number = new Intl.NumberFormat(state.language, { maximumFractionDigits: 1 });
+      const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(text(title))}</h2></div>${content}</section>`;
+      const metrics = (data, keys) => `<dl class="admin-stats-metrics">${keys.map(([key, label = key]) => `<div><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
+      let statsRevision = 0;
+      const load = async (params = {}) => {
+        const revision = ++statsRevision;
+        const data = await api("/site-analytics/admin/summary", { params });
+        if (!active() || revision !== statsRevision) return;
+        start.value = data.start_date || start.value;
+        end.value = data.end_date || end.value;
+        end.min = start.value;
+        document.getElementById("adminStats").innerHTML =
+          block("statsTraffic", metrics(data, ["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key]).concat([["total_events", "trackedActions"]]))) +
+          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(text("statsWindow").replace("{days}", data.users?.active_window_days ?? 30))}</p>`) +
+          ["top_searches", "top_athletes", "top_events"].map((key) => block(key, data[key]?.length ? `<ol class="admin-stats-top">${data[key].map((item) => `<li><span>${esc(item.label)}</span><strong>${number.format(item.count)}</strong></li>`).join("")}</ol>` : `<div class="empty-state">${esc(text("empty"))}</div>`)).join("");
+      };
       onSubmit("adminStatsForm", load); await load();
     }
     if (tab === "merge") {

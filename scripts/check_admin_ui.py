@@ -50,7 +50,14 @@ def main():
             elif path == "/admin/calendar":
                 payload = {"events": [], "summary": {"total_events": 0}, "reminders": []}
             elif path == "/site-analytics/admin/summary":
-                payload = {"unique_visitors": 0, "registered_users": 0}
+                payload = {"start_date": "2026-09-01", "end_date": "2026-09-30", "visitors": 42,
+                           "sessions": 50, "page_views": 100, "searches": 20, "athlete_views": 30,
+                           "event_views": 15, "dashboard_views": 5, "total_events": 170,
+                           "average_session_seconds": None,
+                           "users": {"registered_users": 10, "verified_users": 8, "unverified_users": 2,
+                                     "active_users": 6, "inactive_users": 4, "active_window_days": 30},
+                           "top_searches": [{"label": "European Championships", "count": 4}],
+                           "top_athletes": [], "top_events": []}
             elif path == "/events/":
                 payload = [event]
             elif path == "/events/1/manual-entry-options":
@@ -165,6 +172,17 @@ def main():
                 page.locator('#adminContext [data-admin-select-value="WAG"]').click()
                 assert page.locator('#adminResultForm [name="apparatus"]').input_value() == "VT"
                 page.screenshot(path="/tmp/leverage-admin-entry.png", full_page=True)
+            if tab == "statistics":
+                assert page.locator('#adminStats > .admin-tool-block').count() == 5
+                assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'
+                assert page.locator('#adminStats .empty-state').count() == 2
+                assert page.locator('#adminStatsForm [name=start_date]').input_value() == '2026-09-01'
+                assert 'Data di inizio' in page.locator('#adminStatsForm').inner_text()
+                assert 'European Championships' in page.locator('.admin-stats-top').inner_text()
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+                page.screenshot(path='/tmp/leverage-admin-statistics-mobile.png', full_page=True)
+                page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "review":
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 3
                 page.locator('.admin-revision-group summary').first.click()
