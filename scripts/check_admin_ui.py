@@ -140,6 +140,11 @@ def main():
                 focus_style = page.locator('#adminCreateForm input[name=last_name]').evaluate('el => { const s = getComputedStyle(el); return [s.outlineStyle, s.borderTopColor, s.boxShadow]; }')
                 assert focus_style == ['none', 'rgba(25, 23, 71, 0.32)', 'rgba(25, 23, 71, 0.08) 0px 0px 0px 3px'], focus_style
                 assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
+                for name, value in [('country', 'ITA'), ('birth_year', '2001')]:
+                    control = page.locator(f'#adminCreateForm [name={name}]').locator('..')
+                    control.locator('summary').click()
+                    control.locator(f'[data-admin-select-value="{value}"]').click()
+                    assert page.locator(f'#adminCreateForm [name={name}]').input_value() == value
                 assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']
                 page.locator("#adminNewEvent").click()
                 page.locator("#adminCreateForm input[name=name]").wait_for()

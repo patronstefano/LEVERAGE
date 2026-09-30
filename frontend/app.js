@@ -1,4 +1,5 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=import-year-options-20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=athlete-fields-20260930";
+import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
 
@@ -10152,7 +10153,7 @@ function renderAnalyticsComparison() {
   renderAnalyticsComparisonWorkspace();
 }
 
-function renderAdminSelectControl(name, label, value, options) {
+function renderAdminSelectControl(name, label, value, options, inputAttributes = "") {
   const normalizedOptions = options.map((option) => (
     typeof option === "string" ? { value: option, label: option } : option
   ));
@@ -10175,7 +10176,7 @@ function renderAdminSelectControl(name, label, value, options) {
             >${escapeHtml(option.label)}</button>
           `).join("")}
         </div>
-        <input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(selectedOption?.value || "")}" data-admin-select-input>
+        <input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(selectedOption?.value || "")}" data-admin-select-input ${inputAttributes}>
       </details>
     </div>
   `;
@@ -10225,9 +10226,21 @@ function syncAdminFormValue(form, name, value) {
   input.value = value ?? "";
   const control = input.closest("[data-admin-select]");
   if (!control) return;
-  const selected = [...control.querySelectorAll("[data-admin-select-value]")]
+  let selected = [...control.querySelectorAll("[data-admin-select-value]")]
     .find((option) => option.dataset.adminSelectValue === String(input.value));
-  if (!selected) return;
+  if (!selected) {
+    selected = document.createElement("button");
+    selected.type = "button";
+    selected.setAttribute("role", "option");
+    selected.dataset.adminSelectValue = String(input.value);
+    selected.textContent = String(input.value) || "—";
+    control.querySelector('[role="listbox"]').append(selected);
+    selected.addEventListener("click", () => {
+      syncAdminFormValue(form, name, selected.dataset.adminSelectValue);
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      control.open = false;
+    });
+  }
   const label = control.querySelector("[data-admin-select-label]");
   if (label) label.textContent = selected.textContent.trim();
   control.querySelectorAll("[role='option']").forEach((option) => {
@@ -10313,18 +10326,9 @@ function renderAthleteAdminForm(athlete) {
           <span>${t("firstName")}</span>
           <input name="first_name" value="${escapeHtml(athlete.first_name || "")}" required>
         </label>
-        <label>
-          <span>${t("birthYear")}</span>
-          <input name="birth_year" type="number" min="1900" max="2100" value="${escapeHtml(athlete.birth_year || "")}">
-        </label>
-        <label>
-          <span>${t("country")}</span>
-          <input name="country" maxlength="3" value="${escapeHtml(athlete.country || "")}">
-        </label>
-        <label>
-          <span>${t("countryChangeYear")}</span>
-          <input name="country_change_year" type="number" min="1900" max="2100">
-        </label>
+        ${renderAdminSelectControl("birth_year", t("birthYear"), String(athlete.birth_year ?? ""), athleteFieldOptions("birth_year", athlete.birth_year))}
+        ${renderAdminSelectControl("country", t("country"), athlete.country || "", athleteFieldOptions("country", athlete.country))}
+        ${renderAdminSelectControl("country_change_year", t("countryChangeYear"), "", athleteFieldOptions("birth_year"))}
         ${renderAdminSelectControl("discipline", t("discipline"), athlete.discipline, ["MAG", "WAG"])}
         <label class="admin-form-wide">
           <span>${t("imageUrl")}</span>
@@ -10379,10 +10383,10 @@ function renderAthleteSuggestions(suggestions = []) {
             ${suggestion.source_url ? `<a href="${escapeHtml(suggestion.source_url)}" target="_blank" rel="noreferrer">${escapeHtml(suggestion.source_title || suggestion.source_url)}</a>` : ""}
           </div>
           <div class="admin-review-actions">
-            <label>
+            ${["country", "birth_year"].includes(suggestion.field_name) ? renderAdminSelectControl(`suggestion_${suggestion.id}`, t("suggestedValue"), String(suggestion.suggested_value ?? ""), athleteFieldOptions(suggestion.field_name, suggestion.suggested_value), `data-athlete-suggestion-value="${suggestion.id}"`) : `<label>
               <span>${t("suggestedValue")}</span>
               <input data-athlete-suggestion-value="${suggestion.id}" value="${escapeHtml(suggestion.suggested_value || "")}">
-            </label>
+            </label>`}
             <div>
               <button class="quiet-button admin-accept-button" type="button" data-athlete-suggestion-accept="${suggestion.id}">${t("accept")}</button>
               <button class="quiet-button filter-clear-button" type="button" data-athlete-suggestion-reject="${suggestion.id}">${t("reject")}</button>
@@ -10628,6 +10632,7 @@ function setAdminSuggestionFeedback(message, text, tone) {
 }
 
 function bindAthleteSuggestionActions(athleteId) {
+  bindAdminSelectControls($("#athleteSuggestionList") || document);
   document.querySelectorAll("[data-athlete-suggestion-accept]").forEach((button) => {
     button.addEventListener("click", async () => {
       const suggestionId = button.dataset.athleteSuggestionAccept;

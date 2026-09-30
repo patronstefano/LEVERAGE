@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Selettori anagrafici atleta e compatibilita World Gymnastics
+
+Prima della modifica verificato il flusso WG: i dati ufficiali arrivano come codice nazione e anno numerico, con proposte sottoposte all'approvazione ADMIN. I selettori mantengono gli stessi nomi dei campi e payload; anno vuoto resta null. Anno di nascita con opzioni dall'anno corrente al 1900, coerenti al vincolo backend; nazioni dal catalogo sportivo e alias gia usati dal sistema, senza conversioni arbitrarie in codici ISO diversi.
+
+Applicati menu condivisi alla scheda atleta, nuova anagrafica, nazione del nuovo atleta nel data entry risultati, anno del cambio nazionalita e correzione country negli import. Anche le proposte country/birth_year, nella scheda e in Revisioni, sono modificabili tramite selettori prima dell'approvazione. Catalogo frontend centralizzato. Valori storici o ufficiali non presenti nelle opzioni sono conservati esplicitamente, sia al rendering sia durante la sincronizzazione del modulo: il menu aggiunge il valore e aggiorna etichetta e selezione, senza azzerarlo o sostituirlo. Nessun cambiamento alla certificazione WG, ai permessi o all'audit.
+
+Verifiche: test API World Gymnastics e suggerimenti (12 superati); test browser Centro Admin; test browser isolato sulle funzioni effettive di rendering/sincronizzazione, con aggiornamento country/anno, codice esterno al catalogo, successiva riselezione e svuotamento a null. Nessuna scrittura sui dati reali durante i test.
+
 #### 2026-09-30 - Selettore anno importazione
 
 Il campo Anno dell'import risultati usa il menu di opzioni condiviso degli strumenti admin, invece dell'input numerico libero. Anni in ordine decrescente dall'anno successivo a quello corrente fino al 1900; mantenuta l'opzione vuota per non forzare l'anno quando il file lo fornisce. Invariati parametro year_hint e controlli backend. Test browser verifica selezione e posizione prima del file.

@@ -1,4 +1,5 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
+import { athleteFieldOptions } from './athlete-field-options.js?v=20260930';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
@@ -284,7 +285,10 @@ export async function renderAdminCenter(host) {
   }
   const tab = tabs.includes(requested) ? requested : "overview";
   const button = (label, attributes = "") => `<button type="button" class="quiet-button outline-command-button" ${attributes}>${esc(text(label))}</button>`;
-  const field = (name, label, type = "text", value = "", required = false) => `<label>${esc(text(label))}<input name="${esc(name)}" type="${type}" value="${esc(value ?? "")}" ${required ? "required" : ""} ${type === "number" ? 'step="any"' : ""}></label>`;
+  const field = (name, label, type = "text", value = "", required = false) => {
+    if (["country", "canonical_country", "birth_year", "country_change_year"].includes(name)) return select(name, label, athleteFieldOptions(name.includes("country") && !name.endsWith("year") ? "country" : "birth_year", value), String(value ?? ""));
+    return `<label>${esc(text(label))}<input name="${esc(name)}" type="${type}" value="${esc(value ?? "")}" ${required ? "required" : ""} ${type === "number" ? 'step="any"' : ""}></label>`;
+  };
   const select = (name, label, options, value = "") => host.renderAdminSelectControl(name, text(label), value,
     options.map((o) => typeof o === "string" ? { value: o, label: text(o) } : o));
   const form = (id, fields, label = "load") => `<form id="${id}" class="admin-form-grid">${fields}<div class="admin-center-actions"><button type="submit" class="quiet-button outline-command-button">${text(label)}</button></div></form>`;
@@ -411,6 +415,7 @@ export async function renderAdminCenter(host) {
     return entries.map(([key, definition]) => {
       const s = resolve(definition), required = schema.required?.includes(key);
       const caption = text(key);
+      if (schemaName.startsWith("Athlete") && ["country", "birth_year"].includes(key)) return select(key, caption, athleteFieldOptions(key, values[key]), String(values[key] ?? ""));
       if (s.enum) return select(key, caption, (required ? [] : [{ value: "", label: "—" }]).concat(s.enum.map((v) => ({ value: v, label: text(v) }))), values[key] ?? definition.default ?? "");
       if (s.type === "boolean") return `<label><input type="checkbox" name="${key}" ${values[key] ? "checked" : ""}>${esc(caption)}</label>`;
       return field(key, caption, s.format === "date" ? "date" : ["integer", "number"].includes(s.type) ? "number" : "text", values[key] ?? definition.default ?? "", required);
@@ -522,7 +527,7 @@ export async function renderAdminCenter(host) {
         area.innerHTML = `<h3>${esc(event.name)}</h3>${entityLink("events", event.id)}
           <div class="admin-form-grid" id="adminContext">${select("discipline", "discipline", options.disciplines)}${select("category", "category", options.categories)}${select("format", "format", options.formats, options.current_context?.format)}${select("round", "round", options.rounds, options.current_context?.round)}${field("day", "day", "number")}</div>
           <form id="adminResultForm" class="admin-form-grid"><div class="admin-lookup admin-form-wide">${field("athlete_search", "search")}<div id="adminAthleteOptions"></div><span id="adminSelectedAthlete"></span></div>
-          <details class="admin-form-wide"><summary>${text("newAthlete")}</summary><div class="admin-form-grid">${field("last_name", host.t("lastName"))}${field("first_name", host.t("firstName"))}${field("country", "country")}</div></details>
+          <details class="admin-form-wide"><summary>${text("newAthlete")}</summary><div class="admin-form-grid">${field("last_name", host.t("lastName"))}${field("first_name", host.t("firstName"))}${select("country", "country", athleteFieldOptions("country"))}</div></details>
           ${select("apparatus", "apparatus", options.apparatus_by_discipline[options.disciplines[0]])}
           ${["D_score", "E_score", "Penalty", "Bonus", "score", "rank", "vt_attempt"].map((key) => field(key, key === "score" ? "Final Score" : key, "number", "", key === "score" || key === "E_score" && event.year >= 2026)).join("")}
           <div><button type="submit" class="quiet-button outline-command-button">${text("add")}</button></div></form>
@@ -600,7 +605,7 @@ export async function renderAdminCenter(host) {
       const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
       const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
       paint(`<div class="admin-revisions">${block(text("complete"), ["athletes", "events"].map((kind) => `<details class="admin-revision-group"><summary>${esc(host.t(kind === "athletes" ? "navAthletes" : "navEvents"))}<span class="admin-revision-count">${incomplete[`total_${kind}`] ?? incomplete[kind].length}</span></summary>${incomplete[kind].map((e) => `<div class="account-notification"><div class="account-notification-copy"><p><strong>${esc(nameOf(e))}</strong></p><p class="admin-revision-meta">${esc((e.missing_fields || []).map((key) => text(key)).join(", "))}</p></div><div class="account-notification-actions">${entityLink(kind, e.id)}</div></div>`).join("") || empty()}</details>`).join(""))}
-        ${block(text("suggestions"), `<div id="adminRevisionSuggestions">${suggestions.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.entity_type))} #${s.entity_id} · ${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}${s.source_url && /^https?:\/\//.test(s.source_url) ? `<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title || s.source_url)}</a>` : ""}${field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("") || empty()}</div>`)}
+        ${block(text("suggestions"), `<div id="adminRevisionSuggestions">${suggestions.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.entity_type))} #${s.entity_id} · ${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}${s.source_url && /^https?:\/\//.test(s.source_url) ? `<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title || s.source_url)}</a>` : ""}${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("") || empty()}</div>`)}
         ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty())}</div>`);
       root.querySelectorAll('[data-accept]').forEach((b) => b.classList.add('admin-accept-button'));
       root.querySelectorAll('[data-reject]').forEach((b) => b.classList.add('filter-clear-button'));
