@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Rimossa Sicurezza dal Centro Admin
+
+Eliminati tab Sicurezza e modulo duplicato di cambio password nel Centro Admin. La password resta gestibile nelle Impostazioni dell'Area Personale e recuperabile dalla schermata di accesso. Restano invariati backend di autenticazione, autorizzazioni, MFA e audit: la modifica riguarda esclusivamente la navigazione e la duplicazione del modulo. Il vecchio percorso admin/security ricade nella panoramica tramite il fallback esistente.
+
 #### 2026-09-30 - Focus dei campi del Centro Admin
 
 Rimosso l'outline esterno aggiuntivo sui campi del Centro Admin. I campi scrivibili condividono ora la regola di focus di accesso e Salva questo ranking: bordo blu tenue e alone leggero, senza doppio contorno o variazioni dimensionali. Esclusi checkbox e caricamento file, che conservano gli indicatori nativi. Aggiunta verifica browser dello stile calcolato del campo attivo.

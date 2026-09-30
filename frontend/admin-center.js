@@ -130,7 +130,6 @@ const COPY = {
   review: ["Review", "Revisioni", "Revisión", "Révision"],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   statistics: ["Site statistics", "Statistiche sito", "Estadísticas", "Statistiques"],
-  security: ["Security", "Sicurezza", "Seguridad", "Sécurité"],
   users: ["Users and roles", "Utenti e ruoli", "Usuarios y roles", "Utilisateurs et rôles"],
   merge: ["Merge athletes", "Unisci atleti", "Fusionar atletas", "Fusionner les athlètes"],
   audit: ["Audit and restore", "Audit e ripristino", "Auditoría y restauración", "Audit et restauration"],
@@ -247,7 +246,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "results", "entities", "imports", "review", "merge", "notifications", "statistics", "security"];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "results", "entities", "imports", "review", "merge", "notifications", "statistics"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
@@ -606,27 +605,6 @@ export async function renderAdminCenter(host) {
         root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); }));
       });
       onSubmit("adminRestoreForm", async (v) => confirm("restore", () => api(`/admin/${v.type}/${Number(v.id)}/restore`, { method: "PUT" })));
-    }
-    if (tab === "security") {
-      paint('<div id="adminSecurityForms"></div>');
-      const target = document.getElementById("adminSecurityForms");
-      const openapi = await api("/openapi.json"); schemas = openapi.components.schemas;
-      for (const path of ["/auth/password/change"]) {
-        const ref = openapi.paths[path].post.requestBody.content["application/json"].schema.$ref.split("/").pop();
-        const id = path.endsWith("confirm") ? "adminMfaConfirm" : "adminPasswordChange";
-        target.insertAdjacentHTML("beforeend", `<h3>${path.endsWith("confirm") ? "MFA" : "Password"}</h3>${form(id, await schemaFields(ref), "save")}`);
-        target.querySelectorAll('input[name*="password"]').forEach((i) => { i.type = "password"; i.autocomplete = "new-password"; });
-        onSubmit(id, async (v, f) => {
-          const result = await api(path, { method: "POST", body: typed(ref, v) }); f.reset();
-          if (result.access_token) await host.setToken(result.access_token);
-          if (path === "/auth/password/change") {
-            host.clearAuth(); window.location.hash = "#/login"; return;
-          }
-          if (result.recovery_codes) document.getElementById("adminMfaOutput").innerHTML = report({ recovery_codes: result.recovery_codes });
-          feedback(result.message || text("success"));
-        });
-      }
-      target.insertAdjacentHTML("beforeend", report({ MFA: Boolean(state.currentUser.mfa_enabled) })); bind();
     }
   } catch (error) { feedback(error.message, true); }
 
