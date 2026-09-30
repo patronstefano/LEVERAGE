@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Correzione del nome All-Japan 2026
+
+- Su richiesta esplicita del responsabile del progetto, rinominato l'evento 1761 (2026) da `All-Japan Team & Event Championships (Aiko Arena, Yokkaichi City)` a `All-Japan Team & Event Championships`.
+- Modificato esclusivamente `Event.name`: ID, date, altri campi e collegamenti invariati. Al momento della correzione nessun risultato o voce EventCalendarEntry era collegato; nessun omonimo esatto del nuovo nome presente.
+- Backup SQLite consistente prima della modifica: `backups/before_event_1761_rename_20260930_145225.db`, conservato localmente ed escluso da Git.
+- Audit 1577 con snapshot prima/dopo e motivazione. Autore applicativo non attribuito, senza impersonare l'account demo SUPER ADMIN; mantenuto lo stato di revisione predefinito pending. Il commit documenta la correzione, non contiene il database locale.
+
+
 #### 30 settembre 2026 - Riquadro della legenda calendario
 
 - Aggiunto uno sfondo bianco alla legenda, con bordo sottile neutro, arrotondamento standard dei controlli e spaziatura compatta. Il contrasto con lo sfondo rende piu distinguibili i colori pastello senza modificarli.
