@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Testo di conferma registrazione
+
+Aggiornato il messaggio in "Se l'indirizzo può essere registrato, riceverai un link di verifica via mail.", con traduzioni EN/ES/FR coerenti. Eliminati invito iniziale a controllare la posta e promessa temporale "a breve". Invariati risposta generica a protezione degli account, validazione e stato dell'invio email.
+
 #### 2026-09-30 - Conferma demo in verde
 
 Il messaggio "Verifica demo completata. Nessuna sessione ADMIN creata." usa ora il colore positivo condiviso degli avvisi, senza contorno. Modificando un campo del form, la conferma e il relativo stato verde vengono rimossi per non lasciare un esito positivo riferito a dati precedenti.
