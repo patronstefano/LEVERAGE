@@ -3052,6 +3052,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 #### 2026-09-30 - Formato email nella registrazione
 
+Allineato anche Accedi: stesso esempio `name@example.com`, dominio completo e attributi per inserimento email. Rimossa la compilazione automatica di email e password nella simulazione MFA integrata: entrambi i campi iniziano vuoti; le credenziali fittizie restano consultabili nella downbar e inseribili manualmente. Invariati autocomplete del browser e flussi di autenticazione.
+
 Esteso lo stesso esempio `name@example.com` e controllo di formato al campo email di Recupera password e al modulo condiviso di reinvio verifica: dominio completo, tastiera email mobile, niente maiuscole automatiche o correttore. Restano gli avvisi inline e la validazione backend; nessun invio reale eseguito per la verifica UI.
 
 Il campo email della registrazione mostra l'esempio generico `name@example.com`, richiede nome locale, @ e dominio con suffisso e mantiene la validazione backend EmailStr. Nessuna restrizione al provider (Gmail, Outlook, domini personali, ecc.). Aggiunti tastiera email mobile, disattivazione maiuscole automatiche e correttore. Gli errori continuano a usare l'avviso inline localizzato del form, non popup nativi. Il controllo del formato non prova che la casella esista: resta distinto dalla futura verifica via email.

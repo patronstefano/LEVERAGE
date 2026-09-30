@@ -6831,7 +6831,7 @@ function renderLogin() {
       <form class="auth-form" id="loginForm">
         <label>
           <span>${t("email")}</span>
-          <input id="loginEmail" type="email" autocomplete="email" required>
+          <input id="loginEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="name@example.com" pattern="[^\\s@]+@[^\\s@]+\\.[^\\s@]+" required>
         </label>
         <label>
           <span>${t("password")}</span>
@@ -6857,8 +6857,6 @@ function renderLogin() {
     success: ["Demo verification completed. No ADMIN session created.", "Verifica demo completata. Nessuna sessione ADMIN creata.", "Verificaci\u00f3n demo completada. No se ha creado una sesi\u00f3n ADMIN.", "V\u00e9rification de d\u00e9monstration termin\u00e9e. Aucune session ADMIN cr\u00e9\u00e9e."],
   }[key][Math.max(0, ["en", "it", "es", "fr"].indexOf(state.language))]);
   if (mfaDemo) {
-    $("#loginEmail").value = "admin@example.test";
-    $("#loginPassword").value = "LeverageDemo!2026";
     const notice = document.createElement("p");
     notice.className = "footer-mfa-demo-notice";
     notice.id = "mfaDemoNotice";
