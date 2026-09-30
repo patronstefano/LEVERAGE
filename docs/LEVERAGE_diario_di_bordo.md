@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Notifica di promozione ADMIN
+
+Semplificata la notifica in "Hai ottenuto la promozione ad ADMIN." nelle nuove notifiche backend e nella simulazione, con traduzioni EN/ES/FR. Eliminata la spiegazione del secondo fattore, gia gestita dal flusso di accesso. Invariati invalidazione sessioni dopo cambio ruolo e obbligo MFA per gli strumenti amministrativi; l'invio via email rimane pianificato dopo l'MVP privato. Nessuna riscrittura dei messaggi storici memorizzati.
+
 #### 2026-09-30 - Testo del requisito password
 
 Semplificato l'avviso per password corte in "La password deve contenere almeno 6 caratteri.", con traduzioni EN/ES/FR coerenti. Invariati i limiti tecnici: per il superamento dei 128 caratteri viene mostrato un messaggio distinto, evitando un'indicazione di lunghezza minima non pertinente.

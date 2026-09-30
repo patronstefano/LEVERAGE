@@ -145,10 +145,10 @@ TRANSLATIONS = {
         models.LanguageEnum.FR: "{event_name} · Nouvel événement recommandé selon vos favoris.",
     },
     "notification.admin_promotion": {
-        models.LanguageEnum.EN: "You have been promoted to ADMIN. On your next login, you must configure two-factor authentication to use LEVERAGE admin tools.",
-        models.LanguageEnum.IT: "Hai ottenuto la promozione ad ADMIN. Al prossimo accesso dovrai configurare l'autenticazione a due fattori per usare gli strumenti di amministrazione di LEVERAGE.",
-        models.LanguageEnum.ES: "Has sido promovido a ADMIN. En tu proximo acceso deberas configurar la autenticacion de dos factores para usar las herramientas de administracion de LEVERAGE.",
-        models.LanguageEnum.FR: "Vous avez ete promu ADMIN. A votre prochaine connexion, vous devrez configurer l'authentification a deux facteurs pour utiliser les outils d'administration de LEVERAGE.",
+        models.LanguageEnum.EN: "You have been promoted to ADMIN.",
+        models.LanguageEnum.IT: "Hai ottenuto la promozione ad ADMIN.",
+        models.LanguageEnum.ES: "Has sido promovido a ADMIN.",
+        models.LanguageEnum.FR: "Vous avez ete promu ADMIN.",
     },
     "notification.super_admin_promotion": {
         models.LanguageEnum.EN: "You have been promoted to SUPER ADMIN. On your next login, you must configure two-factor authentication to manage roles, restore data and critical operations.",
