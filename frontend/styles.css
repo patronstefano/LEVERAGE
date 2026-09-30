@@ -1843,24 +1843,8 @@ button {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(25, 23, 71, 0.28);
-}
-
-.legend-dot.has-results {
-  background: var(--brand-blue);
-}
-
-.legend-dot.missing-results {
-  background: var(--warning);
-}
-
-.legend-dot.ongoing {
-  background: var(--success);
-}
-
-.legend-dot.upcoming {
-  background: rgba(25, 23, 71, 0.18);
-  border: 1px solid rgba(25, 23, 71, 0.22);
+  border: 1px solid transparent;
+  box-sizing: border-box;
 }
 
 .calendar-weekdays,
@@ -2020,31 +2004,35 @@ button {
 }
 
 .calendar-event-bar.has-results,
-.pill.event-status-pill.has-results {
-  color: #fff;
-  background: var(--brand-blue);
-  border-color: var(--brand-blue);
+.pill.event-status-pill.has-results,
+.legend-dot.has-results {
+  color: #444276;
+  background: #efeff9;
+  border-color: #d3d2eb;
 }
 
 .calendar-event-bar.missing-results,
-.pill.event-status-pill.missing-results {
-  color: var(--warning);
-  background: rgba(154, 103, 0, 0.1);
-  border-color: rgba(154, 103, 0, 0.18);
+.pill.event-status-pill.missing-results,
+.legend-dot.missing-results {
+  color: #89620f;
+  background: #fff8e9;
+  border-color: #efdfb7;
 }
 
 .calendar-event-bar.ongoing,
-.pill.event-status-pill.ongoing {
-  color: var(--success);
-  background: rgba(22, 101, 52, 0.09);
-  border-color: rgba(22, 101, 52, 0.16);
+.pill.event-status-pill.ongoing,
+.legend-dot.ongoing {
+  color: #36724d;
+  background: #edf8f0;
+  border-color: #c7e4cf;
 }
 
 .calendar-event-bar.upcoming,
-.pill.event-status-pill.upcoming {
-  color: var(--brand-blue);
-  background: rgba(25, 23, 71, 0.08);
-  border-color: rgba(25, 23, 71, 0.14);
+.pill.event-status-pill.upcoming,
+.legend-dot.upcoming {
+  color: #666a73;
+  background: #f5f5f7;
+  border-color: #e1e2e7;
 }
 
 .calendar-event-bar.is-calendar-focus {

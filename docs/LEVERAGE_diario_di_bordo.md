@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Palette tenue degli stati evento
+
+- Resi pastello i quattro stati evento, con sfondo chiaro, bordo leggero e testo leggibile, coerentemente ai badge MAG/WAG. Eliminato il riempimento blu pieno di Risultati disponibili.
+- Legenda, barre del calendario e badge delle card condividono le medesime regole colore: blu desaturato, ambra, verde e grigio neutro. Nessuna modifica alla logica degli stati o ai colori generali di pulsanti e avvisi.
+
+
 #### 30 settembre 2026 - Stato degli eventi nelle card
 
 - Il terzo badge delle card evento mostra ora Risultati disponibili, Risultati mancanti, In corso o In programma, al posto del livello della competizione. Disciplina, categoria, data e badge di verifica rimangono invariati.
