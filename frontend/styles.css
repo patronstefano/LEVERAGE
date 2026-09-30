@@ -3568,7 +3568,17 @@ a:focus-visible > .entity-card-clickable {
   mask-image: url('./assets/lucide-eye-off.svg');
 }
 .password-visibility-button:hover,
-.password-visibility-button:focus-visible { color: var(--ink); border-color: currentColor; }
+.password-visibility-button:focus-visible,
+.password-visibility-button[aria-pressed="true"] {
+  color: var(--brand-blue);
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.password-visibility-button:focus-visible::before {
+  filter: drop-shadow(0 0 1px currentColor);
+}
 
 .auth-message.auth-validation-message { min-height: 0; line-height: 1.35; }
 

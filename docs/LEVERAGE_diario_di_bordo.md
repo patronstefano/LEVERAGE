@@ -3052,6 +3052,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 #### 2026-09-30 - Visualizzazione della password
 
+Rifinitura successiva: rimosso il contorno visibile del pulsante occhio. Hover e stato attivo evidenziano soltanto l'icona in blu LEVERAGE, senza sfondo o riquadro; il focus da tastiera distingue l'icona con una lieve evidenziazione. Invariati dimensioni del campo e comportamento mostra/nascondi.
+
 Aggiunto pulsante occhio Lucide nel campo password tramite il componente condiviso di validazione dei form: accesso (anche demo), registrazione, recupero con nuova password e cambio password nelle impostazioni. Password inizialmente nascosta; pulsante non submit, utilizzabile da tastiera, con etichette accessibili EN/IT/ES/FR e stato premuto. Il box mantiene dimensioni e arrotondamento esistenti. La validazione riconosce il campo come password anche quando visibile: lunghezza, errori server e spazi non vengono alterati dal cambio di tipo dell'input. Nessuna modifica ai dati o alla sicurezza del backend. Verificati con Playwright mostra/nascondi, validazione a password visibile, passaggio MFA demo, registrazione e overflow mobile.
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
