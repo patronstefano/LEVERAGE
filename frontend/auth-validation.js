@@ -48,6 +48,11 @@ export function bindAuthValidation(form, message, getLanguage) {
   const isPassword = (input) => input.dataset.passwordField === 'true' || input.type === 'password';
   const shell = form.closest('.auth-panel') || form;
   const main = shell.closest('.auth-main-view');
+  const initialShellHeight = shell.offsetHeight;
+  const syncLayout = () => {
+    if (!shell.isConnected) return;
+    main?.style.setProperty('--auth-feedback-growth', `${Math.max(0, shell.offsetHeight - initialShellHeight)}px`);
+  };
   if (main) {
     main.style.setProperty('--auth-feedback-growth', '0px');
   }
@@ -79,17 +84,16 @@ export function bindAuthValidation(form, message, getLanguage) {
       message.classList.remove('auth-validation-message', 'is-error');
       delete message.dataset.authError;
     }
-    main?.style.setProperty('--auth-feedback-growth', '0px');
+    syncLayout();
   };
   const show = (issues) => {
     anchorLayout();
     clear();
-    const initialHeight = shell.offsetHeight;
     message.classList.remove('is-success', 'account-feedback');
     message.classList.add('auth-validation-message', 'is-error');
     message.dataset.authError = 'true';
     message.textContent = [...new Set(issues.map((issue) => text(issue.key)))].join(' ');
-    main?.style.setProperty('--auth-feedback-growth', `${Math.max(0, shell.offsetHeight - initialHeight)}px`);
+    syncLayout();
     const fields = [...new Set(issues.flatMap((issue) => issue.fields || []))];
     fields.forEach((input) => {
       input.setAttribute('aria-invalid', 'true');
@@ -142,5 +146,5 @@ export function bindAuthValidation(form, message, getLanguage) {
     }
     show([{ key, fields: affected }]);
   };
-  return { validate, serverError };
+  return { validate, serverError, syncLayout };
 }

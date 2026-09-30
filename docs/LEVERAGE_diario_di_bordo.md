@@ -3058,6 +3058,8 @@ Aggiunto pulsante occhio Lucide nel campo password tramite il componente condivi
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Corretta la gestione dell'espansione del form di accesso: il recupero dello spazio sotto il box include ora anche il campo MFA e il relativo suggerimento, non solo gli avvisi di validazione. Il calcolo usa l'altezza iniziale del box e resta valido durante digitazione, errore e conferma. Nessuno spazio aggiuntivo riservato prima dell'interazione. Verificata con Playwright la downbar interamente visibile e stabile a 1280x720, 1280x768 e 1440x900, durante comparsa MFA, codice errato e successo demo; il layout continua a consentire lo scorrimento su schermi troppo piccoli per contenere tutti gli elementi.
+
 Semplificato il testo centrale della downbar: rimangono soltanto email, password e codice demo, rimuovendo la frase introduttiva sulla simulazione. Invariati isolamento locale, assenza di autenticazione reale e messaggio finale di verifica demo.
 
 Posizionamento finale richiesto: testo demo da 10 px centrato nella downbar, tra marchio a sinistra e pulsanti demo a destra. Colonne laterali simmetriche mantengono il centro geometrico; su schermi stretti il testo resta centrato in disposizione verticale senza sovrapposizioni.
