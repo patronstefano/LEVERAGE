@@ -19,7 +19,6 @@
 .admin-center .admin-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 20px 0; align-items: end; }
 .admin-center label { display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 14px; min-width: 0; }
 .admin-center input:not([type="checkbox"]), .admin-center .admin-custom-select > summary { height: 36px; width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: var(--control-radius); background: #fff; color: var(--ink); padding: 0 13px; font-family: inherit; font-size: 15px; font-weight: 480; }
-.admin-center input:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 2px; }
 .admin-center .admin-custom-select { position: relative; margin: 0; }
 .admin-center .admin-form-field { display: flex; flex-direction: column; gap: 8px; }
 .admin-center .admin-form-field > span { font-size: 14px; color: var(--muted); font-weight: 400; }
@@ -2887,6 +2886,8 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .saved-ranking-input-shell:focus-within,
+.admin-center input:not([type="checkbox"]):not([type="file"]):focus,
+.admin-center textarea:focus,
 .auth-form input:focus {
   outline: none;
   border-color: rgba(25, 23, 71, 0.32);

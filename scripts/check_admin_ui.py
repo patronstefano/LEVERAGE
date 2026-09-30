@@ -119,6 +119,10 @@ def main():
                 assert not page.locator('.admin-overview-link').count()
             if tab == "entry":
                 page.locator('#adminCreateForm input[name=last_name]').wait_for()
+                page.locator('#adminCreateForm input[name=last_name]').focus()
+                page.wait_for_timeout(200)
+                focus_style = page.locator('#adminCreateForm input[name=last_name]').evaluate('el => { const s = getComputedStyle(el); return [s.outlineStyle, s.borderTopColor, s.boxShadow]; }')
+                assert focus_style == ['none', 'rgba(25, 23, 71, 0.32)', 'rgba(25, 23, 71, 0.08) 0px 0px 0px 3px'], focus_style
                 assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
                 assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']
                 page.locator("#adminNewEvent").click()

@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Focus dei campi del Centro Admin
+
+Rimosso l'outline esterno aggiuntivo sui campi del Centro Admin. I campi scrivibili condividono ora la regola di focus di accesso e Salva questo ranking: bordo blu tenue e alone leggero, senza doppio contorno o variazioni dimensionali. Esclusi checkbox e caricamento file, che conservano gli indicatori nativi. Aggiunta verifica browser dello stile calcolato del campo attivo.
+
 #### 2026-09-30 - Creazione atleta preselezionata
 
 Invertito lo slider di Inserimento dati: Nuovo atleta a sinistra, Nuovo evento a destra. Ogni apertura della sottosezione preseleziona Nuovo atleta e carica il relativo modulo automaticamente. Aggiornati indice del thumb e test browser per ordine, selezione iniziale e cambio modulo; invariati salvataggio e separazione dalla sottosezione Risultati.
