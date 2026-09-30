@@ -3058,6 +3058,8 @@ Aggiunto pulsante occhio Lucide nel campo password tramite il componente condivi
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Semplificato il testo centrale della downbar: rimangono soltanto email, password e codice demo, rimuovendo la frase introduttiva sulla simulazione. Invariati isolamento locale, assenza di autenticazione reale e messaggio finale di verifica demo.
+
 Posizionamento finale richiesto: testo demo da 10 px centrato nella downbar, tra marchio a sinistra e pulsanti demo a destra. Colonne laterali simmetriche mantengono il centro geometrico; su schermi stretti il testo resta centrato in disposizione verticale senza sovrapposizioni.
 
 Rifinitura della downbar: istruzioni demo in testo da 10 px accanto ai pulsanti demo nello stesso gruppo, senza riga dedicata a tutta larghezza. Su schermi stretti il gruppo conserva il ritorno a capo responsive.

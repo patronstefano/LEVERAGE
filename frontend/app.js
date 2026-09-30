@@ -6850,7 +6850,6 @@ function renderLogin() {
   `);
 
   const demoText = (key) => ({
-    notice: ["Local MFA simulation. No real sign-in or email delivery.", "Simulazione MFA locale. Nessun accesso reale e nessuna email inviata.", "Simulaci\u00f3n MFA local. Sin acceso real ni env\u00edo de correo.", "Simulation MFA locale. Aucune connexion r\u00e9elle ni aucun email envoy\u00e9."],
     success: ["Demo verification completed. No ADMIN session created.", "Verifica demo completata. Nessuna sessione ADMIN creata.", "Verificaci\u00f3n demo completada. No se ha creado una sesi\u00f3n ADMIN.", "V\u00e9rification de d\u00e9monstration termin\u00e9e. Aucune session ADMIN cr\u00e9\u00e9e."],
   }[key][Math.max(0, ["en", "it", "es", "fr"].indexOf(state.language))]);
   if (mfaDemo) {
@@ -6859,7 +6858,7 @@ function renderLogin() {
     const notice = document.createElement("p");
     notice.className = "footer-mfa-demo-notice";
     notice.id = "mfaDemoNotice";
-    notice.textContent = `${demoText("notice")} Email: admin@example.test \u00b7 Password: LeverageDemo!2026 \u00b7 Code: 123456`;
+    notice.textContent = "Email: admin@example.test \u00b7 Password: LeverageDemo!2026 \u00b7 Code: 123456";
     $("#footerDemoAccess").before(notice);
   }
   const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
