@@ -3738,13 +3738,11 @@ a:focus-visible > .entity-card-clickable {
 .account-tool-actions { display: flex; gap: 8px; }
 .account-tool-button { position: relative; }
 .account-admin-center-link { position: relative; }
-.admin-create-actions .quiet-button[aria-pressed="true"],
-.admin-create-actions .quiet-button[aria-pressed="true"]:hover,
-.admin-create-actions .quiet-button[aria-pressed="true"]:focus-visible {
-  background: var(--brand-blue);
-  border-color: var(--brand-blue);
-  color: #fff;
-}
+.admin-create-toggle { width: max-content; max-width: 100%; }
+.admin-create-toggle .segmented-option { padding: 0 14px; font-size: var(--control-font-size, 14px); }
+.admin-create-toggle .segmented-option[aria-pressed="true"] { color: #fff; }
+.admin-create-toggle .segmented-thumb { transform: translateX(calc(var(--selected-index) * 100%)); }
+.admin-create-toggle[data-active="false"] .segmented-thumb { opacity: 0; }
 .admin-tools-toggle.account-tool-button[aria-pressed="true"],
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:hover,
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:focus-visible {

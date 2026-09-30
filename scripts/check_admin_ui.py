@@ -127,7 +127,8 @@ def main():
                 assert page.locator("#adminCreateForm input[name=last_name]").count()
                 assert page.locator('#adminNewEvent').get_attribute('aria-pressed') == 'false'
                 assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
-                assert page.locator('#adminNewAthlete').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
+                assert page.locator('.admin-create-toggle .segmented-thumb').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
+                assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '1'
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator("#adminResultForm").wait_for()
