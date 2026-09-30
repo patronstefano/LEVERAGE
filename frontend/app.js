@@ -6245,10 +6245,19 @@ function athleteCardSummaryPills(athlete = {}, id = athlete.id) {
 }
 
 function eventCardSummaryPills(event = {}) {
+  const statusLabels = {
+    completed_with_results: "resultsAvailable",
+    completed_no_results: "resultsMissing",
+    ongoing: "ongoing",
+    upcoming: "upcoming",
+  };
   return [
     { label: escapeHtml(event.discipline ? displayEnumValue(event.discipline) : t("discipline")) },
     { label: escapeHtml(event.category ? displayEnumValue(event.category) : t("category")) },
-    { label: escapeHtml(event.level || t("event")) },
+    ...(statusLabels[event.calendar_status] ? [{
+      label: escapeHtml(t(statusLabels[event.calendar_status])),
+      variant: `event-status-pill ${calendarStatusClass(event)}`,
+    }] : []),
   ];
 }
 

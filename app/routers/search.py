@@ -7,6 +7,7 @@ from sqlalchemy import and_, case, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
+from app.event_calendar import get_event_calendar_status
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
 from app.display_names import athlete_display_name
@@ -619,6 +620,7 @@ def global_search(
             level=event.level,
             world_gymnastics_verified_at=event.world_gymnastics_verified_at,
             result_count=event_counts.get(event.id, 0),
+            calendar_status=get_event_calendar_status(event, event_counts.get(event.id, 0)),
         )
         for event in events
     ]

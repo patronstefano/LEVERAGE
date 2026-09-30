@@ -1526,6 +1526,7 @@ class GlobalSearchEvent(BaseModel):
     level: LevelEnum
     world_gymnastics_verified_at: Optional[datetime] = None
     result_count: int = 0
+    calendar_status: EventCalendarStatusEnum
 
 
 class GlobalSearchResult(ResultRankingEntry):

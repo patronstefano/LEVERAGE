@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Stato degli eventi nelle card
+
+- Il terzo badge delle card evento mostra ora Risultati disponibili, Risultati mancanti, In corso o In programma, al posto del livello della competizione. Disciplina, categoria, data e badge di verifica rimangono invariati.
+- Riutilizzate le regole colore del calendario: blu Leverage per risultati disponibili, ambra per mancanti, verde per gare in corso, neutro per programmate. Testi localizzati nelle quattro lingue e dimensioni dei badge esistenti conservate.
+- Modifica condivisa dalla lista Eventi, dai preferiti e dalla ricerca globale. Quest'ultima riceve ora `calendar_status` dal backend usando la stessa funzione del calendario; nessuna deduzione dello stato dal solo numero di risultati nel frontend.
+- Il livello rimane memorizzato e disponibile nei filtri e nei dettagli: cambia solo la rappresentazione sintetica nelle card. Per eventi in corso/futuri lo stato temporale ha precedenza, come nel calendario.
+
+
 #### 29 settembre 2026 - Filtro Solo conclusi nella sezione Eventi
 
 - Aggiunto un pulsante filtro standard accanto allo slider Lista/Calendario, tradotto nelle quattro lingue. Si combina con ricerca, periodo, level, disciplina, categoria e preferiti; Pulisci filtri lo disattiva.

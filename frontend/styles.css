@@ -2019,25 +2019,29 @@ button {
   background: rgba(245, 245, 247, 0.96);
 }
 
-.calendar-event-bar.has-results {
+.calendar-event-bar.has-results,
+.pill.event-status-pill.has-results {
   color: #fff;
   background: var(--brand-blue);
   border-color: var(--brand-blue);
 }
 
-.calendar-event-bar.missing-results {
+.calendar-event-bar.missing-results,
+.pill.event-status-pill.missing-results {
   color: var(--warning);
   background: rgba(154, 103, 0, 0.1);
   border-color: rgba(154, 103, 0, 0.18);
 }
 
-.calendar-event-bar.ongoing {
+.calendar-event-bar.ongoing,
+.pill.event-status-pill.ongoing {
   color: var(--success);
   background: rgba(22, 101, 52, 0.09);
   border-color: rgba(22, 101, 52, 0.16);
 }
 
-.calendar-event-bar.upcoming {
+.calendar-event-bar.upcoming,
+.pill.event-status-pill.upcoming {
   color: var(--brand-blue);
   background: rgba(25, 23, 71, 0.08);
   border-color: rgba(25, 23, 71, 0.14);
