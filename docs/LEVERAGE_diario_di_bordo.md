@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Generatori notifiche DEMO ADMIN separati
+
+La downbar dell'ADMIN demo espone due comandi: Notifiche Centro Admin e Notifiche Area Personale. Il primo genera soltanto riepilogo import, riepilogo data entry e reminder risultati e apre le notifiche amministrative; il secondo genera nuovi risultati, nuovo evento consigliato, promozione e declassamento e apre le notifiche personali. Le due caselle demo sono ora memorizzate separatamente per utente e ambito: rigenerarne una non cancella o rimette come non lette le notifiche dell'altra. Il generatore amministrativo non richiede il caricamento dei preferiti. Nessuna scrittura nel DB; dati fittizi eliminati al reload. Invariati generatori USER e SUPER ADMIN e limitazione agli account demo su localhost. Test UI aggiornato per pulsanti, tipi di notifica, navigazione, conservazione dello stato di lettura tra ambiti e assenza di scritture API.
+
 #### 2026-09-30 - Notifica di promozione ADMIN
 
 Testo finale richiesto: "Hai ottenuto la promozione ad ADMIN. Gli strumenti di amministrazione sono ora disponibili." Aggiornate nuove notifiche backend e demo, con traduzioni coerenti. La disponibilita resta subordinata ai controlli di autenticazione e autorizzazione esistenti, che non vengono modificati.

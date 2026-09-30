@@ -377,7 +377,7 @@ def main():
             user.update(role=role, email=email)
             page.reload()
             page.locator('#' + button_id).wait_for(state='visible')
-            assert page.locator('[data-demo-notifications]:visible').count() == 1
+            assert page.locator('[data-demo-notifications]:visible').count() == (2 if role == 'admin' else 1)
             write_count = len(writes)
             page.locator('#' + button_id).click()
             page.wait_for_timeout(200)
@@ -396,11 +396,24 @@ def main():
             assert len(writes) == write_count
             assert user['role'] == role
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-            page.goto('http://127.0.0.1:5173/#/account?section=notifications')
+            if role == 'admin':
+                page.locator('#demoAdminPersonalNotifications').click()
+                page.wait_for_timeout(200)
+                assert '#/account?section=notifications' in page.url
+            else:
+                page.goto('http://127.0.0.1:5173/#/account?section=notifications')
             page.locator('.account-notification').first.wait_for()
             assert page.locator('.account-notification').count() == 4
             assert page.locator('.account-notification.is-unread').count() == 4
             assert set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')) == {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'}
+            if role == 'admin':
+                page.evaluate("location.hash = '#/admin/notifications'")
+                page.wait_for_timeout(200)
+                assert page.locator('.account-notification').count() == 3
+                assert page.locator('.account-notification.is-unread').count() == 0
+                page.evaluate("location.hash = '#/account?section=notifications'")
+                page.wait_for_timeout(200)
+            assert len(writes) == write_count
             page.reload()
             page.locator('.account-notification').first.wait_for()
             assert page.locator('.account-notification-copy p').first.inner_text() == 'Notifica personale 0'

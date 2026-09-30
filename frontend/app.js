@@ -1,6 +1,6 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=promotion-tools-20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=demo-inbox-scopes-20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=promotion-tools-20260930";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=demo-inbox-scopes-20260930";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -2041,7 +2041,7 @@ function updateAuthUi() {
   document.querySelectorAll('[data-demo-notifications]').forEach((button) => {
     const role = button.dataset.demoNotifications;
     button.hidden = !canGenerateDemoNotifications(state.currentUser) || state.currentUser.role !== role;
-    button.textContent = accountText(state.language, { user: 'demoGenerator', admin: 'demoAdminGenerator', super_admin: 'demoSuperAdminGenerator' }[role]);
+    button.textContent = accountText(state.language, button.dataset.demoScope === 'personal' ? 'demoAdminPersonalGenerator' : { user: 'demoGenerator', admin: 'demoAdminGenerator', super_admin: 'demoSuperAdminGenerator' }[role]);
   });
   const demoAccess = $("#footerDemoAccess");
   if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
@@ -6945,11 +6945,12 @@ function bindDemoLoginButtons() {
   document.querySelectorAll('[data-demo-notifications]').forEach((control) => control.addEventListener('click', async (event) => {
     if (!canGenerateDemoNotifications(state.currentUser) || control.dataset.demoNotifications !== state.currentUser.role) return;
     const user = state.currentUser, button = event.currentTarget;
+    const scope = control.dataset.demoScope || 'all';
     if (button.disabled) return;
     button.disabled = true;
     try {
-      const athletes = await getJson('/preferences/athletes/followed/details', {}, { auth: true });
-      const events = await getJson('/preferences/events/saved/details', {}, { auth: true });
+      const athletes = scope === 'admin' ? [] : await getJson('/preferences/athletes/followed/details', {}, { auth: true });
+      const events = scope === 'admin' ? [] : await getJson('/preferences/events/saved/details', {}, { auth: true });
       const athlete = athletes.find((detail) => detail.athlete?.id)?.athlete;
       const resultEvents = [];
       if (athlete) {
@@ -6959,8 +6960,8 @@ function bindDemoLoginButtons() {
         }
       }
       if (state.currentUser?.id !== user.id) return;
-      generateDemoNotifications(user, athletes, events, resultEvents);
-      const target = user.role === 'user' ? '/account?section=notifications' : '/admin/notifications';
+      generateDemoNotifications(user, athletes, events, resultEvents, scope);
+      const target = scope === 'personal' || user.role === 'user' ? '/account?section=notifications' : '/admin/notifications';
       if (state.route === target) render();
       else window.location.hash = '#' + target;
     } catch (_) {
