@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=separate-results-20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-access-20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
 
@@ -2703,6 +2703,7 @@ function setApp(html) {
   app.classList.toggle("primary-section-main-view", isPrimarySection);
   app.classList.toggle("auth-main-view", ["/login", "/register", "/verify-email", "/forgot-password", "/reset-password", "/resend-verification"].includes(routePath) || (routePath === "/account" && !state.currentUser));
   app.innerHTML = html;
+  if (app.querySelector('.auth-brand-welcome')) app.classList.add("auth-main-view");
   if (welcomeLogoRect && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const logo = app.querySelector('.auth-brand-logo');
     if (logo) {
@@ -6801,11 +6802,11 @@ async function renderRankings() {
   await loadRankingResults();
 }
 
-function authRequiredPage() {
+function authRequiredPage(message = t("loginRequiredFavorites"), alert = false) {
   setApp(`
     <div class="auth-brand auth-brand-form auth-brand-welcome">
       <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="80" height="80">
-      <p class="home-body">${t("loginRequiredFavorites")}</p>
+      <p class="home-body" ${alert ? 'role="alert"' : ''}>${escapeHtml(message)}</p>
     </div>
     <div class="auth-required-actions">
       <a class="quiet-button outline-command-button auth-primary-link" href="#/login">${t("signIn")}</a>
@@ -12249,7 +12250,7 @@ function render() {
   if (["/forgot-password", "/reset-password", "/resend-verification"].includes(state.route.split("?")[0])) {
     return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
   } else if (/^\/(?:admin|super-admin)(?:\/|$)/.test(state.route)) {
-    return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml,
+    return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml, authRequiredPage,
       renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t,
       setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });
   } else if (state.route.startsWith("/account")) {

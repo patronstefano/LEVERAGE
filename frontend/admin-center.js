@@ -240,7 +240,7 @@ export async function renderAdminCenter(host) {
   const baseRoute = superCenter ? "/super-admin" : "/admin";
   const text = (key) => COPY[key] ? adminLabel(state.language, key) : host.t(key) !== key ? host.t(key) : adminLabel(state.language, key);
   if (!["admin", "super_admin"].includes(state.currentUser?.role) || (superCenter && state.currentUser?.role !== "super_admin")) {
-    host.setApp(`<p role="alert">${text("denied")}</p><a class="quiet-button" href="#/login">${host.t("signIn")}</a>`);
+    host.authRequiredPage(text("denied"), true);
     return;
   }
   if (session?.user !== state.currentUser.id) session = { user: state.currentUser.id, rows: [], import: null };

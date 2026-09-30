@@ -236,6 +236,9 @@ def main():
         page.reload()
         page.locator('[role="alert"]').wait_for()
         assert not page.locator(".admin-center").count()
+        assert page.locator('#app').evaluate('el => el.classList.contains("auth-main-view")')
+        assert page.locator('.auth-brand-welcome .auth-brand-logo').is_visible()
+        assert page.locator('.auth-required-actions a').get_attribute('href') == '#/login'
         assert page.locator('#authLink').get_attribute('href') == '#/account'
         assert not errors, errors
         browser.close()

@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Accesso richiesto al Centro Admin
+
+La schermata Accesso ADMIN richiesto riutilizza il componente della pagina di disconnessione: logo LEVERAGE centrale, messaggio con tipografia del sottotitolo e pulsante Accedi senza riquadro aggiuntivo. Condivisi dimensioni, spaziature e animazione del logo verso la schermata di login. Conservati controllo dei ruoli, traduzioni e annuncio accessibile dell'accesso negato; nessuna modifica alle autorizzazioni. Aggiunto controllo browser di logo, layout e collegamento Accedi.
+
 #### 2026-09-30 - Separazione anagrafica e risultati nel Centro Admin
 
 Inserimento dati contiene esclusivamente lo slider Nuovo Evento / Nuovo Atleta e i rispettivi moduli di creazione. Dopo il salvataggio resta disponibile il collegamento alla scheda creata, senza aprire automaticamente il caricamento punteggi. La nuova sottosezione Risultati raccoglie invece ricerca dell'evento, contesto di gara, selezione atleta, compilazione punteggi e invio cumulativo della classifica. Import da file rimane nella sottosezione Import dedicata. Nessuna modifica ai vincoli backend, alle verifiche dei punteggi o alle autorizzazioni.
