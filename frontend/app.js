@@ -6866,11 +6866,27 @@ function renderLogin() {
     $("#footerDemoAccess").before(notice);
   }
   const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
+  const loginForm = $("#loginForm");
+  let credentialsRevision = 0;
+  loginForm.addEventListener("input", (event) => {
+    if (!["loginEmail", "loginPassword"].includes(event.target.id)) return;
+    credentialsRevision += 1;
+    $("#mfaField").hidden = true;
+    const code = $("#loginMfaCode");
+    code.value = "";
+    code.required = false;
+    code.removeAttribute("aria-invalid");
+    code.removeAttribute("aria-describedby");
+    code.classList.remove("is-invalid");
+    $("#loginMessage").textContent = "";
+    validation.syncLayout();
+  });
   $("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const message = $("#loginMessage");
     const submit = event.currentTarget.querySelector("button[type='submit']");
     if (submit.disabled || !validation.validate()) return;
+    const submittedRevision = credentialsRevision;
     message.textContent = "";
     submit.disabled = true;
     try {
@@ -6898,6 +6914,8 @@ function renderLogin() {
           mfa_code: $("#loginMfaCode")?.value.trim() || undefined,
         },
       });
+      // Ignore responses belonging to credentials edited while the request was pending.
+      if (!loginForm.isConnected || submittedRevision !== credentialsRevision) return;
       if (payload.mfa_required) {
         $("#mfaField").hidden = false;
         $("#loginMfaCode").required = true;
@@ -6915,6 +6933,7 @@ function renderLogin() {
       }
       await completeLoginWithToken(payload.access_token);
     } catch (error) {
+      if (!loginForm.isConnected || submittedRevision !== credentialsRevision) return;
       validation.serverError(error, "login");
     } finally {
       submit.disabled = false;
