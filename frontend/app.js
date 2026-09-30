@@ -59,6 +59,10 @@ function routeHasGlobalSearchContext(route) {
 }
 
 function activeRouteSection(route) {
+  const [path, query = ""] = String(route || "/").split("?");
+  if (/^\/(athletes|events)\/\d+$/.test(path) && new URLSearchParams(query).get("from") === "admin") {
+    return "";
+  }
   if (routeHasGlobalSearchContext(route)) return "home";
   return contextualAthleteSourceSection(route) || routeSection(route);
 }

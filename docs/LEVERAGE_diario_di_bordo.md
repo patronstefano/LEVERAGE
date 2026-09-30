@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Navigazione indipendente dalle schede aperte dal Centro Admin
+
+- Corretto il riconoscimento delle schede Atleta ed Evento aperte dal Centro Admin: non devono sovrascrivere la memoria di navigazione delle sezioni pubbliche Atleti ed Eventi.
+- Il collegamento di ritorno al Centro Admin resta invariato. La topbar recupera la precedente vista pubblica oppure la lista, senza riaprire la scheda amministrativa.
+- Le memorie precedentemente contaminate da un percorso amministrativo vengono scartate al caricamento, ripristinando la lista della sezione. Restano preservati i percorsi provenienti da Rankings, classifiche e Ricerca globale.
+
 #### 2026-09-30 - Denominazione Importazione file
 
 - Rinominata la sezione del Centro Admin da "Importazioni" a "Importazione file", con etichette equivalenti in inglese, spagnolo e francese.
