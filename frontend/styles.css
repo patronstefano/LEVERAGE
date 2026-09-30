@@ -527,7 +527,7 @@ button {
 }
 
 @media (min-width: 901px) and (max-height: 760px) {
-  .app-shell:has(#mfaField:not([hidden])) .footer { padding-bottom: 20px; }
+  .auth-main-view:has(#mfaField:not([hidden])) #loginMessage:not(:empty) { margin-top: -14px; }
 }
 
 .auth-main-view .page-heading > div {

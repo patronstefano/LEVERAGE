@@ -3058,6 +3058,8 @@ Aggiunto pulsante occhio Lucide nel campo password tramite il componente condivi
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Ulteriore correzione: eliminata la riduzione del padding della downbar durante MFA, che ne spostava il bordo superiore. La downbar mantiene ora dimensioni iniziali; si consuma lo spazio libero sotto i link. Nei desktop bassi (fino a 760 px) viene inoltre ridotto di 14 px il solo spazio prima del messaggio MFA, necessario per contenere form, margine link da 20 px e footer originale senza sovrapposizioni.
+
 Ripristinata la distanza invariabile di 20 px tra box di accesso e link Registrati/Recupera password anche durante MFA e avvisi: l'espansione non consuma piu tale margine. Sui desktop con altezza ridotta, il campo MFA aperto riduce soltanto il padding inferiore della downbar per mantenerne visibile il contenuto senza avvicinare i link al form.
 
 Corretta la gestione dell'espansione del form di accesso: il recupero dello spazio sotto il box include ora anche il campo MFA e il relativo suggerimento, non solo gli avvisi di validazione. Il calcolo usa l'altezza iniziale del box e resta valido durante digitazione, errore e conferma. Nessuno spazio aggiuntivo riservato prima dell'interazione. Verificata con Playwright la downbar interamente visibile e stabile a 1280x720, 1280x768 e 1440x900, durante comparsa MFA, codice errato e successo demo; il layout continua a consentire lo scorrimento su schermi troppo piccoli per contenere tutti gli elementi.
