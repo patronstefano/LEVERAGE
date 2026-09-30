@@ -6860,7 +6860,7 @@ function renderLogin() {
     notice.className = "footer-mfa-demo-notice";
     notice.id = "mfaDemoNotice";
     notice.textContent = `${demoText("notice")} Email: admin@example.test \u00b7 Password: LeverageDemo!2026 \u00b7 Code: 123456`;
-    $(".footer").append(notice);
+    $("#footerDemoAccess").append(notice);
   }
   const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
   $("#loginForm").addEventListener("submit", async (event) => {

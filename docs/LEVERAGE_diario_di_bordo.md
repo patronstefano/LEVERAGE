@@ -3058,6 +3058,8 @@ Aggiunto pulsante occhio Lucide nel campo password tramite il componente condivi
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Rifinitura della downbar: istruzioni demo in testo da 10 px accanto ai pulsanti demo nello stesso gruppo, senza riga dedicata a tutta larghezza. Su schermi stretti il gruppo conserva il ritorno a capo responsive.
+
 Il testo informativo con email, password e codice fittizi della simulazione integrata e stato spostato dal box Accedi alla downbar, su una riga dedicata con ritorno a capo responsive. Compare solo durante la simulazione locale della schermata di accesso e viene rimosso quando si cambia pagina; invariato il flusso di verifica e nessuna credenziale reale esposta.
 
 Su successiva richiesta, la stessa simulazione e disponibile direttamente nel form Accedi della piattaforma tramite `?auth_demo=mfa#/login`, esclusivamente su hostname di loopback. Riutilizza validazione, messaggi di errore e animazione del form reale, senza chiamare login/demo-login o creare token. Le credenziali statiche non sono ammesse dall'autenticazione reale tramite questo meccanismo. Il form normale senza parametro resta invariato; anche una sessione preesistente rimane intatta durante la simulazione. Messaggi espliciti in EN/IT/ES/FR distinguono la prova dall'accesso reale.
