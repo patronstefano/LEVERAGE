@@ -6810,7 +6810,9 @@ function authRequiredPage() {
 }
 
 function renderLogin() {
-  if (state.currentUser) {
+  const mfaDemo = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname)
+    && new URLSearchParams(window.location.search).get("auth_demo") === "mfa";
+  if (state.currentUser && !mfaDemo) {
     renderAccount();
     return;
   }
@@ -6846,6 +6848,19 @@ function renderLogin() {
     </div>
   `);
 
+  const demoText = (key) => ({
+    notice: ["Local MFA simulation. No real sign-in or email delivery.", "Simulazione MFA locale. Nessun accesso reale e nessuna email inviata.", "Simulaci\u00f3n MFA local. Sin acceso real ni env\u00edo de correo.", "Simulation MFA locale. Aucune connexion r\u00e9elle ni aucun email envoy\u00e9."],
+    success: ["Demo verification completed. No ADMIN session created.", "Verifica demo completata. Nessuna sessione ADMIN creata.", "Verificaci\u00f3n demo completada. No se ha creado una sesi\u00f3n ADMIN.", "V\u00e9rification de d\u00e9monstration termin\u00e9e. Aucune session ADMIN cr\u00e9\u00e9e."],
+  }[key][Math.max(0, ["en", "it", "es", "fr"].indexOf(state.language))]);
+  if (mfaDemo) {
+    $("#loginEmail").value = "admin@example.test";
+    $("#loginPassword").value = "LeverageDemo!2026";
+    const notice = document.createElement("p");
+    notice.className = "auth-message";
+    notice.id = "mfaDemoNotice";
+    notice.textContent = `${demoText("notice")} Email: admin@example.test \u00b7 Password: LeverageDemo!2026 \u00b7 Code: 123456`;
+    $("#loginForm").before(notice);
+  }
   const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
   $("#loginForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -6855,6 +6870,22 @@ function renderLogin() {
     message.textContent = "";
     submit.disabled = true;
     try {
+      // Explicit local preview: never exchange static demo credentials for a token.
+      if (mfaDemo) {
+        if ($("#loginEmail").value.trim() !== "admin@example.test" || $("#loginPassword").value !== "LeverageDemo!2026") {
+          validation.serverError({ status: 401 }, "login");
+        } else if ($("#mfaField").hidden) {
+          $("#mfaField").hidden = false;
+          $("#loginMfaCode").required = true;
+          $("#loginMfaCode").focus();
+          message.textContent = t("mfaRequired");
+        } else if ($("#loginMfaCode").value.trim() !== "123456") {
+          validation.serverError({ status: 401, detail: "Invalid authentication credentials" }, "login");
+        } else {
+          message.textContent = demoText("success");
+        }
+        return;
+      }
       const payload = await sendJson("/auth/login", {
         auth: false,
         body: {

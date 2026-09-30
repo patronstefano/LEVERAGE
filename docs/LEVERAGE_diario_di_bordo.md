@@ -3052,6 +3052,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
+Su successiva richiesta, la stessa simulazione e disponibile direttamente nel form Accedi della piattaforma tramite `?auth_demo=mfa#/login`, esclusivamente su hostname di loopback. Riutilizza validazione, messaggi di errore e animazione del form reale, senza chiamare login/demo-login o creare token. Le credenziali statiche non sono ammesse dall'autenticazione reale tramite questo meccanismo. Il form normale senza parametro resta invariato; anche una sessione preesistente rimane intatta durante la simulazione. Messaggi espliciti in EN/IT/ES/FR distinguono la prova dall'accesso reale.
+
 Su richiesta dell'utente, aggiunta `frontend/demo-mfa.html`: simulazione locale dell'accesso di un ADMIN con secondo fattore gia configurato. Email `admin@example.test`, password `LeverageDemo!2026` e codice statico `123456` valgono esclusivamente nella simulazione. Nessuna API di autenticazione chiamata, nessuna sessione creata, nessuna credenziale o modifica salvata nel database. La pagina riutilizza lo stile dei form di accesso e verifica email/password demo prima di mostrare il campo codice; sono simulati errore e conferma. Verificati con Playwright codice errato, codice corretto, riavvio e assenza di overflow mobile. Artefatto temporaneo da rimuovere alla chiusura dello sviluppo.
 
 L'attivazione di Brevo e il futuro codice via email sono rinviati a dopo l'MVP privato. L'autenticazione reale continua a utilizzare TOTP e codici di recupero; la simulazione non ne modifica le protezioni e non rappresenta un test di consegna email o di configurazione iniziale MFA.
