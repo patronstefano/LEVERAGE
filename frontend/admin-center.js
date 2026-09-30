@@ -1,4 +1,4 @@
-import { mountNotificationInbox } from './account-tools.js?v=mfa-layout-20260930';
+import { mountNotificationInbox } from './account-tools.js?v=auth-code-copy-20260930';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {

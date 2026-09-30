@@ -3,7 +3,7 @@ const messages = {
   email: ["Enter a valid email address.", "Inserisci un indirizzo email valido.", "Introduce un correo electrónico válido.", "Saisissez une adresse email valide."],
   password: ["The password must contain 6 to 128 characters.", "La password deve contenere da 6 a 128 caratteri.", "La contraseña debe contener entre 6 y 128 caracteres.", "Le mot de passe doit contenir entre 6 et 128 caractères."],
   mismatch: ["The passwords do not match.", "Le password non coincidono.", "Las contraseñas no coinciden.", "Les mots de passe ne correspondent pas."],
-  code: ["Enter a valid authentication or recovery code.", "Inserisci un Codice di Autenticazione o di recupero valido.", "Introduce un código de autenticación o recuperación válido.", "Saisissez un code d’authentification ou de récupération valide."],
+  code: ["Incorrect authentication code.", "Codice di Autenticazione errato.", "Código de autenticación incorrecto.", "Code d’authentification incorrect."],
   credentials: ["Incorrect email or password.", "Email o password errate.", "Correo o contraseña incorrectos.", "Email ou mot de passe incorrect."],
   wrongCode: ["Incorrect authentication code. Try again.", "Codice di Autenticazione errato. Riprova.", "Código de autenticación incorrecto. Inténtalo de nuevo.", "Code d’authentification incorrect. Réessayez."],
   verification: ["Verify your email before signing in.", "Verifica la tua email prima di accedere.", "Verifica tu correo antes de iniciar sesión.", "Vérifiez votre email avant de vous connecter."],

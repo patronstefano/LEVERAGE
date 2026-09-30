@@ -1,6 +1,6 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=mfa-layout-20260930";
-import { bindAuthValidation } from "./auth-validation.js?v=mfa-layout-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=mfa-layout-20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=auth-code-copy-20260930";
+import { bindAuthValidation } from "./auth-validation.js?v=auth-code-copy-20260930";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=auth-code-copy-20260930";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
