@@ -253,7 +253,11 @@ def main():
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
         page.locator('#adminActivityPeriod').wait_for()
         assert page.locator('.admin-activity-table').count() == 2
+        assert page.locator('.admin-data-total').count() == 3
+        assert not page.locator('.admin-activity-details[open]').count()
+        page.locator('.admin-activity-details > summary').first.click()
         assert 'actor@example.test' in page.locator('#adminWorkspace').inner_text()
+        page.locator('.admin-activity-details > summary').first.click()
         page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => node.value = '7'")
         page.locator('#adminActivityPeriod button[type="submit"]').click()
         page.wait_for_timeout(300)

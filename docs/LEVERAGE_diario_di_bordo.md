@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Panoramiche Admin e Super Admin allineate
+
+La Panoramica Super Admin adotta la stessa griglia a tre colonne della Panoramica Admin, con totali evidenziati e identici caratteri, divisori e spaziature. Mantiene il proprio significato: stato delle revisioni, tipi di operazioni e tipi di entita modificate. Il periodo e selezionabile sotto al riepilogo; attivita per amministratore e operazioni recenti sono espandibili e inizialmente chiuse. Dati e accesso all'audit restano disponibili, senza confondere le statistiche operative con i conteggi delle entita. Test browser aggiornato per totali e apertura dei dettagli.
+
 #### 2026-09-30 - Coerenza delle sezioni Centro Super Admin
 
 Uniformate gestione utenti e audit alle righe delle Notifiche: tipografia, dati secondari, spaziature e azioni separate. Ripristino in blocco dedicato analogo alle Impostazioni; approvazione con contorno verde e annullamento modifica con contorno rosso. Tabelle della panoramica inserite nei blocchi condivisi, mantenendo conteggi, filtri e riepilogo attivita. Date audit localizzate, stati tradotti, risultati vuoti in riquadro uniforme. Notifiche mantiene il componente gia condiviso. Invariati autorizzazioni, conferme, divieto di approvare le proprie modifiche e contratti backend. Test browser esteso a righe utenti, audit popolato e layout mobile.

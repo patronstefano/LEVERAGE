@@ -445,21 +445,21 @@ export async function renderAdminCenter(host) {
           const date = (value) => new Intl.DateTimeFormat(state.language, { dateStyle: "short", timeStyle: "short" }).format(new Date(value.endsWith("Z") ? value : `${value}Z`));
           const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
-          const summary = (title, rows) => `<section class="admin-data-group"><h3>${esc(text(title))}</h3><dl>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
-          const table = (title, headers, rows) => toolBlock(title, rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : emptyState());
-          paint(`${form("adminActivityPeriod", select("days", "activityPeriod", [
-            { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
-            { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
-          ], String(session.activityDays ?? 30)))}
-          <div class="admin-data-overview admin-activity-summary">
-            ${summary("activityTotal", [[text("dataTotal"), data.total], [text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
+          const summary = (title, rows) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd>${number.format(data.total)}</dd></div>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
+          const table = (title, headers, rows) => `<details class="admin-activity-details"><summary>${esc(text(title))}</summary>${rows.length ? `<div class="admin-activity-table-scroll" tabindex="0"><table class="admin-activity-table"><thead><tr>${headers.map((header) => `<th scope="col">${esc(text(header))}</th>`).join("")}</tr></thead><tbody>${rows.map((cells) => `<tr>${cells.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : emptyState()}</details>`;
+          paint(`<div class="admin-data-overview">
+            ${summary("activityTotal", [[text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
             ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
             ${summary("activityEntities", data.by_entity.map((row) => [entity(row.key), row.count]))}
           </div>
+          <p class="admin-data-note">${esc(text("activityNote"))}</p>
+          ${form("adminActivityPeriod", select("days", "activityPeriod", [
+            { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
+            { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
+          ], String(session.activityDays ?? 30)))}
           ${table("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
           ${table("activityRecent", ["ID", "activityDate", "activityAuthor", "activityOperation", "entity_type", "status"], data.recent.map((row) => [`#${row.id}`, date(row.created_at), author(row), text(row.action), `${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, text(row.review_status)]))}
-          <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>
-          <p class="admin-data-note">${esc(text("activityNote"))}</p>`);
+          <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>`);
           if (!active()) return;
           document.getElementById("adminActivityPeriod").onsubmit = guard(async (event) => {
             session.activityDays = Number(new FormData(event.currentTarget).get("days"));
