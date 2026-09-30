@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Denominazione Importazione file
+
+- Rinominata la sezione del Centro Admin da "Importazioni" a "Importazione file", con etichette equivalenti in inglese, spagnolo e francese.
+- La modifica riguarda solo la presentazione: percorsi, permessi e funzionamento degli strumenti di importazione restano invariati.
+
 #### 2026-09-30 - Popup selettori compatti
 
 I menu di opzioni condivisi mostrano al massimo quattro voci complete; le successive sono raggiungibili tramite scorrimento interno. Rimossa l'altezza maggiorata specifica del Centro Admin. L'altezza viene misurata sulle prime quattro righe all'apertura, includendo eventuali testi su piu righe e senza tagliare la voce successiva. Stesso comportamento in Centro Admin, schede entita e Impostazioni. Test browser sul numero di opzioni visibili e sulla selezione tramite scorrimento.

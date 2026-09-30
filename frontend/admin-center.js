@@ -132,7 +132,7 @@ const COPY = {
   Event: ["Event", "Evento", "Evento", "Événement"],
   Result: ["Result", "Risultato", "Resultado", "Résultat"],
   duplicateResults: ["Possible duplicate results", "Possibili risultati duplicati", "Posibles resultados duplicados", "Résultats potentiellement en double"],
-  imports: ["Imports", "Importazioni", "Importaciones", "Importations"],
+  imports: ["File import", "Importazione file", "Importación de archivos", "Importation de fichiers"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
   review: ["Review", "Revisioni", "Revisión", "Révision"],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
