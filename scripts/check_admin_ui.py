@@ -87,7 +87,7 @@ def main():
         assert admin_link['x'] + admin_link['width'] < notifications_button['x']
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
-        for tab in ["overview", "entry", "entities", "imports", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
+        for tab in ["overview", "entry", "results", "entities", "imports", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
             base = '/super-admin/' if tab in ['users', 'audit'] else '/admin/'
             page.evaluate("(route) => location.hash = route", base + tab)
             page.wait_for_timeout(500)
@@ -129,10 +129,14 @@ def main():
                 assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
                 assert page.locator('.admin-create-toggle .segmented-thumb').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
                 assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '1'
+                assert page.locator('[name="event_search"]').count() == 0
+                assert page.locator('#adminEntry').count() == 0
+            if tab == "results":
+                assert page.locator('#adminNewAthlete').count() == 0
+                assert page.locator('#adminNewEvent').count() == 0
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator("#adminResultForm").wait_for()
-                assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'false'
                 page.locator('[name="athlete_search"]').fill("Test")
                 page.locator("#adminAthleteOptions button").first.click()
                 for key, value in {"D_score": "5", "E_score": "8", "score": "13"}.items():

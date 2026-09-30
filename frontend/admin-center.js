@@ -124,6 +124,7 @@ const COPY = {
     "Enregistrements actifs uniquement. À compléter inclut les champs facultatifs, même pour les profils vérifiés. Les événements sans résultats incluent ceux à venir. Les notes comptent les valeurs enregistrées (y compris zéro), sans estimations ni totaux calculés."
   ],
   entry: ["Data entry", "Inserimento dati", "Entrada de datos", "Saisie des données"],
+  results: ["Results", "Risultati", "Resultados", "Résultats"],
   imports: ["Imports", "Importazioni", "Importaciones", "Importations"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
   review: ["Review", "Revisioni", "Revisión", "Révision"],
@@ -246,7 +247,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "entities", "imports", "review", "merge", "notifications", "statistics", "security"];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "results", "entities", "imports", "review", "merge", "notifications", "statistics", "security"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
@@ -451,8 +452,7 @@ export async function renderAdminCenter(host) {
       }
     }
     if (tab === "entry") {
-      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text("entry"))}" data-active="false" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminNewEvent" aria-pressed="false">${esc(text("newEvent"))}</button><button type="button" class="segmented-option" id="adminNewAthlete" aria-pressed="false">${esc(text("newAthlete"))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminCreate"></div>
-        <div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);
+      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text("entry"))}" data-active="false" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminNewEvent" aria-pressed="false">${esc(text("newEvent"))}</button><button type="button" class="segmented-option" id="adminNewAthlete" aria-pressed="false">${esc(text("newAthlete"))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminCreate"></div>`);
       let createRevision = 0;
       const selectCreate = (kind) => {
         document.getElementById("adminNewEvent").setAttribute("aria-pressed", String(kind === "events"));
@@ -473,17 +473,17 @@ export async function renderAdminCenter(host) {
           if (!active() || revision !== createRevision) return;
           document.getElementById("adminCreate").innerHTML = entityLink(kind, created.id);
           selectCreate(null);
-          feedback(text("success")); if (kind === "events") await loadEvent(created);
+          feedback(text("success"));
         });
       };
       document.getElementById("adminNewEvent").onclick = guard(() => create("events"));
       document.getElementById("adminNewAthlete").onclick = guard(() => create("athletes"));
+    }
+    if (tab === "results") {
+      paint(`<div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);
       const loadEvent = async (event) => {
         if (session.event?.id !== event.id && session.rows.length) { feedback(text("batch"), true); return; }
         session.event = event;
-        createRevision += 1;
-        document.getElementById("adminCreate").innerHTML = "";
-        selectCreate(null);
         const options = await api(`/events/${event.id}/manual-entry-options`);
         if (!active()) return;
         const area = document.getElementById("adminEntry");

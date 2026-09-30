@@ -333,6 +333,8 @@ Le operazioni ordinarie di data entry restano disponibili agli `admin`, ma le op
 Il soft delete non sostituisce i backup: in produzione sara comunque necessario configurare backup automatici del database a livello infrastrutturale, idealmente giornalieri o piu frequenti durante import massivi.
 
 ## Calendario eventi
+
+Nel Centro Admin, **Inserimento dati** crea esclusivamente nuove schede Atleta ed Evento. La sottosezione **Risultati** gestisce l'inserimento manuale di punteggi e classifiche per una gara esistente. Gli import da file restano nella sottosezione dedicata.
 Gli `Event` possono essere creati anche prima che la gara si svolga e possono quindi non avere ancora `Result` associati.
 `GET /events/calendar` espone una vista calendario pubblica con stato calcolato automaticamente:
 

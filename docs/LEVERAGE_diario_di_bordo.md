@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Separazione anagrafica e risultati nel Centro Admin
+
+Inserimento dati contiene esclusivamente lo slider Nuovo Evento / Nuovo Atleta e i rispettivi moduli di creazione. Dopo il salvataggio resta disponibile il collegamento alla scheda creata, senza aprire automaticamente il caricamento punteggi. La nuova sottosezione Risultati raccoglie invece ricerca dell'evento, contesto di gara, selezione atleta, compilazione punteggi e invio cumulativo della classifica. Import da file rimane nella sottosezione Import dedicata. Nessuna modifica ai vincoli backend, alle verifiche dei punteggi o alle autorizzazioni.
+
+Mantenuti stile, slider di navigazione e traduzioni EN/IT/ES/FR; la bozza dei risultati conserva il proprio stato separato dalla creazione delle anagrafiche. Controllo browser Centro Admin superato, compresi assenza del caricamento risultati in Inserimento dati, assenza dei pulsanti di creazione autonoma in Risultati, invio batch e cambio disciplina.
+
 #### 2026-09-30 - Reminder cumulativo automatico per gli amministratori
 
 Eliminata la sottosezione Calendario del Centro Admin: il calendario pubblico della sezione Eventi e gli strumenti di importazione restano invariati. Il promemoria manuale per singola gara viene sostituito da una notifica cumulativa per ciascun ADMIN/SUPER ADMIN attivo: "N Eventi conclusi e senza risultati: EventoA, EventoB, ...". Il contenuto e tradotto nella lingua preferita del destinatario, con singolare dedicato quando rimane una sola gara.
