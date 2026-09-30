@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
+
+Su richiesta dell'utente, aggiunta `frontend/demo-mfa.html`: simulazione locale dell'accesso di un ADMIN con secondo fattore gia configurato. Email `admin@example.test`, password `LeverageDemo!2026` e codice statico `123456` valgono esclusivamente nella simulazione. Nessuna API di autenticazione chiamata, nessuna sessione creata, nessuna credenziale o modifica salvata nel database. La pagina riutilizza lo stile dei form di accesso e verifica email/password demo prima di mostrare il campo codice; sono simulati errore e conferma. Verificati con Playwright codice errato, codice corretto, riavvio e assenza di overflow mobile. Artefatto temporaneo da rimuovere alla chiusura dello sviluppo.
+
+L'attivazione di Brevo e il futuro codice via email sono rinviati a dopo l'MVP privato. L'autenticazione reale continua a utilizzare TOTP e codici di recupero; la simulazione non ne modifica le protezioni e non rappresenta un test di consegna email o di configurazione iniziale MFA.
+
 #### 30 settembre 2026 - Testo notifiche evento per livello
 
 - Distinto il testo della notifica new_event: per Olympic Games, World Championships, Continental Championships, World Cup e World Challenge Cup resta "Nome evento · Nuovo evento di livello Livello"; per National Event e International Event diventa "Nome evento · Nuovo evento consigliato in base ai preferiti."

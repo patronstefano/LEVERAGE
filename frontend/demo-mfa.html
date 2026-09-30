@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>LEVERAGE | Demo autenticazione</title>
+  <link rel="icon" href="./assets/leverage-favicon-64.png">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    main { padding: 48px 20px; }
+    .demo-note { max-width: 440px; margin: 24px auto; color: var(--muted); line-height: 1.6; }
+    .demo-note code { overflow-wrap: anywhere; }
+    [hidden] { display: none !important; }
+  </style>
+</head>
+<body>
+  <main class="main-view auth-main-view">
+    <div class="auth-brand auth-brand-form">
+      <img class="auth-brand-logo" src="./assets/leverage-logo.png" alt="LEVERAGE" width="28" height="28">
+      <h1 id="heading">Accedi</h1>
+      <p class="home-body auth-login-subtitle">Anteprima locale dell'accesso ADMIN con secondo fattore.</p>
+    </div>
+    <section class="panel auth-panel auth-login-panel">
+      <form class="auth-form" id="demoForm" novalidate>
+        <div id="credentials" class="auth-form">
+          <label>Email<input id="email" type="email" autocomplete="off" value="admin@example.test"></label>
+          <label>Password<input id="password" type="password" autocomplete="off" value="LeverageDemo!2026"></label>
+        </div>
+        <label id="codeField" hidden>Codice di Autenticazione
+          <input id="code" type="text" inputmode="numeric" maxlength="6" autocomplete="off" aria-describedby="codeHelp">
+          <span id="codeHelp">Nell'accesso reale, il codice viene generato dalla tua app di autenticazione.</span>
+        </label>
+        <button id="submit" class="quiet-button outline-command-button auth-login-submit" type="submit">Accedi</button>
+        <div class="auth-message" id="message" role="status" aria-live="polite"></div>
+      </form>
+      <div id="success" hidden>
+        <p>Verifica demo completata. Nessuna sessione reale creata.</p>
+        <button id="restart" class="quiet-button outline-command-button" type="button">Riprova</button>
+      </div>
+    </section>
+    <div class="demo-note">
+      <strong>Simulazione, non accesso reale</strong><br>
+      Email: <code>admin@example.test</code><br>
+      Password: <code>LeverageDemo!2026</code><br>
+      Codice demo: <code>123456</code>
+      <p>Nessuna email inviata, nessun dato salvato e nessun permesso ADMIN assegnato. Questa anteprima simula un account con secondo fattore gi&agrave; configurato.</p>
+      <a href="./#/login">Torna a LEVERAGE</a>
+    </div>
+  </main>
+  <script>
+    // This isolated preview never calls authentication APIs or stores credentials.
+    if (!['localhost', '127.0.0.1', '[::1]', ''].includes(location.hostname)) {
+      document.body.textContent = 'Anteprima disponibile solo in locale.';
+    } else {
+      const get = id => document.getElementById(id);
+      let stage = 'credentials';
+      get('demoForm').addEventListener('submit', event => {
+        event.preventDefault();
+        get('message').textContent = '';
+        document.querySelectorAll('.is-invalid').forEach(input => {
+          input.classList.remove('is-invalid');
+          input.removeAttribute('aria-invalid');
+        });
+        const fail = (input, message) => {
+          input.classList.add('is-invalid');
+          input.setAttribute('aria-invalid', 'true');
+          get('message').textContent = message;
+          get('message').style.color = '#b42318';
+          const form = get('demoForm');
+          form.classList.remove('is-shaking');
+          void form.offsetWidth;
+          form.classList.add('is-shaking');
+          input.focus();
+        };
+        if (stage === 'credentials') {
+          if (get('email').value.trim() !== 'admin@example.test') return fail(get('email'), 'Inserisci l\'email demo indicata sotto.');
+          if (get('password').value !== 'LeverageDemo!2026') return fail(get('password'), 'Inserisci la password demo indicata sotto.');
+          stage = 'code';
+          get('credentials').hidden = true;
+          get('codeField').hidden = false;
+          get('heading').textContent = 'Verifica accesso';
+          get('submit').textContent = 'Conferma';
+          get('code').focus();
+        } else {
+          if (get('code').value.trim() !== '123456') return fail(get('code'), 'Codice demo non valido. Usa 123456.');
+          get('demoForm').hidden = true;
+          get('success').hidden = false;
+          get('heading').textContent = 'Accesso demo verificato';
+          get('restart').focus();
+        }
+      });
+      get('restart').addEventListener('click', () => location.reload());
+    }
+  </script>
+</body>
+</html>
