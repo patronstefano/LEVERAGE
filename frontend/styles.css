@@ -6310,6 +6310,16 @@ a:focus-visible > .entity-card-clickable {
   margin-right: 10px;
 }
 
+.footer:has(.footer-mfa-demo-notice) { flex-wrap: wrap; }
+.footer-mfa-demo-notice {
+  flex-basis: 100%;
+  margin: 0;
+  font: inherit;
+  line-height: 1.5;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
 .empty-state,
 .error-state {
   padding: 22px;

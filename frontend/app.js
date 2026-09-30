@@ -6810,6 +6810,7 @@ function authRequiredPage() {
 }
 
 function renderLogin() {
+  $("#mfaDemoNotice")?.remove();
   const mfaDemo = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname)
     && new URLSearchParams(window.location.search).get("auth_demo") === "mfa";
   if (state.currentUser && !mfaDemo) {
@@ -6856,10 +6857,10 @@ function renderLogin() {
     $("#loginEmail").value = "admin@example.test";
     $("#loginPassword").value = "LeverageDemo!2026";
     const notice = document.createElement("p");
-    notice.className = "auth-message";
+    notice.className = "footer-mfa-demo-notice";
     notice.id = "mfaDemoNotice";
     notice.textContent = `${demoText("notice")} Email: admin@example.test \u00b7 Password: LeverageDemo!2026 \u00b7 Code: 123456`;
-    $("#loginForm").before(notice);
+    $(".footer").append(notice);
   }
   const validation = bindAuthValidation($("#loginForm"), $("#loginMessage"), () => state.language);
   $("#loginForm").addEventListener("submit", async (event) => {
@@ -12209,6 +12210,7 @@ function accountToolsHost() {
 }
 
 function render() {
+  $("#mfaDemoNotice")?.remove();
   normalizeRoute();
   setActiveNav();
   applyTranslations();
