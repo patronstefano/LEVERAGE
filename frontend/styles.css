@@ -23,7 +23,7 @@
 .admin-center .admin-form-field { display: flex; flex-direction: column; gap: 8px; }
 .admin-center .admin-form-field > span { font-size: 14px; color: var(--muted); font-weight: 400; }
 .admin-center label, .admin-center .admin-custom-select > summary { font-weight: 400; }
-.admin-center .admin-custom-select-menu { z-index: 40; max-height: 260px; overflow-y: auto; background: #fff; }
+.admin-center .admin-custom-select-menu { z-index: 40; overflow-y: auto; background: #fff; }
 .admin-center .admin-form-wide { grid-column: 1 / -1; }
 .admin-center-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .admin-center .quiet-button, .admin-confirm .quiet-button { min-height: 36px; border-radius: var(--control-radius); font-size: 14px; white-space: normal; text-align: center; }
@@ -5980,9 +5980,11 @@ a:focus-visible > .entity-card-clickable {
   right: 0;
   left: 0;
   display: grid;
+  grid-auto-rows: max-content;
   gap: 3px;
-  max-height: 220px;
-  padding: 6px;
+  box-sizing: border-box;
+  max-height: 155px;
+  padding: 0 6px;
   overflow-y: auto;
   border: 1px solid rgba(25, 23, 71, 0.12);
   border-radius: var(--control-radius);
@@ -6001,7 +6003,7 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .admin-custom-select-menu button {
-  min-height: 34px;
+  min-height: 36px;
   padding: 7px 10px;
   border: 1px solid transparent;
   border-radius: var(--control-radius);

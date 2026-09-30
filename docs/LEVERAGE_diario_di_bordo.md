@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Popup selettori compatti
+
+I menu di opzioni condivisi mostrano al massimo quattro voci complete; le successive sono raggiungibili tramite scorrimento interno. Rimossa l'altezza maggiorata specifica del Centro Admin. L'altezza viene misurata sulle prime quattro righe all'apertura, includendo eventuali testi su piu righe e senza tagliare la voce successiva. Stesso comportamento in Centro Admin, schede entita e Impostazioni. Test browser sul numero di opzioni visibili e sulla selezione tramite scorrimento.
+
 #### 2026-09-30 - Selettori anagrafici atleta e compatibilita World Gymnastics
 
 Prima della modifica verificato il flusso WG: i dati ufficiali arrivano come codice nazione e anno numerico, con proposte sottoposte all'approvazione ADMIN. I selettori mantengono gli stessi nomi dei campi e payload; anno vuoto resta null. Anno di nascita con opzioni dall'anno corrente al 1900, coerenti al vincolo backend; nazioni dal catalogo sportivo e alias gia usati dal sistema, senza conversioni arbitrarie in codici ISO diversi.

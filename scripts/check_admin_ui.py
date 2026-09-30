@@ -143,6 +143,9 @@ def main():
                 for name, value in [('country', 'ITA'), ('birth_year', '2001')]:
                     control = page.locator(f'#adminCreateForm [name={name}]').locator('..')
                     control.locator('summary').click()
+                    page.wait_for_timeout(180)
+                    visible_count = control.locator('.admin-custom-select-menu').evaluate('menu => { const r = menu.getBoundingClientRect(); return [...menu.querySelectorAll("[role=option]")].filter(el => { const b = el.getBoundingClientRect(); return b.top >= r.top && b.bottom <= r.bottom; }).length; }')
+                    assert visible_count == 4, visible_count
                     control.locator(f'[data-admin-select-value="{value}"]').click()
                     assert page.locator(f'#adminCreateForm [name={name}]').input_value() == value
                 assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']

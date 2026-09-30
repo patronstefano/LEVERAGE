@@ -10193,7 +10193,16 @@ function bindAdminSelectControls(rootNode = document) {
     if (control.dataset.adminSelectBound === "true") return;
     control.dataset.adminSelectBound = "true";
     control.addEventListener("toggle", () => {
-      if (control.open) closeAdminSelectControls(control);
+      if (control.open) {
+        closeAdminSelectControls(control);
+        const menu = control.querySelector(".admin-custom-select-menu");
+        const options = [...menu.querySelectorAll("[role='option']")].slice(0, 4);
+        if (options.length) {
+          const style = getComputedStyle(menu);
+          const rowsHeight = options.reduce((height, option) => height + option.getBoundingClientRect().height, 0);
+          menu.style.maxHeight = `${rowsHeight + Math.max(0, options.length - 1) * parseFloat(style.rowGap) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)}px`;
+        }
+      }
     });
     control.querySelectorAll("[data-admin-select-value]").forEach((option) => {
       option.addEventListener("click", () => {
