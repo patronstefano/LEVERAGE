@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Selettore anno importazione
+
+Il campo Anno dell'import risultati usa il menu di opzioni condiviso degli strumenti admin, invece dell'input numerico libero. Anni in ordine decrescente dall'anno successivo a quello corrente fino al 1900; mantenuta l'opzione vuota per non forzare l'anno quando il file lo fornisce. Invariati parametro year_hint e controlli backend. Test browser verifica selezione e posizione prima del file.
+
 #### 2026-09-30 - Ordine campi importazione
 
 Scambiati Anno e File: l'import risultati presenta Tipo, Anno, File, nello stesso ordine anche nel DOM e nella navigazione da tastiera. Invariati valori, controlli e comportamento dell'import calendario.
