@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Conferma demo in verde
+
+Il messaggio "Verifica demo completata. Nessuna sessione ADMIN creata." usa ora il colore positivo condiviso degli avvisi, senza contorno. Modificando un campo del form, la conferma e il relativo stato verde vengono rimossi per non lasciare un esito positivo riferito a dati precedenti.
+
 #### 2026-09-30 - Conferma recupero password senza contorno
 
 Il messaggio positivo del modulo di recupero password usa ora testo semplice da 13 px, senza bordo, sfondo o padding interno aggiuntivo, analogamente al suggerimento MFA. Conservato il colore verde esistente. Modifica circoscritta alle conferme del modulo recupero, senza alterare gli avvisi delle impostazioni e delle altre sezioni.

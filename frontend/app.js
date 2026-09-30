@@ -6867,6 +6867,12 @@ function renderLogin() {
   const loginForm = $("#loginForm");
   let credentialsRevision = 0;
   loginForm.addEventListener("input", (event) => {
+    const feedback = $("#loginMessage");
+    if (feedback.classList.contains("is-success")) {
+      feedback.classList.remove("is-success");
+      feedback.textContent = "";
+      validation.syncLayout();
+    }
     if (!["loginEmail", "loginPassword"].includes(event.target.id)) return;
     credentialsRevision += 1;
     $("#mfaField").hidden = true;
@@ -6901,6 +6907,7 @@ function renderLogin() {
           validation.serverError({ status: 401, detail: "Invalid authentication credentials" }, "login");
         } else {
           message.textContent = demoText("success");
+          message.classList.add("is-success");
         }
         return;
       }
