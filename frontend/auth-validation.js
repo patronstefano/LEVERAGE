@@ -1,7 +1,8 @@
 const messages = {
   required: ["Complete the required fields.", "Completa i campi obbligatori.", "Completa los campos obligatorios.", "Remplissez les champs obligatoires."],
   email: ["Enter a valid email address.", "Inserisci un indirizzo email valido.", "Introduce un correo electrónico válido.", "Saisissez une adresse email valide."],
-  password: ["The password must contain 6 to 128 characters.", "La password deve contenere da 6 a 128 caratteri.", "La contraseña debe contener entre 6 y 128 caracteres.", "Le mot de passe doit contenir entre 6 et 128 caractères."],
+  password: ["The password must contain at least 6 characters.", "La password deve contenere almeno 6 caratteri.", "La contraseña debe contener al menos 6 caracteres.", "Le mot de passe doit contenir au moins 6 caractères."],
+  passwordTooLong: ["The password must not exceed 128 characters.", "La password non deve superare 128 caratteri.", "La contraseña no debe superar los 128 caracteres.", "Le mot de passe ne doit pas dépasser 128 caractères."],
   mismatch: ["The passwords do not match.", "Le password non coincidono.", "Las contraseñas no coinciden.", "Les mots de passe ne correspondent pas."],
   code: ["Incorrect authentication code.", "Codice di Autenticazione errato.", "Código de autenticación incorrecto.", "Code d’authentification incorrect."],
   credentials: ["Incorrect email or password.", "Email o password errate.", "Correo o contraseña incorrectos.", "Email ou mot de passe incorrect."],
@@ -115,7 +116,8 @@ export function bindAuthValidation(form, message, getLanguage) {
       if (input.required && !value) { issues.push({ key: 'required', fields: [input] }); continue; }
       if (!value) continue;
       if (input.type === 'email' && !input.validity.valid) issues.push({ key: 'email', fields: [input] });
-      else if (isPassword(input) && (value.length < (input.minLength > 0 ? input.minLength : 6) || value.length > 128)) issues.push({ key: 'password', fields: [input] });
+      else if (isPassword(input) && value.length > 128) issues.push({ key: 'passwordTooLong', fields: [input] });
+      else if (isPassword(input) && value.length < (input.minLength > 0 ? input.minLength : 6)) issues.push({ key: 'password', fields: [input] });
       else if (input.id === 'loginMfaCode' && (value.length < 6 || value.length > 64)) issues.push({ key: 'code', fields: [input] });
     }
     const confirmation = form.querySelector('#registerPasswordConfirm, [name="repeat_password"]');

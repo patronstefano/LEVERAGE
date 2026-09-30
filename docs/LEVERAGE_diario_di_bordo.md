@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Testo del requisito password
+
+Semplificato l'avviso per password corte in "La password deve contenere almeno 6 caratteri.", con traduzioni EN/ES/FR coerenti. Invariati i limiti tecnici: per il superamento dei 128 caratteri viene mostrato un messaggio distinto, evitando un'indicazione di lunghezza minima non pertinente.
+
 #### 2026-09-30 - Formato email nella registrazione
 
 Allineato anche Accedi: stesso esempio `name@example.com`, dominio completo e attributi per inserimento email. Rimossa la compilazione automatica di email e password nella simulazione MFA integrata: entrambi i campi iniziano vuoti; le credenziali fittizie restano consultabili nella downbar e inseribili manualmente. Invariati autocomplete del browser e flussi di autenticazione.

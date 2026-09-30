@@ -1,4 +1,4 @@
-import { bindAuthValidation } from "./auth-validation.js?v=auth-code-copy-20260930";
+import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 
 const labels = {
   registerLink: ["Sign up", "Registrati", "Regístrate", "S’inscrire"],
