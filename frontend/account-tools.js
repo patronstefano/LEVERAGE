@@ -20,7 +20,7 @@ const labels = {
   demoCompetition: ["Example competition", "Gara di esempio", "Competición de ejemplo", "Compétition fictive"],
   demoEvent: ["New event at {level} level.", "Nuovo evento di livello {level}.", "Nuevo evento de nivel {level}.", "Nouvel événement de niveau {level}."],
   demoRecommendedEvent: ["New event recommended based on your favorites.", "Nuovo evento consigliato in base ai preferiti.", "Nuevo evento recomendado según tus favoritos.", "Nouvel événement recommandé selon vos favoris."],
-  demoPromotion: ["You have been promoted to ADMIN.", "Hai ottenuto la promozione ad ADMIN.", "Has obtenido la promoción a ADMIN.", "Vous avez été promu ADMIN."],
+  demoPromotion: ["You have been promoted to ADMIN. Administration tools are now available.", "Hai ottenuto la promozione ad ADMIN. Gli strumenti di amministrazione sono ora disponibili.", "Has obtenido la promoción a ADMIN. Las herramientas de administración ya están disponibles.", "Vous avez été promu ADMIN. Les outils d’administration sont maintenant disponibles."],
   demoDemotion: ["Your role has changed to USER. Administration tools are no longer available.", "Il tuo ruolo è stato modificato in USER. Gli strumenti di amministrazione non sono più disponibili.", "Tu rol ha cambiado a USER. Las herramientas de administración ya no están disponibles.", "Votre rôle est devenu USER. Les outils d’administration ne sont plus disponibles."],
   role: ["Role", "Ruolo", "Rol", "Rôle"],
   accountData: ["Account details", "Dati account", "Datos de la cuenta", "Informations du compte"],

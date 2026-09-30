@@ -145,10 +145,10 @@ TRANSLATIONS = {
         models.LanguageEnum.FR: "{event_name} · Nouvel événement recommandé selon vos favoris.",
     },
     "notification.admin_promotion": {
-        models.LanguageEnum.EN: "You have been promoted to ADMIN.",
-        models.LanguageEnum.IT: "Hai ottenuto la promozione ad ADMIN.",
-        models.LanguageEnum.ES: "Has sido promovido a ADMIN.",
-        models.LanguageEnum.FR: "Vous avez ete promu ADMIN.",
+        models.LanguageEnum.EN: "You have been promoted to ADMIN. Administration tools are now available.",
+        models.LanguageEnum.IT: "Hai ottenuto la promozione ad ADMIN. Gli strumenti di amministrazione sono ora disponibili.",
+        models.LanguageEnum.ES: "Has sido promovido a ADMIN. Las herramientas de administracion ya estan disponibles.",
+        models.LanguageEnum.FR: "Vous avez ete promu ADMIN. Les outils d'administration sont maintenant disponibles.",
     },
     "notification.super_admin_promotion": {
         models.LanguageEnum.EN: "You have been promoted to SUPER ADMIN. On your next login, you must configure two-factor authentication to manage roles, restore data and critical operations.",

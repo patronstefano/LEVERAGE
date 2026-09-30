@@ -3052,6 +3052,8 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 #### 2026-09-30 - Notifica di promozione ADMIN
 
+Testo finale richiesto: "Hai ottenuto la promozione ad ADMIN. Gli strumenti di amministrazione sono ora disponibili." Aggiornate nuove notifiche backend e demo, con traduzioni coerenti. La disponibilita resta subordinata ai controlli di autenticazione e autorizzazione esistenti, che non vengono modificati.
+
 Semplificata la notifica in "Hai ottenuto la promozione ad ADMIN." nelle nuove notifiche backend e nella simulazione, con traduzioni EN/ES/FR. Eliminata la spiegazione del secondo fattore, gia gestita dal flusso di accesso. Invariati invalidazione sessioni dopo cambio ruolo e obbligo MFA per gli strumenti amministrativi; l'invio via email rimane pianificato dopo l'MVP privato. Nessuna riscrittura dei messaggi storici memorizzati.
 
 #### 2026-09-30 - Testo del requisito password
