@@ -87,7 +87,7 @@ def main():
         assert admin_link['x'] + admin_link['width'] < notifications_button['x']
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
-        for tab in ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
+        for tab in ["overview", "entry", "entities", "imports", "review", "merge", "notifications", "statistics", "security", "users", "audit"]:
             base = '/super-admin/' if tab in ['users', 'audit'] else '/admin/'
             page.evaluate("(route) => location.hash = route", base + tab)
             page.wait_for_timeout(500)

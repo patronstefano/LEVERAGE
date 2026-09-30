@@ -3050,6 +3050,20 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Reminder cumulativo automatico per gli amministratori
+
+Eliminata la sottosezione Calendario del Centro Admin: il calendario pubblico della sezione Eventi e gli strumenti di importazione restano invariati. Il promemoria manuale per singola gara viene sostituito da una notifica cumulativa per ciascun ADMIN/SUPER ADMIN attivo: "N Eventi conclusi e senza risultati: EventoA, EventoB, ...". Il contenuto e tradotto nella lingua preferita del destinatario, con singolare dedicato quando rimane una sola gara.
+
+La notifica mantiene lo stesso identificativo quando cambia l'elenco. Un nuovo evento concluso viene aggiunto; l'inserimento di almeno un risultato attivo lo rimuove per tutti gli amministratori. Una variazione dell'elenco rende nuovamente non letta la notifica; leggerla rimane una scelta personale, indipendente dagli altri admin. Quando non restano eventi, la notifica scompare. Eventi eliminati sono esclusi; eliminazioni/ripristini dei risultati sono riconciliati. I vecchi reminder individuali vengono consolidati senza accumulare duplicati.
+
+La riconciliazione avviene dopo le scritture dati, durante la consultazione delle notifiche amministrative e ogni 60 secondi a backend attivo. Il frontend aggiorna contatori e lista visibile ogni 30 secondi senza ricaricare la pagina. Alla riaccensione del backend vengono recuperati anche i passaggi di data avvenuti durante lo spegnimento. Nessuna email, servizio esterno o costo API aggiunto.
+
+Perimetro semantico: entita EVENT non eliminate e prive di qualsiasi risultato attivo; non e una certificazione di completezza della classifica. La fine evento segue end_date, altrimenti start_date; senza date puntuali si usa la conclusione dell'anno, coerentemente al calendario esistente. Il giorno finale rimane in corso fino al giorno successivo. Le righe soltanto calendariali non collegate a EVENT restano escluse: non si presume che gare storiche programmate ma mai associate ai risultati siano state effettivamente disputate. Lo stato degli eventi non viene alterato da questa funzione.
+
+Test dedicato: passaggio temporale, concorrenza di quattro riconciliazioni, destinatari ADMIN/SUPER ADMIN, esclusione USER, identita stabile, lettura indipendente, inserimento/eliminazione risultati e svuotamento del reminder. Aggiornati i test API degli ambiti notifiche e il controllo browser del Centro Admin.
+
+Esito finale: 196 test backend superati; controlli Playwright Area Personale e Centro Admin superati, inclusi layout desktop/mobile. Test aggiuntivo per consolidamento dei reminder preesistenti ed esclusione amministratori inattivi. Isolata la ricreazione dello schema SQLite nei test chiudendo il pool prima di ricreare le tabelle, evitando riuso di connessioni con stato dello schema precedente. Prima dell'attivazione creato backup locale ignorato da Git: `backups/pre_live_reminders_20260930_191202.db`. Preview frontend e backend verificate con risposta HTTP 200.
+
 #### 2026-09-30 - Stato selezionato creazione manuale
 
 Su richiesta successiva, i due pulsanti sono stati riuniti in un unico controllo segmentato Nuovo evento / Nuovo atleta: thumb blu animato, geometria e transizione condivise con gli slider della piattaforma. Il thumb indica il modulo aperto e scompare quando non e aperto alcun modulo; invariati creazione, salvataggio e selezione gara esistente.

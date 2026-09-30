@@ -175,10 +175,16 @@ TRANSLATIONS = {
         models.LanguageEnum.FR: "Rapport de saisie manuelle pour {event_name} : {count} nouvel/nouveaux athlete(s) cree(s) ({athlete_names}). Completez la fiche athlete des que possible.",
     },
     "notification.event_results_reminder": {
-        models.LanguageEnum.EN: "Result reminder: event {event_name} ended {days_since_end} day(s) ago and still has no Result entries.",
-        models.LanguageEnum.IT: "Reminder risultati: l'evento {event_name} risulta concluso da {days_since_end} giorni e non ha ancora Result inseriti.",
-        models.LanguageEnum.ES: "Recordatorio de resultados: el evento {event_name} termino hace {days_since_end} dia(s) y aun no tiene Result cargados.",
-        models.LanguageEnum.FR: "Rappel resultats : l'evenement {event_name} est termine depuis {days_since_end} jour(s) et n'a encore aucun Result saisi.",
+        models.LanguageEnum.EN: "{count} completed events without results: {event_names}.",
+        models.LanguageEnum.IT: "{count} Eventi conclusi e senza risultati: {event_names}.",
+        models.LanguageEnum.ES: "{count} eventos finalizados sin resultados: {event_names}.",
+        models.LanguageEnum.FR: "{count} evenements termines sans resultats : {event_names}.",
+    },
+    "notification.event_results_reminder_single": {
+        models.LanguageEnum.EN: "1 completed event without results: {event_names}.",
+        models.LanguageEnum.IT: "1 Evento concluso e senza risultati: {event_names}.",
+        models.LanguageEnum.ES: "1 evento finalizado sin resultados: {event_names}.",
+        models.LanguageEnum.FR: "1 evenement termine sans resultats : {event_names}.",
     },
     "notification.import_summary": {
         models.LanguageEnum.EN: (

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.database import get_db
 from app.security import get_current_user
+from app.event_reminders import sync_event_result_reminders
 
 router = APIRouter(tags=["notifications"])
 
@@ -22,6 +23,8 @@ def scoped_notifications(db, user, scope):
     is_admin = user.role in (models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN)
     if scope == "admin" and not is_admin:
         raise HTTPException(status_code=403, detail="Admin notifications require an administrator role")
+    if is_admin and scope != "personal":
+        sync_event_result_reminders(db.get_bind())
     if scope == "personal" or not is_admin:
         query = query.filter(models.Notification.type.notin_(ADMIN_TYPES))
     elif scope == "admin":

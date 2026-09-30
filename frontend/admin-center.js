@@ -1,4 +1,4 @@
-import { mountNotificationInbox } from './account-tools.js?v=admin-unread-badge-20260930';
+import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
@@ -246,7 +246,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "entities", "imports", "calendar", "review", "merge", "notifications", "statistics", "security"];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "entities", "imports", "review", "merge", "notifications", "statistics", "security"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
@@ -563,36 +563,6 @@ export async function renderAdminCenter(host) {
       });
     }
     if (tab === "imports") await imports();
-    if (tab === "calendar") {
-      paint(form("adminCalendarForm", field("year", "year", "number", new Date().getFullYear()) + select("status", "status", [{ value: "", label: text("all") }, ...["upcoming", "ongoing", "completed_no_results", "completed_with_results"]])) + button("notify", 'id="adminNotify"') + '<div id="adminCalendarOutput"></div>');
-      const load = async (params) => {
-        const data = await api("/admin/calendar", { params: { ...params, limit: 2000 } });
-        if (!active()) return;
-        document.getElementById("adminCalendarOutput").innerHTML = report(data.summary) + data.events.map((e) => `<div class="admin-center-row"><div><strong>${esc(e.name)}</strong><p>${esc(e.start_date || e.year)} – ${esc(e.end_date || "")} · ${esc(e.status || e.calendar_status || "")} · ${e.result_count ?? 0}</p></div>${entityLink("events", e.id)}</div>`).join("");
-      };
-      onSubmit("adminCalendarForm", load);
-      const grid = document.createElement("div");
-      grid.id = "adminCalendarGrid";
-      document.getElementById("adminCalendarOutput").before(grid);
-      const drawCalendar = async () => {
-        const params = Object.fromEntries(new FormData(document.getElementById("adminCalendarForm")));
-        const data = await api("/admin/calendar", { params: { ...params, limit: 2000 } });
-        if (!active()) return;
-        let month = new Date(Number(params.year), 0, 1);
-        const draw = () => {
-          host.renderHomeCalendar("#adminCalendarGrid", data.events, month, { navScope: "admin" });
-          root.querySelectorAll('[data-calendar-nav-scope="admin"]').forEach((b) => b.onclick = () => {
-            month = new Date(month.getFullYear(), month.getMonth() + Number(b.dataset.calendarNav), 1); draw();
-          });
-          root.querySelector('[data-calendar-today-scope="admin"]').onclick = () => { month = new Date(); draw(); };
-        };
-        draw();
-      };
-      document.getElementById("adminCalendarForm").addEventListener("submit", guard(drawCalendar));
-      await drawCalendar();
-      document.getElementById("adminNotify").onclick = () => confirm("notify", () => api("/admin/event-result-reminders/notify", { method: "POST" }));
-      await load({ year: new Date().getFullYear() });
-    }
     if (tab === "review") {
       const [incomplete, suggestions, duplicates] = await Promise.all([api("/admin/entities-to-complete", { params: { limit: 500 } }), api("/data-suggestions/", { params: { status: "pending" } }), api("/admin/result-duplicate-groups")]);
       paint(`<h2>${text("complete")}</h2>${report({ total_athletes: incomplete.total_athletes, total_events: incomplete.total_events })}${["athletes", "events"].map((kind) => `<details><summary>${host.t(kind === "athletes" ? "navAthletes" : "navEvents")} (${incomplete[kind].length})</summary>${incomplete[kind].map((e) => `<div class="admin-center-row"><span>${esc(nameOf(e))} · ${esc((e.missing_fields || []).join(", "))}</span>${entityLink(kind, e.id)}</div>`).join("")}</details>`).join("")}

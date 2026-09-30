@@ -163,7 +163,7 @@ e aprire `http://localhost:5174`. Il frontend usa di default l'API su `http://lo
 - `GET /admin/event-result-reminders`
   Endpoint admin-only per vedere eventi conclusi che non hanno ancora result inseriti
 - `POST /admin/event-result-reminders/notify`
-  Endpoint admin-only per creare notifiche `event_results_reminder` per gli admin, senza duplicarle per lo stesso evento
+  Endpoint di compatibilita per riconciliare il reminder cumulativo `event_results_reminder` di ogni admin attivo
 - `GET /results`
   Supporta `limit` e `offset`
 - `GET /results/analytics/rankings`
@@ -342,7 +342,11 @@ Gli `Event` possono essere creati anche prima che la gara si svolga e possono qu
 - `completed_with_results`: evento concluso con result
 
 Lo stato non viene salvato manualmente nel database: deriva da `start_date`, `end_date`, data corrente e numero di `Result` associati.
-Per gli admin, `GET /admin/calendar` restituisce una vista gestionale aggregata con eventi, summary per stato e reminder. `GET /admin/event-result-reminders` mostra solo gli eventi conclusi senza result; `POST /admin/event-result-reminders/notify` crea una notifica `event_results_reminder` per ricordare l'inserimento dei risultati.
+La sottosezione Calendario del Centro Admin e stata rimossa; il calendario pubblico e l'import calendario restano disponibili. Le API `GET /admin/calendar` e `GET /admin/event-result-reminders` restano compatibili per consultazione tecnica.
+
+Ogni ADMIN/SUPER ADMIN attivo riceve un solo reminder cumulativo degli EVENT conclusi privi di risultati attivi. L'elenco si aggiorna dopo le scritture (anche import, eliminazione e ripristino), alla lettura delle notifiche amministrative e ogni 60 secondi a backend attivo. La UI aggiorna contatori e notifiche visibili ogni 30 secondi. Nessun servizio esterno richiesto. Se cambia l'elenco, la stessa notifica torna non letta per tutti; le letture restano individuali. Se l'elenco si svuota, il reminder viene rimosso. Alla ripartenza si recuperano le scadenze avvenute a server spento.
+
+Si usa end_date, in alternativa start_date, oppure fine anno se mancano entrambe; il giorno finale e incluso nella durata della gara. Le sole righe calendario senza entita EVENT sono escluse. Basta un risultato attivo per rimuovere la gara dal reminder: questo non certifica la completezza di tutte le classifiche. `POST /admin/event-result-reminders/notify` rimane disponibile per compatibilita ma non e piu necessario per generare gli avvisi. I reminder individuali preesistenti vengono consolidati automaticamente.
 
 ## Accesso pubblico e area personale
 LEVERAGE e pensato come sito pubblico consultabile senza login: atleti, eventi, risultati, classifiche e analytics sono leggibili da visitatori anonimi.

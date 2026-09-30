@@ -450,37 +450,8 @@ def notify_admins_about_event_result_reminders(
     limit: int = Query(100, ge=1, le=500),
 ):
     reminders = get_event_result_reminders(db, as_of, limit)
-    admins = db.query(models.User).filter(
-        models.User.role.in_([models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN]),
-        models.User.is_active.is_(True),
-    ).all()
-
-    created_notifications = 0
-    for reminder in reminders:
-        event = reminder["event"]
-        for admin in admins:
-            existing_notification = db.query(models.Notification).filter(
-                models.Notification.user_id == admin.id,
-                models.Notification.type == models.NotificationTypeEnum.EVENT_RESULTS_REMINDER,
-                models.Notification.related_event_id == event["id"],
-            ).first()
-            if existing_notification:
-                continue
-            db.add(models.Notification(
-                user_id=admin.id,
-                type=models.NotificationTypeEnum.EVENT_RESULTS_REMINDER,
-                message=translate(
-                    "notification.event_results_reminder",
-                    admin.preferred_language,
-                    event_name=event["name"],
-                    days_since_end=reminder["days_since_end"],
-                ),
-                related_event_id=event["id"],
-            ))
-            created_notifications += 1
-
-    if created_notifications:
-        db.commit()
+    from app.event_reminders import sync_event_result_reminders
+    created_notifications = sync_event_result_reminders(db.get_bind(), as_of)
 
     return {
         "created_notifications": created_notifications,

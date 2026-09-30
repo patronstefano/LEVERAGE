@@ -14,7 +14,7 @@ const labels = {
   demoSuperAdminGenerator: ["Generate SUPER ADMIN notifications (DEMO)", "Generatore notifiche SUPER ADMIN (DEMO)", "Generar notificaciones SUPER ADMIN (DEMO)", "Générer des notifications SUPER ADMIN (DEMO)"],
   demoImport: ["Import completed: 3 new athletes, 2 new events, 24 results; 2 duplicates skipped. Check the new entities’ details.", "Importazione completata: 3 nuovi atleti, 2 nuovi eventi, 24 risultati; 2 duplicati ignorati. Verifica i dati delle nuove entità.", "Importación completada: 3 nuevos atletas, 2 nuevos eventos, 24 resultados; 2 duplicados omitidos. Revisa los datos de las nuevas entidades.", "Import terminé : 3 nouveaux athlètes, 2 nouveaux événements, 24 résultats ; 2 doublons ignorés. Vérifiez les données des nouvelles entités."],
   demoDataEntry: ["Manual entry completed: 12 results and 2 new athletes. Complete the new athletes’ profiles.", "Inserimento manuale completato: 12 risultati e 2 nuovi atleti. Completa le schede dei nuovi atleti.", "Entrada manual completada: 12 resultados y 2 nuevos atletas. Completa los perfiles de los nuevos atletas.", "Saisie manuelle terminée : 12 résultats et 2 nouveaux athlètes. Complétez les profils des nouveaux athlètes."],
-  demoReminder: ["An event has ended but has no results yet. Check whether results need to be entered.", "Un evento è terminato ma non ha ancora risultati. Verifica se occorre inserirli.", "Un evento ha terminado pero aún no tiene resultados. Comprueba si deben registrarse.", "Un événement est terminé mais n’a pas encore de résultats. Vérifiez s’il faut les saisir."],
+  demoReminder: ["2 completed events without results: Example Event A, Example Event B.", "2 Eventi conclusi e senza risultati: Gara di esempio A, Gara di esempio B.", "2 eventos finalizados sin resultados: Evento de ejemplo A, Evento de ejemplo B.", "2 événements terminés sans résultats : Événement exemple A, Événement exemple B."],
   demoSecurity: ["Security alert: another administrator deleted a result. Review the operation in the audit log.", "Avviso di sicurezza: un altro amministratore ha eliminato un risultato. Verifica l’operazione nel registro di audit.", "Alerta de seguridad: otro administrador ha eliminado un resultado. Revisa la operación en el registro de auditoría.", "Alerte de sécurité : un autre administrateur a supprimé un résultat. Vérifiez l’opération dans le journal d’audit."],
   demoResult: ["New results in {count} competitions: {events}.", "Nuovi risultati in {count} gare: {events}.", "Nuevos resultados en {count} competiciones: {events}.", "Nouveaux résultats dans {count} compétitions : {events}."],
   demoResultSingle: ["New results in 1 competition: {events}.", "Nuovi risultati in 1 gara: {events}.", "Nuevos resultados en 1 competición: {events}.", "Nouveaux résultats dans 1 compétition : {events}."],
@@ -147,13 +147,20 @@ export function mountAccountTools(host) {
   const adminBadge = document.getElementById('accountAdminUnreadCount');
   if (adminBadge && ['admin', 'super_admin'].includes(state.currentUser.role)) {
     const adminRequest = context({ ...host, notificationScope: 'admin' }).request;
-    adminRequest('/notifications/unread-count').then((data) => {
+    const refreshAdminBadge = () => adminRequest('/notifications/unread-count').then((data) => {
       if (!live() || !adminBadge.isConnected) return;
       const count = Math.max(0, Number(data.count) || 0);
       adminBadge.textContent = count > 99 ? '99+' : String(count);
       adminBadge.hidden = count === 0;
       adminBadge.setAttribute('aria-label', `${t('unread')}: ${count}`);
     }).catch(() => { /* Do not display an unverified count when loading fails. */ });
+    refreshAdminBadge();
+    const pollAdminBadge = async () => {
+      if (!live()) return;
+      if (!document.hidden) await refreshAdminBadge();
+      if (live()) setTimeout(pollAdminBadge, 30000);
+    };
+    setTimeout(pollAdminBadge, 30000);
   }
   settings.className = 'panel athlete-admin-panel account-settings-panel';
   settings.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("settings") + '</h2></div>' +
@@ -219,7 +226,7 @@ export function mountNotificationInbox(host) {
       badge.setAttribute("aria-label", String(data.count));
     } catch (_) { /* The notification list reports request failures. */ }
   };
-  const load = async (reset = false) => {
+  const load = async (reset = false, requestedLimit = 30) => {
     if (busy && !reset) return;
     const current = ++revision;
     if (reset) offset = 0;
@@ -228,7 +235,13 @@ export function mountNotificationInbox(host) {
     retry.hidden = true;
     notifications.querySelector("#accountNotificationFeedback").textContent = "";
     try {
-      const items = await request("/notifications/", "GET", null, true, { limit: 30, offset, unread_only: isUnreadOnly() });
+      const items = [];
+      while (items.length < requestedLimit) {
+        const limit = Math.min(500, requestedLimit - items.length);
+        const chunk = await request("/notifications/", "GET", null, true, { limit, offset: offset + items.length, unread_only: isUnreadOnly() });
+        items.push(...chunk);
+        if (chunk.length < limit) break;
+      }
       if (!live() || current !== revision) return;
       if (reset) list.innerHTML = "";
       const existingIds = new Set([...list.querySelectorAll('[data-notification-id]')].map((item) => item.dataset.notificationId));
@@ -256,7 +269,7 @@ export function mountNotificationInbox(host) {
         };
         list.append(article);
       }
-      offset += items.length; more.hidden = items.length < 30; loaded = true;
+      offset += items.length; more.hidden = items.length < requestedLimit; loaded = true;
       if (!list.children.length) list.innerHTML = '<div class="empty-state">' + esc(t(isUnreadOnly() ? "emptyUnread" : "empty")) + '</div>';
     } catch (error) {
       if (live() && current === revision) {
@@ -280,6 +293,17 @@ export function mountNotificationInbox(host) {
   const activate = () => { if (!notifications.closest("[data-account-view-panel]").hidden && !loaded) load(true); };
   document.querySelectorAll("[data-account-view]").forEach((b) => b.addEventListener("click", activate));
   updateCount(); activate();
+  const poll = async () => {
+    if (!live()) return;
+    if (!document.hidden) {
+      await updateCount();
+      if (loaded && !busy && !notifications.closest('[data-account-view-panel]').hidden) {
+        await load(true, Math.max(30, offset));
+      }
+    }
+    if (live()) setTimeout(poll, 30000);
+  };
+  setTimeout(poll, 30000);
 }
 
 export function renderAccountRecovery(host, mode) {

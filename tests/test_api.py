@@ -36,6 +36,8 @@ TEST_RESET_TOKEN = "test-password-reset-token-with-enough-entropy"
 def create_test_db():
     clear_rate_limits()
     Base.metadata.drop_all(bind=engine)
+    # Schema recreation must not reuse SQLite connections holding cached schema state.
+    engine.dispose()
     Base.metadata.create_all(bind=engine)
     yield
     Base.metadata.drop_all(bind=engine)
@@ -2696,6 +2698,8 @@ def test_notification_scopes_keep_personal_and_admin_inboxes_independent(role):
     with SessionLocal() as db:
         user = db.query(models.User).filter_by(email=email).one()
         user.role = role
+        db.add(models.Event(name="Scope reminder", year=2020, discipline="MAG",
+                            category="senior", level="World Cup"))
         for kind in models.NotificationTypeEnum:
             db.add(models.Notification(user_id=user.id, type=kind, message=kind.value))
         db.commit()
@@ -5722,7 +5726,8 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
     notify_response = client.post("/admin/event-result-reminders/notify?as_of=2024-05-02", headers=admin_headers)
     assert notify_response.status_code == 200
     notify_payload = notify_response.json()
-    assert notify_payload["created_notifications"] == 1
+    # The event write already generated the cumulative reminder automatically.
+    assert notify_payload["created_notifications"] == 0
     assert notify_payload["reminders"][0]["event"]["id"] == event["id"]
 
     notifications_response = client.get("/notifications", headers=admin_headers)
@@ -5733,7 +5738,8 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
         if notification["type"] == "event_results_reminder"
     ]
     assert len(reminder_notifications) == 1
-    assert reminder_notifications[0]["related_event_id"] == event["id"]
+    assert reminder_notifications[0]["related_event_id"] is None
+    assert reminder_notifications[0]["related_event_ids"] == [event["id"]]
     assert "Reminder Event" in reminder_notifications[0]["message"]
 
     duplicate_notify_response = client.post(

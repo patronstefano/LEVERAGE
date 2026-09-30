@@ -1,17 +1,36 @@
 from pathlib import Path
 from contextlib import asynccontextmanager
+import asyncio
+import logging
+from contextlib import suppress
+from starlette.concurrency import run_in_threadpool
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_cors_origins, validate_runtime_settings
+from app.database import engine
+from app.event_reminders import sync_event_result_reminders
 from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, search, site_analytics, world_gymnastics
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     validate_runtime_settings()
-    yield
+    async def refresh_reminders():
+        while True:
+            try:
+                await run_in_threadpool(sync_event_result_reminders, engine)
+            except Exception:
+                logging.getLogger(__name__).exception("Unable to refresh event reminders")
+            await asyncio.sleep(60)
+    task = asyncio.create_task(refresh_reminders())
+    try:
+        yield
+    finally:
+        task.cancel()
+        with suppress(asyncio.CancelledError):
+            await task
 
 
 app = FastAPI(title="LEVERAGE API", version="0.1.0", lifespan=lifespan)
@@ -28,16 +47,29 @@ uploads_path = Path("uploads")
 uploads_path.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_path)), name="uploads")
 
+
+def refresh_reminders_after_write(request: Request):
+    yield
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+        try:
+            sync_event_result_reminders(engine)
+        except Exception:
+            # The committed operation remains successful; reads and the timer retry.
+            logging.getLogger(__name__).exception("Unable to refresh reminders after data change")
+
+
+reminder_dependencies = [Depends(refresh_reminders_after_write)]
+
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(admin_users.router, prefix="/admin", tags=["admin-users"])
+app.include_router(admin_users.router, prefix="/admin", tags=["admin-users"], dependencies=reminder_dependencies)
 app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
-app.include_router(athletes.router, prefix="/athletes", tags=["athletes"])
-app.include_router(data_suggestions.router, prefix="/data-suggestions", tags=["data-suggestions"])
-app.include_router(events.router, prefix="/events", tags=["events"])
-app.include_router(world_gymnastics.router, prefix="/world-gymnastics", tags=["world-gymnastics"])
-app.include_router(results.router, prefix="/results", tags=["results"])
+app.include_router(athletes.router, prefix="/athletes", tags=["athletes"], dependencies=reminder_dependencies)
+app.include_router(data_suggestions.router, prefix="/data-suggestions", tags=["data-suggestions"], dependencies=reminder_dependencies)
+app.include_router(events.router, prefix="/events", tags=["events"], dependencies=reminder_dependencies)
+app.include_router(world_gymnastics.router, prefix="/world-gymnastics", tags=["world-gymnastics"], dependencies=reminder_dependencies)
+app.include_router(results.router, prefix="/results", tags=["results"], dependencies=reminder_dependencies)
 app.include_router(search.router, prefix="/search", tags=["search"])
-app.include_router(imports.router, prefix="/imports", tags=["imports"])
+app.include_router(imports.router, prefix="/imports", tags=["imports"], dependencies=reminder_dependencies)
 app.include_router(preferences.router, prefix="/preferences", tags=["preferences"])
 app.include_router(notifications.router, prefix="/notifications", tags=["notifications"])
 app.include_router(site_analytics.router, prefix="/site-analytics", tags=["site-analytics"])
