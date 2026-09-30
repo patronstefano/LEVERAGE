@@ -89,7 +89,7 @@ function context(host) {
   const t = (key) => accountText(state.language, key);
   const button = (key, attrs = "") => '<button class="quiet-button outline-command-button" type="button" ' + attrs + '>' + esc(t(key)) + '</button>';
   const input = (name, key, type = "password") => '<label><span>' + esc(t(key)) + '</span><input name="' + name + '" type="' + type +
-    '" required ' + (type === "password" ? 'maxlength="128" minlength="' + (name === "current_password" ? 1 : 6) + '" autocomplete="' + (name === "current_password" ? "current-password" : "new-password") + '"' : 'autocomplete="email"') + '></label>';
+    '" required ' + (type === "password" ? 'maxlength="128" minlength="' + (name === "current_password" ? 1 : 6) + '" autocomplete="' + (name === "current_password" ? "current-password" : "new-password") + '"' : 'autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="name@example.com" pattern="[^\\s@]+@[^\\s@]+\\.[^\\s@]+"') + '></label>';
   const feedback = (node, key, error = false) => {
     node.className = "account-feedback " + (error ? "is-error" : "is-success");
     node.textContent = t(key);
