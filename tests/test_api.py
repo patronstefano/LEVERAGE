@@ -2619,7 +2619,7 @@ def test_notifications():
     notifications = notifications_response.json()
     assert len(notifications) == 1
     assert notifications[0]["type"] == "new_event"
-    assert "Test Event Final 2023 · New event at National Event level." == notifications[0]["message"]
+    assert "Test Event Final 2023 · New event recommended based on your favorites." == notifications[0]["message"]
 
     # Create result for followed athlete
     client.post(
@@ -5157,6 +5157,30 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
         headers=headers,
     )
     assert invalid_response.status_code == 400
+
+
+@pytest.mark.parametrize("level", list(models.LevelEnum))
+def test_new_event_notification_wording_depends_on_level(level):
+    client.post("/auth/register", json={"email": "wording_admin@example.com", "password": TEST_PASSWORD})
+    token = login_as_admin("wording_admin@example.com")
+    with SessionLocal() as db:
+        user = db.query(User).filter_by(email="wording_admin@example.com").one()
+        user.preferred_language = models.LanguageEnum.IT
+        event = models.Event(name="Finnish Championships 2025", year=2025, discipline="MAG", category="senior", level=level)
+        db.add(event)
+        db.flush()
+        db.add(models.SavedEvent(user_id=user.id, event_id=event.id))
+        db.commit()
+    headers = {"Authorization": f"Bearer {token}"}
+    response = client.post("/events/", headers=headers, json={"name": "Finnish Championships 2026", "year": 2026,
+        "discipline": "MAG", "category": "senior", "level": level.value})
+    assert response.status_code in (200, 201), response.text
+    notifications = client.get("/notifications", headers=headers).json()
+    notice = next(n for n in notifications if n["type"] == "new_event")
+    suffix = "Nuovo evento consigliato in base ai preferiti." if level in {
+        models.LevelEnum.NATIONAL_EVENT, models.LevelEnum.INTERNATIONAL_EVENT,
+    } else f"Nuovo evento di livello {level.value}."
+    assert notice["message"] == "Finnish Championships 2026 · " + suffix
 
 
 def test_national_athlete_filter_and_favorites():

@@ -499,7 +499,9 @@ def create_event(
             user_id=saved_event.user_id,
             type=models.NotificationTypeEnum.NEW_EVENT,
             message=translate(
-                "notification.new_event",
+                "notification.recommended_event" if event.level in {
+                    models.LevelEnum.NATIONAL_EVENT, models.LevelEnum.INTERNATIONAL_EVENT,
+                } else "notification.new_event",
                 saved_event.user.preferred_language if saved_event.user else models.LanguageEnum.EN,
                 event_name=event.name if str(event.year) in event.name else f"{event.name} {event.year}",
                 level=event.level.value,

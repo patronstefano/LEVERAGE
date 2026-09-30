@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 30 settembre 2026 - Testo notifiche evento per livello
+
+- Distinto il testo della notifica new_event: per Olympic Games, World Championships, Continental Championships, World Cup e World Challenge Cup resta "Nome evento · Nuovo evento di livello Livello"; per National Event e International Event diventa "Nome evento · Nuovo evento consigliato in base ai preferiti."
+- Applicata la distinzione alle nuove notifiche reali e al generatore demo, nelle quattro lingue. Invariati i criteri di invio: per i due livelli generici occorre anche la corrispondenza della famiglia del nome con un preferito.
+- Nessuna riscrittura delle notifiche storiche gia salvate. Le demo si aggiornano rigenerandole dopo il ricaricamento della pagina.
+- Test API parametrizzato sui sette livelli per verificare il testo effettivamente ricevuto in italiano.
+
+
 #### 30 settembre 2026 - Filtro Solo nazionali negli Atleti
 
 - Aggiunto il pulsante Solo nazionali accanto allo slider Nome/Nazione, con stile standard e testi nelle quattro lingue. Disattivato di default, reversibile e azzerato da Pulisci filtri.

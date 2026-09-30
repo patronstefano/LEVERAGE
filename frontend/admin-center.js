@@ -1,4 +1,4 @@
-import { mountNotificationInbox } from './account-tools.js?v=notification-scopes-20260928';
+import { mountNotificationInbox } from './account-tools.js?v=event-notice-20260930';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {

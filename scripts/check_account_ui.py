@@ -335,7 +335,7 @@ def main():
         assert '2 compétitions' in page.locator('.account-notification').first.inner_text()
         assert 'Test Cup 43 (2026); Test Cup 44 (2026)' in page.locator('.account-notification').first.inner_text()
         assert 'Favorite Test Event' in page.locator('.account-notification').nth(1).inner_text()
-        assert 'Nouvel événement de niveau International Event.' in page.locator('.account-notification').nth(1).inner_text()
+        assert 'Nouvel événement recommandé selon vos favoris.' in page.locator('.account-notification').nth(1).inner_text()
         assert page.locator('.account-notification').first.locator('a').get_attribute('href') == '#/athletes/42'
         assert page.locator('#accountMoreNotifications').is_hidden()
         assert 'ADMIN' in page.locator('.account-notification').nth(2).inner_text()

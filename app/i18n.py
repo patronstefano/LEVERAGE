@@ -138,6 +138,12 @@ TRANSLATIONS = {
         models.LanguageEnum.ES: "{event_name} · Nuevo evento de nivel {level}.",
         models.LanguageEnum.FR: "{event_name} · Nouvel événement de niveau {level}.",
     },
+    "notification.recommended_event": {
+        models.LanguageEnum.EN: "{event_name} · New event recommended based on your favorites.",
+        models.LanguageEnum.IT: "{event_name} · Nuovo evento consigliato in base ai preferiti.",
+        models.LanguageEnum.ES: "{event_name} · Nuevo evento recomendado según tus favoritos.",
+        models.LanguageEnum.FR: "{event_name} · Nouvel événement recommandé selon vos favoris.",
+    },
     "notification.admin_promotion": {
         models.LanguageEnum.EN: "You have been promoted to ADMIN. On your next login, you must configure two-factor authentication to use LEVERAGE admin tools.",
         models.LanguageEnum.IT: "Hai ottenuto la promozione ad ADMIN. Al prossimo accesso dovrai configurare l'autenticazione a due fattori per usare gli strumenti di amministrazione di LEVERAGE.",

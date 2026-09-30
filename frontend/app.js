@@ -1,6 +1,6 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=activity-overview-20260928";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=event-notice-20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=notification-scopes-20260928";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=event-notice-20260930";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
