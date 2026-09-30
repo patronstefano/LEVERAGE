@@ -212,6 +212,7 @@ def main():
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
             if tab == "imports":
+                assert page.locator('[name=year_hint]').bounding_box()['x'] < page.locator('#adminChooseFile').bounding_box()['x']
                 assert page.locator('#adminImportFilename').inner_text() == 'Nessun file selezionato'
                 assert page.locator('#adminImportForm [name=kind]').input_value() == 'gymternet'
                 assert 'Risultati (The Gymternet)' in page.locator('#adminImportForm').inner_text()
