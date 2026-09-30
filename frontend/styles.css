@@ -3738,6 +3738,13 @@ a:focus-visible > .entity-card-clickable {
 .account-tool-actions { display: flex; gap: 8px; }
 .account-tool-button { position: relative; }
 .account-admin-center-link { position: relative; }
+.admin-create-actions .quiet-button[aria-pressed="true"],
+.admin-create-actions .quiet-button[aria-pressed="true"]:hover,
+.admin-create-actions .quiet-button[aria-pressed="true"]:focus-visible {
+  background: var(--brand-blue);
+  border-color: var(--brand-blue);
+  color: #fff;
+}
 .admin-tools-toggle.account-tool-button[aria-pressed="true"],
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:hover,
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:focus-visible {

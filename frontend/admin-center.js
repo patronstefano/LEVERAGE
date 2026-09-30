@@ -451,14 +451,25 @@ export async function renderAdminCenter(host) {
       }
     }
     if (tab === "entry") {
-      paint(`<div class="admin-center-actions">${button("newEvent", 'id="adminNewEvent"')}${button("newAthlete", 'id="adminNewAthlete"')}</div><div id="adminCreate"></div>
+      paint(`<div class="admin-center-actions admin-create-actions">${button("newEvent", 'id="adminNewEvent" aria-pressed="false"')}${button("newAthlete", 'id="adminNewAthlete" aria-pressed="false"')}</div><div id="adminCreate"></div>
         <div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);
+      let createRevision = 0;
+      const selectCreate = (kind) => {
+        document.getElementById("adminNewEvent").setAttribute("aria-pressed", String(kind === "events"));
+        document.getElementById("adminNewAthlete").setAttribute("aria-pressed", String(kind === "athletes"));
+      };
       const create = async (kind) => {
+        const revision = ++createRevision;
         const schema = kind === "events" ? "EventCreate" : "AthleteCreate";
-        document.getElementById("adminCreate").innerHTML = form("adminCreateForm", await schemaFields(schema), "save"); bind();
+        const fields = await schemaFields(schema);
+        if (!active() || revision !== createRevision) return;
+        document.getElementById("adminCreate").innerHTML = form("adminCreateForm", fields, "save"); bind();
+        selectCreate(kind);
         onSubmit("adminCreateForm", async (values) => {
           const created = await api(`/${kind}/`, { method: "POST", body: typed(schema, values) });
+          if (!active() || revision !== createRevision) return;
           document.getElementById("adminCreate").innerHTML = entityLink(kind, created.id);
+          selectCreate(null);
           feedback(text("success")); if (kind === "events") await loadEvent(created);
         });
       };
@@ -467,7 +478,9 @@ export async function renderAdminCenter(host) {
       const loadEvent = async (event) => {
         if (session.event?.id !== event.id && session.rows.length) { feedback(text("batch"), true); return; }
         session.event = event;
+        createRevision += 1;
         document.getElementById("adminCreate").innerHTML = "";
+        selectCreate(null);
         const options = await api(`/events/${event.id}/manual-entry-options`);
         if (!active()) return;
         const area = document.getElementById("adminEntry");

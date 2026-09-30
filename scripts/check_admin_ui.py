@@ -121,12 +121,17 @@ def main():
                 page.locator("#adminNewEvent").click()
                 page.locator("#adminCreateForm").wait_for()
                 assert page.locator("#adminCreateForm input[name=name]").count()
+                assert page.locator('#adminNewEvent').get_attribute('aria-pressed') == 'true'
                 page.locator("#adminNewAthlete").click()
                 page.wait_for_timeout(200)
                 assert page.locator("#adminCreateForm input[name=last_name]").count()
+                assert page.locator('#adminNewEvent').get_attribute('aria-pressed') == 'false'
+                assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
+                assert page.locator('#adminNewAthlete').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator("#adminResultForm").wait_for()
+                assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'false'
                 page.locator('[name="athlete_search"]').fill("Test")
                 page.locator("#adminAthleteOptions button").first.click()
                 for key, value in {"D_score": "5", "E_score": "8", "score": "13"}.items():

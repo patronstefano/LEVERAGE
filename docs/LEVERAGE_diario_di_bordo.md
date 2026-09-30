@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Stato selezionato creazione manuale
+
+In Inserimento dati, Nuovo atleta e Nuovo evento mantengono sfondo blu LEVERAGE e testo bianco mentre il rispettivo modulo e aperto, anche in hover. Selezione esclusiva tramite aria-pressed; stato rimosso dopo il salvataggio o quando si seleziona una gara per inserire risultati. Protetto il cambio rapido tra moduli da risposte asincrone superate. Test browser aggiornato per selezione, colore e reset.
+
 #### 2026-09-30 - Testo di conferma registrazione
 
 Aggiornato il messaggio in "Se l'indirizzo può essere registrato, riceverai un link di verifica via mail.", con traduzioni EN/ES/FR coerenti. Eliminati invito iniziale a controllare la posta e promessa temporale "a breve". Invariati risposta generica a protezione degli account, validazione e stato dell'invio email.
