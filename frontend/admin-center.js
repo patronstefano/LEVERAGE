@@ -452,14 +452,14 @@ export async function renderAdminCenter(host) {
       }
     }
     if (tab === "entry") {
-      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text("entry"))}" data-active="false" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminNewEvent" aria-pressed="false">${esc(text("newEvent"))}</button><button type="button" class="segmented-option" id="adminNewAthlete" aria-pressed="false">${esc(text("newAthlete"))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminCreate"></div>`);
+      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text("entry"))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminNewAthlete" aria-pressed="true">${esc(text("newAthlete"))}</button><button type="button" class="segmented-option" id="adminNewEvent" aria-pressed="false">${esc(text("newEvent"))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminCreate"></div>`);
       let createRevision = 0;
       const selectCreate = (kind) => {
         document.getElementById("adminNewEvent").setAttribute("aria-pressed", String(kind === "events"));
         document.getElementById("adminNewAthlete").setAttribute("aria-pressed", String(kind === "athletes"));
         const toggle = root.querySelector(".admin-create-toggle");
         toggle.dataset.active = String(Boolean(kind));
-        if (kind) toggle.style.setProperty("--selected-index", kind === "athletes" ? "1" : "0");
+        if (kind) toggle.style.setProperty("--selected-index", kind === "athletes" ? "0" : "1");
       };
       const create = async (kind) => {
         const revision = ++createRevision;
@@ -478,6 +478,7 @@ export async function renderAdminCenter(host) {
       };
       document.getElementById("adminNewEvent").onclick = guard(() => create("events"));
       document.getElementById("adminNewAthlete").onclick = guard(() => create("athletes"));
+      await create("athletes");
     }
     if (tab === "results") {
       paint(`<div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);

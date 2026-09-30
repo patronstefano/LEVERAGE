@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Creazione atleta preselezionata
+
+Invertito lo slider di Inserimento dati: Nuovo atleta a sinistra, Nuovo evento a destra. Ogni apertura della sottosezione preseleziona Nuovo atleta e carica il relativo modulo automaticamente. Aggiornati indice del thumb e test browser per ordine, selezione iniziale e cambio modulo; invariati salvataggio e separazione dalla sottosezione Risultati.
+
 #### 2026-09-30 - Accesso richiesto al Centro Admin
 
 La schermata Accesso ADMIN richiesto riutilizza il componente della pagina di disconnessione: logo LEVERAGE centrale, messaggio con tipografia del sottotitolo e pulsante Accedi senza riquadro aggiuntivo. Condivisi dimensioni, spaziature e animazione del logo verso la schermata di login. Conservati controllo dei ruoli, traduzioni e annuncio accessibile dell'accesso negato; nessuna modifica alle autorizzazioni. Aggiunto controllo browser di logo, layout e collegamento Accedi.

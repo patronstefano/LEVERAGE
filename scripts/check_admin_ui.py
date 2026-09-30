@@ -118,8 +118,11 @@ def main():
                 assert page.locator('[data-overview-count="results.total"]').inner_text() == '40.000'
                 assert not page.locator('.admin-overview-link').count()
             if tab == "entry":
+                page.locator('#adminCreateForm input[name=last_name]').wait_for()
+                assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
+                assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']
                 page.locator("#adminNewEvent").click()
-                page.locator("#adminCreateForm").wait_for()
+                page.locator("#adminCreateForm input[name=name]").wait_for()
                 assert page.locator("#adminCreateForm input[name=name]").count()
                 assert page.locator('#adminNewEvent').get_attribute('aria-pressed') == 'true'
                 page.locator("#adminNewAthlete").click()
@@ -128,7 +131,7 @@ def main():
                 assert page.locator('#adminNewEvent').get_attribute('aria-pressed') == 'false'
                 assert page.locator('#adminNewAthlete').get_attribute('aria-pressed') == 'true'
                 assert page.locator('.admin-create-toggle .segmented-thumb').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
-                assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '1'
+                assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '0'
                 assert page.locator('[name="event_search"]').count() == 0
                 assert page.locator('#adminEntry').count() == 0
             if tab == "results":
