@@ -1,4 +1,4 @@
-import { bindAuthValidation } from "./auth-validation.js?v=auth-existing-space-20260923";
+import { bindAuthValidation } from "./auth-validation.js?v=password-visibility-20260930";
 
 const labels = {
   registerLink: ["Sign up", "Registrati", "Regístrate", "S’inscrire"],
@@ -281,7 +281,7 @@ export function renderAccountRecovery(host, mode) {
   const validation = bindAuthValidation(form, message, () => host.state.language);
   if (reset && token.length < 20) { form.hidden = true; feedback(message, "invalid", true); return; }
   form.onsubmit = async (e) => {
-    e.preventDefault(); const submit = form.querySelector("button");
+    e.preventDefault(); const submit = form.querySelector("button[type=submit]");
     if (submit.disabled || !validation.validate()) return;
     const values = Object.fromEntries(new FormData(form));
     submit.disabled = true; message.textContent = "";

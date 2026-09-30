@@ -3539,6 +3539,37 @@ a:focus-visible > .entity-card-clickable {
   font-size: 13px;
 }
 
+.password-field { position: relative; display: block; min-width: 0; }
+.password-field input { padding-right: 46px; }
+.password-visibility-button {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--control-radius);
+  color: var(--muted);
+  background: transparent;
+  cursor: pointer;
+}
+.password-visibility-button::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  mask: url('./assets/lucide-eye.svg') center / contain no-repeat;
+}
+.password-visibility-button[data-visible="true"]::before {
+  mask-image: url('./assets/lucide-eye-off.svg');
+}
+.password-visibility-button:hover,
+.password-visibility-button:focus-visible { color: var(--ink); border-color: currentColor; }
+
 .auth-message.auth-validation-message { min-height: 0; line-height: 1.35; }
 
 .auth-message.is-success {

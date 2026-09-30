@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-09-30 - Visualizzazione della password
+
+Aggiunto pulsante occhio Lucide nel campo password tramite il componente condiviso di validazione dei form: accesso (anche demo), registrazione, recupero con nuova password e cambio password nelle impostazioni. Password inizialmente nascosta; pulsante non submit, utilizzabile da tastiera, con etichette accessibili EN/IT/ES/FR e stato premuto. Il box mantiene dimensioni e arrotondamento esistenti. La validazione riconosce il campo come password anche quando visibile: lunghezza, errori server e spazi non vengono alterati dal cambio di tipo dell'input. Nessuna modifica ai dati o alla sicurezza del backend. Verificati con Playwright mostra/nascondi, validazione a password visibile, passaggio MFA demo, registrazione e overflow mobile.
+
 #### 2026-09-30 - Anteprima isolata del secondo fattore ADMIN
 
 Su successiva richiesta, la stessa simulazione e disponibile direttamente nel form Accedi della piattaforma tramite `?auth_demo=mfa#/login`, esclusivamente su hostname di loopback. Riutilizza validazione, messaggi di errore e animazione del form reale, senza chiamare login/demo-login o creare token. Le credenziali statiche non sono ammesse dall'autenticazione reale tramite questo meccanismo. Il form normale senza parametro resta invariato; anche una sessione preesistente rimane intatta durante la simulazione. Messaggi espliciti in EN/IT/ES/FR distinguono la prova dall'accesso reale.

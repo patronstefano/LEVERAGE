@@ -208,19 +208,19 @@ def main():
                 assert page.locator('.auth-login-links a[href="#/login"]').count() == 1
             assert page.locator('#authLink').get_attribute('aria-current') == 'page'
             check_input(page.locator('#accountRecoveryForm input[name=email]'))
-            recovery_button = page.locator('#accountRecoveryForm button')
+            recovery_button = page.locator('#accountRecoveryForm button[type=submit]')
             bottom_gap = page.locator('.account-recovery').evaluate("node => node.getBoundingClientRect().bottom - node.querySelector('button[type=submit]').getBoundingClientRect().bottom")
             assert 19 <= bottom_gap <= 22, bottom_gap
             assert recovery_button.bounding_box()['width'] < page.locator('#accountRecoveryForm').bounding_box()['width']
             assert recovery_button.evaluate('node => getComputedStyle(node).justifySelf') == 'center'
-            page.locator('#accountRecoveryForm button').click()
+            page.locator('#accountRecoveryForm button[type=submit]').click()
             page.wait_for_timeout(200)
             assert endpoint in writes
             assert page.locator('#accountRecoveryFeedback').inner_text()
         page.evaluate("location.hash = '/reset-password?token=abcdefghijklmnopqrstuvwxyz123456'")
         page.locator('[name="new_password"]').fill("ReplacementPassword123!")
         page.locator('[name="repeat_password"]').fill("ReplacementPassword123!")
-        page.locator('#accountRecoveryForm button').click()
+        page.locator('#accountRecoveryForm button[type=submit]').click()
         page.wait_for_timeout(200)
         assert "/auth/password/reset" in writes
         assert "token=" not in page.url
@@ -266,6 +266,17 @@ def main():
         assert page.locator('.auth-brand-form h1').is_visible()
         assert 'sr-only' not in (page.locator('.auth-brand-form h1').get_attribute('class') or '')
         assert after_logo['y'] < before_logo['y']
+        eye = page.locator('#loginForm .password-visibility-button')
+        password = page.locator('#loginPassword')
+        password.fill('  DemoPassword  ')
+        eye.click()
+        assert password.get_attribute('type') == 'text'
+        assert eye.get_attribute('aria-pressed') == 'true'
+        assert password.input_value() == '  DemoPassword  '
+        eye.click()
+        assert password.get_attribute('type') == 'password'
+        assert eye.get_attribute('aria-pressed') == 'false'
+        password.fill('')
         page.screenshot(path='/tmp/leverage-login-logo.png', full_page=True)
         assert not page.locator('#mfaField').is_visible()
         assert not page.locator('#loginMfaCode').evaluate('node => node.required')

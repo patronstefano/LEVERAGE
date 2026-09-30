@@ -19,6 +19,33 @@ const messages = {
 
 export function bindAuthValidation(form, message, getLanguage) {
   form.noValidate = true;
+  form.querySelectorAll('input[type="password"]').forEach((input) => {
+    if (input.dataset.passwordField) return;
+    input.dataset.passwordField = 'true';
+    const wrapper = document.createElement('span');
+    wrapper.className = 'password-field';
+    input.before(wrapper);
+    wrapper.append(input);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'password-visibility-button';
+    const update = () => {
+      const visible = input.type === 'text';
+      const language = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(getLanguage()));
+      button.setAttribute('aria-label', (visible
+        ? ['Hide password', 'Nascondi password', 'Ocultar contrase\u00f1a', 'Masquer le mot de passe']
+        : ['Show password', 'Mostra password', 'Mostrar contrase\u00f1a', 'Afficher le mot de passe'])[language]);
+      button.setAttribute('aria-pressed', String(visible));
+      button.dataset.visible = String(visible);
+    };
+    button.addEventListener('click', () => {
+      input.type = input.type === 'password' ? 'text' : 'password';
+      update();
+    });
+    update();
+    wrapper.append(button);
+  });
+  const isPassword = (input) => input.dataset.passwordField === 'true' || input.type === 'password';
   const shell = form.closest('.auth-panel') || form;
   const main = shell.closest('.auth-main-view');
   if (main) {
@@ -79,12 +106,12 @@ export function bindAuthValidation(form, message, getLanguage) {
     clear();
     const fields = inputs(), issues = [];
     for (const input of fields) {
-      if (input.type !== 'password') input.value = input.value.trim();
+      if (!isPassword(input)) input.value = input.value.trim();
       const value = input.value;
       if (input.required && !value) { issues.push({ key: 'required', fields: [input] }); continue; }
       if (!value) continue;
       if (input.type === 'email' && !input.validity.valid) issues.push({ key: 'email', fields: [input] });
-      else if (input.type === 'password' && (value.length < (input.minLength > 0 ? input.minLength : 6) || value.length > 128)) issues.push({ key: 'password', fields: [input] });
+      else if (isPassword(input) && (value.length < (input.minLength > 0 ? input.minLength : 6) || value.length > 128)) issues.push({ key: 'password', fields: [input] });
       else if (input.id === 'loginMfaCode' && (value.length < 6 || value.length > 64)) issues.push({ key: 'code', fields: [input] });
     }
     const confirmation = form.querySelector('#registerPasswordConfirm, [name="repeat_password"]');
@@ -103,14 +130,14 @@ export function bindAuthValidation(form, message, getLanguage) {
     else if (status === 403 && detail === 'Email verification required') key = 'verification';
     else if (status === 401 && mode === 'login') {
       key = detail === 'Invalid authentication credentials' ? 'wrongCode' : 'credentials';
-      affected = fields.filter((f) => key === 'wrongCode' ? f.id === 'loginMfaCode' : f.type === 'email' || f.type === 'password');
+      affected = fields.filter((f) => key === 'wrongCode' ? f.id === 'loginMfaCode' : f.type === 'email' || isPassword(f));
     } else if (status === 401) key = 'session';
     else if (status === 400 && mode === 'reset') key = 'expired';
     else if (status === 400 && mode === 'change') { key = 'current'; affected = fields.filter((f) => f.name === 'current_password'); }
     else if (status === 422) {
       key = 'invalid';
       const names = Array.isArray(detail) ? detail.map((item) => item.loc?.at(-1)) : [];
-      affected = fields.filter((f) => names.includes(f.name) || (names.includes('email') && f.type === 'email') || (names.includes('password') && f.type === 'password') || (names.includes('mfa_code') && f.id === 'loginMfaCode'));
+      affected = fields.filter((f) => names.includes(f.name) || (names.includes('email') && f.type === 'email') || (names.includes('password') && isPassword(f)) || (names.includes('mfa_code') && f.id === 'loginMfaCode'));
       if (!affected.length) affected = fields;
     }
     show([{ key, fields: affected }]);
