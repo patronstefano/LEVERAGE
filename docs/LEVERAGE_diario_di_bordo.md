@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Denominazioni delle sottosezioni del Centro Admin
+
+- Rinominati slider e titoli: Inserimento dati diventa Nuova Entita; Risultati diventa Editor Risultati; Unisci atleti diventa Unione Entita; Statistiche sito diventa Statistiche. Etichette localizzate anche in inglese, spagnolo e francese.
+- Nessuna modifica ai percorsi, ai permessi o alle funzionalita. La denominazione Unione Entita non estende automaticamente il merge agli eventi: resta il flusso di unione atleti gia implementato.
+
 #### 2026-10-01 - Pulsante testuale per l'editor dalla classifica
 
 - Sostituita la chiave inglese con Vai all'Editor Risultati, posizionato a sinistra della freccia di ritorno all'inizio classifica. Stile del pulsante coerente ai comandi con contorno, testo localizzato nelle quattro lingue.

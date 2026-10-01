@@ -144,6 +144,10 @@ def main():
                 assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
+                renamed = {'entry': 'Nuova Entità', 'results': 'Editor Risultati', 'merge': 'Unione Entità', 'statistics': 'Statistiche'}
+                if tab in renamed:
+                    assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text() == renamed[tab]
+                    assert page.locator(f'[data-admin-tab="{tab}"]').inner_text() == renamed[tab]
                 for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):not(#adminImportFile):visible, #adminWorkspace .admin-custom-select > summary:visible, #adminChooseFile').all():
                     assert abs(control.bounding_box()['height'] - 36) < 1
             else:
