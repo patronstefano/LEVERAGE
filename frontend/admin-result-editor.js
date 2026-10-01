@@ -31,6 +31,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const label = (key) => COPY[key]?.[lang] || text(key);
   const keys = ['score', 'D_score', 'E_score', 'Penalty', 'Bonus'];
+  const apparatusOrder = {MAG: ['FX', 'PH', 'SR', 'VT', 'PB', 'HB'], WAG: ['VT', 'UB', 'BB', 'FX']};
   const oneDecimal = (key) => ['D_score', 'Penalty', 'Bonus'].includes(key);
   const inputValue = (key, value) => value == null ? '' : oneDecimal(key) ? Number(value).toFixed(1) : value;
   const titles = ['Final Score', 'D Score', 'E Score', 'P', 'B'];
@@ -58,6 +59,10 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
         let available = groups;
         const html = dimensions.map((key) => {
           const options = [...new Set(available.map((g) => String(g[key] ?? '')))];
+          if (key === 'apparatus') {
+            const order = apparatusOrder[selected.discipline] || [];
+            options.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+          }
           if (!options.includes(String(selected[key] ?? ''))) selected[key] = available[0][key];
           const value = String(selected[key] ?? '');
           available = available.filter((g) => String(g[key] ?? '') === value);

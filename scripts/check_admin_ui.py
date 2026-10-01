@@ -75,7 +75,7 @@ def main():
             elif path == "/events/":
                 payload = [event]
             elif path == "/events/1/result-groups":
-                payload = [{"discipline": "MAG", "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for category in ["senior", "junior"] for apparatus in ["AA", "VT AVG", "FX", "PH"] for day in event_days]
+                payload = [{"discipline": discipline, "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for discipline, apparatuses in [('MAG', ['AA', 'VT AVG', 'FX', 'HB', 'PB', 'SR', 'VT', 'PH']), ('WAG', ['FX', 'BB', 'VT', 'UB'])] for category in ["senior", "junior"] for apparatus in apparatuses for day in event_days]
             elif path == "/results/":
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
                 payload.append({**payload[0], "id": 2, "category": "junior"})
@@ -202,8 +202,9 @@ def main():
                 assert page.locator('[name=classification_category]').count() == 0
                 apparatus = page.locator('[name=classification_apparatus]')
                 assert apparatus.input_value() == 'FX'
-                assert 'AA' not in apparatus.locator('option').all_text_contents()
-                assert 'VT AVG' not in apparatus.locator('option').all_text_contents()
+                assert apparatus.locator('..').locator('[data-admin-select-value]').evaluate_all('options => options.map(o => o.dataset.adminSelectValue)') == ['FX', 'PH', 'SR', 'VT', 'PB', 'HB']
+                assert apparatus.locator('..').locator('[data-admin-select-value="AA"]').count() == 0
+                assert apparatus.locator('..').locator('[data-admin-select-value="VT AVG"]').count() == 0
                 assert page.locator('[data-execution-notice]').is_visible()
                 execution_input = page.locator('.admin-score-table [name=E_score]')
                 assert execution_input.input_value() == ''
@@ -291,6 +292,11 @@ def main():
                 assert parse_qs(urlparse(day_response.value.url).query)['day'] == ['2']
                 assert page.locator('[data-result-id="1"]').count() == 0
                 event_days[:] = [None]
+                discipline_control = page.locator('[name=classification_discipline]').locator('..')
+                discipline_control.locator('summary').click()
+                discipline_control.locator('[data-admin-select-value="WAG"]').click()
+                page.locator('#adminScoreRows .empty-state').wait_for()
+                assert page.locator('[name=classification_apparatus]').locator('..').locator('[data-admin-select-value]').evaluate_all('options => options.map(o => o.dataset.adminSelectValue)') == ['VT', 'UB', 'BB', 'FX']
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()

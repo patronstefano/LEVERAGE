@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Ordine degli attrezzi nell'editor risultati
+
+- Ordinata la selezione degli attrezzi secondo la disciplina: MAG FX, PH, SR, VT, PB, HB; WAG VT, UB, BB, FX. Rimangono visibili solo gli attrezzi disponibili nel contesto selezionato, senza AA o VT AVG.
+- L'ordine non dipende piu dall'ordine dei gruppi restituiti dal backend. Test browser con gruppi volutamente disordinati e cambio MAG/WAG; nessuna modifica ai dati sportivi.
+
 #### 2026-10-01 - Giorno opzionale nell'editor punteggi
 
 - Il selettore Giorno appare soltanto quando la classifica selezionata offre piu giornate tra cui scegliere. Nascosto se manca il giorno o e disponibile una sola giornata; viene rivalutato al cambio di disciplina, format, round o attrezzo.
