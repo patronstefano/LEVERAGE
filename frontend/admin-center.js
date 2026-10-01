@@ -178,6 +178,10 @@ const COPY = {
   top_events: ["Most viewed events", "Eventi più visualizzati", "Eventos más vistos", "Événements les plus consultés"],
   users: ["Users and roles", "Utenti e ruoli", "Usuarios y roles", "Utilisateurs et rôles"],
   merge: ["Entity Merge", "Unione Entità", "Unión de Entidades", "Fusion d’Entités"],
+  mergeAthlete: ["Merge athlete", "Unione atleta", "Unión de atleta", "Fusion d’athlète"],
+  mergeEvent: ["Merge event", "Unione evento", "Unión de evento", "Fusion d’événement"],
+  sourceEvent: ["Source event ID", "ID evento da unire", "ID evento de origen", "ID événement source"],
+  targetEvent: ["Destination event ID", "ID evento da mantenere", "ID evento de destino", "ID événement à conserver"],
   audit: ["Audit and restore", "Audit e ripristino", "Auditoría y restauración", "Audit et restauration"],
   intro: ["Manage data, review changes and follow import activity.", "Gestisci i dati, verifica le modifiche e segui le importazioni.", "Gestiona datos, revisa cambios y sigue las importaciones.", "Gérez les données, vérifiez les modifications et suivez les importations."],
   denied: ["Admin access required.", "Accesso ADMIN richiesto.", "Se requiere acceso ADMIN.", "Accès ADMIN requis."],
@@ -602,16 +606,37 @@ export async function renderAdminCenter(host) {
       onSubmit("adminStatsForm", load); await load();
     }
     if (tab === "merge") {
-      paint(form("adminMergeForm", field("source", "source", "number", "", true) + field("target", "target", "number", "", true) + field("reason", "reason"), "preview") + '<div id="adminMergePreview"></div>');
-      onSubmit("adminMergeForm", async (v) => {
-        const payload = { target_athlete_id: Number(v.target), reason: v.reason || null };
-        const result = await api(`/athletes/${Number(v.source)}/merge-preview`, { method: "POST", body: payload });
-        const output = document.getElementById("adminMergePreview"); output.innerHTML = report(result) + (result.can_merge ? button("merge", 'id="adminMergeCommit"') : "");
-        document.getElementById("adminMergeCommit")?.addEventListener("click", () => confirm("merge", async () => {
-          const saved = await api(`/athletes/${Number(v.source)}/merge`, { method: "POST", body: { ...payload, confirm: true } }); output.innerHTML = report(saved);
-        }));
-        document.getElementById("adminMergeForm").addEventListener("input", () => { output.innerHTML = ""; }, { once: true });
-      });
+      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('merge'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminMergeAthlete" aria-pressed="true">${esc(text('mergeAthlete'))}</button><button type="button" class="segmented-option" id="adminMergeEvent" aria-pressed="false">${esc(text('mergeEvent'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminMergeContent"></div>`);
+      let mergeRevision = 0;
+      const renderMerge = (kind) => {
+        ++mergeRevision;
+        const isEvent = kind === 'events';
+        document.getElementById('adminMergeAthlete').setAttribute('aria-pressed', String(!isEvent));
+        document.getElementById('adminMergeEvent').setAttribute('aria-pressed', String(isEvent));
+        root.querySelector('.admin-create-toggle').style.setProperty('--selected-index', isEvent ? '1' : '0');
+        document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', field('source', isEvent ? 'sourceEvent' : 'source', 'number', '', true) + field('target', isEvent ? 'targetEvent' : 'target', 'number', '', true) + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
+        const output = document.getElementById('adminMergePreview');
+        document.getElementById('adminMergeForm').addEventListener('input', () => { ++mergeRevision; output.innerHTML = ''; });
+        onSubmit('adminMergeForm', async (v) => {
+          const revision = ++mergeRevision;
+          const payload = { [isEvent ? 'target_event_id' : 'target_athlete_id']: Number(v.target), reason: v.reason || null };
+          const result = await api(`/${kind}/${Number(v.source)}/merge-preview`, {method: 'POST', body: payload});
+          if (!active() || revision !== mergeRevision) return;
+          const {preview_token, ...visiblePreview} = result;
+          output.innerHTML = report(visiblePreview) + (result.can_merge ? button(isEvent ? 'mergeEvent' : 'mergeAthlete', 'id="adminMergeCommit"') : '');
+          document.getElementById('adminMergeCommit')?.addEventListener('click', () => confirm(isEvent ? 'mergeEvent' : 'mergeAthlete', async () => {
+            if (!active() || revision !== mergeRevision) return;
+            const saved = await api(`/${kind}/${Number(v.source)}/merge`, {method: 'POST', body: {...payload, confirm: true, ...(isEvent ? {preview_token: result.preview_token} : {})}});
+            if (!active() || revision !== mergeRevision) return;
+            ++mergeRevision;
+            output.innerHTML = report(saved);
+            state.globalSearch.payload = null;
+          }));
+        });
+      };
+      document.getElementById('adminMergeAthlete').onclick = () => renderMerge('athletes');
+      document.getElementById('adminMergeEvent').onclick = () => renderMerge('events');
+      renderMerge('athletes');
     }
     if (tab === "users") {
       paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers" class="admin-revision-list"></div>');

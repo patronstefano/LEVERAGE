@@ -439,6 +439,14 @@ Flusso consigliato per la UI admin:
 
 Il merge sposta i `Result` verso l'atleta canonico, mantiene `represented_country` sui result, riallaccia i follower, sposta country history non duplicate, sposta suggerimenti e notifiche collegate, copia nel target solo metadati mancanti, soft-delete della scheda duplicata e registra audit log. Se il merge creerebbe due result nello stesso contesto sportivo sullo stesso atleta target, l'operazione viene bloccata con `409` e la preview restituisce i conflitti da risolvere.
 
+## Unione Entita nel Centro Admin
+
+La sottosezione usa lo stesso slider di Nuova Entita: **Unione atleta** (predefinita) e **Unione evento**. Entrambi i flussi richiedono ID sorgente e destinazione, anteprima e conferma esplicita.
+
+Per gli eventi, `POST /events/{source_event_id}/merge-preview` riceve `target_event_id` e una motivazione opzionale. La conferma su `/events/{source_event_id}/merge` richiede anche `confirm: true` e il `preview_token` restituito: modifiche intervenute nel frattempo invalidano l'anteprima.
+
+Il merge eventi preserva nome/ID della destinazione, trasferisce risultati e calendario, deduplica preferiti e contesti di inserimento, riallaccia suggerimenti, notifiche e configurazioni salvate, e disattiva logicamente la sorgente. Blocca anni, date, livelli o riferimenti World Gymnastics discordanti e collisioni dei risultati. Non copia la certificazione della sorgente; modifiche ai metadati certificati della destinazione richiedono nuova verifica. Accesso ADMIN con MFA, transazione atomica e audit; le unioni non sono reversibili tramite il comando generico di ripristino delle modifiche.
+
 ## Scalabilita pre-popolamento
 Prima della popolazione storica 2018-2025, LEVERAGE include una migrazione dedicata agli indici (`0027_add_scalability_indexes`) per rendere piu efficienti classifiche evento, schede atleta, filtri calendario, ranking, ricerca duplicati e query sui country rappresentati.
 

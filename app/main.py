@@ -14,6 +14,7 @@ from app.database import engine
 from app.event_reminders import sync_event_result_reminders
 from app.world_gymnastics_scan import process_next, mark_identity_changed
 from app.routers import world_gymnastics_scan
+from app.routers import event_merges
 from sqlalchemy.orm import Session
 import re
 from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, search, site_analytics, world_gymnastics
@@ -88,6 +89,7 @@ app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 app.include_router(athletes.router, prefix="/athletes", tags=["athletes"], dependencies=reminder_dependencies)
 app.include_router(data_suggestions.router, prefix="/data-suggestions", tags=["data-suggestions"], dependencies=reminder_dependencies)
 app.include_router(events.router, prefix="/events", tags=["events"], dependencies=reminder_dependencies)
+app.include_router(event_merges.router, prefix="/events", tags=["events"], dependencies=reminder_dependencies)
 app.include_router(world_gymnastics.router, prefix="/world-gymnastics", tags=["world-gymnastics"], dependencies=reminder_dependencies)
 app.include_router(results.router, prefix="/results", tags=["results"], dependencies=reminder_dependencies)
 app.include_router(search.router, prefix="/search", tags=["search"])

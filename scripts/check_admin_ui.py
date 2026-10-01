@@ -104,6 +104,8 @@ def main():
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path in ["/events/1/merge-preview", "/athletes/1/merge-preview"]:
+                    route.fulfill(json={"can_merge": True, "preview_token": "a" * 64}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -198,6 +200,23 @@ def main():
                 assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '0'
                 assert page.locator('[name="event_search"]').count() == 0
                 assert page.locator('#adminEntry').count() == 0
+            if tab == "merge":
+                assert page.locator('#adminMergeAthlete').get_attribute('aria-pressed') == 'true'
+                page.locator('#adminMergeEvent').click()
+                assert page.locator('#adminMergeEvent').get_attribute('aria-pressed') == 'true'
+                assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '1'
+                for name, value in [('source', '1'), ('target', '2')]:
+                    page.locator(f'#adminMergeForm [name={name}]').fill(value)
+                page.locator('#adminMergeForm button[type=submit]').click()
+                page.locator('#adminMergeCommit').wait_for()
+                assert writes[-1]['path'] == '/events/1/merge-preview'
+                assert json.loads(writes[-1]['body'])['target_event_id'] == 2
+                assert 'preview_token' not in page.locator('#adminMergePreview').inner_text()
+                page.locator('#adminMergeForm [name=target]').fill('3')
+                assert page.locator('#adminMergeCommit').count() == 0
+                page.locator('#adminMergeAthlete').click()
+                assert page.locator('#adminMergeAthlete').get_attribute('aria-pressed') == 'true'
+                assert page.locator('#adminMergeForm [name=source]').input_value() == ''
             if tab == "results":
                 assert page.evaluate('''async () => {
                     const {classificationHasRecordedExecution: valid} = await import('/admin-result-editor.js?v=execution-validation-20261001');

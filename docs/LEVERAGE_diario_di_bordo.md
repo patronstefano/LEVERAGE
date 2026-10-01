@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Unione Entita: atleti ed eventi
+
+- La sottosezione adotta lo stesso slider e gli stessi campi di Nuova Entita: Unione atleta (predefinita) e Unione evento. La scelta cambia il modulo senza ricaricare la pagina.
+- L'ADMIN indica ID sorgente, ID da mantenere e motivazione; genera un'anteprima prima della conferma esplicita. Cambiare i dati invalida l'anteprima.
+- Aggiunto il backend di unione eventi, protetto da autorizzazione ADMIN e MFA. Anni, date o riferimenti ufficiali discordanti e collisioni dei risultati bloccano l'operazione; un token impedisce di confermare anteprime obsolete.
+- Il merge conserva l'identita di destinazione, trasferisce risultati, calendario e collegamenti utente, deduplica i preferiti e disattiva logicamente la sorgente. Nessun punteggio viene ricalcolato. MAG/WAG e Junior/Senior vengono aggregati ove necessario.
+- La certificazione World Gymnastics non viene trasferita dalla sorgente; cambiamenti ai dettagli certificati della destinazione richiedono nuova verifica. Operazione registrata nell'audit con avviso di sicurezza; non equivale a un ripristino automatico generico delle unioni.
+- Verifiche su database isolati e interfaccia con richieste simulate: nessuna unione effettuata sul database storico durante lo sviluppo.
+- Esito: 232 test backend superati; controllo browser Centro Admin superato, inclusi cambio atleta/evento, anteprima e sua invalidazione dopo modifica degli ID.
+
 #### 2026-10-01 - Ordine delle sezioni del Centro Admin
 
 - Nuovo ordine dello slider: Panoramica, Statistiche, Revisioni, Nuova Entita, Unione Entita, Editor Risultati, Importazione file. Notifiche resta un pulsante separato; invariato il Centro Super Admin.
