@@ -10,9 +10,17 @@ const COPY = {
   conflict: ['This result was modified by another administrator. Reload the classification.', 'Questo risultato è stato modificato da un altro amministratore. Ricarica la classifica.', 'Otro administrador modificó este resultado. Recarga la clasificación.', 'Un autre administrateur a modifié ce résultat. Rechargez le classement.'],
   estimated: ['E est. · Execution components are incomplete in this classification. Empty fields remain unknown.', 'E est. · I componenti di esecuzione non sono completi in tutta la classifica. I campi vuoti restano non disponibili.', 'E est. · Los componentes de ejecución no están completos en toda la clasificación. Los campos vacíos siguen sin estar disponibles.', 'E est. · Les composantes d’exécution sont incomplètes dans ce classement. Les champs vides restent indisponibles.'],
   derived: ['AA and VT AVG cannot be edited directly. Select an apparatus classification.', 'AA e VT AVG non sono modificabili direttamente. Seleziona una classifica per attrezzo.', 'AA y VT AVG no se pueden editar directamente. Selecciona una clasificación por aparato.', 'AA et VT AVG ne sont pas modifiables directement. Sélectionnez un classement par agrès.'],
-  components: ['To record E, also provide P and any applicable B (0 if absent).', 'Per registrare E, indica anche P e l’eventuale B previsto (0 se assenti).', 'Para registrar E, introduce también P y B cuando corresponda (0 si no se aplican).', 'Pour enregistrer E, renseignez aussi P et B si applicable (0 si absents).'],
+  components: ['To record E, provide Final Score, D, P and B (0 if absent).', 'Per registrare E, indica Final Score, D, P e B (0 se assenti).', 'Para registrar E, introduce Final Score, D, P y B (0 si no se aplican).', 'Pour enregistrer E, renseignez Final Score, D, P et B (0 si absents).'],
+  formula: ['Final Score must equal D + E + B − P.', 'Final Score deve essere uguale a D + E + B − P.', 'Final Score debe ser igual a D + E + B − P.', 'Final Score doit être égal à D + E + B − P.'],
   aggregate: ['The linked total cannot be recalculated safely: its components are missing, ambiguous or inconsistent. Review the source data before correcting this score.', 'Il totale collegato non può essere ricalcolato in sicurezza: i componenti sono mancanti, ambigui o incoerenti. Verifica i dati della fonte prima di correggere questo punteggio.', 'No se puede recalcular el total vinculado: sus componentes faltan, son ambiguos o incoherentes. Revisa los datos de origen.', 'Le total associé ne peut pas être recalculé : ses composantes sont manquantes, ambiguës ou incohérentes. Vérifiez les données sources.'],
 };
+
+export function classificationHasRecordedExecution(rows) {
+  return rows.length > 0 && rows.every((row) =>
+    ['score', 'D_score', 'E_score', 'Penalty', 'Bonus'].every((key) => Number.isFinite(row[key]))
+    && row.E_score >= 0 && row.E_score <= 10
+    && Math.abs(Number(row.score.toFixed(3)) - Number((row.D_score + row.E_score + row.Bonus - row.Penalty).toFixed(3))) <= 0.001);
+}
 
 export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved }) {
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
@@ -81,7 +89,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
             return `<tr data-result-id="${r.id}"><th scope="row">${esc(names.get(r.athlete_id))}<small>${esc(r.represented_country || '')} · ID ${r.id}${r.vt_attempt ? ` · VT ${r.vt_attempt}` : ''}</small></th>${keys.map((key,i) => `<td><input type="number" step="${key === 'D_score' ? '0.1' : '0.001'}" min="0" name="${key}" aria-label="${titles[i]} · ${esc(names.get(r.athlete_id))}" value="${values[key] == null ? '' : key === 'D_score' ? Number(values[key]).toFixed(1) : values[key]}" placeholder="—" title="${esc(label('unavailable'))}"></td>`).join('')}<td><div class="admin-center-actions"><button type="button" data-save class="quiet-button outline-command-button">${esc(label('save'))}</button><button type="button" data-reset class="quiet-button outline-command-button">${esc(label('cancel'))}</button></div><small role="status"></small></td></tr>`;
           }).join('')}</tbody></table></div>`;
           const refreshExecutionNotice = () => {
-            const incomplete = rows.some((r) => r.E_score == null || r.Penalty == null || (r.bonus_status !== 'not_applicable' && r.Bonus == null));
+            const incomplete = !classificationHasRecordedExecution(rows);
             const notice = out.querySelector('[data-execution-notice]');
             notice.hidden = !incomplete;
             notice.textContent = incomplete ? label('estimated') : '';
@@ -113,6 +121,10 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
             save.onclick = async () => {
               if (inputs.some((input) => !input.reportValidity())) return;
               const body = {expected: snapshot(row), values: values()};
+              if (body.values.E_score != null) {
+                if (keys.some((key) => body.values[key] == null)) { notice.textContent = label('components'); return; }
+                if (!classificationHasRecordedExecution([body.values])) { notice.textContent = label('formula'); return; }
+              }
               save.disabled = reset.disabled = true;
               inputs.forEach((el) => { el.disabled = true; });
               try {
@@ -128,6 +140,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
               } catch (error) {
                 notice.textContent = error.message.includes('Result changed') ? label('conflict')
                   : error.message.includes('Incomplete execution components') ? label('components')
+                  : error.message.includes('Final score must equal') ? label('formula')
                   : error.message.includes('Unsafe aggregate correction') ? label('aggregate') : error.message;
                 save.disabled = reset.disabled = false;
               } finally { inputs.forEach((el) => { el.disabled = false; }); }

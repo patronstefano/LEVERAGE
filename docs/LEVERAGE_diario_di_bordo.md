@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Vincoli espliciti per E registrata
+
+- Precisazione dell'utente: non si salva E se P o B sono null. Obbligatori anche D e Final Score, affinche la formula sia sempre verificabile. Controllo sia nell'editor sia nel backend, quindi non aggirabile tramite una richiesta diretta all'endpoint di correzione.
+- Formula obbligatoria su ogni riga con E registrata: Final Score=D+E+B-P, tolleranza 0,001 gia adottata dal sistema. Vale anche per le correzioni dei dati precedenti al 2026. Una modifica successiva a D, P, B o Final Score deve continuare a rispettarla.
+- Nell'editor l'avviso E est. scompare soltanto se tutte le righe caricate della classifica hanno cinque valori numerici, E nell'intervallo 0-10 e formula valida. Completamento progressivo consentito, senza cancellare i componenti reali gia inseriti; una singola riga incompleta o incoerente mantiene l'avviso collettivo.
+- Per attestare assenza di Bonus nella correzione manuale si ammette B=0 anche nei codici/attrezzi storici che non prevedevano bonus. Rimangono vietati bonus positivi non ammessi. Questa eccezione locale non altera le regole Gymternet o converte automaticamente i null importati.
+- Test dedicati a B obbligatorio nel 2024 e sul PH 2025, D mancante, formula errata e conferma manuale dello zero. Test browser del criterio collettivo: due righe valide, una incompleta, una con formula errata e classifica vuota.
+
 #### 2026-10-01 - Correzione per attrezzo e protezione dei totali derivati
 
 - Decisione: Risultati nel Centro Admin serve esclusivamente a correggere Final Score, D, E, P, B degli attrezzi. AA non e un punteggio da modificare direttamente; anche VT AVG e escluso dall'editor e dall'endpoint dedicato di correzione.

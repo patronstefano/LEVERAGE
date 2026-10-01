@@ -87,6 +87,31 @@ def test_partial_execution_not_promoted_to_recorded_e(record, changes):
     assert row.E_score is row.Penalty is row.Bonus is None
 
 
+@pytest.mark.parametrize("year,apparatus", [(2024, "FX"), (2025, "PH")])
+def test_recorded_e_requires_explicit_zero_even_without_bonus_policy(record, year, apparatus):
+    db, admin, row = record
+    row.event.year = year
+    row.apparatus = apparatus
+    db.commit()
+    with pytest.raises(HTTPException, match="Incomplete execution components"):
+        correct_result_scores(row.id, correction(row, E_score=8, Penalty=0), db, admin)
+    correct_result_scores(row.id, correction(row, E_score=8, Penalty=0, Bonus=0), db, admin)
+    assert row.E_score == 8 and row.Bonus == 0
+
+
+def test_recorded_e_requires_d_and_formula_for_historical_scores(record):
+    db, admin, row = record
+    row.event.year = 2024
+    db.commit()
+    with pytest.raises(HTTPException, match="Incomplete execution components"):
+        correct_result_scores(row.id, correction(row, D_score=None, E_score=8, Penalty=0, Bonus=0), db, admin)
+    with pytest.raises(HTTPException) as err:
+        correct_result_scores(row.id, correction(row, E_score=7.5, Penalty=0, Bonus=0), db, admin)
+    assert err.value.status_code == 400
+    db.refresh(row)
+    assert row.E_score is row.Bonus is None
+
+
 def add_component(db, row, apparatus, **values):
     item = models.Result(**{key: getattr(row, key) for key in (
         "athlete_id", "event_id", "discipline", "category", "format", "round", "day")},

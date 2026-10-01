@@ -182,6 +182,12 @@ def main():
                 assert page.locator('[name="event_search"]').count() == 0
                 assert page.locator('#adminEntry').count() == 0
             if tab == "results":
+                assert page.evaluate('''async () => {
+                    const {classificationHasRecordedExecution: valid} = await import('/admin-result-editor.js?v=execution-validation-20261001');
+                    const row = {score: 13, D_score: 5, E_score: 8, Penalty: 0, Bonus: 0};
+                    return valid([row, row]) && !valid([]) && !valid([row, {...row, Bonus: null}])
+                        && !valid([row, {...row, E_score: null}]) && !valid([row, {...row, score: 14}]);
+                }''')
                 assert page.locator('#adminNewAthlete').count() == 0
                 assert page.locator('#adminNewEvent').count() == 0
                 page.locator('[name="event_search"]').fill("Admin")

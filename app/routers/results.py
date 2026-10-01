@@ -653,23 +653,22 @@ def correct_result_scores(
     expected = payload.expected.model_dump()
     if any(getattr(result, key) != value for key, value in expected.items()):
         raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
-    if values["E_score"] is not None and (
-        values["Penalty"] is None or (values["Bonus"] is None and
-            schemas.result_bonus_is_applicable(result.event.year, result.discipline, result.apparatus))
+    if values["E_score"] is not None and any(
+        values[key] is None for key in ("score", "D_score", "Penalty", "Bonus")
     ):
-        raise HTTPException(status_code=400, detail="Incomplete execution components: recording E requires P and applicable B (zero if absent).")
+        raise HTTPException(status_code=400, detail="Incomplete execution components: recording E requires Final Score, D, P and B (zero if absent).")
     try:
         schemas.validate_result_scoring(result.discipline, result.apparatus, result.vt_attempt,
             values["score"], values["D_score"], values["E_score"], values["Penalty"], values["Bonus"])
         schemas.validate_result_score_upper_bound(result.apparatus, values["score"])
-        schemas.validate_result_bonus_policy(result.event.year, result.discipline, result.apparatus, values["Bonus"])
+        # An explicit zero confirms absence of bonus, even under historical codes.
+        # This exception belongs to corrections, not to automatic Gymternet import.
+        if values["Bonus"] != 0:
+            schemas.validate_result_bonus_policy(result.event.year, result.discipline, result.apparatus, values["Bonus"])
         schemas.validate_result_score_policy(result.event.year, result.discipline, result.apparatus,
             result.vt_attempt, values["score"], values["D_score"])
         # Imported unknown components stay unknown, including Gymternet data after 2025.
-        if all(values[key] is not None for key in ("score", "D_score", "E_score")) and (
-            values["Penalty"] is not None and (values["Bonus"] is not None or not
-                schemas.result_bonus_is_applicable(result.event.year, result.discipline, result.apparatus))
-        ):
+        if values["E_score"] is not None:
             schemas.validate_result_score_formula(2026, values["score"], values["D_score"],
                 values["E_score"], values["Penalty"], values["Bonus"])
     except ValueError as exc:
