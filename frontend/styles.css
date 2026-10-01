@@ -4256,15 +4256,27 @@ a:focus-visible > .entity-card-clickable {
   top: auto;
 }
 
+.admin-center .admin-editor-search-row .search-form {
+  width: min(520px, 100%);
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  box-sizing: border-box;
+  border-color: var(--line);
+  box-shadow: none;
+}
+
 .admin-center .admin-editor-search-row input.search-input,
 .admin-center .admin-editor-search-row input.search-input:focus {
-  padding: 0 36px 0 14px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 36px 0 13px;
   border: 0;
   border-radius: calc(var(--control-radius) - 4px);
   background: transparent;
   box-shadow: none;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 15px;
+  font-weight: 480;
 }
 
 .analytics-comparison-selected-athlete {

@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Dimensioni compatte della ricerca Editor Risultati
+
+- Ridotta la barra ricerca evento a 36 px di altezza esterna, con testo di 15 px e larghezza massima di 520 px, coerente con i campi del Centro Admin. Rimosso l'effetto ombra; mantenuti bordi arrotondati, crocetta e popup adattivo.
+- Modifica circoscritta all'Editor Risultati: nessun cambiamento alle barre pubbliche o alla logica di ricerca e selezione. Test browser aggiornati per verificare le nuove dimensioni e i suggerimenti.
+
 #### 1 ottobre 2026 - Ricerca evento nell'Editor Risultati
 
 - Allineata la ricerca eventi alla barra di selezione atleta di Analytics: stessi componenti, dimensioni, bordi, caratteri, crocetta e popup scorrevole con quattro righe visibili.

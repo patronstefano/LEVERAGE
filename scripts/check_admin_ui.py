@@ -152,7 +152,8 @@ def main():
                     assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text() == renamed[tab]
                     assert page.locator(f'[data-admin-tab="{tab}"]').inner_text() == renamed[tab]
                 for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):not(#adminImportFile):visible, #adminWorkspace .admin-custom-select > summary:visible, #adminChooseFile').all():
-                    assert abs(control.bounding_box()['height'] - 36) < 1
+                    expected_height = 34 if control.get_attribute('id') == 'adminEventSearch' else 36
+                    assert abs(control.bounding_box()['height'] - expected_height) < 1
             else:
                 assert page.locator('#adminWorkspace').is_hidden()
             assert page.locator('.admin-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }') == account_option_style
@@ -229,8 +230,10 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator('#adminEventOptions button').first.wait_for()
                 assert page.locator('[name=event_search]').get_attribute('placeholder') == 'Cerca eventi per competizione, anno o luogo...'
-                assert page.locator('#adminEventSearchForm').bounding_box()['width'] == 620
-                assert page.locator('#adminEventOptions').bounding_box()['width'] >= 618
+                assert page.locator('#adminEventSearchForm').bounding_box()['width'] == 520
+                assert page.locator('#adminEventSearchForm').bounding_box()['height'] == 36
+                assert page.locator('[name=event_search]').evaluate('el => getComputedStyle(el).fontSize') == '15px'
+                assert page.locator('#adminEventOptions').bounding_box()['width'] >= 518
                 assert page.locator('#adminEventOptions .search-suggestion').count() == 1
                 assert 'Caricamento' not in page.locator('#adminEventOptions').inner_text()
                 page.locator('[name=event_search]').press('Escape')
