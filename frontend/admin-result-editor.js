@@ -6,8 +6,7 @@ const COPY = {
   saved: ['Saved', 'Salvato', 'Guardado', 'Enregistré'],
   pending: ['Unsaved changes', 'Modifiche non salvate', 'Cambios sin guardar', 'Modifications non enregistrées'],
   unavailable: ['Not available', 'Non disponibile', 'No disponible', 'Indisponible'],
-  reload: ['Reload classification', 'Ricarica classifica', 'Recargar clasificación', 'Recharger le classement'],
-  conflict: ['This result was modified by another administrator. Reload the classification.', 'Questo risultato è stato modificato da un altro amministratore. Ricarica la classifica.', 'Otro administrador modificó este resultado. Recarga la clasificación.', 'Un autre administrateur a modifié ce résultat. Rechargez le classement.'],
+  conflict: ['This result was modified by another administrator. Select the event again to load the updated scores.', 'Questo risultato è stato modificato da un altro amministratore. Seleziona nuovamente l’evento per caricare i punteggi aggiornati.', 'Otro administrador modificó este resultado. Selecciona de nuevo el evento para cargar los resultados actualizados.', 'Un autre administrateur a modifié ce résultat. Sélectionnez à nouveau l’événement pour charger les scores actualisés.'],
   estimated: ['E est. · Execution components are incomplete in this classification. Empty fields remain unknown.', 'E est. · I componenti di esecuzione non sono completi in tutta la classifica. I campi vuoti restano non disponibili.', 'E est. · Los componentes de ejecución no están completos en toda la clasificación. Los campos vacíos siguen sin estar disponibles.', 'E est. · Les composantes d’exécution sont incomplètes dans ce classement. Les champs vides restent indisponibles.'],
   derived: ['AA and VT AVG cannot be edited directly. Select an apparatus classification.', 'AA e VT AVG non sono modificabili direttamente. Seleziona una classifica per attrezzo.', 'AA y VT AVG no se pueden editar directamente. Selecciona una clasificación por aparato.', 'AA et VT AVG ne sont pas modifiables directement. Sélectionnez un classement par agrès.'],
   components: ['To record E, provide Final Score, D, P and B (0 if absent).', 'Per registrare E, indica Final Score, D, P e B (0 se assenti).', 'Para registrar E, introduce Final Score, D, P y B (0 si no se aplican).', 'Pour enregistrer E, renseignez Final Score, D, P et B (0 si absents).'],
@@ -54,7 +53,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
       const dimensions = ['discipline', 'format', 'round', 'apparatus', 'day'];
       let selected = {...groups[0]};
       area.innerHTML += '<div id="adminClassificationSelectors" class="admin-form-grid"></div>'
-        + `<div class="admin-center-actions"><button type="button" id="adminReloadClassification" class="quiet-button outline-command-button">${esc(label('reload'))}</button></div><div id="adminScoreRows"></div>`;
+        + '<div id="adminScoreRows"></div>';
       const renderSelectors = () => {
         let available = groups;
         const html = dimensions.map((key) => {
@@ -170,7 +169,6 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
         } catch (error) { if (groupToken === revision) showError(error); }
       };
       renderSelectors();
-      area.querySelector('#adminReloadClassification').onclick = loadGroup;
       await loadGroup();
     } catch (error) { if (token === revision) showError(error); }
   };

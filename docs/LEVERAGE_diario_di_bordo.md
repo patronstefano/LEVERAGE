@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Caricamento automatico dell'intera classifica nell'editor
+
+- Eliminato il pulsante Ricarica classifica dal Centro Admin. Selezionando l'evento o cambiando i criteri, il caricamento parte automaticamente e mostra tutte le righe della classifica.
+- Conservata la lettura automatica di tutte le pagine API da 500 record: nessun pulsante Carica altri e nessun troncamento alla prima pagina. La tabella viene resa disponibile una volta completato il caricamento.
+- Aggiornato il messaggio di conflitto concorrente: per recuperare valori aggiornati si riseleziona l'evento, senza suggerire un pulsante rimosso. Test browser con 501 risultati per verificare anche la seconda pagina automatica e l'ultimo record.
+
 #### 2026-10-01 - Ordine degli attrezzi nell'editor risultati
 
 - Ordinata la selezione degli attrezzi secondo la disciplina: MAG FX, PH, SR, VT, PB, HB; WAG VT, UB, BB, FX. Rimangono visibili solo gli attrezzi disponibili nel contesto selezionato, senza AA o VT AVG.

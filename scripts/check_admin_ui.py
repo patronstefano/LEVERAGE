@@ -20,6 +20,7 @@ def main():
                "orphan_dscore_review": []}
     current_role = ["super_admin"]
     event_days = [None]
+    full_classification_size = [0]
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
@@ -80,6 +81,11 @@ def main():
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
                 payload.append({**payload[0], "id": 2, "category": "junior"})
                 payload = [{**row, "day": day, "id": row['id'] + index * 10} for index, day in enumerate(event_days) for row in payload]
+                if full_classification_size[0]:
+                    params = parse_qs(urlparse(route.request.url).query)
+                    offset = int(params.get('offset', ['0'])[0])
+                    limit = int(params.get('limit', ['500'])[0])
+                    payload = [{**payload[0], 'id': 1000 + index} for index in range(offset, min(offset + limit, full_classification_size[0]))]
             elif path == "/athletes/1":
                 payload = athlete
             elif path == "/events/1/manual-entry-options":
@@ -197,6 +203,7 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator('.admin-score-table').wait_for()
+                assert page.locator('#adminReloadClassification').count() == 0
                 assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 4
                 assert page.locator('[name=classification_day]').count() == 0
                 assert page.locator('[name=classification_category]').count() == 0
@@ -297,6 +304,13 @@ def main():
                 discipline_control.locator('[data-admin-select-value="WAG"]').click()
                 page.locator('#adminScoreRows .empty-state').wait_for()
                 assert page.locator('[name=classification_apparatus]').locator('..').locator('[data-admin-select-value]').evaluate_all('options => options.map(o => o.dataset.adminSelectValue)') == ['VT', 'UB', 'BB', 'FX']
+                full_classification_size[0] = 501
+                page.locator('[name=event_search]').fill('Admin full classification')
+                page.locator('#adminEventOptions button').first.click()
+                page.wait_for_function("document.querySelectorAll('.admin-score-table tbody tr').length === 501")
+                assert page.locator('[data-result-id="1500"]').count() == 1
+                assert page.locator('#adminReloadClassification').count() == 0
+                full_classification_size[0] = 0
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()
