@@ -58,6 +58,7 @@ def main():
                 if (role === 'user' || role === null) { if (html) return false; continue; }
                 const node = document.createElement('div'); node.innerHTML = html;
                 const a = node.querySelector('a');
+                if (a.textContent !== 'Vai all’Editor Risultati' || a.querySelector('svg')) return false;
                 const params = new URLSearchParams(a.hash.split('?')[1]);
                 if (params.get('event_id') !== '1' || params.get('apparatus') !== 'VT AVG' || params.get('day') !== '2' || params.get('discipline') !== 'WAG') return false;
             }

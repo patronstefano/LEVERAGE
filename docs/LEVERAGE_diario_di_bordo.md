@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Pulsante testuale per l'editor dalla classifica
+
+- Sostituita la chiave inglese con Vai all'Editor Risultati, posizionato a sinistra della freccia di ritorno all'inizio classifica. Stile del pulsante coerente ai comandi con contorno, testo localizzato nelle quattro lingue.
+- Invariati visibilita ADMIN/SUPER ADMIN e collegamento contestuale a evento/classifica. Su schermi piccoli i comandi rimangono raggruppati senza comprimere il riepilogo.
+
 #### 2026-10-01 - Accesso contestuale all'editor dalla Scheda Evento
 
 - Aggiunta una chiave inglese nel box riepilogo della classifica, a destra del pulsante per tornare ai comandi iniziali. Visibile esclusivamente ad ADMIN e SUPER ADMIN, con icona e comportamento coerenti agli strumenti delle schede.

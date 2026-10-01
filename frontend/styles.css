@@ -1659,7 +1659,11 @@ button {
 
 .event-result-context.sticky-context-note { grid-template-columns: minmax(0, 1fr) auto; }
 .event-context-actions { display: flex; align-items: center; gap: 8px; }
-.event-context-actions .event-score-editor-link { width: 30px; height: 30px; min-width: 30px; padding: 0; }
+.event-context-actions .event-score-editor-link { min-height: 30px; padding: 5px 10px; font-size: 13px; white-space: nowrap; }
+@media (max-width: 600px) {
+  .event-result-context.sticky-context-note:has(.event-score-editor-link) { grid-template-columns: minmax(0, 1fr); }
+  .event-context-actions { justify-content: flex-end; }
+}
 
 .context-scroll-button {
   display: inline-flex;
