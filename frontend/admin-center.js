@@ -1,5 +1,6 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions } from './athlete-field-options.js?v=20260930';
+import { mountResultEditor } from './admin-result-editor.js?v=20261001';
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
@@ -517,60 +518,9 @@ export async function renderAdminCenter(host) {
       await create("athletes");
     }
     if (tab === "results") {
-      paint(`<div class="admin-lookup">${field("event_search", "search")}<div id="adminEventOptions"></div></div><div id="adminEntry"></div>`);
-      const loadEvent = async (event) => {
-        if (session.event?.id !== event.id && session.rows.length) { feedback(text("batch"), true); return; }
-        session.event = event;
-        const options = await api(`/events/${event.id}/manual-entry-options`);
-        if (!active()) return;
-        const area = document.getElementById("adminEntry");
-        area.innerHTML = `<h3>${esc(event.name)}</h3>${entityLink("events", event.id)}
-          <div class="admin-form-grid" id="adminContext">${select("discipline", "discipline", options.disciplines)}${select("category", "category", options.categories)}${select("format", "format", options.formats, options.current_context?.format)}${select("round", "round", options.rounds, options.current_context?.round)}${field("day", "day", "number")}</div>
-          <form id="adminResultForm" class="admin-form-grid"><div class="admin-lookup admin-form-wide">${field("athlete_search", "search")}<div id="adminAthleteOptions"></div><span id="adminSelectedAthlete"></span></div>
-          <details class="admin-form-wide"><summary>${text("newAthlete")}</summary><div class="admin-form-grid">${field("last_name", host.t("lastName"))}${field("first_name", host.t("firstName"))}${select("country", "country", athleteFieldOptions("country"))}</div></details>
-          ${select("apparatus", "apparatus", options.apparatus_by_discipline[options.disciplines[0]])}
-          ${["D_score", "E_score", "Penalty", "Bonus", "score", "rank", "vt_attempt"].map((key) => field(key, key === "score" ? "Final Score" : key, "number", "", key === "score" || key === "E_score" && event.year >= 2026)).join("")}
-          <div><button type="submit" class="quiet-button outline-command-button">${text("add")}</button></div></form>
-          <h3>${text("batch")}</h3><div id="adminBatch"></div>${button("submit", 'id="adminSubmitResults"')}`;
-        bind();
-        let selected = null;
-        const search = area.querySelector('[name="athlete_search"]');
-        area.querySelectorAll('#adminResultForm input[name="first_name"], #adminResultForm input[name="last_name"]').forEach((input) => input.addEventListener("input", () => {
-          selected = null; search.value = ""; document.getElementById("adminSelectedAthlete").textContent = "";
-        }));
-        search.addEventListener("input", () => { selected = null; document.getElementById("adminSelectedAthlete").textContent = ""; });
-        wireLookup(search, document.getElementById("adminAthleteOptions"), `/events/${event.id}/result-athlete-suggestions`, {}, (a) => { selected = a; search.value = nameOf(a); document.getElementById("adminSelectedAthlete").textContent = `ID ${a.id || a.athlete_id} · ${a.discipline}`; });
-        const context = () => Object.fromEntries([...document.querySelectorAll("#adminContext input")].map((i) => [i.name, i.value]));
-        area.querySelector('#adminContext [name="discipline"]').addEventListener("change", () => {
-          selected = null; search.value = ""; document.getElementById("adminSelectedAthlete").textContent = "";
-          const control = area.querySelector('#adminResultForm [name="apparatus"]').closest(".admin-form-field");
-          control.outerHTML = select("apparatus", "apparatus", options.apparatus_by_discipline[context().discipline]); bind();
-        });
-        const batch = () => {
-          document.getElementById("adminBatch").innerHTML = session.rows.map((row, i) => `<div class="admin-center-row"><span>${esc(row.label)} · ${esc(row.data.apparatus)} · ${row.data.score}</span>${button("remove", `data-remove="${i}"`)}</div>`).join("") || text("empty");
-          document.getElementById("adminSubmitResults").disabled = !session.rows.length;
-          area.querySelectorAll("[data-remove]").forEach((b) => b.onclick = () => { session.rows.splice(Number(b.dataset.remove), 1); batch(); });
-        };
-        batch();
-        onSubmit("adminResultForm", async (v, f) => {
-          const c = context();
-          if (selected && selected.discipline !== c.discipline) throw new Error(text("countryMismatch"));
-          if (!selected && (!v.last_name.trim() || !v.first_name.trim())) throw new Error(text("athlete"));
-          const data = { ...c, day: c.day ? Number(c.day) : null, apparatus: v.apparatus };
-          for (const key of ["D_score", "E_score", "Penalty", "Bonus", "score", "rank", "vt_attempt"]) data[key] = v[key] === "" ? null : Number(v[key]);
-          if (selected) data.athlete_id = selected.id || selected.athlete_id;
-          else data.athlete = { last_name: v.last_name.trim(), first_name: v.first_name.trim(), country: v.country || null };
-          session.rows.push({ data, label: selected ? nameOf(selected) : `${v.last_name} ${v.first_name}` });
-          for (const key of ["D_score", "E_score", "Penalty", "Bonus", "score", "rank"]) f.elements[key].value = "";
-          batch();
-        });
-        document.getElementById("adminSubmitResults").onclick = guard(async () => {
-          const saved = await api(`/events/${event.id}/results/bulk`, { method: "POST", body: { results: session.rows.map((r) => r.data) } });
-          session.rows = []; batch(); feedback(`${text("success")} ${saved.length}`);
-        });
-      };
-      wireLookup(root.querySelector('[name="event_search"]'), document.getElementById("adminEventOptions"), "/events/", {}, (event) => guard(() => loadEvent(event))());
-      if (session.event) await loadEvent(session.event);
+      paint('<div id="adminResultEditor"></div>');
+      mountResultEditor({ root: root.querySelector('#adminResultEditor'), api, select, field, text, esc, bind, wireLookup, active, language: state.language, nameOf, feedback,
+        onSaved: () => { state.globalSearch.payload = null; } });
     }
     if (tab === "entities") {
       paint(form("adminRecordLookup", select("kind", "type", ["athletes", "events", "results"]) + field("id", "Leverage ID", "number", "", true)) + '<div id="adminRecord"></div>');

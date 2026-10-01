@@ -64,6 +64,12 @@ def main():
                            "top_athletes": [], "top_events": []}
             elif path == "/events/":
                 payload = [event]
+            elif path == "/events/1/result-groups":
+                payload = [{"discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "count": 1}]
+            elif path == "/results/":
+                payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
+            elif path == "/athletes/1":
+                payload = athlete
             elif path == "/events/1/manual-entry-options":
                 payload = {"event": event, "disciplines": ["MAG", "WAG"], "categories": ["senior"],
                            "formats": ["individual"], "rounds": ["final", "qualification"],
@@ -72,8 +78,8 @@ def main():
                 payload = [athlete]
             if route.request.method not in ("GET", "OPTIONS"):
                 writes.append({"path": path, "body": route.request.post_data})
-                if path == "/events/1/results/bulk":
-                    route.fulfill(json=[{"id": 1}], headers={"Access-Control-Allow-Origin": "*"})
+                if path == "/results/1/scores":
+                    route.fulfill(json={"id": 1, **json.loads(route.request.post_data)["values"]}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/imports/gymternet/preview":
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
@@ -167,23 +173,28 @@ def main():
                 assert page.locator('#adminNewEvent').count() == 0
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
-                page.locator("#adminResultForm").wait_for()
-                page.locator('[name="athlete_search"]').fill("Test")
-                page.locator("#adminAthleteOptions button").first.click()
-                for key, value in {"D_score": "5", "E_score": "8", "score": "13"}.items():
-                    page.locator("#adminResultForm [name=" + key + "]").fill(value)
-                page.locator('#adminResultForm button[type="submit"]').click()
-                assert page.locator("#adminBatch").inner_text().startswith("Test Ada")
-                page.locator("#adminSubmitResults").click()
+                page.locator('.admin-score-table').wait_for()
+                assert page.locator('#adminResultForm').count() == 0
+                assert page.locator('[data-save]').is_disabled()
+                page.locator('.admin-score-table [name=score]').fill('13.2')
+                page.locator('[data-reset]').click()
+                assert page.locator('.admin-score-table [name=score]').input_value() == '13'
+                page.locator('.admin-score-table [name=score]').fill('13.2')
+                page.locator('[data-save]').click()
                 page.wait_for_timeout(200)
-                saved = json.loads(writes[-1]["body"])["results"][0]
-                assert saved["athlete_id"] == 1
-                assert saved["D_score"] == 5 and saved["score"] == 13
-                assert saved["Penalty"] is None and saved["Bonus"] is None
-                page.locator('#adminContext [data-admin-select]').first.locator("summary").click()
-                page.locator('#adminContext [data-admin-select-value="WAG"]').click()
-                assert page.locator('#adminResultForm [name="apparatus"]').input_value() == "VT"
-                page.screenshot(path="/tmp/leverage-admin-entry.png", full_page=True)
+                saved = json.loads(writes[-1]["body"])
+                assert writes[-1]['path'] == '/results/1/scores'
+                assert saved['expected']['score'] == 13
+                assert saved['values']['score'] == 13.2
+                assert saved['values']['Penalty'] is None and saved['values']['Bonus'] is None
+                assert page.locator('[data-save]').is_disabled()
+                page.screenshot(path="/tmp/leverage-admin-result-editor.png", full_page=True)
+                page.set_viewport_size({"width": 390, "height": 844})
+                page.wait_for_timeout(100)
+                assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+                assert page.locator('.admin-score-table-scroll').evaluate('el => el.scrollWidth > el.clientWidth')
+                page.screenshot(path="/tmp/leverage-admin-result-editor-mobile.png", full_page=True)
+                page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()

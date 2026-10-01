@@ -334,7 +334,9 @@ Il soft delete non sostituisce i backup: in produzione sara comunque necessario 
 
 ## Calendario eventi
 
-Nel Centro Admin, **Inserimento dati** crea esclusivamente nuove schede Atleta ed Evento. La sottosezione **Risultati** gestisce l'inserimento manuale di punteggi e classifiche per una gara esistente. Gli import da file restano nella sottosezione dedicata.
+Nel Centro Admin, **Inserimento dati** crea esclusivamente nuove schede Atleta ed Evento. La sottosezione **Risultati** permette di cercare un evento, scegliere una classifica gia presente e correggere D, E, P, B e Final Score in una tabella, con salvataggio o annullamento per riga. La creazione dei risultati dalla UI avviene esclusivamente in **Importazione file**. Le API di inserimento manuale restano disponibili per compatibilita tecnica, ma non sono piu esposte dalla sezione Risultati.
+
+`PATCH /results/{id}/scores` e riservato ad ADMIN/SUPER ADMIN con MFA verificata. Accetta i cinque punteggi originali (`expected`) e corretti (`values`), impedisce sovrascritture concorrenti (409), applica vincoli sportivi e registra l'audit. Nei dati importati, i componenti sconosciuti restano `null`, anche dal 2026; non vengono trasformati in zero o in E stimata registrata. La formula D+E-P+B viene verificata quando tutti i componenti applicabili sono conosciuti. Non modifica identita, contesto della gara o posizione ufficiale importata; la tabella si riordina per Final Score. Le correzioni sono per singolo record, non una transazione globale dell'intera classifica.
 Gli `Event` possono essere creati anche prima che la gara si svolga e possono quindi non avere ancora `Result` associati.
 `GET /events/calendar` espone una vista calendario pubblica con stato calcolato automaticamente:
 
@@ -371,6 +373,8 @@ Gli utenti registrati hanno `preferred_language`, con default `en` e valori amme
 Le notifiche generate dal backend usano sempre la lingua preferita del destinatario loggato. Per visitatori anonimi, testi di interfaccia e label visuali restano responsabilita del frontend.
 
 ## Inserimento manuale dati
+
+Le API descritte sotto sono mantenute per compatibilita: dal 1 ottobre 2026 la UI del Centro Admin non propone piu la creazione manuale di risultati, ma la correzione delle classifiche importate.
 La creazione, modifica, cancellazione e upload immagini di `Athlete`, `Event` e `Result` sono operazioni riservate agli admin.
 
 Per una interfaccia semplice di data entry, il frontend puo usare questo flusso:

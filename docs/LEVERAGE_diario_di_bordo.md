@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Risultati: correzione delle classifiche importate
+
+- Decisione dell'utente: abbandonare il caricamento manuale dalla UI, considerato troppo macchinoso. La creazione dei risultati rimane affidata a Importazione file; Inserimento dati continua a creare soltanto Atleta ed Evento.
+- Risultati ora presenta ricerca evento, selezione di classifiche realmente disponibili e tabella dei punteggi per atleta. Le combinazioni includono disciplina, categoria, format, round, attrezzo e giorno; i tentativi VT sono distinti nelle righe.
+- D, E, P, B e Final Score sono modificabili con Salva e Annulla per riga, senza ricreare la pagina. Le bozze si conservano tra classifiche durante la permanenza nella sezione. La tabella viene riordinata per Final Score dopo il salvataggio; la posizione ufficiale importata non viene riscritta.
+- Endpoint dedicato PATCH /results/{id}/scores: autorizzazione ADMIN con MFA, audit prima/dopo, controllo ottimistico dei valori originali e rifiuto delle modifiche concorrenti. Il contratto non consente cambi a identita o contesto sportivo.
+- I null importati restano sconosciuti anche per Gymternet 2026: nessuna conversione automatica a zero, nessuna E stimata salvata come E reale. Formula verificata quando i componenti applicabili sono tutti noti; restano attivi limiti dei punteggi, politica Bonus e caso eccezionale WAG VT2 senza Final Score.
+- Nessuna modifica ai dati storici durante lo sviluppo. API di creazione manuale conservate per compatibilita, ma flusso rimosso dalla UI. Salvataggi atomici per record, non salvataggio collettivo della classifica.
+- Verifica: 206 test backend superati, inclusi 10 test dedicati a correzioni, audit, conflitti, autorizzazione e MFA; test browser del Centro Admin con selezione, annullamento e salvataggio su dati simulati. Controllate schermate desktop e mobile; su mobile la tabella scorre internamente senza allargare la pagina.
+
 #### 2026-09-30 - Navigazione indipendente dalle schede aperte dal Centro Admin
 
 - Corretto il riconoscimento delle schede Atleta ed Evento aperte dal Centro Admin: non devono sovrascrivere la memoria di navigazione delle sezioni pubbliche Atleti ed Eventi.

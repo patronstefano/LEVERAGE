@@ -1119,6 +1119,21 @@ class ResultCreate(ResultBase):
     pass
 
 
+class ResultScoreValues(BaseModel):
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+    D_score: Optional[float]
+    E_score: Optional[float]
+    Penalty: Optional[float]
+    Bonus: Optional[float]
+    score: Optional[float]
+
+
+class ResultScoreCorrection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected: ResultScoreValues
+    values: ResultScoreValues
+
+
 class ResultUpdate(BaseModel):
     athlete_id: Optional[int] = None
     event_id: Optional[int] = None

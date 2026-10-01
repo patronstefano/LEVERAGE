@@ -634,6 +634,53 @@ def get_result(result_id: int, db: Session = Depends(get_db)):
     return result
 
 
+@router.patch("/{result_id}/scores", response_model=schemas.ResultRead)
+def correct_result_scores(
+    result_id: int,
+    payload: schemas.ResultScoreCorrection,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    result = db.query(models.Result).filter(
+        models.Result.id == result_id, models.Result.is_deleted.is_(False),
+    ).first()
+    if not result or result.event.is_deleted or result.athlete.is_deleted:
+        raise HTTPException(status_code=404, detail="Result not found")
+    values = payload.values.model_dump()
+    expected = payload.expected.model_dump()
+    if any(getattr(result, key) != value for key, value in expected.items()):
+        raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
+    try:
+        schemas.validate_result_scoring(result.discipline, result.apparatus, result.vt_attempt,
+            values["score"], values["D_score"], values["E_score"], values["Penalty"], values["Bonus"])
+        schemas.validate_result_score_upper_bound(result.apparatus, values["score"])
+        schemas.validate_result_bonus_policy(result.event.year, result.discipline, result.apparatus, values["Bonus"])
+        schemas.validate_result_score_policy(result.event.year, result.discipline, result.apparatus,
+            result.vt_attempt, values["score"], values["D_score"])
+        # Imported unknown components stay unknown, including Gymternet data after 2025.
+        if all(values[key] is not None for key in ("score", "D_score", "E_score")) and (
+            values["Penalty"] is not None and (values["Bonus"] is not None or not
+                schemas.result_bonus_is_applicable(result.event.year, result.discipline, result.apparatus))
+        ):
+            schemas.validate_result_score_formula(2026, values["score"], values["D_score"],
+                values["E_score"], values["Penalty"], values["Bonus"])
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    before = model_snapshot(result)
+    # Compare-and-swap also catches a concurrent write after the initial read.
+    query = db.query(models.Result).filter(models.Result.id == result_id, models.Result.is_deleted.is_(False))
+    for key, value in expected.items():
+        query = query.filter(getattr(models.Result, key) == value)
+    if query.update(values, synchronize_session=False) != 1:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
+    db.refresh(result)
+    add_audit_log(db, current_user, "update", "Result", result.id, before=before, after=model_snapshot(result))
+    db.commit()
+    db.refresh(result)
+    return result
+
+
 @router.put("/{result_id}", response_model=schemas.ResultRead)
 def update_result(
     result_id: int,
