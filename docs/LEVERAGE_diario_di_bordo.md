@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Categoria dell'editor determinata dall'evento
+
+- Rimossa la scelta Junior/Senior dall'editor punteggi del Centro Admin. Evento Junior e Senior: unica tabella con entrambe le categorie; evento Junior o Senior: solo la categoria dell'evento.
+- Conservati i selettori di disciplina, format, round, apparatus e giorno. Per eventi misti la richiesta non restringe category e la tabella unisce i risultati del medesimo contesto; negli eventi a categoria unica il filtro viene applicato automaticamente.
+- Ogni modifica continua a usare l'ID del singolo Result e il contratto limitato ai cinque punteggi: nessuna riclassificazione di atleti o risultati, nessuna fusione dei totali AA fra categorie. La verifica collettiva di E nell'editor comprende tutte le righe della tabella mista.
+- Test browser su eventi misti e a categoria unica, assenza del selettore, filtri delle richieste e modifica di una riga Junior nella tabella combinata senza inviare cambi di categoria.
+
 #### 2026-10-01 - Classifica evento Junior e Senior e selettore verticale
 
 - Negli eventi con categoria Junior e Senior, l'apertura ordinaria propone la vista combinata dei risultati delle due categorie. Restano invariati disciplina, round, format, attrezzo e giornata: non vengono mescolati contesti diversi.

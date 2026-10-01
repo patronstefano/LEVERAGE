@@ -22,6 +22,11 @@ export function classificationHasRecordedExecution(rows) {
     && Math.abs(Number(row.score.toFixed(3)) - Number((row.D_score + row.E_score + row.Bonus - row.Penalty).toFixed(3))) <= 0.001);
 }
 
+export function eventEditorCategories(event) {
+  return event.category === 'junior and senior' ? ['junior', 'senior']
+    : ['junior', 'senior'].includes(event.category) ? [event.category] : [];
+}
+
 export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved }) {
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const label = (key) => COPY[key]?.[lang] || text(key);
@@ -39,11 +44,13 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   const loadEvent = async (event) => {
     const token = ++revision;
     try {
-      const groups = (await api(`/events/${event.id}/result-groups`)).filter((g) => ['FX', 'PH', 'SR', 'VT', 'PB', 'HB', 'UB', 'BB'].includes(g.apparatus));
+      const categories = eventEditorCategories(event);
+      const groups = (await api(`/events/${event.id}/result-groups`)).filter((g) => categories.includes(g.category)
+        && ['FX', 'PH', 'SR', 'VT', 'PB', 'HB', 'UB', 'BB'].includes(g.apparatus));
       if (!active() || token !== revision) return;
       area.innerHTML = `<h3>${esc(event.name)} · ${esc(event.year)}</h3>`;
       if (!groups.length) { area.innerHTML += `<div class="empty-state">${esc(label('derived'))}</div>`; return; }
-      const dimensions = ['discipline', 'category', 'format', 'round', 'apparatus', 'day'];
+      const dimensions = ['discipline', 'format', 'round', 'apparatus', 'day'];
       let selected = {...groups[0]};
       area.innerHTML += '<div id="adminClassificationSelectors" class="admin-form-grid"></div>'
         + `<div class="admin-center-actions"><button type="button" id="adminReloadClassification" class="quiet-button outline-command-button">${esc(label('reload'))}</button></div><div id="adminScoreRows"></div>`;
@@ -72,14 +79,16 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
         out.replaceChildren();
         try {
           const params = {event_id: event.id, limit: 500};
-          for (const key of ['discipline', 'category', 'format', 'round', 'apparatus', 'day']) if (group[key] != null) params[key] = group[key];
+          for (const key of dimensions) if (group[key] != null) params[key] = group[key];
+          if (categories.length === 1) params.category = categories[0];
           let rows = [], batch;
           do {
             batch = await api('/results/', {params: {...params, offset: rows.length}});
             if (!active() || groupToken !== revision) return;
             rows.push(...batch);
           } while (batch.length === 500);
-          rows = rows.filter((r) => ['discipline', 'category', 'format', 'round', 'apparatus', 'day'].every((key) => (r[key] ?? null) === (group[key] ?? null)));
+          rows = rows.filter((r) => categories.includes(r.category)
+            && dimensions.every((key) => (r[key] ?? null) === (group[key] ?? null)));
           for (const id of new Set(rows.map((r) => r.athlete_id))) {
             if (!names.has(id)) names.set(id, nameOf(await api(`/athletes/${id}`)));
             if (!active() || groupToken !== revision) return;

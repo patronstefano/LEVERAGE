@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 from urllib.request import urlopen
+from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import sync_playwright
 
@@ -73,9 +74,10 @@ def main():
             elif path == "/events/":
                 payload = [event]
             elif path == "/events/1/result-groups":
-                payload = [{"discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": apparatus, "day": None, "count": 1} for apparatus in ["AA", "VT AVG", "FX", "PH"]]
+                payload = [{"discipline": "MAG", "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": None, "count": 1} for category in ["senior", "junior"] for apparatus in ["AA", "VT AVG", "FX", "PH"]]
             elif path == "/results/":
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
+                payload.append({**payload[0], "id": 2, "category": "junior"})
             elif path == "/athletes/1":
                 payload = athlete
             elif path == "/events/1/manual-entry-options":
@@ -86,8 +88,8 @@ def main():
                 payload = [athlete]
             if route.request.method not in ("GET", "OPTIONS"):
                 writes.append({"path": path, "body": route.request.post_data})
-                if path == "/results/1/scores":
-                    route.fulfill(json={"id": 1, **json.loads(route.request.post_data)["values"]}, headers={"Access-Control-Allow-Origin": "*"})
+                if path in ["/results/1/scores", "/results/2/scores"]:
+                    route.fulfill(json={"id": int(path.split('/')[2]), **json.loads(route.request.post_data)["values"]}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/imports/gymternet/preview":
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
@@ -193,7 +195,8 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator('.admin-score-table').wait_for()
-                assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 6
+                assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 5
+                assert page.locator('[name=classification_category]').count() == 0
                 apparatus = page.locator('[name=classification_apparatus]')
                 assert apparatus.input_value() == 'FX'
                 assert 'AA' not in apparatus.locator('option').all_text_contents()
@@ -244,6 +247,23 @@ def main():
                 assert page.locator('.admin-score-table-scroll').evaluate('el => el.scrollWidth > el.clientWidth')
                 page.screenshot(path="/tmp/leverage-admin-result-editor-mobile.png", full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
+                for category, expected_ids in [('junior and senior', ['1', '2']), ('junior', ['2']), ('senior', ['1'])]:
+                    event['category'] = category
+                    page.locator('[name=event_search]').fill('Admin ' + category)
+                    with page.expect_response(lambda response: ':8000/results/?' in response.url) as loaded:
+                        page.locator('#adminEventOptions button').first.click()
+                    page.locator('.admin-score-table').wait_for()
+                    query = parse_qs(urlparse(loaded.value.url).query)
+                    assert query.get('category') == (None if category == 'junior and senior' else [category])
+                    assert page.locator('[name=classification_category]').count() == 0
+                    assert sorted(page.locator('[data-result-id]').evaluate_all('rows => rows.map(r => r.dataset.resultId)')) == expected_ids
+                    if category == 'junior and senior':
+                        junior_row = page.locator('[data-result-id="2"]')
+                        junior_row.locator('[name=score]').fill('13.1')
+                        junior_row.locator('[data-save]').click()
+                        page.wait_for_timeout(200)
+                        assert writes[-1]['path'] == '/results/2/scores'
+                        assert set(json.loads(writes[-1]['body'])) == {'expected', 'values'}
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()
