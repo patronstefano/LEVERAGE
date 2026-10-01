@@ -73,7 +73,7 @@ def main():
             elif path == "/events/":
                 payload = [event]
             elif path == "/events/1/result-groups":
-                payload = [{"discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "count": 1}]
+                payload = [{"discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": apparatus, "day": None, "count": 1} for apparatus in ["AA", "VT AVG", "FX", "PH"]]
             elif path == "/results/":
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
             elif path == "/athletes/1":
@@ -187,9 +187,25 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator('.admin-score-table').wait_for()
+                assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 6
+                apparatus = page.locator('[name=classification_apparatus]')
+                assert apparatus.input_value() == 'FX'
+                assert 'AA' not in apparatus.locator('option').all_text_contents()
+                assert 'VT AVG' not in apparatus.locator('option').all_text_contents()
+                assert page.locator('[data-execution-notice]').is_visible()
+                assert 'E est. 8.000' in page.locator('.admin-score-table').inner_text()
                 assert page.locator('#adminResultForm').count() == 0
                 assert page.locator('[data-save]').is_disabled()
                 page.locator('.admin-score-table [name=score]').fill('13.2')
+                for value in ['PH', 'FX']:
+                    control = page.locator('[name=classification_apparatus]').locator('..')
+                    control.locator('summary').click()
+                    control.locator(f'[data-admin-select-value="{value}"]').click()
+                    if value == 'PH':
+                        page.locator('#adminScoreRows .empty-state').wait_for()
+                    else:
+                        page.locator('.admin-score-table').wait_for()
+                assert page.locator('.admin-score-table [name=score]').input_value() == '13.2'
                 page.locator('[data-reset]').click()
                 assert page.locator('.admin-score-table [name=score]').input_value() == '13'
                 page.locator('.admin-score-table [name=score]').fill('13.2')

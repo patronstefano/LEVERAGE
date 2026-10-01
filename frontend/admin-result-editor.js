@@ -8,6 +8,10 @@ const COPY = {
   unavailable: ['Not available', 'Non disponibile', 'No disponible', 'Indisponible'],
   reload: ['Reload classification', 'Ricarica classifica', 'Recargar clasificación', 'Recharger le classement'],
   conflict: ['This result was modified by another administrator. Reload the classification.', 'Questo risultato è stato modificato da un altro amministratore. Ricarica la classifica.', 'Otro administrador modificó este resultado. Recarga la clasificación.', 'Un autre administrateur a modifié ce résultat. Rechargez le classement.'],
+  estimated: ['E est. · Execution components are incomplete in this classification. Empty fields remain unknown.', 'E est. · I componenti di esecuzione non sono completi in tutta la classifica. I campi vuoti restano non disponibili.', 'E est. · Los componentes de ejecución no están completos en toda la clasificación. Los campos vacíos siguen sin estar disponibles.', 'E est. · Les composantes d’exécution sont incomplètes dans ce classement. Les champs vides restent indisponibles.'],
+  derived: ['AA and VT AVG cannot be edited directly. Select an apparatus classification.', 'AA e VT AVG non sono modificabili direttamente. Seleziona una classifica per attrezzo.', 'AA y VT AVG no se pueden editar directamente. Selecciona una clasificación por aparato.', 'AA et VT AVG ne sont pas modifiables directement. Sélectionnez un classement par agrès.'],
+  components: ['To record E, also provide P and any applicable B (0 if absent).', 'Per registrare E, indica anche P e l’eventuale B previsto (0 se assenti).', 'Para registrar E, introduce también P y B cuando corresponda (0 si no se aplican).', 'Pour enregistrer E, renseignez aussi P et B si applicable (0 si absents).'],
+  aggregate: ['The linked total cannot be recalculated safely: its components are missing, ambiguous or inconsistent. Review the source data before correcting this score.', 'Il totale collegato non può essere ricalcolato in sicurezza: i componenti sono mancanti, ambigui o incoerenti. Verifica i dati della fonte prima di correggere questo punteggio.', 'No se puede recalcular el total vinculado: sus componentes faltan, son ambiguos o incoherentes. Revisa los datos de origen.', 'Le total associé ne peut pas être recalculé : ses composantes sont manquantes, ambiguës ou incohérentes. Vérifiez les données sources.'],
 };
 
 export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved }) {
@@ -25,16 +29,35 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   const loadEvent = async (event) => {
     const token = ++revision;
     try {
-      const groups = await api(`/events/${event.id}/result-groups`);
+      const groups = (await api(`/events/${event.id}/result-groups`)).filter((g) => ['FX', 'PH', 'SR', 'VT', 'PB', 'HB', 'UB', 'BB'].includes(g.apparatus));
       if (!active() || token !== revision) return;
       area.innerHTML = `<h3>${esc(event.name)} · ${esc(event.year)}</h3>`;
-      if (!groups.length) { area.innerHTML += `<div class="empty-state">${esc(text('empty'))}</div>`; return; }
-      area.innerHTML += select('classification', label('classification'), groups.map((g, i) => ({value: String(i), label: [g.discipline, g.category, g.format, g.round, g.apparatus, g.day == null ? '' : `${text('day')} ${g.day}`].filter(Boolean).map(text).join(' · ')})), '0')
+      if (!groups.length) { area.innerHTML += `<div class="empty-state">${esc(label('derived'))}</div>`; return; }
+      const dimensions = ['discipline', 'category', 'format', 'round', 'apparatus', 'day'];
+      let selected = {...groups[0]};
+      area.innerHTML += '<div id="adminClassificationSelectors" class="admin-form-grid"></div>'
         + `<div class="admin-center-actions"><button type="button" id="adminReloadClassification" class="quiet-button outline-command-button">${esc(label('reload'))}</button></div><div id="adminScoreRows"></div>`;
-      bind();
+      const renderSelectors = () => {
+        let available = groups;
+        const html = dimensions.map((key) => {
+          const options = [...new Set(available.map((g) => String(g[key] ?? '')))];
+          if (!options.includes(String(selected[key] ?? ''))) selected[key] = available[0][key];
+          const value = String(selected[key] ?? '');
+          available = available.filter((g) => String(g[key] ?? '') === value);
+          return select(`classification_${key}`, text(key), options.map((v) => ({value: v, label: v ? text(v) : '—'})), value);
+        }).join('');
+        selected = {...available[0]};
+        area.querySelector('#adminClassificationSelectors').innerHTML = html;
+        bind();
+        dimensions.forEach((key) => area.querySelector(`[name=classification_${key}]`).addEventListener('change', (event) => {
+          selected[key] = event.target.value;
+          renderSelectors();
+          loadGroup();
+        }));
+      };
       const loadGroup = async () => {
         const groupToken = ++revision;
-        const group = groups[Number(area.querySelector('[name=classification]').value)];
+        const group = {...selected};
         const out = area.querySelector('#adminScoreRows');
         out.replaceChildren();
         try {
@@ -53,21 +76,34 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
           }
           rows.sort((a,b) => (b.score ?? -Infinity) - (a.score ?? -Infinity) || a.id-b.id);
           if (!rows.length) { out.innerHTML = `<div class="empty-state">${esc(text('empty'))}</div>`; return; }
-          out.innerHTML = `<div class="admin-score-table-scroll"><table class="admin-score-table"><thead><tr><th>${esc(label('athlete'))}</th>${titles.map((t) => `<th>${t}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r) => {
+          out.innerHTML = `<p data-execution-notice role="status"></p><div class="admin-score-table-scroll"><table class="admin-score-table"><thead><tr><th>${esc(label('athlete'))}</th>${titles.map((t) => `<th>${t}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r) => {
             const values = drafts.get(r.id) || snapshot(r);
             return `<tr data-result-id="${r.id}"><th scope="row">${esc(names.get(r.athlete_id))}<small>${esc(r.represented_country || '')} · ID ${r.id}${r.vt_attempt ? ` · VT ${r.vt_attempt}` : ''}</small></th>${keys.map((key,i) => `<td><input type="number" step="${key === 'D_score' ? '0.1' : '0.001'}" min="0" name="${key}" aria-label="${titles[i]} · ${esc(names.get(r.athlete_id))}" value="${values[key] == null ? '' : key === 'D_score' ? Number(values[key]).toFixed(1) : values[key]}" placeholder="—" title="${esc(label('unavailable'))}"></td>`).join('')}<td><div class="admin-center-actions"><button type="button" data-save class="quiet-button outline-command-button">${esc(label('save'))}</button><button type="button" data-reset class="quiet-button outline-command-button">${esc(label('cancel'))}</button></div><small role="status"></small></td></tr>`;
           }).join('')}</tbody></table></div>`;
+          const refreshExecutionNotice = () => {
+            const incomplete = rows.some((r) => r.E_score == null || r.Penalty == null || (r.bonus_status !== 'not_applicable' && r.Bonus == null));
+            const notice = out.querySelector('[data-execution-notice]');
+            notice.hidden = !incomplete;
+            notice.textContent = incomplete ? label('estimated') : '';
+          };
+          refreshExecutionNotice();
           rows.forEach((row) => {
             const tr = out.querySelector(`[data-result-id="${row.id}"]`);
             const notice = tr.querySelector('[role=status]');
             const save = tr.querySelector('[data-save]');
             const reset = tr.querySelector('[data-reset]');
             const inputs = [...tr.querySelectorAll('input')];
+            const estimate = document.createElement('small');
+            tr.querySelector('[name=E_score]').after(estimate);
             const values = () => Object.fromEntries(inputs.map((el) => [el.name,
               el.name === 'D_score' && row.D_score != null && el.value === Number(row.D_score).toFixed(1)
                 ? row.D_score : el.value === '' ? null : el.valueAsNumber]));
             const update = () => {
-              const dirty = keys.some((key) => values()[key] !== (row[key] ?? null));
+              const current = values();
+              const dirty = keys.some((key) => current[key] !== (row[key] ?? null));
+              const e = current.score != null && current.D_score != null ? current.score - current.D_score : null;
+              estimate.hidden = current.E_score != null || e == null || e < 0 || e > 10;
+              estimate.textContent = !estimate.hidden ? `E est. ${e.toFixed(3)}` : '';
               save.disabled = reset.disabled = !dirty;
               notice.textContent = dirty ? label('pending') : '';
               if (dirty) drafts.set(row.id, values()); else drafts.delete(row.id);
@@ -81,13 +117,18 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
               inputs.forEach((el) => { el.disabled = true; });
               try {
                 const saved = await api(`/results/${row.id}/scores`, {method: 'PATCH', body});
-                Object.assign(row, saved); drafts.delete(row.id); update();
+                Object.assign(row, saved); drafts.delete(row.id);
                 onSaved?.();
+                if (!active() || groupToken !== revision) return;
+                update();
+                refreshExecutionNotice();
                 notice.textContent = label('saved');
                 rows.sort((a,b) => (b.score ?? -Infinity) - (a.score ?? -Infinity) || a.id-b.id)
                   .forEach((item) => out.querySelector('tbody').append(out.querySelector(`[data-result-id="${item.id}"]`)));
               } catch (error) {
-                notice.textContent = error.message.includes('Result changed') ? label('conflict') : error.message;
+                notice.textContent = error.message.includes('Result changed') ? label('conflict')
+                  : error.message.includes('Incomplete execution components') ? label('components')
+                  : error.message.includes('Unsafe aggregate correction') ? label('aggregate') : error.message;
                 save.disabled = reset.disabled = false;
               } finally { inputs.forEach((el) => { el.disabled = false; }); }
             };
@@ -95,7 +136,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
           });
         } catch (error) { if (groupToken === revision) showError(error); }
       };
-      area.querySelector('[name=classification]').addEventListener('change', loadGroup);
+      renderSelectors();
       area.querySelector('#adminReloadClassification').onclick = loadGroup;
       await loadGroup();
     } catch (error) { if (token === revision) showError(error); }

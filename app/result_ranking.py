@@ -223,6 +223,7 @@ def build_aa_d_score_totals_subquery(db):
             component.is_deleted.is_(False),
             component.apparatus.is_not(None),
             component.apparatus.notin_(["AA", "VT AVG"]),
+            or_(component.apparatus != "VT", component.vt_attempt.is_(None), component.vt_attempt == 1),
             component.score.is_not(None),
         )
         .group_by(
@@ -235,6 +236,7 @@ def build_aa_d_score_totals_subquery(db):
             component.day,
         )
         .having(component_d_score_count == component_count)
+        .having(component_count == represented_apparatus_count)
         .having(
             or_(
                 and_(
@@ -390,6 +392,7 @@ def aa_component_matches(component: models.Result, aa_result: models.Result) -> 
         and component.round == aa_result.round
         and component.day == aa_result.day
         and component.apparatus not in (None, "AA", "VT AVG")
+        and (component.apparatus != "VT" or component.vt_attempt != 2)
         and component.score is not None
     )
 
@@ -446,7 +449,9 @@ def build_ranking_component_context(results: list[models.Result]) -> dict[str, d
     vt_avg_components_by_key: dict[tuple, list[models.Result]] = {}
     for component in components:
         key = result_component_scope_key(component)
-        if component.apparatus not in (None, "AA", "VT AVG") and component.score is not None:
+        if component.apparatus not in (None, "AA", "VT AVG") and component.score is not None and (
+            component.apparatus != "VT" or component.vt_attempt != 2
+        ):
             aa_components_by_key.setdefault(key, []).append(component)
         if component.apparatus == "VT" and component.vt_attempt in (1, 2):
             vt_avg_components_by_key.setdefault(key, []).append(component)
@@ -496,7 +501,7 @@ def calculate_aa_d_score_total_from_components(
     if not components or expected_count == 0:
         return None
     represented_apparatuses = {component.apparatus for component in components}
-    if len(represented_apparatuses) < expected_count:
+    if len(components) != expected_count or represented_apparatuses != set(RANKING_APPARATUS_BREAKDOWN_ORDER.get(result.discipline, [])):
         return None
     if any(component.D_score is None for component in components):
         return None

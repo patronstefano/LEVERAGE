@@ -3050,6 +3050,17 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Correzione per attrezzo e protezione dei totali derivati
+
+- Decisione: Risultati nel Centro Admin serve esclusivamente a correggere Final Score, D, E, P, B degli attrezzi. AA non e un punteggio da modificare direttamente; anche VT AVG e escluso dall'editor e dall'endpoint dedicato di correzione.
+- Sostituita la tendina unica con selettori dipendenti disciplina, categoria, format, round, apparatus e giorno: solo combinazioni realmente presenti nell'evento. Restano distinti i tentativi VT nelle righe, senza confondere round o giornate.
+- E stimata resta un calcolo separato Final-D, mai precompilato o salvato come E registrata. Per registrare E occorre specificare anche P e B quando previsto, con zero esplicito se assenti. Nessuna trasformazione dei null Gymternet in zero. L'avviso di componenti incompleti resta finche almeno una riga della classifica ne e priva; i componenti reali delle altre righe restano conservati.
+- Correzione e aggiornamento di AA collegato sono atomici e sottoposti ad audit prima/dopo e controllo delle modifiche concorrenti. Ricalcolo solo con componenti completi e univoci nello stesso atleta/evento/disciplina/categoria/format/round/giorno, verificando la somma originale oppure che la nuova somma ripristini il totale ufficiale. Incoerenze non risolvibili producono un blocco, non una riscrittura arbitraria.
+- Per VT AVG occorrono entrambi i Final Score e media verificabile; WAG dal 2025 richiede anche Bonus noto sul totale. Non si deduce un bonus sconosciuto dal residuo della media. Un salto mancante o un ordine incerto che comprometta AA impediscono la propagazione automatica.
+- Il D AA letto per ranking esclude VT2 e richiede un solo componente per attrezzo, sia nella query SQL sia nel percorso di composizione in memoria. Evitata la somma di due salti nello stesso totale AA.
+- Salvataggio per riga, mantenimento bozze, controllo dei limiti sportivi e formula quando completa. Nessun nuovo risultato e nessuna modifica ai dati storici durante i test. Le vecchie API generiche rimangono per compatibilita; questo vincolo riguarda il flusso dedicato di correzione.
+- Verifica: 221 test backend superati, inclusi 19 test di correzione; verifica browser desktop/mobile del Centro Admin con selettori, esclusione aggregati, E stimata, annullamento e salvataggio. La scansione World Gymnastics resta indipendente e persistente; alle 15:53 Europe/Rome risultavano 424 riscontri, 207 esiti senza riscontro, nessun errore.
+
 #### 2026-10-01 - Avvio della scansione massiva World Gymnastics
 
 - Autorizzazione dell'utente a cercare in modo massivo possibili profili ufficiali, con percentuale di compatibilita. Superato il limite descritto nella precedente voce: anche i candidati della sola ricerca ora vengono persistiti, separatamente dai suggerimenti d'importazione e dalla certificazione.

@@ -23,6 +23,7 @@ from app.ranking_context import (
     validate_global_ranking_scope,
 )
 from app.security import get_current_admin_user, get_current_super_admin_user
+from app.result_score_corrections import linked_total_updates
 
 router = APIRouter()
 
@@ -646,10 +647,17 @@ def correct_result_scores(
     ).first()
     if not result or result.event.is_deleted or result.athlete.is_deleted:
         raise HTTPException(status_code=404, detail="Result not found")
+    if result.apparatus not in {"FX", "PH", "SR", "VT", "PB", "HB", "UB", "BB"}:
+        raise HTTPException(status_code=400, detail="Only individual apparatus scores can be corrected. AA and VT AVG are aggregates.")
     values = payload.values.model_dump()
     expected = payload.expected.model_dump()
     if any(getattr(result, key) != value for key, value in expected.items()):
         raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
+    if values["E_score"] is not None and (
+        values["Penalty"] is None or (values["Bonus"] is None and
+            schemas.result_bonus_is_applicable(result.event.year, result.discipline, result.apparatus))
+    ):
+        raise HTTPException(status_code=400, detail="Incomplete execution components: recording E requires P and applicable B (zero if absent).")
     try:
         schemas.validate_result_scoring(result.discipline, result.apparatus, result.vt_attempt,
             values["score"], values["D_score"], values["E_score"], values["Penalty"], values["Bonus"])
@@ -666,6 +674,7 @@ def correct_result_scores(
                 values["E_score"], values["Penalty"], values["Bonus"])
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    total_updates = linked_total_updates(db, result, values)
     before = model_snapshot(result)
     # Compare-and-swap also catches a concurrent write after the initial read.
     query = db.query(models.Result).filter(models.Result.id == result_id, models.Result.is_deleted.is_(False))
@@ -676,6 +685,16 @@ def correct_result_scores(
         raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
     db.refresh(result)
     add_audit_log(db, current_user, "update", "Result", result.id, before=before, after=model_snapshot(result))
+    for total, changes in total_updates:
+        total_before = model_snapshot(total)
+        total_query = db.query(models.Result).filter(models.Result.id == total.id, models.Result.is_deleted.is_(False))
+        for key in expected:
+            total_query = total_query.filter(getattr(models.Result, key) == getattr(total, key))
+        if total_query.update(changes, synchronize_session=False) != 1:
+            db.rollback()
+            raise HTTPException(status_code=409, detail="Result changed. Reload the classification before saving.")
+        db.refresh(total)
+        add_audit_log(db, current_user, "update", "Result", total.id, before=total_before, after=model_snapshot(total))
     db.commit()
     db.refresh(result)
     return result
