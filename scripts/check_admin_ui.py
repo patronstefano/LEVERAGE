@@ -227,6 +227,18 @@ def main():
                 assert page.locator('#adminNewAthlete').count() == 0
                 assert page.locator('#adminNewEvent').count() == 0
                 page.locator('[name="event_search"]').fill("Admin")
+                page.locator('#adminEventOptions button').first.wait_for()
+                assert page.locator('[name=event_search]').get_attribute('placeholder') == 'Cerca eventi per competizione, anno o luogo...'
+                assert page.locator('#adminEventSearchForm').bounding_box()['width'] == 620
+                assert page.locator('#adminEventOptions').bounding_box()['width'] >= 618
+                assert page.locator('#adminEventOptions .search-suggestion').count() == 1
+                assert 'Caricamento' not in page.locator('#adminEventOptions').inner_text()
+                page.locator('[name=event_search]').press('Escape')
+                assert page.locator('#adminEventOptions').is_hidden()
+                page.locator('#adminEventSearchForm .search-clear-button').click()
+                assert page.locator('[name=event_search]').input_value() == ''
+                assert page.locator('#adminEventOptions').is_hidden()
+                page.locator('[name=event_search]').fill('Admin')
                 page.locator("#adminEventOptions button").first.click()
                 page.locator('.admin-score-table').wait_for()
                 assert page.locator('#adminReloadClassification').count() == 0

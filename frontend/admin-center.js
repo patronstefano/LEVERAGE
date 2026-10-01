@@ -1,6 +1,6 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions } from './athlete-field-options.js?v=20260930';
-import { mountResultEditor } from './admin-result-editor.js?v=classification-editor-link-20261001';
+import { mountResultEditor } from './admin-result-editor.js?v=editor-event-search-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=20261001';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
@@ -538,7 +538,7 @@ export async function renderAdminCenter(host) {
     }
     if (tab === "results") {
       paint('<div id="adminResultEditor"></div>');
-      mountResultEditor({ root: root.querySelector('#adminResultEditor'), api, select, field, text, esc, bind, wireLookup, active, language: state.language, nameOf, feedback,
+      mountResultEditor({ root: root.querySelector('#adminResultEditor'), api, select, field, text, esc, bind, searchUi: host, active, language: state.language, nameOf, feedback,
         initialSelection: new URLSearchParams(state.route.split('?')[1] || ''),
         onSaved: () => { state.globalSearch.payload = null; } });
     }

@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Ricerca evento nell'Editor Risultati
+
+- Allineata la ricerca eventi alla barra di selezione atleta di Analytics: stessi componenti, dimensioni, bordi, caratteri, crocetta e popup scorrevole con quattro righe visibili.
+- Suggerimenti dinamici durante digitazione e cancellazione, con attesa breve di 140 ms e protezione dalle risposte obsolete. I suggerimenti precedenti rimangono visibili durante la richiesta; nessun lampeggio del testo di caricamento.
+- Nome evento, anno, disciplina, luogo e ID consentono di identificare la gara; la selezione carica la classifica senza ricaricare la pagina. Preservati accesso diretto dalla Scheda Evento e ricerca per ID (le quattro cifre sono interpretate come ricerca anno).
+- Chiusura con Escape o uscita dalla barra; Invio seleziona il primo suggerimento. Svuotare il testo non elimina modifiche gia presenti nell'editor.
+- Verifica browser con API simulate, senza modificare i punteggi reali.
+
 #### 1 ottobre 2026 - Unione Entita: atleti ed eventi
 
 - La sottosezione adotta lo stesso slider e gli stessi campi di Nuova Entita: Unione atleta (predefinita) e Unione evento. La scelta cambia il modulo senza ricaricare la pagina.

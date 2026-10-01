@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=entity-merge-20261001";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=editor-event-search-20261001";
 import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
@@ -12313,7 +12313,7 @@ function render() {
     return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
   } else if (/^\/(?:admin|super-admin)(?:\/|$)/.test(state.route)) {
     return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml, authRequiredPage,
-      renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t,
+      renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t, setSearchSuggestionsOpen, setSearchSuggestionsBusy,
       setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });
   } else if (state.route.startsWith("/account")) {
     return renderAccount();

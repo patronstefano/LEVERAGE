@@ -26,7 +26,7 @@ export function eventEditorCategories(event) {
     : ['junior', 'senior'].includes(event.category) ? [event.category] : [];
 }
 
-export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved, initialSelection }) {
+export function mountResultEditor({ root, api, select, field, text, esc, bind, searchUi, active, language, nameOf, feedback, onSaved, initialSelection }) {
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const label = (key) => COPY[key]?.[lang] || text(key);
   const keys = ['score', 'D_score', 'E_score', 'Penalty', 'Bonus'];
@@ -38,7 +38,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   const drafts = new Map();
   const names = new Map();
   let revision = 0;
-  root.innerHTML = `<div class="admin-lookup">${field('event_search', 'search')}<div id="adminEventOptions"></div></div><div id="adminClassificationEditor"></div>`;
+  root.innerHTML = `<div class="section-search-row analytics-comparison-search-row admin-editor-search-row"><div class="analytics-comparison-search-primary"><form class="search-form section-search-form analytics-comparison-search-form" id="adminEventSearchForm"><div class="search-input-shell"><input class="search-input" id="adminEventSearch" name="event_search" type="search" autocomplete="off" placeholder="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-label="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-controls="adminEventOptions" aria-expanded="false"><button type="button" class="search-clear-button" aria-label="${esc(searchUi.t('clearSearch'))}" hidden><span aria-hidden="true">&times;</span></button></div><div id="adminEventOptions" class="search-suggestions analytics-comparison-suggestions" role="listbox" hidden></div></form></div></div><div id="adminClassificationEditor"></div>`;
   const area = root.querySelector('#adminClassificationEditor');
   const showError = (error) => { if (active()) feedback(error.message, true); };
   const loadEvent = async (event, fromLink = false) => {
@@ -186,12 +186,70 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
       await loadGroup();
     } catch (error) { if (token === revision) showError(error); }
   };
-  wireLookup(root.querySelector('[name=event_search]'), root.querySelector('#adminEventOptions'), '/events/', {}, loadEvent);
+  const input = root.querySelector('[name=event_search]');
+  const suggestions = root.querySelector('#adminEventOptions');
+  const clear = root.querySelector('.search-clear-button');
+  const searchForm = root.querySelector('#adminEventSearchForm');
+  let searchRevision = 0, timer;
+  const closeSuggestions = () => {
+    ++searchRevision;
+    clearTimeout(timer);
+    suggestions.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    searchUi.setSearchSuggestionsOpen(suggestions, false);
+    searchUi.setSearchSuggestionsBusy(suggestions, false);
+  };
+  const chooseEvent = (event) => {
+    closeSuggestions();
+    input.value = `${event.name} · ${event.year}`;
+    clear.hidden = false;
+    loadEvent(event);
+  };
+  const search = async (token) => {
+    const query = input.value.trim();
+    if (!query) { closeSuggestions(); return; }
+    searchUi.setSearchSuggestionsBusy(suggestions, true);
+    try {
+      const events = /^\d+$/.test(query) && !/^\d{4}$/.test(query)
+        ? [await api(`/events/${Number(query)}`)]
+        : await api('/events/', {params: {search: query, query, limit: 12}});
+      if (!active() || !input.isConnected || token !== searchRevision) return;
+      suggestions.innerHTML = events.length ? events.map((event, index) => `<button type="button" class="analytics-comparison-suggestion search-suggestion" role="option" data-event-choice="${index}"><strong>${esc(event.name)}</strong><span>${esc([event.year, event.discipline, event.location, `ID ${event.id}`].filter(Boolean).join(' · '))}</span></button>`).join('') : `<div class="search-suggestion search-suggestion-status">${esc(text('empty'))}</div>`;
+      suggestions.querySelectorAll('[data-event-choice]').forEach((button) => { button.onclick = () => chooseEvent(events[Number(button.dataset.eventChoice)]); });
+      suggestions.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+      searchUi.setSearchSuggestionsOpen(suggestions, true, Math.max(1, events.length));
+    } catch (error) {
+      if (token === searchRevision && active()) showError(error);
+    } finally {
+      if (token === searchRevision) searchUi.setSearchSuggestionsBusy(suggestions, false);
+    }
+  };
+  const scheduleSearch = () => {
+    clearTimeout(timer);
+    const token = ++searchRevision;
+    clear.hidden = !input.value;
+    if (!input.value.trim()) { closeSuggestions(); return; }
+    timer = setTimeout(() => search(token), 140);
+  };
+  input.addEventListener('input', scheduleSearch);
+  input.addEventListener('focus', scheduleSearch);
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') { closeSuggestions(); input.blur(); }
+    if (event.key === 'ArrowDown') { event.preventDefault(); suggestions.querySelector('button')?.focus(); }
+  });
+  searchForm.addEventListener('submit', (event) => { event.preventDefault(); if (!suggestions.hidden) suggestions.querySelector('button')?.click(); });
+  searchForm.addEventListener('focusout', () => setTimeout(() => {
+    if (!searchForm.contains(document.activeElement)) closeSuggestions();
+  }, 0));
+  root.addEventListener('pointerdown', (event) => { if (!searchForm.contains(event.target)) closeSuggestions(); }, true);
+  clear.onclick = () => { input.value = ''; clear.hidden = true; closeSuggestions(); input.focus(); };
   const eventId = initialSelection?.get('event_id');
   if (eventId && /^\d+$/.test(eventId)) {
     api(`/events/${eventId}`).then((event) => {
       if (!active()) return;
       root.querySelector('[name=event_search]').value = `${event.name} · ${event.year}`;
+      clear.hidden = false;
       return loadEvent(event, true);
     }).catch(showError);
   }
