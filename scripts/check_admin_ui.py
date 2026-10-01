@@ -202,7 +202,14 @@ def main():
                 assert 'AA' not in apparatus.locator('option').all_text_contents()
                 assert 'VT AVG' not in apparatus.locator('option').all_text_contents()
                 assert page.locator('[data-execution-notice]').is_visible()
-                assert 'E est. 8.000' in page.locator('.admin-score-table').inner_text()
+                execution_input = page.locator('.admin-score-table [name=E_score]')
+                assert execution_input.input_value() == ''
+                assert execution_input.get_attribute('placeholder') == 'E est. 8,000'
+                assert execution_input.evaluate('el => getComputedStyle(el, "::placeholder").color') == 'rgb(142, 142, 147)'
+                execution_input.fill('8')
+                assert execution_input.get_attribute('placeholder') == '—'
+                execution_input.fill('')
+                assert execution_input.get_attribute('placeholder') == 'E est. 8,000'
                 assert page.locator('#adminResultForm').count() == 0
                 assert page.locator('[data-save]').is_disabled()
                 for key in ['D_score', 'Penalty', 'Bonus']:
@@ -239,6 +246,8 @@ def main():
                 assert saved['expected']['score'] == 13
                 assert saved['values']['score'] == 13.2
                 assert saved['values']['Penalty'] is None and saved['values']['Bonus'] is None
+                assert saved['values']['E_score'] is None
+                assert execution_input.get_attribute('placeholder') == 'E est. 8,200'
                 assert page.locator('[data-save]').is_disabled()
                 page.screenshot(path="/tmp/leverage-admin-result-editor.png", full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})

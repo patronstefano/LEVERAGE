@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - E stimata come segnaposto del campo E
+
+- Nell'editor risultati E est. compare dentro il campo E vuoto, in grigio chiaro, al posto del trattino e non piu sotto al riquadro. Tre decimali e separatore locale, per esempio E est. 8,333 in italiano.
+- La stima e esclusivamente un segnaposto: non compila E, non viene inviata al backend e sparisce quando si digita E. Cancellando E ricompare, se Final Score e D permettono una stima valida; si aggiorna anche quando questi punteggi cambiano.
+- Restano invariati i controlli su P/B obbligatori e formula. Test browser su apparizione/scomparsa, colore, formato italiano e mantenimento di E null nel salvataggio di un Final Score corretto.
+
 #### 2026-10-01 - Categoria dell'editor determinata dall'evento
 
 - Rimossa la scelta Junior/Senior dall'editor punteggi del Centro Admin. Evento Junior e Senior: unica tabella con entrambe le categorie; evento Junior o Senior: solo la categoria dell'evento.

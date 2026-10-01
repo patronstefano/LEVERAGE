@@ -112,8 +112,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
             const save = tr.querySelector('[data-save]');
             const reset = tr.querySelector('[data-reset]');
             const inputs = [...tr.querySelectorAll('input')];
-            const estimate = document.createElement('small');
-            tr.querySelector('[name=E_score]').after(estimate);
+            const executionInput = tr.querySelector('[name=E_score]');
             const values = () => Object.fromEntries(inputs.map((el) => [el.name,
               oneDecimal(el.name) && row[el.name] != null && el.value === inputValue(el.name, row[el.name])
                 ? row[el.name] : el.value === '' ? null : el.valueAsNumber]));
@@ -121,8 +120,8 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
               const current = values();
               const dirty = keys.some((key) => current[key] !== (row[key] ?? null));
               const e = current.score != null && current.D_score != null ? current.score - current.D_score : null;
-              estimate.hidden = current.E_score != null || e == null || e < 0 || e > 10;
-              estimate.textContent = !estimate.hidden ? `E est. ${e.toFixed(3)}` : '';
+              executionInput.placeholder = current.E_score == null && e != null && e >= 0 && e <= 10
+                ? `E est. ${e.toLocaleString(language, {minimumFractionDigits: 3, maximumFractionDigits: 3})}` : '—';
               save.disabled = reset.disabled = !dirty;
               notice.textContent = dirty ? label('pending') : '';
               if (dirty) drafts.set(row.id, values()); else drafts.delete(row.id);
