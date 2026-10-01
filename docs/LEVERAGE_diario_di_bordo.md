@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Centratura delle schermate di disconnessione
+
+- Logo, indicazione e pulsante Accedi centrati verticalmente nello spazio disponibile tra topbar e downbar, per l'accesso richiesto sia USER sia ADMIN.
+- Modifica circoscritta alla schermata condivisa di disconnessione: invariati i moduli Accedi, Registrati e Recupera password e l'animazione del logo.
+- Verifica browser con API simulate su desktop e mobile; nessun accesso al database e nessun ripristino implicito dei dati.
+
 #### 2026-10-01 - Revisione delle operazioni effettuate dal SUPER ADMIN
 
 - Decisione: anche il SUPER ADMIN opera come amministratore quando modifica i dati. Le nuove operazioni sono quindi in attesa di revisione, senza autoapprovazione legata al ruolo; il SUPER ADMIN puo confermare o annullare anche le proprie modifiche.

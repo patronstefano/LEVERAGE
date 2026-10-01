@@ -7137,7 +7137,10 @@ a:focus-visible > .entity-card-clickable {
   padding-top: calc(var(--page-start) + var(--page-title-offset) - 34px);
 }
 .auth-main-view .auth-brand-form { margin-top: 0; }
-.main-view.auth-main-view:has(.auth-brand-welcome) { padding-top: calc(var(--page-start) + var(--page-title-offset)); }
+.main-view.auth-main-view:has(.auth-brand-welcome) {
+  justify-content: center;
+  padding-block: 32px;
+}
 .main-view:has(> .detail-topbar) { padding-top: var(--page-start); }
 
 #adminResultEditor, #adminClassificationEditor, #adminScoreRows { min-width: 0; }
