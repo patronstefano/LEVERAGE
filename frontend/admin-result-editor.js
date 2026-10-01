@@ -190,8 +190,9 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   const suggestions = root.querySelector('#adminEventOptions');
   const clear = root.querySelector('.search-clear-button');
   const searchForm = root.querySelector('#adminEventSearchForm');
-  let searchRevision = 0, timer;
+  let searchRevision = 0, timer, choosingSuggestion = false;
   const closeSuggestions = () => {
+    choosingSuggestion = false;
     ++searchRevision;
     clearTimeout(timer);
     suggestions.hidden = true;
@@ -234,13 +235,30 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   };
   input.addEventListener('input', scheduleSearch);
   input.addEventListener('focus', scheduleSearch);
+  suggestions.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || !event.target.closest('[data-event-choice]')) return;
+    choosingSuggestion = true;
+    // Keep the chosen DOM row stable until click, even if a search is still in flight.
+    ++searchRevision;
+    clearTimeout(timer);
+    searchUi.setSearchSuggestionsBusy(suggestions, false);
+    window.addEventListener('pointerup', () => setTimeout(() => {
+      choosingSuggestion = false;
+      if (!searchForm.contains(document.activeElement)) closeSuggestions();
+    }, 0), {once: true});
+  });
+  suggestions.addEventListener('pointercancel', closeSuggestions);
+  suggestions.addEventListener('mousedown', (event) => {
+    if (event.button === 0 && event.target.closest('[data-event-choice]')) event.preventDefault();
+  });
+  searchForm.addEventListener('click', (event) => event.stopPropagation());
   input.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') { closeSuggestions(); input.blur(); }
     if (event.key === 'ArrowDown') { event.preventDefault(); suggestions.querySelector('button')?.focus(); }
   });
   searchForm.addEventListener('submit', (event) => { event.preventDefault(); if (!suggestions.hidden) suggestions.querySelector('button')?.click(); });
   searchForm.addEventListener('focusout', () => setTimeout(() => {
-    if (!searchForm.contains(document.activeElement)) closeSuggestions();
+    if (!choosingSuggestion && !searchForm.contains(document.activeElement)) closeSuggestions();
   }, 0));
   root.addEventListener('pointerdown', (event) => { if (!searchForm.contains(event.target)) closeSuggestions(); }, true);
   clear.onclick = () => { input.value = ''; clear.hidden = true; closeSuggestions(); input.focus(); };

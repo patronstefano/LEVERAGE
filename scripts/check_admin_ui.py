@@ -251,7 +251,16 @@ def main():
                 assert page.locator('[name=event_search]').input_value() == ''
                 assert page.locator('#adminEventOptions').is_hidden()
                 page.locator('[name=event_search]').fill('Admin')
-                page.locator("#adminEventOptions button").first.click()
+                choice = page.locator('#adminEventOptions button').first
+                choice.wait_for()
+                # Reproduce browsers that do not focus a clicked button before input blur.
+                choice.evaluate('el => el.addEventListener("mousedown", event => { event.preventDefault(); document.querySelector("#adminEventSearch").blur(); }, {once: true})')
+                choice.hover()
+                page.mouse.down()
+                page.wait_for_timeout(200)
+                assert page.locator('#adminEventOptions').is_visible(), 'Suggestions closed before the event click completed'
+                page.mouse.up()
+                page.locator('#adminScoreRows tbody tr').first.wait_for()
                 page.locator('.admin-score-table').wait_for()
                 assert page.locator('#adminReloadClassification').count() == 0
                 assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 4

@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Selezione evento dal popup dell'editor
+
+- Riprodotto con test browser il difetto per cui la perdita di focus chiudeva i suggerimenti prima del completamento del clic, impedendo di aprire l'evento.
+- La selezione mantiene ora stabile la riga premuta fino al clic, anche in presenza di risposte di ricerca in arrivo; evitata la chiusura globale del popup durante le interazioni interne. Preservate chiusura esterna, tastiera e crocetta.
+- Test di regressione con perdita di focus simulata tra pressione e rilascio del mouse; verificato il caricamento della classifica senza modifiche ai risultati reali.
+
 #### 1 ottobre 2026 - Testo guida ricerca evento
 
 - Impostato a peso normale (400) il solo placeholder della ricerca evento nell'Editor Risultati. Invariati testo digitato, suggerimenti e dimensioni. Aggiunta verifica browser dedicata.
