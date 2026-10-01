@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Giorno opzionale nell'editor punteggi
+
+- Il selettore Giorno appare soltanto quando la classifica selezionata offre piu giornate tra cui scegliere. Nascosto se manca il giorno o e disponibile una sola giornata; viene rivalutato al cambio di disciplina, format, round o attrezzo.
+- La giornata rimane comunque nel contesto della query e del confronto delle righe, anche quando il selettore e nascosto: nessuna fusione involontaria di risultati di giorni diversi.
+- Test browser per giorno assente, singolo giorno, scelta fra giorni 1 e 2 e caricamento esclusivo delle righe del giorno selezionato.
+
 #### 2026-10-01 - E stimata come segnaposto del campo E
 
 - Nell'editor risultati E est. compare dentro il campo E vuoto, in grigio chiaro, al posto del trattino e non piu sotto al riquadro. Tre decimali e separatore locale, per esempio E est. 8,333 in italiano.

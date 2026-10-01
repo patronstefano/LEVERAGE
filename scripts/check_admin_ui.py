@@ -19,6 +19,7 @@ def main():
                  "imported_athlete": athlete, "suggestions": [{"suggestion_id": "s1", "target_athlete": athlete}]}],
                "orphan_dscore_review": []}
     current_role = ["super_admin"]
+    event_days = [None]
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
@@ -74,10 +75,11 @@ def main():
             elif path == "/events/":
                 payload = [event]
             elif path == "/events/1/result-groups":
-                payload = [{"discipline": "MAG", "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": None, "count": 1} for category in ["senior", "junior"] for apparatus in ["AA", "VT AVG", "FX", "PH"]]
+                payload = [{"discipline": "MAG", "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for category in ["senior", "junior"] for apparatus in ["AA", "VT AVG", "FX", "PH"] for day in event_days]
             elif path == "/results/":
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
                 payload.append({**payload[0], "id": 2, "category": "junior"})
+                payload = [{**row, "day": day, "id": row['id'] + index * 10} for index, day in enumerate(event_days) for row in payload]
             elif path == "/athletes/1":
                 payload = athlete
             elif path == "/events/1/manual-entry-options":
@@ -195,7 +197,8 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator("#adminEventOptions button").first.click()
                 page.locator('.admin-score-table').wait_for()
-                assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 5
+                assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 4
+                assert page.locator('[name=classification_day]').count() == 0
                 assert page.locator('[name=classification_category]').count() == 0
                 apparatus = page.locator('[name=classification_apparatus]')
                 assert apparatus.input_value() == 'FX'
@@ -273,6 +276,21 @@ def main():
                         page.wait_for_timeout(200)
                         assert writes[-1]['path'] == '/results/2/scores'
                         assert set(json.loads(writes[-1]['body'])) == {'expected', 'values'}
+                for days in [[1], [1, 2]]:
+                    event_days[:] = days
+                    page.locator('[name=event_search]').fill('Admin days ' + str(days))
+                    with page.expect_response(lambda response: ':8000/results/?' in response.url):
+                        page.locator('#adminEventOptions button').first.click()
+                    page.locator('.admin-score-table').wait_for()
+                    assert page.locator('[name=classification_day]').count() == (1 if len(days) > 1 else 0)
+                day_control = page.locator('[name=classification_day]').locator('..')
+                day_control.locator('summary').click()
+                with page.expect_response(lambda response: ':8000/results/?' in response.url) as day_response:
+                    day_control.locator('[data-admin-select-value="2"]').click()
+                page.locator('[data-result-id="11"]').wait_for()
+                assert parse_qs(urlparse(day_response.value.url).query)['day'] == ['2']
+                assert page.locator('[data-result-id="1"]').count() == 0
+                event_days[:] = [None]
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()

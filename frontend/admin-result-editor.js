@@ -61,12 +61,13 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
           if (!options.includes(String(selected[key] ?? ''))) selected[key] = available[0][key];
           const value = String(selected[key] ?? '');
           available = available.filter((g) => String(g[key] ?? '') === value);
+          if (key === 'day' && options.length < 2) return '';
           return select(`classification_${key}`, text(key), options.map((v) => ({value: v, label: v ? text(v) : '—'})), value);
         }).join('');
         selected = {...available[0]};
         area.querySelector('#adminClassificationSelectors').innerHTML = html;
         bind();
-        dimensions.forEach((key) => area.querySelector(`[name=classification_${key}]`).addEventListener('change', (event) => {
+        dimensions.forEach((key) => area.querySelector(`[name=classification_${key}]`)?.addEventListener('change', (event) => {
           selected[key] = event.target.value;
           renderSelectors();
           loadGroup();
