@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Popup compatto della ricerca evento nell'editor
+
+- Allineato anche il popup alla nuova barra compatta: nomi evento di 15 px, dettagli secondari di 12 px, righe di 54 px e massimo quattro suggerimenti completi prima dello scorrimento (salvo viewport molto bassi).
+- Stessi bordi arrotondati, fondo bianco e ombra dei selettori del Centro Admin; larghezza agganciata alla barra. Nessuna modifica alle ricerche delle sezioni pubbliche o alla logica di caricamento.
+- Aggiunti controlli browser su altezza delle righe, caratteri e arrotondamento.
+
 #### 1 ottobre 2026 - Dimensioni compatte della ricerca Editor Risultati
 
 - Ridotta la barra ricerca evento a 36 px di altezza esterna, con testo di 15 px e larghezza massima di 520 px, coerente con i campi del Centro Admin. Rimosso l'effetto ombra; mantenuti bordi arrotondati, crocetta e popup adattivo.

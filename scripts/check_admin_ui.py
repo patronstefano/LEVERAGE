@@ -235,6 +235,10 @@ def main():
                 assert page.locator('[name=event_search]').evaluate('el => getComputedStyle(el).fontSize') == '15px'
                 assert page.locator('#adminEventOptions').bounding_box()['width'] >= 518
                 assert page.locator('#adminEventOptions .search-suggestion').count() == 1
+                assert page.locator('#adminEventOptions .search-suggestion').first.bounding_box()['height'] == 54
+                assert page.locator('#adminEventOptions strong').first.evaluate('el => getComputedStyle(el).fontSize') == '15px'
+                assert page.locator('#adminEventOptions span').first.evaluate('el => getComputedStyle(el).fontSize') == '12px'
+                assert page.locator('#adminEventOptions').evaluate('el => getComputedStyle(el).borderRadius') == page.locator('#adminEventSearchForm').evaluate('el => getComputedStyle(el).borderRadius')
                 assert 'Caricamento' not in page.locator('#adminEventOptions').inner_text()
                 page.locator('[name=event_search]').press('Escape')
                 assert page.locator('#adminEventOptions').is_hidden()

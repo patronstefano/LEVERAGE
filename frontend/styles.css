@@ -4279,6 +4279,42 @@ a:focus-visible > .entity-card-clickable {
   font-weight: 480;
 }
 
+.admin-editor-search-row .search-suggestions {
+  top: calc(100% + 7px);
+  box-sizing: border-box;
+  max-height: min(239px, 42vh);
+  padding: 6px;
+  border-color: rgba(25, 23, 71, 0.12);
+  border-radius: var(--control-radius);
+  background: #fff;
+  box-shadow: 0 16px 36px rgba(25, 23, 71, 0.14);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.admin-editor-search-row .search-suggestion {
+  height: 54px;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: var(--control-radius);
+  font-family: inherit;
+}
+
+.admin-editor-search-row .search-suggestion strong {
+  font-size: 15px;
+  font-weight: 480;
+}
+
+.admin-editor-search-row .search-suggestion span {
+  font-size: 12px;
+}
+
+.admin-editor-search-row .search-suggestion-status {
+  align-content: center;
+  font-size: 15px;
+  font-weight: 480;
+}
+
 .analytics-comparison-selected-athlete {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
