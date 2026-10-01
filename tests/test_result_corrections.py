@@ -147,6 +147,26 @@ def test_incomplete_aa_blocks_final_correction_without_partial_write(record):
     assert db.query(models.AuditLog).count() == 0
 
 
+def test_super_admin_reverts_own_score_and_linked_totals(record):
+    from app.routers.admin_users import revert_audit_log
+    db, admin, row = record
+    admin.role = models.RoleEnum.SUPER_ADMIN
+    for apparatus in ["PH", "SR", "VT", "PB", "HB"]:
+        add_component(db, row, apparatus, score=13, D_score=5)
+    aa = add_component(db, row, "AA", score=78)
+    correct_result_scores(row.id, correction(row, score=13.2, D_score=5.2), db, admin)
+    log = db.query(models.AuditLog).filter_by(entity_id=row.id, entity_type="Result").one()
+    total_log = db.query(models.AuditLog).filter_by(entity_id=aa.id, entity_type="Result").one()
+    with pytest.raises(HTTPException, match="original apparatus correction"):
+        revert_audit_log(total_log.id, None, db, admin)
+    revert_audit_log(log.id, None, db, admin)
+    assert row.score == 13 and row.D_score == 5 and aa.score == 78
+    assert row.E_score is row.Penalty is row.Bonus is None
+    assert log.review_status == models.AuditReviewStatusEnum.REVERTED
+    with pytest.raises(HTTPException, match="already been reviewed"):
+        revert_audit_log(log.id, None, db, admin)
+
+
 def test_vault_average_and_aa_d_exclude_second_attempt(record):
     from app.result_ranking import build_ranking_component_context, result_d_score_for_ranking_entry, build_aa_d_score_totals_subquery
     db, admin, row = record

@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Revisione delle operazioni effettuate dal SUPER ADMIN
+
+- Decisione: anche il SUPER ADMIN opera come amministratore quando modifica i dati. Le nuove operazioni sono quindi in attesa di revisione, senza autoapprovazione legata al ruolo; il SUPER ADMIN puo confermare o annullare anche le proprie modifiche.
+- Compatibilita: le operazioni storiche con nota `Auto-approved super-admin operation.` rimangono revisionabili senza alterare retroattivamente il registro. Restano esclusi i log gia revisionati esplicitamente o annullati.
+- Il ripristino verifica che lo stato corrente coincida con quello successivo all'operazione: modifiche intervenute successivamente bloccano l'annullamento con conflitto, evitando sovrascritture silenziose.
+- Per le correzioni dei punteggi degli attrezzi, vengono aggiornati nella stessa transazione anche i totali collegati AA e VT AVG mediante le regole conservative dell'editor. Non e consentito annullare isolatamente un totale derivato; occorre partire dall'operazione sull'attrezzo. I dati non disponibili rimangono tali.
+- La revisione resta riservata al SUPER ADMIN e tracciata con autore, data, nota e snapshot. Nessun risultato reale e stato ripristinato automaticamente durante questo intervento.
+- Test aggiunti per revisione delle proprie operazioni, vecchie autoapprovazioni, conflitti con modifiche successive e ripristino dei totali AA collegati.
+
 #### 1 ottobre 2026 - Priorita visiva degli errori nei campi Admin
 
 - Le regole di hover e focus neutro non si applicano piu ai campi non validi: il bordo rosso e il relativo alone restano visibili anche quando il campo viene selezionato, senza essere sostituiti dal contorno grigio/blu.

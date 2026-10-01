@@ -1775,6 +1775,33 @@ def test_super_admin_can_review_and_revert_admin_update_audit_logs():
     assert revert_logs[0]["review_status"] == "approved"
 
 
+def test_super_admin_can_review_own_and_legacy_updates_without_overwriting_newer_changes():
+    client.post("/auth/register", json={"email": "own_review@example.com", "password": TEST_PASSWORD})
+    headers = {"Authorization": f"Bearer {login_as_admin('own_review@example.com')}"}
+    athlete = client.post("/athletes/", json={"first_name": "Own", "last_name": "Review",
+        "discipline": "MAG", "country": "ITA"}, headers=headers).json()
+    url = f"/athletes/{athlete['id']}"
+    logs_url = f"/admin/audit-logs?action=update&entity_type=Athlete&entity_id={athlete['id']}"
+    client.put(url, json={"last_name": "Changed"}, headers=headers)
+    log = client.get(logs_url, headers=headers).json()[0]
+    assert log["review_status"] == "pending"
+    assert client.post(f"/admin/audit-logs/{log['id']}/approve", json={}, headers=headers).status_code == 200
+    client.put(url, json={"last_name": "Legacy"}, headers=headers)
+    log = client.get(logs_url, headers=headers).json()[0]
+    with SessionLocal() as db:
+        saved = db.get(models.AuditLog, log['id'])
+        saved.review_status = models.AuditReviewStatusEnum.APPROVED
+        saved.review_note = "Auto-approved super-admin operation."
+        db.commit()
+    assert client.post(f"/admin/audit-logs/{log['id']}/revert", json={}, headers=headers).status_code == 200
+    assert client.get(url).json()['last_name'] == 'Changed'
+    client.put(url, json={"last_name": "Older"}, headers=headers)
+    old = client.get(logs_url, headers=headers).json()[0]
+    client.put(url, json={"last_name": "Newer"}, headers=headers)
+    assert client.post(f"/admin/audit-logs/{old['id']}/revert", json={}, headers=headers).status_code == 409
+    assert client.get(url).json()['last_name'] == 'Newer'
+
+
 def test_entity_updates_cannot_break_existing_result_semantics():
     client.post("/auth/register", json={"email": "semantic_guard_admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("semantic_guard_admin@example.com")

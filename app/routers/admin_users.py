@@ -541,10 +541,12 @@ def ensure_audit_log_can_be_reviewed(
     audit_log: models.AuditLog,
     current_user: models.User,
 ) -> None:
-    if audit_log.review_status != models.AuditReviewStatusEnum.PENDING:
+    legacy_auto_approval = (
+        audit_log.review_status == models.AuditReviewStatusEnum.APPROVED
+        and audit_log.review_note == "Auto-approved super-admin operation."
+    )
+    if audit_log.review_status != models.AuditReviewStatusEnum.PENDING and not legacy_auto_approval:
         raise HTTPException(status_code=400, detail="Audit log has already been reviewed")
-    if audit_log.admin_id == current_user.id:
-        raise HTTPException(status_code=400, detail="Super admin cannot review their own audit log")
 
 
 def parse_snapshot(snapshot_json: Optional[str]) -> dict[str, Any]:
@@ -663,6 +665,23 @@ def revert_audit_log(
 
     snapshot = parse_snapshot(audit_log.before_json)
     before_revert = model_snapshot(entity)
+    if before_revert != parse_snapshot(audit_log.after_json):
+        raise HTTPException(status_code=409, detail="The record has changed since this operation. Review newer changes before reverting.")
+    if audit_log.entity_type == "Result":
+        from app.result_score_corrections import SCORE_FIELDS, linked_total_updates
+
+        changed = {key for key in snapshot if snapshot[key] != before_revert.get(key)}
+        if changed.intersection(SCORE_FIELDS):
+            if entity.apparatus in {"AA", "VT AVG"}:
+                raise HTTPException(status_code=409, detail="Revert the original apparatus correction, not its derived total.")
+            if not changed.issubset(SCORE_FIELDS):
+                raise HTTPException(status_code=409, detail="This operation also changed result context and requires a separate review.")
+            for total, values in linked_total_updates(db, entity, {key: snapshot[key] for key in SCORE_FIELDS}):
+                total_before = model_snapshot(total)
+                for key, value in values.items():
+                    setattr(total, key, value)
+                add_audit_log(db, current_user, "update", "Result", total.id,
+                              before=total_before, after=model_snapshot(total))
     apply_audit_snapshot(entity, snapshot)
     mark_audit_log_reviewed(
         audit_log,
