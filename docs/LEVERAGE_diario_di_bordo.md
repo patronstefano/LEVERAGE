@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Revisioni limitate a duplicati e riscontri World Gymnastics
+
+- Rimossi gli elenchi di Atleti/Eventi con anagrafica incompleta dalla sezione Revisioni: un campo opzionale mancante non costituisce piu una richiesta di revisione. La UI non interroga piu entities-to-complete in questa sezione.
+- Conservati i gruppi di risultati potenzialmente duplicati segnalati dal backend. I suggerimenti generici di altre fonti non vengono piu mostrati qui.
+- I suggerimenti pendenti del motore World Gymnastics vengono raggruppati per entita, con nome, collegamento agli strumenti della scheda e accettazione/rifiuto dei singoli campi. La provenienza viene riconosciuta dal titolo della fonte ufficiale e dal dominio gymnastics.sport, non da una generica menzione di World Gymnastics.
+- Eliminata la voce del gruppo quando tutti i suoi suggerimenti sono stati esaminati; escluse entita non piu disponibili. La semplice visualizzazione di un riscontro non assegna certificazioni.
+- Perimetro attuale: si visualizzano riscontri gia persistiti come suggerimenti pendenti. I candidati restituiti dalla sola ricerca automatica non vengono attualmente persistiti dal backend, quindi questa modifica non costituisce una scansione massiva ne una coda persistente dei candidati non ancora importati.
+- Test browser superato, inclusa esclusione di suggerimenti generici e domini che imitano quello ufficiale.
+
 #### 2026-10-01 - Rimozione di Gestione record
 
 - Su richiesta dell'utente, eliminata la sottosezione Gestione record dal Centro Admin, insieme al relativo modulo generico di modifica, caricamento immagini e cancellazione.

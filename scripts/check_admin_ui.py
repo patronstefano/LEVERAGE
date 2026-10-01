@@ -50,7 +50,11 @@ def main():
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
             elif path == "/data-suggestions/":
-                payload = [{"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "source_url": "https://example.org/profile"}]
+                payload = [
+                    {"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "status": "pending", "source_title": "World Gymnastics Athlete Profile", "source_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=1"},
+                    {"id": 13, "entity_type": "athlete", "entity_id": 1, "field_name": "country", "suggested_value": "ITA", "status": "pending", "source_title": "Generic suggestion", "source_url": "https://example.org/profile"},
+                    {"id": 14, "entity_type": "athlete", "entity_id": 1, "field_name": "country", "suggested_value": "ITA", "status": "pending", "source_title": "World Gymnastics Athlete Profile", "source_url": "https://gymnastics.sport.example.org/profile"},
+                ]
             elif path == "/admin/calendar":
                 payload = {"events": [], "summary": {"total_events": 0}, "reminders": []}
             elif path == "/site-analytics/admin/summary":
@@ -227,9 +231,10 @@ def main():
                 page.screenshot(path='/tmp/leverage-admin-statistics-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "review":
-                assert page.locator('.admin-revisions > .admin-tool-block').count() == 3
+                assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 page.locator('.admin-revision-group summary').first.click()
-                assert page.locator('.admin-revisions .account-notification').count() == 2
+                assert page.locator('.admin-revisions .account-notification').count() == 1
+                assert page.locator('[data-accept="13"], [data-accept="14"]').count() == 0
                 assert page.locator('[data-accept]').evaluate('el => el.classList.contains("admin-accept-button")')
                 page.locator('[data-accept]').click()
                 page.locator('#adminRevisionSuggestions .empty-state').wait_for()
