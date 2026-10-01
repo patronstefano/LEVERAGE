@@ -193,6 +193,8 @@ def main():
                 assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']
                 page.locator("#adminNewEvent").click()
                 page.locator("#adminCreateForm input[name=name]").wait_for()
+                category_label = page.locator('#adminCreateForm [data-admin-select-value="junior and senior"]').text_content().strip()
+                assert category_label == 'Junior e Senior', repr(category_label)
                 event_start = page.locator('#adminCreateForm [data-admin-date=start_date] input')
                 event_start.fill('29/02/2024')
                 assert event_start.evaluate('el => el.checkValidity()')

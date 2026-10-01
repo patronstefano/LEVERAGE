@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Etichetta categoria Nuovo Evento
+
+- Corretta l'opzione combinata in "Junior e Senior", con maiuscole e traduzioni coerenti nelle quattro lingue. Invariato il valore backend `junior and senior`. Aggiunto controllo browser sul modulo Nuovo Evento.
+
 #### 1 ottobre 2026 - Evento selezionato nell'Editor Risultati
 
 - La selezione di un evento svuota la barra di ricerca e mostra nome, anno e ID in un riquadro dedicato, con lo stesso stile e pulsante di chiusura delle selezioni atleta di Analytics.

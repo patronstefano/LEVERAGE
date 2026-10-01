@@ -16,6 +16,7 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  'junior and senior': ['Junior and Senior', 'Junior e Senior', 'Junior y Senior', 'Junior et Senior'],
   WorldGymnasticsScanControl: ["World Gymnastics scan", "Scansione World Gymnastics", "Escaneo World Gymnastics", "Recherche World Gymnastics"],
   WorldGymnasticsScanJob: ["World Gymnastics match", "Riscontro World Gymnastics", "Coincidencia World Gymnastics", "Correspondance World Gymnastics"],
   center: ["Admin center", "Centro Admin", "Centro Admin", "Centre Admin"],
