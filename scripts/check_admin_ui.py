@@ -239,6 +239,10 @@ def main():
                 assert page.locator('#adminEventOptions strong').first.evaluate('el => getComputedStyle(el).fontSize') == '15px'
                 assert page.locator('#adminEventOptions span').first.evaluate('el => getComputedStyle(el).fontSize') == '12px'
                 assert page.locator('#adminEventOptions').evaluate('el => getComputedStyle(el).borderRadius') == page.locator('#adminEventSearchForm').evaluate('el => getComputedStyle(el).borderRadius')
+                assert page.locator('.admin-editor-search-row').evaluate('el => getComputedStyle(el, "::before").content') == 'none'
+                assert page.locator('.admin-editor-search-row').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgba(0, 0, 0, 0)'
+                assert page.locator('#adminEventOptions').evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(255, 255, 255)'
+                page.screenshot(path='/tmp/leverage-editor-search-background.png')
                 assert 'Caricamento' not in page.locator('#adminEventOptions').inner_text()
                 page.locator('[name=event_search]').press('Escape')
                 assert page.locator('#adminEventOptions').is_hidden()

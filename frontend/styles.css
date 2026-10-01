@@ -4254,6 +4254,11 @@ a:focus-visible > .entity-card-clickable {
 .admin-editor-search-row {
   position: relative;
   top: auto;
+  background: transparent;
+}
+
+.admin-editor-search-row::before {
+  content: none;
 }
 
 .admin-center .admin-editor-search-row .search-form {

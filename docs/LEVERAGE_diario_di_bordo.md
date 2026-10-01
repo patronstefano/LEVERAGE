@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Sfondo del pannello ricerca evento
+
+- Rimossa solo nell'Editor Risultati la fascia grigia a tutta larghezza ereditata dalla ricerca Analytics: copriva il fondo bianco del pannello Admin attorno alla barra. Il contenitore lascia ora visibile lo sfondo del pannello e il popup resta bianco opaco.
+- Dimensioni, suggerimenti e funzionamento invariati. Aggiunto controllo browser per impedire il ritorno della fascia sovrapposta.
+
 #### 1 ottobre 2026 - Popup compatto della ricerca evento nell'editor
 
 - Allineato anche il popup alla nuova barra compatta: nomi evento di 15 px, dettagli secondari di 12 px, righe di 54 px e massimo quattro suggerimenti completi prima dello scorrimento (salvo viewport molto bassi).
