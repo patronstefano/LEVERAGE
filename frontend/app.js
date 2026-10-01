@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=editor-event-selection-20261001";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-date-select-20261001";
 import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
@@ -10194,19 +10194,111 @@ function closeAdminSelectControls(except = null) {
   });
 }
 
+function bindAdminDateControls(rootNode) {
+  rootNode.querySelectorAll('input[type="date"]').forEach((source) => {
+    const label = source.closest('label')?.textContent.trim() || source.name;
+    const required = source.required;
+    source.type = 'hidden';
+    source.required = false;
+    const control = document.createElement('details');
+    control.className = 'ranking-date-wheel admin-date-control';
+    control.dataset.adminDate = source.name;
+    control.innerHTML = `<summary><input type="text" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="${escapeHtml(t('datePlaceholder'))}" aria-label="${escapeHtml(label)}" ${required ? 'required' : ''}></summary><div class="ranking-date-wheel-panel"></div>`;
+    source.after(control);
+    const input = control.querySelector('input');
+    const panel = control.querySelector('.ranking-date-wheel-panel');
+    const parse = (value) => {
+      const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value);
+      if (!match) return '';
+      const [, day, month, year] = match;
+      const date = new Date(Number(year), Number(month) - 1, Number(day));
+      return date.getFullYear() === Number(year) && date.getMonth() + 1 === Number(month) && date.getDate() === Number(day) ? `${year}-${month}-${day}` : '';
+    };
+    const minimum = () => source.name === 'end_date' ? source.form?.elements.namedItem('start_date')?.value || source.min : source.min;
+    const validRange = (iso) => (!minimum() || iso >= minimum()) && (!source.max || iso <= source.max);
+    const error = () => [
+      'Enter a valid date within the allowed range.', 'Inserisci una data valida nell’intervallo consentito.',
+      'Introduce una fecha válida dentro del intervalo permitido.', 'Saisissez une date valide dans la plage autorisée.',
+    ][Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(state.language))];
+    const validate = () => {
+      const iso = parse(input.value.trim());
+      const invalid = Boolean(input.value && (!iso || !validRange(iso)));
+      input.setCustomValidity(invalid ? error() : '');
+      input.setAttribute('aria-invalid', String(invalid));
+      return !invalid;
+    };
+    const sync = () => {
+      input.value = source.value ? source.value.split('-').reverse().join('/') : '';
+      validate();
+    };
+    const render = () => {
+      const date = parseLocalDate(source.value) || new Date(new Date().getFullYear(), 0, 1);
+      const parts = {year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate()};
+      const years = Array.from({length: Math.max(new Date().getFullYear() + 10, parts.year) - Math.min(1900, parts.year) + 1}, (_, i) => ({value: Math.min(1900, parts.year) + i, label: String(Math.min(1900, parts.year) + i)}));
+      const months = Array.from({length: 12}, (_, i) => ({value: i + 1, label: monthShortLabel(i + 1)}));
+      const days = Array.from({length: daysInMonth(parts.year, parts.month)}, (_, i) => ({value: i + 1, label: String(i + 1)}));
+      panel.innerHTML = [['day', days, 'dateDay'], ['month', months, 'dateMonth'], ['year', years, 'dateYear']].map(([unit, options, title]) => renderDateWheelColumn('admin', source.name, unit, t(title), options, source.value ? parts[unit] : null, source.value)).join('');
+      panel.querySelector(`[data-date-wheel-unit="year"][data-date-wheel-value="${new Date().getFullYear()}"]`).insertAdjacentHTML('afterend', renderDateWheelTodayOption('admin', source.name));
+      const commit = (iso) => {
+        if (!validRange(iso)) return;
+        source.value = iso;
+        source.dispatchEvent(new Event('change', {bubbles: true}));
+        source.dispatchEvent(new Event('input', {bubbles: true}));
+        sync();
+        render();
+      };
+      panel.querySelectorAll('[data-date-wheel-unit]').forEach((button) => {
+        const next = {...parts, [button.dataset.dateWheelUnit]: Number(button.dataset.dateWheelValue)};
+        next.day = Math.min(next.day, daysInMonth(next.year, next.month));
+        const iso = `${next.year}-${String(next.month).padStart(2, '0')}-${String(next.day).padStart(2, '0')}`;
+        button.disabled = !validRange(iso);
+        button.onclick = () => commit(iso);
+      });
+      const today = panel.querySelector('[data-date-wheel-today-scope]');
+      const todayIso = formatLocalIso(new Date());
+      today.disabled = !validRange(todayIso);
+      today.onclick = () => commit(todayIso);
+      requestAnimationFrame(() => panel.querySelectorAll('.ranking-date-wheel-options').forEach((column) => {
+        const selected = column.querySelector('[aria-pressed="true"]') || column.querySelector(`[data-date-wheel-value="${parts[column.querySelector('[data-date-wheel-unit]').dataset.dateWheelUnit]}"]`);
+        if (selected) column.scrollTop = selected.offsetTop - column.clientHeight / 2 + selected.clientHeight / 2;
+      }));
+    };
+    input.addEventListener('input', () => {
+      const valid = validate();
+      source.value = valid ? parse(input.value.trim()) : '';
+      source.dispatchEvent(new Event('input', {bubbles: true}));
+      if (valid) { source.dispatchEvent(new Event('change', {bubbles: true})); if (control.open) render(); }
+    });
+    input.addEventListener('click', (event) => { event.preventDefault(); control.open = true; });
+    control.addEventListener('toggle', () => {
+      if (control.open) { closeAdminSelectControls(); document.querySelectorAll('.admin-date-control[open]').forEach((other) => { if (other !== control) other.open = false; }); render(); }
+    });
+    source.addEventListener('change', sync);
+    source.addEventListener('admin-date-sync', sync);
+    source.form?.addEventListener('change', () => { validate(); });
+    sync();
+  });
+  if (document.documentElement.dataset.adminDatesBound) return;
+  document.documentElement.dataset.adminDatesBound = 'true';
+  document.addEventListener('pointerdown', (event) => document.querySelectorAll('.admin-date-control[open]').forEach((control) => { if (!control.contains(event.target)) control.open = false; }));
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') document.querySelectorAll('.admin-date-control[open]').forEach((control) => { control.open = false; }); });
+}
+
 function bindAdminSelectControls(rootNode = document) {
+  bindAdminDateControls(rootNode);
   rootNode.querySelectorAll("[data-admin-select]").forEach((control) => {
     if (control.dataset.adminSelectBound === "true") return;
     control.dataset.adminSelectBound = "true";
     control.addEventListener("toggle", () => {
       if (control.open) {
         closeAdminSelectControls(control);
+        document.querySelectorAll('.admin-date-control[open]').forEach((dateControl) => { dateControl.open = false; });
         const menu = control.querySelector(".admin-custom-select-menu");
         const options = [...menu.querySelectorAll("[role='option']")].slice(0, 4);
         if (options.length) {
           const style = getComputedStyle(menu);
           const rowsHeight = options.reduce((height, option) => height + option.getBoundingClientRect().height, 0);
-          menu.style.maxHeight = `${rowsHeight + Math.max(0, options.length - 1) * parseFloat(style.rowGap) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)}px`;
+          menu.style.maxHeight = `${rowsHeight + Math.max(0, options.length - 1) * parseFloat(style.rowGap) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth) + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom)}px`;
         }
       }
     });
@@ -10239,6 +10331,7 @@ function syncAdminFormValue(form, name, value) {
   const input = form?.elements?.namedItem(name);
   if (!input) return;
   input.value = value ?? "";
+  input.dispatchEvent(new Event('admin-date-sync'));
   const control = input.closest("[data-admin-select]");
   if (!control) return;
   let selected = [...control.querySelectorAll("[data-admin-select-value]")]

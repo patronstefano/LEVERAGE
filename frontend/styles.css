@@ -6097,9 +6097,11 @@ a:focus-visible > .entity-card-clickable {
   grid-auto-rows: max-content;
   gap: 3px;
   box-sizing: border-box;
-  max-height: 155px;
-  padding: 0 6px;
+  max-height: 167px;
+  padding: 6px;
   overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;
   border: 1px solid rgba(25, 23, 71, 0.12);
   border-radius: var(--control-radius);
   background: #fff;
@@ -6117,6 +6119,10 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .admin-custom-select-menu button {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
   min-height: 36px;
   padding: 7px 10px;
   border: 1px solid transparent;
@@ -6149,6 +6155,26 @@ a:focus-visible > .entity-card-clickable {
 .admin-custom-select input[type="hidden"] {
   display: none;
 }
+
+.admin-date-control { position: relative; min-width: 0; }
+.admin-center .admin-date-control { margin: 0; }
+.admin-date-control[open] { z-index: 45; }
+.admin-date-control > summary { list-style: none; }
+.admin-date-control > summary::-webkit-details-marker { display: none; }
+.admin-date-control .ranking-date-wheel-panel {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  box-sizing: border-box;
+  top: calc(100% + 7px);
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  box-shadow: 0 16px 36px rgba(25, 23, 71, .14);
+}
+.admin-date-control .ranking-date-wheel-options { position: relative; grid-auto-rows: 34px; align-content: start; }
+.admin-date-control input[aria-invalid="true"] { border-color: var(--danger); color: var(--danger); }
 
 .admin-form-grid input,
 .admin-form-grid select,

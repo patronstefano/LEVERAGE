@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Selettori e date negli strumenti Admin
+
+- Corretti i margini delle opzioni nei popup condivisi: selezione blu contenuta nel menu, spazi simmetrici e altezza calcolata per quattro opzioni complete, includendo padding e bordi.
+- Sostituiti i campi data nativi nei moduli Admin con rotelle giorno/mese/anno nello stile del filtro Periodo. Disponibili digitazione gg/mm/aaaa, Oggi, chiusura esterna/Escape e una sola tendina aperta alla volta.
+- Per i dati anagrafici e le date evento resta necessaria una data completa: il backend continua a ricevere ISO yyyy-mm-dd. Date impossibili e fine antecedente all'inizio sono rifiutate, senza modificare il significato del filtro Periodo pubblico che ammette anche intervalli parziali.
+- Preservato l'aggiornamento programmatico dei campi, incluso quello dai dati World Gymnastics. Nessuna modifica al database o alla scansione in corso.
+- Test browser estesi ad allineamento popup, date bisestili/non valide, ordine date, sincronizzazione ISO e layout mobile.
+
 #### 1 ottobre 2026 - Selezione evento dal popup dell'editor
 
 - Riprodotto con test browser il difetto per cui la perdita di focus chiudeva i suggerimenti prima del completamento del clic, impedendo di aprire l'evento.

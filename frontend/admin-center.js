@@ -598,6 +598,8 @@ export async function renderAdminCenter(host) {
         start.value = data.start_date || start.value;
         end.value = data.end_date || end.value;
         end.min = start.value;
+        start.dispatchEvent(new Event('admin-date-sync'));
+        end.dispatchEvent(new Event('admin-date-sync'));
         document.getElementById("adminStats").innerHTML =
           block("statsTraffic", metrics(data, ["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key]).concat([["total_events", "trackedActions"]]))) +
           block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(text("statsWindow").replace("{days}", data.users?.active_window_days ?? 30))}</p>`) +
