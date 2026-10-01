@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=focused-reviews-20261001";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=wg-scan-20261001";
 import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
@@ -10599,6 +10599,12 @@ async function createWorldGymnasticsAthleteSuggestions(athleteId, payload, outpu
 
 function bindAthleteWorldGymnasticsTools(athleteId) {
   const output = $("#athleteWorldGymnasticsOutput");
+  const scanJob = new URLSearchParams(state.route.split('?')[1] || '').get('wg_scan_job');
+  if (scanJob && output) {
+    getJson(`/world-gymnastics/scan/matches/${encodeURIComponent(scanJob)}`, {}, { auth: true }).then((response) => {
+      if (output.isConnected && response.entity_type === 'athlete' && Number(response.entity_id) === Number(athleteId)) output.innerHTML = renderWorldGymnasticsCandidateList(response);
+    }).catch(() => { /* The usual search remains available if this review has been resolved. */ });
+  }
   $("#findAthleteWorldGymnasticsCandidates")?.addEventListener("click", async () => {
     if (!output) return;
     output.innerHTML = loadingState();
@@ -11686,6 +11692,12 @@ async function createWorldGymnasticsEventSuggestions(eventId, payload, outputNod
 
 function bindEventWorldGymnasticsTools(eventId) {
   const output = $("#eventWorldGymnasticsOutput");
+  const scanJob = new URLSearchParams(state.route.split('?')[1] || '').get('wg_scan_job');
+  if (scanJob && output) {
+    getJson(`/world-gymnastics/scan/matches/${encodeURIComponent(scanJob)}`, {}, { auth: true }).then((response) => {
+      if (output.isConnected && response.entity_type === 'event' && Number(response.entity_id) === Number(eventId)) output.innerHTML = renderWorldGymnasticsEventCandidateList(response);
+    }).catch(() => { /* The usual search remains available if this review has been resolved. */ });
+  }
   $("#findEventWorldGymnasticsCandidates")?.addEventListener("click", async () => {
     if (!output) return;
     output.innerHTML = loadingState();

@@ -374,7 +374,19 @@ Le notifiche generate dal backend usano sempre la lingua preferita del destinata
 
 La sottosezione **Gestione record** e stata rimossa dal Centro Admin: gli strumenti delle schede Atleta/Evento e la sezione Risultati sono i punti di accesso per la manutenzione. Il vecchio percorso `/admin/entities` mostra la Panoramica; le API backend rimangono invariate.
 
-**Revisioni** non elenca piu le anagrafiche incomplete: mostra i gruppi di risultati duplicati e i suggerimenti pendenti World Gymnastics, raggruppati per Atleta/Evento. Sono esclusi suggerimenti di altre fonti. Si tratta dei suggerimenti gia registrati: i candidati della sola ricerca automatica, non persistiti dal backend, non costituiscono ancora una coda di revisione. Non viene avviata alcuna ricerca massiva all'apertura della pagina.
+**Revisioni** non elenca piu le anagrafiche incomplete: mostra i gruppi di risultati duplicati, i suggerimenti pendenti World Gymnastics e i candidati della scansione persistente, raggruppati per Atleta/Evento. Sono esclusi suggerimenti di altre fonti. Aprire Revisioni non avvia una nuova scansione.
+
+### Scansione World Gymnastics
+
+- Applicare `alembic upgrade head` (revisione `0041_world_gymnastics_scan`) prima di avviare il backend aggiornato.
+- Da Revisioni: Avvia scansione completa, Sospendi/Riprendi, Riprova ricerche fallite. Il worker risiede nel backend FastAPI, non nel browser. Una volta abilitato, resta in ascolto delle nuove entita committate, anche dopo import Gymternet; non ricontrolla entita esistenti per nuovi risultati.
+- Le tabelle `world_gymnastics_scan_control` e `world_gymnastics_scan_jobs` conservano coda, cursori incrementali, candidati, punteggi di compatibilita, esiti, tentativi, rifiuti e data del controllo. Una lease condivisa impedisce elaborazioni concorrenti e permette il recupero dopo un'interruzione.
+- Ricerca soltanto: nessuna anagrafica, immagine, punteggio, badge o suggerimento di import viene creato/modificato dal worker. I candidati sono quelli dei motori gia esistenti (massimo 10 per entita), senza nuova soglia automatica di accettazione. La percentuale e `match_score * 100`, indice euristico, non probabilita d'identita certificata.
+- Richieste distanziate di almeno 2 secondi nella scansione, comprese le ricerche di fallback; tre errori consecutivi sospendono il worker. Un errore resta distinto dall'assenza di candidati. Rifiuti persistenti non vengono riproposti; schede gia verificate o eliminate sono escluse dalle revisioni.
+- Esamina scheda riapre gli strumenti dell'entita con i candidati salvati. Soltanto la conferma esplicita Importa dati segue il flusso di certificazione esistente. Non esiste accettazione massiva.
+- Le modifiche identificative tramite PUT/PATCH delle schede possono rimettere in coda l'entita; la richiesta in corso viene scartata se i dati sono cambiati durante la ricerca. Non viene eseguito un riesame periodico di tutti gli esiti negativi.
+- Il computer e il backend devono restare attivi. Se il processo termina, la coda rimane nel DB e riprende all'avvio successivo (con eventuale attesa della lease, massimo 5 minuti). Il controllo massivo iniziale non e istantaneo: circa 30.000 entita richiedono molte ore.
+- Comandi locali: `.venv/bin/python scripts/run_world_gymnastics_scan.py --action status`; `--action pause`; `--action start`; `--report percorso.json`. L'avvio locale e tracciato nell'audit senza attribuirlo a un ADMIN fittizio.
 
 ## Inserimento manuale dati
 

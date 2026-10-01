@@ -4,6 +4,7 @@ import html
 import json
 import re
 from dataclasses import dataclass
+from contextvars import ContextVar
 from datetime import date
 from difflib import SequenceMatcher
 from typing import Optional
@@ -15,6 +16,7 @@ from app import models
 from app.config import settings
 
 BASE_URL = "https://www.gymnastics.sport"
+search_request_pacer = ContextVar("world_gymnastics_search_pacer", default=None)
 ATHLETE_SEARCH_URL = f"{BASE_URL}/api/athletes.php"
 ATHLETE_PROFILE_URL = f"{BASE_URL}/site/athletes/bio_detail.php"
 ATHLETE_PROFILE_SOURCE_TITLE = "World Gymnastics Athlete Profile"
@@ -362,6 +364,8 @@ def search_athlete_candidates(
 
 
 def request_athlete_search(params: dict[str, str]) -> list[dict]:
+    if search_request_pacer.get():
+        search_request_pacer.get()()
     try:
         response = httpx.get(
             ATHLETE_SEARCH_URL,
@@ -492,6 +496,8 @@ def parse_event_profile(payload: dict) -> WorldGymnasticsEventProfile:
 
 
 def request_event_search(params: dict[str, str]) -> list[dict]:
+    if search_request_pacer.get():
+        search_request_pacer.get()()
     try:
         response = httpx.get(
             EVENT_SEARCH_URL,

@@ -245,6 +245,38 @@ class Event(Base):
     deleted_by_admin = relationship("User", foreign_keys=[deleted_by_admin_id])
 
 
+class WorldGymnasticsScanControl(Base):
+    __tablename__ = "world_gymnastics_scan_control"
+    id = Column(Integer, primary_key=True)
+    enabled = Column(Boolean, nullable=False, default=False)
+    started_at = Column(DateTime, nullable=True)
+    athlete_cursor = Column(Integer, nullable=False, default=0)
+    event_cursor = Column(Integer, nullable=False, default=0)
+    lease_until = Column(DateTime, nullable=True)
+    lease_token = Column(String(50), nullable=True)
+    consecutive_errors = Column(Integer, nullable=False, default=0)
+    last_error = Column(Text, nullable=True)
+
+
+class WorldGymnasticsScanJob(Base):
+    __tablename__ = "world_gymnastics_scan_jobs"
+    __table_args__ = (
+        UniqueConstraint("entity_type", "entity_id", name="uq_wg_scan_entity"),
+        Index("ix_wg_scan_status", "status", "id"),
+    )
+    id = Column(Integer, primary_key=True)
+    entity_type = Column(String(10), nullable=False)
+    entity_id = Column(Integer, nullable=False)
+    entity_name = Column(String(300), nullable=False)
+    status = Column(String(20), nullable=False, default="pending")
+    candidates = Column(JSON, nullable=False, default=list)
+    rejected_ids = Column(JSON, nullable=False, default=list)
+    fingerprint = Column(String(64), nullable=False)
+    checked_at = Column(DateTime, nullable=True)
+    error = Column(Text, nullable=True)
+    attempts = Column(Integer, nullable=False, default=0)
+
+
 class EventCalendarEntry(Base):
     __tablename__ = "event_calendar_entries"
     __table_args__ = (

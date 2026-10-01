@@ -3050,6 +3050,20 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Avvio della scansione massiva World Gymnastics
+
+- Autorizzazione dell'utente a cercare in modo massivo possibili profili ufficiali, con percentuale di compatibilita. Superato il limite descritto nella precedente voce: anche i candidati della sola ricerca ora vengono persistiti, separatamente dai suggerimenti d'importazione e dalla certificazione.
+- Inventario iniziale: 27.918 atleti e 1.759 eventi attivi. Avvio del 1 ottobre 2026 alle 15:24 Europe/Rome: 29.675 entita accodate, di cui 27.917 atleti e 1.758 eventi; escluse due schede gia verificate. Nessuna modifica a risultati, anagrafiche o badge.
+- Backup SQLite consistente prima della migrazione: backups/before_wg_scan_20261001_152338.db. Migrazione 0041_world_gymnastics_scan con tabelle per controllo e lavori persistenti; nessuna modifica ai record sportivi esistenti.
+- Le ricerche atleti/eventi sono intercalate e serializzate tramite lease condivisa fra processi. Intervallo minimo di 2 secondi fra richieste della scansione, comprese quelle di fallback. Tre errori consecutivi sospendono il lavoro. Distinti esito negativo, errore tecnico, riscontro, esclusione e rifiuto.
+- Cursori incrementali sui nuovi ID: dopo il primo passaggio vengono cercate le sole nuove entita salvate, anche tramite import Gymternet. Nessuna ricerca durante la preview e nessun riesame per l'aggiunta di soli risultati a entita esistenti. Modifiche identificative delle schede rimettono in coda il controllo; i candidati rifiutati restano esclusi.
+- Revisioni mostra avanzamento, pausa/ripresa, recupero errori, caricamento progressivo dei riscontri e percentuale di ogni candidato. La percentuale riprende il match_score del motore, non e una probabilita di identita: nomi/country/disciplina per atleti; titolo/date/localita/disciplina per eventi. Nessuna soglia nuova e nessuna accettazione automatica.
+- Esamina scheda carica i candidati memorizzati negli strumenti gia esistenti. Solo Importa dati puo confermare il profilo e attivare il flusso di certificazione. Gli endpoint della scansione richiedono ADMIN/SUPER ADMIN con MFA; avvii, sospensioni e rifiuti sono sottoposti ad audit.
+- Controllo preliminare del robots.txt ufficiale: nessun percorso disabilitato nella risposta ricevuta; questo non costituisce autorizzazione illimitata. Prime prove reali riuscite per Patron Stefano (100%) e Olympic Games 2024 (70,37%).
+- Snapshot iniziale e di avanzamento in docs/import_reports/world_gymnastics_scan_initial_status.json e world_gymnastics_scan_progress_20261001.json. Al primo snapshot di avanzamento: 41 entita elaborate, 32 con candidati, 9 senza candidati, nessun errore. Scansione ancora in corso; il backend locale deve restare attivo, oppure riprendera dal DB al successivo avvio.
+- Verifica: 212 test backend superati, inclusi 6 test dedicati a persistenza, mancata certificazione/importazione, incrementalita, lease concorrenti, ripresa dopo crash, errori, autorizzazione, rifiuti e candidati evento. Verificata l'interfaccia desktop/mobile via browser con percentuali, link di revisione e controlli gia esistenti. I log delle operazioni di scansione sono consultabili ma non propongono il ripristino generico riservato alle entita sportive.
+- Alembic check generale rileva disallineamenti preesistenti su indici/enum/vincoli di altre tabelle, lasciati fuori da questo intervento. Il confronto limitato alle nuove tabelle della scansione non rileva differenze fra migrazione e modelli.
+
 #### 2026-10-01 - Revisioni limitate a duplicati e riscontri World Gymnastics
 
 - Rimossi gli elenchi di Atleti/Eventi con anagrafica incompleta dalla sezione Revisioni: un campo opzionale mancante non costituisce piu una richiesta di revisione. La UI non interroga piu entities-to-complete in questa sezione.

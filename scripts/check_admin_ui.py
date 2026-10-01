@@ -43,6 +43,10 @@ def main():
                     "actors": [{"admin_id": 7, "email": "actor@example.test", "count": 3, "pending": 1, "last_activity": "2026-09-28T10:00:00"}],
                     "recent": [{"id": 15, "admin_id": 7, "email": "actor@example.test", "action": "create", "entity_type": "Athlete", "entity_id": 2, "review_status": "pending", "created_at": "2026-09-28T10:00:00"}],
                 }
+            elif path == "/world-gymnastics/scan/status":
+                payload = {"enabled": False, "started_at": None, "counts": {"matched": 1}, "total": 1}
+            elif path == "/world-gymnastics/scan/matches":
+                payload = {"total": 1, "items": [{"id": 51, "entity_type": "athlete", "entity_id": 1, "entity_name": "Test Ada", "candidates": [{"fig_id": "123", "first_name": "Ada", "last_name": "Test", "country": "ITA", "discipline": "WAG", "match_score": .95, "profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=123"}]}]}
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
             elif path == "/admin/users":
@@ -232,14 +236,23 @@ def main():
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "review":
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
-                page.locator('.admin-revision-group summary').first.click()
-                assert page.locator('.admin-revisions .account-notification').count() == 1
+                assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
+                page.locator('[data-scan-job="51"] summary').click()
+                assert 'Compatibilità 95%' in page.locator('[data-scan-job="51"]').inner_text()
+                assert 'wg_scan_job=51' in page.locator('[data-scan-job="51"] .admin-center-actions a').get_attribute('href')
+                page.locator('[data-wg-review-group] > summary').click()
+                assert page.locator('.admin-revisions .account-notification').count() == 2
                 assert page.locator('[data-accept="13"], [data-accept="14"]').count() == 0
                 assert page.locator('[data-accept]').evaluate('el => el.classList.contains("admin-accept-button")')
                 page.locator('[data-accept]').click()
                 page.locator('#adminRevisionSuggestions .empty-state').wait_for()
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
+                page.set_viewport_size({"width": 390, "height": 844})
+                page.wait_for_timeout(100)
+                assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+                page.screenshot(path="/tmp/leverage-wg-scan-mobile.png", full_page=True)
+                page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "imports":
                 year_control = page.locator('[name=year_hint]').locator('..')
                 assert year_control.locator('summary').bounding_box()['x'] < page.locator('#adminChooseFile').bounding_box()['x']

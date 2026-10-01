@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "started_at": "2026-10-01 13:24:18.604700",
+  "counts": {
+    "matched": 32,
+    "no_match": 9,
+    "pending": 29634
+  },
+  "total": 29675,
+  "last_error": null
+}
