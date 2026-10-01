@@ -1,6 +1,6 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions } from './athlete-field-options.js?v=20260930';
-import { mountResultEditor } from './admin-result-editor.js?v=editor-event-selection-20261001';
+import { mountResultEditor } from './admin-result-editor.js?v=editor-selected-event-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=20261001';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {

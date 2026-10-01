@@ -1,4 +1,5 @@
 const COPY = {
+  closeEvent: ['Close event', 'Chiudi evento', 'Cerrar evento', 'Fermer l’événement'],
   classification: ['Classification', 'Classifica', 'Clasificación', 'Classement'],
   athlete: ['Athlete', 'Atleta', 'Atleta', 'Athlète'],
   save: ['Save', 'Salva', 'Guardar', 'Enregistrer'],
@@ -40,15 +41,31 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   let revision = 0;
   root.innerHTML = `<div class="section-search-row analytics-comparison-search-row admin-editor-search-row"><div class="analytics-comparison-search-primary"><form class="search-form section-search-form analytics-comparison-search-form" id="adminEventSearchForm"><div class="search-input-shell"><input class="search-input" id="adminEventSearch" name="event_search" type="search" autocomplete="off" placeholder="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-label="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-controls="adminEventOptions" aria-expanded="false"><button type="button" class="search-clear-button" aria-label="${esc(searchUi.t('clearSearch'))}" hidden><span aria-hidden="true">&times;</span></button></div><div id="adminEventOptions" class="search-suggestions analytics-comparison-suggestions" role="listbox" hidden></div></form></div></div><div id="adminClassificationEditor"></div>`;
   const area = root.querySelector('#adminClassificationEditor');
+  const selectedEvent = document.createElement('div');
+  selectedEvent.id = 'adminSelectedEvent';
+  area.before(selectedEvent);
   const showError = (error) => { if (active()) feedback(error.message, true); };
   const loadEvent = async (event, fromLink = false) => {
     const token = ++revision;
+    closeSuggestions();
+    input.value = '';
+    clear.hidden = true;
+    area.innerHTML = '';
+    selectedEvent.innerHTML = `<article class="analytics-comparison-picker admin-editor-selected-event"><div class="analytics-comparison-selected-athlete"><div><strong>${esc(event.name)}</strong><span>${esc(event.year)} · ID ${esc(event.id)}</span></div><button type="button" class="icon-button analytics-comparison-remove" aria-label="${esc(label('closeEvent'))}"><span aria-hidden="true">&times;</span></button></div></article>`;
+    selectedEvent.querySelector('button').onclick = () => {
+      ++revision;
+      closeSuggestions();
+      selectedEvent.innerHTML = '';
+      area.innerHTML = '';
+      feedback('');
+      input.focus();
+    };
     try {
       const categories = eventEditorCategories(event);
       const groups = (await api(`/events/${event.id}/result-groups`)).filter((g) => categories.includes(g.category)
         && ['FX', 'PH', 'SR', 'VT', 'PB', 'HB', 'UB', 'BB'].includes(g.apparatus));
       if (!active() || token !== revision) return;
-      area.innerHTML = `<h3>${esc(event.name)} · ${esc(event.year)}</h3>`;
+      area.innerHTML = '';
       if (!groups.length) { area.innerHTML += `<div class="empty-state">${esc(label('derived'))}</div>`; return; }
       const dimensions = ['discipline', 'format', 'round', 'apparatus', 'day'];
       let selected = {...groups[0]};
@@ -202,8 +219,6 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   };
   const chooseEvent = (event) => {
     closeSuggestions();
-    input.value = `${event.name} · ${event.year}`;
-    clear.hidden = false;
     loadEvent(event);
   };
   const search = async (token) => {
@@ -264,10 +279,9 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   clear.onclick = () => { input.value = ''; clear.hidden = true; closeSuggestions(); input.focus(); };
   const eventId = initialSelection?.get('event_id');
   if (eventId && /^\d+$/.test(eventId)) {
+    const initialRevision = revision;
     api(`/events/${eventId}`).then((event) => {
-      if (!active()) return;
-      root.querySelector('[name=event_search]').value = `${event.name} · ${event.year}`;
-      clear.hidden = false;
+      if (!active() || initialRevision !== revision) return;
       return loadEvent(event, true);
     }).catch(showError);
   }

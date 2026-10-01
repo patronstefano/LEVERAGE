@@ -382,9 +382,19 @@ def main():
                 for apparatus, expected in [('PH', 'PH'), ('AA', 'FX'), ('VT AVG', 'VT')]:
                     page.evaluate('(apparatus) => { location.hash = "/admin/results?event_id=1&discipline=MAG&round=final&format=individual&day=&apparatus=" + encodeURIComponent(apparatus); }', apparatus)
                     page.wait_for_function('(expected) => document.querySelector("[name=classification_apparatus]")?.value === expected', arg=expected)
-                    assert page.locator('[name=event_search]').input_value() == 'Admin test event · 2026'
+                    assert page.locator('[name=event_search]').input_value() == ''
+                    assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
                     assert page.locator('[name=classification_round]').input_value() == 'final'
                     assert page.locator('[name=classification_format]').input_value() == 'individual'
+                page.screenshot(path='/tmp/leverage-editor-selected-event.png', full_page=True)
+                page.locator('#adminSelectedEvent button').click()
+                assert page.locator('#adminClassificationEditor').inner_text() == ''
+                assert page.locator('#adminSelectedEvent').inner_text() == ''
+                assert page.locator('[name=event_search]').input_value() == ''
+                page.locator('[name=event_search]').fill('Admin')
+                page.locator('#adminEventOptions button').first.click()
+                page.locator('#adminScoreRows tbody tr').first.wait_for()
+                assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()

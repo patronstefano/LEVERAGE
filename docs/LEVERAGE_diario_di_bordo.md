@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Evento selezionato nell'Editor Risultati
+
+- La selezione di un evento svuota la barra di ricerca e mostra nome, anno e ID in un riquadro dedicato, con lo stesso stile e pulsante di chiusura delle selezioni atleta di Analytics.
+- La crocetta rimuove la gara e la classifica dalla vista, senza eliminare dati dal database; le bozze locali non salvate restano in memoria durante la permanenza nell'editor. Le risposte tardive di caricamento non riaprono una gara chiusa.
+- Comportamento applicato anche all'accesso diretto dalla Scheda Evento. Test browser su barra vuota, riquadro, chiusura e nuova selezione.
+
 #### 1 ottobre 2026 - Selettori e date negli strumenti Admin
 
 - Corretti i margini delle opzioni nei popup condivisi: selezione blu contenuta nel menu, spazi simmetrici e altezza calcolata per quattro opzioni complete, includendo padding e bordi.

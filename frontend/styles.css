@@ -4261,6 +4261,15 @@ a:focus-visible > .entity-card-clickable {
   content: none;
 }
 
+.admin-editor-selected-event {
+  margin-bottom: 16px;
+  box-shadow: none;
+}
+
+.admin-editor-selected-event .analytics-comparison-selected-athlete {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .admin-center .admin-editor-search-row .search-form {
   width: min(520px, 100%);
   height: 36px;
