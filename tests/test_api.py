@@ -11,8 +11,6 @@ import pyotp
 from fastapi.testclient import TestClient
 from sqlalchemy import inspect
 
-os.environ["DATABASE_URL"] = "sqlite:///./test_leverage.db"
-
 from app import ai_suggestions, models, world_gymnastics
 from app.auth_security import hash_email_token
 from app.calendar_import import infer_event_level as infer_calendar_event_level
@@ -34,6 +32,8 @@ TEST_RESET_TOKEN = "test-password-reset-token-with-enough-entropy"
 
 @pytest.fixture(autouse=True)
 def create_test_db():
+    from conftest import TEST_DATABASE
+    assert Path(engine.url.database).resolve() == TEST_DATABASE.resolve(), "Unsafe test database"
     clear_rate_limits()
     Base.metadata.drop_all(bind=engine)
     # Schema recreation must not reuse SQLite connections holding cached schema state.

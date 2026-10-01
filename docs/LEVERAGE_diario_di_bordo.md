@@ -3059,6 +3059,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 - La revisione resta riservata al SUPER ADMIN e tracciata con autore, data, nota e snapshot. Nessun risultato reale e stato ripristinato automaticamente durante questo intervento.
 - Test aggiunti per revisione delle proprie operazioni, vecchie autoapprovazioni, conflitti con modifiche successive e ripristino dei totali AA collegati.
 
+#### 2026-10-01 - Incidente di isolamento dei test e sospensione della preview
+
+- Durante la verifica combinata `tests/test_result_corrections.py tests/test_api.py`, il primo modulo ha importato la configurazione applicativa prima che il secondo impostasse il database di test. La fixture con `drop_all/create_all` ha quindi operato sul database locale `leverage.db`. I 180 test superati NON certificano la sicurezza di quella esecuzione: le tabelle locali sono state cancellate.
+- Il backend e stato fermato dopo aver rilevato l'assenza delle tabelle al riavvio. Preservata una copia del file interessato in `backups/incident_20261001_1901_preserved.db`.
+- Verificato in sola lettura il backup `before_wg_scan_20261001_152338.db`: controllo di integrita OK, 27.921 atleti, 1.761 eventi, 819.739 risultati. Il ripristino richiede autorizzazione dell'utente: non si presume recuperata alcuna modifica o progresso della scansione successivo alle 15:23.
+- Correzione preventiva: `tests/conftest.py` imposta un database in directory temporanea prima di importare i moduli; controllo del percorso all'avvio pytest e prima della fixture distruttiva. Eliminata la configurazione tardiva dal modulo API.
+- L'incidente e stato comunicato all'utente; nessun ripristino del database effettuato senza conferma.
+
 #### 1 ottobre 2026 - Priorita visiva degli errori nei campi Admin
 
 - Le regole di hover e focus neutro non si applicano piu ai campi non validi: il bordo rosso e il relativo alone restano visibili anche quando il campo viene selezionato, senza essere sostituiti dal contorno grigio/blu.
