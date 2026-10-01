@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Ripristino autorizzato del database e conservazione dello sviluppo
+
+- L'utente autorizza il ripristino del backup delle 15:23 e richiede espressamente di NON riavviare la scansione World Gymnastics. Il suo avanzamento potra essere ricostruito in un secondo momento.
+- Ripristinato `backups/before_wg_scan_20261001_152338.db` mediante API di backup SQLite, con backend fermo. Conservati sia il backup originale sia la copia del database interessato dall'incidente.
+- Riapplicata la migrazione `0041_world_gymnastics_scan`, necessaria al codice attuale: controllo scansione disabilitato, `started_at` nullo e nessun job accodato. Verifica ripetuta dopo il riavvio del backend.
+- Integrita SQLite: OK; controllo chiavi esterne: nessuna violazione. Conteggi ripristinati: 27.921 atleti, 1.761 eventi, 819.739 risultati (conteggi totali, inclusi eventuali record soft-deleted).
+- Nessun rollback Git: preservati codice, interfaccia, funzionalita, test e documentazione sviluppati oggi, comprese le nuove regole di audit SUPER ADMIN e la centratura della schermata di disconnessione.
+- Il ripristino riporta i DATI alle 15:23: non certifica il recupero di modifiche anagrafiche, punteggi o altre operazioni successive a quell'ora. Il lavoro di SVILUPPO resta invece allo stato piu recente.
+- Backend riattivato; verificati HTTP 200 per elenco atleti, elenco eventi e frontend locale. Preview disponibile su `http://127.0.0.1:5173/`.
+
 #### 2026-10-01 - Centratura delle schermate di disconnessione
 
 - Logo, indicazione e pulsante Accedi centrati verticalmente nello spazio disponibile tra topbar e downbar, per l'accesso richiesto sia USER sia ADMIN.
