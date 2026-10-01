@@ -4284,6 +4284,10 @@ a:focus-visible > .entity-card-clickable {
   font-weight: 480;
 }
 
+.admin-center .admin-editor-search-row input.search-input::placeholder {
+  font-weight: 400;
+}
+
 .admin-editor-search-row .search-suggestions {
   top: calc(100% + 7px);
   box-sizing: border-box;

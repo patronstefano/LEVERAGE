@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Testo guida ricerca evento
+
+- Impostato a peso normale (400) il solo placeholder della ricerca evento nell'Editor Risultati. Invariati testo digitato, suggerimenti e dimensioni. Aggiunta verifica browser dedicata.
+
 #### 1 ottobre 2026 - Sfondo del pannello ricerca evento
 
 - Rimossa solo nell'Editor Risultati la fascia grigia a tutta larghezza ereditata dalla ricerca Analytics: copriva il fondo bianco del pannello Admin attorno alla barra. Il contenitore lascia ora visibile lo sfondo del pannello e il popup resta bianco opaco.

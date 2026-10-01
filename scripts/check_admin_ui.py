@@ -230,6 +230,7 @@ def main():
                 page.locator('[name="event_search"]').fill("Admin")
                 page.locator('#adminEventOptions button').first.wait_for()
                 assert page.locator('[name=event_search]').get_attribute('placeholder') == 'Cerca eventi per competizione, anno o luogo...'
+                assert page.locator('[name=event_search]').evaluate('el => getComputedStyle(el, "::placeholder").fontWeight') == '400'
                 assert page.locator('#adminEventSearchForm').bounding_box()['width'] == 520
                 assert page.locator('#adminEventSearchForm').bounding_box()['height'] == 36
                 assert page.locator('[name=event_search]').evaluate('el => getComputedStyle(el).fontSize') == '15px'
