@@ -10242,7 +10242,6 @@ function bindAdminDateControls(rootNode) {
       const months = Array.from({length: 12}, (_, i) => ({value: i + 1, label: monthShortLabel(i + 1)}));
       const days = Array.from({length: daysInMonth(parts.year, parts.month)}, (_, i) => ({value: i + 1, label: String(i + 1)}));
       panel.innerHTML = [['day', days, 'dateDay'], ['month', months, 'dateMonth'], ['year', years, 'dateYear']].map(([unit, options, title]) => renderDateWheelColumn('admin', source.name, unit, t(title), options, source.value ? parts[unit] : null, source.value)).join('');
-      panel.querySelector(`[data-date-wheel-unit="year"][data-date-wheel-value="${new Date().getFullYear()}"]`).insertAdjacentHTML('afterend', renderDateWheelTodayOption('admin', source.name));
       const commit = (iso) => {
         if (!validRange(iso)) return;
         source.value = iso;
@@ -10258,10 +10257,6 @@ function bindAdminDateControls(rootNode) {
         button.disabled = !validRange(iso);
         button.onclick = () => commit(iso);
       });
-      const today = panel.querySelector('[data-date-wheel-today-scope]');
-      const todayIso = formatLocalIso(new Date());
-      today.disabled = !validRange(todayIso);
-      today.onclick = () => commit(todayIso);
       requestAnimationFrame(() => panel.querySelectorAll('.ranking-date-wheel-options').forEach((column) => {
         const selected = column.querySelector('[aria-pressed="true"]') || column.querySelector(`[data-date-wheel-value="${parts[column.querySelector('[data-date-wheel-unit]').dataset.dateWheelUnit]}"]`);
         if (selected) column.scrollTop = selected.offsetTop - column.clientHeight / 2 + selected.clientHeight / 2;

@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Date Admin senza scorciatoia Oggi
+
+- Rimosso il tasto Oggi dal selettore data condiviso degli strumenti Admin/Super Admin. Restano rotelle giorno/mese/anno, digitazione manuale e validazione. Invariato il tasto Oggi nei filtri Periodo pubblici.
+- Aggiunto controllo browser sull'assenza della scorciatoia nei popup amministrativi.
+
 #### 1 ottobre 2026 - Nomi dei paesi nei selettori nazionalita
 
 - Le opzioni nazionalita mostrano codice sportivo e nome localizzato, per esempio `ITA (Italia)`, nei moduli Admin, nelle schede atleta e nei suggerimenti di revisione.

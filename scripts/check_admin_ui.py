@@ -435,6 +435,7 @@ def main():
                 assert start_date.input_value() == '01/09/2026'
                 assert page.locator('#adminStatsForm input[type=date]').count() == 0
                 start_date.click()
+                assert page.locator('.admin-date-control [data-date-wheel-today-scope]').count() == 0
                 page.locator('[data-admin-date="start_date"] [data-date-wheel-unit="day"][data-date-wheel-value="2"]').click()
                 assert page.locator('#adminStatsForm [name=start_date]').input_value() == '2026-09-02'
                 end_date.click()
