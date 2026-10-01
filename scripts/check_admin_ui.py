@@ -50,6 +50,8 @@ def main():
                 payload = {"enabled": False, "started_at": None, "counts": {"matched": 1}, "total": 1}
             elif path == "/world-gymnastics/scan/matches":
                 payload = {"total": 1, "items": [{"id": 51, "entity_type": "athlete", "entity_id": 1, "entity_name": "Test Ada", "candidates": [{"fig_id": "123", "first_name": "Ada", "last_name": "Test", "country": "ITA", "discipline": "WAG", "match_score": .95, "profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=123"}]}]}
+                if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
+                    payload = {"total": 1, "items": [{"id": 52, "entity_type": "event", "entity_id": 1, "entity_name": "Admin test event", "candidates": [{"event_id": "456", "title": "Event candidate", "match_score": .9, "event_url": "https://www.gymnastics.sport/site/events/detail.php?id=456"}]}]}
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
             elif path == "/admin/users":
@@ -501,6 +503,15 @@ def main():
                 page.locator('[data-accept]').click()
                 page.locator('#adminRevisionSuggestions .empty-state').wait_for()
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
+                page.locator('[data-review-entity="event"]').click()
+                page.locator('[data-scan-job="52"]').wait_for()
+                assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
+                assert page.locator('[data-scan-job="51"]').count() == 0
+                assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
+                page.locator('[data-review-entity="athlete"]').click()
+                page.locator('[data-scan-job="51"]').wait_for()
+                assert page.locator('[data-scan-job="52"]').count() == 0
+                assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 page.wait_for_timeout(100)

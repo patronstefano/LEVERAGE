@@ -20,7 +20,7 @@ const COPY = {
   refresh: ['Refresh', 'Aggiorna', 'Actualizar', 'Actualiser'],
 };
 
-export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route}) {
+export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType}) {
   const index = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const t = (key) => COPY[key][index];
   let limit = 30, signature = '', busy = false;
@@ -33,7 +33,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
       const status = await api('/world-gymnastics/scan/status');
       const matches = {items: [], total: 0};
       do {
-        const page = await api('/world-gymnastics/scan/matches', {params: {limit: Math.min(100, limit - matches.items.length), offset: matches.items.length}});
+        const page = await api('/world-gymnastics/scan/matches', {params: {limit: Math.min(100, limit - matches.items.length), offset: matches.items.length, ...(entityType ? {entity_type: entityType} : {})}});
         matches.total = page.total;
         matches.items.push(...page.items);
         if (!page.items.length) break;

@@ -1,7 +1,7 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
-import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=20261001';
+import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=review-entities-20261001';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
@@ -585,11 +585,34 @@ export async function renderAdminCenter(host) {
       }
       const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
       const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
-      paint(`<div class="admin-revisions">
+      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('review'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" data-review-entity="athlete" aria-pressed="true">${esc(text('athletes'))}</button><button type="button" class="segmented-option" data-review-entity="event" aria-pressed="false">${esc(text('events'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div class="admin-revisions">
         ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty())}
-        ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
+        ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
-      await mountWorldGymnasticsScan({ root: root.querySelector('#adminWorldGymnasticsScan'), api, esc, language: state.language, active, feedback, route: state.route });
+      let reviewEntity = 'athlete';
+      const updateReviewVisibility = () => {
+        const list = root.querySelector('#adminRevisionSuggestions');
+        const groups = [...list.querySelectorAll('[data-wg-review-group]')];
+        groups.forEach((group) => { group.hidden = group.dataset.reviewKind !== reviewEntity; });
+        list.querySelector('.empty-state')?.remove();
+        if (!groups.some((group) => !group.hidden)) list.insertAdjacentHTML('beforeend', empty());
+      };
+      const selectReviewEntity = async (kind) => {
+        reviewEntity = kind;
+        root.querySelectorAll('[data-review-entity]').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.reviewEntity === kind));
+          button.parentElement.style.setProperty('--selected-index', kind === 'athlete' ? '0' : '1');
+        });
+        updateReviewVisibility();
+        const scanRoot = document.createElement('div');
+        scanRoot.id = 'adminWorldGymnasticsScan';
+        root.querySelector('#adminWorldGymnasticsScan').replaceWith(scanRoot);
+        await mountWorldGymnasticsScan({ root: scanRoot, api, esc, language: state.language, active, feedback, route: state.route, entityType: kind });
+      };
+      root.querySelectorAll('[data-review-entity]').forEach((button) => {
+        button.onclick = () => { if (reviewEntity !== button.dataset.reviewEntity) selectReviewEntity(button.dataset.reviewEntity); };
+      });
+      await selectReviewEntity(reviewEntity);
       root.querySelectorAll('[data-accept]').forEach((b) => b.classList.add('admin-accept-button'));
       root.querySelectorAll('[data-reject]').forEach((b) => b.classList.add('filter-clear-button'));
       ["accept", "reject"].forEach((action) => root.querySelectorAll(`[data-${action}]`).forEach((b) => b.onclick = guard(async () => {
@@ -597,8 +620,7 @@ export async function renderAdminCenter(host) {
         const group = b.closest('[data-wg-review-group]');
         b.closest("article").remove();
         if (!group.querySelector("article")) group.remove();
-        const list = document.getElementById("adminRevisionSuggestions");
-        if (!list.querySelector("article")) list.innerHTML = empty();
+        updateReviewVisibility();
         feedback(text("success"));
       })));
     }

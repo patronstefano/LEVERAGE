@@ -37,6 +37,20 @@ def unlock(engine):
         db.get(CONTROL, 1).lease_until = None; db.commit()
 
 
+def test_matches_filter_entity_before_pagination(scan):
+    from app.routers.world_gymnastics_scan import matches
+    with Session(scan) as db:
+        for job in db.query(JOB).all():
+            job.status = "matched"
+            job.candidates = [{"fig_id": "123", "match_score": .95}]
+        db.commit()
+        for kind in ("athlete", "event"):
+            page = matches(offset=0, limit=1, db=db, admin=None, entity_type=kind)
+            assert page['total'] == 1
+            assert page['items'][0]['entity_type'] == kind
+            assert matches(offset=1, limit=1, db=db, admin=None, entity_type=kind)['items'] == []
+
+
 def test_persistence_incremental_and_no_certification(scan):
     assert process_next(scan)
     with Session(scan) as db:

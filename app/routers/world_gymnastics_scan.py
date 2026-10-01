@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, ConfigDict
@@ -66,8 +66,11 @@ def control(payload: ScanCommand, db: Session = Depends(get_db), admin=Depends(g
 
 @router.get("/matches")
 def matches(offset: int = Query(0, ge=0), limit: int = Query(30, ge=1, le=100),
-            db: Session = Depends(get_db), admin=Depends(get_current_admin_user)):
+            db: Session = Depends(get_db), admin=Depends(get_current_admin_user),
+            entity_type: Optional[Literal["athlete", "event"]] = None):
     query = available_matches(db)
+    if entity_type is not None:
+        query = query.filter(JOB.entity_type == entity_type)
     return {"total": query.count(), "items": [job_payload(j) for j in query.order_by(JOB.id).offset(offset).limit(limit).all()]}
 
 

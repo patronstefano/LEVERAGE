@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Revisioni distinte per Atleti ed Eventi
+
+- Aggiunto selettore slider Atleti / Eventi nella sezione Revisioni del Centro Admin, con Atleti selezionato inizialmente e stile condiviso con Nuova Entita.
+- La selezione separa i suggerimenti ufficiali e i riscontri World Gymnastics gia registrati; la paginazione dei riscontri applica il filtro di entita sul backend prima del conteggio e del limite.
+- I controlli sui duplicati di risultato rimangono comuni alle due viste, poiche ogni risultato collega atleta ed evento. Lo stato complessivo della scansione rimane globale.
+- Il cambio vista non avvia scansioni e non importa dati. Conservata la scansione disabilitata come richiesto; test con dati simulati per navigazione e filtro.
+
 #### 2026-10-01 - Ripristino autorizzato del database e conservazione dello sviluppo
 
 - L'utente autorizza il ripristino del backup delle 15:23 e richiede espressamente di NON riavviare la scansione World Gymnastics. Il suo avanzamento potra essere ricostruito in un secondo momento.
