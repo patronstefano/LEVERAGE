@@ -2925,7 +2925,8 @@ a:focus-visible > .entity-card-clickable {
 
 .saved-ranking-form-shell.is-shaking,
 .auth-panel.is-shaking,
-.auth-form.is-shaking {
+.auth-form.is-shaking,
+.admin-center .is-shaking {
   animation: savedRankingInvalidShake 360ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
@@ -2958,7 +2959,8 @@ a:focus-visible > .entity-card-clickable {
 @media (prefers-reduced-motion: reduce) {
   .saved-ranking-form-shell.is-shaking,
   .auth-panel.is-shaking,
-  .auth-form.is-shaking {
+  .auth-form.is-shaking,
+  .admin-center .is-shaking {
     animation: none;
   }
 }
@@ -6184,6 +6186,23 @@ a:focus-visible > .entity-card-clickable {
 }
 .admin-date-control .ranking-date-wheel-options { position: relative; grid-auto-rows: 34px; align-content: start; }
 .admin-date-control input[aria-invalid="true"] { border-color: var(--danger); color: var(--danger); }
+
+.admin-center input.is-invalid,
+.admin-center input.is-invalid:focus,
+.admin-center textarea.is-invalid,
+.admin-center select.is-invalid,
+.admin-center .admin-file-picker:has(input.is-invalid) > button {
+  border-color: rgba(184, 52, 52, 0.76);
+  box-shadow: 0 0 0 3px rgba(184, 52, 52, 0.08);
+}
+.admin-center .admin-form-validation {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.admin-center .admin-form-validation:empty { display: none; }
 
 .admin-form-grid input,
 .admin-form-grid select,

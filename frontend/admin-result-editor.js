@@ -1,3 +1,5 @@
+import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
+
 const COPY = {
   closeEvent: ['Close event', 'Chiudi evento', 'Cerrar evento', 'Fermer l’événement'],
   classification: ['Classification', 'Classifica', 'Clasificación', 'Classement'],
@@ -145,6 +147,8 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
           rows.forEach((row) => {
             const tr = out.querySelector(`[data-result-id="${row.id}"]`);
             const notice = tr.querySelector('[role=status]');
+            notice.id = `adminScoreValidation${row.id}`;
+            const validation = bindAuthValidation(tr, notice, () => language, {generic: true});
             const save = tr.querySelector('[data-save]');
             const reset = tr.querySelector('[data-reset]');
             const inputs = [...tr.querySelectorAll('input')];
@@ -167,13 +171,13 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
               if (input.value !== '' && input.validity.valid) input.value = inputValue(input.name, input.valueAsNumber);
               update();
             }));
-            reset.onclick = () => { inputs.forEach((el) => { el.value = inputValue(el.name, row[el.name]); }); update(); };
+            reset.onclick = () => { inputs.forEach((el) => { el.value = inputValue(el.name, row[el.name]); }); validation.validate(); update(); };
             save.onclick = async () => {
-              if (inputs.some((input) => !input.reportValidity())) return;
+              if (!validation.validate()) return;
               const body = {expected: snapshot(row), values: values()};
               if (body.values.E_score != null) {
-                if (keys.some((key) => body.values[key] == null)) { notice.textContent = label('components'); return; }
-                if (!classificationHasRecordedExecution([body.values])) { notice.textContent = label('formula'); return; }
+                if (keys.some((key) => body.values[key] == null)) { validation.showError(label('components'), inputs.filter((input) => body.values[input.name] == null)); return; }
+                if (!classificationHasRecordedExecution([body.values])) { validation.showError(label('formula'), inputs); return; }
               }
               save.disabled = reset.disabled = true;
               inputs.forEach((el) => { el.disabled = true; });
@@ -188,10 +192,11 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
                 rows.sort((a,b) => (b.score ?? -Infinity) - (a.score ?? -Infinity) || a.id-b.id)
                   .forEach((item) => out.querySelector('tbody').append(out.querySelector(`[data-result-id="${item.id}"]`)));
               } catch (error) {
-                notice.textContent = error.message.includes('Result changed') ? label('conflict')
+                const message = error.message.includes('Result changed') ? label('conflict')
                   : error.message.includes('Incomplete execution components') ? label('components')
                   : error.message.includes('Final score must equal') ? label('formula')
                   : error.message.includes('Unsafe aggregate correction') ? label('aggregate') : error.message;
+                validation.showError(message);
                 save.disabled = reset.disabled = false;
               } finally { inputs.forEach((el) => { el.disabled = false; }); }
             };

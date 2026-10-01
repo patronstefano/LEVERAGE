@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Validazione coerente nei moduli del Centro Admin
+
+- I moduli amministrativi usano il componente di validazione di Accedi/Registrati: niente fumetto nativo "Completa questo campo", ma shake, bordo rosso e messaggio sotto ai comandi. Animazioni disabilitate quando richiesto dalle preferenze di movimento ridotto.
+- Anteprima e Salva bloccano l'invio in presenza di campi obbligatori vuoti o valori non validi. Compresi date, file da importare e campi numerici; l'Editor Risultati usa lo stesso trattamento anche per componenti mancanti e formula del punteggio incoerente.
+- Messaggi localizzati nelle quattro lingue, attributi accessibili sui campi errati e pulizia dell'avviso durante la correzione. Le risposte di errore server restano visibili, senza ricaricare il modulo.
+- Test browser con API simulate su Nuova Entita, Unione Entita, Importazione File e Editor Risultati: nessun invio in caso di dati mancanti/non validi. Verifiche di regressione sulla parte account e autenticazione condivisa.
+- Esiti: suite Centro Admin e Area Personale superate. Nel test autenticazione, aggiornate due aspettative di testo obsolete; resta un controllo di stabilita verticale del footer non superato, riprodotto anche servendo il componente di validazione originale da HEAD. Segnalazione preesistente, non corretta in questa modifica circoscritta alla validazione Admin.
+
 #### 1 ottobre 2026 - Date Admin senza scorciatoia Oggi
 
 - Rimosso il tasto Oggi dal selettore data condiviso degli strumenti Admin/Super Admin. Restano rotelle giorno/mese/anno, digitazione manuale e validazione. Invariato il tasto Oggi nei filtri Periodo pubblici.

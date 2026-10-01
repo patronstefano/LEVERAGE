@@ -1,7 +1,8 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
-import { mountResultEditor } from './admin-result-editor.js?v=editor-selected-event-20261001';
+import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=20261001';
+import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -397,7 +398,24 @@ export async function renderAdminCenter(host) {
       }
     finally { controls.forEach((c) => { if (c) c.disabled = false; }); if (trigger?.dataset) delete trigger.dataset.busy; }
   };
-  const onSubmit = (id, fn) => document.getElementById(id)?.addEventListener("submit", guard((e) => fn(Object.fromEntries(new FormData(e.currentTarget)), e.currentTarget)));
+  const onSubmit = (id, fn) => {
+    const target = document.getElementById(id);
+    if (!target) return;
+    const message = document.createElement('p');
+    message.id = `${id}Validation`;
+    message.className = 'admin-form-validation';
+    message.setAttribute('role', 'alert');
+    target.append(message);
+    const validation = bindAuthValidation(target, message, () => state.language, {generic: true});
+    target.addEventListener('submit', guard(async (e) => {
+      if (!validation.validate()) return;
+      try { await fn(Object.fromEntries(new FormData(e.currentTarget)), e.currentTarget); }
+      catch (error) {
+        if (error.status === 422) validation.serverError(error, 'admin');
+        else { validation.showError(error.message); }
+      }
+    }));
+  };
   const bind = () => host.bindAdminSelectControls(root);
   const paint = (html) => {
     if (active()) {

@@ -185,6 +185,15 @@ def main():
                         && options('birth_year', '2001', 'it').find(row => row.value === '2001').label === '2001';
                 }''')
                 page.locator('#adminCreateForm input[name=last_name]').wait_for()
+                previous_writes = len(writes)
+                page.locator('#adminCreateForm button[type=submit]').click()
+                assert page.locator('#adminCreateForm').evaluate('el => el.noValidate')
+                assert page.locator('#adminCreateFormValidation').inner_text() == 'Completa i campi obbligatori.'
+                assert page.locator('#adminCreateForm input[aria-invalid=true]').count() > 0
+                assert page.locator('#adminCreateForm').evaluate('el => getComputedStyle(el).animationName') == 'savedRankingInvalidShake'
+                assert len(writes) == previous_writes
+                page.locator('#adminCreateForm input[name=last_name]').fill('Test')
+                assert page.locator('#adminCreateFormValidation').inner_text() == ''
                 page.locator('#adminCreateForm input[name=last_name]').focus()
                 page.wait_for_timeout(200)
                 focus_style = page.locator('#adminCreateForm input[name=last_name]').evaluate('el => { const s = getComputedStyle(el); return [s.outlineStyle, s.borderTopColor, s.boxShadow]; }')
@@ -226,6 +235,10 @@ def main():
                 assert page.locator('[name="event_search"]').count() == 0
                 assert page.locator('#adminEntry').count() == 0
             if tab == "merge":
+                previous_writes = len(writes)
+                page.locator('#adminMergeForm button[type=submit]').click()
+                assert page.locator('#adminMergeFormValidation').inner_text() == 'Completa i campi obbligatori.'
+                assert len(writes) == previous_writes
                 assert page.locator('#adminMergeAthlete').get_attribute('aria-pressed') == 'true'
                 page.locator('#adminMergeEvent').click()
                 assert page.locator('#adminMergeEvent').get_attribute('aria-pressed') == 'true'
@@ -306,6 +319,13 @@ def main():
                 assert execution_input.get_attribute('placeholder') == 'E est. 8,000'
                 assert page.locator('#adminResultForm').count() == 0
                 assert page.locator('[data-save]').is_disabled()
+                previous_writes = len(writes)
+                page.locator('.admin-score-table [name=D_score]').fill('-1')
+                page.locator('[data-save]').click()
+                assert page.locator('.admin-score-table [name=D_score]').get_attribute('aria-invalid') == 'true'
+                assert page.locator('.admin-score-table [role=status]').inner_text() == 'Alcuni dati non sono validi. Controlla i campi evidenziati.'
+                assert len(writes) == previous_writes
+                page.locator('[data-reset]').click()
                 for key in ['D_score', 'Penalty', 'Bonus']:
                     score_input = page.locator(f'.admin-score-table [name={key}]')
                     assert score_input.get_attribute('step') == '0.1'
@@ -482,6 +502,11 @@ def main():
                 page.screenshot(path="/tmp/leverage-wg-scan-mobile.png", full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "imports":
+                previous_writes = len(writes)
+                page.locator('#adminImportForm button[type=submit]').click()
+                assert page.locator('#adminImportFormValidation').inner_text() == 'Completa i campi obbligatori.'
+                assert page.locator('#adminImportFile').get_attribute('aria-invalid') == 'true'
+                assert len(writes) == previous_writes
                 year_control = page.locator('[name=year_hint]').locator('..')
                 assert year_control.locator('summary').bounding_box()['x'] < page.locator('#adminChooseFile').bounding_box()['x']
                 year_control.locator('summary').click()

@@ -18,7 +18,7 @@ const messages = {
   failed: ["Unable to complete the operation. Try again later.", "Impossibile completare l’operazione. Riprova più tardi.", "No se pudo completar la operación. Inténtalo más tarde.", "Impossible de terminer l’opération. Réessayez plus tard."],
 };
 
-export function bindAuthValidation(form, message, getLanguage) {
+export function bindAuthValidation(form, message, getLanguage, { generic = false } = {}) {
   form.noValidate = true;
   form.querySelectorAll('input[type="password"]').forEach((input) => {
     if (input.dataset.passwordField) return;
@@ -71,7 +71,7 @@ export function bindAuthValidation(form, message, getLanguage) {
     const shift = top - shell.getBoundingClientRect().top;
     main.style.setProperty('--auth-content-top', `${Math.max(padding, padding + shift)}px`);
   };
-  const inputs = () => [...form.querySelectorAll('input')].filter((input) => !input.disabled && input.type !== 'hidden' && !input.closest('[hidden]'));
+  const inputs = () => [...form.querySelectorAll(generic ? 'input, textarea, select' : 'input')].filter((input) => !input.disabled && input.type !== 'hidden' && !input.closest('[hidden]'));
   const text = (key) => messages[key][Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(getLanguage()))];
   const clear = () => {
     form.querySelectorAll('[aria-invalid]').forEach((input) => {
@@ -93,7 +93,7 @@ export function bindAuthValidation(form, message, getLanguage) {
     message.classList.remove('is-success', 'account-feedback');
     message.classList.add('auth-validation-message', 'is-error');
     message.dataset.authError = 'true';
-    message.textContent = [...new Set(issues.map((issue) => text(issue.key)))].join(' ');
+    message.textContent = [...new Set(issues.map((issue) => issue.message || text(issue.key)))].join(' ');
     syncLayout();
     const fields = [...new Set(issues.flatMap((issue) => issue.fields || []))];
     fields.forEach((input) => {
@@ -103,14 +103,23 @@ export function bindAuthValidation(form, message, getLanguage) {
     });
     void shell.offsetWidth;
     shell.classList.add('is-shaking');
-    fields[0]?.focus({ preventScroll: true });
+    const first = fields[0];
+    const focusTarget = first?.type === 'file' ? first.closest('.admin-file-picker')?.querySelector('button') || first : first;
+    focusTarget?.focus({ preventScroll: true });
   };
   form.addEventListener('input', clear);
+  if (generic) form.addEventListener('change', clear);
   const validate = () => {
     anchorLayout();
     clear();
     const fields = inputs(), issues = [];
     for (const input of fields) {
+      if (generic) {
+        if (['text', 'email', 'search', 'tel', 'url'].includes(input.type)) input.value = input.value.trim();
+        if (input.validity.valueMissing) issues.push({key: 'required', fields: [input]});
+        else if (!input.validity.valid) issues.push({key: input.type === 'email' && input.validity.typeMismatch ? 'email' : 'invalid', fields: [input]});
+        continue;
+      }
       if (!isPassword(input)) input.value = input.value.trim();
       const value = input.value;
       if (input.required && !value) { issues.push({ key: 'required', fields: [input] }); continue; }
@@ -148,5 +157,5 @@ export function bindAuthValidation(form, message, getLanguage) {
     }
     show([{ key, fields: affected }]);
   };
-  return { validate, serverError, syncLayout };
+  return { validate, serverError, syncLayout, showError: (message, fields = []) => show([{message, fields}]) };
 }

@@ -55,7 +55,7 @@ def main():
         page.locator('#loginPassword').fill('short')
         form.locator('button[type=submit]').click()
         assert 'email valido' in page.locator('#loginMessage').inner_text()
-        assert '6 a 128' in page.locator('#loginMessage').inner_text()
+        assert 'almeno 6 caratteri' in page.locator('#loginMessage').inner_text()
         assert not requests
         page.locator('#loginEmail').fill('user@example.test')
         page.locator('#loginPassword').fill('Valid6!')
@@ -81,7 +81,7 @@ def main():
         assert page.locator('#loginMfaCode').get_attribute('aria-invalid') == 'true'
         page.locator('#loginMfaCode').fill('12')
         form.locator('button[type=submit]').click()
-        assert 'Codice di Autenticazione o di recupero valido' in page.locator('#loginMessage').inner_text()
+        assert 'Codice di Autenticazione errato.' in page.locator('#loginMessage').inner_text()
         response.update(status=401, body={'detail': 'Invalid authentication credentials'})
         page.locator('#loginMfaCode').fill('123456')
         form.locator('button[type=submit]').click()
