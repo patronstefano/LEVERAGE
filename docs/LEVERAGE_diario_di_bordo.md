@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Classifica evento Junior e Senior e selettore verticale
+
+- Negli eventi con categoria Junior e Senior, l'apertura ordinaria propone la vista combinata dei risultati delle due categorie. Restano invariati disciplina, round, format, attrezzo e giornata: non vengono mescolati contesti diversi.
+- Rimosso il selettore orizzontale della categoria dalla prima riga. Nuovo slider verticale a destra, esteso sull'altezza delle tre righe di comandi: Junior e Senior, Solo Senior, Solo Junior. Opzioni non disponibili disabilitate; testi localizzati nelle quattro lingue e movimento verticale del thumb misurato sulla scelta attiva.
+- Le viste combinate sono costruite dai gruppi esistenti, senza modificare Result.category o duplicare risultati. La richiesta al backend omette category per la vista combinata; le varianti applicano senior/junior. La graduatoria combinata usa computed_rank, non i rank ufficiali separati che potrebbero produrre due primi posti. Non si afferma che la vista combinata costituisca una nuova classifica ufficiale pubblicata dalla federazione.
+- Il cambio categoria conserva gli altri criteri quando disponibili. I collegamenti espliciti a una classifica Junior/Senior, per esempio dalla ricerca di un risultato, continuano ad aprire la categoria richiesta. Memoria della navigazione preservata.
+- Verifica read-only con browser sull'evento 1: default MAG AA combinato di 27 risultati, varianti Senior/Junior, selezione blu e allineamento in altezza, assenza di overflow orizzontale su mobile. Nessuna modifica al database e nessun riavvio della scansione World Gymnastics.
+
 #### 2026-10-01 - Precisione dei comandi D, P e B nell'editor risultati
 
 - D Score, Penalty e Bonus sono visualizzati con una cifra decimale e modificabili tramite freccine a passi di 0,1. E Score e Final Score conservano il passo di 0,001.

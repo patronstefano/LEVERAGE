@@ -4558,6 +4558,39 @@ a:focus-visible > .entity-card-clickable {
   margin: 0;
 }
 
+.event-classification-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.event-classification-layout .event-classification-segment-category {
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, minmax(34px, 1fr));
+  width: 170px;
+  height: 100%;
+}
+
+.event-classification-segment-category .event-classification-option {
+  height: 100%;
+  padding: 0 12px;
+}
+
+.event-classification-layout .event-classification-segment-category.is-measured-thumb .event-classification-thumb {
+  top: var(--thumb-top);
+  bottom: auto;
+  height: var(--thumb-height);
+  transition: top var(--control-expand-motion), height var(--control-expand-motion);
+}
+
+.event-classification-layout .event-classification-segment-category.is-syncing-thumb .event-classification-thumb { transition: none; }
+
+@media (max-width: 760px) {
+  .event-classification-layout { grid-template-columns: minmax(0, 1fr); }
+  .event-classification-layout .event-classification-segment-category { width: 100%; height: 108px; }
+}
+
 .event-classification-select-grid {
   display: flex;
   flex-wrap: wrap;

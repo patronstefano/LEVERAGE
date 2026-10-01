@@ -219,7 +219,7 @@ const ATHLETE_ANALYTICS_APPARATUS_ORDER = {
 };
 const EVENT_CLASSIFICATION_FIXED_OPTIONS = {
   discipline: ["MAG", "WAG"],
-  category: ["senior", "junior"],
+  category: ["junior and senior", "senior", "junior"],
   round: ["final", "qualification"],
   format: ["individual", "apparatus", "team", "mixed team"],
 };
@@ -5136,6 +5136,8 @@ function syncMeasuredSegmentedThumb(control, options = {}) {
   if (!animate) control.classList.add("is-syncing-thumb");
   control.style.setProperty("--thumb-left", `${selectedOption.offsetLeft}px`);
   control.style.setProperty("--thumb-width", `${selectedOption.offsetWidth}px`);
+  control.style.setProperty("--thumb-top", `${selectedOption.offsetTop}px`);
+  control.style.setProperty("--thumb-height", `${selectedOption.offsetHeight}px`);
   control.classList.add("is-measured-thumb");
   if (!animate) {
     window.requestAnimationFrame(() => {
@@ -10925,11 +10927,21 @@ function eventClassificationApparatusIndex(group = {}) {
 }
 
 function officialEventClassificationGroups(profile = state.eventDetail.profile) {
-  return [...(profile?.result_groups || [])]
-    .filter((group) => group && group.discipline && group.category && group.format && group.round)
-    .sort((a, b) => (
+  const groups = [...(profile?.result_groups || [])]
+    .filter((group) => group && group.discipline && group.category && group.format && group.round);
+  if (profile?.event?.category === "junior and senior") {
+    const combined = new Map();
+    groups.forEach((group) => {
+      const item = {...group, category: "junior and senior"};
+      const key = eventClassificationKey(item);
+      if (combined.has(key)) combined.get(key).count += Number(group.count || 0);
+      else combined.set(key, {...item, count: Number(group.count || 0)});
+    });
+    groups.push(...combined.values());
+  }
+  return groups.sort((a, b) => (
       eventClassificationOrderIndex(a.discipline, ["MAG", "WAG"]) - eventClassificationOrderIndex(b.discipline, ["MAG", "WAG"])
-      || eventClassificationOrderIndex(a.category, ["senior", "junior"]) - eventClassificationOrderIndex(b.category, ["senior", "junior"])
+      || eventClassificationOrderIndex(a.category, ["junior and senior", "senior", "junior"]) - eventClassificationOrderIndex(b.category, ["junior and senior", "senior", "junior"])
       || eventClassificationOrderIndex(a.format, ["individual", "apparatus", "team", "mixed team"]) - eventClassificationOrderIndex(b.format, ["individual", "apparatus", "team", "mixed team"])
       || eventClassificationOrderIndex(a.round, ["final", "qualification"]) - eventClassificationOrderIndex(b.round, ["final", "qualification"])
       || eventClassificationApparatusIndex(a) - eventClassificationApparatusIndex(b)
@@ -10988,7 +11000,7 @@ function eventClassificationCategoryLabel(value) {
 }
 
 function eventClassificationFields() {
-  return ["discipline", "category", "round", "format", "apparatus", "day"];
+  return ["discipline", "round", "format", "apparatus", "day", "category"];
 }
 
 function eventClassificationValueKey(value) {
@@ -11076,6 +11088,9 @@ function nextEventClassificationForChoice(field, value) {
   const fieldIndex = fields.indexOf(field);
   const prefixFields = fields.slice(0, Math.max(0, fieldIndex));
   const selectedValueKey = eventClassificationValueKey(value);
+  const exact = groups.find((group) => fields.every((key) =>
+    eventClassificationValueKey(group?.[key]) === (key === field ? selectedValueKey : eventClassificationValueKey(selected?.[key]))));
+  if (exact) return exact;
   return groups.find((group) => (
     eventClassificationMatchesPrefix(group, selected, prefixFields)
     && eventClassificationValueKey(group?.[field]) === selectedValueKey
@@ -11093,6 +11108,7 @@ function eventClassificationSegment(field, selected, groups) {
       <div
         class="segmented-control event-classification-segment event-classification-segment-${escapeHtml(field)}"
         role="radiogroup"
+        ${field === "category" ? 'aria-orientation="vertical"' : ''}
         aria-label="${escapeHtml(eventClassificationFieldLabel(field))}"
         data-event-classification-control="${escapeHtml(field)}"
         style="--segment-count: ${options.length}; --selected-index: ${selectedIndex};"
@@ -11111,7 +11127,9 @@ function eventClassificationSegment(field, selected, groups) {
               aria-checked="${active}"
               aria-disabled="${available ? "false" : "true"}"
               ${available ? "" : "disabled"}
-            >${escapeHtml(eventClassificationValueLabel(field, value))}</button>
+            >${escapeHtml(field === 'category' && value !== 'junior and senior'
+              ? ({en: 'Only', it: 'Solo', es: 'Solo', fr: 'Uniquement'}[state.language] || 'Only') + ' ' + eventClassificationCategoryLabel(value)
+              : eventClassificationValueLabel(field, value))}</button>
           `;
         }).join("")}
         <span class="segmented-thumb event-classification-thumb" aria-hidden="true"></span>
@@ -11159,6 +11177,7 @@ function eventDetailRankingParams(limit = 200) {
   };
   if (!group) return params;
   ["discipline", "category", "format", "round", "apparatus", "day"].forEach((key) => {
+    if (key === "category" && group[key] === "junior and senior") return;
     if (group[key] !== null && group[key] !== undefined && group[key] !== "") {
       params[key] = group[key];
     }
@@ -11170,7 +11189,7 @@ function eventResultContextParts(payload = {}) {
   const filters = payload.applied_filters || selectedEventClassification() || {};
   return [
     displayEnumValue(filters.discipline),
-    eventClassificationCategoryLabel(filters.category),
+    eventClassificationCategoryLabel(filters.category || selectedEventClassification()?.category),
     filters.format ? displayEnumValue(filters.format) : "",
     filters.round ? displayEnumValue(filters.round) : "",
     filters.apparatus,
@@ -11202,12 +11221,12 @@ function renderEventResultGroups(profile = state.eventDetail.profile) {
   const groups = officialEventClassificationGroups(profile);
   if (!groups.length) return emptyMessage(t("eventNoResults"));
   const selected = selectedEventClassification(profile);
-  const primaryFields = eventClassificationFields().filter((field) => field !== "apparatus");
+  const primaryFields = eventClassificationFields().filter((field) => field !== "apparatus" && field !== "category");
   const primaryControls = primaryFields.map((field) => eventClassificationSegment(field, selected, groups)).filter(Boolean).join("");
   const apparatusControl = eventClassificationSegment("apparatus", selected, groups);
   return `
     <div class="event-classification-sticky-menu">
-      <div class="event-result-groups">
+      <div class="event-classification-layout"><div class="event-result-groups">
         ${primaryControls ? `
           <div class="event-classification-select-grid event-classification-primary-row">
             ${primaryControls}
@@ -11221,7 +11240,7 @@ function renderEventResultGroups(profile = state.eventDetail.profile) {
         <div class="event-classification-select-grid event-classification-metric-row">
           ${renderEventDetailMetricControl()}
         </div>
-      </div>
+      </div>${eventClassificationSegment("category", selected, groups)}</div>
     </div>
   `;
 }
@@ -11261,7 +11280,7 @@ function renderEventRankingList(payload = {}) {
       showVaultAttempts,
       showApparatus: false,
       showTags: false,
-      rankForEntry: (entry) => (selectedMetric === "score" ? (entry.official_rank || entry.computed_rank) : entry.computed_rank),
+      rankForEntry: (entry) => (selectedMetric === "score" && selectedEventClassification()?.category !== "junior and senior" ? (entry.official_rank || entry.computed_rank) : entry.computed_rank),
       metaForEntry: (entry) => [entry.country],
     })}
     ${renderEventResultWarnings(results, payload)}

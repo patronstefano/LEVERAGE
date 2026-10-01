@@ -334,6 +334,8 @@ Il soft delete non sostituisce i backup: in produzione sara comunque necessario 
 
 ## Calendario eventi
 
+Nella Scheda Evento, gli eventi Junior e Senior aprono per default una graduatoria combinata nel medesimo contesto di disciplina/round/format/attrezzo/giorno. Lo slider verticale offre Junior e Senior, Solo Senior e Solo Junior. La vista combinata utilizza posizioni calcolate insieme, senza alterare i rank ufficiali delle categorie separate o i dati importati; i link a classifiche specifiche mantengono la categoria richiesta.
+
 Nel Centro Admin, **Inserimento dati** crea esclusivamente nuove schede Atleta ed Evento. La sottosezione **Risultati** permette di cercare un evento, scegliere una classifica gia presente e correggere D, E, P, B e Final Score in una tabella, con salvataggio o annullamento per riga. La creazione dei risultati dalla UI avviene esclusivamente in **Importazione file**. Le API di inserimento manuale restano disponibili per compatibilita tecnica, ma non sono piu esposte dalla sezione Risultati.
 
 `PATCH /results/{id}/scores` e riservato ad ADMIN/SUPER ADMIN con MFA verificata. Accetta i cinque punteggi originali (`expected`) e corretti (`values`), impedisce sovrascritture concorrenti (409), applica vincoli sportivi e registra l'audit. Nei dati importati, i componenti sconosciuti restano `null`, anche dal 2026; non vengono trasformati in zero o in E stimata registrata. La formula D+E-P+B viene verificata quando tutti i componenti applicabili sono conosciuti. Non modifica identita, contesto della gara o posizione ufficiale importata; la tabella si riordina per Final Score. Le correzioni sono per singolo record, non una transazione globale dell'intera classifica.
