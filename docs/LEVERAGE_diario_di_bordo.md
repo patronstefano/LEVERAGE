@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Ordine dei comandi della classifica
+
+- Invertiti i due comandi nel riepilogo della Scheda Evento: freccia di ritorno all'inizio classifica a sinistra, Vai all'Editor Risultati a destra. Invariati stile, collegamenti e permessi.
+
 #### 2026-10-01 - Denominazioni delle sottosezioni del Centro Admin
 
 - Rinominati slider e titoli: Inserimento dati diventa Nuova Entita; Risultati diventa Editor Risultati; Unisci atleti diventa Unione Entita; Statistiche sito diventa Statistiche. Etichette localizzate anche in inglese, spagnolo e francese.

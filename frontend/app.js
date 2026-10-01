@@ -11213,8 +11213,8 @@ function renderEventResultContext(payload = {}) {
         <span><strong class="context-note-lead">${escapeHtml(contextTitle)}</strong>${contextDetails.length ? ` · ${escapeHtml(contextDetails.join(" · "))}` : ""}</span>
       </div>
       <div class="event-context-actions">
-        ${renderEventScoreEditorLink()}
         ${renderStickyContextScrollButton("event-detail")}
+        ${renderEventScoreEditorLink()}
       </div>
     </div>
   `;
