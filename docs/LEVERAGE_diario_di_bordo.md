@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Priorita visiva degli errori nei campi Admin
+
+- Le regole di hover e focus neutro non si applicano piu ai campi non validi: il bordo rosso e il relativo alone restano visibili anche quando il campo viene selezionato, senza essere sostituiti dal contorno grigio/blu.
+- Coperti sia gli errori del validatore condiviso sia quelli dei campi data. Test browser sul colore effettivo di bordo e alone durante focus e hover dei campi obbligatori vuoti.
+
 #### 1 ottobre 2026 - Validazione coerente nei moduli del Centro Admin
 
 - I moduli amministrativi usano il componente di validazione di Accedi/Registrati: niente fumetto nativo "Completa questo campo", ma shake, bordo rosso e messaggio sotto ai comandi. Animazioni disabilitate quando richiesto dalle preferenze di movimento ridotto.

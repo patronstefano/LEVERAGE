@@ -190,6 +190,12 @@ def main():
                 assert page.locator('#adminCreateForm').evaluate('el => el.noValidate')
                 assert page.locator('#adminCreateFormValidation').inner_text() == 'Completa i campi obbligatori.'
                 assert page.locator('#adminCreateForm input[aria-invalid=true]').count() > 0
+                for invalid in page.locator('#adminCreateForm input[aria-invalid=true]').all():
+                    invalid.focus()
+                    invalid.hover()
+                    page.wait_for_timeout(180)
+                    colors = invalid.evaluate('el => { const s = getComputedStyle(el); return [s.borderTopColor, s.boxShadow]; }')
+                    assert colors == ['rgba(184, 52, 52, 0.76)', 'rgba(184, 52, 52, 0.08) 0px 0px 0px 3px'], colors
                 assert page.locator('#adminCreateForm').evaluate('el => getComputedStyle(el).animationName') == 'savedRankingInvalidShake'
                 assert len(writes) == previous_writes
                 page.locator('#adminCreateForm input[name=last_name]').fill('Test')

@@ -2889,8 +2889,8 @@ a:focus-visible > .entity-card-clickable {
 }
 
 .saved-ranking-input-shell:focus-within,
-.admin-center input:not([type="checkbox"]):not([type="file"]):focus,
-.admin-center textarea:focus,
+.admin-center input:not([type="checkbox"]):not([type="file"]):not(.is-invalid):not([aria-invalid="true"]):focus,
+.admin-center textarea:not(.is-invalid):focus,
 .auth-form input:focus {
   outline: none;
   border-color: rgba(25, 23, 71, 0.32);
@@ -6189,6 +6189,8 @@ a:focus-visible > .entity-card-clickable {
 
 .admin-center input.is-invalid,
 .admin-center input.is-invalid:focus,
+.admin-center input[aria-invalid="true"],
+.admin-center input[aria-invalid="true"]:focus,
 .admin-center textarea.is-invalid,
 .admin-center select.is-invalid,
 .admin-center .admin-file-picker:has(input.is-invalid) > button {
@@ -6254,17 +6256,17 @@ a:focus-visible > .entity-card-clickable {
   background-clip: padding-box;
 }
 
-.admin-form-grid input:hover,
-.admin-form-grid select:hover,
-.admin-inline-form input:hover,
-.admin-review-actions input:hover {
+.admin-form-grid input:not(.is-invalid):not([aria-invalid="true"]):hover,
+.admin-form-grid select:not(.is-invalid):hover,
+.admin-inline-form input:not(.is-invalid):hover,
+.admin-review-actions input:not(.is-invalid):hover {
   border-color: rgba(25, 23, 71, 0.26);
 }
 
-.admin-form-grid input:focus-visible,
-.admin-form-grid select:focus-visible,
-.admin-inline-form input:focus-visible,
-.admin-review-actions input:focus-visible {
+.admin-form-grid input:not(.is-invalid):not([aria-invalid="true"]):focus-visible,
+.admin-form-grid select:not(.is-invalid):focus-visible,
+.admin-inline-form input:not(.is-invalid):focus-visible,
+.admin-review-actions input:not(.is-invalid):focus-visible {
   border-color: var(--brand-blue);
   box-shadow: 0 0 0 3px rgba(25, 23, 71, 0.1);
 }
