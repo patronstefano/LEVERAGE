@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=full-classification-20261001";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=classification-editor-link-20261001";
 import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
@@ -11212,9 +11212,22 @@ function renderEventResultContext(payload = {}) {
       <div class="context-note-copy">
         <span><strong class="context-note-lead">${escapeHtml(contextTitle)}</strong>${contextDetails.length ? ` · ${escapeHtml(contextDetails.join(" · "))}` : ""}</span>
       </div>
-      ${renderStickyContextScrollButton("event-detail")}
+      <div class="event-context-actions">
+        ${renderStickyContextScrollButton("event-detail")}
+        ${renderEventScoreEditorLink()}
+      </div>
     </div>
   `;
+}
+
+function renderEventScoreEditorLink() {
+  if (!isAdminUser()) return '';
+  const group = selectedEventClassification();
+  if (!group) return '';
+  const params = new URLSearchParams({event_id: String(state.eventDetail.eventId)});
+  ['discipline', 'format', 'round', 'apparatus', 'day'].forEach((key) => params.set(key, group[key] ?? ''));
+  const label = {en: 'Edit classification scores', it: 'Modifica punteggi della classifica', es: 'Editar puntuaciones de la clasificación', fr: 'Modifier les scores du classement'}[state.language] || 'Edit classification scores';
+  return `<a class="favorite-button admin-tools-toggle event-score-editor-link" href="#/admin/results?${escapeHtml(params.toString())}" aria-label="${escapeHtml(label)}" title="${escapeHtml(label)}">${adminToolsIcon()}</a>`;
 }
 
 function renderEventResultGroups(profile = state.eventDetail.profile) {

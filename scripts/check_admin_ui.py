@@ -75,6 +75,8 @@ def main():
                            "top_athletes": [], "top_events": []}
             elif path == "/events/":
                 payload = [event]
+            elif path == "/events/1":
+                payload = event
             elif path == "/events/1/result-groups":
                 payload = [{"discipline": discipline, "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for discipline, apparatuses in [('MAG', ['AA', 'VT AVG', 'FX', 'HB', 'PB', 'SR', 'VT', 'PH']), ('WAG', ['FX', 'BB', 'VT', 'UB'])] for category in ["senior", "junior"] for apparatus in apparatuses for day in event_days]
             elif path == "/results/":
@@ -311,6 +313,12 @@ def main():
                 assert page.locator('[data-result-id="1500"]').count() == 1
                 assert page.locator('#adminReloadClassification').count() == 0
                 full_classification_size[0] = 0
+                for apparatus, expected in [('PH', 'PH'), ('AA', 'FX'), ('VT AVG', 'VT')]:
+                    page.evaluate('(apparatus) => { location.hash = "/admin/results?event_id=1&discipline=MAG&round=final&format=individual&day=&apparatus=" + encodeURIComponent(apparatus); }', apparatus)
+                    page.wait_for_function('(expected) => document.querySelector("[name=classification_apparatus]")?.value === expected', arg=expected)
+                    assert page.locator('[name=event_search]').input_value() == 'Admin test event · 2026'
+                    assert page.locator('[name=classification_round]').input_value() == 'final'
+                    assert page.locator('[name=classification_format]').input_value() == 'individual'
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').wait_for()

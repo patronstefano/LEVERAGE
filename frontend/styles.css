@@ -1657,6 +1657,10 @@ button {
   min-width: 0;
 }
 
+.event-result-context.sticky-context-note { grid-template-columns: minmax(0, 1fr) auto; }
+.event-context-actions { display: flex; align-items: center; gap: 8px; }
+.event-context-actions .event-score-editor-link { width: 30px; height: 30px; min-width: 30px; padding: 0; }
+
 .context-scroll-button {
   display: inline-flex;
   align-items: center;

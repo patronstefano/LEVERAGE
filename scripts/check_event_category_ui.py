@@ -1,5 +1,6 @@
 """Read-only check of combined event categories and the vertical selector."""
 from urllib.parse import parse_qs, urlparse
+from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
@@ -20,6 +21,7 @@ def main():
         control = page.locator('[data-event-classification-control=category]')
         selected = control.locator('[aria-checked=true]')
         assert selected.inner_text() == 'Junior e Senior'
+        assert page.locator('.event-score-editor-link').count() == 0
         assert page.locator('.event-classification-primary-row [data-event-classification-control=category]').count() == 0
         for value in ['senior', 'junior', 'junior and senior']:
             with page.expect_response(lambda response: '/events/1/ranking-view?' in response.url) as response:
@@ -46,6 +48,21 @@ def main():
         with page.expect_response(lambda response: '/events/1/ranking-view?' in response.url) as direct:
             page.goto('http://127.0.0.1:5173/?v=event-category-20261001#/events/1?classification_category=junior')
         assert parse_qs(urlparse(direct.value.url).query)['category'] == ['junior']
+        source = (Path(__file__).resolve().parents[1] / 'frontend/app.js').read_text()
+        renderer = source[source.index('function renderEventScoreEditorLink()'):source.index('function renderEventResultGroups(')]
+        assert page.evaluate('''(source) => {
+            const render = new Function('state', 'isAdminUser', 'selectedEventClassification', 'escapeHtml', 'adminToolsIcon', source + '; return renderEventScoreEditorLink();');
+            const group = {discipline:'WAG', format:'apparatus', round:'qualification', apparatus:'VT AVG', day:2};
+            for (const role of ['user', 'admin', 'super_admin', null]) {
+                const html = render({language:'it', eventDetail:{eventId:1}}, () => ['admin', 'super_admin'].includes(role), () => group, String, () => '<svg></svg>');
+                if (role === 'user' || role === null) { if (html) return false; continue; }
+                const node = document.createElement('div'); node.innerHTML = html;
+                const a = node.querySelector('a');
+                const params = new URLSearchParams(a.hash.split('?')[1]);
+                if (params.get('event_id') !== '1' || params.get('apparatus') !== 'VT AVG' || params.get('day') !== '2' || params.get('discipline') !== 'WAG') return false;
+            }
+            return true;
+        }''', renderer)
         assert not errors, errors
         browser.close()
     print('Combined categories, category variants, vertical thumb and responsive layout: passed')

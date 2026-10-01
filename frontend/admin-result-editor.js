@@ -26,7 +26,7 @@ export function eventEditorCategories(event) {
     : ['junior', 'senior'].includes(event.category) ? [event.category] : [];
 }
 
-export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved }) {
+export function mountResultEditor({ root, api, select, field, text, esc, bind, wireLookup, active, language, nameOf, feedback, onSaved, initialSelection }) {
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const label = (key) => COPY[key]?.[lang] || text(key);
   const keys = ['score', 'D_score', 'E_score', 'Penalty', 'Bonus'];
@@ -41,7 +41,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   root.innerHTML = `<div class="admin-lookup">${field('event_search', 'search')}<div id="adminEventOptions"></div></div><div id="adminClassificationEditor"></div>`;
   const area = root.querySelector('#adminClassificationEditor');
   const showError = (error) => { if (active()) feedback(error.message, true); };
-  const loadEvent = async (event) => {
+  const loadEvent = async (event, fromLink = false) => {
     const token = ++revision;
     try {
       const categories = eventEditorCategories(event);
@@ -52,6 +52,20 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
       if (!groups.length) { area.innerHTML += `<div class="empty-state">${esc(label('derived'))}</div>`; return; }
       const dimensions = ['discipline', 'format', 'round', 'apparatus', 'day'];
       let selected = {...groups[0]};
+      if (fromLink) {
+        const requestedApparatus = initialSelection.get('apparatus');
+        const candidates = groups.filter((group) => dimensions.every((key) => {
+          if (!initialSelection.has(key)) return true;
+          let requested = initialSelection.get(key);
+          if (key === 'apparatus' && requested === 'AA') return true;
+          if (key === 'apparatus' && requested === 'VT AVG') requested = 'VT';
+          return String(group[key] ?? '') === requested;
+        }));
+        if (!candidates.length) { area.innerHTML += `<div class="empty-state">${esc(text('empty'))}</div>`; return; }
+        candidates.sort((a, b) => (apparatusOrder[a.discipline] || []).indexOf(a.apparatus) - (apparatusOrder[b.discipline] || []).indexOf(b.apparatus));
+        selected = {...candidates[0]};
+        if (['AA', 'VT AVG'].includes(requestedApparatus)) area.innerHTML += `<p>${esc(label('derived'))}</p>`;
+      }
       area.innerHTML += '<div id="adminClassificationSelectors" class="admin-form-grid"></div>'
         + '<div id="adminScoreRows"></div>';
       const renderSelectors = () => {
@@ -173,4 +187,12 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
     } catch (error) { if (token === revision) showError(error); }
   };
   wireLookup(root.querySelector('[name=event_search]'), root.querySelector('#adminEventOptions'), '/events/', {}, loadEvent);
+  const eventId = initialSelection?.get('event_id');
+  if (eventId && /^\d+$/.test(eventId)) {
+    api(`/events/${eventId}`).then((event) => {
+      if (!active()) return;
+      root.querySelector('[name=event_search]').value = `${event.name} · ${event.year}`;
+      return loadEvent(event, true);
+    }).catch(showError);
+  }
 }

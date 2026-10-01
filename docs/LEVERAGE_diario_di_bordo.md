@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Accesso contestuale all'editor dalla Scheda Evento
+
+- Aggiunta una chiave inglese nel box riepilogo della classifica, a destra del pulsante per tornare ai comandi iniziali. Visibile esclusivamente ad ADMIN e SUPER ADMIN, con icona e comportamento coerenti agli strumenti delle schede.
+- Il collegamento apre Centro Admin > Risultati e carica automaticamente l'evento e il contesto disciplina/format/round/attrezzo/giorno della classifica. Mantiene il giorno non specificato distinto dai giorni numerati; una combinazione non disponibile non viene sostituita arbitrariamente con un'altra classifica.
+- Come deciso per l'editor, negli eventi misti vengono caricate entrambe le categorie. Per AA si apre il primo attrezzo disponibile nel contesto, per VT AVG si apre VT, con un avviso che ricorda che gli aggregati non sono modificabili direttamente.
+- Nessun ampliamento dei permessi backend: lettura pubblica e correzioni ADMIN con MFA restano separate. Verificati il renderer per USER/anonimo/ADMIN/SUPER ADMIN e l'apertura dell'editor con PH, AA e VT AVG.
+
 #### 2026-10-01 - Caricamento automatico dell'intera classifica nell'editor
 
 - Eliminato il pulsante Ricarica classifica dal Centro Admin. Selezionando l'evento o cambiando i criteri, il caricamento parte automaticamente e mostra tutte le righe della classifica.
