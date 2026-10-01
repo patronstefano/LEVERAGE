@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Precisione dei comandi D, P e B nell'editor risultati
+
+- D Score, Penalty e Bonus sono visualizzati con una cifra decimale e modificabili tramite freccine a passi di 0,1. E Score e Final Score conservano il passo di 0,001.
+- I campi null restano vuoti; la sola visualizzazione non arrotonda i valori storici salvati. Annulla ripristina la formattazione a una cifra decimale e gli eventuali null originali.
+- Verifica browser di ArrowUp/ArrowDown per tutti e tre i campi, formattazione, annullamento e conservazione dei passi di E/Final Score.
+
 #### 2026-10-01 - Vincoli espliciti per E registrata
 
 - Precisazione dell'utente: non si salva E se P o B sono null. Obbligatori anche D e Final Score, affinche la formula sia sempre verificabile. Controllo sia nell'editor sia nel backend, quindi non aggirabile tramite una richiesta diretta all'endpoint di correzione.

@@ -26,6 +26,8 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
   const lang = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const label = (key) => COPY[key]?.[lang] || text(key);
   const keys = ['score', 'D_score', 'E_score', 'Penalty', 'Bonus'];
+  const oneDecimal = (key) => ['D_score', 'Penalty', 'Bonus'].includes(key);
+  const inputValue = (key, value) => value == null ? '' : oneDecimal(key) ? Number(value).toFixed(1) : value;
   const titles = ['Final Score', 'D Score', 'E Score', 'P', 'B'];
   const snapshot = (row) => Object.fromEntries(keys.map((key) => [key, row[key] ?? null]));
   const drafts = new Map();
@@ -86,7 +88,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
           if (!rows.length) { out.innerHTML = `<div class="empty-state">${esc(text('empty'))}</div>`; return; }
           out.innerHTML = `<p data-execution-notice role="status"></p><div class="admin-score-table-scroll"><table class="admin-score-table"><thead><tr><th>${esc(label('athlete'))}</th>${titles.map((t) => `<th>${t}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r) => {
             const values = drafts.get(r.id) || snapshot(r);
-            return `<tr data-result-id="${r.id}"><th scope="row">${esc(names.get(r.athlete_id))}<small>${esc(r.represented_country || '')} · ID ${r.id}${r.vt_attempt ? ` · VT ${r.vt_attempt}` : ''}</small></th>${keys.map((key,i) => `<td><input type="number" step="${key === 'D_score' ? '0.1' : '0.001'}" min="0" name="${key}" aria-label="${titles[i]} · ${esc(names.get(r.athlete_id))}" value="${values[key] == null ? '' : key === 'D_score' ? Number(values[key]).toFixed(1) : values[key]}" placeholder="—" title="${esc(label('unavailable'))}"></td>`).join('')}<td><div class="admin-center-actions"><button type="button" data-save class="quiet-button outline-command-button">${esc(label('save'))}</button><button type="button" data-reset class="quiet-button outline-command-button">${esc(label('cancel'))}</button></div><small role="status"></small></td></tr>`;
+            return `<tr data-result-id="${r.id}"><th scope="row">${esc(names.get(r.athlete_id))}<small>${esc(r.represented_country || '')} · ID ${r.id}${r.vt_attempt ? ` · VT ${r.vt_attempt}` : ''}</small></th>${keys.map((key,i) => `<td><input type="number" step="${oneDecimal(key) ? '0.1' : '0.001'}" min="0" name="${key}" aria-label="${titles[i]} · ${esc(names.get(r.athlete_id))}" value="${inputValue(key, values[key])}" placeholder="—" title="${esc(label('unavailable'))}"></td>`).join('')}<td><div class="admin-center-actions"><button type="button" data-save class="quiet-button outline-command-button">${esc(label('save'))}</button><button type="button" data-reset class="quiet-button outline-command-button">${esc(label('cancel'))}</button></div><small role="status"></small></td></tr>`;
           }).join('')}</tbody></table></div>`;
           const refreshExecutionNotice = () => {
             const incomplete = !classificationHasRecordedExecution(rows);
@@ -104,8 +106,8 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
             const estimate = document.createElement('small');
             tr.querySelector('[name=E_score]').after(estimate);
             const values = () => Object.fromEntries(inputs.map((el) => [el.name,
-              el.name === 'D_score' && row.D_score != null && el.value === Number(row.D_score).toFixed(1)
-                ? row.D_score : el.value === '' ? null : el.valueAsNumber]));
+              oneDecimal(el.name) && row[el.name] != null && el.value === inputValue(el.name, row[el.name])
+                ? row[el.name] : el.value === '' ? null : el.valueAsNumber]));
             const update = () => {
               const current = values();
               const dirty = keys.some((key) => current[key] !== (row[key] ?? null));
@@ -117,7 +119,11 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, w
               if (dirty) drafts.set(row.id, values()); else drafts.delete(row.id);
             };
             inputs.forEach((input) => input.addEventListener('input', update));
-            reset.onclick = () => { inputs.forEach((el) => { el.value = row[el.name] == null ? '' : el.name === 'D_score' ? Number(row[el.name]).toFixed(1) : row[el.name]; }); update(); };
+            inputs.filter((input) => oneDecimal(input.name)).forEach((input) => input.addEventListener('change', () => {
+              if (input.value !== '' && input.validity.valid) input.value = inputValue(input.name, input.valueAsNumber);
+              update();
+            }));
+            reset.onclick = () => { inputs.forEach((el) => { el.value = inputValue(el.name, row[el.name]); }); update(); };
             save.onclick = async () => {
               if (inputs.some((input) => !input.reportValidity())) return;
               const body = {expected: snapshot(row), values: values()};

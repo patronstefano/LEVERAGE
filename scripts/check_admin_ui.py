@@ -202,6 +202,20 @@ def main():
                 assert 'E est. 8.000' in page.locator('.admin-score-table').inner_text()
                 assert page.locator('#adminResultForm').count() == 0
                 assert page.locator('[data-save]').is_disabled()
+                for key in ['D_score', 'Penalty', 'Bonus']:
+                    score_input = page.locator(f'.admin-score-table [name={key}]')
+                    assert score_input.get_attribute('step') == '0.1'
+                    score_input.fill('1.0')
+                    score_input.press('ArrowUp')
+                    assert score_input.input_value() == '1.1'
+                    score_input.press('ArrowDown')
+                    score_input.blur()
+                    assert score_input.input_value() == '1.0'
+                page.locator('[data-reset]').click()
+                assert page.locator('.admin-score-table [name=D_score]').input_value() == '5.0'
+                assert page.locator('.admin-score-table [name=Penalty]').input_value() == ''
+                assert page.locator('.admin-score-table [name=E_score]').get_attribute('step') == '0.001'
+                assert page.locator('.admin-score-table [name=score]').get_attribute('step') == '0.001'
                 page.locator('.admin-score-table [name=score]').fill('13.2')
                 for value in ['PH', 'FX']:
                     control = page.locator('[name=classification_apparatus]').locator('..')
