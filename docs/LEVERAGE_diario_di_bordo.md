@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 1 ottobre 2026 - Nomi dei paesi nei selettori nazionalita
+
+- Le opzioni nazionalita mostrano codice sportivo e nome localizzato, per esempio `ITA (Italia)`, nei moduli Admin, nelle schede atleta e nei suggerimenti di revisione.
+- Nomi nelle quattro lingue tramite il catalogo internazionale del browser, con corrispondenza esplicita tra codici sportivi e geografici e gestione dedicata di Scozia e Taipei Cinese.
+- Il valore inviato al backend resta il codice originario; i codici storici o non presenti nel catalogo sono conservati senza inventare un nome. Gli anni di nascita non cambiano.
+- Test browser su copertura del catalogo nelle quattro lingue, etichetta italiana, selezione con codice sportivo invariato e mantenimento dei valori fuori catalogo.
+
 #### 1 ottobre 2026 - Etichetta categoria Nuovo Evento
 
 - Corretta l'opzione combinata in "Junior e Senior", con maiuscole e traduzioni coerenti nelle quattro lingue. Invariato il valore backend `junior and senior`. Aggiunto controllo browser sul modulo Nuovo Evento.

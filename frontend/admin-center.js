@@ -1,5 +1,5 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
-import { athleteFieldOptions } from './athlete-field-options.js?v=20260930';
+import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=editor-selected-event-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=20261001';
 
@@ -286,6 +286,7 @@ let generation = 0;
 let navigationObserver;
 export async function renderAdminCenter(host) {
   const { state, escapeHtml: esc } = host;
+  const athleteFieldOptions = (field, current) => localizedAthleteFieldOptions(field, current, state.language);
   const superCenter = /^\/super-admin(?:\/|$)/.test(state.route);
   const baseRoute = superCenter ? "/super-admin" : "/admin";
   const text = (key) => COPY[key] ? adminLabel(state.language, key) : host.t(key) !== key ? host.t(key) : adminLabel(state.language, key);

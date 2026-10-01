@@ -173,6 +173,17 @@ def main():
                 assert page.locator('[data-overview-count="results.total"]').inner_text() == '40.000'
                 assert not page.locator('.admin-overview-link').count()
             if tab == "entry":
+                assert page.evaluate('''async () => {
+                    const {athleteFieldOptions: options, athleteCountryCodes: codes} = await import('/athlete-field-options.js?v=country-names-20261001');
+                    for (const language of ['en', 'it', 'es', 'fr']) {
+                        const rows = options('country', '', language);
+                        if (!codes.every(code => rows.some(row => row.value === code && row.label.startsWith(code + ' (')))) return false;
+                    }
+                    return options('country', '', 'it').find(row => row.value === 'ITA').label === 'ITA (Italia)'
+                        && options('country', '', 'en').find(row => row.value === 'ITA').label === 'ITA (Italy)'
+                        && options('country', 'ZZZ', 'it').some(row => row.value === 'ZZZ' && row.label === 'ZZZ')
+                        && options('birth_year', '2001', 'it').find(row => row.value === '2001').label === '2001';
+                }''')
                 page.locator('#adminCreateForm input[name=last_name]').wait_for()
                 page.locator('#adminCreateForm input[name=last_name]').focus()
                 page.wait_for_timeout(200)
@@ -190,6 +201,8 @@ def main():
                     assert abs(bounds['left'] - bounds['right']) < 2, bounds
                     control.locator(f'[data-admin-select-value="{value}"]').click()
                     assert page.locator(f'#adminCreateForm [name={name}]').input_value() == value
+                    if name == 'country':
+                        assert control.locator('[data-admin-select-label]').inner_text() == 'ITA (Italia)'
                 assert page.locator('#adminNewAthlete').bounding_box()['x'] < page.locator('#adminNewEvent').bounding_box()['x']
                 page.locator("#adminNewEvent").click()
                 page.locator("#adminCreateForm input[name=name]").wait_for()

@@ -1,5 +1,5 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-category-label-20261001";
-import { athleteFieldOptions } from "./athlete-field-options.js?v=20260930";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=country-names-20261001";
+import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
 
@@ -10157,6 +10157,10 @@ function renderAnalyticsComparison() {
   `);
   bindAnalyticsComparisonPickers();
   renderAnalyticsComparisonWorkspace();
+}
+
+function athleteFieldOptions(field, current) {
+  return localizedAthleteFieldOptions(field, current, state.language);
 }
 
 function renderAdminSelectControl(name, label, value, options, inputAttributes = "") {
