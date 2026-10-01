@@ -112,6 +112,7 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
+        assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'review', 'entry', 'merge', 'results', 'imports']
         back = page.locator('.detail-topbar .detail-back-button')
         assert back.inner_text() == 'Torna all’Area Personale'
         assert back.get_attribute('href') == '#/account'
