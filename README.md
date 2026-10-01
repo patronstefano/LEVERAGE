@@ -372,6 +372,8 @@ Gli utenti registrati hanno `preferred_language`, con default `en` e valori amme
 
 Le notifiche generate dal backend usano sempre la lingua preferita del destinatario loggato. Per visitatori anonimi, testi di interfaccia e label visuali restano responsabilita del frontend.
 
+La sottosezione **Gestione record** e stata rimossa dal Centro Admin: gli strumenti delle schede Atleta/Evento e la sezione Risultati sono i punti di accesso per la manutenzione. Il vecchio percorso `/admin/entities` mostra la Panoramica; le API backend rimangono invariate.
+
 ## Inserimento manuale dati
 
 Le API descritte sotto sono mantenute per compatibilita: dal 1 ottobre 2026 la UI del Centro Admin non propone piu la creazione manuale di risultati, ma la correzione delle classifiche importate.

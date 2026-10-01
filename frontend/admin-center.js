@@ -8,7 +8,6 @@ const COPY = {
   superCenter: ["Super Admin center", "Centro Super Admin", "Centro Super Admin", "Centre Super Admin"],
   superIntro: ["Manage access roles, review the audit trail and restore changes.", "Gestisci i ruoli di accesso, verifica lo storico delle operazioni e ripristina le modifiche.", "Gestiona los roles de acceso, revisa el historial y restaura los cambios.", "Gérez les rôles, consultez l’historique et restaurez les modifications."],
   backToAccount: ["Back to Personal Area", "Torna all’Area Personale", "Volver al Área Personal", "Retour à l’Espace personnel"],
-  entities: ["Manage records", "Gestione record", "Gestionar registros", "Gérer les fiches"],
   delete: ["Delete", "Elimina", "Eliminar", "Supprimer"],
   image: ["Upload image", "Carica immagine", "Subir imagen", "Importer une image"],
   mfaSetup: ["Set up two-factor authentication", "Configura l’autenticazione a due fattori", "Configurar autenticación de dos factores", "Configurer l’authentification à deux facteurs"],
@@ -278,7 +277,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "results", "entities", "imports", "review", "merge", "notifications", "statistics"];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "entry", "results", "imports", "review", "merge", "notifications", "statistics"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
@@ -521,33 +520,6 @@ export async function renderAdminCenter(host) {
       paint('<div id="adminResultEditor"></div>');
       mountResultEditor({ root: root.querySelector('#adminResultEditor'), api, select, field, text, esc, bind, wireLookup, active, language: state.language, nameOf, feedback,
         onSaved: () => { state.globalSearch.payload = null; } });
-    }
-    if (tab === "entities") {
-      paint(form("adminRecordLookup", select("kind", "type", ["athletes", "events", "results"]) + field("id", "Leverage ID", "number", "", true)) + '<div id="adminRecord"></div>');
-      onSubmit("adminRecordLookup", async (v) => {
-        const id = Number(v.id), kind = v.kind;
-        const record = await api("/" + kind + "/" + id);
-        const output = document.getElementById("adminRecord");
-        if (kind === "results") {
-          const fields = ["athlete_id", "event_id", "represented_country", "discipline", "category", "apparatus", "vt_attempt", "day", "format", "round", "D_score", "E_score", "Penalty", "Bonus", "score", "rank"];
-          output.innerHTML = form("adminResultEdit", await schemaFields("ResultUpdate", record, fields), "save");
-          onSubmit("adminResultEdit", async (values) => {
-            await api("/results/" + id, { method: "PUT", body: typed("ResultUpdate", values) }); feedback(text("success"));
-          });
-        } else {
-          output.innerHTML = entityLink(kind, id, nameOf(record)) +
-            form("adminImage", '<label>' + text("image") + '<input type="file" name="file" accept="image/png,image/jpeg,image/webp" required></label>', "image");
-          onSubmit("adminImage", async (values, f) => {
-            const body = new FormData(); body.append("file", f.elements.file.files[0]);
-            await api("/" + kind + "/" + id + "/image", { method: "POST", body }); feedback(text("success"));
-          });
-        }
-        output.insertAdjacentHTML("beforeend", button("delete", 'id="adminDeleteRecord"')); bind();
-        document.getElementById("adminDeleteRecord").onclick = () => confirm("delete", async () => {
-          await api("/" + kind + "/" + id, { method: "DELETE" }); output.innerHTML = "";
-        });
-        document.getElementById("adminRecordLookup").addEventListener("change", () => { output.innerHTML = ""; }, { once: true });
-      });
     }
     if (tab === "imports") await imports();
     if (tab === "review") {

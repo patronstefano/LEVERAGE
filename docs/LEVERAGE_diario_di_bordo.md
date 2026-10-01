@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-01 - Rimozione di Gestione record
+
+- Su richiesta dell'utente, eliminata la sottosezione Gestione record dal Centro Admin, insieme al relativo modulo generico di modifica, caricamento immagini e cancellazione.
+- La manutenzione rimane negli strumenti delle schede Atleta/Evento e nella sezione Risultati dedicata alle correzioni dei punteggi. Nessuna eliminazione di dati o API backend.
+- Il vecchio percorso /admin/entities mostra la Panoramica, come gli altri percorsi non piu disponibili. Aggiornato il test browser per controllare l'assenza della voce e del modulo.
+
 #### 2026-10-01 - Risultati: correzione delle classifiche importate
 
 - Decisione dell'utente: abbandonare il caricamento manuale dalla UI, considerato troppo macchinoso. La creazione dei risultati rimane affidata a Importazione file; Inserimento dati continua a creare soltanto Atleta ed Evento.
