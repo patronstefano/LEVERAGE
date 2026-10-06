@@ -553,6 +553,7 @@ def main():
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
                 assert page.locator('.admin-user-role-actions').is_visible()
             if tab == "audit":
+                assert page.locator('#adminAuditForm [name=entity_id]').locator('..').inner_text() == 'Leverage ID'
                 assert page.evaluate('''async () => {
                     const { createAdminReport } = await import('/admin-reports.js?v=20261006');
                     const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');

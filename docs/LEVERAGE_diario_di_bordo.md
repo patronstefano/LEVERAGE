@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Etichetta Leverage ID nel filtro audit
+
+- Rinominato ID in Leverage ID per chiarire che il filtro identifica l'entita interessata, non l'operazione di audit. Invariati parametro entity_id e comportamento della ricerca.
+
 #### 2026-10-06 - Selettori Editor Risultati su una riga
 
 - Disposti Disciplina, Formato, Fase e Attrezzo sulla stessa riga, includendo Giorno quando disponibile. Griglia adattiva con colonne uniformi e ritorno a capo su finestre strette, senza variazioni alla logica dei selettori.
