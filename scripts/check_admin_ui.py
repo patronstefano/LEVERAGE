@@ -491,6 +491,7 @@ def main():
                 page.screenshot(path='/tmp/leverage-admin-statistics-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "review":
+                assert page.locator('[data-scan-refresh]').count() == 0
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
                 page.locator('[data-scan-job="51"] summary').click()

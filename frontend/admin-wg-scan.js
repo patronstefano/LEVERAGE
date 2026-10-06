@@ -17,7 +17,6 @@ const COPY = {
   open: ['Review profile', 'Esamina scheda', 'Revisar ficha', 'Examiner la fiche'],
   reject: ['Reject', 'Rifiuta', 'Rechazar', 'Refuser'],
   more: ['Load more matches', 'Carica altri riscontri', 'Cargar más coincidencias', 'Charger plus de correspondances'],
-  refresh: ['Refresh', 'Aggiorna', 'Actualizar', 'Actualiser'],
 };
 
 export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType}) {
@@ -41,8 +40,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
       if (!active() || !root.isConnected) return;
       root.querySelector('[data-scan-controls]').innerHTML =
         button(status.started_at ? status.enabled ? 'pause' : 'resume' : 'start', `data-scan-action="${status.started_at ? status.enabled ? 'pause' : 'resume' : 'start'}"`)
-        + (status.counts.error ? button('retry', 'data-scan-action="retry_errors"') : '')
-        + button('refresh', 'data-scan-refresh');
+        + (status.counts.error ? button('retry', 'data-scan-action="retry_errors"') : '');
       root.querySelector('[data-scan-status]').innerHTML = `<div><dt>World Gymnastics</dt><dd>${esc(t(status.enabled ? 'active' : 'paused'))}</dd></div>`
         + ['pending', 'running', 'matched', 'no_match', 'error', 'skipped', 'dismissed'].map((key) => `<div><dt>${esc(t(key))}</dt><dd>${status.counts[key] || 0}</dd></div>`).join('');
       const next = JSON.stringify(matches.items);
@@ -57,7 +55,6 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
         }).join('');
       }
       root.querySelector('[data-scan-more]').hidden = matches.items.length >= matches.total;
-      root.querySelector('[data-scan-refresh]').onclick = refresh;
       root.querySelectorAll('[data-scan-action]').forEach((button) => { button.onclick = async () => {
         button.disabled = true;
         try { await api('/world-gymnastics/scan/control', {method:'POST',body:{action:button.dataset.scanAction}}); await refresh(); }

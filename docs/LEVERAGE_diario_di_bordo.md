@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Rimozione del comando Aggiorna nei riscontri World Gymnastics
+
+- Rimosso il pulsante manuale Aggiorna, ridondante con l'aggiornamento automatico ogni 10 secondi quando la sezione e visibile.
+- Conservati caricamento iniziale, aggiornamento dopo le azioni e paginazione dei riscontri. Nessuna scansione avviata: leggere lo stato non avvia ricerche World Gymnastics.
+
 #### 2026-10-06 - Riordino dei riscontri World Gymnastics nelle Revisioni
 
 - Separati visivamente comandi, contatori, nota sulla compatibilita e lista dei riscontri con spaziature uniformi e divisori leggeri, senza aggiungere contenitori decorativi.

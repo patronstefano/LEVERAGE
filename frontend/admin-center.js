@@ -1,7 +1,7 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
-import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=review-entities-20261001';
+import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=auto-refresh-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
