@@ -18,6 +18,7 @@ router = APIRouter()
 class ScanCommand(BaseModel):
     model_config = ConfigDict(extra="forbid")
     action: Literal["start", "pause", "resume", "retry_errors"]
+    entity_type: Literal["athlete", "event"]
 
 
 class RejectCandidate(BaseModel):
@@ -42,13 +43,13 @@ def job_payload(job):
 
 
 @router.get("/status")
-def status(db: Session = Depends(get_db), admin=Depends(get_current_admin_user)):
-    return scan_status(db)
+def status(entity_type: Literal["athlete", "event"], db: Session = Depends(get_db), admin=Depends(get_current_admin_user)):
+    return scan_status(db, entity_type)
 
 
 @router.post("/control")
 def control(payload: ScanCommand, db: Session = Depends(get_db), admin=Depends(get_current_admin_user)):
-    item = get_control(db)
+    item = get_control(db, payload.entity_type)
     before = model_snapshot(item)
     item.enabled = payload.action != "pause"
     if item.started_at is None and payload.action != "pause":
@@ -58,10 +59,10 @@ def control(payload: ScanCommand, db: Session = Depends(get_db), admin=Depends(g
         item.consecutive_errors = 0
         item.last_error = None
     if payload.action == "retry_errors":
-        db.query(JOB).filter_by(status="error").update({"status": "pending"})
-    add_audit_log(db, admin, "update", "WorldGymnasticsScanControl", 1, before=before, after=model_snapshot(item))
+        db.query(JOB).filter_by(entity_type=payload.entity_type, status="error").update({"status": "pending"})
+    add_audit_log(db, admin, "update", "WorldGymnasticsScanControl", item.id, before=before, after=model_snapshot(item))
     db.commit()
-    return scan_status(db)
+    return scan_status(db, payload.entity_type)
 
 
 @router.get("/matches")

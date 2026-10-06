@@ -17,7 +17,10 @@ def main():
     parser.add_argument("--backup", action="store_true")
     parser.add_argument("--action", choices=["start", "pause", "status"], default="status")
     parser.add_argument("--report", type=Path)
+    parser.add_argument("--entity-type", choices=["athlete", "event"])
     args = parser.parse_args()
+    if not args.backup and args.action != "status" and not args.entity_type:
+        parser.error("--entity-type is required to start or pause a scan")
     if args.backup:
         path = Path("backups") / f"before_wg_scan_{datetime.now():%Y%m%d_%H%M%S}.db"
         path.parent.mkdir(exist_ok=True)
@@ -26,17 +29,18 @@ def main():
         print(str(path))
         return
     with SessionLocal() as db:
-        item = get_control(db)
+        item = get_control(db, args.entity_type) if args.entity_type else None
         if args.action != "status":
             before = model_snapshot(item)
             item.enabled = args.action == "start"
             if item.started_at is None and args.action == "start":
                 item.started_at = datetime.utcnow()
                 enqueue_initial(db, item)
-            add_audit_log(db, None, "update", "WorldGymnasticsScanControl", 1,
+            add_audit_log(db, None, "update", "WorldGymnasticsScanControl", item.id,
                           before=before, after=model_snapshot(item))
             db.commit()
-        report = scan_status(db)
+        report = scan_status(db, args.entity_type) if args.entity_type else {
+            kind: scan_status(db, kind) for kind in ("athlete", "event")}
         text = json.dumps(report, default=str, indent=2)
         print(text)
         if args.report:

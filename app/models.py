@@ -248,6 +248,7 @@ class Event(Base):
 class WorldGymnasticsScanControl(Base):
     __tablename__ = "world_gymnastics_scan_control"
     id = Column(Integer, primary_key=True)
+    entity_type = Column(String(10), nullable=False, unique=True, default="athlete")
     enabled = Column(Boolean, nullable=False, default=False)
     started_at = Column(DateTime, nullable=True)
     athlete_cursor = Column(Integer, nullable=False, default=0)

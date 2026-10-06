@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Scansioni World Gymnastics indipendenti per Atleti ed Eventi
+
+- Decisione: la separazione nelle Revisioni non riguarda piu solo i riscontri visualizzati. Atleti ed Eventi hanno controlli persistenti distinti, con avvio, sospensione, ripresa, riprova errori, contatori e cursori indipendenti.
+- Migrazione 0042: conservati i job e l'avanzamento preesistenti, suddivisi i cursori e sospese entrambe le scansioni. Una ricerca gia in corso puo terminare dopo la sospensione; non vengono avviati altri job di quel tipo finche non ripreso.
+- Il worker seleziona il controllo abilitato con attesa piu lunga per evitare che una coda impedisca l'avanzamento dell'altra. Tre errori consecutivi sospendono solamente il tipo interessato.
+- API e comandi locali richiedono il tipo di entita per cambiare lo stato della scansione; comandi sottoposti ad audit con ID del controllo corretto. Il frontend invia il tipo selezionato anche per leggere i contatori.
+- Backup preventivo: `backups/before_wg_scan_20261006_111132.db`. Migrazione applicata a backend fermo; successivamente riavviata la preview con entrambe le scansioni disabilitate. Nessuna ricerca reale avviata durante l'intervento.
+- Verifiche su database temporanei e browser con API simulate: separazione di avvio, pausa e retry, conteggi filtrati, migrazione con conservazione cursori, gestione errori e selettori frontend.
+- Esito finale: 239 test automatici superati e controllo UI desktop/mobile superato. Backend disponibile dopo la migrazione; confermato stato disabilitato per entrambe le scansioni.
+
 #### 2026-10-06 - Rimozione del comando Aggiorna nei riscontri World Gymnastics
 
 - Rimosso il pulsante manuale Aggiorna, ridondante con l'aggiornamento automatico ogni 10 secondi quando la sezione e visibile.

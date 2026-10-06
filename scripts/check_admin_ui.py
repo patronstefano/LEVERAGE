@@ -48,6 +48,9 @@ def main():
                 }
             elif path == "/world-gymnastics/scan/status":
                 payload = {"enabled": False, "started_at": None, "counts": {"matched": 1}, "total": 1}
+                if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
+                    payload['counts']['matched'] = 7
+                    payload['total'] = 7
             elif path == "/world-gymnastics/scan/matches":
                 payload = {"total": 1, "items": [{"id": 51, "entity_type": "athlete", "entity_id": 1, "entity_name": "Test Ada", "candidates": [{"fig_id": "123", "first_name": "Ada", "last_name": "Test", "country": "ITA", "discipline": "WAG", "match_score": .95, "profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=123"}]}]}
                 if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
@@ -506,6 +509,7 @@ def main():
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
                 page.locator('[data-review-entity="event"]').click()
                 page.locator('[data-scan-job="52"]').wait_for()
+                assert '7' in page.locator('[data-scan-status]').inner_text()
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
                 assert page.locator('[data-scan-job="51"]').count() == 0
                 assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
@@ -530,6 +534,14 @@ def main():
                 assert actions['y'] >= copy['y'] + copy['height'] + 11
                 page.screenshot(path="/tmp/leverage-wg-scan-mobile.png", full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
+                page.locator('[data-scan-action="start"]').click()
+                page.wait_for_timeout(200)
+                assert json.loads(writes[-1]['body']) == {'action': 'start', 'entity_type': 'athlete'}
+                page.locator('[data-review-entity="event"]').click()
+                page.locator('[data-scan-job="52"]').wait_for()
+                page.locator('[data-scan-action="start"]').click()
+                page.wait_for_timeout(200)
+                assert json.loads(writes[-1]['body']) == {'action': 'start', 'entity_type': 'event'}
             if tab == "imports":
                 previous_writes = len(writes)
                 page.locator('#adminImportForm button[type=submit]').click()

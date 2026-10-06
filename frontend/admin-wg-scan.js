@@ -29,7 +29,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
     if (!active() || !root.isConnected || busy) return;
     busy = true;
     try {
-      const status = await api('/world-gymnastics/scan/status');
+      const status = await api('/world-gymnastics/scan/status', {params: {entity_type: entityType}});
       const matches = {items: [], total: 0};
       do {
         const page = await api('/world-gymnastics/scan/matches', {params: {limit: Math.min(100, limit - matches.items.length), offset: matches.items.length, ...(entityType ? {entity_type: entityType} : {})}});
@@ -57,7 +57,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
       root.querySelector('[data-scan-more]').hidden = matches.items.length >= matches.total;
       root.querySelectorAll('[data-scan-action]').forEach((button) => { button.onclick = async () => {
         button.disabled = true;
-        try { await api('/world-gymnastics/scan/control', {method:'POST',body:{action:button.dataset.scanAction}}); await refresh(); }
+        try { await api('/world-gymnastics/scan/control', {method:'POST',body:{action:button.dataset.scanAction, entity_type: entityType}}); await refresh(); }
         catch (error) { feedback(error.message,true); button.disabled=false; }
       }; });
       root.querySelectorAll('[data-scan-reject]').forEach((button) => {

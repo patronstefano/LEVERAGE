@@ -5,7 +5,6 @@ import time
 import uuid
 from dataclasses import asdict
 from datetime import datetime, timedelta
-from itertools import zip_longest
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import or_, func
@@ -32,32 +31,28 @@ def display_name(entity, kind):
     return f"{entity.last_name} {entity.first_name}" if kind == "athlete" else f"{entity.name} {entity.year}"
 
 
-def get_control(db):
-    control = db.get(CONTROL, 1)
+def get_control(db, kind="athlete"):
+    if kind not in ENTITY_MODELS:
+        raise ValueError("Unknown scan entity type")
+    control = db.query(CONTROL).filter_by(entity_type=kind).first()
     if control is None:
-        control = CONTROL(id=1)
+        control = CONTROL(id=1 if kind == "athlete" else 2, entity_type=kind)
         db.add(control)
         db.flush()
     return control
 
 
 def enqueue_new(db, control):
-    batches = []
-    for kind, model in ENTITY_MODELS.items():
-        cursor = getattr(control, f"{kind}_cursor")
-        entities = db.query(model).filter(model.id > cursor).order_by(model.id).limit(1000).all()
-        if entities:
-            setattr(control, f"{kind}_cursor", entities[-1].id)
-        existing = {row[0] for row in db.query(JOB.entity_id).filter(JOB.entity_type == kind,
-            JOB.entity_id.in_([e.id for e in entities])).all()}
-        batches.append([(kind, entity) for entity in entities
-            if entity.id not in existing and not entity.is_deleted and not verified(entity, kind)])
-    # Interleave athletes and events so both kinds start returning matches immediately.
-    for pair in zip_longest(*batches):
-        for item in pair:
-            if item is None:
-                continue
-            kind, entity = item
+    kind = control.entity_type
+    model = ENTITY_MODELS[kind]
+    cursor = getattr(control, f"{kind}_cursor")
+    entities = db.query(model).filter(model.id > cursor).order_by(model.id).limit(1000).all()
+    if entities:
+        setattr(control, f"{kind}_cursor", entities[-1].id)
+    existing = {row[0] for row in db.query(JOB.entity_id).filter(JOB.entity_type == kind,
+        JOB.entity_id.in_([e.id for e in entities])).all()}
+    for entity in entities:
+        if entity.id not in existing and not entity.is_deleted and not verified(entity, kind):
             db.add(JOB(entity_type=kind, entity_id=entity.id, entity_name=display_name(entity, kind),
                        fingerprint=fingerprint(entity, kind)))
 
@@ -71,10 +66,10 @@ def enqueue_initial(db, control):
             break
 
 
-def scan_status(db):
-    control = get_control(db)
-    counts = dict(db.query(JOB.status, func.count(JOB.id)).group_by(JOB.status).all())
-    return {"as_of": datetime.utcnow(), "enabled": control.enabled, "started_at": control.started_at, "counts": counts,
+def scan_status(db, kind="athlete"):
+    control = get_control(db, kind)
+    counts = dict(db.query(JOB.status, func.count(JOB.id)).filter(JOB.entity_type == kind).group_by(JOB.status).all())
+    return {"entity_type": kind, "as_of": datetime.utcnow(), "enabled": control.enabled, "started_at": control.started_at, "counts": counts,
             "total": sum(counts.values()), "last_error": control.last_error}
 
 
@@ -83,17 +78,23 @@ def process_next(engine):
     token = uuid.uuid4().hex
     now = datetime.utcnow()
     with Session(engine) as db:
-        claimed = db.query(CONTROL).filter(CONTROL.id == 1, CONTROL.enabled.is_(True),
+        # Oldest eligible control first, so neither queue starves the other.
+        selected = db.query(CONTROL).filter(CONTROL.enabled.is_(True),
+            or_(CONTROL.lease_until.is_(None), CONTROL.lease_until < now)).order_by(CONTROL.lease_until, CONTROL.id).first()
+        if selected is None:
+            return False
+        control_id, kind = selected.id, selected.entity_type
+        claimed = db.query(CONTROL).filter(CONTROL.id == control_id, CONTROL.enabled.is_(True),
             or_(CONTROL.lease_until.is_(None), CONTROL.lease_until < now)).update(
                 {"lease_token": token, "lease_until": now + timedelta(minutes=5)}, synchronize_session=False)
         db.commit()
         if not claimed:
             return False
-        control = db.get(CONTROL, 1)
-        db.query(JOB).filter_by(status="running").update({"status": "pending"})
+        control = db.get(CONTROL, control_id)
+        db.query(JOB).filter_by(entity_type=kind, status="running").update({"status": "pending"})
         enqueue_new(db, control)
         db.flush()
-        job = db.query(JOB).filter_by(status="pending").order_by(JOB.id).first()
+        job = db.query(JOB).filter_by(entity_type=kind, status="pending").order_by(JOB.id).first()
         if job is None:
             control.lease_until = now + timedelta(seconds=5)
             db.commit()
@@ -129,7 +130,7 @@ def process_next(engine):
     finally:
         wg.search_request_pacer.reset(marker)
     with Session(engine) as db:
-        control = db.get(CONTROL, 1)
+        control = db.get(CONTROL, control_id)
         if control.lease_token != token:
             return False
         job = db.get(JOB, job_id)
