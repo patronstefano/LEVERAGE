@@ -30,7 +30,8 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
   const alive = () => active() && root.isConnected;
   let offset = 0, total = 0;
   const button = (label, attrs) => `<button type="button" class="quiet-button outline-command-button" ${attrs}>${esc(t(label))}</button>`;
-  root.innerHTML = `<div class="section-header compact-section-header"><h2>${esc(t(kind))}</h2></div><p class="admin-stats-note">${esc(t('note'))}</p><div data-pair-feedback role="status"></div><div data-pairs></div>${button('more', 'data-pairs-more hidden')}`;
+  root.dataset.reviewKind = kind;
+  root.innerHTML = `<div data-pair-feedback role="status"></div><div data-pairs></div>${button('more', 'data-pairs-more hidden')}<p class="admin-stats-note" data-pair-note>${esc(t('note'))}</p>`;
   const list = root.querySelector('[data-pairs]');
   const more = root.querySelector('[data-pairs-more]');
   const failure = (error) => {

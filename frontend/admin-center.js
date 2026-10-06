@@ -3,7 +3,7 @@ import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-f
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
-import { mountEntityReviews } from './admin-entity-reviews.js?v=compare-active-20261006';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=duplicate-note-bottom-20261006';
 import { createAdminReport } from './admin-reports.js?v=compact-merge-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
@@ -600,10 +600,10 @@ export async function renderAdminCenter(host) {
         } catch (error) { if (error.status !== 404) throw error; }
       }
       const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
-      const block = (title, content, id = '') => `<section class="admin-tool-block"${id ? ` id="${id}" hidden` : ''}><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
+      const block = (title, content, id = '') => `<section class="admin-tool-block"${id ? ` id="${id}" hidden` : ''}>${title ? `<div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>` : ''}${content}</section>`;
       paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle admin-review-toggle" role="group" aria-label="${esc(text('review'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" data-review-entity="athlete" aria-pressed="true">${esc(text('athletes'))}</button><button type="button" class="segmented-option" data-review-entity="event" aria-pressed="false">${esc(text('events'))}</button><button type="button" class="segmented-option" data-review-entity="result" aria-pressed="false">${esc(text('reviewResults'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div class="admin-revisions">
         <section id="adminEntityReviews" class="admin-tool-block"></section>
-        ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty(), 'adminResultReviews')}
+        ${block('', duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty(), 'adminResultReviews')}
         ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
       let reviewEntity = 'athlete';

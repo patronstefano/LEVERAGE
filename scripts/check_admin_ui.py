@@ -663,7 +663,8 @@ def main():
                 assert page.locator('#adminWorldGymnasticsScan').count() == 0
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
-                assert 'Possibili atleti duplicati' in page.locator('#adminEntityReviews').inner_text()
+                assert page.locator('#adminEntityReviews h2').count() == 0
+                assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
                 page.locator('[data-pair-compare]').click()
                 page.locator('.admin-pair-warning').wait_for()
                 compare = page.locator('[data-pair-compare]')
@@ -680,10 +681,12 @@ def main():
                 assert compare.get_attribute('aria-expanded') == 'true'
                 assert 'Valuta unione' in page.locator('#adminEntityReviews').inner_text()
                 page.locator('[data-review-entity="event"]').click()
-                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
+                page.locator('#adminEntityReviews[data-review-kind="event"] .admin-identity-pair').wait_for()
+                assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
                 page.locator('[data-review-entity="result"]').click()
                 assert page.locator('#adminResultReviews').is_visible()
+                assert page.locator('#adminResultReviews h2').count() == 0
                 assert page.locator('#adminEntityReviews').is_hidden()
                 page.wait_for_timeout(700)
                 thumb = page.locator('.admin-review-toggle .segmented-thumb').bounding_box()
@@ -747,7 +750,7 @@ def main():
                 page.locator('[data-admin-tab="review"]').click()
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
                 page.locator('[data-review-entity="event"]').click()
-                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
+                page.locator('#adminEntityReviews[data-review-kind="event"] .admin-identity-pair').wait_for()
                 page.locator('[data-pair-separate]').click()
                 page.locator('#adminEntityReviews .empty-state').wait_for()
                 assert writes[-1]['path'] == '/admin/entity-duplicates/event/1/2/keep-separate'

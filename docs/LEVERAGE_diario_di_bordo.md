@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Revisione Duplicati senza titoli ridondanti
+
+- Rimossi i titoli Possibili atleti/eventi/risultati duplicati dalle tre viste interne. Restano il titolo della sezione e lo slider che identifica il tipo di revisione.
+- Spostato l'avviso sulla somiglianza dei nomi dopo la lista e il pulsante di caricamento di altre coppie, nelle viste Atleti ed Eventi. Nessuna modifica alle regole di confronto o unione.
+
 #### 2026-10-06 - Conferma audit nel record interessato
 
 - Dopo approvazione o annullamento, il messaggio verde Operazione completata sostituisce i pulsanti del relativo record. Eliminata la conferma globale in cima alla pagina per queste azioni.
