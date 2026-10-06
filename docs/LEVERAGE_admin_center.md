@@ -4,6 +4,16 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
+Le decisioni sono ora accumulate nella bozza locale: selezioni identita,
+correzioni ed esclusioni di righe, scarto orfani, rinvio duplicati e inclusione
+o esclusione delle gare esistenti. Non attivano ricalcoli automatici.
+Al termine, Ricalcola anteprima valida tutte le scelte; il commit resta
+disabilitato fino alla validazione senza conflitti bloccanti. I conteggi prima
+del ricalcolo descrivono l'ultima analisi, come indicato nell'avviso.
+La bozza e mantenuta nella navigazione interna, non dopo un refresh del browser.
+Restano i passaggi interni di riconciliazione delle decisioni quando varia il
+perimetro o una riga sorgente, eseguiti nello stesso ricalcolo esplicito.
+
 Le Gare da elaborare usano la stessa gerarchia della revisione atleti: nome
 da 14 px, metadati/stato in grigio e comandi a destra. ID e Confronta dettagli
 sono separati dal nome; i conteggi per classifica e i campioni di punteggio

@@ -1,5 +1,21 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Revisione importazioni con decisioni in bozza
+
+- Eliminati i ricalcoli automatici dopo ciascuna esclusione, annullamento,
+  rinvio duplicati, scarto D-score orfani e cambio inclusione gare esistenti.
+  Le decisioni di identita e le correzioni dei punteggi restano anch'esse in bozza.
+- Un unico comando Ricalcola anteprima valida insieme le scelte. Gli eventuali
+  passaggi tecnici per riallineare gli identificativi di revisione rimangono
+  interni alla stessa operazione; nessuna importazione prima della validazione.
+- Parametri scelti separati da quelli dell'ultima anteprima validata. Se il
+  ricalcolo fallisce, la bozza resta da validare e l'importazione resta bloccata.
+- Avviso nelle quattro lingue: i conteggi restano riferiti all'ultima analisi.
+  La bozza resta in memoria durante la navigazione interna, non e un salvataggio
+  persistente dopo ricaricamento del browser. Nessuna modifica del DB in revisione.
+- Aggiornati i controlli UI per l'assenza di richieste automatiche, il blocco
+  dell'importazione e la validazione esplicita di risultati e calendario.
+
 ## 2026-10-06 - Posizione del comando di rinvio duplicati
 
 - Spostato Tralascia tutte le revisioni duplicati al posto del collegamento

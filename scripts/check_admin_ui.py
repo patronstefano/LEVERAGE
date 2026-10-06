@@ -962,9 +962,15 @@ def main():
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('.admin-import-duplicate-link a').count() == 0
                 assert page.locator('#importPart_events .admin-import-duplicate-link [data-defer-duplicates]').is_visible()
+                pending_requests = len(writes)
                 page.locator('[data-defer-duplicates]:visible').click()
                 assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
                 page.locator('dialog[open] [data-confirm]').click()
+                page.locator('dialog[open]').wait_for(state='detached')
+                assert len(writes) == pending_requests
+                assert page.locator('#adminCommitImport').is_disabled()
+                assert page.locator('#adminImportDecisionsNotice').is_visible()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'defer_duplicate_reviews=true' in writes[-1]['url']
                 assert page.locator('[data-import-group=athlete]').count() == 0
@@ -972,6 +978,8 @@ def main():
                 page.locator('[data-import-part=athletes]').click()
                 assert 'Riprendi revisione duplicati' in page.locator('[data-defer-duplicates]:visible').inner_text()
                 page.locator('[data-defer-duplicates]:visible').click()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[data-import-group=athlete]') && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'defer_duplicate_reviews=false' in writes[-1]['url']
                 assert page.locator('#adminCommitImport').is_disabled()
@@ -1019,6 +1027,7 @@ def main():
                 assert 'Test Ada' in page.locator('.admin-import-table').last.inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-import-group=event] > summary').click()
+                pending_requests = len(writes)
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.locator('[data-event-review] summary').click()
                 page.locator('[data-event-review] [data-admin-select-value="1"]').click()
@@ -1026,6 +1035,9 @@ def main():
                 row.locator('[data-import-review-toggle]').click()
                 row.locator("[data-admin-select]").first.locator("summary").click()
                 row.locator('[data-admin-select-value="suggestion:s1"]').click()
+                assert len(writes) == pending_requests
+                assert page.locator('[data-apply-review]').count() == 0
+                assert page.locator('#adminImportDecisionsNotice').is_visible()
                 page.locator("#adminReviewPreview").click()
                 page.locator('dialog[open] .is-complete').wait_for(state='attached')
                 assert page.locator('dialog[open] [data-import-progress-label]').inner_text() == 'Analisi completata'
@@ -1100,6 +1112,8 @@ def main():
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()
                 scope.locator('[data-admin-select-value=skip]').click()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('[name=existing_event_scope]').input_value() == 'skip'
@@ -1108,6 +1122,8 @@ def main():
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()
                 scope.locator('[data-admin-select-value=include]').click()
+                page.locator('#adminReviewPreview').click()
+                page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
                 assert 'skip_existing_events=false' in writes[-1]['url']
@@ -1144,24 +1160,35 @@ def main():
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.screenshot(path='/tmp/leverage-import-review-results-desktop.png', full_page=True)
                 page.locator('[data-source-fields] input').first.fill('13.0')
+                pending_requests = len(writes)
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-apply]').click()
+                assert len(writes) == pending_requests
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert '13.0' in writes[-1]['body']
                 assert 'source_row_decisions' in writes[-1]['body']
                 assert page.locator('[data-source-undo]').is_visible()
                 page.locator('[data-source-undo]').click()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
+                page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-exclude-all]').click()
+                pending_requests = len(writes)
                 assert 'tutti i relativi punteggi' in page.locator('dialog[open]').inner_text()
                 assert '1 riga del file' in page.locator('dialog[open]').inner_text()
                 page.locator('dialog[open] [data-confirm]').click()
+                page.locator('dialog[open]').wait_for(state='detached')
+                assert len(writes) == pending_requests
+                assert page.locator('#adminCommitImport').is_disabled()
+                assert page.locator('[data-source-exclude-all]').count() == 0
+                page.locator('#adminReviewPreview').click()
                 page.locator('dialog[open] .is-complete').wait_for(state='attached')
-                assert page.locator('dialog[open] [data-cancel]').is_disabled()
-                assert page.locator('dialog[open] [data-confirm]').is_disabled()
-                assert '1 riga del file' in page.locator('dialog[open] h2').inner_text()
+                assert 'Ricalcola anteprima' in page.locator('dialog[open] h2').inner_text()
                 page.screenshot(path='/tmp/leverage-import-dialog-complete.png')
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert '"action":"exclude"' in writes[-1]['body']
@@ -1210,6 +1237,8 @@ def main():
                 calendar_scope = page.locator('[name=existing_event_scope]').locator('..')
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=skip]').click()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '0', '0', '7', '0', '0', '1']
@@ -1217,6 +1246,7 @@ def main():
                 assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=include]').click()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'include' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=false' in writes[-1]['url']
                 assert page.locator('#adminCalendarRows article').count() == 6
@@ -1287,6 +1317,8 @@ def main():
                 analyze_import()
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=skip]').click()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 page.locator('#adminCommitImport').click()
                 page.locator('dialog[open] [data-confirm]').click()

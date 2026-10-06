@@ -1,14 +1,15 @@
-export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, apply, confirm, guard}) {
+export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard}) {
   const rows = preview.source_review || [];
   if (!rows.length) { root.innerHTML = `<p class="admin-stats-note">${esc(text('importNoCorrections'))}</p>`; return {focus() {}}; }
   const keyOf = row => `${row.sheet}:${row.row}`;
   const pageSize = 6;
   let page = Math.min(draft.sourcePage || 0, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
-  const pending = rows.filter(row => draft.source[keyOf(row)]?.action !== 'exclude' && (
+  const pendingRows = () => rows.filter(row => draft.source[keyOf(row)]?.action !== 'exclude' && (
     (preview.conflicts || []).some(item => item.source_sheet === row.sheet && item.source_row === row.row) ||
     (preview.issues || []).some(item => item.severity === 'error' && item.sheet === row.sheet && item.row === row.row)));
   const exclude = row => { draft.source[keyOf(row)] = {sheet: row.sheet, row: row.row, fingerprint: row.fingerprint, action: 'exclude'}; };
   const render = () => {
+    const pending = pendingRows();
     draft.sourcePage = page;
     root.innerHTML = `<details class="admin-revision-group" data-source-group ${draft.sourceOpen ? 'open' : ''}><summary>${esc(text('importCorrections'))}<span class="admin-revision-count">${rows.length}</span></summary><p class="admin-stats-note">${esc(text('importSourceNote'))}</p>${pending.length ? `<div class="admin-center-actions">${button('importExcludeAllRows', 'data-source-exclude-all')}</div>` : ''}<div data-source-rows>${rows.slice(page * pageSize, (page + 1) * pageSize).map((row, offset) => {
       const index = page * pageSize + offset, decision = draft.source[keyOf(row)];
@@ -33,12 +34,12 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
           markChanged();
         };
       });
-      article.querySelector('[data-source-apply]').onclick = guard(apply);
-      article.querySelector('[data-source-exclude]').onclick = () => confirm(text('importExcludeRowConfirm'), async dialog => { exclude(row); markChanged(); await apply(dialog); }, false, text('importSourceNote'));
-      article.querySelector('[data-source-undo]')?.addEventListener('click', guard(async () => { delete draft.source[keyOf(row)]; markChanged(); await apply(); }));
+      article.querySelector('[data-source-apply]').onclick = render;
+      article.querySelector('[data-source-exclude]').onclick = () => confirm(text('importExcludeRowConfirm'), () => { exclude(row); markChanged(); render(); }, false, text('importSourceNote'));
+      article.querySelector('[data-source-undo]')?.addEventListener('click', guard(() => { delete draft.source[keyOf(row)]; markChanged(); render(); }));
     });
-    root.querySelector('[data-source-exclude-all]')?.addEventListener('click', () => confirm(text(pending.length === 1 ? 'importExcludeRowConfirm' : 'importExcludeRowsConfirm').replace('{n}', pending.length), async dialog => {
-      pending.forEach(exclude); markChanged(); await apply(dialog);
+    root.querySelector('[data-source-exclude-all]')?.addEventListener('click', () => confirm(text(pending.length === 1 ? 'importExcludeRowConfirm' : 'importExcludeRowsConfirm').replace('{n}', pending.length), () => {
+      pending.forEach(exclude); markChanged(); render();
     }, false, text('importSourceNote')));
     root.querySelectorAll('[data-source-page]').forEach(control => control.onclick = () => { page += Number(control.dataset.sourcePage); render(); });
   };
