@@ -20,12 +20,16 @@ const COPY = {
   more: ['Load more matches', 'Carica altri riscontri', 'Cargar más coincidencias', 'Charger plus de correspondances'],
 };
 
-export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType}) {
+export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType, noteHost = root}) {
   const index = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const t = (key) => COPY[key][index];
   let limit = 30, signature = '', busy = false;
   const button = (key, attr = '') => `<button type="button" class="quiet-button outline-command-button" ${attr}>${esc(t(key))}</button>`;
-  root.innerHTML = `<div class="admin-center-actions" data-scan-controls></div><dl class="admin-stats-metrics" data-scan-status></dl><p class="admin-stats-note">${esc(t('note'))}</p><div data-scan-matches></div>${button('more', 'data-scan-more hidden')}`;
+  root.innerHTML = `<div class="admin-center-actions" data-scan-controls></div><dl class="admin-stats-metrics" data-scan-status></dl><div data-scan-matches></div>${button('more', 'data-scan-more hidden')}<p class="admin-stats-note" data-scan-note>${esc(t('note'))}</p>`;
+  if (noteHost !== root) {
+    [...noteHost.children].filter((element) => element.matches('[data-scan-note]')).forEach((element) => element.remove());
+    noteHost.append(root.querySelector('[data-scan-note]'));
+  }
   const refresh = async () => {
     if (!active() || !root.isConnected || busy) return;
     busy = true;

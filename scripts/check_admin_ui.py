@@ -729,6 +729,7 @@ def main():
                 page.locator('[data-scan-job="52"]').wait_for()
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione eventi'
                 assert '7' in page.locator('[data-scan-status]').inner_text()
+                assert page.locator('[data-scan-note]').evaluate('el => el === el.parentElement.lastElementChild && el.previousElementSibling.id === "adminRevisionSuggestions"')
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
                 assert page.locator('[data-scan-job="51"]').count() == 0
                 assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
@@ -740,7 +741,7 @@ def main():
                 assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 4
                 controls = page.locator('[data-scan-controls]').bounding_box()
                 counters = page.locator('[data-scan-status]').bounding_box()
-                note = page.locator('#adminWorldGymnasticsScan .admin-stats-note').bounding_box()
+                note = page.locator('[data-scan-note]').bounding_box()
                 assert counters['y'] - controls['y'] - controls['height'] >= 17
                 assert note['y'] - counters['y'] - counters['height'] >= 17
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)

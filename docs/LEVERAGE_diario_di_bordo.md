@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Avviso World Gymnastics a fine sezione
+
+- Spostato l'avviso sulla compatibilita e sulla mancata importazione automatica sotto i riscontri e il comando per caricarne altri, nelle viste Atleti ed Eventi. Testo, traduzioni e funzionamento della scansione invariati; posizione coerente con la Revisione Duplicati.
+
 #### 2026-10-06 - Periodo di attivita nelle Statistiche
 
 - Sostituiti i campi data iniziale/finale con lo stesso selettore della Panoramica: ultimi 7, 30, 90 giorni oppure tutto il periodo; valore iniziale 30 giorni, scelta mantenuta nella sessione della UI.
