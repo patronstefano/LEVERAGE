@@ -5366,6 +5366,14 @@ def test_admin_data_overview_counts_active_records_and_recorded_scores():
         removed = models.Event(name="Deleted", year=2026, discipline="MAG", category="senior", level="National Event", is_deleted=True)
         db.add_all([complete, incomplete, deleted, event, future, removed])
         db.flush()
+        db.add_all([
+            models.WorldGymnasticsScanJob(entity_type="athlete", entity_id=incomplete.id,
+                entity_name="Test Two", status="no_match", fingerprint="scan-athlete", checked_at=datetime.utcnow()),
+            models.WorldGymnasticsScanJob(entity_type="event", entity_id=future.id,
+                entity_name="Future", status="matched", fingerprint="scan-event", checked_at=datetime.utcnow()),
+            models.WorldGymnasticsScanJob(entity_type="event", entity_id=event.id,
+                entity_name="Complete", status="pending", fingerprint="pending-event"),
+        ])
         for person, competition, apparatus, values in [
             (complete, event, "FX", {"score": 14, "D_score": 5, "E_score": 9, "Penalty": 0, "Bonus": 0}),
             (complete, event, "AA", {"score": 80}),
@@ -5380,14 +5388,24 @@ def test_admin_data_overview_counts_active_records_and_recorded_scores():
     response = client.get("/admin/data-overview", headers=headers)
     assert response.status_code == 200, response.text
     assert response.json() == {
-        "athletes": {"total": 2, "verified": 1, "incomplete": 1, "missing_birth_year": 1, "mag": 1, "wag": 1},
-        "events": {"total": 2, "verified": 1, "incomplete": 1, "missing_dates": 1, "with_results": 1, "without_results": 1},
+        "athletes": {"total": 2, "verified": 1, "scanned_world_gymnastics": 1, "possible_duplicates": 0,
+                     "incomplete": 1, "missing_birth_year": 1, "mag": 1, "wag": 1},
+        "events": {"total": 2, "verified": 1, "scanned_world_gymnastics": 1, "possible_duplicates": 0,
+                   "incomplete": 1, "missing_dates": 1, "with_results": 1, "without_results": 1},
         "results": {"total": 3, "with_final_score": 2, "without_final_score": 1, "with_d_score": 2,
                     "with_e_score": 1, "with_penalty": 1, "with_bonus": 1},
     }
     queue = client.get("/admin/entities-to-complete", headers=headers).json()
     assert queue["total_athletes"] == response.json()["athletes"]["incomplete"]
     assert queue["total_events"] == response.json()["events"]["incomplete"]
+    with SessionLocal() as db:
+        db.add(models.Athlete(first_name="One", last_name="Test", discipline="MAG", country="ITA"))
+        db.add(models.Event(name="Complete", year=2026, discipline="MAG and WAG", category="senior",
+            level="International Event"))
+        db.commit()
+    duplicates = client.get("/admin/data-overview", headers=headers).json()
+    assert duplicates["athletes"]["possible_duplicates"] == 1
+    assert duplicates["events"]["possible_duplicates"] == 1
     with SessionLocal() as db:
         user = db.query(User).filter_by(email="overview@example.com").one()
         user.role = RoleEnum.ADMIN

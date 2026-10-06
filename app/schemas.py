@@ -857,6 +857,8 @@ class AdminIncompleteEvent(BaseModel):
 class AdminAthleteOverview(BaseModel):
     total: int
     verified: int
+    scanned_world_gymnastics: int
+    possible_duplicates: int
     incomplete: int
     missing_birth_year: int
     mag: int
@@ -866,6 +868,8 @@ class AdminAthleteOverview(BaseModel):
 class AdminEventOverview(BaseModel):
     total: int
     verified: int
+    scanned_world_gymnastics: int
+    possible_duplicates: int
     incomplete: int
     missing_dates: int
     with_results: int

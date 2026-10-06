@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import String, case, func, or_
 from sqlalchemy.orm import Session, joinedload
 
-from app import models, schemas
+from app import entity_reviews, models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.database import get_db
 from app.event_calendar import (
@@ -304,7 +304,23 @@ def get_data_overview(
         counted(result.Penalty.is_not(None), "with_penalty"),
         counted(result.Bonus.is_not(None), "with_bonus"),
     ).one()
-    return {"athletes": dict(athletes._mapping), "events": dict(events._mapping), "results": dict(results._mapping)}
+    scan = models.WorldGymnasticsScanJob
+    completed_statuses = ("matched", "no_match", "dismissed", "skipped")
+    athlete_scanned = db.query(func.count(scan.id)).join(athlete, athlete.id == scan.entity_id).filter(
+        scan.entity_type == "athlete", scan.status.in_(completed_statuses), scan.checked_at.is_not(None),
+        athlete.is_deleted.is_(False),
+    ).scalar()
+    event_scanned = db.query(func.count(scan.id)).join(event, event.id == scan.entity_id).filter(
+        scan.entity_type == "event", scan.status.in_(completed_statuses), scan.checked_at.is_not(None),
+        event.is_deleted.is_(False),
+    ).scalar()
+    return {
+        "athletes": {**dict(athletes._mapping), "scanned_world_gymnastics": athlete_scanned,
+                     "possible_duplicates": len(entity_reviews.candidates(db, "athlete"))},
+        "events": {**dict(events._mapping), "scanned_world_gymnastics": event_scanned,
+                   "possible_duplicates": len(entity_reviews.candidates(db, "event"))},
+        "results": dict(results._mapping),
+    }
 
 
 @router.get("/entities-to-complete", response_model=schemas.AdminEntitiesToCompleteResponse)

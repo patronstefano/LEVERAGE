@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Nuovi conteggi nella Panoramica Admin
+
+- Sostituita la riga Da completare con Possibili duplicati per atleti ed eventi. Il valore usa gli stessi candidati della sezione Revisione Duplicati e conta coppie ancora da revisionare, non entita distinte; non effettua unioni automatiche.
+- Aggiunta sotto Verificati World Gymnastics la riga Scansionati World Gymnastics. Conta le entita attive con una scansione conclusa registrata, escludendo lavori in attesa, in corso ed errori. Il conteggio e distinto dalla certificazione del profilo. Aggiornata la nota della Panoramica e verificati endpoint e UI.
+
 #### 2026-10-06 - Nota audit della Panoramica Super Admin
 
 - Corretta in tutte le lingue la nota della Panoramica: le voci sono selezionate per data di creazione dell'audit; i conteggi riguardano voci, non entita distinte; lo stato di revisione e quello corrente. Il ruolo SUPER ADMIN dell'autore non determina da solo l'approvazione automatica. Le azioni senza voce di audit non entrano nei conteggi.

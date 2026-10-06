@@ -37,8 +37,8 @@ def main():
                 payload = schema
             elif path == "/admin/data-overview":
                 payload = {
-                    "athletes": {"total": 1250, "verified": 50, "incomplete": 1200, "missing_birth_year": 1000, "mag": 650, "wag": 600},
-                    "events": {"total": 500, "verified": 20, "incomplete": 480, "missing_dates": 10, "with_results": 400, "without_results": 100},
+                    "athletes": {"total": 1250, "verified": 50, "scanned_world_gymnastics": 300, "possible_duplicates": 12, "incomplete": 1200, "missing_birth_year": 1000, "mag": 650, "wag": 600},
+                    "events": {"total": 500, "verified": 20, "scanned_world_gymnastics": 100, "possible_duplicates": 3, "incomplete": 480, "missing_dates": 10, "with_results": 400, "without_results": 100},
                     "results": {"total": 40000, "with_final_score": 39000, "without_final_score": 1000, "with_d_score": 20000, "with_e_score": 100, "with_penalty": 100, "with_bonus": 100},
                 }
             elif path == "/admin/activity-overview":
@@ -873,6 +873,10 @@ def main():
         assert page.locator('#authLink').get_attribute('href') == '#/account'
         page.evaluate("location.hash = '/admin'")
         page.wait_for_timeout(300)
+        athlete_overview = page.locator('.admin-data-group').first
+        assert athlete_overview.locator('dt').all_inner_texts()[:4] == ['Totali', 'Verificati World Gymnastics', 'Scansionati World Gymnastics', 'Possibili duplicati']
+        assert 'Da completare' not in page.locator('.admin-data-overview').inner_text()
+        assert athlete_overview.locator('[data-overview-count="athletes.possible_duplicates"]').inner_text() == '12'
         page.screenshot(path="/tmp/leverage-admin-desktop.png", full_page=True)
         for width, height in [(1366, 768), (1280, 720), (1440, 900)]:
             page.set_viewport_size({'width': width, 'height': height})

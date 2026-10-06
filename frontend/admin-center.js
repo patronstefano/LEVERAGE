@@ -141,6 +141,8 @@ const COPY = {
   dataResults: ["Results and scores", "Risultati e punteggi", "Resultados y puntuaciones", "Résultats et notes"],
   dataTotal: ["Total", "Totali", "Total", "Total"],
   dataVerified: ["World Gymnastics verified", "Verificati World Gymnastics", "Verificados World Gymnastics", "Vérifiés World Gymnastics"],
+  dataScanned: ["World Gymnastics scanned", "Scansionati World Gymnastics", "Escaneados World Gymnastics", "Analysés World Gymnastics"],
+  dataPossibleDuplicates: ["Possible duplicate pairs", "Possibili duplicati", "Posibles duplicados", "Doublons possibles"],
   dataIncomplete: ["To complete", "Da completare", "Por completar", "À compléter"],
   dataBirthMissing: ["Missing birth year", "Senza anno di nascita", "Sin año de nacimiento", "Sans année de naissance"],
   dataDatesMissing: ["Missing event dates", "Date gara incomplete", "Fechas incompletas", "Dates incomplètes"],
@@ -153,10 +155,10 @@ const COPY = {
   dataP: ["Penalty recorded", "Penalty registrata", "Penalty registrada", "Penalty enregistrée"],
   dataB: ["Bonus recorded", "Bonus registrato", "Bonus registrado", "Bonus enregistré"],
   dataOverviewNote: [
-    "Active records only. To complete includes optional fields, even on verified profiles. Events without results include future events. Score counts include recorded values (including zero), not estimates or derived totals.",
-    "Solo record attivi. Da completare include campi facoltativi, anche nei profili verificati. Gli eventi senza risultati comprendono quelli futuri. I conteggi dei punteggi includono valori registrati (anche zero), non stime o totali derivati.",
-    "Solo registros activos. Por completar incluye campos opcionales, también en perfiles verificados. Los eventos sin resultados incluyen eventos futuros. Las puntuaciones cuentan valores registrados (incluido cero), no estimaciones ni totales derivados.",
-    "Enregistrements actifs uniquement. À compléter inclut les champs facultatifs, même pour les profils vérifiés. Les événements sans résultats incluent ceux à venir. Les notes comptent les valeurs enregistrées (y compris zéro), sans estimations ni totaux calculés."
+    "Active records only. Possible duplicates counts pairs awaiting review, not unique entities. Scanned counts completed World Gymnastics checks, not verified profiles. Events without results include future events. Score counts include recorded values (including zero), not estimates or derived totals.",
+    "Solo record attivi. Possibili duplicati conta le coppie da revisionare, non le entità distinte. Scansionati indica i controlli World Gymnastics conclusi, non i profili verificati. Gli eventi senza risultati comprendono quelli futuri. I punteggi contano valori registrati (anche zero), non stime o totali derivati.",
+    "Solo registros activos. Posibles duplicados cuenta los pares pendientes de revisión, no las entidades distintas. Escaneados indica comprobaciones World Gymnastics concluidas, no perfiles verificados. Los eventos sin resultados incluyen los futuros. Las puntuaciones cuentan valores registrados (incluido cero), no estimaciones ni totales derivados.",
+    "Enregistrements actifs uniquement. Doublons possibles compte les paires à vérifier, pas les entités distinctes. Analysés indique les contrôles World Gymnastics terminés, pas les profils vérifiés. Les événements sans résultats incluent ceux à venir. Les notes comptent les valeurs enregistrées (y compris zéro), sans estimations ni totaux calculés."
   ],
   entry: ["New Entity", "Nuova Entità", "Nueva Entidad", "Nouvelle Entité"],
   results: ["Results Editor", "Editor Risultati", "Editor de Resultados", "Éditeur de Résultats"],
@@ -539,8 +541,8 @@ export async function renderAdminCenter(host) {
       } else {
         const data = await api("/admin/data-overview");
         const groups = [
-          ["athletes", "dataAthletes", [["verified", "dataVerified"], ["incomplete", "dataIncomplete"], ["missing_birth_year", "dataBirthMissing"], ["mag", "MAG"], ["wag", "WAG"]]],
-          ["events", "dataEvents", [["verified", "dataVerified"], ["incomplete", "dataIncomplete"], ["missing_dates", "dataDatesMissing"], ["with_results", "dataWithResults"], ["without_results", "dataWithoutResults"]]],
+          ["athletes", "dataAthletes", [["verified", "dataVerified"], ["scanned_world_gymnastics", "dataScanned"], ["possible_duplicates", "dataPossibleDuplicates"], ["missing_birth_year", "dataBirthMissing"], ["mag", "MAG"], ["wag", "WAG"]]],
+          ["events", "dataEvents", [["verified", "dataVerified"], ["scanned_world_gymnastics", "dataScanned"], ["possible_duplicates", "dataPossibleDuplicates"], ["missing_dates", "dataDatesMissing"], ["with_results", "dataWithResults"], ["without_results", "dataWithoutResults"]]],
           ["results", "dataResults", [["with_final_score", "dataFinal"], ["without_final_score", "dataNoFinal"], ["with_d_score", "dataD"], ["with_e_score", "dataE"], ["with_penalty", "dataP"], ["with_bonus", "dataB"]]],
         ];
         const number = new Intl.NumberFormat(state.language);
