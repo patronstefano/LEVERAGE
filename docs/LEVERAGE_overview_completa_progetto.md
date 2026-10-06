@@ -796,29 +796,31 @@ Le notifiche sono state razionalizzate.
 Notifiche user:
 
 - nuovi result relativi ad atleta seguito, in forma cumulativa;
+- nuovo evento consigliato in base agli eventi preferiti;
 - promozione/declassamento ruolo;
-- future notifiche preferenze/dashboard.
 
 Notifiche admin:
 
-- `import_summary`, unica e cumulativa;
-- `data_entry_summary`;
-- entita create da import da completare;
-- atleti nuovi;
-- eventi nuovi;
-- eventi futuri svolti senza risultati;
-- suggerimenti da review.
+- `import_summary` per un commit Gymternet o Calendar, cumulativa per operazione;
+- `event_results_reminder` cumulativa per eventi conclusi senza risultati.
+
+Notifiche super admin:
+
+- `security_alert` per operazioni amministrative rilevanti compiute da altri amministratori.
+
+Il tipo storico `data_entry_summary` resta nello schema per compatibilita, ma non viene piu generato o mostrato nell'inbox. I risultati ora vengono importati da file o corretti nell'Editor Risultati, non inseriti manualmente dalla UI.
 
 La notifica `import_summary` riassume:
 
 - nuovi atleti;
 - nuovi eventi;
 - nuovi result;
-- atleti con nuovi risultati;
-- conflitti risolti;
-- dati scartati;
-- D-score orfani;
-- warning generati.
+- punteggi completi e parziali;
+- atleti ed eventi con nuovi risultati;
+- eventi aggiornati, cambi di nazionalita atleta e correzioni della nazionalita rappresentata;
+- D-score orfani lasciati in review e duplicati saltati.
+
+Nel caso Calendar, `import_summary` riporta invece eventi aggiornati con date, eventi futuri creati e righe storiche lasciate in review.
 
 ## 15. Motori di suggerimento
 

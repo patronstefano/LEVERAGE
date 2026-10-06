@@ -2743,13 +2743,13 @@ def test_notification_scopes_keep_personal_and_admin_inboxes_independent(role):
         return
     assert admin_response.status_code == 200
     administrative = admin_response.json()
-    assert len(administrative) == (4 if role == models.RoleEnum.SUPER_ADMIN else 3)
+    assert len(administrative) == (3 if role == models.RoleEnum.SUPER_ADMIN else 2)
     assert {n["type"] for n in client.get("/notifications?scope=admin_only", headers=headers).json()} == {
-        "import_summary", "data_entry_summary", "event_results_reminder"}
+        "import_summary", "event_results_reminder"}
     if role == models.RoleEnum.SUPER_ADMIN:
         assert [n["type"] for n in client.get("/notifications?scope=super_admin", headers=headers).json()] == ["security_alert"]
         assert client.put("/notifications/read-all?scope=super_admin", headers=headers).status_code == 200
-        assert client.get("/notifications/unread-count?scope=admin_only", headers=headers).json()["count"] == 3
+        assert client.get("/notifications/unread-count?scope=admin_only", headers=headers).json()["count"] == 2
     else:
         assert client.get("/notifications?scope=super_admin", headers=headers).status_code == 403
     assert ("security_alert" in {n["type"] for n in administrative}) == (role == models.RoleEnum.SUPER_ADMIN)
@@ -5203,12 +5203,7 @@ def test_event_manual_entry_can_resolve_or_create_athletes():
         for notification in notifications_response.json()
         if notification["type"] == "data_entry_summary"
     ]
-    assert len(data_entry_notifications) == 1
-    assert "Manual data entry report for Resolve Athlete Event" in data_entry_notifications[0]["message"]
-    assert "1 new athlete(s) created" in data_entry_notifications[0]["message"]
-    assert "Neri Marco" in data_entry_notifications[0]["message"]
-    assert data_entry_notifications[0]["related_athlete_id"] == create_payload["athlete"]["id"]
-    assert data_entry_notifications[0]["related_event_id"] == event["id"]
+    assert data_entry_notifications == []
 
     invalid_response = client.post(
         f"/events/{event['id']}/athletes/resolve",
@@ -5491,11 +5486,7 @@ def test_event_bulk_results_can_create_missing_athlete_from_result_row():
         for notification in notifications_response.json()
         if notification["type"] == "data_entry_summary"
     ]
-    assert len(data_entry_notifications) == 1
-    assert "Manual data entry report for Bulk Missing Athlete Event" in data_entry_notifications[0]["message"]
-    assert "Blu Sara" in data_entry_notifications[0]["message"]
-    assert data_entry_notifications[0]["related_athlete_id"] == athletes[0]["id"]
-    assert data_entry_notifications[0]["related_event_id"] == event["id"]
+    assert data_entry_notifications == []
 
     client.post("/auth/register", json={"email": "entities_to_complete_user@example.com", "password": TEST_PASSWORD})
     user_token = login_as_user("entities_to_complete_user@example.com")
@@ -6985,9 +6976,7 @@ def test_manual_bulk_results_block_mismatched_final_scores_and_notify_admin():
     notifications_response = client.get("/notifications", headers=headers)
     assert notifications_response.status_code == 200
     notifications = notifications_response.json()
-    assert notifications[0]["type"] == "data_entry_summary"
-    assert "Manual import blocked for Formula Check Cup" in notifications[0]["message"]
-    assert "1 result(s) do not match" in notifications[0]["message"]
+    assert notifications == []
 
 
 def test_manual_bulk_2026_results_require_e_score():

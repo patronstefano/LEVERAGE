@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Rimozione della notifica manuale e chiarimento dei riepiloghi import
+
+- L'inserimento manuale dei risultati non fa piu parte della UI attiva: rimossa dai generatori DEMO e dalle emissioni degli endpoint legacy la notifica `data_entry_summary`. I vecchi record conservano il tipo nel database per compatibilita, ma sono esclusi dall'inbox e dai contatori; non vengono cancellati. Restano invariati i controlli sui punteggi e le risposte di errore dell'API legacy.
+- Rimangono due tipi ADMIN attivi: `import_summary` (commit Gymternet o Calendar) e `event_results_reminder` (eventi conclusi senza risultati). Il report Gymternet distingue entita e score creati, score completi/parziali, entita con nuovi risultati, aggiornamenti, correzioni country, D-score orfani e duplicati saltati. Quello Calendar riporta date aggiornate, eventi futuri creati e righe storiche in review. Aggiornati test backend e browser e contratto import corrente.
+
 #### 2026-10-06 - Destinatario funzionale accanto alla data delle notifiche
 
 - Nell'inbox unica, accanto alla data e ora in grigio, ogni notifica mostra USER, ADMIN o SUPER ADMIN. La classificazione deriva dal tipo della notifica, non dal ruolo corrente di chi la legge: una notifica personale ricevuta da un Super Admin resta USER. La stessa regola vale per notifiche reali e simulazioni DEMO; nessuna modifica al database o al testo dei messaggi.

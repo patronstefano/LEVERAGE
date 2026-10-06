@@ -11,7 +11,6 @@ router = APIRouter(tags=["notifications"])
 
 ADMIN_TYPES = (
     models.NotificationTypeEnum.IMPORT_SUMMARY,
-    models.NotificationTypeEnum.DATA_ENTRY_SUMMARY,
     models.NotificationTypeEnum.EVENT_RESULTS_REMINDER,
     models.NotificationTypeEnum.SECURITY_ALERT,
 )
@@ -19,7 +18,10 @@ NotificationScope = Literal["all", "personal", "admin", "admin_only", "super_adm
 
 
 def scoped_notifications(db, user, scope):
-    query = db.query(models.Notification).filter(models.Notification.user_id == user.id)
+    query = db.query(models.Notification).filter(
+        models.Notification.user_id == user.id,
+        models.Notification.type != models.NotificationTypeEnum.DATA_ENTRY_SUMMARY,
+    )
     is_admin = user.role in (models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN)
     if scope in ("admin", "admin_only") and not is_admin:
         raise HTTPException(status_code=403, detail="Admin notifications require an administrator role")

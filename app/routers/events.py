@@ -12,7 +12,7 @@ from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
 from app.country_aliases import resolve_country_codes, resolve_country_terms
 from app.database import get_db
-from app.display_names import athlete_display_name, athlete_display_name_from_parts
+from app.display_names import athlete_display_name_from_parts
 from app.event_notification_matching import should_notify_saved_event
 from app.event_search import (
     EVENT_YEAR_PATTERN,
@@ -407,67 +407,6 @@ def result_entry_item_label(index: int, item: schemas.ResultEntryItem, apparatus
         athlete_name = "athlete non indicato"
     apparatus_label = apparatus or "apparatus non indicato"
     return f"riga {index}: {athlete_name}, {apparatus_label}, {item.discipline.value}, {item.category.value}"
-
-
-def notify_admin_about_score_formula_mismatches(
-    db: Session,
-    admin: models.User,
-    event: models.Event,
-    mismatches: list[dict],
-) -> None:
-    preview = "; ".join(
-        f"{item['label']} (score {item['score']}, atteso {item['expected_score']})"
-        for item in mismatches[:5]
-    )
-    suffix = ""
-    if len(mismatches) > 5:
-        suffix = f"; altri {len(mismatches) - 5} result da controllare"
-
-    db.add(models.Notification(
-        user_id=admin.id,
-        type=models.NotificationTypeEnum.DATA_ENTRY_SUMMARY,
-        message=translate(
-            "notification.data_entry_formula_blocked",
-            admin.preferred_language,
-            event_name=event.name,
-            count=len(mismatches),
-            preview=preview,
-            suffix=suffix,
-        ),
-        related_event_id=event.id,
-    ))
-
-
-def notify_admin_about_manual_created_athletes(
-    db: Session,
-    admin: models.User,
-    event: models.Event,
-    created_athletes: list[models.Athlete],
-) -> None:
-    unique_athletes = list({athlete.id: athlete for athlete in created_athletes}.values())
-    if not unique_athletes:
-        return
-
-    athlete_names = ", ".join(
-        athlete_display_name(athlete)
-        for athlete in unique_athletes[:5]
-    )
-    if len(unique_athletes) > 5:
-        athlete_names = f"{athlete_names}, ..."
-
-    db.add(models.Notification(
-        user_id=admin.id,
-        type=models.NotificationTypeEnum.DATA_ENTRY_SUMMARY,
-        message=translate(
-            "notification.data_entry_created_athletes",
-            admin.preferred_language,
-            event_name=event.name,
-            count=len(unique_athletes),
-            athlete_names=athlete_names,
-        ),
-        related_event_id=event.id,
-        related_athlete_id=unique_athletes[0].id,
-    ))
 
 
 @router.post("/", response_model=schemas.EventRead)
@@ -931,7 +870,6 @@ def resolve_event_athlete(
     )
     db.add(athlete)
     db.flush()
-    notify_admin_about_manual_created_athletes(db, current_user, event, [athlete])
     db.commit()
     db.refresh(athlete)
     return schemas.EventAthleteResolveResponse(
@@ -1378,8 +1316,6 @@ def create_event_results_bulk(
         prepared_items.append((item, apparatus, day, format_value, round_value, e_score, penalty, bonus))
 
     if score_mismatches:
-        notify_admin_about_score_formula_mismatches(db, current_user, event, score_mismatches)
-        db.commit()
         raise HTTPException(
             status_code=400,
             detail={
@@ -1484,7 +1420,6 @@ def create_event_results_bulk(
         db.add(result)
         created_results.append(result)
 
-    notify_admin_about_manual_created_athletes(db, current_user, event, list(created_athletes_by_id.values()))
     db.commit()
     for result in created_results:
         db.refresh(result)

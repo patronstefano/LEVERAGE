@@ -4,7 +4,7 @@ Questo documento definisce il contratto comune che ogni import automatico deve r
 
 ## Importer supportati
 
-- `manual_entry`: inserimento admin da UI, tramite `POST /events/{event_id}/results/bulk`.
+- `manual_entry`: endpoint legacy `POST /events/{event_id}/results/bulk`, non esposto nel flusso UI attuale.
 - `gymternet_legacy`: import Gymternet storico/legacy, tramite `POST /imports/gymternet/preview` e `POST /imports/gymternet/commit`.
 - `standard_2026_plus`: import futuro consigliato per file standardizzati con componenti di punteggio esplicite.
 
@@ -17,7 +17,7 @@ Gli importer possono avere parser diversi, ma devono convergere sugli stessi con
 3. Preview admin con righe importabili, warning, duplicati e conflitti.
 4. Review admin per problemi non risolvibili automaticamente.
 5. Commit solo delle righe pulite o approvate.
-6. Notifica admin cumulativa `import_summary` o `data_entry_summary`.
+6. Per gli import file Gymternet e Calendar, notifica admin cumulativa `import_summary` quando il commit produce modifiche o elementi da rivedere. Nessuna notifica `data_entry_summary` e generata dal vecchio endpoint manuale.
 
 ## Controlli comuni
 

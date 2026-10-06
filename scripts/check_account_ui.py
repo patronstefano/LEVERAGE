@@ -378,8 +378,8 @@ def main():
         page.locator('.account-notification').first.wait_for()
         assert page.locator('.account-notification-copy p').first.inner_text() == 'Notifica personale 0'
         for role, email, button_id, count in (
-            ('admin', 'demo.admin@leverage-demo.com', 'demoAdminNotifications', 3),
-            ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 8),
+            ('admin', 'demo.admin@leverage-demo.com', 'demoAdminNotifications', 2),
+            ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 7),
         ):
             user.update(role=role, email=email)
             page.reload()
@@ -389,16 +389,16 @@ def main():
             if role == 'super_admin':
                 for generator_id, expected_count, expected_types in (
                     ('demoSuperAdminPersonalNotifications', 4, {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'}),
-                    ('demoSuperAdminAdminNotifications', 7, {'import_summary', 'data_entry_summary', 'event_results_reminder'}),
-                    ('demoSuperAdminNotifications', 8, {'security_alert'}),
+                    ('demoSuperAdminAdminNotifications', 6, {'import_summary', 'event_results_reminder'}),
+                    ('demoSuperAdminNotifications', 7, {'security_alert'}),
                 ):
                     page.locator('#' + generator_id).click()
                     page.wait_for_timeout(200)
                     assert page.locator('.account-notification').count() == expected_count
                     assert expected_types <= set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))
                 page.locator('#demoSuperAdminPersonalNotifications').click()
-                assert page.locator('.account-notification').count() == 8
-                assert page.locator('#accountUnreadCount').inner_text() == '8'
+                assert page.locator('.account-notification').count() == 7
+                assert page.locator('#accountUnreadCount').inner_text() == '7'
             else:
                 page.locator('#' + button_id).click()
             page.wait_for_timeout(200)
@@ -409,10 +409,10 @@ def main():
             assert len(set(types)) == count
             for item in items.all():
                 notification_type = item.get_attribute('data-notification-type')
-                expected_audience = 'SUPER ADMIN' if notification_type == 'security_alert' else 'ADMIN' if notification_type in {'import_summary', 'data_entry_summary', 'event_results_reminder'} else 'USER'
+                expected_audience = 'SUPER ADMIN' if notification_type == 'security_alert' else 'ADMIN' if notification_type in {'import_summary', 'event_results_reminder'} else 'USER'
                 assert item.locator('.account-notification-audience').inner_text().strip() == '· ' + expected_audience
                 assert item.locator('.account-notification-audience').evaluate('node => getComputedStyle(node).color') == item.locator('time').evaluate('node => getComputedStyle(node).color')
-            assert {'import_summary', 'data_entry_summary', 'event_results_reminder'} <= set(types)
+            assert {'import_summary', 'event_results_reminder'} <= set(types)
             assert ('security_alert' in types) == (role == 'super_admin')
             assert '#/account?section=notifications' in page.url
             assert page.locator('#accountUnreadCount').inner_text() == str(count)
@@ -426,13 +426,13 @@ def main():
                 assert page.locator('.account-notification').count() == 1
                 assert page.locator('.account-notification').first.get_attribute('data-notification-type') == 'security_alert'
                 scope_buttons.first.click()
-                assert page.locator('.account-notification').count() == 8
+                assert page.locator('.account-notification').count() == 7
             page.locator('[data-notification-scope="admin_only"]').click()
-            assert page.locator('.account-notification').count() == 3
+            assert page.locator('.account-notification').count() == 2
             assert page.locator('[data-notification-scope="admin_only"]').get_attribute('aria-pressed') == 'true'
             assert page.locator('[data-notification-scope="admin_only"]').evaluate(button_style) == page.locator('#accountUnreadOnly').evaluate(button_style)
             page.locator('#accountUnreadOnly').click()
-            assert page.locator('.account-notification').count() == 3
+            assert page.locator('.account-notification').count() == 2
             assert page.locator('[data-notification-scope="admin_only"]').get_attribute('aria-pressed') == 'true'
             page.locator('#accountUnreadOnly').click()
             page.locator('#accountReadAll').click()
@@ -454,12 +454,12 @@ def main():
             else:
                 page.locator('[data-notification-scope="super_admin"]').click()
             page.locator('.account-notification').first.wait_for()
-            assert page.locator('.account-notification').count() == (7 if role == 'admin' else 8)
+            assert page.locator('.account-notification').count() == (6 if role == 'admin' else 7)
             assert page.locator('.account-notification.is-unread').count() == 4
             assert {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'} <= set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))
             if role == 'admin':
                 page.locator('[data-notification-scope="admin_only"]').click()
-                assert page.locator('.account-notification').count() == 3
+                assert page.locator('.account-notification').count() == 2
                 assert page.locator('.account-notification.is-unread').count() == 0
                 page.locator('[data-notification-scope="admin_only"]').click()
             assert len(writes) == write_count
