@@ -4,7 +4,7 @@ import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-2
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=compare-active-20261006';
-import { createAdminReport } from './admin-reports.js?v=20261006';
+import { createAdminReport } from './admin-reports.js?v=compact-audit-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -235,7 +235,7 @@ const COPY = {
   approve: ["Approve", "Approva", "Aprobar", "Approuver"],
   revert: ["Revert change", "Annulla modifica", "Revertir cambio", "Annuler la modification"],
   details: ["Details", "Dettagli", "Detalles", "Détails"],
-  compareChanges: ["Compare changes", "Confronta le modifiche", "Comparar cambios", "Comparer les modifications"],
+  compareChanges: ["Compare details", "Confronta dettagli", "Comparar detalles", "Comparer les détails"],
   insertedData: ["View inserted data", "Visualizza i dati inseriti", "Ver datos insertados", "Voir les données créées"],
   importDetails: ["Issues and source rows", "Anomalie e righe sorgente", "Problemas y filas de origen", "Anomalies et lignes source"],
   year: ["Year", "Anno", "Año", "Année"],
@@ -717,7 +717,7 @@ export async function renderAdminCenter(host) {
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
         for (const [index, log] of logs.entries()) {
           const summary = root.querySelectorAll('#adminAudit > article')[index]?.querySelector('.admin-revision-group > summary');
-          if (summary) summary.textContent = text(log.action === 'create' ? 'insertedData' : 'compareChanges');
+          if (summary) summary.textContent = text('compareChanges');
           if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
           const undoLabel = log.action === 'merge' ? 'undoMerge' : 'undoCreate';

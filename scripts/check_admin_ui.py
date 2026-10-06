@@ -517,10 +517,12 @@ def main():
                         const render = createAdminReport({language, esc: escape, text: key => key});
                         const node = document.createElement('div');
                         node.innerHTML = render({before: {id: 1, country: 'ITA', value: null}, after: {id: 1, country: 'FRA', value: '<script>bad</script>'}});
-                        if (node.querySelectorAll('.admin-comparison-row:not(.admin-comparison-head)').length !== 2) return false;
-                        if (node.querySelector('script') || !node.querySelector('.admin-report-disclosure')) return false;
+                        if (node.querySelectorAll('.admin-audit-side').length !== 2) return false;
+                        if (node.querySelector('script') || node.querySelector('.admin-report-disclosure')) return false;
                         node.innerHTML = render({before: null, after: {id: 1, is_deleted: false, D_score: 5.3}});
-                        if (node.querySelector('.admin-comparison') || !node.querySelector('.admin-report-section')) return false;
+                        if (node.querySelectorAll('.admin-audit-side').length !== 2) return false;
+                        node.innerHTML = render({before: {source_athlete: {id: 1, first_name: 'Ada', last_name: 'Test'}, target_athlete: {id: 2, first_name: 'Ada', last_name: 'Test'}, source_result_ids: [10], target_result_ids_before: [11], reversal_state: {results: [{id: 10, athlete_id: 1}, {id: 11, athlete_id: 2}]}}, after: {source_athlete: {id: 1, first_name: 'Ada', last_name: 'Test', is_deleted: true}, target_athlete: {id: 2, first_name: 'Ada', last_name: 'Test'}, moved_results: 1, reversal_state: {results: [{id: 10, athlete_id: 2}, {id: 11, athlete_id: 2}]}}});
+                        if (node.querySelectorAll('.admin-audit-entity').length !== 4 || node.textContent.includes('reversal') || node.querySelector('details')) return false;
                         node.innerHTML = render({warnings: ['Test'], source_athlete: {id: 1, last_name: 'Test'}});
                         if (node.querySelectorAll('.admin-report-disclosure').length !== 2) return false;
                     }
@@ -529,8 +531,12 @@ def main():
                 page.locator('#adminAuditForm button[type=submit]').click()
                 page.locator('#adminAudit .account-notification').first.wait_for()
                 page.locator('#adminAudit .admin-revision-group > summary').first.click()
-                assert page.locator('#adminAudit .admin-comparison').first.locator('[role=cell]').all_inner_texts() == ['ITA', 'FRA']
-                assert page.locator('#adminAudit .admin-comparison-head').first.inner_text().splitlines() == ['Campo', 'Prima', 'Dopo']
+                comparison = page.locator('#adminAudit .admin-audit-comparison').first
+                assert comparison.locator('dd').all_inner_texts() == ['ITA', 'FRA']
+                assert comparison.locator('h3').all_inner_texts() == ['Prima', 'Dopo']
+                before_box = comparison.locator('.admin-audit-side').nth(0).bounding_box()
+                after_box = comparison.locator('.admin-audit-side').nth(1).bounding_box()
+                assert before_box['x'] < after_box['x'] and abs(before_box['y'] - after_box['y']) < 1
                 assert page.locator('[data-action=approve].admin-accept-button').count() == 3
                 assert page.locator('[data-action=revert].filter-clear-button').count() == 3
                 undo_merge = page.locator('[data-audit="93"][data-action=revert]')

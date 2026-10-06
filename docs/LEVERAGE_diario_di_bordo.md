@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Audit compatto affiancato come nelle Revisioni
+
+- Sostituita la tabella tecnica dell'audit con due colonne Prima / Dopo nello stesso impianto del confronto nelle Revisioni. Pulsante "Confronta dettagli" con stato aperto blu Leverage; disposizione verticale su mobile.
+- Mostrati identita essenziale e campi modificati, senza elenco dei campi invariati, timestamp tecnici, intere liste di ID o snapshot di ripristino. Gli inserimenti indicano Non presente nella colonna Prima. Valori rimossi restano leggibili come Non impostato.
+- Le unioni distinguono entita sorgente e destinazione, nomi/ID, stato eliminato e conteggi risultati se ricavabili dagli snapshot. I dati completi restano immutati nell'audit backend per annullamento e tracciabilita: la sintesi riguarda esclusivamente la visualizzazione.
+- Test browser aggiornati per colonne affiancate, contenuto essenziale, unioni, inserimenti, escaping e assenza di dettagli annidati, nelle quattro lingue e su viewport desktop/mobile.
+
 #### 2026-10-06 - Stato attivo del confronto nelle Revisioni
 
 - "Confronta dettagli" mantiene sfondo blu Leverage e testo bianco mentre il pannello e aperto, anche al passaggio del mouse e con focus da tastiera. Richiudendo torna allo stile neutro; stato sincronizzato con aria-expanded, anche alla riapertura dei dettagli gia caricati.

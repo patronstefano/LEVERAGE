@@ -5977,6 +5977,17 @@ a:focus-visible > .entity-card-clickable {
 .admin-identity-pair:last-child { border-bottom: 0; }
 .admin-identity-pair-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
 .admin-identity-pair-grid > div { min-width: 0; overflow-wrap: anywhere; }
+.admin-audit-comparison { margin: 16px 0; }
+.admin-audit-side { min-width: 0; overflow-wrap: anywhere; }
+.admin-center .admin-audit-side > h3 { margin: 0 0 12px; color: var(--muted); font-size: 13px; font-weight: 500; }
+.admin-audit-entity > strong { font-size: 15px; font-weight: 600; }
+.admin-audit-entity + .admin-audit-entity { margin-top: 16px; }
+.admin-audit-side .admin-report { grid-template-columns: minmax(0, 1fr); margin: 6px 0 0; font-size: 13px; }
+.admin-audit-side .admin-report > div { padding: 6px 0; }
+#adminAudit .admin-revision-group > summary { display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; padding: 0 13px; border: 1px solid var(--line); border-radius: var(--control-radius); background: #fff; font-size: 14px; }
+#adminAudit .admin-revision-group > summary::-webkit-details-marker { display: none; }
+#adminAudit .admin-revision-group > summary:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
+#adminAudit .admin-revision-group[open] > summary { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
 .admin-identity-pair p { margin: 6px 0 12px; font-size: 13px; line-height: 1.5; }
 .admin-identity-entity a { font-size: 15px; }
 .admin-identity-pair [data-pair-details] { margin-top: 18px; }
