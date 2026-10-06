@@ -1,3 +1,40 @@
+export function mountImportProgressDialog({dialog, text, esc}) {
+  const owned = !dialog;
+  if (owned) {
+    dialog = document.createElement('dialog');
+    dialog.className = 'admin-confirm';
+    dialog.innerHTML = `<h2>${esc(text('importRecalculate'))}</h2>`;
+    document.body.append(dialog);
+    dialog.showModal();
+  }
+  const root = document.createElement('div');
+  root.dataset.importDialogProgress = '';
+  const actions = dialog.querySelector('.admin-center-actions');
+  if (actions) actions.before(root);
+  else dialog.append(root);
+  const controls = [...dialog.querySelectorAll('button')].map(button => [button, button.disabled]);
+  controls.forEach(([button]) => { button.disabled = true; });
+  dialog.querySelector('[role=alert]')?.remove();
+  dialog.setAttribute('aria-busy', 'true');
+  const preventCancel = event => event.preventDefault();
+  const close = () => { if (owned) { dialog.close(); dialog.remove(); } };
+  dialog.addEventListener('cancel', preventCancel);
+  window.addEventListener('hashchange', close);
+  const progress = mountImportProgress({root, text, esc});
+  return {
+    complete: () => progress.complete(),
+    dispose() {
+      progress.dispose();
+      root.remove();
+      controls.forEach(([button, disabled]) => { button.disabled = disabled; });
+      dialog.removeAttribute('aria-busy');
+      dialog.removeEventListener('cancel', preventCancel);
+      window.removeEventListener('hashchange', close);
+      close();
+    },
+  };
+}
+
 export function mountImportProgress({root, text, esc, uploading = false}) {
   let disposed = false;
   let analyzing = !uploading;

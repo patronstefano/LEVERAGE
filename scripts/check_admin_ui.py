@@ -976,9 +976,10 @@ def main():
                 row.locator("[data-admin-select]").first.locator("summary").click()
                 row.locator('[data-admin-select-value="suggestion:s1"]').click()
                 page.locator("#adminReviewPreview").click()
-                page.locator('#adminImportScopeStatus .is-complete').wait_for(state='attached')
-                assert page.locator('#adminImportScopeStatus [data-import-progress-label]').inner_text() == 'Analisi completata'
-                assert page.locator('#adminImportScopeStatus [role=progressbar]').get_attribute('aria-valuenow') == '100'
+                page.locator('dialog[open] .is-complete').wait_for(state='attached')
+                assert page.locator('dialog[open] [data-import-progress-label]').inner_text() == 'Analisi completata'
+                assert page.locator('dialog[open] [role=progressbar]').get_attribute('aria-valuenow') == '100'
+                assert page.locator('#adminImportOutput [role=progressbar]').count() == 0
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert "accept_suggestion" in writes[-1]["body"]
@@ -1104,7 +1105,13 @@ def main():
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-exclude-all]').click()
                 assert 'tutti i relativi punteggi' in page.locator('dialog[open]').inner_text()
+                assert '1 riga del file' in page.locator('dialog[open]').inner_text()
                 page.locator('dialog[open] [data-confirm]').click()
+                page.locator('dialog[open] .is-complete').wait_for(state='attached')
+                assert page.locator('dialog[open] [data-cancel]').is_disabled()
+                assert page.locator('dialog[open] [data-confirm]').is_disabled()
+                assert '1 riga del file' in page.locator('dialog[open] h2').inner_text()
+                page.screenshot(path='/tmp/leverage-import-dialog-complete.png')
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert '"action":"exclude"' in writes[-1]['body']
                 page.evaluate('window.scrollTo(0, 0)')

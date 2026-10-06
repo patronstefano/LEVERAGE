@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Avanzamento delle revisioni nel popup
+
+- Spostata l'animazione di ricalcolo all'interno della conferma di esclusione delle righe/D Score orfani: il testo della decisione resta visibile, la barra si completa al 100% e solo successivamente la conferma si chiude. Per applicazione delle revisioni, annullamento delle correzioni e cambio Includi/Tralascia senza conferma preesistente si usa un popup di avanzamento nello stesso stile.
+- Evitata la duplicazione dell'indicatore nell'anteprima sottostante. Durante l'attesa i pulsanti del popup e Escape non interrompono l'operazione; la navigazione pulisce il popup e le risposte obsolete restano ignorate. In caso di errore non viene mostrato un falso completamento e la conferma torna utilizzabile.
+- Corretta la frase "Tralasciare 1 riga del file..." nelle quattro lingue, conservando il plurale per le esclusioni multiple. Nessuna modifica alle regole d'importazione o al database reale.
+- Estesi i test browser per posizione della barra nella conferma, disabilitazione dei pulsanti, completamento, pulizia del popup, navigazione, movimento ridotto e viewport mobile. Documentazione aggiornata anche in Word.
+
 #### 2026-10-06 - Calendar: esclusione degli eventi gia presenti
 
 - Introdotto nell'anteprima Calendar lo stesso selettore Includi/Tralascia di Results, con etichetta "Eventi gia presenti in LEVERAGE" e traduzioni EN/IT/ES/FR. La scelta ricalcola l'anteprima con l'animazione di completamento condivisa e resta nella bozza durante la navigazione.

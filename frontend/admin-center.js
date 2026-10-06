@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
-import { mountImportProgress } from './admin-import-progress.js?v=import-progress-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-scope-20261006';
+import { mountImportResolution } from './admin-import-resolution.js?v=import-dialog-20261006';
+import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=import-dialog-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -473,7 +473,7 @@ export async function renderAdminCenter(host) {
     const close = () => dialog.close();
     window.addEventListener("hashchange", close, { once: true });
     dialog.addEventListener("close", () => { window.removeEventListener("hashchange", close); dialog.remove(); });
-    dialog.querySelector("[data-confirm]").onclick = guard(async () => { await operation(); dialog.close(); if (showSuccess) feedback(text("success")); });
+    dialog.querySelector("[data-confirm]").onclick = guard(async () => { await operation(dialog); dialog.close(); if (showSuccess) feedback(text("success")); });
   };
   let schemas;
   const getSchemas = async () => schemas ||= (await api("/openapi.json")).components.schemas;
@@ -1080,7 +1080,7 @@ export async function renderAdminCenter(host) {
         }
         return body;
       };
-      refreshPreview = async (scope = draft.params.skip_existing_events) => {
+      refreshPreview = async (scope = draft.params.skip_existing_events, dialog = null) => {
         if (draft.scopeBusy) return;
         const changingScope = scope !== draft.params.skip_existing_events;
         const changingSource = Boolean(draft.sourceDirty);
@@ -1090,7 +1090,7 @@ export async function renderAdminCenter(host) {
         output.inert = true;
         output.setAttribute('aria-busy', 'true');
         output.querySelector('#adminCommitImport')?.setAttribute('disabled', '');
-        const progress = mountImportProgress({root: output.querySelector('#adminImportScopeStatus'), text, esc});
+        const progress = mountImportProgressDialog({dialog, text, esc});
         try {
           let result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(draft.preview, !changingScope && !changingSource, !changingSource), params });
           if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
@@ -1159,7 +1159,7 @@ export async function renderAdminCenter(host) {
     if (draft.kind === 'gymternet' && !p.committed) {
       const resolution = !p.committed ? mountImportResolution({
         root: output.querySelector('#adminImportResolution'), preview: p, draft, text, esc, button, field, report,
-        markChanged: () => { draft.sourceDirty = true; markChanged(); }, apply: () => refreshPreview(), confirm, guard,
+        markChanged: () => { draft.sourceDirty = true; markChanged(); }, apply: dialog => refreshPreview(undefined, dialog instanceof HTMLDialogElement ? dialog : null), confirm, guard,
       }) : null;
       mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report,
         language: state.language, route: state.route, viewState: draft.reportView ||= {}, onCorrect: resolution ? (sheet, row) => resolution.focus(sheet, row) : null});
@@ -1167,9 +1167,9 @@ export async function renderAdminCenter(host) {
       if (!p.committed && p.orphan_dscore_review?.length) {
         const group = output.querySelector('[data-import-group=orphan]');
         group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDiscardOrphans', 'data-discard-orphans')}</div>`);
-        group.querySelector('[data-discard-orphans]').onclick = () => confirm('importDiscardOrphansConfirm', async () => {
+        group.querySelector('[data-discard-orphans]').onclick = () => confirm('importDiscardOrphansConfirm', async dialog => {
           for (const item of p.orphan_dscore_review) draft.orphan[item.review_id] = {review_id: item.review_id, action: 'discard', selection: 'discard'};
-          markChanged(); await refreshPreview();
+          markChanged(); await refreshPreview(undefined, dialog);
         }, false, text('importSourceNote'));
       }
     }

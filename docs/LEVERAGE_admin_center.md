@@ -10,6 +10,13 @@ la risposta valida. Correzioni e decisioni mantengono la vecchia anteprima
 non interagibile fino alla sostituzione. La transizione rispetta il movimento
 ridotto; un errore di rete non viene mostrato come completamento. Il 100%
 indica analisi conclusa, non assenza di conflitti o avvenuta importazione.
+Durante esclusioni e revisioni la barra compare nel popup: viene riutilizzata
+la conferma gia aperta oppure mostrato un popup di avanzamento per i ricalcoli
+diretti. Non compare una seconda barra dietro la conferma. I pulsanti e la
+chiusura con Escape sono sospesi durante l'operazione; dopo il completamento
+il popup si chiude. In caso di errore la conferma resta disponibile con il
+messaggio, consentendo di riprovare o annullare. Corretti singolare/plurale
+della conferma di esclusione nelle quattro lingue.
 
 Il selettore Anno e disponibile anche per Calendar, nello stesso punto del
 form Risultati. Se valorizzato, limita preview e commit al foglio XLSX o alle

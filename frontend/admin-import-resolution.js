@@ -34,11 +34,11 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
         };
       });
       article.querySelector('[data-source-apply]').onclick = guard(apply);
-      article.querySelector('[data-source-exclude]').onclick = () => confirm(text('importExcludeRowsConfirm').replace('{n}', '1'), async () => { exclude(row); markChanged(); await apply(); }, false, text('importSourceNote'));
+      article.querySelector('[data-source-exclude]').onclick = () => confirm(text('importExcludeRowConfirm'), async dialog => { exclude(row); markChanged(); await apply(dialog); }, false, text('importSourceNote'));
       article.querySelector('[data-source-undo]')?.addEventListener('click', guard(async () => { delete draft.source[keyOf(row)]; markChanged(); await apply(); }));
     });
-    root.querySelector('[data-source-exclude-all]')?.addEventListener('click', () => confirm(text('importExcludeRowsConfirm').replace('{n}', pending.length), async () => {
-      pending.forEach(exclude); markChanged(); await apply();
+    root.querySelector('[data-source-exclude-all]')?.addEventListener('click', () => confirm(text(pending.length === 1 ? 'importExcludeRowConfirm' : 'importExcludeRowsConfirm').replace('{n}', pending.length), async dialog => {
+      pending.forEach(exclude); markChanged(); await apply(dialog);
     }, false, text('importSourceNote')));
     root.querySelectorAll('[data-source-page]').forEach(control => control.onclick = () => { page += Number(control.dataset.sourcePage); render(); });
   };

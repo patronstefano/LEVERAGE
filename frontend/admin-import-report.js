@@ -53,6 +53,7 @@ export const IMPORT_COPY = {
   importExcludeRow: ['Skip row', 'Tralascia riga', 'Omitir fila', 'Exclure la ligne'],
   importExcludeAllRows: ['Skip unresolved source rows', 'Tralascia tutte le righe da correggere', 'Omitir las filas pendientes', 'Exclure les lignes à corriger'],
   importExcludeRowsConfirm: ['Skip {n} source rows and all their scores in this import?', 'Tralasciare {n} righe del file e tutti i relativi punteggi in questa importazione?', '¿Omitir {n} filas y todas sus puntuaciones de esta importación?', 'Exclure {n} lignes et tous leurs scores de cet import ?'],
+  importExcludeRowConfirm: ['Skip 1 source row and all its scores in this import?', 'Tralasciare 1 riga del file e tutti i relativi punteggi in questa importazione?', '¿Omitir 1 fila y todas sus puntuaciones de esta importación?', 'Exclure 1 ligne et tous ses scores de cet import ?'],
   importRowExcluded: ['Excluded', 'Tralasciata', 'Excluida', 'Exclue'],
   importRowCorrected: ['Proposed correction', 'Correzione proposta', 'Corrección propuesta', 'Correction proposée'],
   importUndoRow: ['Restore source row', 'Ripristina riga originale', 'Restaurar fila original', 'Restaurer la ligne originale'],
