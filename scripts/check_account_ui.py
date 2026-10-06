@@ -92,6 +92,8 @@ def main():
         signout_box = page.locator('#topbarSignOut').bounding_box()
         assert signout_box['x'] >= auth_box['x'] + auth_box['width']
         assert abs(signout_box['height'] - auth_box['height']) < 1
+        typography = 'el => { const s = getComputedStyle(el); return [s.fontFamily, s.fontSize, s.fontWeight, s.lineHeight]; }'
+        assert page.locator('#topbarSignOut').evaluate(typography) == page.locator('#authLink').evaluate(typography)
         assert page.locator('.account-view-switcher .account-tool-actions button').count() == 2
         slider = page.locator('.account-view-toggle').bounding_box()
         actions = page.locator('.account-navigation-actions').bounding_box()

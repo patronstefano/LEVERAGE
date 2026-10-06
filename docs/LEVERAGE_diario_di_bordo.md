@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Tipografia condivisa nella topbar
+
+- Rimossa la dimensione specifica 14px del pulsante Esci: Esci e Area personale condividono ora famiglia, dimensione, peso e interlinea tramite la stessa classe. Invariati posizione, dimensioni esterne e comportamento.
+- Aggiunta verifica browser dell'uguaglianza della tipografia calcolata dei due pulsanti.
+
 #### 2026-10-06 - Accesso rapido alla disconnessione nella topbar
 
 - Aggiunto il pulsante "Esci" immediatamente a destra di "Area personale", visibile solo con utente autenticato (USER, ADMIN e SUPER ADMIN). Testo localizzato e stile contorno condiviso, altezza 36px.
