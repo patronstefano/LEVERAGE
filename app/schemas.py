@@ -1917,6 +1917,7 @@ class CalendarImportRowPreview(BaseModel):
 
 class CalendarImportPreview(BaseModel):
     filename: str
+    year: Optional[int] = None
     create_missing_from_year: int
     parsed_rows: int
     years: list[int]

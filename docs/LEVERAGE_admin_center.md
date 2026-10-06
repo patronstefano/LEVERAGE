@@ -4,6 +4,12 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
+Il selettore Anno e disponibile anche per Calendar, nello stesso punto del
+form Risultati. Se valorizzato, limita preview e commit al foglio XLSX o alle
+righe CSV di quell'anno; vuoto mantiene l'intero file. La scelta resta nella
+bozza durante la navigazione. Non cambia la soglia separata di creazione degli
+eventi mancanti. Un anno assente dal file viene segnalato e non e importabile.
+
 L'anteprima e stata compattata usando gli stessi caratteri, controlli e
 separazioni di Revisione Duplicati. Dopo l'analisi il form file/parametri
 si chiude ed e riapribile con Cambia file; il file e le opzioni restano in

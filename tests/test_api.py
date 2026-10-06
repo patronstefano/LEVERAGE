@@ -5856,6 +5856,42 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
     assert duplicate_notify_response.json()["created_notifications"] == 0
 
 
+def test_calendar_import_selected_year_limits_preview_and_commit():
+    client.post('/auth/register', json={'email': 'calendar_year@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('calendar_year@example.com')}"}
+    content = make_calendar_workbook({2025: [('invalid date', 'Excluded Cup')],
+                                     2026: [('Jul 1-2', 'Selected Cup')],
+                                     2027: [('Jan 2', 'Future Cup')]})
+    files = {'file': ('Calendar.xlsx', content, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    params = '?year=2026&create_missing_from_year=2026'
+    response = client.post('/imports/calendar/preview' + params, files=files, headers=headers)
+    assert response.status_code == 200, response.text
+    preview = response.json()
+    assert preview['year'] == 2026
+    assert preview['years'] == [2026]
+    assert preview['parsed_rows'] == 1
+    assert not preview['issues']
+    assert client.post('/imports/calendar/preview?year=1800', files=files, headers=headers).status_code == 422
+    absent = client.post('/imports/calendar/preview?year=2024', files=files, headers=headers).json()
+    assert absent['parsed_rows'] == 0
+    assert absent['issues'][0]['code'] == 'calendar_year_empty'
+    assert client.post('/imports/calendar/commit?year=2024', files=files, headers=headers).status_code == 400
+    committed = client.post('/imports/calendar/commit' + params, files=files, headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_events'] == 1
+    assert [row['name'] for row in client.get('/events/').json()] == ['Selected Cup']
+
+
+def test_calendar_csv_selected_year_keeps_unknown_year_errors():
+    from app.calendar_import import parse_calendar_file
+    content = b'YEAR,DATE,EVENT\n2025,invalid,Excluded\n2026,Jan 2,Selected\ninvalid,Jan 3,Unknown\n'
+    rows, issues = parse_calendar_file('Calendar.csv', content, selected_year=2026)
+    assert [row.event_name for row in rows] == ['Selected']
+    assert len(issues) == 1 and issues[0]['row'] == 4
+    rows, issues = parse_calendar_file('Calendar.csv', content)
+    assert len(issues) == 2
+
+
 def test_calendar_import_preview_and_commit_update_existing_events_and_create_future_calendar_events():
     client.post("/auth/register", json={"email": "calendar_import_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("calendar_import_admin@example.com")

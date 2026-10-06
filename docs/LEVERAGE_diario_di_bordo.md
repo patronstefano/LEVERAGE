@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Selettore Anno anche per Calendar
+
+- Il form Importazione file mantiene il selettore Anno anche scegliendo Calendario (The Gymternet), nella stessa posizione e con lo stesso controllo gia usato per Risultati. La scelta e conservata nella bozza tornando alla sezione ed e inviata a preview, ricalcolo e commit.
+- Semantica Calendar: il parametro opzionale `year` seleziona il foglio XLSX dell'anno oppure le righe CSV con quel YEAR. Non modifica l'anno delle date e non equivale a `create_missing_from_year`, che rimane la soglia distinta per creare eventi non associati. Senza anno si mantiene il comportamento precedente su tutto il file.
+- Gli errori appartenenti ad altri anni esclusi non bloccano l'anno scelto; nei CSV rimangono bloccanti gli anni illeggibili, non attribuibili con certezza. Un anno privo di voci produce un avviso localizzato e impedisce il commit vuoto. Controlli su range 1900-2100 e sullo stesso perimetro in anteprima e conferma.
+- Test su workbook multianno, esclusione di errori degli altri fogli, anno assente, CSV con anno invalido e scrittura limitata all'anno selezionato su DB di test. Collaudo browser con richieste simulate, persistenza della selezione e form desktop/mobile. Nessuna importazione o scansione sui dati reali.
+
+
 #### 2026-10-06 - Anteprima Gymternet in tre revisioni: Eventi, Atleti, Risultati
 
 - Decisione UX richiesta dall'utente: tre parti selezionabili, con recap specifico e liste apribili paginate a sei elementi, al posto di elenchi sovrapposti. Rimangono Includi/Tralascia per lo storico, applicazione delle scelte, correzioni singole ed esclusioni cumulative esplicite. Il cambio di parte non scrive dati e non aggira i blocchi dell'import; la parte selezionata e conservata dopo il ricalcolo.

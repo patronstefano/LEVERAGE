@@ -5,7 +5,7 @@ import { bindAuthValidation } from './auth-validation.js?v=admin-validation-2026
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows } from './admin-import-report.js?v=three-reviews-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows } from './admin-import-report.js?v=calendar-year-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -867,11 +867,11 @@ export async function renderAdminCenter(host) {
 
   async function imports() {
     let importRevision = 0;
-    paint(form("adminImportForm", select("kind", "type", [{ value: "gymternet", label: text("importResults") }, { value: "calendar", label: text("importCalendar") }], session.import?.kind || "gymternet") + select("year_hint", "year", [{ value: "", label: "—" }, ...Array.from({ length: new Date().getFullYear() - 1898 }, (_, index) => String(new Date().getFullYear() + 1 - index))], session.import?.params?.year_hint || "") + `<div class="admin-form-field"><span>File</span><div class="admin-file-picker"><input id="adminImportFile" name="file" type="file" accept=".xlsx,.csv" required tabindex="-1" aria-label="${esc(text("chooseFile"))}"><button id="adminChooseFile" type="button" class="quiet-button outline-command-button" aria-controls="adminImportFile" aria-describedby="adminImportFilename">${esc(text("chooseFile"))}</button><span id="adminImportFilename" aria-live="polite">${esc(text("noFileSelected"))}</span></div></div>` + select("csv_discipline", "CSV discipline", [{ value: "", label: "—" }, "MAG", "WAG"]) + select("csv_score_kind", "CSV score", [{ value: "", label: "—" }, "final", "dscore"]) + field("create_missing_from_year", "Create calendar events from year", "number"), "preview") + '<div id="adminImportOutput"></div>');
+    paint(form("adminImportForm", select("kind", "type", [{ value: "gymternet", label: text("importResults") }, { value: "calendar", label: text("importCalendar") }], session.import?.kind || "gymternet") + select("year_hint", "year", [{ value: "", label: "—" }, ...Array.from({ length: new Date().getFullYear() - 1898 }, (_, index) => String(new Date().getFullYear() + 1 - index))], session.import?.params?.year_hint || session.import?.params?.year || "") + `<div class="admin-form-field"><span>File</span><div class="admin-file-picker"><input id="adminImportFile" name="file" type="file" accept=".xlsx,.csv" required tabindex="-1" aria-label="${esc(text("chooseFile"))}"><button id="adminChooseFile" type="button" class="quiet-button outline-command-button" aria-controls="adminImportFile" aria-describedby="adminImportFilename">${esc(text("chooseFile"))}</button><span id="adminImportFilename" aria-live="polite">${esc(text("noFileSelected"))}</span></div></div>` + select("csv_discipline", "CSV discipline", [{ value: "", label: "—" }, "MAG", "WAG"]) + select("csv_score_kind", "CSV score", [{ value: "", label: "—" }, "final", "dscore"]) + field("create_missing_from_year", "Create calendar events from year", "number"), "preview") + '<div id="adminImportOutput"></div>');
     onSubmit("adminImportForm", async (v, f) => {
       const revision = ++importRevision;
       const file = f.elements.file.files[0];
-      const params = v.kind === "calendar" ? { create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000, skip_existing_events: false };
+      const params = v.kind === "calendar" ? { year: v.year_hint, create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000, skip_existing_events: false };
       const body = new FormData(); body.append("file", file);
       const output = document.getElementById("adminImportOutput");
       output.innerHTML = `<div class="admin-import-progress" role="status" aria-live="polite"><div class="admin-import-progress-heading"><span id="adminImportProgressLabel">${esc(text("importUploading"))}</span><strong id="adminImportProgressValue">0%</strong></div><div id="adminImportProgressTrack" class="admin-import-progress-track" role="progressbar" aria-label="${esc(text("importUploading"))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="adminImportProgressFill"></span></div></div>`;
@@ -917,7 +917,7 @@ export async function renderAdminCenter(host) {
       const csv = importForm.elements.file.files[0]?.name.toLowerCase().endsWith(".csv");
       for (const key of ["csv_discipline", "csv_score_kind", "year_hint", "create_missing_from_year"]) {
         importForm.elements[key].closest("label, .admin-form-field").hidden =
-          key === "create_missing_from_year" ? !calendar : key === "year_hint" ? calendar : calendar || !csv;
+          key === "create_missing_from_year" ? !calendar : key === "year_hint" ? false : calendar || !csv;
       }
     };
     importForm.addEventListener("change", () => {

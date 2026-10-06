@@ -44,9 +44,11 @@ def build_calendar_import_preview_payload(
     filename: str,
     create_missing_from_year: int,
     summary: dict,
+    year: Optional[int] = None,
 ) -> dict:
     return {
         "filename": filename,
+        "year": year,
         "create_missing_from_year": create_missing_from_year,
         "parsed_rows": summary["parsed_rows"],
         "years": summary["years"],
@@ -68,6 +70,7 @@ def parse_and_summarize_calendar_upload(
     file: UploadFile,
     db: Session,
     create_missing_from_year: Optional[int],
+    year: Optional[int] = None,
 ) -> tuple[str, int, dict]:
     resolved_create_missing_from_year = create_missing_from_year or date.today().year
     filename = file.filename or "calendar_import"
@@ -82,7 +85,10 @@ def parse_and_summarize_calendar_upload(
         return filename, resolved_create_missing_from_year, summary
 
     try:
-        rows, issues = parse_calendar_file(filename, content)
+        rows, issues = parse_calendar_file(filename, content, selected_year=year)
+        if year is not None and not rows and not issues:
+            issues.append({"severity": "error", "code": "calendar_year_empty", "year": year,
+                           "message": "No calendar entries found for the selected year."})
     except Exception as exc:
         summary = summarize_calendar_import(
             db,
@@ -331,6 +337,7 @@ def parse_athlete_match_decisions(raw: Optional[str]) -> Optional[list[dict]]:
 @router.post("/calendar/preview", response_model=schemas.CalendarImportPreview)
 def preview_calendar_import(
     file: UploadFile = File(...),
+    year: Optional[int] = Query(None, ge=1900, le=2100),
     create_missing_from_year: Optional[int] = Query(
         None,
         ge=1900,
@@ -344,13 +351,15 @@ def preview_calendar_import(
         file,
         db,
         create_missing_from_year,
+        year,
     )
-    return build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary)
+    return build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary, year)
 
 
 @router.post("/calendar/commit", response_model=schemas.CalendarImportCommit)
 def commit_calendar_import(
     file: UploadFile = File(...),
+    year: Optional[int] = Query(None, ge=1900, le=2100),
     create_missing_from_year: Optional[int] = Query(
         None,
         ge=1900,
@@ -364,8 +373,9 @@ def commit_calendar_import(
         file,
         db,
         create_missing_from_year,
+        year,
     )
-    payload = build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary)
+    payload = build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary, year)
     if has_error_issues(summary):
         raise HTTPException(status_code=400, detail=jsonable_encoder(payload))
     if summary["duplicate_source_rows"]:

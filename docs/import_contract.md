@@ -19,6 +19,16 @@ Gli importer possono avere parser diversi, ma devono convergere sugli stessi con
 5. Commit solo delle righe pulite o approvate.
 6. Per gli import file Gymternet e Calendar, notifica cumulativa `import_summary` all'autore e agli altri SUPER ADMIN attivi quando il commit produce modifiche o elementi da rivedere. Il riepilogo indica ruolo e ID autore, nella lingua preferita di ciascun destinatario; nessuna duplicazione per autore SUPER ADMIN e nessuna notifica di successo dalla preview o da un commit bloccato. Nessuna notifica `data_entry_summary` e generata dal vecchio endpoint manuale.
 
+## Selezione anno Calendar
+
+`POST /imports/calendar/preview` e `POST /imports/calendar/commit` accettano
+`year` opzionale (1900-2100), restituito anche nel payload. Il parser limita
+la lettura al foglio XLSX omonimo oppure alle righe CSV con YEAR corrispondente.
+Senza parametro viene analizzato l'intero file, come prima. La selezione non
+sostituisce `create_missing_from_year` e non forza date o anni delle gare.
+Un anno senza voci genera `calendar_year_empty`; il commit lo rifiuta. Gli
+errori CSV con YEAR non interpretabile restano bloccanti anche col filtro.
+
 ## Revisione Gymternet nell'anteprima
 
 L'anteprima separa Eventi, Atleti e Risultati. Il payload espone

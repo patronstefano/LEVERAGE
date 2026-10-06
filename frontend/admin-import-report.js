@@ -1,4 +1,5 @@
 export const IMPORT_COPY = {
+  importCalendarYearEmpty: ['No calendar entries found for {year}.', 'Nessuna voce calendario trovata per il {year}.', 'No se encontraron eventos de calendario para {year}.', 'Aucune entrée de calendrier trouvée pour {year}.'],
   importReviewEvents: ['Event review', 'Revisione Eventi', 'Revisión de Eventos', 'Révision des Événements'],
   importReviewAthletes: ['Athlete review', 'Revisione Atleti', 'Revisión de Atletas', 'Révision des Athlètes'],
   importReviewResults: ['Result review', 'Revisione Risultati', 'Revisión de Resultados', 'Révision des Résultats'],
@@ -109,7 +110,7 @@ export function renderImportIssues({issues, text, esc, language, sourceRows = []
   page = Math.min(page, Math.max(0, Math.ceil(ordered.length / 6) - 1));
   return `<ul class="admin-import-issues">${ordered.slice(page * 6, (page + 1) * 6).map(issue => {
     const known = issue.code === 'derived_vt_outlier';
-    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.message;
+    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.code === 'calendar_year_empty' ? text('importCalendarYearEmpty').replace('{year}', issue.year) : issue.message;
     const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
     const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
     return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}${sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row) ? `<div class="admin-center-actions"><button type="button" class="quiet-button outline-command-button" data-correct-issue-sheet="${esc(issue.sheet)}" data-correct-issue-row="${issue.row}">${esc(text('importEditRow'))}</button></div>` : ''}</li>`;

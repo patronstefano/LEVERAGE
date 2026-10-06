@@ -167,20 +167,22 @@ def _parse_month(value: str) -> int:
     return month
 
 
-def parse_calendar_file(filename: str, content: bytes) -> tuple[list[CalendarImportRow], list[dict]]:
+def parse_calendar_file(filename: str, content: bytes, selected_year: Optional[int] = None) -> tuple[list[CalendarImportRow], list[dict]]:
     suffix = Path(filename).suffix.lower()
     if suffix == ".csv":
-        return _parse_calendar_csv(content)
+        return _parse_calendar_csv(content, selected_year)
     if suffix in {".xlsx", ".xlsm"}:
-        return _parse_calendar_xlsx(content)
+        return _parse_calendar_xlsx(content, selected_year)
     raise ValueError("Calendar import supports .xlsx, .xlsm or .csv files")
 
 
-def _parse_calendar_xlsx(content: bytes) -> tuple[list[CalendarImportRow], list[dict]]:
+def _parse_calendar_xlsx(content: bytes, selected_year: Optional[int] = None) -> tuple[list[CalendarImportRow], list[dict]]:
     workbook = load_workbook(BytesIO(content), read_only=True, data_only=True)
     rows: list[CalendarImportRow] = []
     issues: list[dict] = []
     for worksheet in workbook.worksheets:
+        if selected_year is not None and str(worksheet.title).strip() != str(selected_year):
+            continue
         try:
             year = int(str(worksheet.title).strip())
         except ValueError:
@@ -238,7 +240,7 @@ def _parse_calendar_xlsx(content: bytes) -> tuple[list[CalendarImportRow], list[
     return rows, issues
 
 
-def _parse_calendar_csv(content: bytes) -> tuple[list[CalendarImportRow], list[dict]]:
+def _parse_calendar_csv(content: bytes, selected_year: Optional[int] = None) -> tuple[list[CalendarImportRow], list[dict]]:
     text = content.decode("utf-8-sig")
     reader = csv.DictReader(StringIO(text))
     required = {"DATE", "EVENT", "YEAR"}
@@ -255,6 +257,8 @@ def _parse_calendar_csv(content: bytes) -> tuple[list[CalendarImportRow], list[d
         normalized_item = {key.strip().upper(): value for key, value in item.items() if key}
         try:
             year = int(str(normalized_item.get("YEAR", "")).strip())
+            if selected_year is not None and year != selected_year:
+                continue
             event_name = str(normalized_item.get("EVENT", "")).strip()
             date_label = str(normalized_item.get("DATE", "")).strip()
             if not event_name:

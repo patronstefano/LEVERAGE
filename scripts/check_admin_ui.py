@@ -1110,8 +1110,26 @@ def main():
                 page.locator('#adminImportChangeFile').click()
                 page.locator('#adminImportForm [name=kind]').locator('..').locator('summary').click()
                 page.locator('[data-admin-select-value=calendar]').click()
+                calendar_year = page.locator('#adminImportForm [name=year_hint]').locator('..')
+                assert calendar_year.is_visible()
+                calendar_year.locator('summary').click()
+                calendar_year.locator('[data-admin-select-value="2026"]').click()
+                page.screenshot(path='/tmp/leverage-calendar-year-desktop.png', full_page=True)
+                page.set_viewport_size({'width': 390, 'height': 844})
+                assert calendar_year.is_visible()
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                page.screenshot(path='/tmp/leverage-calendar-year-mobile.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.locator('#adminImportFile').set_input_files({'name': 'Calendar.xlsx', 'mimeType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'buffer': b'test'})
                 analyze_import()
+                assert 'year=2026' in writes[-1]['url']
+                assert 'year_hint=' not in writes[-1]['url']
+                page.locator('[data-admin-tab=overview]').click()
+                page.locator('.admin-data-overview').wait_for()
+                page.locator('[data-admin-tab=imports]').click()
+                page.locator('#adminImportChangeFile').click()
+                assert page.locator('#adminImportForm [name=year_hint]').input_value() == '2026'
+                page.locator('#adminImportChangeFile').click()
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '1', '1', '7', '0', '0']
                 assert page.locator('#adminCommitImport').is_enabled()
                 page.locator('[data-calendar-details] > summary').click()
@@ -1136,6 +1154,7 @@ def main():
                 page.locator('dialog[open] [data-confirm]').click()
                 page.locator('.admin-import-heading.is-complete').wait_for()
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['1', '7', '0']
+                assert 'year=2026' in writes[-1]['url']
                 page.locator('[data-calendar-details] > summary').click()
                 assert 'Date aggiornate' in page.locator('#adminCalendarRows article').first.inner_text()
                 assert 'Gara creata' in page.locator('#adminCalendarRows article').nth(1).inner_text()
