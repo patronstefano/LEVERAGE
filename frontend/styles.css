@@ -102,6 +102,45 @@
 #adminImportOutput [data-pair-details] { min-width: 0; }
 #adminImportOutput [aria-expanded="true"].quiet-button,
 #adminImportOutput [aria-expanded="true"].quiet-button:hover { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+#adminImportForm[hidden] + #adminImportOutput { margin-top: 0; }
+.admin-import-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 16px; }
+.admin-import-heading > div:first-child { min-width: 0; flex: 1 1 220px; }
+#adminImportOutput .admin-import-heading h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+#adminImportOutput .admin-import-heading.is-complete h3 { color: var(--success); }
+.admin-import-heading .admin-revision-meta { margin: 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.admin-import-header-actions { display: flex; align-items: end; flex-wrap: wrap; gap: 8px 16px; }
+.admin-import-header-actions .admin-import-scope-choice { margin: 0; }
+.admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 220px; }
+#adminImportOutput .admin-import-metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 18px; padding-bottom: 16px; }
+#adminImportOutput .admin-import-metrics dt { min-height: 39px; }
+#adminImportOutput .admin-revision-group { border-bottom: 1px solid var(--line); margin: 0; }
+#adminImportOutput .admin-revision-group > summary { padding: 10px 0; font-size: 14px; font-weight: 500; line-height: 20px; }
+#adminImportOutput .admin-revision-group[open] { padding-bottom: 12px; }
+#adminImportOutput .admin-revision-group[open] > summary { color: var(--brand-blue); }
+#adminImportOutput .admin-revision-count { font-weight: 400; }
+.admin-import-blocking { margin-left: 12px; color: var(--danger); font-size: 13px; font-weight: 400; }
+#adminImportOutput .admin-identity-pair { padding-block: 10px; font-size: 14px; }
+#adminImportOutput .admin-identity-pair strong, #adminImportOutput .admin-identity-entity a { font-size: 14px; font-weight: 600; }
+#adminImportOutput .admin-identity-pair p { margin: 4px 0 0; }
+#adminImportOutput .admin-revision-meta { color: var(--muted); }
+#adminImportOutput .admin-identity-pair [data-pair-details] { margin-top: 8px; }
+#adminImportOutput .admin-audit-comparison { margin: 8px 0; }
+#adminImportOutput .admin-import-actions { justify-content: flex-end; gap: 8px; margin-top: 16px; }
+#adminImportOutput .admin-import-safety { margin-top: 10px; }
+#adminImportOutput .admin-import-table-scroll { max-height: 320px; }
+#adminImportOutput .admin-import-table th, #adminImportOutput .admin-import-table td { padding-block: 7px; }
+#adminImportOutput .admin-import-historical-total { margin: 10px 0; }
+@media (max-width: 1000px) {
+  #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #adminImportOutput .admin-import-metrics dt { min-height: 0; }
+}
+@media (max-width: 580px) {
+  .admin-import-header-actions { width: 100%; }
+  .admin-import-header-actions .admin-import-scope-choice { flex: 1 1 180px; }
+  .admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 100%; }
+  #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #adminImportOutput .admin-import-actions { justify-content: flex-start; }
+}
 .admin-lookup { position: relative; max-width: 650px; }
 .admin-lookup-option { display: flex; justify-content: space-between; gap: 12px; width: 100%; padding: 12px; border: 0; border-bottom: 1px solid var(--line); background: var(--page-bg); color: var(--ink); text-align: left; font: inherit; }
 .admin-lookup-option:hover, .admin-lookup-option:focus-visible { color: var(--brand-blue); outline: 1px solid var(--brand-blue); border-radius: var(--control-radius); }

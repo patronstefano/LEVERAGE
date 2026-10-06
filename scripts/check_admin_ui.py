@@ -36,6 +36,13 @@ def main():
     ]
     current_role = ["super_admin"]
     scope_response = {}
+    import_previews = {}
+    calendar_preview = {'filename': 'Calendar.xlsx', 'parsed_rows': 8, 'matched_events': 1,
+        'would_update_events': 1, 'would_create_events': 7, 'unmatched_historical_rows': 0,
+        'duplicate_source_rows': [], 'matched_event_source_conflicts': [], 'issues': [],
+        'rows': [{'event_name': f'Calendar Cup {i + 1}', 'start_date': f'2026-01-{i + 1:02d}',
+            'end_date': f'2026-01-{i + 2:02d}', 'action': 'update_dates' if i == 0 else 'create_event',
+            'matched_event_ids': [1] if i == 0 else []} for i in range(8)]}
     event_days = [None]
     full_classification_size = [0]
     dismissed_scan_jobs = set()
@@ -152,7 +159,19 @@ def main():
                         payload.update(issues=[], conflicts=[], importable_results=1,
                             source_decision_stats={'excluded': sum(d['action'] == 'exclude' for d in decisions),
                                                    'corrected': sum(d['action'] == 'edit' for d in decisions)})
+                    import_previews['gymternet'] = payload
                     route.fulfill(json=payload, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/imports/calendar/preview':
+                    route.fulfill(json=calendar_preview, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/imports/calendar/commit':
+                    route.fulfill(json={**calendar_preview, 'committed': True, 'updated_events': 1,
+                        'created_events': 7, 'skipped_unmatched_historical_rows': 0},
+                        headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/imports/gymternet/commit':
+                    route.fulfill(json={**import_previews['gymternet'], 'committed': True,
+                        'created_results': 1, 'created_athletes': 0, 'created_events': 0,
+                        'updated_events': 0, 'skipped_duplicates': 2, 'skipped_conflicts': 0},
+                        headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path.startswith('/world-gymnastics/scan/matches/') and path.endswith('/dismiss'):
@@ -861,6 +880,19 @@ def main():
                 assert page.locator('#adminMergeForm [name=source]').input_value() == '2'
                 assert page.locator('#adminMergeForm [name=target]').input_value() == '1'
             if tab == "imports":
+                def analyze_import():
+                    if page.locator('#adminImportForm').is_hidden():
+                        page.locator('#adminImportChangeFile').click()
+                    page.locator('#adminImportForm button[type="submit"]').click()
+                    page.locator('#adminImportChangeFile').wait_for()
+                    assert page.locator('#adminImportForm').is_hidden()
+
+                def open_import_issues():
+                    group = page.locator('[data-import-issues]')
+                    group.wait_for(state='attached')
+                    if group.get_attribute('open') is None:
+                        group.locator('summary').click()
+
                 previous_writes = len(writes)
                 page.locator('#adminImportForm button[type=submit]').click()
                 assert page.locator('#adminImportFormValidation').inner_text() == 'Completa i campi obbligatori.'
@@ -878,7 +910,22 @@ def main():
                     page.locator('#adminChooseFile').click()
                 chooser.value.set_files({"name": "test.csv", "mimeType": "text/csv", "buffer": b"test"})
                 assert page.locator('#adminImportFilename').inner_text() == 'test.csv'
-                page.locator('#adminImportForm button[type="submit"]').click()
+                analyze_import()
+                assert page.locator('#adminImportOutput').bounding_box()['height'] < 650
+                assert len(set(round(box.bounding_box()['y']) for box in page.locator('.admin-import-metrics dd').all())) == 1
+                assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
+                page.screenshot(path='/tmp/leverage-import-minimal-desktop.png', full_page=True)
+                page.locator('[data-admin-tab=overview]').click()
+                page.locator('.admin-data-overview').wait_for()
+                page.locator('[data-admin-tab=imports]').click()
+                page.locator('#adminImportChangeFile').wait_for()
+                assert page.locator('#adminImportForm').is_hidden()
+                page.locator('#adminImportChangeFile').click()
+                assert page.locator('#adminImportForm').is_visible()
+                assert page.locator('#adminImportFilename').inner_text() == 'test.csv'
+                assert page.locator('#adminImportFile').evaluate('input => input.files[0].name') == 'test.csv'
+                page.locator('#adminImportChangeFile').click()
+                assert page.locator('#adminImportForm').is_hidden()
                 row = page.locator("[data-review-type=athlete]")
                 page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
@@ -912,26 +959,27 @@ def main():
                 assert page.locator('#adminCommitImport').is_enabled()
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
-                page.locator('[data-import-event-list] > summary').click()
+                assert page.locator('[data-import-event-list]').get_attribute('open') is not None
+                assert page.locator('[data-import-filter=new]').get_attribute('aria-pressed') == 'true'
                 page.locator('[data-import-event]').first.click()
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.screenshot(path='/tmp/leverage-admin-import-mobile.png', full_page=True)
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "duplicate_existing"}] * 1000, athlete_match_review=[], event_match_review=[])
-                page.locator('#adminImportForm button[type="submit"]').click()
+                analyze_import()
                 page.locator('#adminImportOutput .admin-center-feedback').wait_for()
                 assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
                 assert int(page.locator('#adminImportOverview .admin-duplicate-recap dd').nth(1).inner_text().replace('.', '')) == 1000
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
-                page.locator('#adminImportForm button[type="submit"]').click()
+                analyze_import()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")
                 assert 'Nessun risultato Gymternet trovato' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 preview.update(parsed_rows=1000, issues=[], importable_results=0,
                     skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
                     'year': 2026, 'results': 100, 'differences': 2, 'source_issues': 1} for i in range(10)])
-                page.locator('#adminImportForm button[type="submit"]').click()
+                analyze_import()
                 page.locator('[data-import-historical]').wait_for(state='attached')
                 assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
                 assert 'Past Cup' not in page.locator('#adminImportOutput').inner_text()
@@ -947,7 +995,8 @@ def main():
                     'message': 'Skipped derived outlier final score for VT', 'first_name': 'Vault', 'last_name': 'Person',
                     'event_name': 'Vault Cup 2026', 'sheet': 'MAG', 'row': 17, 'source_vt': 11.333,
                     'source_vt_avg': 5.666, 'original_score': -0.001, 'possible_rounding': True}])
-                page.locator('#adminImportForm button[type="submit"]').click()
+                analyze_import()
+                open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
                 assert 'Person Vault' in page.locator('.admin-import-issues').inner_text()
                 assert 'Riga 17' in page.locator('.admin-import-issues').inner_text()
@@ -969,6 +1018,7 @@ def main():
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()
                 scope.locator('[data-admin-select-value=include]').click()
+                open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
                 assert 'skip_existing_events=false' in writes[-1]['url']
                 assert page.locator('#adminCommitImport').is_disabled()
@@ -976,7 +1026,7 @@ def main():
                 preview['source_review'] = [{'sheet': 'MAG', 'row': 17, 'fingerprint': 'f' * 64,
                     'values': {'Athlete': 'Vault Person', 'Event': 'Vault Cup 2026', 'VT': '1.2', 'VT AVG': '12.85'},
                     'editable_fields': ['VT', 'VT AVG']}]
-                page.locator('#adminImportForm button[type=submit]').click()
+                analyze_import()
                 page.locator('[data-source-group] > summary').click()
                 page.locator('[data-source-edit]').click()
                 page.locator('[data-source-fields] input').first.fill('13.0')
@@ -987,6 +1037,7 @@ def main():
                 assert 'source_row_decisions' in writes[-1]['body']
                 assert page.locator('[data-source-undo]').is_visible()
                 page.locator('[data-source-undo]').click()
+                open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-exclude-all]').click()
@@ -1000,6 +1051,46 @@ def main():
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.screenshot(path='/tmp/leverage-import-scope-mobile.png', full_page=True)
                 page.set_viewport_size({'width': 1440, 'height': 1000})
+                page.locator('#adminCommitImport').click()
+                page.locator('dialog[open] [data-confirm]').click()
+                page.locator('.admin-import-heading.is-complete').wait_for()
+                assert page.locator('#adminCommitImport').count() == 0
+                assert page.locator('#adminReviewPreview').count() == 0
+                assert page.locator('[data-source-group]').count() == 0
+                assert page.locator('.admin-import-metrics dt').first.inner_text() == 'Risultati importati'
+                assert 'require_resolved_reviews=true' in writes[-1]['url']
+                page.locator('#adminImportChangeFile').click()
+                page.locator('#adminImportForm [name=kind]').locator('..').locator('summary').click()
+                page.locator('[data-admin-select-value=calendar]').click()
+                page.locator('#adminImportFile').set_input_files({'name': 'Calendar.xlsx', 'mimeType': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'buffer': b'test'})
+                analyze_import()
+                assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '1', '1', '7', '0', '0']
+                assert page.locator('#adminCommitImport').is_enabled()
+                page.locator('[data-calendar-details] > summary').click()
+                assert page.locator('#adminCalendarRows article').count() == 6
+                assert 'Date da aggiornare' in page.locator('#adminCalendarRows article').first.inner_text()
+                page.locator('[data-calendar-page="1"]').click()
+                assert page.locator('#adminCalendarRows article').count() == 2
+                assert 'Calendar Cup 7' in page.locator('#adminCalendarRows').inner_text()
+                page.evaluate('window.scrollTo(0, 0)')
+                page.screenshot(path='/tmp/leverage-calendar-import-desktop.png', full_page=True)
+                page.set_viewport_size({'width': 390, 'height': 844})
+                page.evaluate('window.scrollTo(0, 0)')
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                page.screenshot(path='/tmp/leverage-calendar-import-mobile.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                calendar_preview['duplicate_source_rows'] = [{'event_name': 'Calendar Cup 1', 'row': 2}]
+                analyze_import()
+                assert page.locator('#adminCommitImport').is_disabled()
+                calendar_preview['duplicate_source_rows'] = []
+                analyze_import()
+                page.locator('#adminCommitImport').click()
+                page.locator('dialog[open] [data-confirm]').click()
+                page.locator('.admin-import-heading.is-complete').wait_for()
+                assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['1', '7', '0']
+                page.locator('[data-calendar-details] > summary').click()
+                assert 'Date aggiornate' in page.locator('#adminCalendarRows article').first.inner_text()
+                assert 'Gara creata' in page.locator('#adminCalendarRows article').nth(1).inner_text()
         page.evaluate("location.hash = '/admin/review'")
         page.wait_for_timeout(300)
         page.locator('[data-section-nav="home"]').click()

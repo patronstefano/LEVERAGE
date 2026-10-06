@@ -4,6 +4,25 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
+L'anteprima e stata compattata usando gli stessi caratteri, controlli e
+separazioni di Revisione Duplicati. Dopo l'analisi il form file/parametri
+si chiude ed e riapribile con Cambia file; il file e le opzioni restano in
+memoria anche tornando alla sezione. Il recap numerico usa una riga su
+desktop e tre/due colonne sui viewport piu stretti. Gare, revisioni e
+avvisi sono sezioni apribili; il numero degli errori bloccanti rimane
+visibile anche con gli avvisi chiusi. I comandi Applica decisioni e
+Conferma importazione sono raccolti in un'unica riga finale.
+
+Il ricalcolo conserva pagina, filtro e apertura delle liste gara, oltre
+alle scelte delle review. Eliminati i paragrafi ripetitivi; i chiarimenti
+sull'identita rimangono nella relativa sezione aperta. Anche Calendar
+ha un recap dedicato e una lista di sei gare per pagina con date, azione
+prevista e ID associati, invece dell'elenco esteso di campi tecnici.
+I conflitti Calendar bloccano il pulsante di conferma come gia previsto
+dal backend. Dopo il commit rimane il riepilogo degli esiti; i controlli
+di risoluzione non sono piu modificabili. Nessuna regola di parsing,
+associazione, scrittura o notifica e cambiata con questa rifinitura UI.
+
 Il primo caricamento Gymternet mostra l'anteprima dell'intero file. Solo dopo
 l'analisi, il selettore "Gare gia importate" permette di scegliere Includi o
 Tralascia, con ricalcolo automatico del report prima della conferma.

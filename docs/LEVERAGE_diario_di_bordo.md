@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Anteprima import compatta e coerente con il Centro Admin
+
+- Richiesta di semplificare l'anteprima senza perdere le funzioni di risoluzione. Dopo l'analisi, il form di caricamento si chiude: Cambia file lo riapre mantenendo file e parametri in memoria, anche dopo navigazione ad altre sottosezioni. Intestazione breve con nome file e selettore Includi/Tralascia; nessun cambiamento del perimetro predefinito.
+- Recap numerico su una sola riga desktop, tre o due colonne su schermi piu stretti. Gare, correzioni, review identita e avvisi diventano righe apribili con separatori leggeri e conteggi discreti. Eliminati i paragrafi duplicati; gli avvisi bloccanti restano conteggiati in rosso anche quando chiusi. Font, altezza pulsanti, arrotondamenti e colori riusano i token del Centro Admin, senza modificare gli altri menu della piattaforma.
+- Applica decisioni e Conferma importazione riuniti in un'unica riga finale; conservati correzioni singole, applicazione cumulativa, esclusioni esplicite, scelta gare gia importate e blocchi fino alla risoluzione. Apertura, pagina e filtro della lista gare restano invariati dopo il ricalcolo. I confronti sono piu compatti e le tabelle dettagliate scorrono nel proprio spazio.
+- Anche l'anteprima Calendar usa il recap sintetico e sei righe per pagina: nome gara, periodo, operazione prevista e ID degli Event associati. I conflitti sorgente rimangono consultabili e disabilitano la conferma, coerentemente ai controlli backend gia esistenti. Non introdotte correzioni automatiche o nuovi matching calendario.
+- Dopo il commit, mostrati i conteggi effettivi e rimossi i controlli di revisione, evitando una falsa possibilita di modificare un import gia concluso. Gli esiti e i nuovi comandi sono localizzati nelle quattro lingue.
+- Collaudo Playwright desktop/mobile con API simulate: compattezza iniziale, allineamento comandi, riapertura del form, recupero del file dopo navigazione, stato delle liste, correzione/ripristino/esclusione, commit simulati Gymternet/Calendar e riepiloghi finali, paginazione Calendar e blocco duplicati. Superata anche la suite completa dei 301 test backend. Nessuna importazione reale, modifica ai dati o scansione World Gymnastics eseguita.
+
 #### 2026-10-06 - Risoluzione diretta dei conflitti e riepilogo ai SUPER ADMIN
 
 - Richiesta: eliminare Scarica report e risolvere i problemi dalla preview prima di importare. Rimossi pulsante di esportazione, download automatico degli errori e spunta import parziale. Restano l'anteprima completa iniziale e la scelta successiva Includi/Tralascia per le gare gia popolate.
