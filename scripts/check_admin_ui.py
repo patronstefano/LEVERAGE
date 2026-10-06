@@ -1019,11 +1019,10 @@ def main():
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                     page.screenshot(path=f'/tmp/leverage-import-events-review-{width}.png', full_page=True)
                 page.set_viewport_size({'width': 1440, 'height': 1000})
-                page.locator('[data-import-filter=existing]').click()
-                assert page.locator('#adminImportOverview .admin-import-event').count() == 1
+                assert page.locator('[data-import-filter]').count() == 0
+                assert page.locator('#adminImportOverview .admin-import-event').count() == 2
                 assert 'Spring Cup' in page.locator('#adminImportOverview [data-import-events]').inner_text()
-                page.locator('[data-import-filter=new]').click()
-                page.locator('[data-import-event]').click()
+                page.locator('[data-import-event]').first.click()
                 assert 'Test Ada' in page.locator('.admin-import-table').last.inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-import-group=event] > summary').click()
@@ -1053,7 +1052,7 @@ def main():
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
                 assert page.locator('[data-import-event-list]').get_attribute('open') is not None
-                assert page.locator('[data-import-filter=new]').get_attribute('aria-pressed') == 'true'
+                assert page.locator('[data-import-filter]').count() == 0
                 page.locator('[data-import-event]').first.click()
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.screenshot(path='/tmp/leverage-admin-import-mobile.png', full_page=True)

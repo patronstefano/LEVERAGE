@@ -236,9 +236,8 @@ export function mountImportReport({root, preview: p, text, esc, report, language
     ...summary, ...skipped.map(row => ({...row, conflicting_results: row.differences})),
   ]}) + `
     ${skipped.length ? `<p class="admin-stats-note admin-import-historical-total"><strong>${count(skipped.length)} ${esc(text(skipped.length === 1 ? 'importHistoricalSingle' : 'importHistorical'))}</strong></p>${historicDifferences.length ? `<details class="admin-revision-group" data-import-historical><summary>${esc(text('importHistoricalDifferences'))}<span class="admin-revision-count">${count(historicDifferences.length)}</span></summary><p class="admin-stats-note">${esc(text('importHistoricalCaution'))}</p><div data-historical-rows></div>${pagination('historical')}</details>` : ''}` : ''}
-    <details class="admin-revision-group" data-import-event-list><summary>${esc(text('importEvents'))}<span class="admin-revision-count">${count(summary.length)}</span></summary><div class="admin-center-actions admin-import-event-filters">${['all', 'existing', 'new', 'conflicts'].map((key, i) => `<button type="button" class="filter-button" data-import-filter="${key}" aria-pressed="${i === 0}">${esc(text(['importAllEvents', 'importPresent', 'importNotPresent', 'importStatusConflict'][i]))}</button>`).join('')}</div><div data-import-events></div>${pagination('events')}</details>
+    <details class="admin-revision-group" data-import-event-list><summary>${esc(text('importEvents'))}<span class="admin-revision-count">${count(summary.length)}</span></summary><div data-import-events></div>${pagination('events')}</details>
     `;
-  let filter = viewState.filter || 'all';
   for (const name of ['event-list', 'historical']) {
     const group = root.querySelector(`[data-import-${name}]`);
     if (!group) continue;
@@ -255,7 +254,7 @@ export function mountImportReport({root, preview: p, text, esc, report, language
     button.setAttribute('aria-expanded', String(open));
   };
   const renderEvents = () => {
-    const events = summary.filter(event => filter === 'all' || (filter === 'existing' ? event.event_id != null : filter === 'new' ? event.event_id == null : event.conflicting_results > 0 || event.source_issues > 0));
+    const events = summary;
     list.innerHTML = pageItems('events', events).map((event, i) => {
       const title = `${esc(event.event_name)}${event.event_name.includes(String(event.year)) ? '' : ` · ${event.year}`}`;
       return `<article class="admin-identity-pair admin-import-event"><div class="admin-identity-entity"><strong>${title}</strong><p class="admin-revision-meta">${esc(text(event.event_id ? 'importPresent' : 'importNotPresent'))}${event.start_date ? ` · ${esc(date(event.start_date))}${event.end_date && event.end_date !== event.start_date ? ` – ${esc(date(event.end_date))}` : ''}` : ''}</p><p class="admin-revision-meta">${esc(text(event.conflicting_results || event.source_issues ? 'importWithIssues' : 'importWithoutIssues'))}</p></div><div class="admin-center-actions">${event.event_id ? `<a class="quiet-button outline-command-button" href="#/events/${event.event_id}?from=admin&return_to=${encodeURIComponent(route)}">ID ${event.event_id}</a>` : ''}${button('importCompare', `data-import-event="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`;
@@ -265,12 +264,6 @@ export function mountImportReport({root, preview: p, text, esc, report, language
       control.onclick = () => toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => eventDetails(events[pages.events * pageSize + Number(control.dataset.importEvent)]));
     });
   };
-  root.querySelectorAll('[data-import-filter]').forEach(control => control.onclick = () => {
-    filter = viewState.filter = control.dataset.importFilter; pages.events = 0;
-    root.querySelectorAll('[data-import-filter]').forEach(item => item.setAttribute('aria-pressed', String(item === control)));
-    renderEvents();
-  });
-  root.querySelectorAll('[data-import-filter]').forEach(control => control.setAttribute('aria-pressed', String(control.dataset.importFilter === filter)));
 
   renderEvents();
   const renderHistorical = () => {

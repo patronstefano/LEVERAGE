@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Elenco gare da elaborare senza filtri locali
+
+- Rimossi i pulsanti Tutte le gare, Gia in LEVERAGE, Non ancora associati e
+  Da verificare. L'elenco mostra tutte le gare dell'anteprima, con paginazione
+  e confronti invariati, ignorando eventuali vecchie selezioni di filtro.
+- Invariata la scelta del perimetro dell'importazione. Aggiornati i test UI.
+
 ## 2026-10-06 - Revisione importazioni con decisioni in bozza
 
 - Eliminati i ricalcoli automatici dopo ciascuna esclusione, annullamento,
