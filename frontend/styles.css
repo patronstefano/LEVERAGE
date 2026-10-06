@@ -26,6 +26,11 @@
 .admin-center .admin-custom-select-menu { z-index: 40; overflow-y: auto; background: #fff; }
 .admin-center .admin-form-wide { grid-column: 1 / -1; }
 .admin-center-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.admin-merge-ids { grid-column: span 2; display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr); gap: 12px; align-items: end; min-width: 0; }
+.admin-merge-ids label { min-width: 0; }
+.admin-center .admin-merge-swap { width: 36px; height: 36px; min-width: 36px; padding: 0; display: grid; place-items: center; }
+.admin-merge-swap span { width: 18px; height: 18px; background: currentColor; mask: url('./assets/lucide-arrow-right-left.svg') center / contain no-repeat; }
+@media (max-width: 760px) { .admin-merge-ids { grid-column: 1 / -1; gap: 8px; } }
 .admin-center .quiet-button, .admin-confirm .quiet-button { min-height: 36px; border-radius: var(--control-radius); font-size: 14px; white-space: normal; text-align: center; }
 .admin-center .quiet-button:disabled { opacity: .45; }
 .admin-center-row { display: flex; gap: 16px; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); }

@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Inversione della direzione di unione
+
+- Aggiunto un pulsante con icona Lucide a doppia freccia tra gli ID sorgente e destinazione, per atleti ed eventi. Nome accessibile e suggerimento tradotti nelle quattro lingue.
+- Lo scambio mantiene la motivazione ma invalida anteprima, conferma e risposte pendenti: occorre richiedere una nuova anteprima nella direzione aggiornata. Nessuna operazione sul database al clic.
+
 #### 2026-10-06 - Azioni di unione affiancate
 
 - Spostato il comando Unione atleta/evento a destra di Anteprima, nella stessa riga di azioni. Compare solo dopo un'anteprima che consente l'unione e viene rimosso quando si modificano i campi o si richiede una nuova anteprima.

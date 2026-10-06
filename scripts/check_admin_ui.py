@@ -334,6 +334,16 @@ def main():
                     page.locator('#adminMergeForm button[type=submit]').click()
                     page.locator('#adminMergePreview .admin-audit-comparison').wait_for()
                     assert page.locator('#adminMergePreview .admin-audit-side').count() == 2
+                    previous_writes = len(writes)
+                    page.locator('#adminMergeSwap').click()
+                    assert page.locator('#adminMergeForm [name=source]').input_value() == '2'
+                    assert page.locator('#adminMergeForm [name=target]').input_value() == '1'
+                    assert page.locator('#adminMergeCommit').count() == 0
+                    assert page.locator('#adminMergePreview').inner_text() == ''
+                    assert len(writes) == previous_writes
+                    page.locator('#adminMergeSwap').click()
+                    page.locator('#adminMergeForm button[type=submit]').click()
+                    page.locator('#adminMergeCommit').wait_for()
                     preview_box = page.locator('#adminMergeForm button[type=submit]').bounding_box()
                     commit_box = page.locator('#adminMergeCommit').bounding_box()
                     assert commit_box['x'] > preview_box['x'] + preview_box['width']

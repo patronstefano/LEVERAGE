@@ -19,6 +19,7 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  swapMergeIds: ['Swap IDs', 'Inverti gli ID', 'Intercambiar los ID', 'Inverser les ID'],
   'junior and senior': ['Junior and Senior', 'Junior e Senior', 'Junior y Senior', 'Junior et Senior'],
   WorldGymnasticsScanControl: ["World Gymnastics scan", "Scansione World Gymnastics", "Escaneo World Gymnastics", "Recherche World Gymnastics"],
   WorldGymnasticsScanJob: ["World Gymnastics match", "Riscontro World Gymnastics", "Coincidencia World Gymnastics", "Correspondance World Gymnastics"],
@@ -677,12 +678,20 @@ export async function renderAdminCenter(host) {
         const reviewParams = new URLSearchParams(state.route.split('?')[1] || '');
         const fromReview = reviewParams.get('entity_type') === (isEvent ? 'event' : 'athlete');
         const reviewId = (key) => fromReview && /^[1-9][0-9]*$/.test(reviewParams.get(key) || '') ? reviewParams.get(key) : '';
-        document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', field('source', isEvent ? 'sourceEvent' : 'source', 'number', reviewId('source'), true) + field('target', isEvent ? 'targetEvent' : 'target', 'number', reviewId('target'), true) + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
+        const swap = `<button type="button" id="adminMergeSwap" class="quiet-button outline-command-button admin-merge-swap" aria-label="${esc(text('swapMergeIds'))}" title="${esc(text('swapMergeIds'))}"><span aria-hidden="true"></span></button>`;
+        document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', '<div class="admin-merge-ids">' + field('source', isEvent ? 'sourceEvent' : 'source', 'number', reviewId('source'), true) + swap + field('target', isEvent ? 'targetEvent' : 'target', 'number', reviewId('target'), true) + '</div>' + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
         const output = document.getElementById('adminMergePreview');
         const mergeForm = document.getElementById('adminMergeForm');
         const actions = mergeForm.querySelector('.admin-center-actions');
         const clearCommit = () => actions.querySelector('#adminMergeCommit')?.remove();
         mergeForm.addEventListener('input', () => { ++mergeRevision; output.innerHTML = ''; clearCommit(); });
+        document.getElementById('adminMergeSwap').addEventListener('click', () => {
+          const source = mergeForm.elements.namedItem('source');
+          const target = mergeForm.elements.namedItem('target');
+          [source.value, target.value] = [target.value, source.value];
+          source.dispatchEvent(new Event('input', {bubbles: true}));
+          target.dispatchEvent(new Event('input', {bubbles: true}));
+        });
         onSubmit('adminMergeForm', async (v) => {
           const revision = ++mergeRevision;
           clearCommit();
