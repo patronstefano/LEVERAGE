@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Divisore del recap World Gymnastics
+
+- Rimossa la linea grigia sopra il recap nella sezione World Gymnastics del Centro Admin. Resta il divisore inferiore tra recap e riscontri; comportamento e conteggi invariati.
+
 #### 2026-10-06 - Nuovi conteggi nella Panoramica Admin
 
 - Sostituita la riga Da completare con Possibili duplicati per atleti ed eventi. Il valore usa gli stessi candidati della sezione Revisione Duplicati e conta coppie ancora da revisionare, non entita distinte; non effettua unioni automatiche.

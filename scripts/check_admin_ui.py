@@ -789,6 +789,7 @@ def main():
                 assert page.locator('[data-scan-job="52"]').count() == 0
                 assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
                 assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 4
+                assert page.locator('[data-scan-status]').evaluate("el => getComputedStyle(el).borderTopWidth === '0px' && getComputedStyle(el).borderBottomWidth === '1px'")
                 controls = page.locator('[data-scan-controls]').bounding_box()
                 toggle = page.locator('[data-review-entity="athlete"]').locator('..').bounding_box()
                 assert controls['x'] >= toggle['x'] + toggle['width']

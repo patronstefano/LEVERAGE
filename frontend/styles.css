@@ -6067,7 +6067,7 @@ a:focus-visible > .entity-card-clickable {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px 24px;
   padding-block: 16px;
-  border-block: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 #adminWorldGymnasticsScan .admin-stats-metrics dt,
 #adminWorldGymnasticsScan .admin-stats-metrics dd { overflow-wrap: anywhere; }
