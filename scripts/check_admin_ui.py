@@ -710,6 +710,7 @@ def main():
                 page.locator('[data-scan-job="51"]').wait_for()
                 assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi']
                 assert page.locator('#adminEntityReviews, #adminResultReviews').count() == 0
+                assert page.locator('.admin-revisions > .admin-tool-block > .section-header').count() == 0
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
                 assert page.locator('[data-scan-refresh]').count() == 0
                 assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()

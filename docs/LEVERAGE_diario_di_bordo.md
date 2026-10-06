@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Titolo World Gymnastics semplificato
+
+- Rimosso il sottotitolo Riscontri World Gymnastics dalla sezione dedicata; invariati titolo principale, scansioni e suggerimenti.
+
 #### 2026-10-06 - Eliminazione logica utenti dal Centro Super Admin
 
 - Aggiunto Elimina utente in Utenti e ruoli, con contorno rosso al passaggio del mouse e conferma che identifica l'email e chiarisce la conservazione dei dati.
