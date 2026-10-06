@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Destinatario funzionale accanto alla data delle notifiche
+
+- Nell'inbox unica, accanto alla data e ora in grigio, ogni notifica mostra USER, ADMIN o SUPER ADMIN. La classificazione deriva dal tipo della notifica, non dal ruolo corrente di chi la legge: una notifica personale ricevuta da un Super Admin resta USER. La stessa regola vale per notifiche reali e simulazioni DEMO; nessuna modifica al database o al testo dei messaggi.
+
 #### 2026-10-06 - Tre generatori notifiche DEMO per Super Admin
 
 - La downbar del profilo DEMO SUPER ADMIN presenta tre pulsanti distinti: notifiche USER, ADMIN e SUPER ADMIN. Il profilo DEMO ADMIN ne conserva due (USER e ADMIN); DEMO USER ne ha uno. I pulsanti sono strumenti locali di prova, non producono notifiche reali e vanno rimossi prima di un'eventuale esposizione pubblica.

@@ -248,8 +248,10 @@ export function mountNotificationInbox(host) {
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("");
+        const group = demoGroup(item.type);
+        const audience = { personal: 'USER', admin: 'ADMIN', super_admin: 'SUPER ADMIN' }[group];
         article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +
-          '</time></div><div class="account-notification-actions">' + links + (!item.is_read ? '<button class="quiet-button filter-clear-button" type="button" data-read>' + esc(t("read")) + '</button>' : "") + '</div>';
+          '</time><span class="account-notification-audience"> · ' + audience + '</span></div><div class="account-notification-actions">' + links + (!item.is_read ? '<button class="quiet-button filter-clear-button" type="button" data-read>' + esc(t("read")) + '</button>' : "") + '</div>';
         const read = article.querySelector("[data-read]");
         if (read) read.onclick = async () => {
           read.disabled = true;

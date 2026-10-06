@@ -1,7 +1,7 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=unified-notifications-20261006";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=split-super-demo-notices-20261006";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=audience-label-20261006";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";

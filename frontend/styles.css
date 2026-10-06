@@ -3833,6 +3833,7 @@ a:focus-visible > .entity-card-clickable {
 .account-notification p { margin: 0 0 6px; overflow-wrap: anywhere; font-size: 15px; line-height: 1.5; font-weight: 400; }
 .account-notification.is-unread p { font-weight: 600; }
 .account-notification time { font-size: 13px; color: var(--muted); }
+.account-notification-audience { color: var(--muted); font-size: 13px; font-weight: 400; white-space: nowrap; }
 #accountMoreNotifications, #accountNotificationRetry { justify-self: start; }
 @media (max-width: 700px) {
   .account-notification-actions { gap: 8px; }

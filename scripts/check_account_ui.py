@@ -67,6 +67,7 @@ def main():
         assert page.locator('#analyticsFavoritePicker .analytics-favorite-picker-status').count() == 0
         page.goto("http://127.0.0.1:5173/#/account?section=notifications")
         page.locator(".account-notification").first.wait_for()
+        assert page.locator('.account-notification-audience').first.inner_text().strip() == '· USER'
         assert page.locator('#accountNotifications').evaluate('node => getComputedStyle(node).borderRadius') == '12px'
         assert page.locator('#accountNotifications > .compact-section-header h2').evaluate('node => getComputedStyle(node).fontSize') == '17px'
         assert page.locator('#accountReadAll').bounding_box()['height'] == 36
@@ -406,6 +407,11 @@ def main():
             assert all('DEMO' not in text for text in page.locator('.account-notification-copy p').all_text_contents())
             types = items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')
             assert len(set(types)) == count
+            for item in items.all():
+                notification_type = item.get_attribute('data-notification-type')
+                expected_audience = 'SUPER ADMIN' if notification_type == 'security_alert' else 'ADMIN' if notification_type in {'import_summary', 'data_entry_summary', 'event_results_reminder'} else 'USER'
+                assert item.locator('.account-notification-audience').inner_text().strip() == '· ' + expected_audience
+                assert item.locator('.account-notification-audience').evaluate('node => getComputedStyle(node).color') == item.locator('time').evaluate('node => getComputedStyle(node).color')
             assert {'import_summary', 'data_entry_summary', 'event_results_reminder'} <= set(types)
             assert ('security_alert' in types) == (role == 'super_admin')
             assert '#/account?section=notifications' in page.url
