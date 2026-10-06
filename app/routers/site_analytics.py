@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app import models, schemas
 from app.database import get_db
 from app.display_names import athlete_display_name
-from app.security import get_current_admin_user, get_optional_current_user
+from app.security import get_current_super_admin_user, get_optional_current_user
 
 router = APIRouter()
 
@@ -110,7 +110,7 @@ def top_entity_views(
 @router.get("/admin/summary", response_model=schemas.SiteAnalyticsSummary)
 def get_site_analytics_summary(
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_admin_user),
+    current_user: models.User = Depends(get_current_super_admin_user),
     start_date: Optional[date] = Query(None),
     end_date: Optional[date] = Query(None),
     active_window_days: int = Query(30, ge=1, le=365),

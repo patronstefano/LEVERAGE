@@ -148,7 +148,7 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
-        assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'review', 'entry', 'merge', 'world-gymnastics', 'results', 'imports']
+        assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'review', 'entry', 'merge', 'world-gymnastics', 'results', 'imports']
         back = page.locator('.detail-topbar .detail-back-button')
         assert back.inner_text() == 'Torna all’Area Personale'
         assert back.get_attribute('href') == '#/account'
@@ -172,7 +172,7 @@ def main():
         assert page.locator('[data-admin-tab="overview"]').get_attribute('aria-current') == 'page'
         assert page.locator('#adminRecordLookup').count() == 0
         for tab in ["overview", "entry", "results", "imports", "review", "merge", "notifications", "statistics", "users", "audit"]:
-            base = '/super-admin/' if tab in ['users', 'audit'] else '/admin/'
+            base = '/super-admin/' if tab in ['users', 'audit', 'statistics'] else '/admin/'
             page.evaluate("(route) => location.hash = route", base + tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
@@ -636,6 +636,7 @@ def main():
                 assert page.locator('#adminAudit > article').count() == 3
                 assert page.locator('#adminAudit [name=note_91]').is_disabled()
             if tab == "statistics":
+                assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'users', 'audit']
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'
                 assert page.locator('#adminStats .empty-state').count() == 2

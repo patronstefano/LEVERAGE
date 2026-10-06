@@ -3660,7 +3660,7 @@ def test_user_can_save_ranking_filter_configuration():
     assert list_response.json()[0]["filters"]["scoringCycle"] == ["2025-2028"]
 
 
-def test_lightweight_site_analytics_are_admin_only_and_aggregate_usage():
+def test_lightweight_site_analytics_are_super_admin_only_and_aggregate_usage():
     client.post("/auth/register", json={"email": "site_analytics_admin@example.com", "password": TEST_PASSWORD})
     admin_token = login_as_admin("site_analytics_admin@example.com")
     admin_headers = {"Authorization": f"Bearer {admin_token}"}
@@ -3778,6 +3778,15 @@ def test_lightweight_site_analytics_are_admin_only_and_aggregate_usage():
     user_summary = client.get("/site-analytics/admin/summary", headers=user_headers)
     assert user_summary.status_code == 403
 
+    with SessionLocal() as db:
+        actor = db.query(User).filter_by(email='site_analytics_admin@example.com').one()
+        actor.role = RoleEnum.ADMIN
+        db.commit()
+    assert client.get('/site-analytics/admin/summary', headers=admin_headers).status_code == 403
+    with SessionLocal() as db:
+        actor = db.query(User).filter_by(email='site_analytics_admin@example.com').one()
+        actor.role = RoleEnum.SUPER_ADMIN
+        db.commit()
     admin_summary = client.get("/site-analytics/admin/summary", headers=admin_headers)
     assert admin_summary.status_code == 200
     payload = admin_summary.json()

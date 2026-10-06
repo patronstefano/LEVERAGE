@@ -487,7 +487,7 @@ Il payload puo includere `visitor_id`, `session_id`, `path`, `search_query`, `en
 
 Per scelta privacy-friendly questa prima versione non salva IP, user-agent completo, fingerprint del browser o dati sensibili. La dashboard admin usa solo dati aggregati.
 
-`GET /site-analytics/admin/summary` restituisce:
+`GET /site-analytics/admin/summary`, riservato al SUPER ADMIN e consultabile in Centro Super Admin > Statistiche, restituisce:
 
 - visitatori unici
 - sessioni

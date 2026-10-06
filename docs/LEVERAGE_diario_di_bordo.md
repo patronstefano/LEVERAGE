@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Statistiche riservate al Centro Super Admin
+
+- Spostata Statistiche dal Centro Admin al Centro Super Admin, subito dopo Panoramica. Per SUPER ADMIN i vecchi collegamenti admin/statistics reindirizzano alla nuova posizione.
+- Riepilogo statistico dell'API riservato al SUPER ADMIN; ADMIN ordinari non possono accedervi nemmeno tramite chiamata diretta. Invariata la raccolta degli eventi di utilizzo.
+- Aggiornati test browser di navigazione e test API sui permessi di visitatori, USER, ADMIN e SUPER ADMIN.
+
 #### 2026-10-06 - Riepilogo nella Revisione Duplicati
 
 - Aggiunti contatori sotto lo slider e prima dei record, con tipografia e griglia analoghe a World Gymnastics. Atleti/Eventi: coppie da verificare, visualizzate e da caricare, aggiornate al caricamento e dopo Mantieni separati.
