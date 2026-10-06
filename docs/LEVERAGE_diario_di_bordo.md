@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Allineamento messaggi statici utenti
+
+- Allineati a destra e centrati verticalmente i messaggi statici nell'area azioni di Utenti e ruoli; eliminato il margine residuo sotto il ruolo. Su mobile messaggi a capo allineati a sinistra con l'identita. Tipografia secondaria e protezioni dei ruoli invariate.
+
 #### 2026-10-06 - Record di revisione compatti e comandi a destra
 
 - Ridotte le spaziature verticali dei record di Revisione Duplicati e dei riscontri World Gymnastics. Identita e compatibilita a sinistra, comandi a destra; dettagli estesi a tutta larghezza. Su schermi stretti i comandi vanno a capo per preservare leggibilita. Operazioni e criteri di matching invariati.
