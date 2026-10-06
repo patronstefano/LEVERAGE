@@ -201,6 +201,8 @@ const COPY = {
   success: ["Operation completed.", "Operazione completata.", "Operación completada.", "Opération terminée."],
   athleteSaved: ["New athlete saved", "Nuovo atleta salvato", "Nuevo atleta guardado", "Nouvel athlète enregistré"],
   eventSaved: ["New event saved", "Nuovo evento salvato", "Nuevo evento guardado", "Nouvel événement enregistré"],
+  athleteMerged: ["Athletes merged", "Atleti uniti", "Atletas unidos", "Athlètes fusionnés"],
+  eventMerged: ["Events merged", "Eventi uniti", "Eventos unidos", "Événements fusionnés"],
   goToAthlete: ["Go to athlete", "Vai all’atleta", "Ir al atleta", "Voir l’athlète"],
   goToEvent: ["Go to event", "Vai all’evento", "Ir al evento", "Voir l’événement"],
   pending: ["Awaiting review", "In attesa di verifica", "Pendiente de revisión", "En attente de vérification"],
@@ -439,7 +441,7 @@ export async function renderAdminCenter(host) {
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  const confirm = (label, operation) => {
+  const confirm = (label, operation, showSuccess = true) => {
     const dialog = document.createElement("dialog"); dialog.className = "admin-confirm";
     dialog.innerHTML = `<h2>${esc(text(label))}</h2><p>${text("mutation")}</p><div class="admin-center-actions">${button("cancel", 'data-cancel')}${button("confirm", 'data-confirm')}</div>`;
     document.body.append(dialog); dialog.showModal();
@@ -447,7 +449,7 @@ export async function renderAdminCenter(host) {
     const close = () => dialog.close();
     window.addEventListener("hashchange", close, { once: true });
     dialog.addEventListener("close", () => { window.removeEventListener("hashchange", close); dialog.remove(); });
-    dialog.querySelector("[data-confirm]").onclick = guard(async () => { await operation(); dialog.close(); feedback(text("success")); });
+    dialog.querySelector("[data-confirm]").onclick = guard(async () => { await operation(); dialog.close(); if (showSuccess) feedback(text("success")); });
   };
   let schemas;
   const getSchemas = async () => schemas ||= (await api("/openapi.json")).components.schemas;
@@ -688,9 +690,10 @@ export async function renderAdminCenter(host) {
             const saved = await api(`/${kind}/${Number(v.source)}/merge`, {method: 'POST', body: {...payload, confirm: true, ...(isEvent ? {preview_token: result.preview_token} : {})}});
             if (!active() || revision !== mergeRevision) return;
             ++mergeRevision;
-            output.innerHTML = report(saved);
+            const target = isEvent ? saved.target_event : saved.target_athlete;
+            document.getElementById('adminMergeContent').innerHTML = `<div class="admin-center-feedback is-success" role="status">${esc(text(isEvent ? 'eventMerged' : 'athleteMerged'))}</div><div class="admin-center-actions">${entityLink(kind, target.id, text(isEvent ? 'goToEvent' : 'goToAthlete'))}</div>`;
             state.globalSearch.payload = null;
-          }));
+          }, false));
         });
       };
       document.getElementById('adminMergeAthlete').onclick = () => renderMerge('athletes');

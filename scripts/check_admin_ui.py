@@ -120,6 +120,9 @@ def main():
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ["/events/1/merge-preview", "/athletes/1/merge-preview"]:
                     route.fulfill(json={"can_merge": True, "preview_token": "a" * 64}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path in ['/events/1/merge', '/athletes/1/merge']:
+                    key = 'target_event' if path.startswith('/events/') else 'target_athlete'
+                    route.fulfill(json={"merged": True, key: {"id": 2}}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path.startswith('/admin/entity-duplicates/') and path.endswith('/keep-separate'):
                     route.fulfill(json={"decision": "keep_separate"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ['/athletes/', '/events/']:
@@ -304,6 +307,27 @@ def main():
                 page.locator('#adminMergeAthlete').click()
                 assert page.locator('#adminMergeAthlete').get_attribute('aria-pressed') == 'true'
                 assert page.locator('#adminMergeForm [name=source]').input_value() == ''
+                for kind, toggle, message, label in [
+                    ('athletes', '#adminMergeAthlete', 'Atleti uniti', 'Vai all’atleta'),
+                    ('events', '#adminMergeEvent', 'Eventi uniti', 'Vai all’evento'),
+                ]:
+                    page.locator(toggle).click()
+                    for name, value in [('source', '1'), ('target', '2')]:
+                        page.locator(f'#adminMergeForm [name={name}]').fill(value)
+                    page.locator('#adminMergeForm button[type=submit]').click()
+                    page.locator('#adminMergeCommit').click()
+                    page.locator('dialog[open] [data-confirm]').click()
+                    notice = page.locator('#adminMergeContent [role=status]')
+                    notice.wait_for()
+                    assert notice.inner_text() == message
+                    assert notice.bounding_box()['height'] == 36
+                    assert notice.evaluate('el => getComputedStyle(el).fontSize') == '14px'
+                    assert page.locator('#adminMergeForm').count() == 0
+                    link = page.locator('#adminMergeContent a')
+                    assert link.inner_text() == label
+                    assert link.get_attribute('href').startswith(f'#/{kind}/2?from=admin&')
+                    assert 'return_to=%2Fadmin%2Fmerge' in link.get_attribute('href')
+                    assert page.locator('#adminFeedback').inner_text() == ''
             if tab == "results":
                 assert page.evaluate('''async () => {
                     const {classificationHasRecordedExecution: valid} = await import('/admin-result-editor.js?v=execution-validation-20261001');

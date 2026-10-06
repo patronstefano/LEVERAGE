@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Conferme di unione coerenti con Nuova Entita
+
+- Dopo un'unione riuscita, il modulo e l'anteprima vengono sostituiti dal messaggio verde compatto "Atleti uniti" / "Eventi uniti" e dal pulsante "Vai all'atleta" / "Vai all'evento" verso l'entita mantenuta restituita dal backend.
+- Stessi stile, dimensioni e comportamento della conferma di creazione: 14px, altezza base 36px, larghezza adattata al testo, sfondo neutro. Eliminata la seconda conferma generica per questo flusso; invariati anteprima, conferma preventiva, gestione errori e regole backend.
+- Test browser esteso alle due unioni simulate e agli ID dei collegamenti. Nessuna unione reale effettuata nel collaudo.
+
 #### 2026-10-06 - Riordino dei dettagli e dei confronti amministrativi
 
 - Sostituita la rappresentazione tecnica ricorsiva condivisa da audit, duplicati risultati, importazioni e anteprime di unione con un renderer di consultazione: etichette leggibili, valori allineati, gruppi espandibili con titolo del contenuto e conteggi, liste con separatori leggeri. Le chiavi non ancora tradotte hanno un fallback leggibile senza underscore.
