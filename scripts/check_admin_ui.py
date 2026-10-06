@@ -485,8 +485,27 @@ def main():
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
                 assert page.locator('.admin-user-role-actions').is_visible()
             if tab == "audit":
+                assert page.evaluate('''async () => {
+                    const { createAdminReport } = await import('/admin-reports.js?v=20261006');
+                    const escape = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+                    for (const language of ['en', 'it', 'es', 'fr']) {
+                        const render = createAdminReport({language, esc: escape, text: key => key});
+                        const node = document.createElement('div');
+                        node.innerHTML = render({before: {id: 1, country: 'ITA', value: null}, after: {id: 1, country: 'FRA', value: '<script>bad</script>'}});
+                        if (node.querySelectorAll('.admin-comparison-row:not(.admin-comparison-head)').length !== 2) return false;
+                        if (node.querySelector('script') || !node.querySelector('.admin-report-disclosure')) return false;
+                        node.innerHTML = render({before: null, after: {id: 1, is_deleted: false, D_score: 5.3}});
+                        if (node.querySelector('.admin-comparison') || !node.querySelector('.admin-report-section')) return false;
+                        node.innerHTML = render({warnings: ['Test'], source_athlete: {id: 1, last_name: 'Test'}});
+                        if (node.querySelectorAll('.admin-report-disclosure').length !== 2) return false;
+                    }
+                    return true;
+                }''')
                 page.locator('#adminAuditForm button[type=submit]').click()
                 page.locator('#adminAudit .account-notification').first.wait_for()
+                page.locator('#adminAudit .admin-revision-group > summary').first.click()
+                assert page.locator('#adminAudit .admin-comparison [role=cell]').all_inner_texts() == ['ITA', 'FRA']
+                assert page.locator('#adminAudit .admin-comparison-head').inner_text().splitlines() == ['Campo', 'Prima', 'Dopo']
                 assert page.locator('[data-action=approve].admin-accept-button').count() == 2
                 assert page.locator('[data-action=revert].filter-clear-button').count() == 2
                 undo = page.locator('[data-audit="92"][data-action=revert]')
@@ -499,6 +518,7 @@ def main():
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path='/tmp/leverage-super-audit-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
+                page.screenshot(path='/tmp/leverage-super-audit-details.png', full_page=True)
             if tab == "statistics":
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'

@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riordino dei dettagli e dei confronti amministrativi
+
+- Sostituita la rappresentazione tecnica ricorsiva condivisa da audit, duplicati risultati, importazioni e anteprime di unione con un renderer di consultazione: etichette leggibili, valori allineati, gruppi espandibili con titolo del contenuto e conteggi, liste con separatori leggeri. Le chiavi non ancora tradotte hanno un fallback leggibile senza underscore.
+- Audit: confronto Campo / Prima / Dopo limitato ai campi modificati; campi invariati in un gruppo richiudibile. Gli inserimenti mostrano direttamente i dati inseriti. I valori nulli restano visibili come "Non impostato", evitando di nascondere cancellazioni di campi. Booleani localizzati, date leggibili e D Score a una cifra decimale.
+- Stile condiviso con Revisioni e Impostazioni: caratteri compatti, sfondo neutro, separatori leggeri, focus da tastiera e adattamento mobile con etichette Prima/Dopo su ogni valore. Nessuna modifica a dati, permessi o azioni di approvazione/unione/importazione.
+- Test browser Admin/Super Admin desktop e mobile; verifiche del renderer in EN/IT/ES/FR per confronto, inserimento, gruppi, conservazione dei nulli ed escaping del contenuto. Tutte le scritture del collaudo sono simulate.
+
 #### 2026-10-06 - Conferme di creazione compatte
 
 - Ridimensionati esclusivamente i messaggi "Nuovo atleta salvato" e "Nuovo evento salvato": carattere 14px come i pulsanti, altezza base 36px, larghezza adattata al testo e spaziatura ridotta. Conservati verde, sfondo neutro e arrotondamento condiviso; nessuna variazione agli altri avvisi o al salvataggio.

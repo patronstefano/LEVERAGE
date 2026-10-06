@@ -4,6 +4,7 @@ import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-2
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=20261006';
+import { createAdminReport } from './admin-reports.js?v=20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -230,6 +231,9 @@ const COPY = {
   approve: ["Approve", "Approva", "Aprobar", "Approuver"],
   revert: ["Revert change", "Annulla modifica", "Revertir cambio", "Annuler la modification"],
   details: ["Details", "Dettagli", "Detalles", "Détails"],
+  compareChanges: ["Compare changes", "Confronta le modifiche", "Comparar cambios", "Comparer les modifications"],
+  insertedData: ["View inserted data", "Visualizza i dati inseriti", "Ver datos insertados", "Voir les données créées"],
+  importDetails: ["Issues and source rows", "Anomalie e righe sorgente", "Problemas y filas de origen", "Anomalies et lignes source"],
   year: ["Year", "Anno", "Año", "Année"],
   status: ["Status", "Stato", "Estado", "Statut"],
   all: ["All", "Tutti", "Todos", "Tous"],
@@ -430,12 +434,7 @@ export async function renderAdminCenter(host) {
       bind();
     }
   };
-  const report = (value) => {
-    if (value === null || value === undefined) return "<span>—</span>";
-    if (typeof value !== "object") return esc(String(value));
-    if (Array.isArray(value)) return value.length ? `<ol class="admin-report-list">${value.map((v) => `<li>${report(v)}</li>`).join("")}</ol>` : text("empty");
-    return `<dl class="admin-report">${Object.entries(value).filter(([,v]) => v !== null).map(([k,v]) => `<div><dt>${esc(text(k))}</dt><dd>${typeof v === "object" ? `<details><summary>${text("details")}${Array.isArray(v) ? ` (${v.length})` : ""}</summary>${report(v)}</details>` : report(v)}</dd></div>`).join("")}</dl>`;
-  };
+  const report = createAdminReport({text, esc, language: state.language});
   const download = (data, filename = "leverage-admin-report.json") => {
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -711,7 +710,9 @@ export async function renderAdminCenter(host) {
       onSubmit("adminAuditForm", async (params) => {
         const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
-        for (const log of logs) {
+        for (const [index, log] of logs.entries()) {
+          const summary = root.querySelectorAll('#adminAudit > article')[index]?.querySelector('.admin-revision-group > summary');
+          if (summary) summary.textContent = text(log.action === 'create' ? 'insertedData' : 'compareChanges');
           if (log.action !== 'create' || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
           actions?.insertAdjacentHTML('beforeend', button('undoCreate', `data-audit="${log.id}" data-action="revert" data-confirm-label="undoCreate"`));
@@ -766,7 +767,7 @@ export async function renderAdminCenter(host) {
       return `<article class="admin-import-review" data-review-type="${type}" data-review-index="${index}"><details><summary>${esc(nameOf(item.imported_athlete || item.orphan_dscore || {}))} · ${esc(item.problem_type || item.review_id)}</summary>${report(item)}</details><div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }]) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div></article>`;
     }).join("");
     output.innerHTML = `<h3>${esc(p.filename)}</h3>${report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
-      <details><summary>${text("details")}</summary>${report({ issues: p.issues, conflicts: p.conflicts, duplicates: p.duplicates, rows: p.rows || p.sample_results, duplicate_source_rows: p.duplicate_source_rows, matched_event_source_conflicts: p.matched_event_source_conflicts })}</details>
+      <details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: p.issues, conflicts: p.conflicts, duplicates: p.duplicates, rows: p.rows || p.sample_results, duplicate_source_rows: p.duplicate_source_rows, matched_event_source_conflicts: p.matched_event_source_conflicts })}</details>
       ${reviewRows(p.athlete_match_review || [], "athlete")}${reviewRows(p.orphan_dscore_review || [], "orphan")}
       <div class="admin-center-actions">${button("report", 'id="adminExportImport"')}${!p.committed ? button("commit", 'id="adminCommitImport"') : ""}</div>
       ${draft.kind === "gymternet" && !p.committed ? `<label><input id="adminPartialImport" type="checkbox">${text("partial")}</label>` : ""}`;
