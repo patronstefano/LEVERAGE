@@ -9593,6 +9593,136 @@ def test_gymternet_cumulative_import_historical_diagnostics_do_not_block_new_eve
     assert client.post('/imports/gymternet/commit?skip_existing_events=true', files=files, headers=headers).status_code == 400
 
 
+def test_gymternet_source_corrections_reparse_vault_and_are_audited():
+    client.post('/auth/register', json={'email': 'inline@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('inline@example.com')}"}
+    content = b'Athlete,Country,Event,VT,VT AVG\nVault Person,Italy,Vault Cup 2026 QF,1.2,12.85\n'
+    files = {'file': ('MAG.csv', content, 'text/csv')}
+    query = '?year_hint=2026&csv_discipline=MAG&require_resolved_reviews=true'
+    preview = client.post('/imports/gymternet/preview' + query, files=files, headers=headers).json()
+    source = preview['source_review'][0]
+    assert source['values']['VT'] == '1.2'
+    assert source['editable_fields'] == ['VT', 'VT AVG']
+    assert client.post('/imports/gymternet/commit' + query, files=files, headers=headers).status_code == 400
+    decision = {key: source[key] for key in ('sheet', 'row', 'fingerprint')}
+    decision.update(action='edit', values={'VT': '13,0'})
+    data = {'source_row_decisions': json.dumps([decision])}
+    corrected = client.post('/imports/gymternet/preview' + query, files=files, data=data, headers=headers).json()
+    assert not any(item['severity'] == 'error' for item in corrected['issues'])
+    assert next(row['score'] for row in corrected['sample_results'] if row['vt_attempt'] == 2) == 12.7
+    assert not client.get('/results/').json()
+    committed = client.post('/imports/gymternet/commit' + query, files=files, data=data, headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == 3
+    with SessionLocal() as db:
+        log = db.query(models.AuditLog).filter(models.AuditLog.entity_type == 'GymternetImport').one()
+        assert json.loads(log.after_json)['source_row_decisions'] == [decision]
+
+
+@pytest.mark.parametrize('values', [{'VT': '-1'}, {'VT': 'nan'}, {'VT': 'Infinity'}, {'Athlete': 'Another Person'}, {'VT': ''}])
+def test_gymternet_source_corrections_reject_invalid_values(values):
+    client.post('/auth/register', json={'email': 'invalid_source@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('invalid_source@example.com')}"}
+    files = {'file': ('MAG.csv', b'Athlete,Country,Event,VT,VT AVG\nVault Person,Italy,Vault Cup 2026 QF,1.2,12.85\n', 'text/csv')}
+    preview = client.post('/imports/gymternet/preview?csv_discipline=MAG', files=files, headers=headers).json()
+    row = preview['source_review'][0]
+    data = {'source_row_decisions': json.dumps([{**row, 'action': 'edit', 'values': values}])}
+    assert client.post('/imports/gymternet/commit?csv_discipline=MAG', files=files, data=data, headers=headers).status_code == 400
+    assert not client.get('/results/').json()
+
+
+def test_gymternet_source_exclusion_preserves_existing_results_and_checks_fingerprints():
+    client.post('/auth/register', json={'email': 'skip_source@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('skip_source@example.com')}"}
+    files = lambda content: {'file': ('results.csv', content, 'text/csv')}
+    original = gymternet_csv_bytes().getvalue()
+    assert client.post('/imports/gymternet/commit', files=files(original), headers=headers).status_code == 200
+    changed = original.replace(b'14.1', b'13.1') + b'MAG,Grace Hopper,USA,Autumn Championships 2024 QF,FX,14.2,5.5\n'
+    preview = client.post('/imports/gymternet/preview', files=files(changed), headers=headers).json()
+    row = preview['source_review'][0]
+    assert len(preview['conflicts']) == 1
+    blocked = client.post('/imports/gymternet/commit?allow_partial=true&require_resolved_reviews=true', files=files(changed), headers=headers)
+    assert blocked.status_code == 409
+    decision = {key: row[key] for key in ('sheet', 'row', 'fingerprint')}
+    decision['action'] = 'exclude'
+    forged = {'source_row_decisions': json.dumps([{**decision, 'fingerprint': 'not-the-source'}])}
+    assert client.post('/imports/gymternet/commit', files=files(changed), data=forged, headers=headers).status_code == 400
+    data = {'source_row_decisions': json.dumps([decision])}
+    committed = client.post('/imports/gymternet/commit?require_resolved_reviews=true', files=files(changed), data=data, headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == 1
+    assert committed.json()['source_decision_stats']['excluded'] == 1
+    assert sorted(row['score'] for row in client.get('/results/').json()) == [14.1, 14.2]
+
+
+def test_gymternet_source_review_includes_linked_d_score_sheet(monkeypatch):
+    client.post('/auth/register', json={'email': 'linked_source@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('linked_source@example.com')}"}
+    identity = {'Athlete': 'Vault Person', 'Country': 'Italy', 'Event': 'Vault Cup 2026 QF'}
+    monkeypatch.setattr('app.gymternet_import.read_xlsx_workbook', lambda content: {
+        'MAG': [{**identity, 'VT': 1.2, 'VT AVG': 12.85}],
+        'MAG D': [{**identity, 'VT': 5.5, 'VT SUM': 11.0}],
+    })
+    files = {'file': ('Results 2026.xlsx', b'fixture', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    preview = client.post('/imports/gymternet/preview', files=files, headers=headers).json()
+    rows = {row['sheet']: row for row in preview['source_review']}
+    assert rows['MAG']['related_rows'] == [{'sheet': 'MAG D', 'row': 2}]
+    assert rows['MAG D']['editable_fields'] == ['VT', 'VT SUM']
+    decisions = [
+        {**{key: rows[sheet][key] for key in ('sheet', 'row', 'fingerprint')}, 'action': 'edit', 'values': values}
+        for sheet, values in [('MAG', {'VT': 13}), ('MAG D', {'VT': 5.7, 'VT SUM': 11.4})]
+    ]
+    corrected = client.post('/imports/gymternet/preview', files=files, headers=headers,
+                            data={'source_row_decisions': json.dumps(decisions)}).json()
+    assert not any(issue['severity'] == 'error' for issue in corrected['issues'])
+    assert corrected['source_decision_stats']['corrected'] == 2
+    vaults = [row for row in corrected['sample_results'] if row['apparatus'] == 'VT']
+    assert {row['vt_attempt'] for row in vaults} == {1, 2}
+    assert all(row['D_score'] == 5.7 for row in vaults)
+    assert not client.get('/results/').json()
+
+
+def test_gymternet_strict_review_requires_orphan_decisions():
+    client.post('/auth/register', json={'email': 'strict_orphans@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('strict_orphans@example.com')}"}
+    files = lambda: {'file': ('results.xlsx', gymternet_review_xlsx_bytes(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    preview = client.post('/imports/gymternet/preview?year_hint=2024', files=files(), headers=headers).json()
+    assert preview['orphan_dscore_review_count'] == 1
+    assert client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), headers=headers).status_code == 409
+    data = {'orphan_dscore_decisions': json.dumps([{'review_id': preview['orphan_dscore_review'][0]['review_id'], 'action': 'discard'}])}
+    response = client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), data=data, headers=headers)
+    assert response.status_code == 200, response.text
+
+
+@pytest.mark.parametrize('kind', ['gymternet', 'calendar'])
+@pytest.mark.parametrize('actor_super', [False, True])
+def test_import_notifies_author_and_active_super_admins_in_their_language(kind, actor_super):
+    client.post('/auth/register', json={'email': 'import_author@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('import_author@example.com')}"}
+    with SessionLocal() as db:
+        author = db.query(models.User).filter_by(email='import_author@example.com').one()
+        if actor_super:
+            author.role = RoleEnum.SUPER_ADMIN
+        author_id = author.id
+        for email, role, active, language in [('super_it@example.com', RoleEnum.SUPER_ADMIN, True, models.LanguageEnum.IT),
+                                               ('inactive@example.com', RoleEnum.SUPER_ADMIN, False, models.LanguageEnum.EN),
+                                               ('user@example.com', RoleEnum.USER, True, models.LanguageEnum.EN)]:
+            db.add(models.User(email=email, role=role, is_active=active, preferred_language=language))
+        db.commit()
+    files = {'file': ('results.csv', gymternet_csv_bytes(), 'text/csv')} if kind == 'gymternet' else {
+        'file': ('Calendar.xlsx', make_calendar_workbook({2026: [('Jan 11', 'Future Cup')]}), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    response = client.post(f'/imports/{kind}/commit?create_missing_from_year=2026', files=files, headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.json()['created_admin_notifications'] == 2
+    with SessionLocal() as db:
+        messages = db.query(models.Notification, models.User).join(models.User).filter(models.Notification.type == models.NotificationTypeEnum.IMPORT_SUMMARY).all()
+        assert {user.email for _, user in messages} == {'import_author@example.com', 'super_it@example.com'}
+        for notification, user in messages:
+            assert f"{'SUPER ADMIN' if actor_super else 'ADMIN'} ID {author_id}" in notification.message
+            if user.email == 'super_it@example.com':
+                assert 'Importazione' in notification.message
+
+
 def test_gymternet_event_identity_requires_explicit_decision_and_recalculates_duplicates():
     client.post('/auth/register', json={'email': 'event_review@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('event_review@example.com')}"}

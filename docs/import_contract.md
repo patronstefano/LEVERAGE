@@ -17,7 +17,32 @@ Gli importer possono avere parser diversi, ma devono convergere sugli stessi con
 3. Preview admin con righe importabili, warning, duplicati e conflitti.
 4. Review admin per problemi non risolvibili automaticamente.
 5. Commit solo delle righe pulite o approvate.
-6. Per gli import file Gymternet e Calendar, notifica admin cumulativa `import_summary` quando il commit produce modifiche o elementi da rivedere. Nessuna notifica `data_entry_summary` e generata dal vecchio endpoint manuale.
+6. Per gli import file Gymternet e Calendar, notifica cumulativa `import_summary` all'autore e agli altri SUPER ADMIN attivi quando il commit produce modifiche o elementi da rivedere. Il riepilogo indica ruolo e ID autore, nella lingua preferita di ciascun destinatario; nessuna duplicazione per autore SUPER ADMIN e nessuna notifica di successo dalla preview o da un commit bloccato. Nessuna notifica `data_entry_summary` e generata dal vecchio endpoint manuale.
+
+## Revisione Gymternet nell'anteprima
+
+Dal 6 ottobre 2026 la UI non richiede report scaricabili: permette decisioni
+individuali e applicazione cumulativa delle scelte esplicite, con ricalcolo
+prima del commit. Le correzioni numeriche della sorgente e le esclusioni di
+righe passano nel campo form JSON `source_row_decisions`: `sheet`, `row`,
+`fingerprint`, `action` (`edit` o `exclude`) e, per edit, `values` con i soli
+campi punteggio modificati. Il backend verifica l'impronta della riga e i
+campi ammessi; rifiuta valori non numerici, vuoti, negativi o non finiti.
+Il parsing e le validazioni sportive sono ripetuti dopo ogni correzione.
+
+L'esclusione riguarda tutta la riga sorgente, quindi puo riguardare piu
+attrezzi: richiede conferma esplicita. I D-score rimasti orfani vanno risolti
+o scartati a loro volta; non si inventano final score. File originale e
+risultati esistenti non vengono modificati da queste decisioni. Le scelte
+di identita/country continuano a usare le review dedicate.
+
+La UI invia `require_resolved_reviews=true` e `allow_partial=false`: il commit
+rivaluta il file e blocca errori, conflitti e review irrisolte, incluse quelle
+D-score, anche se qualcuno invia insieme `allow_partial=true`. Il parametro
+strict rimane opzionale (default false) per i client/script preesistenti.
+Il commit registra una voce `GymternetImport` con decisioni e riepilogo,
+nella stessa transazione. Questa tracciabilita non equivale a un comando
+di annullamento atomico dell'intero import.
 
 ## Controlli comuni
 

@@ -4,7 +4,8 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues } from './admin-import-report.js?v=import-preview-choice-20261006';
+import { mountImportResolution } from './admin-import-resolution.js?v=inline-import-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues } from './admin-import-report.js?v=inline-import-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -462,10 +463,6 @@ export async function renderAdminCenter(host) {
     }
   };
   const report = createAdminReport({text, esc, language: state.language});
-  const download = (data, filename = "leverage-admin-report.json") => {
-    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-    const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-  };
   const confirm = (label, operation, showSuccess = true, explanation = '') => {
     const dialog = document.createElement("dialog"); dialog.className = "admin-confirm";
     dialog.innerHTML = `<h2>${esc(text(label))}</h2><p>${text("mutation")}</p><div class="admin-center-actions">${button("cancel", 'data-cancel')}${button("confirm", 'data-confirm')}</div>`;
@@ -936,6 +933,8 @@ export async function renderAdminCenter(host) {
     if (!active()) return;
     const draft = session.import, output = document.getElementById("adminImportOutput"), p = draft.preview;
     draft.event ||= {};
+    draft.source ||= {};
+    let refreshPreview;
     draft.reviewPages ||= {};
     draft.reviewOpen ||= {};
     const pageSize = 6;
@@ -962,32 +961,35 @@ export async function renderAdminCenter(host) {
     }).join("");
     const eventReviewRows = (p.event_match_review || []).slice(start('event'), start('event') + pageSize).map((item, i) => `<article class="admin-identity-pair admin-import-review" data-event-review="${start('event') + i}"><div class="admin-identity-entity"><strong>${esc(item.event_name)} · ${item.year}</strong><p class="admin-revision-meta">${esc(text('importFileRows'))}: ${item.result_count}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({event_name: item.event_name, year: item.year, discipline: item.disciplines.join(' · '), results_count: item.result_count})}</section><section class="admin-audit-side"><h3>${esc(text('importDatabase'))}</h3>${item.suggestions.map(s => `<p><strong>${esc(s.name)}</strong> · ID ${s.event_id} · ${s.compatibility}%</p>${report({year: s.year, discipline: s.discipline, start_date: s.start_date, end_date: s.end_date})}`).join('')}</section></div>${select('event_action', 'decision', [{value: '', label: text('unresolved')}, ...item.suggestions.map(s => ({value: String(s.event_id), label: `${text('importMatchEvent')} · ${s.name} · ID ${s.event_id}`})), {value: 'keep_separate', label: text('importNewSeparate')}], draft.event[item.review_id]?.selection || '')}</div></article>`).join('');
     output.innerHTML = `<h3>${esc(p.filename)}</h3>${importStatus ? `<p class="admin-center-feedback ${issueErrors.length || p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}${draft.kind === 'gymternet' ? `${!p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], draft.params.skip_existing_events ? 'skip' : 'include')}<span id="adminImportScopeStatus" class="admin-stats-note" role="status" hidden>${esc(text('importLoading'))}</span></div>` : ''}<div id="adminImportOverview"></div>` : report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
-      ${draft.kind === 'gymternet' ? (p.issues?.length ? `<details class="admin-revision-group" ${issueErrors.length ? 'open' : ''}><summary>${text('importIssueList')} · ${p.issues.length}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language})}</details>` : '') : `<details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: limited(p.issues), conflicts: limited(p.conflicts), rows: limited(p.rows), duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts) })}</details>`}
+      ${draft.kind === 'gymternet' ? (p.issues?.length ? `<details class="admin-revision-group" ${issueErrors.length ? 'open' : ''}><summary>${text('importIssueList')} · ${p.issues.length}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review})}</details>` : '') : `<details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: limited(p.issues), conflicts: limited(p.conflicts), rows: limited(p.rows), duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts) })}</details>`}
+      ${draft.kind === "gymternet" && !p.committed ? '<div id="adminImportResolution"></div>' : ""}
       ${p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
       ${p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
       ${p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${p.committed ? `<p class="admin-center-feedback is-success">${esc(text('importCompleted'))}</p>${report({created_results: p.created_results, created_athletes: p.created_athletes, created_events: p.created_events, skipped_duplicates: p.skipped_duplicates, skipped_conflicts: p.skipped_conflicts})}` : ''}
       ${p.event_match_review?.length || p.athlete_match_review?.length ? `<p class="admin-stats-note admin-import-footer">${esc(text('importIdentityNote'))}</p>` : ''}
-      <div class="admin-center-actions">${button("report", 'id="adminExportImport"')}${!p.committed ? button("commit", `id="adminCommitImport" ${issueErrors.length || p.parsed_rows === 0 ? 'disabled' : ''}`) : ""}</div>
-      ${draft.kind === "gymternet" && !p.committed ? `<label><input id="adminPartialImport" type="checkbox">${text("partial")}</label>` : ""}`;
+      <div class="admin-center-actions">${!p.committed ? button("commit", `id="adminCommitImport" ${issueErrors.length || p.parsed_rows === 0 ? 'disabled' : ''}`) : ""}</div>
+`;
     if (!p.committed) {
-      output.insertAdjacentHTML("beforeend", `<div class="admin-center-actions admin-import-footer">${button("importRecalculate", 'id="adminReviewPreview"')}</div>`);
-      const bodyWithDecisions = (preview, includeIdentities = true) => {
+      output.insertAdjacentHTML("beforeend", `<div class="admin-center-actions admin-import-footer">${button(draft.kind === "gymternet" ? "importApplyAll" : "importRecalculate", 'id="adminReviewPreview"')}</div>`);
+      const bodyWithDecisions = (preview, includeIdentities = true, includeEvents = true) => {
         const body = new FormData(); body.append("file", draft.file);
+        body.append("source_row_decisions", JSON.stringify(Object.values(draft.source)));
         for (const [type, key, items] of [
           ['athlete', 'athlete_match_decisions', preview.athlete_match_review],
           ['orphan', 'orphan_dscore_decisions', preview.orphan_dscore_review],
           ['event', 'event_match_decisions', preview.event_match_review],
         ]) {
           const ids = new Set((items || []).map(item => item.review_id));
-          body.append(key, JSON.stringify(Object.values(draft[type]).filter(d => d.action && ids.has(d.review_id) && (includeIdentities || type === 'event'))));
+          body.append(key, JSON.stringify(Object.values(draft[type]).filter(d => d.action && ids.has(d.review_id) && (type === 'event' ? includeEvents : includeIdentities))));
         }
         return body;
       };
-      const refreshPreview = async (scope = draft.params.skip_existing_events) => {
+      refreshPreview = async (scope = draft.params.skip_existing_events) => {
         if (draft.scopeBusy) return;
         const changingScope = scope !== draft.params.skip_existing_events;
+        const changingSource = Boolean(draft.sourceDirty);
         const params = {...draft.params, ...(draft.kind === 'gymternet' ? {skip_existing_events: scope} : {})};
         const revision = draft.decisionRevision || 0;
         draft.scopeBusy = true;
@@ -996,10 +998,13 @@ export async function renderAdminCenter(host) {
         output.querySelector('#adminCommitImport')?.setAttribute('disabled', '');
         output.querySelector('#adminImportScopeStatus')?.removeAttribute('hidden');
         try {
-          let result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(draft.preview, !changingScope), params });
+          let result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(draft.preview, !changingScope && !changingSource, !changingSource), params });
           if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
+          if (changingSource && (result.event_match_review || []).some(item => draft.event[item.review_id]?.action)) {
+            result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(result, false), params });
+          }
           // Reapply only decisions that belong to the newly selected scope.
-          if (changingScope && [['athlete', result.athlete_match_review], ['orphan', result.orphan_dscore_review]]
+          if ((changingScope || changingSource) && [['athlete', result.athlete_match_review], ['orphan', result.orphan_dscore_review]]
               .some(([type, items]) => (items || []).some(item => draft[type][item.review_id]?.action))) {
             result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(result), params });
           }
@@ -1007,6 +1012,7 @@ export async function renderAdminCenter(host) {
           draft.params = params;
           draft.preview = result;
           draft.needsPreview = false;
+          draft.sourceDirty = false;
         } finally {
           draft.scopeBusy = false;
           if (output.isConnected) {
@@ -1022,12 +1028,12 @@ export async function renderAdminCenter(host) {
     output.inert = Boolean(draft.scopeBusy);
     output.setAttribute('aria-busy', String(Boolean(draft.scopeBusy)));
     bind();
-    if (draft.kind === 'gymternet') mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report, language: state.language, route: state.route});
+
     const updateCommit = () => {
       const control = output.querySelector('#adminCommitImport');
       if (control) control.disabled = Boolean(draft.scopeBusy || issueErrors.length || p.parsed_rows === 0 || (p.skipped_existing_events?.length && !p.importable_results) || draft.needsPreview ||
         p.athlete_match_decision_stats?.unresolved || p.event_match_decision_stats?.unresolved ||
-        (p.conflicts?.length && !output.querySelector('#adminPartialImport')?.checked));
+        (draft.kind === 'gymternet' && ((p.orphan_dscore_decision_stats?.unresolved ?? p.orphan_dscore_review_count ?? p.orphan_dscore_review?.length ?? 0) || p.orphan_dscore_decision_stats?.invalid_decisions || p.athlete_match_decision_stats?.invalid_decisions)) || p.conflicts?.length);
     };
     const markChanged = () => {
       draft.decisionRevision = (draft.decisionRevision || 0) + 1;
@@ -1035,6 +1041,23 @@ export async function renderAdminCenter(host) {
       output.querySelector('#adminImportDecisionsNotice').hidden = false;
       updateCommit();
     };
+    if (draft.kind === 'gymternet') {
+      const resolution = !p.committed ? mountImportResolution({
+        root: output.querySelector('#adminImportResolution'), preview: p, draft, text, esc, button, field,
+        markChanged: () => { draft.sourceDirty = true; markChanged(); }, apply: () => refreshPreview(), confirm, guard,
+      }) : null;
+      mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report,
+        language: state.language, route: state.route, onCorrect: resolution ? (sheet, row) => resolution.focus(sheet, row) : null});
+      output.querySelectorAll('[data-correct-issue-sheet]').forEach(control => control.onclick = () => resolution?.focus(control.dataset.correctIssueSheet, Number(control.dataset.correctIssueRow)));
+      if (!p.committed && p.orphan_dscore_review?.length) {
+        const group = output.querySelector('[data-import-group=orphan]');
+        group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDiscardOrphans', 'data-discard-orphans')}</div>`);
+        group.querySelector('[data-discard-orphans]').onclick = () => confirm('importDiscardOrphansConfirm', async () => {
+          for (const item of p.orphan_dscore_review) draft.orphan[item.review_id] = {review_id: item.review_id, action: 'discard', selection: 'discard'};
+          markChanged(); await refreshPreview();
+        }, false, text('importSourceNote'));
+      }
+    }
     output.querySelectorAll('[data-import-group]').forEach(group => group.ontoggle = () => {
       if (group.isConnected) draft.reviewOpen[group.dataset.importGroup] = group.open;
     });
@@ -1044,7 +1067,7 @@ export async function renderAdminCenter(host) {
       showImport();
     });
     updateCommit();
-    output.querySelector('#adminPartialImport')?.addEventListener('change', updateCommit);
+
     output.querySelectorAll('[data-import-review-toggle]').forEach(control => control.onclick = () => {
       const details = control.closest('article').querySelector('[data-pair-details]');
       details.hidden = !details.hidden;
@@ -1077,6 +1100,8 @@ export async function renderAdminCenter(host) {
           timer = setTimeout(async () => {
             try {
               const body = new FormData(); body.append("file", draft.file);
+              body.append('source_row_decisions', JSON.stringify(Object.values(draft.source)));
+              body.append('event_match_decisions', JSON.stringify(Object.values(draft.event).filter(d => d.action && p.event_match_review?.some(item => item.review_id === d.review_id))));
               const found = await api("/imports/gymternet/review-target-suggestions", { method: "POST", body, params: { ...draft.params, review_id: item.review_id, query: lookup.querySelector("input").value } });
               if (request !== version || !lookup.isConnected) return;
               const list = lookup.querySelector("div");
@@ -1112,18 +1137,25 @@ export async function renderAdminCenter(host) {
         markChanged();
       });
     });
-    document.getElementById("adminExportImport").onclick = () => download({ preview: p, import_options: draft.params, athlete_match_decisions: Object.values(draft.athlete), orphan_dscore_decisions: Object.values(draft.orphan), event_match_decisions: Object.values(draft.event) }, `leverage-${draft.kind}-report.json`);
+
+    if (!p.committed) {
+      output.querySelectorAll('.admin-import-review [data-pair-details]').forEach(details => {
+        details.insertAdjacentHTML('beforeend', `<div class="admin-center-actions">${button('importApplyDecision', 'data-apply-review')}</div>`);
+        details.querySelector('[data-apply-review]').onclick = guard(() => refreshPreview());
+      });
+    }
     document.getElementById("adminCommitImport")?.addEventListener("click", () => confirm("commit", async () => {
       const body = new FormData(); body.append("file", draft.file);
+      body.append("source_row_decisions", JSON.stringify(Object.values(draft.source)));
       for (const [type, key, items] of [["athlete", "athlete_match_decisions", p.athlete_match_review], ["orphan", "orphan_dscore_decisions", p.orphan_dscore_review], ["event", "event_match_decisions", p.event_match_review]]) {
         const ids = new Set((items || []).map(item => item.review_id));
         body.append(key, JSON.stringify(Object.values(draft[type]).filter(d => d.action && ids.has(d.review_id))));
       }
       try {
-        const result = await api(`/imports/${draft.kind}/commit`, { method: "POST", body, params: { ...draft.params, ...(draft.kind === "gymternet" ? { allow_partial: document.getElementById("adminPartialImport").checked } : {}) } });
+        const result = await api(`/imports/${draft.kind}/commit`, { method: "POST", body, params: { ...draft.params, ...(draft.kind === "gymternet" ? { allow_partial: false, require_resolved_reviews: true } : {}) } });
         draft.preview = result; showImport();
       } catch (error) {
-        if (error.detail && typeof error.detail === "object") { draft.lastError = error.detail; download({ ...draft.preview, commit_error: error.detail }, "leverage-import-conflicts.json"); }
+        if (error.detail && typeof error.detail === "object" && Array.isArray(error.detail.issues)) { draft.preview = error.detail; draft.needsPreview = false; showImport(); }
         throw error;
       }
     }));

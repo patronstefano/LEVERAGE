@@ -83,6 +83,9 @@
 .admin-import-historical-row { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
 .admin-import-scope-choice { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 12px 0; }
 .admin-import-scope-choice > label, .admin-import-scope-choice > .admin-form-field { width: 260px; max-width: 100%; }
+.admin-source-row [data-source-fields] { grid-column: 1 / -1; min-width: 0; }
+.admin-source-row .admin-form-grid { margin: 12px 0; }
+.admin-source-row strong { overflow-wrap: anywhere; }
 .admin-import-table-scroll { max-width: 100%; overflow-x: auto; }
 .admin-import-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 1.5; }
 .admin-import-table th, .admin-import-table td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; }

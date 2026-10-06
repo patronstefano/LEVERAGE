@@ -33,6 +33,7 @@ from app.gymternet_import import (
     summarize_records,
 )
 from app.i18n import translate
+from app.import_notifications import notify_import_super_admins
 from app.security import get_current_admin_user
 
 
@@ -119,6 +120,8 @@ def build_import_preview_payload(
         "event_summaries": summary.get("event_summaries", []),
         "event_match_review": summary.get("event_match_review", []),
         "event_match_decision_stats": summary.get("event_match_decision_stats", {}),
+        "source_review": summary.get("source_review", []),
+        "source_decision_stats": summary.get("source_decision_stats", {}),
         "orphan_dscore_review_count": summary.get("orphan_dscore_review_count", 0),
         "orphan_dscore_review": summary.get("orphan_dscore_review", []),
         "orphan_dscore_decision_stats": summary.get("orphan_dscore_decision_stats", {}),
@@ -144,6 +147,7 @@ def parse_and_summarize_upload(
     athlete_review_limit: int = 2000,
     event_match_decisions: Optional[list[dict]] = None,
     skip_existing_events: bool = False,
+    source_row_decisions: Optional[list[dict]] = None,
 ) -> tuple[str, dict]:
     filename = file.filename or "gymternet_import"
     content = file.file.read()
@@ -174,6 +178,7 @@ def parse_and_summarize_upload(
             year_hint=year_hint,
             csv_discipline=csv_discipline,
             csv_score_kind=csv_score_kind,
+            source_row_decisions=source_row_decisions,
         )
     except Exception as exc:
         summary = summarize_records(
@@ -289,6 +294,14 @@ def parse_and_summarize_upload(
     summary["athlete_merge_keys"] = athlete_merge_keys
     summary["represented_country_overrides"] = represented_country_overrides
     summary["athlete_canonical_names"] = athlete_canonical_names
+    source_keys = {(issue.get('sheet'), issue.get('row')) for issue in summary['issues'] if issue.get('severity') == 'error'}
+    source_keys.update((item.get('source_sheet'), item.get('source_row')) for item in summary['conflicts'])
+    source_keys.update((item.get('sheet'), item.get('row')) for item in source_row_decisions or [])
+    for key in list(source_keys):
+        for related in parsed.source_rows.get(key, {}).get('related_rows', []):
+            source_keys.add((related['sheet'], related['row']))
+    summary['source_review'] = [value for key, value in parsed.source_rows.items() if key in source_keys]
+    summary['source_decision_stats'] = parsed.source_decision_stats
     return filename, summary
 
 
@@ -404,7 +417,8 @@ def commit_calendar_import(
         db.add(models.Notification(
             user_id=current_user.id,
             type=models.NotificationTypeEnum.IMPORT_SUMMARY,
-            message=translate(
+            message=translate('notification.import_actor', current_user.preferred_language,
+                              role=current_user.role.value.upper().replace('_', ' '), actor_id=current_user.id) + translate(
                 "notification.calendar_import_summary",
                 current_user.preferred_language,
                 updated_events=len(updated_event_ids),
@@ -413,6 +427,9 @@ def commit_calendar_import(
             ),
         ))
         created_admin_notifications = 1
+        created_admin_notifications += notify_import_super_admins(db, current_user, 'Calendar', {
+            'updated_events': len(updated_event_ids), 'created_events': created_events,
+        })
 
     db.commit()
     return {
@@ -431,6 +448,7 @@ def preview_gymternet_import(
     orphan_dscore_decisions: Optional[str] = Form(None),
     athlete_match_decisions: Optional[str] = Form(None),
     event_match_decisions: Optional[str] = Form(None),
+    source_row_decisions: Optional[str] = Form(None),
     skip_existing_events: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
@@ -452,6 +470,7 @@ def preview_gymternet_import(
         athlete_review_limit=athlete_review_limit,
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
         skip_existing_events=skip_existing_events,
+        source_row_decisions=parse_json_decision_list(source_row_decisions, 'source_row_decisions'),
     )
     return build_import_preview_payload(filename, year_hint, summary)
 
@@ -459,6 +478,8 @@ def preview_gymternet_import(
 @router.post("/gymternet/review-target-suggestions", response_model=schemas.GymternetImportTargetSuggestions)
 def suggest_gymternet_import_review_targets(
     file: UploadFile = File(...),
+    source_row_decisions: Optional[str] = Form(None),
+    event_match_decisions: Optional[str] = Form(None),
     skip_existing_events: bool = Query(False),
     query: Optional[str] = Query(None, description="Search target results by athlete, event, apparatus or context"),
     review_id: Optional[str] = Query(None, description="Optional orphan D-score review_id to rank context matches first"),
@@ -477,6 +498,8 @@ def suggest_gymternet_import_review_targets(
         csv_score_kind,
         orphan_review_limit=5000,
         skip_existing_events=skip_existing_events,
+        source_row_decisions=parse_json_decision_list(source_row_decisions, 'source_row_decisions'),
+        event_match_decisions=parse_json_decision_list(event_match_decisions, 'event_match_decisions'),
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
     if has_error_issues(summary):
@@ -515,6 +538,8 @@ def suggest_gymternet_import_review_targets(
 def commit_gymternet_import(
     file: UploadFile = File(...),
     event_match_decisions: Optional[str] = Form(None),
+    source_row_decisions: Optional[str] = Form(None),
+    require_resolved_reviews: bool = Query(False),
     skip_existing_events: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
@@ -548,15 +573,22 @@ def commit_gymternet_import(
         athlete_review_limit=athlete_review_limit,
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
         skip_existing_events=skip_existing_events,
+        source_row_decisions=parse_json_decision_list(source_row_decisions, 'source_row_decisions'),
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
     if has_error_issues(summary):
         raise HTTPException(status_code=400, detail=payload)
-    if summary["conflicts"] and not allow_partial:
+    if summary["conflicts"] and (not allow_partial or require_resolved_reviews):
         raise HTTPException(status_code=409, detail=payload)
     if summary["athlete_match_decision_stats"].get("unresolved", 0):
         raise HTTPException(status_code=409, detail=payload)
     if summary.get("event_match_decision_stats", {}).get("unresolved", 0):
+        raise HTTPException(status_code=409, detail=payload)
+    if require_resolved_reviews and (
+        summary.get('orphan_dscore_decision_stats', {}).get('unresolved', summary.get('orphan_dscore_review_count', 0))
+        or summary.get('athlete_match_decision_stats', {}).get('invalid_decisions', 0)
+        or summary.get('orphan_dscore_decision_stats', {}).get('invalid_decisions', 0)
+    ):
         raise HTTPException(status_code=409, detail=payload)
 
     stats = commit_records(
@@ -570,11 +602,20 @@ def commit_gymternet_import(
         represented_country_overrides=summary["represented_country_overrides"],
         athlete_canonical_names=summary["athlete_canonical_names"],
         pre_skipped_duplicates=len(summary["duplicates"]),
+        excluded_source_rows=summary.get('source_decision_stats', {}).get('excluded', 0),
         orphan_dscore_review_uncommitted=summary.get("orphan_dscore_decision_stats", {}).get(
             "unresolved",
             summary.get("orphan_dscore_review_count", 0),
         ),
     )
+    add_audit_log(db, current_user, 'import', 'GymternetImport', None, after={
+        'filename': filename, 'skip_existing_events': skip_existing_events,
+        'source_row_decisions': parse_json_decision_list(source_row_decisions, 'source_row_decisions') or [],
+        'athlete_match_decisions': parse_athlete_match_decisions(athlete_match_decisions) or [],
+        'event_match_decisions': parse_json_decision_list(event_match_decisions, 'event_match_decisions') or [],
+        'orphan_dscore_decisions': parse_orphan_dscore_decisions(orphan_dscore_decisions) or [],
+        'summary': stats,
+    })
     db.commit()
     return {
         **payload,

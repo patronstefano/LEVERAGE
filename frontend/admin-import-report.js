@@ -1,4 +1,19 @@
 export const IMPORT_COPY = {
+  importResolveRows: ['Resolve source rows', 'Correggi righe del file', 'Corregir filas del archivo', 'Corriger les lignes du fichier'],
+  importSourceNote: ['Edits apply only to this import, not to the original file or existing scores. Excluding a source row omits all its scores.', 'Le correzioni riguardano solo questa importazione, non il file originale o i punteggi già salvati. Tralasciare una riga esclude tutti i suoi punteggi.', 'Las correcciones afectan solo a esta importación, no al archivo original ni a los resultados guardados. Omitir una fila excluye todas sus puntuaciones.', 'Les corrections concernent uniquement cet import, pas le fichier original ni les scores existants. Exclure une ligne exclut tous ses scores.'],
+  importEditRow: ['Correct row', 'Correggi riga', 'Corregir fila', 'Corriger la ligne'],
+  importExcludeRow: ['Skip row', 'Tralascia riga', 'Omitir fila', 'Exclure la ligne'],
+  importExcludeAllRows: ['Skip unresolved source rows', 'Tralascia tutte le righe da correggere', 'Omitir las filas pendientes', 'Exclure les lignes à corriger'],
+  importExcludeRowsConfirm: ['Skip {n} source rows and all their scores in this import?', 'Tralasciare {n} righe del file e tutti i relativi punteggi in questa importazione?', '¿Omitir {n} filas y todas sus puntuaciones de esta importación?', 'Exclure {n} lignes et tous leurs scores de cet import ?'],
+  importRowExcluded: ['Excluded', 'Tralasciata', 'Excluida', 'Exclue'],
+  importRowCorrected: ['Proposed correction', 'Correzione proposta', 'Corrección propuesta', 'Correction proposée'],
+  importUndoRow: ['Restore source row', 'Ripristina riga originale', 'Restaurar fila original', 'Restaurer la ligne originale'],
+  importInvalidCorrection: ['Enter a valid non-negative score, or explicitly skip the source row.', 'Inserisci un punteggio numerico valido e non negativo, oppure tralascia esplicitamente la riga.', 'Introduce una puntuación válida no negativa u omite explícitamente la fila.', 'Saisissez un score valide non négatif, ou excluez explicitement la ligne.'],
+  importApplyDecision: ['Apply decision', 'Applica decisione', 'Aplicar decisión', 'Appliquer la décision'],
+  importApplyAll: ['Apply selected decisions', 'Applica tutte le decisioni selezionate', 'Aplicar decisiones seleccionadas', 'Appliquer les décisions sélectionnées'],
+  importDiscardOrphans: ['Skip all unmatched D Scores', 'Tralascia tutti i D Score orfani', 'Omitir todos los D Scores sin asociar', 'Exclure tous les D Scores non associés'],
+  importDiscardOrphansConfirm: ['Skip all unmatched D Scores in this preview? No scores will be invented.', 'Tralasciare tutti i D Score orfani di questa anteprima? Non verranno inventati punteggi mancanti.', '¿Omitir todos los D Scores sin asociar? No se inventarán puntuaciones.', 'Exclure tous les D Scores non associés ? Aucun score ne sera inventé.'],
+  importIssueSample: ['Review source rows below to resolve file issues.', 'Correggi le righe del file qui sotto per risolvere le segnalazioni.', 'Corrige las filas del archivo para resolver las incidencias.', 'Corrigez les lignes du fichier pour résoudre les signalements.'],
   importExistingScope: ['Previously imported competitions', 'Gare già importate', 'Competiciones ya importadas', 'Compétitions déjà importées'],
   importScopeInclude: ['Include', 'Includi', 'Incluir', 'Inclure'],
   importScopeSkip: ['Skip', 'Tralascia', 'Omitir', 'Exclure'],
@@ -16,7 +31,6 @@ export const IMPORT_COPY = {
   importVtRounding: ['The calculation gives a slightly negative score, possibly due to rounding of VT AVG. Verify the source: no second-vault score has been created.', 'Il calcolo dà un punteggio leggermente negativo, compatibile con un arrotondamento di VT AVG. Verifica la fonte: il punteggio del secondo salto non è stato creato.', 'El cálculo da una puntuación ligeramente negativa, posiblemente por redondeo de VT AVG. Verifica la fuente: no se ha creado el segundo salto.', 'Le calcul donne un score légèrement négatif, possiblement dû à l’arrondi de VT AVG. Vérifiez la source : aucun score du deuxième saut n’a été créé.'],
   importSourceSheet: ['Sheet', 'Foglio', 'Hoja', 'Feuille'],
   importSourceRow: ['Row', 'Riga', 'Fila', 'Ligne'],
-  importIssueSample: ['First 6 warnings shown. Download the report for the complete list.', 'Visualizzati i primi 6 avvisi. Scarica il report per l’elenco completo.', 'Se muestran los primeros 6 avisos. Descarga el informe completo.', 'Les 6 premiers avertissements sont affichés. Téléchargez le rapport complet.'],
   compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
   importEvents: ['Competitions to process', 'Gare da elaborare', 'Competiciones por procesar', 'Compétitions à traiter'],
   importAllEvents: ['All competitions', 'Tutte le gare', 'Todas las competiciones', 'Toutes les compétitions'],
@@ -59,18 +73,19 @@ export const IMPORT_COPY = {
   same_context_different_score_after_athlete_merge: ['Athlete association produces conflicting scores', 'L’associazione dell’atleta produce punteggi in conflitto', 'La asociación del atleta produce conflictos', 'L’association de l’athlète produit des scores en conflit'],
 };
 
-export function renderImportIssues({issues, text, esc, language}) {
+export function renderImportIssues({issues, text, esc, language, sourceRows = []}) {
   const ordered = [...issues].sort((a, b) => Number(b.severity === 'error') - Number(a.severity === 'error'));
   const score = value => new Intl.NumberFormat(language, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(value);
   return `<ul class="admin-import-issues">${ordered.slice(0, 6).map(issue => {
     const known = issue.code === 'derived_vt_outlier';
+    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.message;
     const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
     const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
-    return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}</li>`;
+    return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}${sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row) ? `<div class="admin-center-actions"><button type="button" class="quiet-button outline-command-button" data-correct-issue-sheet="${esc(issue.sheet)}" data-correct-issue-row="${issue.row}">${esc(text('importEditRow'))}</button></div>` : ''}</li>`;
   }).join('')}</ul>${ordered.length > 6 ? `<p class="admin-stats-note">${esc(text('importIssueSample'))}</p>` : ''}`;
 }
 
-export function mountImportReport({root, preview: p, text, esc, report, language, route}) {
+export function mountImportReport({root, preview: p, text, esc, report, language, route, onCorrect}) {
   const count = value => new Intl.NumberFormat(language).format(value || 0);
   const score = (value, digits) => value == null ? '—' : new Intl.NumberFormat(language, {minimumFractionDigits: digits, maximumFractionDigits: digits}).format(value);
   const athlete = row => [row.last_name, row.first_name].filter(Boolean).join(' ') || row.athlete_name || '';
@@ -134,10 +149,14 @@ export function mountImportReport({root, preview: p, text, esc, report, language
   const renderConflicts = () => {
     const conflicts = root.querySelector('[data-import-conflicts]');
     if (!conflicts) return;
-    conflicts.innerHTML = pageItems('conflicts', p.conflicts).map((row, i) => `<article class="admin-identity-pair"><div><strong>${esc(athlete(row))}</strong><p class="admin-revision-meta">${esc(row.event_name)} · ${row.year} · ${esc(context(row))}</p><p class="admin-revision-meta">${esc(text(row.reason))}</p></div><div class="admin-center-actions">${button('importCompare', `data-import-conflict="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`).join('');
+    conflicts.innerHTML = pageItems('conflicts', p.conflicts).map((row, i) => `<article class="admin-identity-pair"><div><strong>${esc(athlete(row))}</strong><p class="admin-revision-meta">${esc(row.event_name)} · ${row.year} · ${esc(context(row))}</p><p class="admin-revision-meta">${esc(text(row.reason))}</p></div><div class="admin-center-actions">${button('importCompare', `data-import-conflict="${i}" aria-expanded="false"`)}${onCorrect ? button('importEditRow', `data-correct-conflict="${i}"`) : ''}</div><div data-pair-details hidden></div></article>`).join('');
     conflicts.querySelectorAll('[data-import-conflict]').forEach(control => control.onclick = () => {
       const row = p.conflicts[pages.conflicts * pageSize + Number(control.dataset.importConflict)];
       toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => `<div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text(row.existing_result_id ? 'importDatabase' : 'previous'))}</h3>${report({score: row.existing_score, D_score: row.existing_D_score, country: row.existing_country})}</section><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({score: row.score, D_score: row.D_score, country: row.country, source_sheet: row.source_sheet, source_row: row.source_row})}</section></div>`);
+    });
+    conflicts.querySelectorAll('[data-correct-conflict]').forEach(control => control.onclick = () => {
+      const row = p.conflicts[pages.conflicts * pageSize + Number(control.dataset.correctConflict)];
+      onCorrect(row.source_sheet, row.source_row);
     });
   };
   renderConflicts();

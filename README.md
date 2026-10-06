@@ -598,11 +598,13 @@ Campi suggeribili attuali:
 - `Event`: `location`, `venue`, `start_date`, `end_date`, `level`, `image_url`
 
 ## Import Gymternet
-Accanto al data entry manuale, LEVERAGE espone uno strumento admin-only per caricare file Gymternet standardizzati in formato `.xlsx` o `.csv`.
+LEVERAGE espone uno strumento admin-only per caricare file Gymternet in formato `.xlsx` o `.csv`. Il data entry manuale resta un endpoint legacy, non una sezione del Centro Admin attuale.
 
 **File cumulativi nella UI:** il primo caricamento mostra l’anteprima dell’intero file. Successivamente, il selettore **Gare già importate: Includi / Tralascia** aggiorna automaticamente il report prima della conferma. Tralascia esclude le gare già popolate con risultati attivi, riconosciute univocamente per nome/anno, mostrando un riepilogo numerico delle eventuali incongruenze storiche senza riaprire le vecchie review. Le gare presenti solo nel calendario restano importabili. Includi consente di completare o ricontrollare anche le gare già popolate. Preview, commit e ricerca target accettano `skip_existing_events`, inizialmente false e true se si sceglie Tralascia. Liste in sezioni apribili, con pagine da sei elementi. Nessun banner generico sui dati incoerenti: restano le diagnostiche specifiche e i blocchi sugli errori delle gare incluse o non attribuibili. Nessun risultato già salvato viene sovrascritto.
 
 Il contratto comune che un import parallelo futuro dovra rispettare e documentato in [docs/import_contract.md](docs/import_contract.md). In sintesi: parser diversi sono ammessi, ma tutti gli importer devono convergere sulla stessa preview admin, sugli stessi controlli di atleta/evento/result, sulla stessa logica anti-duplicato, sulle stesse verifiche di country storica e sulle notifiche cumulative.
+
+**Risoluzione nell'anteprima:** rimossi Scarica report e import parziale dalla UI. ADMIN puo correggere i punteggi delle righe sorgente, escludere esplicitamente una riga o tutte quelle problematiche, gestire le decisioni di identita e i D-score orfani, quindi applicare le scelte singolarmente o insieme. Ogni applicazione ricalcola l'anteprima; Conferma importazione resta bloccata con problemi irrisolti. Escludere una riga omette tutti i suoi punteggi. File originale e risultati gia salvati non vengono sovrascritti; decisioni e riepilogo sono registrati nell'audit dell'import.
 
 Il popolamento storico 2018-2025 viene documentato passo passo in [docs/LEVERAGE_popolamento_massivo_diario.md](docs/LEVERAGE_popolamento_massivo_diario.md), con preview, statistiche, scelte admin, commit e controlli post-import per ogni anno.
 
@@ -617,8 +619,8 @@ Flusso consigliato per la UI admin:
 2. `POST /imports/gymternet/review-target-suggestions`
    Usa lo stesso file della preview e restituisce target `Result` suggeriti mentre l'admin risolve manualmente un D-score non agganciato. Accetta `query`, `review_id`, `year_hint`, `csv_discipline`, `csv_score_kind` e `limit`; la UI puo usarlo come autocomplete per scegliere il `target_id` corretto.
 3. `POST /imports/gymternet/commit`
-   Ripete il parsing e scrive nel database solo se non ci sono errori strutturali. Di default blocca il commit se ci sono conflitti; con `allow_partial=true` importa le righe pulite e lascia i conflitti non importati nel report. I duplicati identici vengono saltati. Puo ricevere decisioni admin per applicare D-score non agganciati.
-   Al termine del commit genera una singola notifica admin `import_summary` con il report generale dell'import: nuovi `Athlete`, nuovi `Event`, nuovi `Result`, atleti ed eventi con nuovi risultati, aggiornamenti applicati e duplicati saltati.
+   Ripete il parsing e le validazioni sul database corrente. La UI richiede tutte le review risolte (`require_resolved_reviews=true`) e non consente import parziale. I duplicati identici vengono saltati. Puo ricevere decisioni admin per applicare D-score non agganciati.
+   Al termine di un commit con modifiche o elementi segnalati genera una notifica `import_summary` all'autore e agli altri SUPER ADMIN attivi. Include ruolo/ID di chi ha importato e un riepilogo; la lingua e quella del destinatario, senza duplicare la notifica dell'autore SUPER ADMIN.
    Se un nuovo atleta importato assomiglia a un `Athlete` gia presente nel database, il commit viene bloccato finche l'admin non decide se usare l'atleta esistente, creare un nuovo atleta o indicare manualmente l'atleta corretto.
 
 Parametri opzionali:
@@ -626,7 +628,9 @@ Parametri opzionali:
 - `year_hint`: anno da usare quando il file o il nome gara non contengono l'anno.
 - `csv_discipline`: `MAG` o `WAG`, utile per CSV pivot senza disciplina nel file.
 - `csv_score_kind`: `final` o `dscore`, utile per CSV pivot.
-- `allow_partial`: solo sul commit; se `true`, importa i result senza conflitti e salta quelli conflittuali.
+- `allow_partial`: opzione API legacy, non esposta nella UI; se `true` importa i result senza conflitti, salvo i blocchi di identita. Non aggira `require_resolved_reviews=true`.
+- `require_resolved_reviews`: solo sul commit, default false per compatibilita; la UI lo invia true per bloccare conflitti e review irrisolte, inclusi i D-score orfani.
+- `source_row_decisions`: campo form JSON su preview, ricerca target e commit. Correzioni `edit` di soli punteggi o esclusione `exclude` della riga sorgente, identificate da foglio/riga/impronta restituiti in `source_review`. Ogni correzione ripete parsing e controlli, incluse le derivazioni VT. Nessun intervento diretto sui risultati gia nel DB.
 - `orphan_review_limit`: limita quanti problemi D-score restituire nella preview.
 - `orphan_dscore_decisions`: su preview e commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview e una `action`: `accept_suggestion`, `discard`, oppure `manual_target`.
 - `athlete_review_limit`: limita quanti possibili match atleta restituire nella preview.
@@ -639,7 +643,7 @@ Parametri opzionali:
 - se lo stesso file contiene lo stesso atleta con nome/cognome invertiti o formato equivalente, il tool applica automaticamente `merge name order`: crea una sola chiave atleta e usa come ordine canonico il nome gia presente nel database, quando disponibile, oppure la variante piu ricorrente nel file importato.
   Se dopo questo merge emergono country diverse, la preview crea comunque una verifica bloccante `possible_athlete_identity_collision`: l'admin decide solo la parte country (`country_history`, `country_correction`, `keep_separate` o target manuale), non l'inversione nome/cognome.
 - `represented_country` non fa parte della chiave anti-duplicato del `Result`: se il sistema trova lo stesso contesto sportivo con paese rappresentato diverso, il record viene trattato come conflitto da review admin e non come duplicato innocuo.
-- `event_match_decisions`: su preview e commit, campo form JSON con `review_id`, `action` (`match_existing` oppure `keep_separate`) e, per l'associazione, `event_id` fra quelli proposti. `event_match_review` suggerisce gare dello stesso anno con similarita almeno 90% dei nomi normalizzati, mantenendo distinti numeri di tappe diversi. Nessuna associazione automatica; non e una verifica certificata. Le decisioni sono incluse nel report esportabile, senza nuova persistenza di alias gara.
+- `event_match_decisions`: su preview, ricerca target e commit, campo form JSON con `review_id`, `action` (`match_existing` oppure `keep_separate`) e, per l'associazione, `event_id` fra quelli proposti. `event_match_review` suggerisce gare dello stesso anno con similarita almeno 90% dei nomi normalizzati, mantenendo distinti numeri di tappe diversi. Nessuna associazione automatica; non e una verifica certificata. Le decisioni sono conservate nell'audit dell'import, senza nuova persistenza di alias gara.
 
 ## Import calendario eventi
 LEVERAGE espone anche un import admin-only per file calendario Gymternet con fogli annuali e colonne `DATE` / `EVENT`.

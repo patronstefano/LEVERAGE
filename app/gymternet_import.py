@@ -3,10 +3,12 @@ from __future__ import annotations
 import csv
 from collections import defaultdict
 import hashlib
+import json
+import math
 import re
 import unicodedata
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from difflib import SequenceMatcher
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -24,6 +26,7 @@ from app.event_levels import (
     is_national_event_level_name,
 )
 from app.i18n import translate
+from app.import_notifications import notify_import_super_admins
 from app.result_identity import result_identity_key
 
 
@@ -278,6 +281,54 @@ class GymternetParseOutput:
     records: list[ParsedGymternetResult]
     issues: list[dict]
     orphan_dscore_records: list[ParsedGymternetResult] | None = None
+    source_rows: dict = field(default_factory=dict)
+    source_decision_stats: dict = field(default_factory=dict)
+
+
+def prepare_import_source_rows(sheet, rows, decisions, sources, issues, stats):
+    prepared = list(rows)
+    by_row = {}
+    for decision in decisions or []:
+        if decision.get('sheet') == sheet:
+            if decision.get('row') in by_row:
+                issues.append({'severity': 'error', 'message': 'Repeated source-row decision'})
+            by_row[decision.get('row')] = decision
+    for number, row in enumerate(rows, 2):
+        fingerprint = hashlib.sha256(json.dumps(row, sort_keys=True, default=str).encode()).hexdigest()
+        editable = [key for key in row if key is not None and (
+            normalize_header(key) in {'score', 'd score'} or
+            normalize_header(key).upper() in MAG_APPARATUS | WAG_APPARATUS | AA_ALIASES | VT_AVG_ALIASES | VT_SUM_ALIASES)]
+        source = {'sheet': sheet, 'row': number, 'fingerprint': fingerprint,
+                  'values': row, 'editable_fields': editable}
+        sources[(sheet, number)] = source
+        decision = by_row.get(number)
+        if not decision:
+            continue
+        if decision.get('fingerprint') != fingerprint:
+            issues.append({'severity': 'error', 'message': 'Source row changed. Generate a new preview.'})
+            continue
+        action = decision.get('action')
+        if action == 'exclude':
+            prepared[number - 2] = {}
+            stats['excluded'] += 1
+        elif action == 'edit' and isinstance(decision.get('values'), dict):
+            values = decision['values']
+            if not values or any(key not in editable or isinstance(value, (dict, list, bool)) for key, value in values.items()):
+                issues.append({'severity': 'error', 'message': 'Invalid source score correction'})
+                continue
+            try:
+                numeric = {key: float(str(value).strip().replace(',', '.')) for key, value in values.items()}
+                if any(not math.isfinite(value) or value < 0 for value in numeric.values()):
+                    raise ValueError('Score must be finite and non-negative')
+            except (TypeError, ValueError):
+                issues.append({'severity': 'error', 'code': 'source_correction_invalid', 'sheet': sheet, 'row': number,
+                               'message': 'Enter a valid non-negative score or explicitly exclude the source row.'})
+                continue
+            prepared[number - 2] = {**row, **numeric}
+            stats['corrected'] += 1
+        else:
+            issues.append({'severity': 'error', 'message': 'Invalid source-row action'})
+    return prepared
 
 
 def parse_gymternet_file(
@@ -286,17 +337,21 @@ def parse_gymternet_file(
     year_hint: Optional[int] = None,
     csv_discipline: Optional[models.DisciplineEnum] = None,
     csv_score_kind: Optional[str] = None,
+    source_row_decisions: Optional[list[dict]] = None,
 ) -> GymternetParseOutput:
     suffix = Path(filename).suffix.lower()
     if suffix == ".xlsx":
-        parsed = parse_xlsx(filename, content, year_hint)
+        parsed = parse_xlsx(filename, content, year_hint, source_row_decisions)
     elif suffix == ".csv":
-        parsed = parse_csv(filename, content, year_hint, csv_discipline, csv_score_kind)
+        parsed = parse_csv(filename, content, year_hint, csv_discipline, csv_score_kind, source_row_decisions)
     else:
         return GymternetParseOutput(
             records=[],
             issues=[{"severity": "error", "message": "Only .xlsx and .csv files are supported"}],
         )
+    for decision in source_row_decisions or []:
+        if (decision.get('sheet'), decision.get('row')) not in parsed.source_rows:
+            parsed.issues.append({'severity': 'error', 'message': 'Source-row decision does not match this file'})
     records = assign_automatic_days(parsed.records, parsed.issues)
     append_mixed_team_apparatus_profile_warnings(records, parsed.issues)
     append_post_2025_policy_warning(records, parsed.issues)
@@ -304,6 +359,8 @@ def parse_gymternet_file(
         records=records,
         issues=parsed.issues,
         orphan_dscore_records=parsed.orphan_dscore_records or [],
+        source_rows=parsed.source_rows,
+        source_decision_stats=parsed.source_decision_stats,
     )
 
 
@@ -366,12 +423,13 @@ def append_post_2025_policy_warning(
         })
 
 
-def parse_xlsx(filename: str, content: bytes, year_hint: Optional[int]) -> GymternetParseOutput:
+def parse_xlsx(filename: str, content: bytes, year_hint: Optional[int], source_row_decisions=None) -> GymternetParseOutput:
     workbook = read_xlsx_workbook(content)
     issues = []
     final_records = []
     dscore_records = []
     fallback_year = year_hint or infer_year(filename, None)
+    sources, source_stats = {}, {'excluded': 0, 'corrected': 0}
 
     for discipline in (models.DisciplineEnum.MAG, models.DisciplineEnum.WAG):
         final_sheet = find_sheet(workbook, [SHEET_NAMES[(discipline, "final")]])
@@ -383,7 +441,7 @@ def parse_xlsx(filename: str, content: bytes, year_hint: Optional[int]) -> Gymte
             })
             continue
         final_records.extend(parse_pivot_rows(
-            workbook[final_sheet],
+            prepare_import_source_rows(final_sheet, workbook[final_sheet], source_row_decisions, sources, issues, source_stats),
             final_sheet,
             discipline,
             "final",
@@ -392,7 +450,7 @@ def parse_xlsx(filename: str, content: bytes, year_hint: Optional[int]) -> Gymte
         ))
         if dscore_sheet:
             dscore_records.extend(parse_pivot_rows(
-                workbook[dscore_sheet],
+                prepare_import_source_rows(dscore_sheet, workbook[dscore_sheet], source_row_decisions, sources, issues, source_stats),
                 dscore_sheet,
                 discipline,
                 "dscore",
@@ -400,11 +458,21 @@ def parse_xlsx(filename: str, content: bytes, year_hint: Optional[int]) -> Gymte
                 issues,
             ))
 
+    dscore_sources = {record.import_key: (record.source_sheet, record.source_row) for record in dscore_records}
+    for record in final_records:
+        related = dscore_sources.get(record.import_key)
+        source = sources.get((record.source_sheet, record.source_row))
+        if related and source:
+            source.setdefault('related_rows', set()).add(related)
+    for source in sources.values():
+        source['related_rows'] = [{'sheet': sheet, 'row': row} for sheet, row in sorted(source.get('related_rows', []))]
     records, orphan_dscore_records = merge_final_and_dscore(final_records, dscore_records, issues)
     return GymternetParseOutput(
         records=records,
         issues=issues,
         orphan_dscore_records=orphan_dscore_records,
+        source_rows=sources,
+        source_decision_stats=source_stats,
     )
 
 
@@ -414,6 +482,7 @@ def parse_csv(
     year_hint: Optional[int],
     csv_discipline: Optional[models.DisciplineEnum],
     csv_score_kind: Optional[str],
+    source_row_decisions=None,
 ) -> GymternetParseOutput:
     text = content.decode("utf-8-sig")
     rows = list(csv.DictReader(StringIO(text)))
@@ -421,8 +490,14 @@ def parse_csv(
         return GymternetParseOutput(records=[], issues=[{"severity": "error", "message": "CSV is empty"}])
 
     headers = {normalize_header(header) for header in rows[0].keys()}
+    source_issues, sources, source_stats = [], {}, {'excluded': 0, 'corrected': 0}
+    rows = prepare_import_source_rows(filename, rows, source_row_decisions, sources, source_issues, source_stats)
     if {"discipline", "athlete", "event", "apparatus", "score"}.issubset(headers):
-        return parse_flat_csv(filename, rows, year_hint)
+        parsed = parse_flat_csv(filename, rows, year_hint)
+        parsed.issues.extend(source_issues)
+        parsed.source_rows = sources
+        parsed.source_decision_stats = source_stats
+        return parsed
 
     discipline = csv_discipline or infer_csv_discipline(filename)
     score_kind = (csv_score_kind or infer_csv_score_kind(filename) or "final").lower()
@@ -437,7 +512,7 @@ def parse_csv(
             issues=[{"severity": "error", "message": "CSV score_kind must be final or dscore"}],
         )
 
-    issues = []
+    issues = source_issues
     parsed = parse_pivot_rows(rows, filename, discipline, score_kind, year_hint, issues)
     records, orphan_dscore_records = merge_final_and_dscore(parsed, [], issues) if score_kind == "final" else ([], parsed)
     if score_kind == "dscore":
@@ -446,6 +521,8 @@ def parse_csv(
         records=records,
         issues=issues,
         orphan_dscore_records=orphan_dscore_records,
+        source_rows=sources,
+        source_decision_stats=source_stats,
     )
 
 
@@ -453,6 +530,8 @@ def parse_flat_csv(filename: str, rows: list[dict], year_hint: Optional[int]) ->
     issues = []
     records = []
     for row_number, row in enumerate(rows, start=2):
+        if not row:
+            continue
         normalized = {normalize_header(key): value for key, value in row.items()}
         try:
             discipline = models.DisciplineEnum(str(normalized["discipline"]).strip().upper())
@@ -3626,6 +3705,7 @@ def commit_records(
     athlete_canonical_names: Optional[dict[tuple, dict]] = None,
     pre_skipped_duplicates: int = 0,
     orphan_dscore_review_uncommitted: int = 0,
+    excluded_source_rows: int = 0,
 ) -> dict:
     stats = {
         "created_athletes": 0,
@@ -3792,7 +3872,9 @@ def commit_records(
         db.add(models.Notification(
             user_id=notification_user_id,
             type=models.NotificationTypeEnum.IMPORT_SUMMARY,
-            message=translate(
+            message=translate('notification.import_actor', notification_user.preferred_language if notification_user else models.LanguageEnum.EN,
+                              role=notification_user.role.value.upper().replace('_', ' ') if notification_user else 'ADMIN',
+                              actor_id=notification_user_id) + translate(
                 "notification.import_summary",
                 notification_user.preferred_language if notification_user else models.LanguageEnum.EN,
                 created_athletes=stats["created_athletes"],
@@ -3812,4 +3894,7 @@ def commit_records(
             related_event_id=created_events_for_notification[0].id if created_events_for_notification else None,
         ))
         stats["created_admin_notifications"] += 1
+        stats["created_admin_notifications"] += notify_import_super_admins(
+            db, notification_user, 'Gymternet', {**stats, 'excluded_source_rows': excluded_source_rows},
+        )
     return stats

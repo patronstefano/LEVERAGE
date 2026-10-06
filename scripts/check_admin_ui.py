@@ -1,5 +1,6 @@
 """Read-only browser smoke checks; all write requests are blocked."""
 import json
+import re
 from pathlib import Path
 from urllib.request import urlopen
 from urllib.parse import parse_qs, urlparse
@@ -144,7 +145,14 @@ def main():
                     if 'accept_suggestion' in route.request.post_data:
                         preview['athlete_match_decision_stats']['unresolved'] = 0
                     scoped = parse_qs(urlparse(route.request.url).query).get('skip_existing_events') == ['true']
-                    route.fulfill(json={**preview, **(scope_response if scoped else {})}, headers={"Access-Control-Allow-Origin": "*"})
+                    payload = {**preview, **(scope_response if scoped else {})}
+                    source_part = re.search(r'name="source_row_decisions"\r\n\r\n([^\r]+)', route.request.post_data)
+                    decisions = json.loads(source_part.group(1)) if source_part else []
+                    if decisions:
+                        payload.update(issues=[], conflicts=[], importable_results=1,
+                            source_decision_stats={'excluded': sum(d['action'] == 'exclude' for d in decisions),
+                                                   'corrected': sum(d['action'] == 'edit' for d in decisions)})
+                    route.fulfill(json=payload, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path.startswith('/world-gymnastics/scan/matches/') and path.endswith('/dismiss'):
@@ -877,6 +885,8 @@ def main():
                 assert page.locator('[name=include_existing]').count() == 0
                 assert page.locator('#adminImportForm [name=existing_event_scope]').count() == 0
                 assert page.locator('#adminImportOutput [name=existing_event_scope]').input_value() == 'include'
+                assert page.locator('#adminExportImport').count() == 0
+                assert page.locator('#adminPartialImport').count() == 0
                 assert 'skip_existing_events=false' in writes[-1]['url']
                 page.locator('[data-import-event-list] > summary').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
@@ -963,6 +973,27 @@ def main():
                 assert 'skip_existing_events=false' in writes[-1]['url']
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert not any(w['path'] == '/imports/gymternet/commit' for w in writes)
+                preview['source_review'] = [{'sheet': 'MAG', 'row': 17, 'fingerprint': 'f' * 64,
+                    'values': {'Athlete': 'Vault Person', 'Event': 'Vault Cup 2026', 'VT': '1.2', 'VT AVG': '12.85'},
+                    'editable_fields': ['VT', 'VT AVG']}]
+                page.locator('#adminImportForm button[type=submit]').click()
+                page.locator('[data-source-group] > summary').click()
+                page.locator('[data-source-edit]').click()
+                page.locator('[data-source-fields] input').first.fill('13.0')
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-source-apply]').click()
+                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
+                assert '13.0' in writes[-1]['body']
+                assert 'source_row_decisions' in writes[-1]['body']
+                assert page.locator('[data-source-undo]').is_visible()
+                page.locator('[data-source-undo]').click()
+                page.locator('.admin-import-issues').wait_for()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-source-exclude-all]').click()
+                assert 'tutti i relativi punteggi' in page.locator('dialog[open]').inner_text()
+                page.locator('dialog[open] [data-confirm]').click()
+                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
+                assert '"action":"exclude"' in writes[-1]['body']
                 page.evaluate('window.scrollTo(0, 0)')
                 page.screenshot(path='/tmp/leverage-import-scope-desktop.png', full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})

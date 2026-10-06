@@ -1948,6 +1948,8 @@ class GymternetImportPreview(BaseModel):
     importable_results: int
     skipped_existing_events: list[dict] = []
     skipped_existing_results: int = 0
+    source_review: list[dict] = []
+    source_decision_stats: dict = {}
     would_create_athletes: int
     would_create_events: int
     duplicates: list[dict]

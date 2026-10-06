@@ -29,10 +29,35 @@ o non attribuibili rimangono bloccanti.
 
 Le possibili corrispondenze di gare nello stesso anno richiedono una decisione
 esplicita: associazione alla gara proposta o conferma di gara distinta. Si
-affiancano alla review atleta/nazionalita e ai D-score orfani. Dopo le decisioni,
-Ricalcola anteprima aggiorna il report prima della conferma. I conflitti di
-identita irrisolti bloccano anche l'import parziale; i risultati gia salvati
-non vengono sovrascritti. Le decisioni sono comprese nel report JSON scaricabile.
+affiancano alla review atleta/nazionalita e ai D-score orfani.
+
+La revisione avviene direttamente nell'anteprima: rimosso Scarica report e
+l'export automatico in caso di errore. Correggi riga apre i punteggi sorgente
+modificabili; Tralascia riga esclude, con conferma, tutti i punteggi di quella
+riga, non soltanto l'attrezzo segnalato. Sono disponibili Ripristina riga
+originale, Applica decisione, Applica tutte le decisioni selezionate ed
+esclusioni cumulative esplicite di righe problematiche o D-score orfani.
+Le liste restano paginate; nessuna unione cumulativa implicita di identita.
+
+Ogni correzione viene applicata in memoria prima del parsing, ricalcolando
+anche i salti VT derivati. L'impronta della riga originale impedisce di
+riapplicare una decisione su una sorgente cambiata. Le righe D-score collegate
+sono esposte insieme alle righe Final Score interessate. Nessuna modifica al
+file originale o sovrascrittura di risultati gia salvati: per questi ultimi
+resta l'Editor Risultati. Le decisioni sono registrate nell'audit del commit.
+
+Conferma importazione si abilita solo dopo il ricalcolo, senza errori,
+conflitti o review irrisolte nel perimetro scelto. Rimossa dalla UI l'opzione
+import parziale: il frontend invia `require_resolved_reviews=true` e
+`allow_partial=false`; gli script legacy conservano il contratto API precedente.
+Gli avvisi non bloccanti non diventano automaticamente errori.
+
+Le notifiche degli import Gymternet e Calendar raggiungono l'autore e tutti
+i SUPER ADMIN attivi. Indicano ruolo/ID autore e riepilogo; ogni destinatario
+riceve il testo nella propria lingua, senza doppia notifica quando l'autore
+e SUPER ADMIN. Preview e tentativi bloccati non generano notifiche di successo.
+La correzione diretta delle righe descritta qui riguarda i risultati Gymternet;
+non introduce un editor delle righe Calendar.
 
 Questo aggiornamento riguarda il flusso di import. La tabella seguente conserva
 la descrizione della prima integrazione del Centro Admin del 22 settembre.

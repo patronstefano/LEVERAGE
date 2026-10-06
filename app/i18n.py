@@ -236,6 +236,18 @@ TRANSLATIONS = {
         models.LanguageEnum.ES: "1 evento finalizado sin resultados: {event_names}.",
         models.LanguageEnum.FR: "1 evenement termine sans resultats : {event_names}.",
     },
+    "notification.import_actor": {
+        models.LanguageEnum.EN: "{role} ID {actor_id} · ",
+        models.LanguageEnum.IT: "{role} ID {actor_id} · ",
+        models.LanguageEnum.ES: "{role} ID {actor_id} · ",
+        models.LanguageEnum.FR: "{role} ID {actor_id} · ",
+    },
+    "notification.import_super_summary": {
+        models.LanguageEnum.EN: "{role} ID {actor_id} · {source} import completed. New athletes: {athletes}; new events: {events}; new scores: {results}; updated events: {updated}; source rows explicitly excluded: {excluded}.",
+        models.LanguageEnum.IT: "{role} ID {actor_id} · Importazione {source} completata. Nuovi atleti: {athletes}; nuovi eventi: {events}; nuovi punteggi: {results}; eventi aggiornati: {updated}; righe del file escluse esplicitamente: {excluded}.",
+        models.LanguageEnum.ES: "{role} ID {actor_id} · Importación {source} completada. Nuevos atletas: {athletes}; nuevos eventos: {events}; nuevas puntuaciones: {results}; eventos actualizados: {updated}; filas excluidas explícitamente: {excluded}.",
+        models.LanguageEnum.FR: "{role} ID {actor_id} · Importation {source} terminée. Nouveaux athlètes : {athletes} ; nouveaux événements : {events} ; nouveaux scores : {results} ; événements mis à jour : {updated} ; lignes explicitement exclues : {excluded}.",
+    },
     "notification.import_summary": {
         models.LanguageEnum.EN: (
             "Gymternet import report: {created_athletes} new athlete(s); {created_events} new event(s); "
