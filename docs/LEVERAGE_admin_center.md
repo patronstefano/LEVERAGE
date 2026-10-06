@@ -44,6 +44,12 @@ righe sorgente consultabili. Avvisi del file e diagnostiche localizzate nelle
 quattro lingue chiudono l'anteprima. Le date sorgente non interpretabili restano
 visibili per riconoscere l'errore. I conflitti bloccano ancora il commit e
 richiedono correzione nel file e nuova analisi; nessuna risoluzione automatica.
+Il riepilogo Calendar usa tre colonne su desktop e due su schermi ridotti,
+con etichette da 13 px e valori da 18 px separati da uno spazio stabile.
+Nomi gara da 14 px, metadati da 13 px e interlinea 1,5 rendono uniforme la
+lettura delle voci e dei conflitti. I link evento occupano un'area limitata
+a destra e passano sotto ai dati su tablet/mobile; testi e nomi file lunghi
+vanno a capo senza sovrapporsi ai comandi.
 
 L'anteprima e stata compattata usando gli stessi caratteri, controlli e
 separazioni di Revisione Duplicati. Dopo l'analisi il form file/parametri

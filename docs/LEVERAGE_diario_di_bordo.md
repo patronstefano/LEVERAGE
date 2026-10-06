@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riordino tipografico dell'anteprima Calendar
+
+- Intervento circoscritto all'anteprima Calendar: riepilogo a tre colonne desktop/due colonne tablet-mobile, etichette da 13 px e valori da 18 px, separati e allineati senza l'altezza minima rigida delle vecchie etichette. I testi lunghi vanno a capo dentro la propria colonna.
+- Uniformati nomi gara (14 px, peso 600), date/dettagli/avvisi (13 px, interlinea 1,5). Limitata la larghezza dei comandi a destra dei record; su schermi ridotti passano sotto ai dati, allineati a sinistra. Intestazione, selettore Includi/Tralascia e Cambia file hanno spazi distinti; su mobile il selettore occupa una riga dedicata.
+- Estesa la verifica UI con nomi gara e file lunghi, molteplici collegamenti evento e controlli geometrici contro sovrapposizioni tra testi, valori, intestazione e pulsanti. Viewport: 1440, 1024, 768, 390 e 360 px; coperti anche conflitti e riepilogo con eventi esclusi. Nessuna modifica ai dati o alle regole d'importazione.
+
 #### 2026-10-06 - Avanzamento delle revisioni nel popup
 
 - Spostata l'animazione di ricalcolo all'interno della conferma di esclusione delle righe/D Score orfani: il testo della decisione resta visibile, la barra si completa al 100% e solo successivamente la conferma si chiude. Per applicazione delle revisioni, annullamento delle correzioni e cambio Includi/Tralascia senza conferma preesistente si usa un popup di avanzamento nello stesso stile.

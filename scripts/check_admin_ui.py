@@ -54,6 +54,33 @@ def main():
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.add_init_script("if (location.origin === 'http://127.0.0.1:5173') { localStorage.setItem('leverage.authToken', 'test-only'); localStorage.setItem('leverage.language', 'it'); }")
 
+        def check_calendar_layout():
+            problems = page.locator('#adminImportOutput').evaluate('''root => {
+                const errors = [];
+                const visible = el => el.getClientRects().length > 0;
+                const rect = el => el.getBoundingClientRect();
+                const overlaps = (a, b) => a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1;
+                for (const item of root.querySelectorAll('.admin-import-metrics > div')) {
+                    const label = item.querySelector('dt'), value = item.querySelector('dd');
+                    if (rect(value).top < rect(label).bottom + 5) errors.push('metric spacing');
+                    if (label.scrollWidth > label.clientWidth + 1) errors.push('metric overflow');
+                }
+                for (const row of root.querySelectorAll('.admin-identity-pair')) {
+                    if (!visible(row)) continue;
+                    const copy = row.firstElementChild, actions = row.querySelector('.admin-center-actions');
+                    if (actions && visible(actions) && overlaps(rect(copy), rect(actions))) errors.push('row actions overlap');
+                    const parts = [...copy.children].filter(visible);
+                    for (let i = 1; i < parts.length; i++) {
+                        if (overlaps(rect(parts[i - 1]), rect(parts[i]))) errors.push('row text overlap');
+                    }
+                }
+                const heading = root.querySelector('.admin-import-heading');
+                if (overlaps(rect(heading.firstElementChild), rect(heading.lastElementChild))) errors.push('heading overlap');
+                return errors;
+            }''')
+            assert not problems, problems
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+
         def api(route):
             path = route.request.url.split(":8000", 1)[-1].split("?", 1)[0]
             payload = []
@@ -1162,6 +1189,7 @@ def main():
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '0', '0', '7', '0', '0', '1']
+                check_calendar_layout()
                 assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=include]').click()
@@ -1172,6 +1200,19 @@ def main():
                 page.locator('[data-calendar-page="1"]').click()
                 assert page.locator('#adminCalendarRows article').count() == 2
                 assert 'Calendar Cup 7' in page.locator('#adminCalendarRows').inner_text()
+                # Stress long event names, filenames and several event links without changing fixtures.
+                page.locator('[data-calendar-page="-1"]').click()
+                page.locator('#adminCalendarRows article strong').first.evaluate("el => el.textContent += ' - International Artistic Gymnastics Championships Junior and Senior MAG and WAG'")
+                page.locator('.admin-import-heading .admin-revision-meta').evaluate("el => el.textContent = 'Calendar_2018_2026_definitivo_revisionato_con_eventi_internazionali.xlsx'")
+                page.locator('#adminCalendarRows article .admin-center-actions').first.evaluate('''el => {
+                    const link = el.querySelector('a');
+                    for (let i = 2; i <= 5; i++) { const copy = link.cloneNode(true); copy.textContent = `Leverage ID ${i}`; el.append(copy); }
+                }''')
+                for width in [1440, 1024, 768, 390, 360]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    check_calendar_layout()
+                    page.screenshot(path=f'/tmp/leverage-calendar-layout-{width}.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.evaluate('window.scrollTo(0, 0)')
                 page.screenshot(path='/tmp/leverage-calendar-import-desktop.png', full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
@@ -1203,6 +1244,7 @@ def main():
                 for width in [1440, 390]:
                     page.set_viewport_size({'width': width, 'height': 1000})
                     page.wait_for_timeout(150)
+                    check_calendar_layout()
                     assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                     page.screenshot(path=f'/tmp/leverage-calendar-conflicts-{width}.png', full_page=True)
                 page.set_viewport_size({'width': 1440, 'height': 1000})

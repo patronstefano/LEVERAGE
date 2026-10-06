@@ -933,6 +933,7 @@ export async function renderAdminCenter(host) {
   function showImport() {
     if (!active()) return;
     const draft = session.import, output = document.getElementById("adminImportOutput"), p = draft.preview;
+    output.dataset.importKind = draft.kind;
     draft.event ||= {};
     draft.source ||= {};
     let refreshPreview;

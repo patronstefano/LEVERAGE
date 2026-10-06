@@ -149,6 +149,38 @@
 .admin-import-scope-note { margin: 12px 0; }
 #adminImportOutput .admin-calendar-source { font-size: 13px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
 #adminCalendarConflicts > details > .admin-stats-note { margin: 8px 0 12px; }
+#adminImportOutput[data-import-kind="calendar"] { font-size: 14px; line-height: 1.5; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-heading { align-items: flex-start; gap: 16px 24px; margin-bottom: 20px; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-header-actions { min-width: 0; max-width: 100%; gap: 12px 16px; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice > .admin-form-field { width: 260px; min-width: 0; }
+#adminImportOutput[data-import-kind="calendar"] .admin-form-field > span { font-size: 13px; line-height: 1.5; font-weight: 400; overflow-wrap: anywhere; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; padding-bottom: 20px; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-metrics > div { display: flex; flex-direction: column; gap: 6px; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-metrics dt { min-height: 0; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-metrics dd { margin: auto 0 0; font-size: 18px; line-height: 1.4; overflow-wrap: anywhere; }
+#adminImportOutput[data-import-kind="calendar"] .admin-stats-note { margin-block: 12px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair { grid-template-columns: minmax(0, 1fr) fit-content(240px); align-items: start; gap: 12px 24px; padding-block: 12px; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair > :first-child { grid-column: 1; grid-row: 1; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair strong { display: block; font-size: 14px; line-height: 1.5; font-weight: 600; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair p { font-size: 13px; line-height: 1.5; margin: 4px 0 0; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair > .admin-center-actions { grid-column: 2; grid-row: 1; width: auto; max-width: 240px; align-self: center; justify-self: end; }
+#adminImportOutput[data-import-kind="calendar"] .admin-identity-pair > .admin-center-actions:empty { display: none; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-issues strong { display: block; font-size: 14px; line-height: 1.5; font-weight: 600; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-issues p { font-size: 13px; line-height: 1.5; }
+#adminImportOutput[data-import-kind="calendar"] .admin-revision-group > summary { line-height: 1.5; overflow-wrap: anywhere; }
+#adminImportOutput[data-import-kind="calendar"] .admin-import-pagination { margin: 16px 0 4px; gap: 10px 14px; }
+@media (max-width: 1000px) {
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #adminImportOutput[data-import-kind="calendar"] .admin-identity-pair { grid-template-columns: minmax(0, 1fr); }
+  #adminImportOutput[data-import-kind="calendar"] .admin-identity-pair > .admin-center-actions { grid-column: 1; grid-row: 2; max-width: 100%; justify-self: start; justify-content: flex-start; }
+}
+@media (max-width: 580px) {
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-heading > div:first-child { flex-basis: 100%; }
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-header-actions { width: 100%; align-items: flex-start; }
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice { flex-basis: 100%; }
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice > .admin-form-field { width: 100%; }
+  #adminImportOutput[data-import-kind="calendar"] .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+}
 @media (max-width: 1000px) {
   #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #adminImportOutput .admin-import-metrics dt { min-height: 0; }
