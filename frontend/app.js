@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=auto-import-scope-20261006";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=classification-export-20261006";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=security-audit-notices-20261006";

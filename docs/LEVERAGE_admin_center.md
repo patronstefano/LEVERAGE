@@ -2,6 +2,23 @@
 
 Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
+## Export Editor Risultati - 6 ottobre 2026
+
+Scarica, accanto alla X dell'evento aperto, offre CSV e XLSX della classifica
+selezionata. Il file usa i dati salvati: occorre salvare o annullare le modifiche
+locali prima del download. Sono inclusi tutti i record, non solo la prima pagina.
+
+Endpoint: `GET /results/export`, con `event_id`, `discipline`, `format`, `round`,
+`apparatus`, `day` opzionale e `file_format=csv|xlsx`. Giorno omesso seleziona
+esattamente i record senza giorno; categorie determinate dall'evento come
+nell'editor. Richiede ADMIN/SUPER ADMIN e MFA verificata; nessuna scrittura DB.
+
+Final Score decrescente, D con una cifra decimale, E registrato separato da
+E stimato, campi sconosciuti vuoti. Position indica solo l'ordine dell'editor,
+non uno spareggio ufficiale. Le date sono quelle dell'intervallo evento.
+Nomi e testi sono protetti dall'esecuzione come formule nei fogli di calcolo.
+
+
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
 Eccezione aggiornata: la scelta Gare gia importate ricalcola automaticamente

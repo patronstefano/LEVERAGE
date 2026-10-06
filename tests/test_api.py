@@ -107,6 +107,82 @@ def make_calendar_workbook(rows_by_year: dict[int, list[tuple[str, str]]]) -> By
     return buffer
 
 
+@pytest.mark.parametrize('file_format', ['csv', 'xlsx'])
+def test_editor_classification_export(file_format):
+    import csv
+    from io import StringIO
+    from openpyxl import load_workbook
+
+    client.post('/auth/register', json={'email': 'export@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('export@example.com')}"}
+    db = SessionLocal()
+    event = models.Event(name='=Unsafe, Cup', year=2026, discipline='MAG',
+        category='junior and senior', level='National Event', start_date=date(2026, 5, 1), end_date=date(2026, 5, 3))
+    athlete = models.Athlete(first_name='Nicolò', last_name='=Test', country='ITA', discipline='MAG')
+    db.add_all([event, athlete]); db.flush()
+    context = dict(event_id=event.id, athlete_id=athlete.id, discipline='MAG', format='individual', round='final', apparatus='VT', represented_country='CRO')
+    # More than one API page, including both categories and vault attempts.
+    rows = [models.Result(**context, category='senior' if i % 2 else 'junior',
+        vt_attempt=1 if i % 2 else 2, score=13.3, D_score=5.3) for i in range(501)]
+    rows.append(models.Result(**context, category='senior', score=14.3, D_score=5.3, E_score=9, Penalty=0, Bonus=0))
+    rows.extend([
+        models.Result(**context, category='senior', day=2, score=15, D_score=6),
+        models.Result(**{**context, 'apparatus': 'PH'}, category='senior', score=16),
+        models.Result(**context, category='senior', score=17, is_deleted=True),
+    ])
+    db.add_all(rows); db.commit()
+    event_id, athlete_id = event.id, athlete.id
+    params = dict(event_id=event_id, discipline='MAG', format='individual', round='final', apparatus='VT', file_format=file_format)
+    assert client.get('/results/export', params=params).status_code == 401
+    response = client.get('/results/export', params=params, headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.headers['cache-control'] == 'no-store'
+    assert f'.{file_format}' in response.headers['content-disposition']
+    if file_format == 'csv':
+        data = list(csv.DictReader(StringIO(response.content.decode('utf-8-sig'))))
+        assert len(data) == 502
+        assert data[0]['Final Score'] == '14.300'
+        assert data[0]['D Score'] == '5.3'
+        assert data[0]['E Score'] == '9.000' and data[0]['E est.'] == ''
+        assert data[1]['E Score'] == '' and data[1]['E est.'] == '8.000'
+        assert data[1]['Penalty'] == '' and data[0]['Penalty'] == '0.000'
+        assert data[0]['Athlete'] == "'=Test Nicolò"
+        assert data[0]['Event'] == "'=Unsafe, Cup"
+        assert data[0]['Country'] == 'CRO'
+        assert data[0]['Event end'] == '2026-05-03'
+        assert {row['Category'] for row in data} == {'junior', 'senior'}
+        assert {row['VT attempt'] for row in data} == {'', '1', '2'}
+    else:
+        workbook = load_workbook(BytesIO(response.content))
+        sheet = workbook['Classification']
+        assert sheet.max_row == 503
+        assert sheet['M2'].value == 14.3
+        assert sheet['N2'].value == 5.3 and sheet['N2'].number_format == '0.0'
+        assert sheet['D2'].value == '=Test Nicolò' and sheet['D2'].data_type == 's'
+        assert sheet['T2'].data_type == 's'
+        assert sheet['O3'].value is None and sheet['P3'].value == 8
+        assert sheet['Q3'].value is None and sheet['Q2'].value == 0
+        assert sheet.freeze_panes and sheet.auto_filter.ref
+    assert client.get('/results/export', params={**params, 'day': 3}, headers=headers).status_code == 404
+    assert client.get('/results/export', params={**params, 'apparatus': 'AA'}, headers=headers).status_code == 422
+    assert client.get('/results/export', params={**params, 'discipline': 'WAG', 'apparatus': 'PH'}, headers=headers).status_code == 422
+    assert client.get('/results/export', params={**params, 'file_format': 'xls'}, headers=headers).status_code == 422
+    # Category scope and soft-deletion must agree with the editor.
+    event.category = models.EventCategoryEnum.JUNIOR
+    db.commit()
+    junior = client.get('/results/export', params={**params, 'file_format': 'csv'}, headers=headers)
+    assert len(list(csv.DictReader(StringIO(junior.content.decode('utf-8-sig'))))) == 251
+    athlete.is_deleted = True; db.commit()
+    assert client.get('/results/export', params=params, headers=headers).status_code == 404
+    event.is_deleted = True; db.commit()
+    assert client.get('/results/export', params=params, headers=headers).status_code == 404
+    assert db.query(models.Result).count() == 505
+    db.close()
+    client.post('/auth/register', json={'email': 'export-user@example.com', 'password': TEST_PASSWORD})
+    user_headers = {'Authorization': f"Bearer {login_as_user('export-user@example.com')}"}
+    assert client.get('/results/export', params=params, headers=user_headers).status_code == 403
+
+
 def test_password_minimum_is_six_characters():
     from app.schemas import UserRegister, PasswordResetConfirm, PasswordChangeRequest
     from pydantic import ValidationError

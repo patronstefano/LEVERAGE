@@ -1,6 +1,9 @@
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 
 const COPY = {
+  download: ['Download', 'Scarica', 'Descargar', 'Télécharger'],
+  exportPending: ['Save or undo changes before downloading the classification.', 'Salva o annulla le modifiche prima di scaricare la classifica.', 'Guarda o deshaz los cambios antes de descargar la clasificación.', 'Enregistrez ou annulez les modifications avant de télécharger le classement.'],
+  exportFailed: ['Unable to download the classification. Please try again.', 'Impossibile scaricare la classifica. Riprova.', 'No se puede descargar la clasificación. Inténtalo de nuevo.', 'Impossible de télécharger le classement. Réessayez.'],
   closeEvent: ['Close event', 'Chiudi evento', 'Cerrar evento', 'Fermer l’événement'],
   classification: ['Classification', 'Classifica', 'Clasificación', 'Classement'],
   athlete: ['Athlete', 'Atleta', 'Atleta', 'Athlète'],
@@ -41,21 +44,70 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   const drafts = new Map();
   const names = new Map();
   let revision = 0;
+  let exportSelection = null, exporting = false, saving = 0;
   root.innerHTML = `<div class="section-search-row analytics-comparison-search-row admin-editor-search-row"><div class="analytics-comparison-search-primary"><form class="search-form section-search-form analytics-comparison-search-form" id="adminEventSearchForm"><div class="search-input-shell"><input class="search-input" id="adminEventSearch" name="event_search" type="search" autocomplete="off" placeholder="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-label="${esc(searchUi.t('eventSearchPlaceholder'))}" aria-controls="adminEventOptions" aria-expanded="false"><button type="button" class="search-clear-button" aria-label="${esc(searchUi.t('clearSearch'))}" hidden><span aria-hidden="true">&times;</span></button></div><div id="adminEventOptions" class="search-suggestions analytics-comparison-suggestions" role="listbox" hidden></div></form></div></div><div id="adminClassificationEditor"></div>`;
   const area = root.querySelector('#adminClassificationEditor');
   const selectedEvent = document.createElement('div');
   selectedEvent.id = 'adminSelectedEvent';
   area.before(selectedEvent);
   const showError = (error) => { if (active()) feedback(error.message, true); };
+  const updateDownload = () => {
+    const dirty = exportSelection?.rows.some(row => drafts.has(row.id));
+    const button = selectedEvent.querySelector('[data-export-toggle]');
+    if (button) {
+      button.disabled = !exportSelection || dirty || exporting || saving > 0;
+      button.setAttribute('aria-label', dirty ? label('exportPending') : label('download'));
+      if (button.disabled) closeDownload();
+    }
+  };
+  const closeDownload = () => {
+    const menu = selectedEvent.querySelector('[data-export-menu]');
+    if (menu) menu.hidden = true;
+    selectedEvent.querySelector('[data-export-toggle]')?.setAttribute('aria-expanded', 'false');
+  };
+  const dismissDownload = event => {
+    if (!root.isConnected) { document.removeEventListener('pointerdown', dismissDownload); return; }
+    if (!event.target.closest('.admin-editor-download')) closeDownload();
+  };
+  document.addEventListener('pointerdown', dismissDownload);
+  selectedEvent.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { closeDownload(); selectedEvent.querySelector('[data-export-toggle]')?.focus(); }
+  });
+  selectedEvent.addEventListener('focusout', () => setTimeout(() => {
+    if (!selectedEvent.contains(document.activeElement)) closeDownload();
+  }, 0));
   const loadEvent = async (event, fromLink = false) => {
     const token = ++revision;
+    exportSelection = null;
     closeSuggestions();
     input.value = '';
     clear.hidden = true;
     area.innerHTML = '';
-    selectedEvent.innerHTML = `<article class="analytics-comparison-picker admin-editor-selected-event"><div class="analytics-comparison-selected-athlete"><div><strong>${esc(event.name)}</strong><span>${esc(event.year)} · ID ${esc(event.id)}</span></div><button type="button" class="icon-button analytics-comparison-remove" aria-label="${esc(label('closeEvent'))}"><span aria-hidden="true">&times;</span></button></div></article>`;
-    selectedEvent.querySelector('button').onclick = () => {
+    selectedEvent.innerHTML = `<article class="analytics-comparison-picker admin-editor-selected-event"><div class="analytics-comparison-selected-athlete"><div><strong>${esc(event.name)}</strong><span>${esc(event.year)} · ID ${esc(event.id)}</span></div><div class="admin-editor-event-actions"><div class="admin-editor-download"><button type="button" data-export-toggle class="quiet-button outline-command-button" aria-expanded="false" aria-controls="adminEditorDownloadOptions" disabled>${esc(label('download'))}</button><div id="adminEditorDownloadOptions" data-export-menu hidden><button type="button" class="quiet-button outline-command-button" data-export-format="csv">CSV</button><button type="button" class="quiet-button outline-command-button" data-export-format="xlsx">XLSX</button></div></div><button type="button" data-close-editor-event class="icon-button analytics-comparison-remove" aria-label="${esc(label('closeEvent'))}"><span aria-hidden="true">&times;</span></button></div></div></article>`;
+    selectedEvent.querySelector('[data-export-toggle]').onclick = event => {
+      const menu = selectedEvent.querySelector('[data-export-menu]');
+      menu.hidden = !menu.hidden;
+      event.currentTarget.setAttribute('aria-expanded', String(!menu.hidden));
+    };
+    selectedEvent.querySelectorAll('[data-export-format]').forEach(button => button.onclick = async () => {
+      const selection = exportSelection;
+      if (!selection || exporting || saving || selection.rows.some(row => drafts.has(row.id))) return;
+      const version = revision, fileFormat = button.dataset.exportFormat;
+      exporting = true; updateDownload();
+      try {
+        const blob = await api('/results/export', {params: {...selection.params, file_format: fileFormat}, responseType: 'blob'});
+        if (!active() || version !== revision || selection.rows.some(row => drafts.has(row.id))) return;
+        const url = URL.createObjectURL(blob), link = document.createElement('a');
+        link.href = url;
+        link.download = `leverage-event-${event.id}-${selection.params.discipline}-${selection.params.apparatus}.${fileFormat}`;
+        document.body.append(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (error) { if (version === revision) showError(new Error(label('exportFailed'))); }
+      finally { exporting = false; updateDownload(); }
+    });
+    selectedEvent.querySelector('[data-close-editor-event]').onclick = () => {
       ++revision;
+      exportSelection = null;
       closeSuggestions();
       selectedEvent.innerHTML = '';
       area.innerHTML = '';
@@ -112,6 +164,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
       };
       const loadGroup = async () => {
         const groupToken = ++revision;
+        exportSelection = null; updateDownload();
         const group = {...selected};
         const out = area.querySelector('#adminScoreRows');
         out.replaceChildren();
@@ -133,6 +186,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
           }
           rows.sort((a,b) => (b.score ?? -Infinity) - (a.score ?? -Infinity) || a.id-b.id);
           if (!rows.length) { out.innerHTML = `<div class="empty-state">${esc(text('empty'))}</div>`; return; }
+          exportSelection = {rows, params: {event_id: event.id, ...Object.fromEntries(dimensions.map(key => [key, group[key]]))}};
           out.innerHTML = `<p data-execution-notice role="status"></p><div class="admin-score-table-scroll"><table class="admin-score-table"><thead><tr><th>${esc(label('athlete'))}</th>${titles.map((t) => `<th>${t}</th>`).join('')}<th></th></tr></thead><tbody>${rows.map((r) => {
             const values = drafts.get(r.id) || snapshot(r);
             return `<tr data-result-id="${r.id}"><th scope="row">${esc(names.get(r.athlete_id))}<small>${esc(r.represented_country || '')} · ID ${r.id}${r.vt_attempt ? ` · VT ${r.vt_attempt}` : ''}</small></th>${keys.map((key,i) => `<td><input type="number" step="${oneDecimal(key) ? '0.1' : '0.001'}" min="0" name="${key}" aria-label="${titles[i]} · ${esc(names.get(r.athlete_id))}" value="${inputValue(key, values[key])}" placeholder="—" title="${esc(label('unavailable'))}"></td>`).join('')}<td><div class="admin-center-actions"><button type="button" data-save class="quiet-button outline-command-button">${esc(label('save'))}</button><button type="button" data-reset class="quiet-button outline-command-button">${esc(label('cancel'))}</button></div><small role="status"></small></td></tr>`;
@@ -165,6 +219,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
               save.disabled = reset.disabled = !dirty;
               notice.textContent = dirty ? label('pending') : '';
               if (dirty) drafts.set(row.id, values()); else drafts.delete(row.id);
+              updateDownload();
             };
             inputs.forEach((input) => input.addEventListener('input', update));
             inputs.filter((input) => oneDecimal(input.name)).forEach((input) => input.addEventListener('change', () => {
@@ -180,6 +235,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
                 if (!classificationHasRecordedExecution([body.values])) { validation.showError(label('formula'), inputs); return; }
               }
               save.disabled = reset.disabled = true;
+              saving++; updateDownload();
               inputs.forEach((el) => { el.disabled = true; });
               try {
                 const saved = await api(`/results/${row.id}/scores`, {method: 'PATCH', body});
@@ -198,7 +254,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
                   : error.message.includes('Unsafe aggregate correction') ? label('aggregate') : error.message;
                 validation.showError(message);
                 save.disabled = reset.disabled = false;
-              } finally { inputs.forEach((el) => { el.disabled = false; }); }
+              } finally { inputs.forEach((el) => { el.disabled = false; }); saving--; updateDownload(); }
             };
             update();
           });

@@ -47,6 +47,8 @@ def main():
             'matched_event_ids': [1] if i == 0 else []} for i in range(8)]}
     event_days = [None]
     full_classification_size = [0]
+    exports = []
+    export_error = [False]
     dismissed_scan_jobs = set()
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -167,6 +169,21 @@ def main():
                 payload = event
             elif path == "/events/1/result-groups":
                 payload = [{"discipline": discipline, "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for discipline, apparatuses in [('MAG', ['AA', 'VT AVG', 'FX', 'HB', 'PB', 'SR', 'VT', 'PH']), ('WAG', ['FX', 'BB', 'VT', 'UB'])] for category in ["senior", "junior"] for apparatus in apparatuses for day in event_days]
+            elif path == '/results/export':
+                params = parse_qs(urlparse(route.request.url).query)
+                exports.append(params)
+                assert route.request.headers.get('authorization') == 'Bearer test-only'
+                if export_error[0]:
+                    route.fulfill(status=500, content_type='application/json', body='{"detail":"Test export failure"}')
+                elif params['file_format'] == ['xlsx']:
+                    from io import BytesIO
+                    from openpyxl import Workbook
+                    stream = BytesIO()
+                    book = Workbook(); book.active.append(['Final Score', 'D Score']); book.save(stream)
+                    route.fulfill(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', body=stream.getvalue())
+                else:
+                    route.fulfill(content_type='text/csv', body='Final Score,D Score\r\n13.000,5.0\r\n')
+                return
             elif path == "/results/":
                 payload = [{"id": 1, "event_id": 1, "athlete_id": 1, "discipline": "MAG", "category": "senior", "format": "individual", "round": "final", "apparatus": "FX", "day": None, "D_score": 5, "score": 13, "E_score": None, "Penalty": None, "Bonus": None}]
                 payload.append({**payload[0], "id": 2, "category": "junior"})
@@ -516,6 +533,26 @@ def main():
                 page.mouse.up()
                 page.locator('#adminScoreRows tbody tr').first.wait_for()
                 page.locator('.admin-score-table').wait_for()
+                download_button = page.locator('[data-export-toggle]')
+                assert download_button.is_enabled()
+                for file_format in ['csv', 'xlsx']:
+                    download_button.click()
+                    with page.expect_download() as download:
+                        page.locator(f'[data-export-format={file_format}]').click()
+                    assert download.value.suggested_filename == f'leverage-event-1-MAG-FX.{file_format}'
+                    assert Path(download.value.path()).stat().st_size > 0
+                    assert exports[-1]['apparatus'] == ['FX']
+                    assert exports[-1]['event_id'] == ['1']
+                    assert 'limit' not in exports[-1] and 'category' not in exports[-1]
+                export_error[0] = True
+                download_button.click()
+                page.locator('[data-export-format=csv]').click()
+                page.wait_for_function('!document.querySelector("[data-export-toggle]").disabled')
+                assert 'Impossibile scaricare' in page.locator('#adminFeedback').inner_text()
+                export_error[0] = False
+                download_button.click()
+                page.locator('#adminEventSearch').click()
+                assert page.locator('[data-export-menu]').is_hidden()
                 assert page.locator('.admin-score-table [data-reset]').evaluate_all('buttons => buttons.every(button => button.getBoundingClientRect().right <= button.closest("td").getBoundingClientRect().right - 5)')
                 page.set_viewport_size({'width': 390, 'height': 844})
                 page.locator('.admin-score-table-scroll').evaluate('el => el.scrollLeft = el.scrollWidth')
@@ -542,8 +579,10 @@ def main():
                 assert execution_input.get_attribute('placeholder') == 'E est. 8,000'
                 assert execution_input.evaluate('el => getComputedStyle(el, "::placeholder").color') == 'rgb(142, 142, 147)'
                 execution_input.fill('8')
+                assert download_button.is_disabled()
                 assert execution_input.get_attribute('placeholder') == '—'
                 execution_input.fill('')
+                assert download_button.is_enabled()
                 assert execution_input.get_attribute('placeholder') == 'E est. 8,000'
                 assert page.locator('#adminResultForm').count() == 0
                 assert page.locator('[data-save]').is_disabled()
@@ -650,7 +689,7 @@ def main():
                     assert page.locator('[name=classification_round]').input_value() == 'final'
                     assert page.locator('[name=classification_format]').input_value() == 'individual'
                 page.screenshot(path='/tmp/leverage-editor-selected-event.png', full_page=True)
-                page.locator('#adminSelectedEvent button').click()
+                page.locator('[data-close-editor-event]').click()
                 assert page.locator('#adminClassificationEditor').inner_text() == ''
                 assert page.locator('#adminSelectedEvent').inner_text() == ''
                 assert page.locator('[name=event_search]').input_value() == ''

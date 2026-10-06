@@ -1,9 +1,10 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import Response
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
@@ -404,6 +405,45 @@ def list_results(
         query = query.filter(models.Result.score <= max_score)
     query = apply_data_quality_filter(query, data_quality)
     return query.order_by(models.Result.created_at.desc(), models.Result.id.desc()).offset(offset).limit(limit).all()
+
+
+@router.get('/export')
+def export_editor_classification(
+    event_id: int,
+    discipline: models.DisciplineEnum,
+    format: models.FormatEnum,
+    round: models.RoundEnum,
+    apparatus: str,
+    file_format: Literal['csv', 'xlsx'] = 'csv',
+    day: Optional[int] = Query(None, ge=1),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_admin_user),
+):
+    from app.result_export import export_classification
+
+    allowed = {'MAG': {'FX', 'PH', 'SR', 'VT', 'PB', 'HB'}, 'WAG': {'VT', 'UB', 'BB', 'FX'}}
+    if apparatus not in allowed[discipline.value]:
+        raise HTTPException(422, 'Select an apparatus classification available in the result editor')
+    event = db.query(models.Event).filter(models.Event.id == event_id, models.Event.is_deleted.is_(False)).first()
+    if event is None:
+        raise HTTPException(404, 'Event not found')
+    categories = ['junior', 'senior'] if event.category == models.EventCategoryEnum.JUNIOR_AND_SENIOR else [event.category.value]
+    rows = (db.query(models.Result).join(models.Athlete).options(joinedload(models.Result.athlete))
+        .filter(models.Result.event_id == event_id, models.Result.is_deleted.is_(False),
+                models.Athlete.is_deleted.is_(False), models.Result.discipline == discipline,
+                models.Result.category.in_(categories), models.Result.format == format,
+                models.Result.round == round, models.Result.apparatus == apparatus,
+                models.Result.day == day)
+        .order_by(models.Result.score.desc().nullslast(), models.Result.id.asc()).all())
+    if not rows:
+        raise HTTPException(404, 'No results in the selected classification')
+    content, media_type = export_classification(event, rows, file_format)
+    filename = f'leverage-event-{event.id}-{discipline.value}-{apparatus}.{file_format}'
+    return Response(content, media_type=media_type, headers={
+        'Content-Disposition': f'attachment; filename="{filename}"',
+        'Cache-Control': 'no-store',
+        'X-Content-Type-Options': 'nosniff',
+    })
 
 
 @router.get("/analytics/rankings", response_model=schemas.ResultRanking)

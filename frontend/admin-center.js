@@ -1,5 +1,5 @@
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
-import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
+import { mountResultEditor } from './admin-result-editor.js?v=classification-export-20261006';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-load-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
@@ -399,7 +399,7 @@ export async function renderAdminCenter(host) {
     node.className = message ? `admin-center-feedback ${error ? "is-error" : "is-success"}` : "";
     node.textContent = message;
   };
-  const api = async (path, { method = "GET", body, params = {}, onUploadProgress, onUploaded } = {}) => {
+  const api = async (path, { method = "GET", body, params = {}, onUploadProgress, onUploaded, responseType } = {}) => {
     if (!active()) throw new Error("Inactive workspace");
     const multipart = body instanceof FormData;
     const response = multipart && onUploadProgress
@@ -408,6 +408,7 @@ export async function renderAdminCenter(host) {
         method, headers: host.authHeaders(Boolean(body) && !multipart),
         body: body ? (multipart ? body : JSON.stringify(body)) : undefined,
       });
+    if (response.ok && responseType === 'blob') return response.blob();
     const data = response.status === 204 ? null : await response.json();
     if (!response.ok) {
       if (response.status === 401) host.clearAuth();

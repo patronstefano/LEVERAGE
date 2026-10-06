@@ -1,5 +1,30 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Esportazione CSV e XLSX dall'Editor Risultati
+
+- Aggiunto Scarica accanto alla X dell'evento selezionato, con opzioni CSV e
+  XLSX e chiusura del menu con clic esterno/Escape. Stile condiviso Leverage.
+- Endpoint autenticato GET /results/export, riservato ad ADMIN/SUPER ADMIN
+  con MFA verificata. Esporta la classifica salvata di evento, disciplina,
+  formato, fase, attrezzo e giorno selezionati, senza limite di paginazione.
+- Categoria determinata dall'evento: Junior e Senior insieme quando previsti.
+  Nessun AA/VT AVG modificabile; VT mantiene i singoli tentativi presenti.
+- Ordine Final Score decrescente e ID come spareggio tecnico, come nell'editor.
+  Position e un ordine di visualizzazione, non una graduatoria ufficiale con
+  applicazione dei criteri di spareggio della federazione.
+- Cognome prima del nome, paese rappresentato, ID e periodo evento inclusi.
+  D Score visualizzato con una cifra decimale; dati mancanti vuoti, zero solo
+  quando registrato. E Score ed E est. sono colonne distinte. XLSX contiene
+  note sui limiti della stima e sulla precisione temporale.
+- Download disabilitato durante caricamento/salvataggio o con modifiche locali
+  non salvate. Si scaricano dati persistiti, non bozze. Nessuna scrittura DB.
+- CSV UTF-8 con BOM; XLSX con numeri nativi, intestazioni e filtri. Protezione
+  contro formule nei testi importati, nessun dato di audit amministrativo esportato.
+- Verifica: 315 test backend superati, inclusi export oltre 500 record,
+  categorie, permessi, eliminazioni logiche, null/zero e sicurezza spreadsheet.
+  Test UI superati per CSV/XLSX, errori download, stato dirty e desktop/mobile.
+
+
 ## 2026-10-06 - Ricalcolo automatico al cambio gare gia importate
 
 - Eccezione al flusso cumulativo: cambiare l'opzione Gare gia importate avvia
