@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Record di revisione compatti e comandi a destra
+
+- Ridotte le spaziature verticali dei record di Revisione Duplicati e dei riscontri World Gymnastics. Identita e compatibilita a sinistra, comandi a destra; dettagli estesi a tutta larghezza. Su schermi stretti i comandi vanno a capo per preservare leggibilita. Operazioni e criteri di matching invariati.
+
 #### 2026-10-06 - Testi statici di Utenti e ruoli
 
 - Uniformati ruolo e messaggi statici (ultimo SUPER ADMIN protetto, utente disabilitato) allo stile secondario Leverage: 13px, peso normale, grigio standard e interlinea 1.5. Messaggi nell'area comandi con larghezza contenuta e ritorno a capo; regole di protezione e operazioni invariate.

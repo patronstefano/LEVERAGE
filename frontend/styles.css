@@ -5995,6 +5995,21 @@ a:focus-visible > .entity-card-clickable {
 .admin-stats-note { margin: 0; color: var(--muted); font-size: 13px; }
 .admin-identity-pair { padding: 18px 0; border-bottom: 1px solid var(--line); min-width: 0; }
 .admin-identity-pair:last-child { border-bottom: 0; }
+.admin-identity-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; row-gap: 6px; padding-block: 12px; }
+.admin-identity-pair > .admin-identity-pair-grid { grid-column: 1; grid-row: 1; }
+.admin-identity-pair > .admin-revision-meta { grid-column: 1; grid-row: 2; margin: 0; }
+.admin-identity-pair > .admin-center-actions { grid-column: 2; grid-row: 1 / span 2; justify-content: flex-end; align-self: center; max-width: 440px; }
+.admin-identity-pair > [data-pair-details] { grid-column: 1 / -1; }
+.admin-identity-pair .admin-identity-entity p { margin: 3px 0 0; }
+.admin-wg-match > .admin-wg-comparison { display: contents; }
+.admin-wg-match > .admin-wg-comparison > summary { grid-column: 2; grid-row: 1 / span 2; align-self: center; justify-self: end; }
+.admin-wg-match > .admin-wg-comparison > .admin-center-actions { grid-column: 1 / -1; justify-content: flex-end; margin: 6px 0; }
+.admin-wg-match > .admin-wg-comparison > .account-notification { grid-column: 1 / -1; padding-block: 10px; }
+@media (max-width: 1000px) {
+  .admin-identity-pair { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .admin-identity-pair > .admin-center-actions,
+  .admin-wg-match > .admin-wg-comparison > summary { grid-column: 1; grid-row: 3; justify-self: end; max-width: 100%; }
+}
 #adminEntityReviews [data-pair-feedback]:empty { display: none; }
 #adminEntityReviews, #adminResultReviews { padding-top: 2px; }
 #adminEntityReviews [data-pairs] > .admin-identity-pair:first-child { padding-top: 0; }
