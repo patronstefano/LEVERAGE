@@ -6025,10 +6025,19 @@ a:focus-visible > .entity-card-clickable {
 .admin-audit-entity + .admin-audit-entity { margin-top: 16px; }
 .admin-audit-side .admin-report { grid-template-columns: minmax(0, 1fr); margin: 6px 0 0; font-size: 13px; }
 .admin-audit-side .admin-report > div { padding: 6px 0; }
-#adminAudit .admin-revision-group > summary { display: inline-flex; align-items: center; min-height: 36px; box-sizing: border-box; padding: 0 13px; border: 1px solid var(--line); border-radius: var(--control-radius); background: #fff; font-size: 14px; }
-#adminAudit .admin-revision-group > summary::-webkit-details-marker { display: none; }
-#adminAudit .admin-revision-group > summary:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
-#adminAudit .admin-revision-group[open] > summary { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+#adminAudit > .admin-audit-record { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 24px; padding-block: 12px; }
+#adminAudit .admin-audit-record > .account-notification-copy { min-width: 0; }
+#adminAudit .admin-audit-commands { justify-content: flex-end; align-self: center; gap: 8px; }
+#adminAudit .admin-audit-commands > .account-notification-actions { gap: 8px; }
+#adminAudit .admin-audit-details { grid-column: 1 / -1; min-width: 0; padding-top: 8px; }
+#adminAudit .admin-audit-details .admin-form-field { max-width: 440px; }
+#adminAudit [data-audit-compare][aria-expanded="true"],
+#adminAudit [data-audit-compare][aria-expanded="true"]:hover,
+#adminAudit [data-audit-compare][aria-expanded="true"]:focus-visible { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+@media (max-width: 1000px) {
+  #adminAudit > .admin-audit-record { grid-template-columns: minmax(0, 1fr); }
+  #adminAudit .admin-audit-commands { justify-content: flex-start; }
+}
 .admin-identity-pair p { margin: 6px 0 12px; font-size: 13px; line-height: 1.5; }
 .admin-identity-entity a { font-size: 15px; }
 .admin-identity-pair [data-pair-details] { margin-top: 18px; }

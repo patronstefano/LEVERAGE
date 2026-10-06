@@ -622,8 +622,16 @@ def main():
                 assert authors[0] == 'Autore: review@example.test · ID 77 · Ruolo attuale: ADMIN'
                 assert 'super@example.test' in authors[1] and 'SUPER ADMIN' in authors[1]
                 assert authors[2] == 'Autore: ID 77'
-                page.locator('#adminAudit .admin-revision-group > summary').first.click()
+                compare_button = page.locator('#adminAudit [data-audit-compare]').first
+                assert compare_button.get_attribute('aria-expanded') == 'false'
+                title_box = page.locator('#adminAudit .admin-audit-record .account-notification-copy').first.bounding_box()
+                button_box = compare_button.bounding_box()
+                assert button_box['x'] > title_box['x'] + title_box['width']
+                compare_button.click()
+                assert compare_button.get_attribute('aria-expanded') == 'true'
+                assert page.locator('#auditDetails_91 [name=note_91]').is_visible()
                 comparison = page.locator('#adminAudit .admin-audit-comparison').first
+                assert comparison.is_visible()
                 assert comparison.locator('dd').all_inner_texts() == ['ITA', 'FRA']
                 assert comparison.locator('h3').all_inner_texts() == ['Prima', 'Dopo']
                 before_box = comparison.locator('.admin-audit-side').nth(0).bounding_box()

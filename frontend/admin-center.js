@@ -800,7 +800,7 @@ export async function renderAdminCenter(host) {
         const params = Object.fromEntries(new FormData(auditForm));
         const logs = await api("/admin/audit-logs", { params });
         if (!active() || revision !== auditRevision) return;
-        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
+        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification admin-audit-record"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta admin-audit-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p></div><div class="admin-center-actions admin-audit-commands">${button('compareChanges', `data-audit-compare="${log.id}" aria-expanded="false" aria-controls="auditDetails_${log.id}"`)}<div class="account-notification-actions">${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}` : ""}</div></div><div class="admin-audit-details" id="auditDetails_${log.id}" hidden>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}${field(`note_${log.id}`, "reason")}</div></article>`).join("") || emptyState();
         for (const [index, log] of logs.entries()) {
           const article = root.querySelectorAll('#adminAudit > article')[index];
           const author = document.createElement('p');
@@ -809,9 +809,7 @@ export async function renderAdminCenter(host) {
           const identity = [log.admin_email, log.admin_id != null ? `ID ${log.admin_id}` : null].filter(Boolean).join(' · ');
           const role = log.admin_current_role ? `${text('auditCurrentRole')}: ${String(log.admin_current_role).replaceAll('_', ' ').toUpperCase()}` : '';
           author.textContent = [identity ? `${text('auditAuthor')}: ${identity}` : text('auditUnknownAuthor'), role].filter(Boolean).join(' · ');
-          article.querySelector('.admin-revision-meta').after(author);
-          const summary = article.querySelector('.admin-revision-group > summary');
-          if (summary) summary.textContent = text('compareChanges');
+          article.querySelector('.admin-audit-meta').after(author);
           if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
           const undoLabel = log.action === 'merge' ? 'undoMerge' : 'undoCreate';
@@ -826,10 +824,17 @@ export async function renderAdminCenter(host) {
           const article = b.closest('article');
           const log = logs.find((item) => String(item.id) === b.dataset.audit);
           log.review_status = b.dataset.action === 'approve' ? 'approved' : 'reverted';
-          article.querySelector('.admin-revision-meta').textContent = `${new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language)} · ${text(log.review_status)}`;
+          article.querySelector('.admin-audit-meta').textContent = `${new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language)} · ${text(log.review_status)}`;
           note.disabled = true;
           article.querySelector('.account-notification-actions').innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('success'))}</div>`;
         }, false));
+        root.querySelectorAll('[data-audit-compare]').forEach((button) => {
+          button.onclick = () => {
+            const details = root.querySelector(`#auditDetails_${button.dataset.auditCompare}`);
+            details.hidden = !details.hidden;
+            button.setAttribute('aria-expanded', String(!details.hidden));
+          };
+        });
       };
       onSubmit('adminAuditForm', async () => { clearTimeout(auditTimer); await loadAudit(); });
       const scheduleAudit = (delay) => {

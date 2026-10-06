@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Record Audit e ripristino riordinati
+
+- Nella lista Audit e ripristino ogni record mostra identita, data, stato e autore a sinistra; Confronta dettagli e le azioni disponibili sono allineati a destra, come nelle altre liste di revisione. Il confronto Prima/Dopo e il campo nota si aprono sotto la riga soltanto su richiesta.
+- Conservati approvazione, annullamento e tracciabilita delle operazioni; verificati anche la disposizione su mobile e lo stato del pulsante di confronto.
+
 #### 2026-10-06 - Compatibilita accanto ai comandi di revisione
 
 - Nelle liste Revisione Duplicati e World Gymnastics resta visibile soltanto Compatibilita: N%, accanto ai pulsanti di ogni record. I motivi del punteggio duplicati compaiono solo dopo Confronta dettagli, insieme al confronto completo.
