@@ -535,6 +535,20 @@ def main():
                 page.locator('.admin-score-table').wait_for()
                 download_button = page.locator('[data-export-toggle]')
                 assert download_button.is_enabled()
+                for width in [1440, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    download_button.click()
+                    download_box = download_button.bounding_box()
+                    close_box = page.locator('[data-close-editor-event]').bounding_box()
+                    menu_box = page.locator('[data-export-menu]').bounding_box()
+                    assert abs(download_box['height'] - close_box['height']) < 1
+                    assert abs(download_box['y'] - close_box['y']) < 1
+                    assert abs(menu_box['width'] - download_box['width']) < 1
+                    assert abs(menu_box['x'] - download_box['x']) < 1
+                    assert page.locator('[data-export-format]').evaluate_all('buttons => buttons.every(b => b.scrollWidth <= b.clientWidth)')
+                    page.screenshot(path=f'/tmp/leverage-download-menu-{width}.png', full_page=True)
+                    download_button.click()
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 for file_format in ['csv', 'xlsx']:
                     download_button.click()
                     with page.expect_download() as download:

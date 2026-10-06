@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Dimensioni del download Editor Risultati
+
+- Pulsante Scarica alto 28 px come la X adiacente, con arrotondamento coerente.
+  Menu CSV/XLSX largo esattamente quanto il pulsante, con opzioni compatte.
+- Aggiunti controlli geometrici desktop/mobile per altezza, allineamento,
+  larghezza del menu e assenza di testo tagliato. Nessuna modifica all'export.
+
 ## 2026-10-06 - Esportazione CSV e XLSX dall'Editor Risultati
 
 - Aggiunto Scarica accanto alla X dell'evento selezionato, con opzioni CSV e
