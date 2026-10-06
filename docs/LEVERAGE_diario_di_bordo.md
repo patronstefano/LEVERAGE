@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Selettori Editor Risultati su una riga
+
+- Disposti Disciplina, Formato, Fase e Attrezzo sulla stessa riga, includendo Giorno quando disponibile. Griglia adattiva con colonne uniformi e ritorno a capo su finestre strette, senza variazioni alla logica dei selettori.
+- Test browser dell'allineamento con quattro e cinque campi; mantenuti i controlli di layout mobile dell'editor.
+
 #### 2026-10-06 - Rimozione del modulo Ripristina dal Centro Super Admin
 
 - Rimosso da Audit e ripristino il blocco autonomo Ripristina con selezione del tipo di entita e ID, insieme al relativo gestore frontend.

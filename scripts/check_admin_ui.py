@@ -414,6 +414,10 @@ def main():
                 page.screenshot(path='/tmp/leverage-editor-action-border.png', full_page=True)
                 assert page.locator('#adminReloadClassification').count() == 0
                 assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 4
+                assert page.locator('#adminClassificationSelectors').evaluate('el => { const tops = [...el.children].map(child => child.getBoundingClientRect().top); return Math.max(...tops) - Math.min(...tops) < 1; }')
+                page.locator('#adminClassificationSelectors').evaluate('el => { const extra = el.firstElementChild.cloneNode(true); extra.dataset.layoutTest = "day"; el.append(extra); }')
+                assert page.locator('#adminClassificationSelectors').evaluate('el => { const tops = [...el.children].map(child => child.getBoundingClientRect().top); return Math.max(...tops) - Math.min(...tops) < 1; }')
+                page.locator('[data-layout-test="day"]').evaluate('el => el.remove()')
                 assert page.locator('[name=classification_day]').count() == 0
                 assert page.locator('[name=classification_category]').count() == 0
                 apparatus = page.locator('[name=classification_apparatus]')

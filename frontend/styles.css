@@ -7251,6 +7251,7 @@ a:focus-visible > .entity-card-clickable {
 .main-view:has(> .detail-topbar) { padding-top: var(--page-start); }
 
 #adminResultEditor, #adminClassificationEditor, #adminScoreRows { min-width: 0; }
+#adminClassificationSelectors { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
 .admin-score-table-scroll { max-width: 100%; overflow-x: auto; margin-top: 16px; }
 #adminScoreRows [data-execution-notice] { font-size: 14px; color: var(--text-muted, #6e6e73); }
 .admin-score-table { width: 100%; min-width: 900px; table-layout: fixed; border-collapse: collapse; font-size: 14px; }
