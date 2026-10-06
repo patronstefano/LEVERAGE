@@ -650,34 +650,14 @@ def main():
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'
                 assert page.locator('#adminStats .empty-state').count() == 2
-                assert page.locator('#adminStatsForm [name=start_date]').input_value() == '2026-09-01'
-                start_date = page.locator('[data-admin-date="start_date"] input')
-                end_date = page.locator('[data-admin-date="end_date"] input')
-                assert start_date.input_value() == '01/09/2026'
-                assert page.locator('#adminStatsForm input[type=date]').count() == 0
-                start_date.click()
-                assert page.locator('.admin-date-control [data-date-wheel-today-scope]').count() == 0
-                page.locator('[data-admin-date="start_date"] [data-date-wheel-unit="day"][data-date-wheel-value="2"]').click()
-                assert page.locator('#adminStatsForm [name=start_date]').input_value() == '2026-09-02'
-                end_date.click()
-                assert not page.locator('[data-admin-date="start_date"]').evaluate('el => el.open')
-                assert page.locator('[data-admin-date="end_date"] [data-date-wheel-unit="day"][data-date-wheel-value="1"]').is_disabled()
-                end_date.fill('31/02/2026')
-                assert not end_date.evaluate('el => el.checkValidity()')
-                end_date.fill('30/09/2026')
-                assert end_date.evaluate('el => el.checkValidity()')
-                assert page.locator('#adminStatsForm [name=end_date]').input_value() == '2026-09-30'
-                page.screenshot(path='/tmp/leverage-admin-date-wheel.png', full_page=True)
-                end_date.press('Escape')
-                assert abs(start_date.bounding_box()['y'] - page.locator('#adminStatsForm button[type=submit]').bounding_box()['y']) < 1
-                page.set_viewport_size({'width': 390, 'height': 844})
-                end_date.click()
-                page.wait_for_timeout(250)
-                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
-                page.screenshot(path='/tmp/leverage-admin-date-wheel-mobile.png', full_page=True)
-                end_date.press('Escape')
-                page.set_viewport_size({'width': 1440, 'height': 1000})
-                assert 'Data di inizio' in page.locator('#adminStatsForm').inner_text()
+                assert page.locator('#adminStatsForm [name=start_date], #adminStatsForm [name=end_date]').count() == 0
+                assert page.locator('#adminStatsForm [name=days]').input_value() == '30'
+                for days in ['7', '90', '0', '30']:
+                    page.locator('#adminStatsForm [name=days]').evaluate('(el, value) => el.value = value', days)
+                    with page.expect_response(lambda response: '/site-analytics/admin/summary?' in response.url and f'days={days}' in response.url):
+                        page.locator('#adminStatsForm button[type=submit]').click()
+                    page.wait_for_timeout(100)
+                    assert page.locator('#adminStatsForm [name=days]').input_value() == days
                 assert 'European Championships' in page.locator('.admin-stats-top').inner_text()
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')

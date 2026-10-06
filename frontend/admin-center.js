@@ -678,29 +678,24 @@ export async function renderAdminCenter(host) {
       })));
     }
     if (tab === "statistics") {
-      paint(form("adminStatsForm", field("start_date", "start_date", "date") + field("end_date", "end_date", "date")) + '<div id="adminStats"></div>');
-      const start = root.querySelector('[name="start_date"]');
-      const end = root.querySelector('[name="end_date"]');
-      start.onchange = () => { end.min = start.value; };
+      paint(form("adminStatsForm", select("days", "activityPeriod", [
+        { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
+        { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
+      ], String(session.statisticsDays ?? 30))) + '<div id="adminStats"></div>');
       const number = new Intl.NumberFormat(state.language, { maximumFractionDigits: 1 });
       const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(text(title))}</h2></div>${content}</section>`;
       const metrics = (data, keys) => `<dl class="admin-stats-metrics">${keys.map(([key, label = key]) => `<div><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
       let statsRevision = 0;
-      const load = async (params = {}) => {
+      const load = async () => {
         const revision = ++statsRevision;
-        const data = await api("/site-analytics/admin/summary", { params });
+        const data = await api("/site-analytics/admin/summary", { params: { days: session.statisticsDays ?? 30 } });
         if (!active() || revision !== statsRevision) return;
-        start.value = data.start_date || start.value;
-        end.value = data.end_date || end.value;
-        end.min = start.value;
-        start.dispatchEvent(new Event('admin-date-sync'));
-        end.dispatchEvent(new Event('admin-date-sync'));
         document.getElementById("adminStats").innerHTML =
           block("statsTraffic", metrics(data, ["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key]).concat([["total_events", "trackedActions"]]))) +
-          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(text("statsWindow").replace("{days}", data.users?.active_window_days ?? 30))}</p>`) +
+          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(session.statisticsDays === 0 ? text("activityAll") : text("statsWindow").replace("{days}", session.statisticsDays ?? 30))}</p>`) +
           ["top_searches", "top_athletes", "top_events"].map((key) => block(key, data[key]?.length ? `<ol class="admin-stats-top">${data[key].map((item) => `<li><span>${esc(item.label)}</span><strong>${number.format(item.count)}</strong></li>`).join("")}</ol>` : `<div class="empty-state">${esc(text("empty"))}</div>`)).join("");
       };
-      onSubmit("adminStatsForm", load); await load();
+      onSubmit("adminStatsForm", async (params) => { session.statisticsDays = Number(params.days); await load(); }); await load();
     }
     if (tab === "merge") {
       paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('merge'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminMergeAthlete" aria-pressed="true">${esc(text('mergeAthlete'))}</button><button type="button" class="segmented-option" id="adminMergeEvent" aria-pressed="false">${esc(text('mergeEvent'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminMergeContent"></div>`);

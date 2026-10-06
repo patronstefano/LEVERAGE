@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Periodo di attivita nelle Statistiche
+
+- Sostituiti i campi data iniziale/finale con lo stesso selettore della Panoramica: ultimi 7, 30, 90 giorni oppure tutto il periodo; valore iniziale 30 giorni, scelta mantenuta nella sessione della UI.
+- Il backend applica il periodo sia alle attivita sia agli utenti attivi. Tutto il periodo parte dalla prima attivita registrata; i totali anagrafici degli account restano complessivi. Mantenuta la compatibilita dei parametri data precedenti e l'accesso riservato SUPER ADMIN.
+- Aggiunte verifiche API sui periodi e test browser del selettore, anche su mobile.
+
 #### 2026-10-06 - Ricerca email dinamica in Utenti e ruoli
 
 - Il campo accetta anche porzioni di indirizzo e aggiorna la lista durante la digitazione, con debounce di 180ms e protezione dalle risposte obsolete. Svuotando il campo riappare la lista non filtrata; il comando di ricerca esplicito resta disponibile.

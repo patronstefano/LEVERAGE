@@ -3807,6 +3807,20 @@ def test_lightweight_site_analytics_are_super_admin_only_and_aggregate_usage():
     assert payload["top_athletes"] == [{"id": athlete["id"], "label": "Rossi Luca", "count": 1}]
     assert payload["top_events"] == [{"id": event["id"], "label": "Analytics Cup", "count": 1}]
 
+    with SessionLocal() as db:
+        db.query(models.SiteAnalyticsEvent).update({
+            models.SiteAnalyticsEvent.created_at: datetime.combine(date.today() - timedelta(days=40), datetime.min.time())
+        })
+        db.commit()
+    for days, expected in [(7, 0), (30, 0), (90, 8), (0, 8)]:
+        response = client.get('/site-analytics/admin/summary', params={'days': days}, headers=admin_headers)
+        assert response.status_code == 200
+        summary = response.json()
+        assert summary['total_events'] == expected
+        assert summary['users']['active_users'] == (1 if expected else 0)
+        assert summary['start_date'] == str(date.today() - timedelta(days=(days - 1 if days else 40)))
+    assert client.get('/site-analytics/admin/summary?days=-1', headers=admin_headers).status_code == 422
+
 
 def test_athlete_suggestions():
     client.post("/auth/register", json={"email": "admin@example.com", "password": TEST_PASSWORD})
