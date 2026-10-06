@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Diagnostica dei punteggi VT derivati fuori intervallo
+
+- Segnalati dall'utente tre errori nell'anteprima: VT derivato 21,950 da media 12,200 e salto 2,450; -0,001 da media 5,666 e salto 11,333; 24,500 da media 12,850 e salto 1,200. Il controllo riguarda il secondo salto ricostruito come 2 * VT AVG - VT, non un punteggio gia salvato da questa anteprima.
+- Mantenuto il blocco sui valori derivati fuori 0-20. Il valore -0,001 e compatibile con l'arrotondamento della media ma non viene trasformato automaticamente in zero: occorre riscontro sulla fonte. Nessuna correzione ai risultati reali.
+- Aggiunti codice strutturato, atleta, gara, foglio, riga e valori sorgente alla diagnostica. In UI gli errori VT vengono spiegati in EN/IT/ES/FR, separati per riga e aperti automaticamente quando bloccanti; eliminata la concatenazione dei primi tre messaggi tecnici inglesi nel banner rosso. I dettagli completi restano esportabili nel report.
+- Test mirati sui tre casi: valori sorgente preservati, nessun secondo salto invalido creato, metadati diagnostici corretti. Test browser per testo italiano, riferimento alla riga e conferma import disabilitata.
+
 #### 2026-10-06 - Anteprima incrementale dei risultati e revisione delle gare
 
 - Preparato il flusso per un file Results 2026 cumulativo aggiornato a fine settembre, contenente sia i risultati del primo semestre gia importati sia quelli successivi. In questa attivita non e stato importato il file reale aggiornato: collaudo svolto con dati sintetici e database di test isolato.

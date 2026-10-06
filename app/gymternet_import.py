@@ -725,6 +725,9 @@ def parse_pivot_rows(
                     sheet_name,
                     row_number,
                     f"(2 * VT AVG {vt_avg}) - VT {vt_score}",
+                    context={"first_name": first_name, "last_name": last_name,
+                             "event_name": event_name, "year": year,
+                             "source_vt": vt_score, "source_vt_avg": vt_avg},
                 )
                 if derived_vt2_score is not None:
                     add_record_if_score(
@@ -1207,6 +1210,7 @@ def validate_derived_gymternet_score_value(
     source: str,
     row_number: int,
     formula: str,
+    context: Optional[dict] = None,
 ) -> Optional[float]:
     if score is None:
         return None
@@ -1215,6 +1219,7 @@ def validate_derived_gymternet_score_value(
         return score
     issues.append({
         "severity": "error",
+        "code": "derived_vt_outlier",
         "sheet": source,
         "row": row_number,
         "message": (
@@ -1225,6 +1230,8 @@ def validate_derived_gymternet_score_value(
         "apparatus": apparatus,
         "score_kind": score_kind,
         "formula": formula,
+        "possible_rounding": score_kind == "final" and -0.001 <= score < 0,
+        **(context or {}),
     })
     return None
 

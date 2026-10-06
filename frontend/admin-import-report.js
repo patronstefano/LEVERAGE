@@ -1,4 +1,10 @@
 export const IMPORT_COPY = {
+  importErrors: ['The file contains inconsistent data. Check the reported rows before confirming the import.', 'Il file contiene dati incoerenti. Controlla le righe segnalate prima di confermare l’importazione.', 'El archivo contiene datos incoherentes. Revisa las filas indicadas antes de confirmar la importación.', 'Le fichier contient des données incohérentes. Vérifiez les lignes indiquées avant de confirmer l’importation.'],
+  importVtInvalid: ['The second vault cannot be reconstructed: the calculated score is outside the 0–20 range. Check VT and VT AVG in the file.', 'Il secondo salto non può essere ricostruito: il punteggio calcolato è fuori dall’intervallo 0–20. Controlla VT e VT AVG nel file.', 'No se puede reconstruir el segundo salto: la puntuación calculada está fuera del intervalo 0–20. Revisa VT y VT AVG.', 'Impossible de reconstituer le deuxième saut : le score calculé est hors de l’intervalle 0–20. Vérifiez VT et VT AVG.'],
+  importVtRounding: ['The calculation gives a slightly negative score, possibly due to rounding of VT AVG. Verify the source: no second-vault score has been created.', 'Il calcolo dà un punteggio leggermente negativo, compatibile con un arrotondamento di VT AVG. Verifica la fonte: il punteggio del secondo salto non è stato creato.', 'El cálculo da una puntuación ligeramente negativa, posiblemente por redondeo de VT AVG. Verifica la fuente: no se ha creado el segundo salto.', 'Le calcul donne un score légèrement négatif, possiblement dû à l’arrondi de VT AVG. Vérifiez la source : aucun score du deuxième saut n’a été créé.'],
+  importSourceSheet: ['Sheet', 'Foglio', 'Hoja', 'Feuille'],
+  importSourceRow: ['Row', 'Riga', 'Fila', 'Ligne'],
+  importIssueSample: ['First 20 warnings shown. Download the report for the complete list.', 'Visualizzati i primi 20 avvisi. Scarica il report per l’elenco completo.', 'Se muestran los primeros 20 avisos. Descarga el informe completo.', 'Les 20 premiers avertissements sont affichés. Téléchargez le rapport complet.'],
   compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
   importEvents: ['Competitions in the file', 'Gare nel file', 'Competiciones del archivo', 'Compétitions du fichier'],
   importAllEvents: ['All competitions', 'Tutte le gare', 'Todas las competiciones', 'Toutes les compétitions'],
@@ -40,6 +46,17 @@ export const IMPORT_COPY = {
   country_conflict_in_file: ['Different represented countries in the file', 'Nazionalità rappresentate diverse nel file', 'Nacionalidades distintas en el archivo', 'Nationalités différentes dans le fichier'],
   same_context_different_score_after_athlete_merge: ['Athlete association produces conflicting scores', 'L’associazione dell’atleta produce punteggi in conflitto', 'La asociación del atleta produce conflictos', 'L’association de l’athlète produit des scores en conflit'],
 };
+
+export function renderImportIssues({issues, text, esc, language}) {
+  const ordered = [...issues].sort((a, b) => Number(b.severity === 'error') - Number(a.severity === 'error'));
+  const score = value => new Intl.NumberFormat(language, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(value);
+  return `<ul class="admin-import-issues">${ordered.slice(0, 20).map(issue => {
+    const known = issue.code === 'derived_vt_outlier';
+    const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
+    const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
+    return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}</li>`;
+  }).join('')}</ul>${ordered.length > 20 ? `<p class="admin-stats-note">${esc(text('importIssueSample'))}</p>` : ''}`;
+}
 
 export function mountImportReport({root, preview: p, text, esc, report, language, route}) {
   const count = value => new Intl.NumberFormat(language).format(value || 0);

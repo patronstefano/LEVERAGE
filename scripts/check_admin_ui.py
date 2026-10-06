@@ -908,6 +908,17 @@ def main():
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")
                 assert 'Nessun risultato Gymternet trovato' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
+                preview.update(parsed_rows=3, issues=[{'severity': 'error', 'code': 'derived_vt_outlier',
+                    'message': 'Skipped derived outlier final score for VT', 'first_name': 'Vault', 'last_name': 'Person',
+                    'event_name': 'Vault Cup 2026', 'sheet': 'MAG', 'row': 17, 'source_vt': 11.333,
+                    'source_vt_avg': 5.666, 'original_score': -0.001, 'possible_rounding': True}])
+                page.locator('#adminImportForm button[type="submit"]').click()
+                page.locator('.admin-import-issues').wait_for()
+                assert 'Person Vault' in page.locator('.admin-import-issues').inner_text()
+                assert 'Riga 17' in page.locator('.admin-import-issues').inner_text()
+                assert 'arrotondamento' in page.locator('.admin-import-issues').inner_text()
+                assert 'Skipped derived' not in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#adminCommitImport').is_disabled()
         page.evaluate("location.hash = '/admin/review'")
         page.wait_for_timeout(300)
         page.locator('[data-section-nav="home"]').click()

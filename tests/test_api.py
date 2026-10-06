@@ -9953,7 +9953,8 @@ def test_gymternet_pivot_vault_derives_attempt_two_for_mag_2025():
     assert vt_average.D_score is None
 
 
-def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier():
+@pytest.mark.parametrize('vt,average,derived,rounding', [(1.2, 12.85, 24.5, False), (2.45, 12.2, 21.95, False), (11.333, 5.666, -0.001, True)])
+def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier(vt, average, derived, rounding):
     from app import models
     from app.gymternet_import import parse_pivot_rows
 
@@ -9964,8 +9965,8 @@ def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier():
                 "Athlete": "Vault Person",
                 "Country": "Italy",
                 "Event": "Champion's Cup 2026 AA",
-                "VT": "1.2",
-                "VT AVG": "12.85",
+                "VT": str(vt),
+                "VT AVG": str(average),
             }
         ],
         "MAG",
@@ -9975,10 +9976,20 @@ def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier():
         issues,
     )
 
-    assert any(record.apparatus == "VT" and record.vt_attempt == 1 and record.score == 1.2 for record in records)
-    assert any(record.apparatus == "VT AVG" and record.score == 12.85 for record in records)
+    assert any(record.apparatus == "VT" and record.vt_attempt == 1 and record.score == vt for record in records)
+    assert any(record.apparatus == "VT AVG" and record.score == average for record in records)
     assert not any(record.apparatus == "VT" and record.vt_attempt == 2 for record in records)
-    assert any("Skipped derived outlier final score for VT: 24.5" in issue["message"] for issue in issues)
+    issue = next(issue for issue in issues if issue.get('code') == 'derived_vt_outlier')
+    assert issue['original_score'] == derived
+    assert issue['possible_rounding'] is rounding
+    assert issue['severity'] == 'error'
+    assert issue['first_name'] == 'Vault'
+    assert issue['last_name'] == 'Person'
+    assert issue['source_vt'] == vt
+    assert issue['source_vt_avg'] == average
+    assert issue['event_name'] == "Champion's Cup 2026"
+    assert issue['sheet'] == 'MAG'
+    assert issue['row'] >= 1
 
 
 def test_gymternet_pivot_vault_wag_2025_derives_attempt_two_d_score_with_missing_score():
