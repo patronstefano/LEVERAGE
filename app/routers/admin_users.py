@@ -820,7 +820,7 @@ def restore_result(
     return result
 
 
-@router.get("/users", response_model=list[schemas.UserRead])
+@router.get("/users", response_model=list[schemas.AdminUserRead])
 def list_users_for_admin(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_super_admin_user),
@@ -840,7 +840,11 @@ def list_users_for_admin(
         query = query.filter(models.User.is_verified == is_verified)
     if is_active is not None:
         query = query.filter(models.User.is_active == is_active)
-    return query.order_by(models.User.created_at.desc(), models.User.id.desc()).limit(limit).all()
+    only_one = count_super_admins(db) == 1
+    users = query.order_by(models.User.created_at.desc(), models.User.id.desc()).limit(limit).all()
+    return [schemas.AdminUserRead.model_validate(user).model_copy(update={
+        'is_last_active_super_admin': bool(only_one and user.is_active and user.role == models.RoleEnum.SUPER_ADMIN)
+    }) for user in users]
 
 
 @router.delete("/users/{user_id}", response_model=schemas.UserRead)

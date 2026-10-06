@@ -19,6 +19,7 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  lastSuperAdmin: ['Last active SUPER ADMIN: role cannot be changed.', 'Ultimo SUPER ADMIN attivo: ruolo non modificabile.', 'Último SUPER ADMIN activo: rol no modificable.', 'Dernier SUPER ADMIN actif : rôle non modifiable.'],
   deleteUser: ['Delete user', 'Elimina utente', 'Eliminar usuario', 'Supprimer l’utilisateur'],
   deleteUserWarning: ['The account will be disabled and its sessions revoked. Audit history and linked data will be retained.', 'L’account sarà disabilitato e le sessioni revocate. Lo storico audit e i dati collegati saranno conservati.', 'La cuenta se desactivará y sus sesiones se revocarán. Se conservarán el historial y los datos vinculados.', 'Le compte sera désactivé et ses sessions révoquées. L’historique et les données liées seront conservés.'],
   userDeleted: ['User deleted', 'Utente eliminato', 'Usuario eliminado', 'Utilisateur supprimé'],
@@ -757,6 +758,10 @@ export async function renderAdminCenter(host) {
           const actions = root.querySelector(`[data-role="${user.id}"]`).parentElement;
           if (user.is_active === false) {
             actions.innerHTML = `<span class="admin-revision-meta">${esc(text('userDeleted'))}</span>`;
+            continue;
+          }
+          if (user.is_last_active_super_admin) {
+            actions.innerHTML = `<span class="admin-revision-meta">${esc(text('lastSuperAdmin'))}</span>`;
             continue;
           }
           if (user.id === state.currentUser.id) continue;

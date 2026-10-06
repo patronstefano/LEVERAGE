@@ -66,7 +66,7 @@ def main():
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
             elif path == "/admin/users":
-                payload = [{"id": 77, "email": "review@example.test", "role": "admin"}]
+                payload = [{"id": 77, "email": "review@example.test", "role": "admin"}, {"id": 78, "email": "last@example.test", "role": "super_admin", "is_active": True, "is_last_active_super_admin": True}]
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
                 payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
@@ -553,9 +553,11 @@ def main():
                 assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
             if tab == "users":
                 page.locator('#adminUsersForm button[type=submit]').click()
-                page.locator('#adminUsers .account-notification').wait_for()
+                page.locator('#adminUsers .account-notification').first.wait_for()
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
-                assert page.locator('.admin-user-role-actions').is_visible()
+                assert page.locator('.admin-user-role-actions').first.is_visible()
+                assert page.locator('[name=role_78], [data-role="78"], [data-delete-user="78"]').count() == 0
+                assert 'Ultimo SUPER ADMIN attivo: ruolo non modificabile.' in page.locator('#adminUsers').inner_text()
                 page.locator('[data-delete-user="77"]').click()
                 assert 'review@example.test' in page.locator('dialog[open]').inner_text()
                 assert 'sarà disabilitato' in page.locator('dialog[open]').inner_text()

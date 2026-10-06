@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Ruolo dell'ultimo SUPER ADMIN bloccato nella UI
+
+- Il backend comunica alla lista utenti se un account e l'ultimo SUPER ADMIN attivo, usando un conteggio globale indipendente da ricerca, filtri e paginazione.
+- Per tale account la UI non mostra selettore ruolo, Salva o Elimina utente; mostra una spiegazione esplicita del blocco. Conservata e testata la protezione backend contro il declassamento.
+
 #### 2026-10-06 - Spaziatura compatta nella Revisione Duplicati
 
 - Eliminato l'ingombro del contenitore messaggi quando vuoto e il padding superiore della prima coppia: i record iniziano a 16px sotto lo slider, senza alterarne dimensioni e spaziature interne.

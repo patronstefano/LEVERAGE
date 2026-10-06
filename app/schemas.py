@@ -484,6 +484,10 @@ class UserRead(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class AdminUserRead(UserRead):
+    is_last_active_super_admin: bool = False
+
+
 class UserRoleUpdate(BaseModel):
     role: RoleEnum
 

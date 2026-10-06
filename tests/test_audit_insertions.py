@@ -5,7 +5,24 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.audit import add_audit_log, model_snapshot
-from app.routers.admin_users import delete_user_account, list_audit_logs, revert_audit_log, restore_entity
+from app.routers.admin_users import delete_user_account, list_audit_logs, list_users_for_admin, update_user_role, revert_audit_log, restore_entity
+
+
+def test_last_super_admin_role_is_locked_even_with_filtered_list(insertion):
+    db, admin, *_ = insertion
+    admin.email = 'super@example.com'
+    db.commit()
+    users = list_users_for_admin(db, admin, search=admin.email, role=None,
+        is_verified=None, is_active=None, limit=1)
+    assert users[0].is_last_active_super_admin
+    with pytest.raises(HTTPException) as error:
+        update_user_role(db, admin, models.RoleEnum.USER, admin)
+    assert error.value.status_code == 400
+    db.add(models.User(email='another@example.test', role=models.RoleEnum.SUPER_ADMIN, is_active=True))
+    db.commit()
+    users = list_users_for_admin(db, admin, search=admin.email, role=None,
+        is_verified=None, is_active=None, limit=1)
+    assert not users[0].is_last_active_super_admin
 
 
 def test_account_deletion_revokes_access_and_preserves_audit(insertion):
