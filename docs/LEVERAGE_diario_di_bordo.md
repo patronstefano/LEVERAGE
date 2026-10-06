@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Bordo dei comandi nell'Editor Risultati
+
+- Ampliata da 230px a 270px la colonna dei comandi e consentito il ritorno a capo dei pulsanti quando necessario: Annulla modifiche non oltrepassa piu il bordo destro della cella.
+- Invariate dimensioni dei pulsanti e logica di modifica dei punteggi. Test browser di contenimento su desktop e mobile, incluso lo scorrimento orizzontale della tabella.
+
 #### 2026-10-06 - Revisioni suddivise in Atleti, Eventi e Risultati
 
 - Aggiunta la voce Risultati alla destra di Eventi nello slider interno delle Revisioni. Il blocco Possibili risultati duplicati compare esclusivamente in questa voce.

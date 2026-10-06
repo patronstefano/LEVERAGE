@@ -405,6 +405,13 @@ def main():
                 page.mouse.up()
                 page.locator('#adminScoreRows tbody tr').first.wait_for()
                 page.locator('.admin-score-table').wait_for()
+                assert page.locator('.admin-score-table [data-reset]').evaluate_all('buttons => buttons.every(button => button.getBoundingClientRect().right <= button.closest("td").getBoundingClientRect().right - 5)')
+                page.set_viewport_size({'width': 390, 'height': 844})
+                page.locator('.admin-score-table-scroll').evaluate('el => el.scrollLeft = el.scrollWidth')
+                assert page.locator('.admin-score-table [data-reset]').evaluate_all('buttons => buttons.every(button => button.getBoundingClientRect().right <= button.closest(".admin-score-table-scroll").getBoundingClientRect().right - 5)')
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                page.locator('.admin-score-table-scroll').evaluate('el => el.scrollLeft = 0')
+                page.screenshot(path='/tmp/leverage-editor-action-border.png', full_page=True)
                 assert page.locator('#adminReloadClassification').count() == 0
                 assert page.locator('#adminClassificationSelectors [name^=classification_]').count() == 4
                 assert page.locator('[name=classification_day]').count() == 0
