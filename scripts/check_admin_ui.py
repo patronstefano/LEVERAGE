@@ -683,6 +683,7 @@ def main():
                 assert abs(first_pair['y'] - review_toggle['y'] - review_toggle['height'] - 16) < 1, (first_pair, review_toggle)
                 assert page.locator('#adminEntityReviews [data-pair-feedback]').is_hidden()
                 assert page.locator('[data-pair-recap] dd').all_text_contents() == ['1', '1', '0']
+                assert page.locator('[data-pair-recap]').evaluate('el => getComputedStyle(el).borderBottomWidth') == '1px'
                 assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
                 page.locator('[data-pair-compare]').click()
@@ -707,6 +708,7 @@ def main():
                 page.locator('[data-review-entity="result"]').click()
                 assert page.locator('#adminResultReviews').is_visible()
                 assert page.locator('[data-result-recap] dd').all_text_contents() == ['0', '0']
+                assert page.locator('[data-result-recap]').evaluate('el => getComputedStyle(el).borderBottomWidth') == '1px'
                 assert page.locator('#adminResultReviews h2').count() == 0
                 assert page.locator('#adminEntityReviews').is_hidden()
                 page.wait_for_timeout(700)

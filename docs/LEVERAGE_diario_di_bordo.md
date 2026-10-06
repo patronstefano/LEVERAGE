@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Separatore sotto il riepilogo duplicati
+
+- Aggiunta una linea sottile nel colore standard dei divisori Leverage tra riepilogo e lista, nelle viste Atleti, Eventi e Risultati. Spaziatura inferiore del riepilogo pari a 14px; conteggi e funzionalita invariati.
+
 #### 2026-10-06 - Statistiche riservate al Centro Super Admin
 
 - Spostata Statistiche dal Centro Admin al Centro Super Admin, subito dopo Panoramica. Per SUPER ADMIN i vecchi collegamenti admin/statistics reindirizzano alla nuova posizione.
