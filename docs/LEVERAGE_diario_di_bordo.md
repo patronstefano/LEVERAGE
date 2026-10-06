@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Statistiche Sito coerenti con Panoramica
+
+- Rinominata la sezione Statistiche Sito, con traduzioni EN/ES/FR aggiornate. Rimosse dalla UI le liste ricerche piu frequenti, atleti piu visualizzati ed eventi piu visualizzati; API e raccolta dati invariate.
+- Riutilizzato lo stile Panoramica per traffico e account: titoli compatti, valori allineati alle etichette, totali evidenziati, separatori e due colonne responsive (una su mobile). Mantenute tutte le 14 metriche riepilogative e la selezione immediata del periodo.
+
 #### 2026-10-06 - Panoramica SUPER ADMIN essenziale
 
 - Rimossi i blocchi Autori piu attivi e Ultime operazioni e il collegamento finale Apri audit e ripristino. Restano periodo, divisore, riepiloghi e nota generale. Audit e ripristino rimane accessibile dal menu dedicato; dati e API di audit invariati.

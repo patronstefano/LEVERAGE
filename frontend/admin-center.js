@@ -172,7 +172,7 @@ const COPY = {
   review: ["Duplicate Review", "Revisione Duplicati", "Revisión de Duplicados", "Révision des Doublons"],
   'world-gymnastics': ['World Gymnastics', 'World Gymnastics', 'World Gymnastics', 'World Gymnastics'],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
-  statistics: ["Statistics", "Statistiche", "Estadísticas", "Statistiques"],
+  statistics: ["Site Statistics", "Statistiche Sito", "Estadísticas del sitio", "Statistiques du site"],
   importResults: ["Results (The Gymternet)", "Risultati (The Gymternet)", "Resultados (The Gymternet)", "Résultats (The Gymternet)"],
   importCalendar: ["Calendar (The Gymternet)", "Calendario (The Gymternet)", "Calendario (The Gymternet)", "Calendrier (The Gymternet)"],
   chooseFile: ["Choose file", "Scegli file", "Elegir archivo", "Choisir un fichier"],
@@ -679,17 +679,17 @@ export async function renderAdminCenter(host) {
         { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
       ], String(session.statisticsDays ?? 30))}</div><div id="adminStats"></div>`);
       const number = new Intl.NumberFormat(state.language, { maximumFractionDigits: 1 });
-      const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(text(title))}</h2></div>${content}</section>`;
-      const metrics = (data, keys) => `<dl class="admin-stats-metrics">${keys.map(([key, label = key]) => `<div><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
+      const metrics = (data, keys) => `<dl>${keys.map(([key, label = key], index) => `<div${index === 0 ? ' class="admin-data-total"' : ''}><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
+      const block = (title, content) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3>${content}</section>`;
       let statsRevision = 0;
       const load = async () => {
         const revision = ++statsRevision;
         const data = await api("/site-analytics/admin/summary", { params: { days: session.statisticsDays ?? 30 } });
         if (!active() || revision !== statsRevision) return;
         document.getElementById("adminStats").innerHTML =
-          block("statsTraffic", metrics(data, ["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key]).concat([["total_events", "trackedActions"]]))) +
-          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(session.statisticsDays === 0 ? text("activityAll") : text("statsWindow").replace("{days}", session.statisticsDays ?? 30))}</p>`) +
-          ["top_searches", "top_athletes", "top_events"].map((key) => block(key, data[key]?.length ? `<ol class="admin-stats-top">${data[key].map((item) => `<li><span>${esc(item.label)}</span><strong>${number.format(item.count)}</strong></li>`).join("")}</ol>` : `<div class="empty-state">${esc(text("empty"))}</div>`)).join("");
+          '<div class="admin-data-overview admin-site-statistics">' +
+          block("statsTraffic", metrics(data, [["total_events", "trackedActions"], ...["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key])])) +
+          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-data-note">${esc(session.statisticsDays === 0 ? text("activityAll") : text("statsWindow").replace("{days}", session.statisticsDays ?? 30))}</p>`) + '</div>';
       };
       root.querySelector('#adminStatsForm [name=days]').onchange = async (event) => {
         session.statisticsDays = Number(event.target.value);

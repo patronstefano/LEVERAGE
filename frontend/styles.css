@@ -81,7 +81,9 @@
 .admin-lookup-option span { color: var(--muted); }
 .admin-overview-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .admin-data-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
-#adminActivityPeriod + .admin-data-overview { border-top: 1px solid rgba(25, 23, 71, 0.08); padding-top: 16px; }
+#adminActivityPeriod + .admin-data-overview,
+#adminStats .admin-site-statistics { border-top: 1px solid rgba(25, 23, 71, 0.08); padding-top: 16px; }
+.admin-data-overview.admin-site-statistics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .admin-data-group { min-width: 0; }
 .admin-data-group + .admin-data-group { border-left: 1px solid var(--line); padding-left: 24px; }
 .admin-workspace-content .admin-data-group h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
@@ -98,7 +100,7 @@
 .admin-activity-details > summary { font-size: 15px; font-weight: 480; line-height: 1.5; }
 .admin-activity-details[open] > summary { margin-bottom: 12px; }
 @media (max-width: 720px) {
-  .admin-data-overview { grid-template-columns: 1fr; gap: 18px; }
+  .admin-data-overview, .admin-data-overview.admin-site-statistics { grid-template-columns: 1fr; gap: 18px; }
   .admin-data-group + .admin-data-group { border-left: 0; padding-left: 0; border-top: 1px solid var(--line); padding-top: 18px; }
 }
 .admin-overview-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: var(--surface-radius); color: var(--ink); padding: 18px; }

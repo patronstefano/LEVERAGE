@@ -183,7 +183,7 @@ def main():
                 assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
                 assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
-                renamed = {'entry': 'Nuova Entità', 'results': 'Editor Risultati', 'merge': 'Unione Entità', 'statistics': 'Statistiche'}
+                renamed = {'entry': 'Nuova Entità', 'results': 'Editor Risultati', 'merge': 'Unione Entità', 'statistics': 'Statistiche Sito'}
                 if tab in renamed:
                     assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text() == renamed[tab]
                     assert page.locator(f'[data-admin-tab="{tab}"]').inner_text() == renamed[tab]
@@ -652,9 +652,11 @@ def main():
                 assert page.locator('#adminAudit [name=note_91]').is_disabled()
             if tab == "statistics":
                 assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'users', 'audit']
-                assert page.locator('#adminStats > .admin-tool-block').count() == 5
-                assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'
-                assert page.locator('#adminStats .empty-state').count() == 2
+                assert page.locator('[data-admin-tab=statistics]').inner_text() == 'Statistiche Sito'
+                assert page.locator('#adminStats .admin-data-group').count() == 2
+                assert page.locator('#adminStats .admin-data-group dl > div').count() == 14
+                assert '42' in page.locator('#adminStats').inner_text()
+                assert page.locator('#adminStats .empty-state, #adminStats .admin-stats-top').count() == 0
                 assert page.locator('#adminStatsForm [name=start_date], #adminStatsForm [name=end_date]').count() == 0
                 assert page.locator('#adminStatsForm [name=days]').input_value() == '30'
                 assert page.locator('#adminStatsForm button[type=submit]').count() == 0
@@ -663,7 +665,7 @@ def main():
                         page.locator('#adminStatsForm [name=days]').evaluate('(el, value) => { el.value = value; el.dispatchEvent(new Event("change", {bubbles: true})); }', days)
                     page.wait_for_timeout(100)
                     assert page.locator('#adminStatsForm [name=days]').input_value() == days
-                assert 'European Championships' in page.locator('.admin-stats-top').inner_text()
+                page.screenshot(path='/tmp/leverage-admin-statistics-desktop.png', full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path='/tmp/leverage-admin-statistics-mobile.png', full_page=True)
