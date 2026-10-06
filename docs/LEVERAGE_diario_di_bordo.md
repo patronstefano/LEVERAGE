@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Testi statici di Utenti e ruoli
+
+- Uniformati ruolo e messaggi statici (ultimo SUPER ADMIN protetto, utente disabilitato) allo stile secondario Leverage: 13px, peso normale, grigio standard e interlinea 1.5. Messaggi nell'area comandi con larghezza contenuta e ritorno a capo; regole di protezione e operazioni invariate.
+
 #### 2026-10-06 - Divisori nelle liste utenti e audit
 
 - Inserita la linea grigia tra parametri di ricerca e lista records in Utenti e ruoli e Audit e ripristino. Riutilizzati colore, spessore di 1px e spazio superiore di 16px dei divisori Panoramica e Statistiche Sito; filtri e operazioni invariati.

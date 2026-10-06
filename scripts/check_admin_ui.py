@@ -570,6 +570,7 @@ def main():
                 assert page.locator('.admin-user-role-actions').first.is_visible()
                 assert page.locator('[name=role_78], [data-role="78"], [data-delete-user="78"]').count() == 0
                 assert 'Ultimo SUPER ADMIN attivo: ruolo non modificabile.' in page.locator('#adminUsers').inner_text()
+                assert page.locator('#adminUsers .admin-user-role-actions > .admin-revision-meta').evaluate('el => { const s = getComputedStyle(el); const reference = getComputedStyle(document.querySelector("#adminUsers .account-notification-copy .admin-revision-meta")); return s.fontSize === "13px" && s.fontWeight === "400" && s.color === reference.color && s.lineHeight === "19.5px"; }')
                 page.locator('[data-delete-user="77"]').click()
                 assert 'review@example.test' in page.locator('dialog[open]').inner_text()
                 assert 'sarà disabilitato' in page.locator('dialog[open]').inner_text()

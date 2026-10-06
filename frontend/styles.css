@@ -5970,6 +5970,8 @@ a:focus-visible > .entity-card-clickable {
 .admin-workspace-content .account-notification-copy .admin-revision-meta { color: var(--muted); font-size: 13px; }
 .admin-user-role-actions { align-items: end; }
 .admin-user-role-actions .admin-form-field { min-width: 160px; }
+#adminUsers .admin-revision-meta { color: var(--muted); font-size: 13px; font-weight: 400; line-height: 1.5; overflow-wrap: anywhere; }
+#adminUsers .admin-user-role-actions > .admin-revision-meta { display: block; max-width: 36ch; }
 #adminUsers .empty-state, #adminAudit .empty-state { margin: 14px 0; }
 .admin-revisions .compact-section-header h2 { margin: 0; }
 .admin-revisions > .admin-tool-block:first-child { border-top: 0; }
