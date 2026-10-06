@@ -554,6 +554,7 @@ def main():
                 page.locator('#adminScoreRows tbody tr').first.wait_for()
                 assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
             if tab == "users":
+                assert page.locator('#adminUsersForm + #adminUsers').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
                 search = page.locator('#adminUsersForm [name=search]')
                 search.fill('REVI')
                 page.wait_for_function("document.querySelectorAll('#adminUsers .account-notification').length === 1 && document.querySelector('#adminUsers').textContent.includes('review@example.test')")
@@ -580,6 +581,7 @@ def main():
                 assert page.locator('#adminUsers .is-success').inner_text() == 'Utente eliminato'
                 assert page.locator('[data-role="77"], [data-delete-user="77"]').count() == 0
             if tab == "audit":
+                assert page.locator('#adminAuditForm + #adminAudit').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
                 assert page.locator('#adminAuditForm [name=entity_id]').locator('..').inner_text() == 'Leverage ID'
                 assert page.evaluate('''async () => {
                     const { createAdminReport } = await import('/admin-reports.js?v=20261006');

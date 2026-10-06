@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Divisori nelle liste utenti e audit
+
+- Inserita la linea grigia tra parametri di ricerca e lista records in Utenti e ruoli e Audit e ripristino. Riutilizzati colore, spessore di 1px e spazio superiore di 16px dei divisori Panoramica e Statistiche Sito; filtri e operazioni invariati.
+
 #### 2026-10-06 - Statistiche Sito coerenti con Panoramica
 
 - Rinominata la sezione Statistiche Sito, con traduzioni EN/ES/FR aggiornate. Rimosse dalla UI le liste ricerche piu frequenti, atleti piu visualizzati ed eventi piu visualizzati; API e raccolta dati invariate.
