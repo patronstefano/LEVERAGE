@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Utenti e ruoli senza pulsante Carica
+
+- Rimosso il comando Carica dalla ricerca utenti, ormai aggiornata automaticamente durante la digitazione. Mantenuti caricamento iniziale, ricerca parziale e invio da tastiera senza ricaricare la pagina; nessuna modifica a ruoli o autorizzazioni.
+
 #### 2026-10-06 - Avviso World Gymnastics a fine sezione
 
 - Spostato l'avviso sulla compatibilita e sulla mancata importazione automatica sotto i riscontri e il comando per caricarne altri, nelle viste Atleti ed Eventi. Testo, traduzioni e funzionamento della scansione invariati; posizione coerente con la Revisione Duplicati.

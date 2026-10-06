@@ -562,7 +562,8 @@ def main():
                 page.locator('#adminUsers .empty-state').wait_for()
                 search.fill('')
                 page.wait_for_function("document.querySelectorAll('#adminUsers .account-notification').length === 2")
-                page.locator('#adminUsersForm button[type=submit]').click()
+                assert page.locator('#adminUsersForm button[type=submit]').count() == 0
+                search.press('Enter')
                 page.locator('#adminUsers .account-notification').first.wait_for()
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
                 assert page.locator('.admin-user-role-actions').first.is_visible()

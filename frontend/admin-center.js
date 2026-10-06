@@ -748,7 +748,7 @@ export async function renderAdminCenter(host) {
       renderMerge(new URLSearchParams(state.route.split('?')[1] || '').get('entity_type') === 'event' ? 'events' : 'athletes');
     }
     if (tab === "users") {
-      paint(form("adminUsersForm", field("search", "email", "search")) + '<div id="adminUsers" class="admin-revision-list"></div>');
+      paint(`<form id="adminUsersForm" class="admin-form-grid">${field("search", "email", "search")}</form><div id="adminUsers" class="admin-revision-list"></div>`);
       let userSearchRevision = 0, userSearchTimer;
       const searchInput = root.querySelector('#adminUsersForm [name=search]');
       const loadUsers = async () => {
