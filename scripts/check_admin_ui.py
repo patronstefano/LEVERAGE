@@ -843,21 +843,15 @@ def main():
         page.goto("http://127.0.0.1:5173/#/super-admin")
         page.locator('.admin-view-toggle [data-admin-tab="audit"]').wait_for()
         page.locator('#adminActivityPeriod').wait_for()
-        assert page.locator('.admin-activity-details .admin-revision-list').count() == 2
-        assert page.locator('.admin-activity-details .account-notification').count() == 2
+        assert page.locator('.admin-activity-details').count() == 0
+        assert page.locator('#adminWorkspace a[href="#/super-admin/audit"]').count() == 0
         assert page.locator('.admin-data-total').count() == 3
-        assert not page.locator('.admin-activity-details[open]').count()
-        page.locator('.admin-activity-details > summary').first.click()
-        assert 'actor@example.test' in page.locator('#adminWorkspace').inner_text()
-        page.locator('.admin-activity-details > summary').first.click()
         assert page.locator('#adminActivityPeriod button[type=submit]').count() == 0
         assert page.locator('#adminActivityPeriod').bounding_box()['y'] < page.locator('.admin-data-overview').bounding_box()['y']
         assert page.locator('#adminActivityPeriod + .admin-data-overview').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
         page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => { node.value = '7'; node.dispatchEvent(new Event('change', {bubbles: true})); }")
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'
-        page.locator('.admin-activity-details > summary').first.click()
-        page.locator('.admin-activity-details > summary').last.click()
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
         page.screenshot(path="/tmp/leverage-super-activity-mobile.png", full_page=True)
         page.set_viewport_size({"width": 1440, "height": 1000})

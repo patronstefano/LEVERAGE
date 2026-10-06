@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Panoramica SUPER ADMIN essenziale
+
+- Rimossi i blocchi Autori piu attivi e Ultime operazioni e il collegamento finale Apri audit e ripristino. Restano periodo, divisore, riepiloghi e nota generale. Audit e ripristino rimane accessibile dal menu dedicato; dati e API di audit invariati.
+
 #### 2026-10-06 - Divisore sotto il periodo della Panoramica
 
 - Inserita una linea orizzontale grigia tra Periodo di attivita e i dati della Panoramica SUPER ADMIN, con lo stesso bordo da 1px e spazio interno di 16px dei blocchi Statistiche. Nessuna modifica funzionale o alla Panoramica ADMIN.

@@ -517,11 +517,8 @@ export async function renderAdminCenter(host) {
           const data = await api("/admin/activity-overview", { params: { days: session.activityDays ?? 30 } });
           if (!active() || revision !== activityRevision) return;
           const number = new Intl.NumberFormat(state.language);
-          const date = (value) => new Intl.DateTimeFormat(state.language, { dateStyle: "short", timeStyle: "short" }).format(new Date(value.endsWith("Z") ? value : `${value}Z`));
-          const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
           const summary = (title, rows) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd>${number.format(data.total)}</dd></div>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
-          const activityList = (title, headers, rows) => `<details class="admin-activity-details admin-revision-group"><summary>${esc(text(title))}<span class="admin-revision-count">${number.format(rows.length)}</span></summary><div class="admin-revision-list">${rows.length ? rows.map((cells) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(cells[0])}</strong></p><dl class="admin-activity-row-details">${cells.slice(1).map((cell, index) => `<div><dt>${esc(text(headers[index + 1]))}</dt><dd>${esc(cell)}</dd></div>`).join("")}</dl></div></article>`).join("") : emptyState()}</div></details>`;
           paint(`<div id="adminActivityPeriod" class="admin-form-grid">${select("days", "activityPeriod", [
             { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
             { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
@@ -530,10 +527,7 @@ export async function renderAdminCenter(host) {
             ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
             ${summary("activityEntities", data.by_entity.map((row) => [entity(row.key), row.count]))}
           </div>
-          <p class="admin-data-note">${esc(text("activityNote"))}</p>
-          ${activityList("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
-          ${activityList("activityRecent", ["ID", "activityDate", "activityAuthor", "status"], data.recent.map((row) => [`#${row.id} · ${text(row.action)} · ${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, date(row.created_at), author(row), text(row.review_status)]))}
-          <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>`);
+          <p class="admin-data-note">${esc(text("activityNote"))}</p>`);
           if (!active()) return;
           root.querySelector('#adminActivityPeriod [name=days]').onchange = async (event) => {
             session.activityDays = Number(event.target.value);
