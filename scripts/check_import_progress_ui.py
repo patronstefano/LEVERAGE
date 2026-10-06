@@ -79,6 +79,16 @@ def main():
         assert page.locator('dialog [role=progressbar]').count() == 0
         page.evaluate("document.querySelector('dialog').remove(); window.dialogProgress = mountDialog()")
         assert page.locator('dialog[open]').count() == 1
+        assert page.locator('dialog').evaluate('''el => {
+            const reference = document.createElement('div');
+            reference.className = 'saved-ranking-form-shell';
+            document.body.append(reference);
+            const actual = getComputedStyle(el), expected = getComputedStyle(reference);
+            const matches = ['borderRadius', 'borderWidth', 'borderColor', 'boxShadow']
+                .every(key => actual[key] === expected[key]) && actual.outlineStyle === 'none';
+            reference.remove();
+            return matches;
+        }''')
         page.evaluate('dialogProgress.complete()')
         assert page.locator('dialog [role=progressbar]').get_attribute('aria-valuenow') == '100'
         page.evaluate('dialogProgress.dispose()')

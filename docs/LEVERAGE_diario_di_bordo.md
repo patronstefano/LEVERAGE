@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Contorno dei popup di ricalcolo anteprima
+
+- Uniformati bordo sottile, arrotondamento e ombra dei popup amministrativi di
+  conferma/ricalcolo al popup Salva questo ranking, senza alterare dimensioni
+  o comportamento. Rimosso il contorno nativo di focus sul solo contenitore;
+  invariato il focus dei pulsanti interattivi.
+- Aggiunto confronto automatico browser degli stili dei due popup.
+
 ## 2026-10-06 - Avanzamento sotto i comandi di conferma importazione
 
 - Nei popup di revisione importazione, l'indicazione di analisi e la barra di

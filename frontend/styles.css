@@ -238,7 +238,8 @@
 .admin-overview-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; border: 1px solid var(--line); border-radius: var(--surface-radius); color: var(--ink); padding: 18px; }
 .admin-overview-link h2 { font-size: 17px; margin: 0; }
 .admin-overview-link:hover { border-color: var(--brand-blue); }
-.admin-confirm { width: min(440px, calc(100vw - 40px)); box-sizing: border-box; border: 1px solid var(--line); border-radius: var(--surface-radius); background: var(--page-bg); color: var(--ink); padding: 24px; }
+.admin-confirm { width: min(440px, calc(100vw - 40px)); box-sizing: border-box; border: 1px solid rgba(25, 23, 71, 0.1); border-radius: var(--surface-radius); background: var(--page-bg); color: var(--ink); padding: 24px; box-shadow: 0 20px 56px rgba(16, 16, 20, 0.12); }
+.admin-confirm:focus { outline: none; }
 .admin-confirm::backdrop { background: rgba(17, 17, 20, .3); }
 @media (max-width: 720px) {
   .admin-center .admin-form-grid, .admin-overview-links, .admin-report { grid-template-columns: 1fr; }
