@@ -1,7 +1,7 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=admin-overview-duplicates-20261006";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=unified-notifications-20261006";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=live-reminders-20260930";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=unified-notifications-20261006";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -6988,7 +6988,7 @@ function bindDemoLoginButtons() {
       }
       if (state.currentUser?.id !== user.id) return;
       generateDemoNotifications(user, athletes, events, resultEvents, scope);
-      const target = scope === 'personal' || user.role === 'user' ? '/account?section=notifications' : '/admin/notifications';
+      const target = '/account?section=notifications';
       if (state.route === target) render();
       else window.location.hash = '#' + target;
     } catch (_) {
@@ -12011,7 +12011,7 @@ function renderAccountViewControl(selected) {
       </div>
       <div class="account-user-actions account-navigation-actions">
         ${state.currentUser?.role === "super_admin" ? `<a class="quiet-button outline-command-button" href="#/super-admin">${adminLabel(state.language, "superCenter")}</a>` : ""}
-        ${isAdminUser() ? `<a class="quiet-button outline-command-button account-admin-center-link" href="#/admin">${adminLabel(state.language, "center")}<span id="accountAdminUnreadCount" class="account-unread-count" hidden></span></a>` : ""}
+        ${isAdminUser() ? `<a class="quiet-button outline-command-button account-admin-center-link" href="#/admin">${adminLabel(state.language, "center")}</a>` : ""}
         ${renderAccountToolActions(selected)}
         <button class="quiet-button outline-command-button" type="button" id="signOutButton">${t("signOut")}</button>
       </div>

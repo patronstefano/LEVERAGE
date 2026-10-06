@@ -15,20 +15,26 @@ ADMIN_TYPES = (
     models.NotificationTypeEnum.EVENT_RESULTS_REMINDER,
     models.NotificationTypeEnum.SECURITY_ALERT,
 )
-NotificationScope = Literal["all", "personal", "admin"]
+NotificationScope = Literal["all", "personal", "admin", "admin_only", "super_admin"]
 
 
 def scoped_notifications(db, user, scope):
     query = db.query(models.Notification).filter(models.Notification.user_id == user.id)
     is_admin = user.role in (models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN)
-    if scope == "admin" and not is_admin:
+    if scope in ("admin", "admin_only") and not is_admin:
         raise HTTPException(status_code=403, detail="Admin notifications require an administrator role")
+    if scope == "super_admin" and user.role != models.RoleEnum.SUPER_ADMIN:
+        raise HTTPException(status_code=403, detail="Super admin notifications require a super administrator role")
     if is_admin and scope != "personal":
         sync_event_result_reminders(db.get_bind())
     if scope == "personal" or not is_admin:
         query = query.filter(models.Notification.type.notin_(ADMIN_TYPES))
     elif scope == "admin":
         query = query.filter(models.Notification.type.in_(ADMIN_TYPES))
+    elif scope == "admin_only":
+        query = query.filter(models.Notification.type.in_(ADMIN_TYPES[:-1]))
+    elif scope == "super_admin":
+        query = query.filter(models.Notification.type == models.NotificationTypeEnum.SECURITY_ALERT)
     if user.role != models.RoleEnum.SUPER_ADMIN:
         query = query.filter(models.Notification.type != models.NotificationTypeEnum.SECURITY_ALERT)
     return query

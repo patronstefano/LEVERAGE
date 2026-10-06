@@ -5,6 +5,8 @@ const labels = {
   recoverLink: ["Recover password", "Recupera password", "Recuperar contraseña", "Récupérer le mot de passe"],
   forgotHelp: ["Enter the email associated with your account to receive a password reset link.", "Inserisci l’email associata al tuo account per ricevere un link con cui reimpostare la password.", "Introduce el correo asociado a tu cuenta para recibir un enlace para restablecer la contraseña.", "Saisissez l’adresse email associée à votre compte pour recevoir un lien de réinitialisation du mot de passe."],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
+  adminOnly: ["Admin only", "Solo Admin", "Solo Admin", "Admin uniquement"],
+  superAdminOnly: ["Super Admin only", "Solo Super Admin", "Solo Super Admin", "Super Admin uniquement"],
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
   goToAthlete: ["Go to Athlete", "Vai all’Atleta", "Ir al Atleta", "Voir l’Athlète"],
   goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
@@ -83,10 +85,12 @@ export function generateDemoNotifications(user, athletes = [], events = [], resu
     ...example, id: index + 1, is_read: false,
     created_at: new Date(Date.now() - index * 3600000).toISOString(),
   }));
-  for (const target of ['personal', 'admin']) {
-    if (scope !== 'all' && scope !== target) continue;
-    demoInboxes.set(`${user.id}:${target}`, generated.filter((item) => adminNotificationTypes.has(item.type) === (target === 'admin')));
-  }
+  const inboxKey = `${user.id}:${user.email}`;
+  const previous = demoInboxes.get(inboxKey) || [];
+  demoInboxes.set(inboxKey, scope === 'all' ? generated : [
+    ...previous.filter((item) => adminNotificationTypes.has(item.type) !== (scope === 'admin')),
+    ...generated.filter((item) => adminNotificationTypes.has(item.type) === (scope === 'admin')),
+  ]);
 }
 
 function context(host) {
@@ -100,10 +104,12 @@ function context(host) {
     node.textContent = t(key);
   };
   const request = async (path, method = "GET", body, auth = true, params = {}) => {
-    const scope = host.notificationScope || 'personal';
+    const scope = host.getNotificationScope?.() || host.notificationScope || 'all';
     if (path.startsWith('/notifications/')) params = { ...params, scope };
-    const generated = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(`${state.currentUser.id}:${scope}`);
-    const inbox = generated && generated.filter((item) => adminNotificationTypes.has(item.type) === (scope === 'admin'));
+    const generated = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(`${state.currentUser.id}:${state.currentUser.email}`);
+    const inbox = generated && generated.filter((item) => scope === 'personal' ? !adminNotificationTypes.has(item.type)
+      : scope === 'admin_only' ? adminNotificationTypes.has(item.type) && item.type !== 'security_alert'
+      : scope === 'super_admin' ? item.type === 'security_alert' : true);
     if (inbox && path.startsWith('/notifications/')) {
       if (path === '/notifications/unread-count') return { count: inbox.filter((item) => !item.is_read).length };
       if (path === '/notifications/read-all' && method === 'PUT') inbox.forEach((item) => { item.is_read = true; });
@@ -144,24 +150,6 @@ export function mountAccountTools(host) {
   const settings = document.getElementById("accountSettings");
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
-  const adminBadge = document.getElementById('accountAdminUnreadCount');
-  if (adminBadge && ['admin', 'super_admin'].includes(state.currentUser.role)) {
-    const adminRequest = context({ ...host, notificationScope: 'admin' }).request;
-    const refreshAdminBadge = () => adminRequest('/notifications/unread-count').then((data) => {
-      if (!live() || !adminBadge.isConnected) return;
-      const count = Math.max(0, Number(data.count) || 0);
-      adminBadge.textContent = count > 99 ? '99+' : String(count);
-      adminBadge.hidden = count === 0;
-      adminBadge.setAttribute('aria-label', `${t('unread')}: ${count}`);
-    }).catch(() => { /* Do not display an unverified count when loading fails. */ });
-    refreshAdminBadge();
-    const pollAdminBadge = async () => {
-      if (!live()) return;
-      if (!document.hidden) await refreshAdminBadge();
-      if (live()) setTimeout(pollAdminBadge, 30000);
-    };
-    setTimeout(pollAdminBadge, 30000);
-  }
   settings.className = 'panel athlete-admin-panel account-settings-panel';
   settings.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("settings") + '</h2></div>' +
     '<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>' + t("accountData") + '</h2></div><div class="admin-form-grid account-settings-details">' +
@@ -197,12 +185,16 @@ export function mountAccountTools(host) {
 
 export function mountNotificationInbox(host) {
   const { state } = host;
-  const { t, esc, button, feedback, request, errorKey } = context(host);
+  let selectedScope = 'all';
+  const { t, esc, button, feedback, request, errorKey } = context({ ...host, getNotificationScope: () => selectedScope });
+  const allRequest = context({ ...host, notificationScope: 'all' }).request;
   const notifications = document.getElementById('accountNotifications');
   const userId = state.currentUser.id;
   const live = () => notifications.isConnected && state.currentUser?.id === userId;
   notifications.className = 'panel athlete-admin-panel account-notifications-panel';
   notifications.innerHTML = '<div class="section-header compact-section-header"><h2>' + t("notifications") + '</h2><div class="account-notification-toolbar">' +
+    (state.currentUser.role === 'super_admin' ? '<button class="quiet-button account-unread-filter" type="button" data-notification-scope="super_admin" aria-pressed="false">' + esc(t('superAdminOnly')) + '</button>' : '') +
+    (['admin', 'super_admin'].includes(state.currentUser.role) ? '<button class="quiet-button account-unread-filter" type="button" data-notification-scope="admin_only" aria-pressed="false">' + esc(t('adminOnly')) + '</button>' : '') +
     '<button class="quiet-button account-unread-filter" type="button" id="accountUnreadOnly" aria-pressed="false">' + esc(t("unread")) + '</button>' +
     '<button class="quiet-button filter-clear-button" type="button" id="accountReadAll">' + esc(t("readAll")) + '</button>' +
     '</div></div><section class="admin-tool-block"><div id="accountNotificationFeedback" role="status" aria-live="polite"></div>' + button("retry", 'id="accountNotificationRetry" hidden') + '<div id="accountNotificationList" aria-live="polite" aria-busy="false"></div>' +
@@ -216,10 +208,11 @@ export function mountNotificationInbox(host) {
   let unreadCount = 0, failedReset = true;
   const updateCount = async () => {
     try {
-      const data = await request("/notifications/unread-count");
+      const data = await allRequest("/notifications/unread-count");
+      const scoped = selectedScope === 'all' ? data : await request("/notifications/unread-count");
       if (!live()) return;
       const badge = document.getElementById("accountUnreadCount");
-      unreadCount = data.count || 0;
+      unreadCount = scoped.count || 0;
       readAll.disabled = !unreadCount;
       badge.textContent = data.count > 99 ? "99+" : String(data.count || "");
       badge.hidden = !data.count;
@@ -280,6 +273,15 @@ export function mountNotificationInbox(host) {
   };
   retry.onclick = () => load(failedReset);
   more.onclick = () => load();
+  notifications.querySelectorAll('[data-notification-scope]').forEach((scopeButton) => {
+    scopeButton.onclick = () => {
+      selectedScope = selectedScope === scopeButton.dataset.notificationScope ? 'all' : scopeButton.dataset.notificationScope;
+      notifications.querySelectorAll('[data-notification-scope]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.notificationScope === selectedScope));
+      });
+      load(true); updateCount();
+    };
+  });
   unreadOnly.onclick = () => {
     unreadOnly.setAttribute('aria-pressed', String(!isUnreadOnly()));
     load(true);

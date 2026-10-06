@@ -179,31 +179,27 @@ def main():
         page.wait_for_timeout(500)
         assert page.locator('[data-admin-tab="overview"]').get_attribute('aria-current') == 'page'
         assert page.locator('#adminRecordLookup').count() == 0
-        for tab in ["overview", "entry", "results", "imports", "review", "merge", "notifications", "statistics", "users", "audit"]:
+        for tab in ["overview", "entry", "results", "imports", "review", "merge", "statistics", "users", "audit"]:
             base = '/super-admin/' if tab in ['users', 'audit', 'statistics'] else '/admin/'
             page.evaluate("(route) => location.hash = route", base + tab)
             page.wait_for_timeout(500)
             assert page.locator("#adminWorkspace").count(), tab
             assert abs(page.locator('.detail-back-button').bounding_box()['y'] - admin_back_top) < 1
-            if tab != 'notifications':
-                assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
-                assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
-                assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
-                renamed = {'entry': 'Nuova Entità', 'results': 'Editor Risultati', 'merge': 'Unione Entità', 'statistics': 'Statistiche Sito'}
-                if tab in renamed:
-                    assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text() == renamed[tab]
-                    assert page.locator(f'[data-admin-tab="{tab}"]').inner_text() == renamed[tab]
-                for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):not(#adminImportFile):visible, #adminWorkspace .admin-custom-select > summary:visible, #adminChooseFile').all():
-                    expected_height = 34 if control.get_attribute('id') == 'adminEventSearch' else 36
-                    assert abs(control.bounding_box()['height'] - expected_height) < 1
-            else:
-                assert page.locator('#adminWorkspace').is_hidden()
+            assert page.locator('#adminWorkspace').evaluate('node => { const s = getComputedStyle(node); return [s.backgroundColor, s.borderRadius, s.padding]; }') == panel_style
+            assert page.locator('#adminWorkspace > .compact-section-header h2').evaluate('node => { const s = getComputedStyle(node); return [s.fontSize, s.fontWeight, s.lineHeight]; }') == title_style
+            assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text()
+            renamed = {'entry': 'Nuova Entità', 'results': 'Editor Risultati', 'merge': 'Unione Entità', 'statistics': 'Statistiche Sito'}
+            if tab in renamed:
+                assert page.locator('#adminWorkspace > .compact-section-header h2').inner_text() == renamed[tab]
+                assert page.locator(f'[data-admin-tab="{tab}"]').inner_text() == renamed[tab]
+            for control in page.locator('#adminWorkspace input:not([type=hidden]):not([type=checkbox]):not(#adminImportFile):visible, #adminWorkspace .admin-custom-select > summary:visible, #adminChooseFile').all():
+                expected_height = 34 if control.get_attribute('id') == 'adminEventSearch' else 36
+                assert abs(control.bounding_box()['height'] - expected_height) < 1
             assert page.locator('.admin-view-toggle .segmented-option').first.evaluate('node => { const s = getComputedStyle(node); return [s.height, s.fontSize, s.fontWeight, s.padding]; }') == account_option_style
             assert page.locator('.admin-view-toggle #adminNotificationsToggle').count() == 0
-            if tab != 'notifications':
-                option = page.locator('.admin-view-toggle [aria-current="page"]').bounding_box()
-                thumb = page.locator('.admin-view-thumb').bounding_box()
-                assert abs(option['x'] - thumb['x']) < 1 and abs(option['width'] - thumb['width']) < 1
+            option = page.locator('.admin-view-toggle [aria-current="page"]').bounding_box()
+            thumb = page.locator('.admin-view-thumb').bounding_box()
+            assert abs(option['x'] - thumb['x']) < 1 and abs(option['width'] - thumb['width']) < 1
             assert page.locator('#authLink').get_attribute('aria-current') == 'page'
             assert page.locator('#authLink').get_attribute('href') == '#' + base + tab
             assert page.locator('#authLink').evaluate('node => getComputedStyle(node).backgroundColor') == 'rgb(25, 23, 71)'
@@ -921,12 +917,13 @@ def main():
         assert page.locator('#authLink').get_attribute('href') == '#/super-admin/audit'
         page.locator('#authLink').click()
         page.locator('#adminWorkspace').wait_for()
-        assert page.locator('#adminNotificationsToggle').is_visible()
-        page.locator('#adminNotificationsToggle').click()
-        page.wait_for_timeout(300)
-        assert page.locator('.admin-view-thumb').is_hidden()
+        assert page.locator('#adminNotificationsToggle').count() == 0
+        page.evaluate("location.hash = '#/super-admin/notifications'")
+        page.wait_for_url('**/#/account?section=notifications')
+        assert page.locator('#accountNotifications').is_visible()
         page.screenshot(path="/tmp/leverage-admin-mobile.png", full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "Horizontal overflow"
+        page.evaluate("location.hash = '#/super-admin/audit'")
         current_role[0] = "admin"
         page.reload()
         page.locator('[role="alert"]').wait_for()

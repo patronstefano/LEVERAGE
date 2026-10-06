@@ -378,7 +378,7 @@ def main():
         assert page.locator('.account-notification-copy p').first.inner_text() == 'Notifica personale 0'
         for role, email, button_id, count in (
             ('admin', 'demo.admin@leverage-demo.com', 'demoAdminNotifications', 3),
-            ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 4),
+            ('super_admin', 'demo.superadmin@leverage-demo.com', 'demoSuperAdminNotifications', 8),
         ):
             user.update(role=role, email=email)
             page.reload()
@@ -388,25 +388,41 @@ def main():
             page.locator('#' + button_id).click()
             page.wait_for_timeout(200)
             items = page.locator('.account-notification')
-            assert items.count() == count
+            assert items.count() == count, (role, items.count(), page.url, items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))
             assert all('DEMO' not in text for text in page.locator('.account-notification-copy p').all_text_contents())
             types = items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')
             assert len(set(types)) == count
             assert {'import_summary', 'data_entry_summary', 'event_results_reminder'} <= set(types)
             assert ('security_alert' in types) == (role == 'super_admin')
-            assert page.locator('#adminNotificationsToggle').get_attribute('aria-pressed') == 'true'
-            assert page.locator('#adminNotificationsToggle').bounding_box()['width'] == 36
-            if role == 'admin':
-                page.evaluate("location.hash = '#/account'")
-                page.locator('#accountAdminUnreadCount').wait_for(state='visible')
-                assert page.locator('#accountAdminUnreadCount').inner_text() == '3'
-                page.locator('.account-admin-center-link').click()
-                page.evaluate("location.hash = '#/admin/notifications'")
-                page.locator('#accountReadAll').wait_for(state='visible')
-                page.wait_for_timeout(200)
+            assert '#/account?section=notifications' in page.url
+            assert page.locator('#accountUnreadCount').inner_text() == str(count)
+            assert page.locator('#adminNotificationsToggle, #accountAdminUnreadCount').count() == 0
+            assert page.locator('[data-notification-scope="admin_only"]').count() == 1
+            if role == 'super_admin':
+                scope_buttons = page.locator('[data-notification-scope]')
+                assert scope_buttons.evaluate_all('nodes => nodes.map(node => node.dataset.notificationScope)') == ['super_admin', 'admin_only']
+                assert scope_buttons.all_inner_texts() == ['Super Admin uniquement', 'Admin uniquement']
+                scope_buttons.first.click()
+                assert page.locator('.account-notification').count() == 1
+                assert page.locator('.account-notification').first.get_attribute('data-notification-type') == 'security_alert'
+                scope_buttons.first.click()
+                assert page.locator('.account-notification').count() == 8
+            page.locator('[data-notification-scope="admin_only"]').click()
+            assert page.locator('.account-notification').count() == 3
+            assert page.locator('[data-notification-scope="admin_only"]').get_attribute('aria-pressed') == 'true'
+            assert page.locator('[data-notification-scope="admin_only"]').evaluate(button_style) == page.locator('#accountUnreadOnly').evaluate(button_style)
+            page.locator('#accountUnreadOnly').click()
+            assert page.locator('.account-notification').count() == 3
+            assert page.locator('[data-notification-scope="admin_only"]').get_attribute('aria-pressed') == 'true'
+            page.locator('#accountUnreadOnly').click()
             page.locator('#accountReadAll').click()
             page.wait_for_timeout(100)
-            assert page.locator('#accountUnreadCount').is_hidden()
+            assert page.locator('#accountUnreadCount').is_hidden() == (role == 'admin')
+            if role == 'super_admin':
+                page.locator('[data-notification-scope="super_admin"]').click()
+                assert page.locator('.account-notification').count() == 1
+                page.locator('#accountReadAll').click()
+                assert page.locator('#accountUnreadCount').inner_text() == '4'
             assert len(writes) == write_count
             assert user['role'] == role
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
@@ -414,20 +430,18 @@ def main():
                 page.locator('#demoAdminPersonalNotifications').click()
                 page.wait_for_timeout(200)
                 assert '#/account?section=notifications' in page.url
-                assert page.locator('#accountAdminUnreadCount').is_hidden()
+                assert page.locator('#accountUnreadCount').inner_text() == '4'
             else:
-                page.goto('http://127.0.0.1:5173/#/account?section=notifications')
+                page.locator('[data-notification-scope="super_admin"]').click()
             page.locator('.account-notification').first.wait_for()
-            assert page.locator('.account-notification').count() == 4
+            assert page.locator('.account-notification').count() == (7 if role == 'admin' else 8)
             assert page.locator('.account-notification.is-unread').count() == 4
-            assert set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)')) == {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'}
+            assert {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'} <= set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))
             if role == 'admin':
-                page.evaluate("location.hash = '#/admin/notifications'")
-                page.wait_for_timeout(200)
+                page.locator('[data-notification-scope="admin_only"]').click()
                 assert page.locator('.account-notification').count() == 3
                 assert page.locator('.account-notification.is-unread').count() == 0
-                page.evaluate("location.hash = '#/account?section=notifications'")
-                page.wait_for_timeout(200)
+                page.locator('[data-notification-scope="admin_only"]').click()
             assert len(writes) == write_count
             page.reload()
             page.locator('.account-notification').first.wait_for()

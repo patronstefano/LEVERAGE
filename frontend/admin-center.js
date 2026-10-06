@@ -1,4 +1,3 @@
-import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-load-20261006';
@@ -330,8 +329,12 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "statistics", "users", "audit", "notifications"] : ["overview", "world-gymnastics", "review", "merge", "entry", "results", "imports", "notifications"];
+  const tabs = superCenter ? ["overview", "statistics", "users", "audit"] : ["overview", "world-gymnastics", "review", "merge", "entry", "results", "imports"];
   const requested = state.route.split("?")[0].split("/")[2];
+  if (requested === 'notifications') {
+    window.location.replace('#/account?section=notifications');
+    return;
+  }
   if (!superCenter && superAdmin && ["users", "audit", "statistics"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
     return;
@@ -348,10 +351,8 @@ export async function renderAdminCenter(host) {
   const emptyState = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
   const nameOf = (a) => [a.last_name, a.first_name].filter(Boolean).join(" ") || a.name || a.athlete_name || a.event_name || "";
   host.setApp(`<div class="detail-topbar"><a class="quiet-button detail-back-button" href="#/account">${esc(text("backToAccount"))}</a></div><section class="admin-center"><div class="section-heading"><h1>${text(superCenter ? "superCenter" : "center")}</h1><p>${text(superCenter ? "superIntro" : "intro")}</p></div>
-    <nav class="admin-center-nav" aria-label="${text(superCenter ? "superCenter" : "center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.filter((key) => key !== 'notifications').map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#${baseRoute}/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div>
-      <button type="button" id="adminNotificationsToggle" class="favorite-button admin-tools-toggle account-tool-button ${tab === 'notifications' ? 'is-open' : ''}" aria-label="${esc(text('notifications'))}" aria-pressed="${tab === 'notifications'}" aria-controls="accountNotifications"><span class="account-tool-icon account-tool-icon-notifications" aria-hidden="true"></span><span id="accountUnreadCount" class="account-unread-count" hidden></span></button></nav>
-    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" class="panel athlete-admin-panel admin-workspace-panel" aria-label="${text(tab)}" ${tab === 'notifications' ? 'hidden' : ''}><div class="section-header compact-section-header"><h2>${esc(text(tab))}</h2></div></section><div data-account-view-panel ${tab === 'notifications' ? '' : 'hidden'}><section id="accountNotifications"></section></div></section>`);
-  document.getElementById('adminNotificationsToggle').onclick = () => { window.location.hash = tab === 'notifications' ? `#${baseRoute}` : `#${baseRoute}/notifications`; };
+    <nav class="admin-center-nav" aria-label="${text(superCenter ? "superCenter" : "center")}"><div class="admin-nav-scroll"><div class="segmented-control admin-view-toggle">${tabs.map((key) => `<a class="segmented-option" data-admin-tab="${key}" ${key === tab ? 'aria-current="page"' : ""} href="#${baseRoute}/${key}">${text(key)}</a>`).join("")}<span class="segmented-thumb admin-view-thumb" aria-hidden="true"></span></div></div></nav>
+    <div id="adminFeedback" role="status" aria-live="polite"></div><section id="adminWorkspace" class="panel athlete-admin-panel admin-workspace-panel" aria-label="${text(tab)}"><div class="section-header compact-section-header"><h2>${esc(text(tab))}</h2></div></section></section>`);
   const control = document.querySelector('.admin-view-toggle');
   const scroll = document.querySelector('.admin-nav-scroll');
   const thumb = control.querySelector('.admin-view-thumb');
@@ -383,7 +384,6 @@ export async function renderAdminCenter(host) {
   navigationObserver?.disconnect();
   navigationObserver = new ResizeObserver(revealSelected);
   navigationObserver.observe(scroll);
-  mountNotificationInbox({ ...host, notificationScope: 'admin' });
   const root = document.getElementById("adminWorkspace");
   const feedback = (message, error = false) => {
     if (!active()) return;

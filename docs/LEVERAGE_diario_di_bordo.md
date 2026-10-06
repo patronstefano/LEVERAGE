@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Inbox notifiche unica per ruolo
+
+- Rimosse le inbox e le campanelle separate dal Centro Admin e dal Centro Super Admin. Tutte le notifiche autorizzate per l'utente sono raccolte nella sezione Notifiche dell'Area Personale, con un unico contatore complessivo. I vecchi percorsi delle notifiche dei centri reindirizzano a questa sezione.
+- Introdotti i filtri Solo Admin (per ADMIN e SUPER ADMIN) e Solo Super Admin (solo per SUPER ADMIN), alla sinistra di Solo non lette. I due filtri di ruolo sono alternativi; Solo non lette resta combinabile. Il backend applica i filtri prima della paginazione e protegge l'accesso per ruolo. I generatori demo continuano a produrre tipi di notifica distinti ma nella stessa inbox, isolati per account.
+- Verificati lettura, conteggi, navigazione, autorizzazioni e UI su desktop/mobile.
+
 #### 2026-10-06 - Spaziatura del recap World Gymnastics
 
 - Allineata a 16 px la distanza tra lo slider Atleti/Eventi e il recap World Gymnastics, come in Revisione Duplicati. Rimossi i padding superiori cumulativi; restano invariati divisore inferiore, risultati e controlli.

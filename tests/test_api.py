@@ -2736,12 +2736,22 @@ def test_notification_scopes_keep_personal_and_admin_inboxes_independent(role):
     admin_response = client.get("/notifications?scope=admin", headers=headers)
     if role == models.RoleEnum.USER:
         assert admin_response.status_code == 403
+        assert client.get("/notifications?scope=admin_only", headers=headers).status_code == 403
+        assert client.get("/notifications?scope=super_admin", headers=headers).status_code == 403
         assert client.put("/notifications/read-all?scope=admin", headers=headers).status_code == 403
         assert len(client.get("/notifications", headers=headers).json()) == 4
         return
     assert admin_response.status_code == 200
     administrative = admin_response.json()
     assert len(administrative) == (4 if role == models.RoleEnum.SUPER_ADMIN else 3)
+    assert {n["type"] for n in client.get("/notifications?scope=admin_only", headers=headers).json()} == {
+        "import_summary", "data_entry_summary", "event_results_reminder"}
+    if role == models.RoleEnum.SUPER_ADMIN:
+        assert [n["type"] for n in client.get("/notifications?scope=super_admin", headers=headers).json()] == ["security_alert"]
+        assert client.put("/notifications/read-all?scope=super_admin", headers=headers).status_code == 200
+        assert client.get("/notifications/unread-count?scope=admin_only", headers=headers).json()["count"] == 3
+    else:
+        assert client.get("/notifications?scope=super_admin", headers=headers).status_code == 403
     assert ("security_alert" in {n["type"] for n in administrative}) == (role == models.RoleEnum.SUPER_ADMIN)
     assert client.put(f"/notifications/{administrative[0]['id']}/read?scope=personal", headers=headers).status_code == 404
     assert client.put("/notifications/read-all?scope=admin", headers=headers).status_code == 200
