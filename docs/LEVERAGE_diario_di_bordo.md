@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Audit e ripristino senza pulsante Carica
+
+- Eliminato Carica: lista iniziale automatica, aggiornamento al cambio di entita/stato e durante la digitazione del Leverage ID (180ms). Protezione dalle risposte obsolete e mantenimento dell'invio da tastiera. Nessun cambiamento alle autorizzazioni, approvazioni o annullamenti.
+
 #### 2026-10-06 - Selettori periodo immediati in Panoramica e Statistiche
 
 - Rinominata l'opzione completa in Storico completo, con traduzioni coerenti EN/IT/ES/FR. Il selettore della Panoramica SUPER ADMIN precede ora i dati, analogamente alle Statistiche.

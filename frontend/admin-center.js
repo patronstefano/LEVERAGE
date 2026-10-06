@@ -798,9 +798,14 @@ export async function renderAdminCenter(host) {
       await loadUsers();
     }
     if (tab === "audit") {
-      paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "Leverage ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit" class="admin-revision-list"></div>');
-      onSubmit("adminAuditForm", async (params) => {
-        const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
+      paint(`<form id="adminAuditForm" class="admin-form-grid">${select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "Leverage ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])}</form><div id="adminAudit" class="admin-revision-list"></div>`);
+      const auditForm = root.querySelector('#adminAuditForm');
+      let auditRevision = 0, auditTimer;
+      const loadAudit = async () => {
+        const revision = ++auditRevision;
+        const params = Object.fromEntries(new FormData(auditForm));
+        const logs = await api("/admin/audit-logs", { params });
+        if (!active() || revision !== auditRevision) return;
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
         for (const [index, log] of logs.entries()) {
           const article = root.querySelectorAll('#adminAudit > article')[index];
@@ -831,7 +836,20 @@ export async function renderAdminCenter(host) {
           note.disabled = true;
           article.querySelector('.account-notification-actions').innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('success'))}</div>`;
         }, false));
-      });
+      };
+      onSubmit('adminAuditForm', async () => { clearTimeout(auditTimer); await loadAudit(); });
+      const scheduleAudit = (delay) => {
+        const revision = ++auditRevision;
+        clearTimeout(auditTimer);
+        auditTimer = setTimeout(async () => {
+          if (!active() || !auditForm.checkValidity()) return;
+          try { await loadAudit(); }
+          catch (error) { if (active() && auditRevision === revision + 1) feedback(error.message, true); }
+        }, delay);
+      };
+      auditForm.addEventListener('change', () => scheduleAudit(0));
+      auditForm.querySelector('[name=entity_id]').addEventListener('input', () => scheduleAudit(180));
+      await loadAudit();
     }
   } catch (error) { feedback(error.message, true); }
 

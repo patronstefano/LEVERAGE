@@ -603,7 +603,11 @@ def main():
                     }
                     return true;
                 }''')
-                page.locator('#adminAuditForm button[type=submit]').click()
+                assert page.locator('#adminAuditForm button[type=submit]').count() == 0
+                with page.expect_response(lambda response: '/admin/audit-logs?' in response.url and 'entity_id=123' in response.url):
+                    page.locator('#adminAuditForm [name=entity_id]').fill('123')
+                with page.expect_response(lambda response: '/admin/audit-logs?' in response.url and 'review_status=pending' in response.url):
+                    page.locator('#adminAuditForm [name=review_status]').evaluate("el => { el.value = 'pending'; el.dispatchEvent(new Event('change', {bubbles: true})); }")
                 page.locator('#adminAudit .account-notification').first.wait_for()
                 authors = page.locator('[data-audit-author]').all_text_contents()
                 assert authors[0] == 'Autore: review@example.test · ID 77 · Ruolo attuale: ADMIN'
