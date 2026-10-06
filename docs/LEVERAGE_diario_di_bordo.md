@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Revisioni suddivise in Atleti, Eventi e Risultati
+
+- Aggiunta la voce Risultati alla destra di Eventi nello slider interno delle Revisioni. Il blocco Possibili risultati duplicati compare esclusivamente in questa voce.
+- Le altre due voci mantengono confronti di identita e riscontri World Gymnastics separati per tipo di entita. La voce Risultati non avvia scansioni World Gymnastics. Invariati controlli backend e dati.
+- Verifica browser della navigazione tra le tre voci, della visibilita esclusiva dei pannelli e dello stato selezionato dello slider.
+
 #### 2026-10-06 - Inversione della direzione di unione
 
 - Aggiunto un pulsante con icona Lucide a doppia freccia tra gli ID sorgente e destinazione, per atleti ed eventi. Nome accessibile e suggerimento tradotti nelle quattro lingue.

@@ -19,6 +19,7 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  reviewResults: ['Results', 'Risultati', 'Resultados', 'Résultats'],
   swapMergeIds: ['Swap IDs', 'Inverti gli ID', 'Intercambiar los ID', 'Inverser les ID'],
   'junior and senior': ['Junior and Senior', 'Junior e Senior', 'Junior y Senior', 'Junior et Senior'],
   WorldGymnasticsScanControl: ["World Gymnastics scan", "Scansione World Gymnastics", "Escaneo World Gymnastics", "Recherche World Gymnastics"],
@@ -595,10 +596,10 @@ export async function renderAdminCenter(host) {
         } catch (error) { if (error.status !== 404) throw error; }
       }
       const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
-      const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
-      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('review'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" data-review-entity="athlete" aria-pressed="true">${esc(text('athletes'))}</button><button type="button" class="segmented-option" data-review-entity="event" aria-pressed="false">${esc(text('events'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div class="admin-revisions">
+      const block = (title, content, id = '') => `<section class="admin-tool-block"${id ? ` id="${id}" hidden` : ''}><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
+      paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle admin-review-toggle" role="group" aria-label="${esc(text('review'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" data-review-entity="athlete" aria-pressed="true">${esc(text('athletes'))}</button><button type="button" class="segmented-option" data-review-entity="event" aria-pressed="false">${esc(text('events'))}</button><button type="button" class="segmented-option" data-review-entity="result" aria-pressed="false">${esc(text('reviewResults'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div class="admin-revisions">
         <section id="adminEntityReviews" class="admin-tool-block"></section>
-        ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty())}
+        ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty(), 'adminResultReviews')}
         ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
       let reviewEntity = 'athlete';
@@ -613,18 +614,24 @@ export async function renderAdminCenter(host) {
         reviewEntity = kind;
         root.querySelectorAll('[data-review-entity]').forEach((button) => {
           button.setAttribute('aria-pressed', String(button.dataset.reviewEntity === kind));
-          button.parentElement.style.setProperty('--selected-index', kind === 'athlete' ? '0' : '1');
+          button.parentElement.style.setProperty('--selected-index', String(['athlete', 'event', 'result'].indexOf(kind)));
         });
+        const resultsSelected = kind === 'result';
+        root.querySelector('#adminResultReviews').hidden = !resultsSelected;
+        root.querySelector('#adminEntityReviews').hidden = resultsSelected;
+        root.querySelector('#adminWorldGymnasticsScan').closest('.admin-tool-block').hidden = resultsSelected;
         updateReviewVisibility();
+        if (resultsSelected) return;
+        const reviewActive = () => active() && reviewEntity === kind;
         const pairRoot = document.createElement('section');
         pairRoot.id = 'adminEntityReviews';
         pairRoot.className = 'admin-tool-block';
         root.querySelector('#adminEntityReviews').replaceWith(pairRoot);
-        mountEntityReviews({root: pairRoot, kind, api, esc, language: state.language, active, route: state.route});
+        mountEntityReviews({root: pairRoot, kind, api, esc, language: state.language, active: reviewActive, route: state.route});
         const scanRoot = document.createElement('div');
         scanRoot.id = 'adminWorldGymnasticsScan';
         root.querySelector('#adminWorldGymnasticsScan').replaceWith(scanRoot);
-        await mountWorldGymnasticsScan({ root: scanRoot, api, esc, language: state.language, active, feedback, route: state.route, entityType: kind });
+        await mountWorldGymnasticsScan({ root: scanRoot, api, esc, language: state.language, active: reviewActive, feedback, route: state.route, entityType: kind });
       };
       root.querySelectorAll('[data-review-entity]').forEach((button) => {
         button.onclick = () => { if (reviewEntity !== button.dataset.reviewEntity) selectReviewEntity(button.dataset.reviewEntity); };

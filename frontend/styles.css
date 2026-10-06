@@ -3782,6 +3782,9 @@ a:focus-visible > .entity-card-clickable {
 .admin-create-toggle .segmented-option[aria-pressed="true"] { color: #fff; }
 .admin-create-toggle .segmented-thumb { transform: translateX(calc(var(--selected-index) * 100%)); }
 .admin-create-toggle[data-active="false"] .segmented-thumb { opacity: 0; }
+.admin-review-toggle { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.admin-review-toggle .segmented-thumb { width: calc(100% / 3); }
+.admin-revisions > .admin-tool-block[hidden] { display: none; }
 .admin-tools-toggle.account-tool-button[aria-pressed="true"],
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:hover,
 .admin-tools-toggle.account-tool-button[aria-pressed="true"]:focus-visible {

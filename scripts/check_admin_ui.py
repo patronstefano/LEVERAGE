@@ -677,8 +677,24 @@ def main():
                 page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
                 assert page.locator('[data-scan-job="51"]').count() == 0
                 assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
+                assert page.locator('#adminResultReviews').is_hidden()
+                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
+                page.locator('[data-review-entity="result"]').click()
+                assert page.locator('#adminResultReviews').is_visible()
+                assert page.locator('#adminEntityReviews').is_hidden()
+                assert page.locator('#adminWorldGymnasticsScan').is_hidden()
+                assert page.locator('[data-review-entity="result"]').get_attribute('aria-pressed') == 'true'
+                assert page.locator('.admin-review-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '2'
+                page.wait_for_timeout(700)
+                thumb = page.locator('.admin-review-toggle .segmented-thumb').bounding_box()
+                selected = page.locator('[data-review-entity="result"]').bounding_box()
+                assert abs(thumb['x'] - selected['x']) < 1
+                assert abs(thumb['width'] - selected['width']) < 1
+                page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)
                 page.locator('[data-review-entity="athlete"]').click()
                 page.locator('[data-scan-job="51"]').wait_for()
+                assert page.locator('#adminResultReviews').is_hidden()
+                assert page.locator('#adminEntityReviews').is_visible()
                 assert page.locator('[data-scan-job="52"]').count() == 0
                 assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
                 page.locator('[data-scan-job="51"] summary').click()
