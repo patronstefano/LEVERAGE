@@ -119,10 +119,10 @@ const COPY = {
   activityOperation: ["Operation", "Operazione", "Operación", "Opération"],
   activityAudit: ["Open audit and restore", "Apri audit e ripristino", "Abrir auditoría y restauración", "Ouvrir audit et restauration"],
   activityNote: [
-    "Audit entries for the selected period, including SUPER ADMIN operations. Counts refer to log entries, not unique modified records. Review status is current; SUPER ADMIN operations are automatically approved. Actions not recorded in the audit are not included.",
-    "Voci di audit nel periodo selezionato, incluse le operazioni SUPER ADMIN. I conteggi indicano voci del registro, non record distinti modificati. Lo stato di revisione è quello attuale; le operazioni SUPER ADMIN sono approvate automaticamente. Le azioni non tracciate nell’audit non sono incluse.",
-    "Entradas de auditoría del periodo, incluidas las operaciones SUPER ADMIN. Los recuentos son entradas, no registros distintos modificados. El estado de revisión es el actual; SUPER ADMIN se aprueba automáticamente. Las acciones no registradas no se incluyen.",
-    "Entrées d’audit de la période, y compris les opérations SUPER ADMIN. Les compteurs portent sur les entrées, non les fiches distinctes modifiées. L’état de révision est actuel ; SUPER ADMIN est approuvé automatiquement. Les actions non tracées sont exclues."
+    "Audit entries created in the selected period, including actions by SUPER ADMIN. Each entry is counted once, even when several entries concern the same record. Review statuses reflect their current state; the author's SUPER ADMIN role does not automatically approve an entry. Actions without an audit entry are not counted.",
+    "Voci di audit create nel periodo selezionato, incluse le azioni dei SUPER ADMIN. Ogni voce è conteggiata una volta, anche se più voci riguardano la stessa entità. Gli stati di revisione sono quelli attuali; il ruolo SUPER ADMIN dell'autore non approva automaticamente una voce. Le azioni senza voce di audit non sono conteggiate.",
+    "Entradas de auditoría creadas en el período seleccionado, incluidas las acciones de SUPER ADMIN. Cada entrada se cuenta una vez, aunque varias correspondan a la misma entidad. Los estados de revisión son los actuales; el rol SUPER ADMIN del autor no aprueba una entrada automáticamente. Las acciones sin entrada de auditoría no se cuentan.",
+    "Entrées d'audit créées pendant la période sélectionnée, y compris les actions des SUPER ADMIN. Chaque entrée est comptée une fois, même si plusieurs concernent la même entité. Les états de révision sont ceux en vigueur ; le rôle SUPER ADMIN de l'auteur n'approuve pas automatiquement une entrée. Les actions sans entrée d'audit ne sont pas comptées."
   ],
   approved: ["Approved", "Approvate", "Aprobadas", "Approuvées"],
   reverted: ["Reverted", "Annullate", "Revertidas", "Annulées"],

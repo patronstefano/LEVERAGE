@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Nota audit della Panoramica Super Admin
+
+- Corretta in tutte le lingue la nota della Panoramica: le voci sono selezionate per data di creazione dell'audit; i conteggi riguardano voci, non entita distinte; lo stato di revisione e quello corrente. Il ruolo SUPER ADMIN dell'autore non determina da solo l'approvazione automatica. Le azioni senza voce di audit non entrano nei conteggi.
+
 #### 2026-10-06 - Nuovo ordine del Centro Admin
 
 - Riordinate le sezioni in: Panoramica, World Gymnastics, Revisione Duplicati, Unione Entita, Nuova Entita, Editor Risultati, Importazione File. Percorsi, contenuti e permessi invariati; verificata la navigazione su desktop e mobile.

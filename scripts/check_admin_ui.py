@@ -894,6 +894,7 @@ def main():
         assert page.locator('#adminActivityPeriod + .admin-data-overview').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
         assert page.locator('.admin-activity-overview .admin-data-total').count() == 1
         assert page.locator('.admin-activity-overview').inner_text().count('Totali') == 0
+        assert "il ruolo SUPER ADMIN dell'autore non approva automaticamente" in page.locator('.admin-data-note').inner_text()
         page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => { node.value = '7'; node.dispatchEvent(new Event('change', {bubbles: true})); }")
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'
