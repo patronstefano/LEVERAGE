@@ -432,6 +432,14 @@ Se dopo un import o un controllo manuale emerge che lo stesso atleta e stato sal
 
 Flusso consigliato per la UI admin:
 
+L'anteprima dei file cumulativi distingue per gara i risultati gia presenti,
+i nuovi risultati e i conflitti (`event_summaries`). Una gara gia esistente
+puo ricevere nuove classifiche senza reinserire i risultati identici. La UI
+propone liste compatte e confronti apribili, con un campione esplicito di massimo
+20 nuovi risultati per gara. Dopo una decisione amministrativa occorre
+ricalcolare l'anteprima. Le associazioni di identita irrisolte bloccano anche
+l'import parziale; i punteggi esistenti differenti non vengono sovrascritti.
+
 1. L'admin apre la scheda duplicata e inserisce l'ID dell'atleta corretto/canonico.
 2. `POST /athletes/{source_athlete_id}/merge-preview` con `{"target_athlete_id": ...}`.
 3. La UI mostra dati dei due atleti, result da spostare, preferenze utente coinvolte, country history, suggerimenti/notification da riallacciare e conflitti bloccanti.
@@ -618,9 +626,9 @@ Parametri opzionali:
 - `csv_score_kind`: `final` o `dscore`, utile per CSV pivot.
 - `allow_partial`: solo sul commit; se `true`, importa i result senza conflitti e salta quelli conflittuali.
 - `orphan_review_limit`: limita quanti problemi D-score restituire nella preview.
-- `orphan_dscore_decisions`: solo sul commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview e una `action`: `accept_suggestion`, `discard`, oppure `manual_target`.
+- `orphan_dscore_decisions`: su preview e commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview e una `action`: `accept_suggestion`, `discard`, oppure `manual_target`.
 - `athlete_review_limit`: limita quanti possibili match atleta restituire nella preview.
-- `athlete_match_decisions`: solo sul commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview. Per i match ordinari sono disponibili `accept_suggestion`, `create_new` e `manual_target`; per un possibile cambio country sono disponibili anche `update_country` e `keep_existing_country`.
+- `athlete_match_decisions`: su preview e commit, come campo form JSON. Ogni decisione usa `review_id` dalla preview. Per i match ordinari sono disponibili `accept_suggestion`, `create_new` e `manual_target`; per un possibile cambio country sono disponibili anche `update_country` e `keep_existing_country`.
   Per un match con atleta gia presente, l'admin puo aggiungere `target_name_update` quando verifica che il nome salvato nella scheda atleta esistente contiene un errore di data entry. Il commit aggiorna la scheda atleta target senza creare un duplicato.
 - se lo stesso nome e la stessa disciplina compaiono con country diverse nello stesso file, la preview crea una verifica bloccante `possible_athlete_identity_collision`. L'admin puo scegliere `keep_separate`, `merge_as_same_athlete` indicando `canonical_country`, `accept_suggestion` verso un atleta esistente oppure `manual_target`.
   Per `merge_as_same_athlete`, il default e `country_strategy="preserve_represented_country"`: una sola scheda Athlete, ma ogni Result conserva la country sorgente come storico di rappresentanza. Se invece una country e un errore di data entry, l'admin puo aggiungere `country_corrections`, per esempio `{"RUS": "ISR"}`, e il commit salvera i Result interessati con `represented_country` corretto.
@@ -629,6 +637,7 @@ Parametri opzionali:
 - se lo stesso file contiene lo stesso atleta con nome/cognome invertiti o formato equivalente, il tool applica automaticamente `merge name order`: crea una sola chiave atleta e usa come ordine canonico il nome gia presente nel database, quando disponibile, oppure la variante piu ricorrente nel file importato.
   Se dopo questo merge emergono country diverse, la preview crea comunque una verifica bloccante `possible_athlete_identity_collision`: l'admin decide solo la parte country (`country_history`, `country_correction`, `keep_separate` o target manuale), non l'inversione nome/cognome.
 - `represented_country` non fa parte della chiave anti-duplicato del `Result`: se il sistema trova lo stesso contesto sportivo con paese rappresentato diverso, il record viene trattato come conflitto da review admin e non come duplicato innocuo.
+- `event_match_decisions`: su preview e commit, campo form JSON con `review_id`, `action` (`match_existing` oppure `keep_separate`) e, per l'associazione, `event_id` fra quelli proposti. `event_match_review` suggerisce gare dello stesso anno con similarita almeno 90% dei nomi normalizzati, mantenendo distinti numeri di tappe diversi. Nessuna associazione automatica; non e una verifica certificata. Le decisioni sono incluse nel report esportabile, senza nuova persistenza di alias gara.
 
 ## Import calendario eventi
 LEVERAGE espone anche un import admin-only per file calendario Gymternet con fogli annuali e colonne `DATE` / `EVENT`.

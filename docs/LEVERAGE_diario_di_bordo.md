@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Anteprima incrementale dei risultati e revisione delle gare
+
+- Preparato il flusso per un file Results 2026 cumulativo aggiornato a fine settembre, contenente sia i risultati del primo semestre gia importati sia quelli successivi. In questa attivita non e stato importato il file reale aggiornato: collaudo svolto con dati sintetici e database di test isolato.
+- L'anteprima Gymternet restituisce ora un riepilogo per ogni gara: risultati identici gia presenti, nuovi risultati candidati, conflitti di punteggio e ripetizioni interne al file. Distingue gare gia importate rispetto alle righe del file, gare esistenti con nuovi risultati, nuove gare e gare con conflitti. Non presume che una gara sia completa solo perche una sua parte e gia nel DB.
+- Report UI coerente con Revisione Duplicati e Audit e Ripristino: recap numerico, liste compatte, comandi a destra, dettagli apribili, confronti dei dati presenti e caricati. Le classifiche coinvolte sono raggruppate per disciplina, categoria, formato, round, attrezzo e giorno; i dettagli includono un campione esplicito di massimo 20 nuovi risultati per gara. Gare e conflitti vengono visualizzati progressivamente.
+- Aggiunta revisione di possibili corrispondenze fra nomi gara dello stesso anno: similarita almeno 90% sui token normalizzati, senza confondere numeri di tappe diversi. La percentuale e un indice euristico, non certificazione. ADMIN conferma l'associazione a una gara proposta oppure una nuova gara distinta; nessuna associazione automatica. Le decisioni vengono ricalcolate sia in preview sia in commit, e restano incluse nel report JSON esportabile. Non e stata introdotta una nuova memoria persistente degli alias gara.
+- Ogni modifica alle decisioni richiede Ricalcola anteprima prima della conferma. Le identita atleta o evento irrisolte bloccano il commit anche con import parziale. I risultati identici vengono saltati; i risultati esistenti con punteggi differenti sono segnalati e non vengono sovrascritti. Il collaudo verifica anche l'aggiunta di un nuovo attrezzo in una gara gia presente.
+- Controlli: 284 test automatici superati; test browser del Centro Admin con decisioni atleta/evento, ricalcolo, filtri del report e layout desktop/mobile. Nessuna scrittura sui risultati reali durante il collaudo.
+
 #### 2026-10-06 - Diagnosi e correzione dell'anteprima import Gymternet
 
 - Segnalato che un file Gymternet di prova non completava il flusso. Verificato che il server era raggiungibile e che il parser legge il file `Results 2026.xlsx` presente nel progetto (66.016 record). La causa tecnica riscontrata nel percorso di preview era il caricamento indiscriminato di tutti i Result attivi del DB (oltre 819.000 nell'istanza locale), anche per un file di poche righe. La costruzione degli indici di confronto ora carica i Result solo per gli eventi presenti nel file, sia in preview sia in commit; la review dei soli atleti non carica piu alcun Result.

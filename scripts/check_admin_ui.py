@@ -18,6 +18,21 @@ def main():
                "athlete_match_review": [{"review_id": "r1", "problem_type": "possible_existing_athlete_match",
                  "imported_athlete": athlete, "suggestions": [{"suggestion_id": "s1", "target_athlete": athlete}]}],
                "orphan_dscore_review": []}
+    preview['athlete_match_decision_stats'] = {'unresolved': 1}
+    preview['event_match_review'] = [{'review_id': 'event:r1', 'event_name': 'Testt Cup', 'year': 2026,
+                                     'result_count': 1, 'disciplines': ['MAG'],
+                                     'suggestions': [{'event_id': 1, 'name': 'Test Cup', 'year': 2026,
+                                                      'discipline': 'MAG', 'compatibility': 95}]}]
+    preview['event_match_decision_stats'] = {'unresolved': 1}
+    preview['event_summaries'] = [
+        {'event_name': 'Test Cup', 'year': 2026, 'event_id': 1, 'status': 'additional_results',
+         'file_results': 2, 'existing_results': 1, 'duplicate_file_results': 0, 'new_results': 1, 'conflicting_results': 0,
+         'groups': [{'discipline': 'MAG', 'category': 'senior', 'format': 'individual', 'round': 'final', 'apparatus': 'FX', 'existing_results': 1, 'new_results': 1}],
+         'new_results_preview': [{'first_name': 'Ada', 'last_name': 'Test', 'discipline': 'MAG', 'category': 'senior', 'format': 'individual', 'round': 'final', 'apparatus': 'FX', 'score': 14.1, 'D_score': 5.8}]},
+        {'event_name': 'Spring Cup', 'year': 2026, 'event_id': 2, 'status': 'already_imported',
+         'file_results': 1, 'existing_results': 1, 'duplicate_file_results': 0, 'new_results': 0, 'conflicting_results': 0,
+         'groups': [], 'new_results_preview': []},
+    ]
     current_role = ["super_admin"]
     event_days = [None]
     full_classification_size = [0]
@@ -123,6 +138,10 @@ def main():
                 if path in ["/results/1/scores", "/results/2/scores"]:
                     route.fulfill(json={"id": int(path.split('/')[2]), **json.loads(route.request.post_data)["values"]}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/imports/gymternet/preview":
+                    if 'match_existing' in route.request.post_data:
+                        preview['event_match_decision_stats']['unresolved'] = 0
+                    if 'accept_suggestion' in route.request.post_data:
+                        preview['athlete_match_decision_stats']['unresolved'] = 0
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
@@ -852,18 +871,38 @@ def main():
                 page.locator('#adminImportForm button[type="submit"]').click()
                 row = page.locator("[data-review-type=athlete]")
                 row.wait_for()
+                assert page.locator('#adminImportOverview .admin-import-event').count() == 2
+                page.locator('[data-import-filter=existing]').click()
+                assert page.locator('#adminImportOverview .admin-import-event').count() == 1
+                assert 'Spring Cup' in page.locator('#adminImportOverview [data-import-events]').inner_text()
+                page.locator('[data-import-filter=new]').click()
+                page.locator('[data-import-event]').click()
+                assert 'Test Ada' in page.locator('.admin-import-table').last.inner_text()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-event-review] [data-import-review-toggle]').click()
+                page.locator('[data-event-review] summary').click()
+                page.locator('[data-event-review] [data-admin-select-value="1"]').click()
+                row.locator('[data-import-review-toggle]').click()
                 row.locator("[data-admin-select]").first.locator("summary").click()
                 row.locator('[data-admin-select-value="suggestion:s1"]').click()
                 page.locator("#adminReviewPreview").click()
                 page.wait_for_timeout(200)
                 assert "accept_suggestion" in writes[-1]["body"]
                 assert "s1" in writes[-1]["body"]
+                assert 'match_existing' in writes[-1]['body']
+                assert page.locator('#adminCommitImport').is_enabled()
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
-                preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "already_present"}] * 1000, athlete_match_review=[])
+                page.set_viewport_size({'width': 390, 'height': 844})
+                page.locator('[data-import-event]').first.click()
+                page.locator('[data-event-review] [data-import-review-toggle]').click()
+                page.screenshot(path='/tmp/leverage-admin-import-mobile.png', full_page=True)
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "duplicate_existing"}] * 1000, athlete_match_review=[], event_match_review=[])
                 page.locator('#adminImportForm button[type="submit"]').click()
                 page.locator('#adminImportOutput .admin-center-feedback').wait_for()
                 assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
-                assert page.locator('#adminImportOutput > details ol li').count() == 20
+                assert int(page.locator('#adminImportOverview .admin-duplicate-recap dd').nth(1).inner_text().replace('.', '')) == 1000
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
                 page.locator('#adminImportForm button[type="submit"]').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")

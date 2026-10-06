@@ -9476,6 +9476,79 @@ def test_gymternet_import_preview_is_admin_only_and_summarizes_csv():
     assert sample["D_score"] == 5.8
 
 
+def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_results():
+    client.post('/auth/register', json={'email': 'incremental@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('incremental@example.com')}"}
+    header = 'discipline,athlete,country,event,apparatus,score,d_score\n'
+    old = ('MAG,Ada Lovelace,USA,Test Cup 2026 QF,FX,14.1,5.8\n'
+           'MAG,Ada Lovelace,USA,Test Cup 2026 QF,HB,13.5,5.5\n'
+           'MAG,Ada Lovelace,USA,Spring Invitational 2026 QF,FX,14.0,5.8\n')
+    files = lambda content: {'file': ('results.csv', (header + content).encode(), 'text/csv')}
+    first = client.post('/imports/gymternet/commit?year_hint=2026', files=files(old), headers=headers)
+    assert first.status_code == 200, first.text
+    updated = old.replace('HB,13.5,5.5', 'HB,13.8,5.5') + (
+        'MAG,Ada Lovelace,USA,Test Cup 2026 QF,PH,13.2,5.2\n'
+        'MAG,Ada Lovelace,USA,Autumn Championship 2026 QF,FX,14.2,5.9\n')
+    response = client.post('/imports/gymternet/preview?year_hint=2026', files=files(updated), headers=headers)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    events = {row['event_name']: row for row in data['event_summaries']}
+    assert events['Spring Invitational 2026']['status'] == 'already_imported'
+    assert events['Spring Invitational 2026']['existing_results'] == 1
+    assert events['Test Cup 2026']['existing_results'] == 1
+    assert events['Test Cup 2026']['new_results'] == 1
+    assert events['Test Cup 2026']['conflicting_results'] == 1
+    assert events['Autumn Championship 2026']['status'] == 'new_event'
+    assert data['importable_results'] == 2
+    assert sum(row['file_results'] for row in events.values()) == data['parsed_rows']
+    assert len(client.get('/results/').json()) == 3
+    blocked = client.post('/imports/gymternet/commit?year_hint=2026', files=files(updated), headers=headers)
+    assert blocked.status_code == 409
+    committed = client.post('/imports/gymternet/commit?year_hint=2026&allow_partial=true', files=files(updated), headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == 2
+    assert committed.json()['skipped_duplicates'] == 2
+    assert committed.json()['skipped_conflicts'] == 1
+    rows = client.get('/results/').json()
+    assert len(rows) == 5
+    assert next(row['score'] for row in rows if row['apparatus'] == 'HB') == 13.5
+
+
+def test_gymternet_event_identity_requires_explicit_decision_and_recalculates_duplicates():
+    client.post('/auth/register', json={'email': 'event_review@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('event_review@example.com')}"}
+    first = client.post('/imports/gymternet/commit?year_hint=2024',
+                        files={'file': ('results.csv', gymternet_csv_bytes(), 'text/csv')}, headers=headers)
+    assert first.status_code == 200
+    content = gymternet_csv_bytes().getvalue().replace(b'Test Cup', b'Testt Cup')
+    files = {'file': ('updated.csv', content, 'text/csv')}
+    preview = client.post('/imports/gymternet/preview?year_hint=2024', files=files, headers=headers).json()
+    review = preview['event_match_review'][0]
+    assert preview['event_match_decision_stats']['unresolved'] == 1
+    blocked = client.post('/imports/gymternet/commit?year_hint=2024&allow_partial=true', files=files, headers=headers)
+    assert blocked.status_code == 409
+    decision = {'review_id': review['review_id'], 'action': 'match_existing', 'event_id': review['suggestions'][0]['event_id']}
+    data = {'event_match_decisions': json.dumps([decision])}
+    resolved = client.post('/imports/gymternet/preview?year_hint=2024', files=files, data=data, headers=headers).json()
+    assert resolved['event_match_decision_stats']['unresolved'] == 0
+    assert resolved['would_create_events'] == 0
+    assert resolved['importable_results'] == 0
+    assert resolved['event_summaries'][0]['status'] == 'already_imported'
+    assert len(client.get('/events/').json()) == 1
+    kept = client.post('/imports/gymternet/preview?year_hint=2024', files=files,
+                       data={'event_match_decisions': json.dumps([{**decision, 'action': 'keep_separate'}])}, headers=headers).json()
+    assert kept['would_create_events'] == 1
+    assert kept['event_match_decision_stats']['unresolved'] == 0
+    invalid = client.post('/imports/gymternet/commit?year_hint=2024', files=files,
+                          data={'event_match_decisions': json.dumps([{**decision, 'event_id': 999999}])}, headers=headers)
+    assert invalid.status_code == 400
+    committed = client.post('/imports/gymternet/commit?year_hint=2024', files=files, data=data, headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == 0
+    assert committed.json()['skipped_duplicates'] == 1
+    assert len(client.get('/events/').json()) == 1
+
+
 def test_gymternet_import_commit_creates_rows_and_skips_identical_duplicates():
     client.post("/auth/register", json={"email": "gymternet_commit@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_commit@example.com")

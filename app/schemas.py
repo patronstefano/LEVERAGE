@@ -1952,6 +1952,9 @@ class GymternetImportPreview(BaseModel):
     conflicts: list[dict]
     issues: list[dict]
     sample_results: list[dict]
+    event_summaries: list[dict] = []
+    event_match_review: list[dict] = []
+    event_match_decision_stats: dict = {}
     orphan_dscore_review_count: int = 0
     orphan_dscore_review: list[dict] = []
     orphan_dscore_decision_stats: dict = {}

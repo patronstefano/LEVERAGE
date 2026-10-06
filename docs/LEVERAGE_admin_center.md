@@ -2,6 +2,25 @@
 
 Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
+## Aggiornamento Importazione file - 6 ottobre 2026
+
+L'anteprima dei risultati cumulativi Gymternet e organizzata come le liste di
+Revisione Duplicati e Audit e Ripristino. Il recap distingue risultati gia
+presenti, nuovi candidati e identita da risolvere. La lista delle gare mostra
+se ciascuna contiene solo risultati gia importati, nuovi risultati in una gara
+esistente, una nuova gara o conflitti. Confronta dettagli apre classifiche,
+conteggi e un campione di massimo 20 nuovi risultati per gara.
+
+Le possibili corrispondenze di gare nello stesso anno richiedono una decisione
+esplicita: associazione alla gara proposta o conferma di gara distinta. Si
+affiancano alla review atleta/nazionalita e ai D-score orfani. Dopo le decisioni,
+Ricalcola anteprima aggiorna il report prima della conferma. I conflitti di
+identita irrisolti bloccano anche l'import parziale; i risultati gia salvati
+non vengono sovrascritti. Le decisioni sono comprese nel report JSON scaricabile.
+
+Questo aggiornamento riguarda il flusso di import. La tabella seguente conserva
+la descrizione della prima integrazione del Centro Admin del 22 settembre.
+
 ## Accesso
 
 Area personale > Centro Admin, oppure `#/admin`. Il frontend richiede

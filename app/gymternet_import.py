@@ -3179,6 +3179,75 @@ def event_lookup_key(record: ParsedGymternetResult) -> tuple:
     return (record.event_name.lower(), record.year)
 
 
+def review_import_events(db: Session, records: list[ParsedGymternetResult], decisions: Optional[list[dict]], issues: list[dict]) -> tuple:
+    """Review similar event names in the same season before resolving result identities."""
+    events = db.query(models.Event).filter(models.Event.is_deleted.is_(False)).all()
+    exact = {(event.name.lower(), event.year): event for event in events}
+    def normalized_event_name(name, year):
+        tokens = normalize_athlete_name_lookup_key(name).split()
+        return " ".join(sorted(token for token in tokens if token != str(year)))
+
+    by_year = {}
+    for event in events:
+        name = normalized_event_name(event.name, event.year)
+        by_year.setdefault(event.year, []).append((event, name))
+    groups = {}
+    for record in records:
+        groups.setdefault(event_lookup_key(record), []).append(record)
+    reviews, replacements = [], {}
+    decisions_by_id = {}
+    for item in decisions or []:
+        review_id = item.get("review_id")
+        if not isinstance(review_id, str) or review_id in decisions_by_id or item.get("action") not in {"keep_separate", "match_existing"}:
+            issues.append({"severity": "error", "message": "Invalid or repeated event review decision"})
+            continue
+        decisions_by_id[review_id] = item
+    stats = {"unresolved": 0, "matched": 0, "kept_separate": 0}
+    for key, rows in groups.items():
+        if key in exact:
+            continue
+        name = normalized_event_name(rows[0].event_name, key[1])
+        suggestions = []
+        for event, candidate_name in by_year.get(key[1], []):
+            if set(re.findall(r"\d+", name)) != set(re.findall(r"\d+", candidate_name)):
+                continue
+            similarity = SequenceMatcher(None, name, candidate_name).ratio()
+            if similarity >= .90:
+                suggestions.append({"event_id": event.id, "name": event.name, "year": event.year,
+                                    "discipline": event.discipline.value, "compatibility": round(similarity * 100),
+                                    "start_date": event.start_date.isoformat() if event.start_date else None,
+                                    "end_date": event.end_date.isoformat() if event.end_date else None})
+        if not suggestions:
+            continue
+        suggestions.sort(key=lambda item: (-item["compatibility"], item["event_id"]))
+        review_id = "event:" + hashlib.sha256(f"{key[1]}:{key[0]}".encode()).hexdigest()[:20]
+        review = {"review_id": review_id, "event_name": rows[0].event_name, "year": key[1],
+                  "result_count": len(rows), "disciplines": sorted({row.discipline.value for row in rows}),
+                  "suggestions": suggestions[:5]}
+        decision = decisions_by_id.get(review_id, {})
+        if decision.get("action") == "keep_separate":
+            stats["kept_separate"] += 1
+        elif decision.get("action") == "match_existing":
+            target = next((event for event in events if event.id == decision.get("event_id")), None)
+            if (target and target.year == key[1]
+                    and sum((event.name.lower(), event.year) == (target.name.lower(), target.year) for event in events) == 1
+                    and any(item["event_id"] == target.id for item in review["suggestions"])):
+                replacements[key] = target.name
+                stats["matched"] += 1
+            else:
+                issues.append({"severity": "error", "message": "Invalid event review target", "review_id": review_id})
+                stats["unresolved"] += 1
+        else:
+            stats["unresolved"] += 1
+        reviews.append(review)
+    unknown = set(decisions_by_id) - {item["review_id"] for item in reviews}
+    if unknown:
+        issues.append({"severity": "error", "message": "Event review decisions no longer match this file. Run a fresh preview."})
+    resolved = [replace(record, event_name=replacements[event_lookup_key(record)])
+                if event_lookup_key(record) in replacements else record for record in records]
+    return resolved, reviews, stats
+
+
 def result_lookup_key(
     athlete_id: int,
     event_id: int,
@@ -3309,6 +3378,27 @@ def summarize_records(
     athlete_merge_keys = athlete_merge_keys or {}
     represented_country_overrides = represented_country_overrides or {}
     resolved_athlete_cache: dict[int, models.Athlete] = {}
+    event_summaries = {}
+
+    def track(record, outcome):
+        key = event_lookup_key(record)
+        event = existing_events.get(key)
+        entry = event_summaries.setdefault(key, {
+            "event_name": record.event_name, "year": record.year, "event_id": event.id if event else None,
+            "start_date": event.start_date.isoformat() if event and event.start_date else None,
+            "end_date": event.end_date.isoformat() if event and event.end_date else None,
+            "file_results": 0, "existing_results": 0, "duplicate_file_results": 0,
+            "new_results": 0, "conflicting_results": 0, "groups": {}, "new_results_preview": [],
+        })
+        entry["file_results"] += 1
+        entry[outcome] += 1
+        context = (record.discipline.value, record.category.value, record.format.value,
+                   record.round.value, record.apparatus, record.day)
+        group = entry["groups"].setdefault(context, dict(zip(
+            ("discipline", "category", "format", "round", "apparatus", "day"), context)))
+        group[outcome] = group.get(outcome, 0) + 1
+        if outcome == "new_results" and len(entry["new_results_preview"]) < 20:
+            entry["new_results_preview"].append(import_record_payload(record))
 
     for record in records:
         if record.year <= 0:
@@ -3340,8 +3430,10 @@ def summarize_records(
             if score_equal(existing_in_file.score, record.score) and score_equal(existing_in_file.D_score, record.D_score):
                 if not country_equal(existing_country, record_country):
                     conflicts.append(conflict_payload(record, None, "country_conflict_in_file", existing_in_file))
+                    track(record, "conflicting_results")
                     continue
                 duplicates.append(import_record_payload(record, reason="duplicate_in_file"))
+                track(record, "duplicate_file_results")
                 continue
             conflict_reason = (
                 "same_context_different_score_after_athlete_merge"
@@ -3349,6 +3441,7 @@ def summarize_records(
                 else "conflict_in_file"
             )
             conflicts.append(conflict_payload(record, None, conflict_reason, existing_in_file))
+            track(record, "conflicting_results")
             continue
         seen[duplicate_key] = record
 
@@ -3358,18 +3451,27 @@ def summarize_records(
                 if score_equal(result.score, record.score) and score_equal(result.D_score, record.D_score):
                     if not country_equal(result_represented_country(result), record_country):
                         conflicts.append(conflict_payload(record, result, "country_conflict_existing"))
+                        track(record, "conflicting_results")
                         continue
                     duplicates.append(import_record_payload(record, result.id, reason="duplicate_existing"))
+                    track(record, "existing_results")
                     continue
                 conflicts.append(conflict_payload(record, result, "conflict_existing"))
+                track(record, "conflicting_results")
                 continue
 
         importable.append(record)
+        track(record, "new_results")
         if not athlete:
             athlete_keys.add(athlete_key)
         if not event:
             event_keys.add(event_lookup_key(record))
 
+    for entry in event_summaries.values():
+        entry["groups"] = list(entry["groups"].values())
+        entry["status"] = ("conflicts" if entry["conflicting_results"] else
+                           "new_event" if entry["event_id"] is None else
+                           "additional_results" if entry["new_results"] else "already_imported")
     return {
         "parsed_rows": len(records),
         "importable_results": len(importable),
@@ -3380,6 +3482,7 @@ def summarize_records(
         "issues": issues,
         "sample_results": [import_record_payload(record) for record in importable[:20]],
         "importable_records": importable,
+        "event_summaries": sorted(event_summaries.values(), key=lambda item: (-item["year"], item["event_name"].casefold())),
     }
 
 
@@ -3388,6 +3491,8 @@ def import_record_payload(record: ParsedGymternetResult, existing_result_id: Opt
         "event_name": record.event_name,
         "year": record.year,
         "athlete_name": record.athlete_name,
+        "first_name": record.first_name,
+        "last_name": record.last_name,
         "country": record.country,
         "discipline": record.discipline.value,
         "category": record.category.value,

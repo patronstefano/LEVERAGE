@@ -27,6 +27,7 @@ from app.gymternet_import import (
     commit_records,
     find_import_target_suggestions,
     parse_gymternet_file,
+    review_import_events,
     summarize_records,
 )
 from app.i18n import translate
@@ -111,6 +112,9 @@ def build_import_preview_payload(
         "conflicts": summary["conflicts"],
         "issues": summary["issues"],
         "sample_results": summary["sample_results"],
+        "event_summaries": summary.get("event_summaries", []),
+        "event_match_review": summary.get("event_match_review", []),
+        "event_match_decision_stats": summary.get("event_match_decision_stats", {}),
         "orphan_dscore_review_count": summary.get("orphan_dscore_review_count", 0),
         "orphan_dscore_review": summary.get("orphan_dscore_review", []),
         "orphan_dscore_decision_stats": summary.get("orphan_dscore_decision_stats", {}),
@@ -134,6 +138,7 @@ def parse_and_summarize_upload(
     orphan_review_limit: int = 2000,
     athlete_match_decisions: Optional[list[dict]] = None,
     athlete_review_limit: int = 2000,
+    event_match_decisions: Optional[list[dict]] = None,
 ) -> tuple[str, dict]:
     filename = file.filename or "gymternet_import"
     content = file.file.read()
@@ -210,6 +215,7 @@ def parse_and_summarize_upload(
         automatic_athlete_canonical_names,
     )
 
+    records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues)
     athlete_review_items = build_athlete_match_review_items(db, records)
     (
         athlete_resolution_ids,
@@ -249,6 +255,8 @@ def parse_and_summarize_upload(
     summary["athlete_match_review_count"] = len(athlete_review_items)
     summary["athlete_match_review"] = athlete_review_items[:athlete_review_limit]
     summary["athlete_match_decision_stats"] = athlete_decision_stats
+    summary["event_match_review"] = event_reviews
+    summary["event_match_decision_stats"] = event_decision_stats
     summary["athlete_resolution_ids"] = athlete_resolution_ids
     summary["athlete_country_update_ids"] = athlete_country_update_ids
     summary["athlete_name_update_ids"] = athlete_name_update_ids
@@ -396,6 +404,7 @@ def preview_gymternet_import(
     file: UploadFile = File(...),
     orphan_dscore_decisions: Optional[str] = Form(None),
     athlete_match_decisions: Optional[str] = Form(None),
+    event_match_decisions: Optional[str] = Form(None),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -414,6 +423,7 @@ def preview_gymternet_import(
         athlete_match_decisions=parse_athlete_match_decisions(athlete_match_decisions),
         orphan_review_limit=orphan_review_limit,
         athlete_review_limit=athlete_review_limit,
+        event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
     )
     return build_import_preview_payload(filename, year_hint, summary)
 
@@ -474,6 +484,7 @@ def suggest_gymternet_import_review_targets(
 @router.post("/gymternet/commit", response_model=schemas.GymternetImportCommit)
 def commit_gymternet_import(
     file: UploadFile = File(...),
+    event_match_decisions: Optional[str] = Form(None),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -504,6 +515,7 @@ def commit_gymternet_import(
         orphan_review_limit=orphan_review_limit,
         athlete_match_decisions=parse_athlete_match_decisions(athlete_match_decisions),
         athlete_review_limit=athlete_review_limit,
+        event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
     if has_error_issues(summary):
@@ -511,6 +523,8 @@ def commit_gymternet_import(
     if summary["conflicts"] and not allow_partial:
         raise HTTPException(status_code=409, detail=payload)
     if summary["athlete_match_decision_stats"].get("unresolved", 0):
+        raise HTTPException(status_code=409, detail=payload)
+    if summary.get("event_match_decision_stats", {}).get("unresolved", 0):
         raise HTTPException(status_code=409, detail=payload)
 
     stats = commit_records(
