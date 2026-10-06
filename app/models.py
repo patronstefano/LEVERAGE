@@ -245,6 +245,22 @@ class Event(Base):
     deleted_by_admin = relationship("User", foreign_keys=[deleted_by_admin_id])
 
 
+class EntityReviewDecision(Base):
+    __tablename__ = "entity_review_decisions"
+    __table_args__ = (
+        UniqueConstraint("entity_type", "left_id", "right_id", "fingerprint", name="uq_entity_review_pair"),
+        CheckConstraint("left_id < right_id", name="ck_entity_review_pair_order"),
+    )
+    id = Column(Integer, primary_key=True)
+    entity_type = Column(String(10), nullable=False)
+    left_id = Column(Integer, nullable=False)
+    right_id = Column(Integer, nullable=False)
+    fingerprint = Column(String(64), nullable=False)
+    decision = Column(String(30), nullable=False)
+    admin_id = Column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
 class WorldGymnasticsScanControl(Base):
     __tablename__ = "world_gymnastics_scan_control"
     id = Column(Integer, primary_key=True)

@@ -3050,6 +3050,18 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Revisione delle identita potenzialmente duplicate
+
+- Problema: "Possibili risultati duplicati" confrontava risultati gia associati allo stesso ID atleta. Non individuava due schede anagrafiche distinte che potevano rappresentare la stessa persona o gara.
+- Aggiunti elenchi distinti di possibili atleti ed eventi duplicati nella vista Atleti/Eventi di Revisioni. Caricamento progressivo di 20 coppie, nomi, ID, disciplina, nazionalita, anno, date, FIG ID e percentuale di compatibilita dei nomi. Il confronto mostra anche storico nazionalita, gare, round e conteggio dei risultati.
+- La percentuale e un indicatore euristico di somiglianza, NON una probabilita, una certificazione World Gymnastics o una decisione automatica. Normalizzazione di accenti e ordine dei nomi; confronto entro la stessa disciplina per atleti e lo stesso anno per eventi. Soglie sui nomi: 86% per atleti dello stesso country, 94% per country diversi, 90% per eventi. Un ID World Gymnastics coincidente costituisce un ulteriore segnale. Il blocco preliminare per prefissi dei token limita il costo, ma non garantisce di trovare ogni possibile duplicato.
+- La memoria delle review storiche Gymternet e ora condivisa con il backend: i "keep separate" vengono riutilizzati SOLO a country invariato. Le indicazioni storiche di merge sono evidenziate, senza eseguirle. Le decisioni contraddittorie non vengono applicate automaticamente.
+- "Mantieni separati" salva una decisione auditata per coppia e impronta dell'identita. Modifiche dei dati anagrafici, inclusa la nazionalita, rendono la coppia nuovamente valutabile. Controllo contro decisioni su dati ormai cambiati e inserimenti concorrenti; endpoint riservati ad ADMIN con i controlli di autenticazione esistenti.
+- "Valuta unione" apre Unione Entita con gli ID precompilati: restano obbligatorie l'anteprima e la conferma dei flussi gia esistenti. Nessuna unione avviene aprendo Revisioni. Punteggi diversi nello stesso contesto di gara vengono segnalati nel confronto come motivo per mantenere separate le schede salvo evidenze ufficiali.
+- Cache delle comparazioni invalidata da variazioni delle identita, delle decisioni o della memoria storica; non vengono memorizzati punteggi o copie dei risultati nella cache.
+- Migrazione 0043_entity_reviews applicata dopo backup locale before_wg_scan_20261006_112430.db. Nessuna entita unita, nessun punteggio modificato e nessuna scansione World Gymnastics avviata durante questo intervento.
+- Verifica: 245 test backend superati su database temporanei isolati; test browser Admin con API simulate, confronto dettagli, separazione, navigazione e layout desktop/mobile. La verifica browser non esegue scritture sui dati reali.
+
 #### 2026-10-06 - Etichette esplicite per l'avvio delle scansioni
 
 - Il comando di avvio nelle Revisioni diventa "Avvia scansione atleti" oppure "Avvia scansione eventi" secondo la vista selezionata, con traduzioni EN/IT/ES/FR.

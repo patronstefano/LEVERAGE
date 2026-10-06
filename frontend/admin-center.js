@@ -3,6 +3,7 @@ import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-f
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -586,6 +587,7 @@ export async function renderAdminCenter(host) {
       const empty = () => `<div class="empty-state">${esc(text("empty"))}</div>`;
       const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(title)}</h2></div>${content}</section>`;
       paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('review'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" data-review-entity="athlete" aria-pressed="true">${esc(text('athletes'))}</button><button type="button" class="segmented-option" data-review-entity="event" aria-pressed="false">${esc(text('events'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div class="admin-revisions">
+        <section id="adminEntityReviews" class="admin-tool-block"></section>
         ${block(text("duplicateResults"), duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty())}
         ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
@@ -604,6 +606,11 @@ export async function renderAdminCenter(host) {
           button.parentElement.style.setProperty('--selected-index', kind === 'athlete' ? '0' : '1');
         });
         updateReviewVisibility();
+        const pairRoot = document.createElement('section');
+        pairRoot.id = 'adminEntityReviews';
+        pairRoot.className = 'admin-tool-block';
+        root.querySelector('#adminEntityReviews').replaceWith(pairRoot);
+        mountEntityReviews({root: pairRoot, kind, api, esc, language: state.language, active, route: state.route});
         const scanRoot = document.createElement('div');
         scanRoot.id = 'adminWorldGymnasticsScan';
         root.querySelector('#adminWorldGymnasticsScan').replaceWith(scanRoot);
@@ -658,7 +665,10 @@ export async function renderAdminCenter(host) {
         document.getElementById('adminMergeAthlete').setAttribute('aria-pressed', String(!isEvent));
         document.getElementById('adminMergeEvent').setAttribute('aria-pressed', String(isEvent));
         root.querySelector('.admin-create-toggle').style.setProperty('--selected-index', isEvent ? '1' : '0');
-        document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', field('source', isEvent ? 'sourceEvent' : 'source', 'number', '', true) + field('target', isEvent ? 'targetEvent' : 'target', 'number', '', true) + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
+        const reviewParams = new URLSearchParams(state.route.split('?')[1] || '');
+        const fromReview = reviewParams.get('entity_type') === (isEvent ? 'event' : 'athlete');
+        const reviewId = (key) => fromReview && /^[1-9][0-9]*$/.test(reviewParams.get(key) || '') ? reviewParams.get(key) : '';
+        document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', field('source', isEvent ? 'sourceEvent' : 'source', 'number', reviewId('source'), true) + field('target', isEvent ? 'targetEvent' : 'target', 'number', reviewId('target'), true) + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
         const output = document.getElementById('adminMergePreview');
         document.getElementById('adminMergeForm').addEventListener('input', () => { ++mergeRevision; output.innerHTML = ''; });
         onSubmit('adminMergeForm', async (v) => {
@@ -680,7 +690,7 @@ export async function renderAdminCenter(host) {
       };
       document.getElementById('adminMergeAthlete').onclick = () => renderMerge('athletes');
       document.getElementById('adminMergeEvent').onclick = () => renderMerge('events');
-      renderMerge('athletes');
+      renderMerge(new URLSearchParams(state.route.split('?')[1] || '').get('entity_type') === 'event' ? 'events' : 'athletes');
     }
     if (tab === "users") {
       paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers" class="admin-revision-list"></div>');

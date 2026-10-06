@@ -15,6 +15,7 @@ from app.event_reminders import sync_event_result_reminders
 from app.world_gymnastics_scan import process_next, mark_identity_changed
 from app.routers import world_gymnastics_scan
 from app.routers import event_merges
+from app.routers import entity_reviews
 from sqlalchemy.orm import Session
 import re
 from app.routers import admin_users, analytics, auth, athletes, data_suggestions, events, imports, results, preferences, notifications, search, site_analytics, world_gymnastics
@@ -84,6 +85,7 @@ reminder_dependencies = [Depends(refresh_reminders_after_write)]
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(admin_users.router, prefix="/admin", tags=["admin-users"], dependencies=reminder_dependencies)
+app.include_router(entity_reviews.router, prefix="/admin", tags=["admin-reviews"])
 app.include_router(world_gymnastics_scan.router, prefix="/world-gymnastics/scan", tags=["world-gymnastics"])
 app.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 app.include_router(athletes.router, prefix="/athletes", tags=["athletes"], dependencies=reminder_dependencies)

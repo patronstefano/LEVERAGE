@@ -51,6 +51,14 @@ def main():
                 if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
                     payload['counts']['matched'] = 7
                     payload['total'] = 7
+            elif path == '/admin/entity-duplicates':
+                kind = parse_qs(urlparse(route.request.url).query).get('entity_type', ['athlete'])[0]
+                entity = {**athlete, 'name': 'Test Ada'} if kind == 'athlete' else event
+                payload = {'total': 1, 'items': [{'left': entity, 'right': {**entity, 'id': 2},
+                    'compatibility': 98, 'reasons': ['similar_name'], 'fingerprint': 'a' * 64}]}
+            elif path in ['/admin/entity-duplicates/athlete/1/2', '/admin/entity-duplicates/event/1/2']:
+                entity = {**athlete, 'name': 'Test Ada', 'result_count': 2, 'country_history': [], 'events': []}
+                payload = {'left': entity, 'right': {**entity, 'id': 2}, 'conflicting_scores': 1}
             elif path == "/world-gymnastics/scan/matches":
                 payload = {"total": 1, "items": [{"id": 51, "entity_type": "athlete", "entity_id": 1, "entity_name": "Test Ada", "candidates": [{"fig_id": "123", "first_name": "Ada", "last_name": "Test", "country": "ITA", "discipline": "WAG", "match_score": .95, "profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=123"}]}]}
                 if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
@@ -111,6 +119,8 @@ def main():
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ["/events/1/merge-preview", "/athletes/1/merge-preview"]:
                     route.fulfill(json={"can_merge": True, "preview_token": "a" * 64}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path.startswith('/admin/entity-duplicates/') and path.endswith('/keep-separate'):
+                    route.fulfill(json={"decision": "keep_separate"}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -496,7 +506,12 @@ def main():
             if tab == "review":
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
                 assert page.locator('[data-scan-refresh]').count() == 0
-                assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
+                assert page.locator('.admin-revisions > .admin-tool-block').count() == 3
+                page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
+                assert 'Possibili atleti duplicati' in page.locator('#adminEntityReviews').inner_text()
+                page.locator('[data-pair-compare]').click()
+                page.locator('.admin-pair-warning').wait_for()
+                assert 'Valuta unione' in page.locator('#adminEntityReviews').inner_text()
                 assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
                 page.locator('[data-scan-job="51"] summary').click()
                 assert 'Compatibilità 95%' in page.locator('[data-scan-job="51"]').inner_text()
@@ -513,6 +528,7 @@ def main():
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione eventi'
                 assert '7' in page.locator('[data-scan-status]').inner_text()
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
+                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
                 assert page.locator('[data-scan-job="51"]').count() == 0
                 assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
                 page.locator('[data-review-entity="athlete"]').click()
@@ -544,6 +560,13 @@ def main():
                 page.locator('[data-scan-action="start"]').click()
                 page.wait_for_timeout(200)
                 assert json.loads(writes[-1]['body']) == {'action': 'start', 'entity_type': 'event'}
+                page.locator('[data-pair-separate]').click()
+                page.locator('#adminEntityReviews .empty-state').wait_for()
+                assert writes[-1]['path'] == '/admin/entity-duplicates/event/1/2/keep-separate'
+                page.evaluate("location.hash = '/admin/merge?entity_type=event&source=2&target=1'")
+                page.locator('#adminMergeForm').wait_for()
+                assert page.locator('#adminMergeForm [name=source]').input_value() == '2'
+                assert page.locator('#adminMergeForm [name=target]').input_value() == '1'
             if tab == "imports":
                 previous_writes = len(writes)
                 page.locator('#adminImportForm button[type=submit]').click()

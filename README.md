@@ -380,7 +380,7 @@ Le notifiche generate dal backend usano sempre la lingua preferita del destinata
 
 La sottosezione **Gestione record** e stata rimossa dal Centro Admin: gli strumenti delle schede Atleta/Evento e la sezione Risultati sono i punti di accesso per la manutenzione. Il vecchio percorso `/admin/entities` mostra la Panoramica; le API backend rimangono invariate.
 
-**Revisioni** non elenca piu le anagrafiche incomplete: mostra i gruppi di risultati duplicati, i suggerimenti pendenti World Gymnastics e i candidati della scansione persistente, raggruppati per Atleta/Evento. Sono esclusi suggerimenti di altre fonti. Aprire Revisioni non avvia una nuova scansione.
+**Revisioni** non elenca piu le anagrafiche incomplete: mostra possibili identita duplicate (Atleti/Eventi), gruppi di risultati duplicati e riscontri World Gymnastics. Le coppie anagrafiche includono compatibilita euristica dei nomi, confronto delle gare e storico nazionalita, decisione auditata "Mantieni separati" e collegamento all'anteprima di unione con ID precompilati. Nessuna fusione automatica. La memoria storica Gymternet viene riutilizzata solo a country invariato; le nuove decisioni sono valide finche l'identita non cambia. La ricerca euristica non garantisce di trovare ogni duplicato. Migrazione richiesta: `0043_entity_reviews`. Aprire Revisioni non avvia una scansione World Gymnastics.
 
 ### Scansione World Gymnastics
 
