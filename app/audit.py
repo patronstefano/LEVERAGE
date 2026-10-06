@@ -1,11 +1,18 @@
 import json
 from datetime import date, datetime
 from enum import Enum
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from sqlalchemy.orm import Session
 
 from app import models
+from app.i18n import translate
+
+
+SecurityAction = Literal[
+    "delete_result", "delete_event", "delete_athlete", "merge_athletes", "merge_events",
+    "revert_merge", "change_role", "approve_audit", "revert_audit", "restore_entity", "deactivate_user",
+]
 
 
 def serialize_value(value: Any):
@@ -54,7 +61,7 @@ def add_audit_log(
 def add_security_alert(
     db: Session,
     actor: models.User,
-    message: str,
+    action: SecurityAction,
     related_athlete_id: Optional[int] = None,
     related_event_id: Optional[int] = None,
     related_result_id: Optional[int] = None,
@@ -67,10 +74,15 @@ def add_security_alert(
     for super_admin in super_admins:
         if super_admin.id == actor.id:
             continue
+        language = super_admin.preferred_language
         db.add(models.Notification(
             user_id=super_admin.id,
             type=models.NotificationTypeEnum.SECURITY_ALERT,
-            message=message,
+            message=translate(
+                "notification.security_alert", language,
+                role=actor.role.value.replace("_", " ").upper(), actor_id=actor.id,
+                action=translate(f"notification.security.{action}", language),
+            ),
             related_athlete_id=related_athlete_id,
             related_event_id=related_event_id,
             related_result_id=related_result_id,

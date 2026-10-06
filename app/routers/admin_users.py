@@ -105,7 +105,7 @@ def update_user_role(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} changed {target_user.email}'s role to {requested_role.value}.",
+        "change_role",
     )
     db.commit()
     db.refresh(target_user)
@@ -653,8 +653,7 @@ def approve_audit_log(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} approved audit log #{audit_log.id} "
-        f"({audit_log.action} {audit_log.entity_type} #{audit_log.entity_id}).",
+        "approve_audit",
         related_athlete_id=audit_log.entity_id if audit_log.entity_type == "Athlete" else None,
         related_event_id=audit_log.entity_id if audit_log.entity_type == "Event" else None,
         related_result_id=audit_log.entity_id if audit_log.entity_type == "Result" else None,
@@ -748,8 +747,7 @@ def revert_audit_log(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} reverted audit log #{audit_log.id} "
-        f"({audit_log.entity_type} #{audit_log.entity_id}).",
+        "revert_audit",
         related_athlete_id=audit_log.entity_id if audit_log.entity_type == "Athlete" else None,
         related_event_id=audit_log.entity_id if audit_log.entity_type == "Event" else None,
         related_result_id=audit_log.entity_id if audit_log.entity_type == "Result" else None,
@@ -770,7 +768,7 @@ def restore_entity(entity, current_user: models.User, db: Session, entity_type: 
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} restored {entity_type} #{entity.id}.",
+        "restore_entity",
         related_athlete_id=entity.id if entity_type == "Athlete" else None,
         related_event_id=entity.id if entity_type == "Event" else None,
         related_result_id=entity.id if entity_type == "Result" else None,
@@ -896,7 +894,7 @@ def delete_user_account(
     target.email_verification_expires_at = None
     add_audit_log(db, current_user, 'deactivate', 'User', target.id, before=before,
         after={'email': target.email, 'role': target.role.value, 'is_active': False})
-    add_security_alert(db, current_user, f"Security: {current_user.email} deactivated user #{target.id} ({target.email}).")
+    add_security_alert(db, current_user, "deactivate_user")
     db.commit()
     db.refresh(target)
     return target

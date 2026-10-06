@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Avvisi di sicurezza leggibili e riconducibili all'audit
+
+- Le notifiche `security_alert` destinate agli altri SUPER ADMIN attivi non riportano piu stringhe tecniche in inglese con l'email dell'autore. Il messaggio e localizzato nella lingua preferita del destinatario, indica ruolo e ID dell'amministratore che ha operato, descrive l'azione concreta (eliminazione, unione, cambio ruolo, ripristino, annullamento o approvazione legacy) e invita a verificare in Audit e Ripristino. Il link nella notifica apre direttamente tale sezione. Il generatore DEMO usa lo stesso formato con autore fittizio.
+- I titoli del Centro Super Admin diventano Utenti e Ruoli e Audit e Ripristino; allineata la capitalizzazione anche nelle altre lingue. Restano invariati destinatari autorizzati, regole di audit, permessi e dati delle entita.
+
 #### 2026-10-06 - Audit: annullamento senza approvazione simbolica
 
 - Nel Centro Super Admin, Audit e ripristino non mostra piu il comando Approva: le modifiche registrate sono gia applicate quando la voce di audit viene creata. Restano Confronta dettagli e, per update di Athlete/Event/Result o creazioni/unioni di Athlete/Event revisionabili, il comando di annullamento. Le voci gia annullate o non reversibili non propongono un'azione non eseguibile.

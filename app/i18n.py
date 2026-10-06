@@ -108,6 +108,56 @@ RESULT_CONTEXT_LABELS = {
 
 
 TRANSLATIONS = {
+    "notification.security_alert": {
+        models.LanguageEnum.EN: "Security alert: another administrator ({role} · ID {actor_id}) {action}. Review the operation in Audit and Restore.",
+        models.LanguageEnum.IT: "Avviso di sicurezza: un altro amministratore ({role} · ID {actor_id}) {action}. Verifica l'operazione in Audit e Ripristino.",
+        models.LanguageEnum.ES: "Alerta de seguridad: otro administrador ({role} · ID {actor_id}) {action}. Revisa la operación en Auditoría y Restauración.",
+        models.LanguageEnum.FR: "Alerte de sécurité : un autre administrateur ({role} · ID {actor_id}) {action}. Vérifiez l'opération dans Audit et Restauration.",
+    },
+    "notification.security.delete_result": {
+        models.LanguageEnum.EN: "deleted a result", models.LanguageEnum.IT: "ha eliminato un risultato",
+        models.LanguageEnum.ES: "eliminó un resultado", models.LanguageEnum.FR: "a supprimé un résultat",
+    },
+    "notification.security.delete_event": {
+        models.LanguageEnum.EN: "deleted an event", models.LanguageEnum.IT: "ha eliminato un evento",
+        models.LanguageEnum.ES: "eliminó un evento", models.LanguageEnum.FR: "a supprimé un événement",
+    },
+    "notification.security.delete_athlete": {
+        models.LanguageEnum.EN: "deleted an athlete", models.LanguageEnum.IT: "ha eliminato un atleta",
+        models.LanguageEnum.ES: "eliminó a un atleta", models.LanguageEnum.FR: "a supprimé un athlète",
+    },
+    "notification.security.merge_athletes": {
+        models.LanguageEnum.EN: "merged two athlete records", models.LanguageEnum.IT: "ha unito due schede atleta",
+        models.LanguageEnum.ES: "fusionó dos fichas de atletas", models.LanguageEnum.FR: "a fusionné deux fiches d'athlètes",
+    },
+    "notification.security.merge_events": {
+        models.LanguageEnum.EN: "merged two event records", models.LanguageEnum.IT: "ha unito due schede evento",
+        models.LanguageEnum.ES: "fusionó dos fichas de eventos", models.LanguageEnum.FR: "a fusionné deux fiches d'événements",
+    },
+    "notification.security.revert_merge": {
+        models.LanguageEnum.EN: "reversed an entity merge", models.LanguageEnum.IT: "ha annullato un'unione di entità",
+        models.LanguageEnum.ES: "revirtió una fusión de entidades", models.LanguageEnum.FR: "a annulé une fusion d'entités",
+    },
+    "notification.security.change_role": {
+        models.LanguageEnum.EN: "changed a user's role", models.LanguageEnum.IT: "ha modificato il ruolo di un utente",
+        models.LanguageEnum.ES: "cambió el rol de un usuario", models.LanguageEnum.FR: "a modifié le rôle d'un utilisateur",
+    },
+    "notification.security.approve_audit": {
+        models.LanguageEnum.EN: "approved an audit entry", models.LanguageEnum.IT: "ha approvato una voce di audit",
+        models.LanguageEnum.ES: "aprobó una entrada de auditoría", models.LanguageEnum.FR: "a approuvé une entrée d'audit",
+    },
+    "notification.security.revert_audit": {
+        models.LanguageEnum.EN: "reversed a change", models.LanguageEnum.IT: "ha annullato una modifica",
+        models.LanguageEnum.ES: "revirtió un cambio", models.LanguageEnum.FR: "a annulé une modification",
+    },
+    "notification.security.restore_entity": {
+        models.LanguageEnum.EN: "restored a deleted record", models.LanguageEnum.IT: "ha ripristinato una scheda eliminata",
+        models.LanguageEnum.ES: "restauró una ficha eliminada", models.LanguageEnum.FR: "a restauré une fiche supprimée",
+    },
+    "notification.security.deactivate_user": {
+        models.LanguageEnum.EN: "deactivated a user account", models.LanguageEnum.IT: "ha disattivato un account utente",
+        models.LanguageEnum.ES: "desactivó una cuenta de usuario", models.LanguageEnum.FR: "a désactivé un compte utilisateur",
+    },
     "notification.new_result.events.single": {
         models.LanguageEnum.EN: "{athlete_name} · New results in 1 competition: {event_names}.",
         models.LanguageEnum.IT: "{athlete_name} · Nuovi risultati in 1 gara: {event_names}.",

@@ -1548,7 +1548,7 @@ def delete_event(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} soft-deleted event {event.name}.",
+        "delete_event",
         related_event_id=event.id,
     )
     db.commit()

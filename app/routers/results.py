@@ -802,7 +802,7 @@ def delete_result(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} soft-deleted result #{result.id}.",
+        "delete_result",
         related_result_id=result.id,
     )
     db.commit()

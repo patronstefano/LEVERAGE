@@ -668,6 +668,8 @@ def main():
             if tab == "statistics":
                 assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'users', 'audit']
                 assert page.locator('[data-admin-tab=statistics]').inner_text() == 'Statistiche Sito'
+                assert page.locator('[data-admin-tab=users]').inner_text() == 'Utenti e Ruoli'
+                assert page.locator('[data-admin-tab=audit]').inner_text() == 'Audit e Ripristino'
                 assert page.locator('#adminStats .admin-data-group').count() == 2
                 assert page.locator('#adminStats .admin-data-group dl > div').count() == 13
                 assert page.locator('#adminStats .admin-data-group').first.locator('dt').all_inner_texts()[-1] == 'Altre attività'

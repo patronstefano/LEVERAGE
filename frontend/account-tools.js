@@ -10,13 +10,14 @@ const labels = {
   settings: ["Settings", "Impostazioni", "Ajustes", "Paramètres"],
   goToAthlete: ["Go to Athlete", "Vai all’Atleta", "Ir al Atleta", "Voir l’Athlète"],
   goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
+  goToAudit: ["Go to Audit and Restore", "Vai ad Audit e Ripristino", "Ir a Auditoría y Restauración", "Aller à Audit et Restauration"],
   demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
   demoAdminGenerator: ["Generate ADMIN notifications (DEMO)", "Generatore notifiche ADMIN (DEMO)", "Generar notificaciones ADMIN (DEMO)", "Générer des notifications ADMIN (DEMO)"],
   demoAdminPersonalGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
   demoSuperAdminGenerator: ["Generate SUPER ADMIN notifications (DEMO)", "Generatore notifiche SUPER ADMIN (DEMO)", "Generar notificaciones SUPER ADMIN (DEMO)", "Générer des notifications SUPER ADMIN (DEMO)"],
   demoImport: ["Import completed: 3 new athletes, 2 new events, 24 results; 2 duplicates skipped. Check the new entities’ details.", "Importazione completata: 3 nuovi atleti, 2 nuovi eventi, 24 risultati; 2 duplicati ignorati. Verifica i dati delle nuove entità.", "Importación completada: 3 nuevos atletas, 2 nuevos eventos, 24 resultados; 2 duplicados omitidos. Revisa los datos de las nuevas entidades.", "Import terminé : 3 nouveaux athlètes, 2 nouveaux événements, 24 résultats ; 2 doublons ignorés. Vérifiez les données des nouvelles entités."],
   demoReminder: ["2 completed events without results: Example Event A, Example Event B.", "2 Eventi conclusi e senza risultati: Gara di esempio A, Gara di esempio B.", "2 eventos finalizados sin resultados: Evento de ejemplo A, Evento de ejemplo B.", "2 événements terminés sans résultats : Événement exemple A, Événement exemple B."],
-  demoSecurity: ["Security alert: another administrator deleted a result. Review the operation in the audit log.", "Avviso di sicurezza: un altro amministratore ha eliminato un risultato. Verifica l’operazione nel registro di audit.", "Alerta de seguridad: otro administrador ha eliminado un resultado. Revisa la operación en el registro de auditoría.", "Alerte de sécurité : un autre administrateur a supprimé un résultat. Vérifiez l’opération dans le journal d’audit."],
+  demoSecurity: ["Security alert: another administrator (ADMIN · ID 42) deleted a result. Review the operation in Audit and Restore.", "Avviso di sicurezza: un altro amministratore (ADMIN · ID 42) ha eliminato un risultato. Verifica l'operazione in Audit e Ripristino.", "Alerta de seguridad: otro administrador (ADMIN · ID 42) eliminó un resultado. Revisa la operación en Auditoría y Restauración.", "Alerte de sécurité : un autre administrateur (ADMIN · ID 42) a supprimé un résultat. Vérifiez l'opération dans Audit et Restauration."],
   demoResult: ["New results in {count} competitions: {events}.", "Nuovi risultati in {count} gare: {events}.", "Nuevos resultados en {count} competiciones: {events}.", "Nouveaux résultats dans {count} compétitions : {events}."],
   demoResultSingle: ["New results in 1 competition: {events}.", "Nuovi risultati in 1 gara: {events}.", "Nuevos resultados en 1 competición: {events}.", "Nouveaux résultats dans 1 compétition : {events}."],
   demoCompetition: ["Example competition", "Gara di esempio", "Competición de ejemplo", "Compétition fictive"],
@@ -245,7 +246,8 @@ export function mountNotificationInbox(host) {
         article.dataset.notificationType = item.type || '';
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
         const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
-          '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("");
+          '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("") +
+          (item.type === 'security_alert' ? '<a class="quiet-button outline-command-button" href="#/super-admin/audit">' + esc(t('goToAudit')) + '</a>' : '');
         const group = demoGroup(item.type);
         const audience = { personal: 'USER', admin: 'ADMIN', super_admin: 'SUPER ADMIN' }[group];
         article.innerHTML = '<div class="account-notification-copy"><p>' + esc(item.message) + '</p><time datetime="' + esc(item.created_at) + '">' + esc(new Date(item.created_at).toLocaleString(state.language)) +

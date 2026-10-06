@@ -598,11 +598,7 @@ def merge_athlete_into_target(
     add_security_alert(
         db,
         current_user,
-        (
-            f"Security: {current_user.email} merged athlete "
-            f"{athlete_display_name_from_parts(source_before.get('first_name'), source_before.get('last_name'))} "
-            f"into {athlete_display_name(target_athlete)}."
-        ),
+        "merge_athletes",
         related_athlete_id=target_athlete.id,
     )
     db.commit()
@@ -1203,7 +1199,7 @@ def delete_athlete(
     add_security_alert(
         db,
         current_user,
-        f"Security: {current_user.email} soft-deleted athlete {athlete_display_name(athlete)}.",
+        "delete_athlete",
         related_athlete_id=athlete.id,
     )
     db.commit()

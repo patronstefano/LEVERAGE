@@ -210,7 +210,7 @@ def merge_event(source_event_id: int, payload: EventMergeCommitRequest,
                       before={**before, 'reason': payload.reason, 'reversal_state': reversal_before},
                       after={'source_event': model_snapshot(source), 'target_event': model_snapshot(target), 'moved': moved,
                              'reversal_state': capture_merge(db, 'Event', source.id, target.id, reversal_before)})
-        add_security_alert(db, admin, f'Security: {admin.email} merged event #{source.id} into #{target.id}.', related_event_id=target.id)
+        add_security_alert(db, admin, "merge_events", related_event_id=target.id)
         db.commit()
         return {'merged': True, 'target_event': model_snapshot(target), 'deleted_source_event_id': source.id, 'moved': moved}
     except HTTPException:

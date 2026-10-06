@@ -13,6 +13,7 @@ from sqlalchemy import inspect
 
 from app import ai_suggestions, models, world_gymnastics
 from app.auth_security import hash_email_token
+from app.audit import add_security_alert
 from app.calendar_import import infer_event_level as infer_calendar_event_level
 from app.gymternet_import import infer_event_level as infer_gymternet_event_level
 from app.main import app
@@ -2720,6 +2721,35 @@ def test_notifications():
     # Check all read
     unread_response = client.get("/notifications?unread_only=true", headers=user_headers)
     assert len(unread_response.json()) == 0
+
+
+def test_security_alerts_identify_actor_and_use_recipient_language():
+    with SessionLocal() as db:
+        actor = models.User(email="actor@example.test", role=models.RoleEnum.ADMIN)
+        italian = models.User(email="italian@example.test", role=models.RoleEnum.SUPER_ADMIN,
+                              preferred_language=models.LanguageEnum.IT)
+        english = models.User(email="english@example.test", role=models.RoleEnum.SUPER_ADMIN,
+                              preferred_language=models.LanguageEnum.EN)
+        db.add_all([actor, italian, english])
+        db.flush()
+        assert add_security_alert(db, actor, "delete_result") == 2
+        db.commit()
+        messages = {item.user_id: item.message for item in db.query(models.Notification).all()}
+        assert messages[italian.id] == (
+            f"Avviso di sicurezza: un altro amministratore (ADMIN · ID {actor.id}) "
+            "ha eliminato un risultato. Verifica l'operazione in Audit e Ripristino."
+        )
+        assert messages[english.id] == (
+            f"Security alert: another administrator (ADMIN · ID {actor.id}) "
+            "deleted a result. Review the operation in Audit and Restore."
+        )
+        assert actor.id not in messages
+        assert add_security_alert(db, italian, "revert_audit") == 1
+        db.commit()
+        latest = db.query(models.Notification).order_by(models.Notification.id.desc()).first()
+        assert latest.user_id == english.id
+        assert f"SUPER ADMIN · ID {italian.id}" in latest.message
+        assert "reversed a change" in latest.message
 
 
 @pytest.mark.parametrize("role", [models.RoleEnum.USER, models.RoleEnum.ADMIN, models.RoleEnum.SUPER_ADMIN])
