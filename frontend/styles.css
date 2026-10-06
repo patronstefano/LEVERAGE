@@ -5986,6 +5986,10 @@ a:focus-visible > .entity-card-clickable {
 .admin-stats-note { margin: 0; color: var(--muted); font-size: 13px; }
 .admin-identity-pair { padding: 18px 0; border-bottom: 1px solid var(--line); min-width: 0; }
 .admin-identity-pair:last-child { border-bottom: 0; }
+#adminEntityReviews [data-pair-feedback]:empty { display: none; }
+#adminEntityReviews, #adminResultReviews { padding-top: 2px; }
+#adminEntityReviews [data-pairs] > .admin-identity-pair:first-child { padding-top: 0; }
+#adminResultReviews { border-top: 0; }
 .admin-identity-pair-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
 .admin-identity-pair-grid > div { min-width: 0; overflow-wrap: anywhere; }
 .admin-audit-comparison { margin: 16px 0; }

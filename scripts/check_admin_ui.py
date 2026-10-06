@@ -675,6 +675,10 @@ def main():
                 assert page.locator('#adminWorldGymnasticsScan').count() == 0
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
+                first_pair = page.locator('#adminEntityReviews .admin-identity-pair').first.bounding_box()
+                review_toggle = page.locator('.admin-review-toggle').bounding_box()
+                assert abs(first_pair['y'] - review_toggle['y'] - review_toggle['height'] - 16) < 1, (first_pair, review_toggle)
+                assert page.locator('#adminEntityReviews [data-pair-feedback]').is_hidden()
                 assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
                 page.locator('[data-pair-compare]').click()

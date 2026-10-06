@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Spaziatura compatta nella Revisione Duplicati
+
+- Eliminato l'ingombro del contenitore messaggi quando vuoto e il padding superiore della prima coppia: i record iniziano a 16px sotto lo slider, senza alterarne dimensioni e spaziature interne.
+- Rimosso il separatore superiore residuo nella vista Risultati. Test browser sulla distanza tra slider e prima coppia.
+
 #### 2026-10-06 - Titolo World Gymnastics semplificato
 
 - Rimosso il sottotitolo Riscontri World Gymnastics dalla sezione dedicata; invariati titolo principale, scansioni e suggerimenti.
