@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Audit: annullamento senza approvazione simbolica
+
+- Nel Centro Super Admin, Audit e ripristino non mostra piu il comando Approva: le modifiche registrate sono gia applicate quando la voce di audit viene creata. Restano Confronta dettagli e, per update di Athlete/Event/Result o creazioni/unioni di Athlete/Event revisionabili, il comando di annullamento. Le voci gia annullate o non reversibili non propongono un'azione non eseguibile.
+- Le voci precedentemente marcate come approved possono ora essere annullate come quelle pending, sempre con conferma, audit della reversal e controlli di conflitto con modifiche successive. Il vecchio endpoint di approvazione rimane per compatibilita API, ma non e richiamato dalla UI. Le etichette degli stati storici nel registro restano invariate. Verificati layout browser e test backend per update e inserimenti gia approvati.
+
 #### 2026-10-06 - Rimozione della notifica manuale e chiarimento dei riepiloghi import
 
 - L'inserimento manuale dei risultati non fa piu parte della UI attiva: rimossa dai generatori DEMO e dalle emissioni degli endpoint legacy la notifica `data_entry_summary`. I vecchi record conservano il tipo nel database per compatibilita, ma sono esclusi dall'inbox e dai contatori; non vengono cancellati. Restano invariati i controlli sui punteggi e le risposte di errore dell'API legacy.

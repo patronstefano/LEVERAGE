@@ -809,7 +809,7 @@ export async function renderAdminCenter(host) {
         const params = Object.fromEntries(new FormData(auditForm));
         const logs = await api("/admin/audit-logs", { params });
         if (!active() || revision !== auditRevision) return;
-        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification admin-audit-record"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta admin-audit-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p></div><div class="admin-center-actions admin-audit-commands">${button('compareChanges', `data-audit-compare="${log.id}" aria-expanded="false" aria-controls="auditDetails_${log.id}"`)}<div class="account-notification-actions">${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}` : ""}</div></div><div class="admin-audit-details" id="auditDetails_${log.id}" hidden>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}${field(`note_${log.id}`, "reason")}</div></article>`).join("") || emptyState();
+        document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification admin-audit-record"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta admin-audit-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p></div><div class="admin-center-actions admin-audit-commands">${button('compareChanges', `data-audit-compare="${log.id}" aria-expanded="false" aria-controls="auditDetails_${log.id}"`)}<div class="account-notification-actions">${["pending", "approved"].includes(log.review_status) && log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div></div><div class="admin-audit-details" id="auditDetails_${log.id}" hidden>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}${field(`note_${log.id}`, "reason")}</div></article>`).join("") || emptyState();
         for (const [index, log] of logs.entries()) {
           const article = root.querySelectorAll('#adminAudit > article')[index];
           const author = document.createElement('p');
@@ -820,11 +820,10 @@ export async function renderAdminCenter(host) {
           author.textContent = [identity ? `${text('auditAuthor')}: ${identity}` : text('auditUnknownAuthor'), role].filter(Boolean).join(' · ');
           article.querySelector('.admin-audit-meta').after(author);
           if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
-          const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
+          const actions = article.querySelector('.account-notification-actions');
           const undoLabel = log.action === 'merge' ? 'undoMerge' : 'undoCreate';
-          actions?.insertAdjacentHTML('beforeend', button(undoLabel, `data-audit="${log.id}" data-action="revert" data-confirm-label="${undoLabel}"`));
+          if (['pending', 'approved'].includes(log.review_status)) actions.insertAdjacentHTML('beforeend', button(undoLabel, `data-audit="${log.id}" data-action="revert" data-confirm-label="${undoLabel}"`));
         }
-        root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));
         root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.confirmLabel || b.dataset.action, async () => {
           const note = root.querySelector(`[name="note_${b.dataset.audit}"]`);
@@ -832,7 +831,7 @@ export async function renderAdminCenter(host) {
           if (!active()) return;
           const article = b.closest('article');
           const log = logs.find((item) => String(item.id) === b.dataset.audit);
-          log.review_status = b.dataset.action === 'approve' ? 'approved' : 'reverted';
+          log.review_status = 'reverted';
           article.querySelector('.admin-audit-meta').textContent = `${new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language)} · ${text(log.review_status)}`;
           note.disabled = true;
           article.querySelector('.account-notification-actions').innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('success'))}</div>`;

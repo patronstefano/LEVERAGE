@@ -1750,6 +1750,11 @@ def test_super_admin_can_review_and_revert_admin_update_audit_logs():
     )
     assert second_pending_response.status_code == 200
     second_update_log = second_pending_response.json()[0]
+    assert client.post(
+        f"/admin/audit-logs/{second_update_log['id']}/approve",
+        json={"note": "Already applied on site"},
+        headers=super_headers,
+    ).status_code == 200
 
     revert_response = client.post(
         f"/admin/audit-logs/{second_update_log['id']}/revert",

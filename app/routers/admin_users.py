@@ -558,12 +558,15 @@ def get_audit_log_or_404(db: Session, audit_log_id: int) -> models.AuditLog:
 def ensure_audit_log_can_be_reviewed(
     audit_log: models.AuditLog,
     current_user: models.User,
+    allow_approved: bool = False,
 ) -> None:
     legacy_auto_approval = (
         audit_log.review_status == models.AuditReviewStatusEnum.APPROVED
         and audit_log.review_note == "Auto-approved super-admin operation."
     )
-    if audit_log.review_status != models.AuditReviewStatusEnum.PENDING and not legacy_auto_approval:
+    if audit_log.review_status != models.AuditReviewStatusEnum.PENDING and not legacy_auto_approval and not (
+        allow_approved and audit_log.review_status == models.AuditReviewStatusEnum.APPROVED
+    ):
         raise HTTPException(status_code=400, detail="Audit log has already been reviewed")
 
 
@@ -673,7 +676,7 @@ def revert_audit_log(
     audit_log = db.query(models.AuditLog).filter(models.AuditLog.id == audit_log_id).populate_existing().with_for_update().first()
     if audit_log is None:
         raise HTTPException(404, "Audit log not found")
-    ensure_audit_log_can_be_reviewed(audit_log, current_user)
+    ensure_audit_log_can_be_reviewed(audit_log, current_user, allow_approved=True)
     if audit_log.action == "merge" and audit_log.entity_type in {"Athlete", "Event"}:
         return revert_merge(db, audit_log, payload, current_user)
     undo_create = audit_log.action == "create" and audit_log.entity_type in {"Athlete", "Event"}

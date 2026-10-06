@@ -74,7 +74,7 @@ def main():
                 payload = [user for user in payload if query in user['email'].lower()]
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
-                payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
+                payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None, 'review_status': 'approved'})
                 payload.append({**payload[0], 'id': 93, 'action': 'merge'})
                 payload[0].update(admin_email='review@example.test', admin_current_role='admin')
                 payload[1].update(admin_email='super@example.test', admin_current_role='super_admin')
@@ -144,8 +144,8 @@ def main():
                     route.fulfill(json={"decision": "keep_separate"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ['/athletes/', '/events/']:
                     route.fulfill(status=201, json={"id": 1, **json.loads(route.request.post_data)}, headers={"Access-Control-Allow-Origin": "*"})
-                elif path == '/admin/audit-logs/91/approve':
-                    route.fulfill(json={"id": 91, "review_status": "approved"}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/admin/audit-logs/91/revert':
+                    route.fulfill(json={"id": 91, "review_status": "reverted"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/admin/users/77' and route.request.method == 'DELETE':
                     route.fulfill(json={"id": 77, "is_active": False}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
@@ -635,7 +635,7 @@ def main():
                 before_box = comparison.locator('.admin-audit-side').nth(0).bounding_box()
                 after_box = comparison.locator('.admin-audit-side').nth(1).bounding_box()
                 assert before_box['x'] < after_box['x'] and abs(before_box['y'] - after_box['y']) < 1
-                assert page.locator('[data-action=approve].admin-accept-button').count() == 3
+                assert page.locator('#adminAudit [data-action=approve]').count() == 0
                 assert page.locator('[data-action=revert].filter-clear-button').count() == 3
                 undo_merge = page.locator('[data-audit="93"][data-action=revert]')
                 assert undo_merge.inner_text() == 'Annulla unione'
@@ -653,7 +653,7 @@ def main():
                 page.screenshot(path='/tmp/leverage-super-audit-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
                 page.screenshot(path='/tmp/leverage-super-audit-details.png', full_page=True)
-                page.locator('[data-audit="91"][data-action=approve]').click()
+                page.locator('[data-audit="91"][data-action=revert]').click()
                 page.locator('dialog[open] [data-confirm]').click()
                 notice = page.locator('#adminAudit > article').first.locator('.account-notification-actions .is-success')
                 notice.wait_for()

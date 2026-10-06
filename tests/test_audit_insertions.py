@@ -111,6 +111,15 @@ def test_insertion_reversal_is_soft_audited_and_restorable(insertion):
     assert not entity.is_deleted
 
 
+def test_approved_insertion_can_still_be_reversed(insertion):
+    db, admin, entity, log, *_ = insertion
+    log.review_status = models.AuditReviewStatusEnum.APPROVED
+    db.commit()
+    revert_audit_log(log.id, None, db, admin)
+    assert entity.is_deleted
+    assert log.review_status == models.AuditReviewStatusEnum.REVERTED
+
+
 def test_changed_insertion_cannot_be_reversed(insertion):
     db, admin, entity, log, athlete, event = insertion
     if log.entity_type == 'Athlete':
