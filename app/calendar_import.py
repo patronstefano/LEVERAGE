@@ -343,6 +343,7 @@ def summarize_calendar_import(
     rows: list[CalendarImportRow],
     issues: list[dict],
     create_missing_from_year: int,
+    skip_existing_events: bool = False,
 ) -> dict:
     event_lookup = _build_event_lookup(db, {row.year for row in rows})
     seen_source_keys: dict[tuple[int, str], CalendarImportRow] = {}
@@ -355,8 +356,16 @@ def summarize_calendar_import(
     would_create_source_keys: set[tuple[int, str]] = set()
     unmatched_historical_rows = []
     matched_sources_by_event_id: dict[int, list[CalendarImportRow]] = {}
+    skipped_event_ids: set[int] = set()
+    skipped_existing_rows = 0
 
     for row in rows:
+        matches = _find_existing_events(event_lookup, row)
+        # Excluded existing events must not participate in conflicts or writes.
+        if skip_existing_events and matches:
+            skipped_event_ids.update(event.id for event in matches)
+            skipped_existing_rows += 1
+            continue
         source_key = (row.year, normalize_calendar_event_name(row.event_name))
         duplicate_of = seen_source_keys.get(source_key)
         if duplicate_of is not None:
@@ -364,7 +373,6 @@ def summarize_calendar_import(
         else:
             seen_source_keys[source_key] = row
 
-        matches = _find_existing_events(event_lookup, row)
         matched_ids = [event.id for event in matches]
         matched_event_ids.update(matched_ids)
         for event in matches:
@@ -395,6 +403,9 @@ def summarize_calendar_import(
 
     return {
         "parsed_rows": len(rows),
+        "skip_existing_events": skip_existing_events,
+        "skipped_existing_events_count": len(skipped_event_ids),
+        "skipped_existing_rows": skipped_existing_rows,
         "years": sorted({row.year for row in rows}),
         "matched_rows": sum(1 for row in preview_rows if row["matched_event_ids"]),
         "matched_events": len(matched_event_ids),

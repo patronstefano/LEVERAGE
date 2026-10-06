@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
 import { mountImportProgress } from './admin-import-progress.js?v=import-progress-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-review-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-scope-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -968,15 +968,19 @@ export async function renderAdminCenter(host) {
       ? [['importCreatedResults', p.created_results], ['importCreatedAthletes', p.created_athletes], ['importCreatedEvents', p.created_events], ['importUpdatedEvents', p.updated_events], ['importSkippedDuplicates', p.skipped_duplicates], ['importSkippedConflicts', p.skipped_conflicts]]
       : [['importUpdatedEvents', p.updated_events], ['importCreatedEvents', p.created_events], ['importCalendarUnmatched', p.skipped_unmatched_historical_rows]];
     const calendarMetrics = [['importCalendarRows', p.parsed_rows], ['importCalendarMatched', p.matched_events], ['importCalendarUpdate', p.would_update_events], ['importNewEvents', p.would_create_events], ['importCalendarUnmatched', p.unmatched_historical_rows], ['importCalendarConflicts', calendarConflicts]];
+    if (draft.kind === 'calendar' && p.skip_existing_events) {
+      (p.committed ? completedMetrics : calendarMetrics).push(['importCalendarExcluded', p.skipped_existing_events_count]);
+    }
     output.innerHTML = `
       <div class="admin-import-heading ${p.committed ? 'is-complete' : ''}">
         <div><h3>${esc(text(p.committed ? 'importCompleted' : 'preview'))}</h3><p class="admin-revision-meta">${esc(p.filename)}</p></div>
         <div class="admin-import-header-actions">
-          ${draft.kind === 'gymternet' && !p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], draft.params.skip_existing_events ? 'skip' : 'include')}</div>` : ''}
+          ${!p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', draft.kind === 'calendar' ? 'importCalendarExistingScope' : 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], draft.params.skip_existing_events ? 'skip' : 'include')}</div>` : ''}
           ${button(draft.fileFormOpen ? 'importHideFile' : 'importChangeFile', `id="adminImportChangeFile" aria-controls="adminImportForm" aria-expanded="${Boolean(draft.fileFormOpen)}"`)}
         </div>
       </div>
       <div id="adminImportScopeStatus" hidden></div>
+      ${draft.kind === 'calendar' && p.skip_existing_events && !p.committed ? `<p class="admin-stats-note">${esc(text('importCalendarSkipNote'))}</p>` : ''}
       ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
@@ -1080,7 +1084,7 @@ export async function renderAdminCenter(host) {
         if (draft.scopeBusy) return;
         const changingScope = scope !== draft.params.skip_existing_events;
         const changingSource = Boolean(draft.sourceDirty);
-        const params = {...draft.params, ...(draft.kind === 'gymternet' ? {skip_existing_events: scope} : {})};
+        const params = {...draft.params, skip_existing_events: Boolean(scope)};
         const revision = draft.decisionRevision || 0;
         draft.scopeBusy = true;
         output.inert = true;
@@ -1142,6 +1146,7 @@ export async function renderAdminCenter(host) {
     const updateCommit = () => {
       const control = output.querySelector('#adminCommitImport');
       if (control) control.disabled = Boolean(draft.scopeBusy || issueErrors.length || p.parsed_rows === 0 || (p.skipped_existing_events?.length && !p.importable_results) || draft.needsPreview ||
+        (draft.kind === 'calendar' && p.skip_existing_events && !p.rows?.length) ||
         p.athlete_match_decision_stats?.unresolved || p.event_match_decision_stats?.unresolved ||
         (draft.kind === 'gymternet' && ((p.orphan_dscore_decision_stats?.unresolved ?? p.orphan_dscore_review_count ?? p.orphan_dscore_review?.length ?? 0) || p.orphan_dscore_decision_stats?.invalid_decisions || p.athlete_match_decision_stats?.invalid_decisions)) || p.conflicts?.length || calendarConflicts);
     };

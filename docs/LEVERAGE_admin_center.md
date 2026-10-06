@@ -19,6 +19,17 @@ eventi mancanti. Il campo "Crea eventi calendario dall'anno" non e piu esposto
 nel modulo: il backend mantiene come soglia predefinita l'anno corrente.
 Un anno assente dal file viene segnalato e non e importabile.
 
+Anche Calendar offre "Eventi gia presenti in LEVERAGE" con Includi/Tralascia.
+Tralascia esclude gli eventi riconosciuti dal matching nome/anno dalla revisione
+e dal commit: nessun aggiornamento delle loro date. Un conteggio compatto
+riporta gli eventi esclusi; le voci totali del file restano indicate. Tornando
+a Includi si ricalcola l'intera anteprima. La scelta passa anche al commit,
+che ripete il matching sul database corrente. Eventuali duplicati o periodi
+discordanti delle sole righe escluse non bloccano i nuovi eventi; errori di
+lettura del file e conflitti dei nuovi eventi rimangono bloccanti. Se tutte
+le righe sono escluse, la conferma UI e disabilitata. L'opzione non modifica
+la soglia di creazione degli eventi storici mancanti.
+
 L'anteprima Calendar non usa piu report tecnici annidati: duplicati e periodi
 discordanti sono righe compatte paginate a sei elementi con nome gara,
 foglio/riga, date e link Leverage ID. Il numero dei conflitti e distinto dalle

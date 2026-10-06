@@ -50,6 +50,9 @@ def build_calendar_import_preview_payload(
         "filename": filename,
         "year": year,
         "create_missing_from_year": create_missing_from_year,
+        "skip_existing_events": summary.get("skip_existing_events", False),
+        "skipped_existing_events_count": summary.get("skipped_existing_events_count", 0),
+        "skipped_existing_rows": summary.get("skipped_existing_rows", 0),
         "parsed_rows": summary["parsed_rows"],
         "years": summary["years"],
         "matched_rows": summary["matched_rows"],
@@ -71,6 +74,7 @@ def parse_and_summarize_calendar_upload(
     db: Session,
     create_missing_from_year: Optional[int],
     year: Optional[int] = None,
+    skip_existing_events: bool = False,
 ) -> tuple[str, int, dict]:
     resolved_create_missing_from_year = create_missing_from_year or date.today().year
     filename = file.filename or "calendar_import"
@@ -81,6 +85,7 @@ def parse_and_summarize_calendar_upload(
             [],
             [{"severity": "error", "code": "calendar_file_empty", "message": "Uploaded file is empty"}],
             resolved_create_missing_from_year,
+            skip_existing_events,
         )
         return filename, resolved_create_missing_from_year, summary
 
@@ -95,13 +100,14 @@ def parse_and_summarize_calendar_upload(
             [],
             [{"severity": "error", "code": "calendar_file_invalid", "message": f"Could not parse calendar upload: {exc}"}],
             resolved_create_missing_from_year,
+            skip_existing_events,
         )
         return filename, resolved_create_missing_from_year, summary
 
     return (
         filename,
         resolved_create_missing_from_year,
-        summarize_calendar_import(db, rows, issues, resolved_create_missing_from_year),
+        summarize_calendar_import(db, rows, issues, resolved_create_missing_from_year, skip_existing_events),
     )
 
 
@@ -338,6 +344,7 @@ def parse_athlete_match_decisions(raw: Optional[str]) -> Optional[list[dict]]:
 def preview_calendar_import(
     file: UploadFile = File(...),
     year: Optional[int] = Query(None, ge=1900, le=2100),
+    skip_existing_events: bool = Query(False),
     create_missing_from_year: Optional[int] = Query(
         None,
         ge=1900,
@@ -352,6 +359,7 @@ def preview_calendar_import(
         db,
         create_missing_from_year,
         year,
+        skip_existing_events,
     )
     return build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary, year)
 
@@ -360,6 +368,7 @@ def preview_calendar_import(
 def commit_calendar_import(
     file: UploadFile = File(...),
     year: Optional[int] = Query(None, ge=1900, le=2100),
+    skip_existing_events: bool = Query(False),
     create_missing_from_year: Optional[int] = Query(
         None,
         ge=1900,
@@ -374,6 +383,7 @@ def commit_calendar_import(
         db,
         create_missing_from_year,
         year,
+        skip_existing_events,
     )
     payload = build_calendar_import_preview_payload(filename, resolved_create_missing_from_year, summary, year)
     if has_error_issues(summary):

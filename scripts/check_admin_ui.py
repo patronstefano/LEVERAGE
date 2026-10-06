@@ -164,9 +164,19 @@ def main():
                     import_previews['gymternet'] = payload
                     route.fulfill(json=payload, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/imports/calendar/preview':
-                    route.fulfill(json=calendar_preview, headers={"Access-Control-Allow-Origin": "*"})
+                    scoped = parse_qs(urlparse(route.request.url).query).get('skip_existing_events') == ['true']
+                    payload = {**calendar_preview}
+                    if scoped:
+                        excluded = [row for row in payload['rows'] if row.get('matched_event_ids')]
+                        payload.update(skip_existing_events=True, matched_events=0, would_update_events=0,
+                            skipped_existing_rows=len(excluded),
+                            skipped_existing_events_count=len({eid for row in excluded for eid in row['matched_event_ids']}),
+                            rows=[row for row in payload['rows'] if not row.get('matched_event_ids')])
+                    import_previews['calendar'] = payload
+                    route.fulfill(json=payload, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/imports/calendar/commit':
-                    route.fulfill(json={**calendar_preview, 'committed': True, 'updated_events': 1,
+                    route.fulfill(json={**import_previews['calendar'], 'committed': True,
+                        'updated_events': 0 if import_previews['calendar'].get('skip_existing_events') else 1,
                         'created_events': 7, 'skipped_unmatched_historical_rows': 0},
                         headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/imports/gymternet/commit':
@@ -1139,6 +1149,17 @@ def main():
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '1', '1', '7', '0', '0']
                 assert page.locator('#adminCommitImport').is_enabled()
                 page.locator('[data-calendar-details] > summary').click()
+                calendar_scope = page.locator('[name=existing_event_scope]').locator('..')
+                calendar_scope.locator('summary').click()
+                calendar_scope.locator('[data-admin-select-value=skip]').click()
+                page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                assert 'skip_existing_events=true' in writes[-1]['url']
+                assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '0', '0', '7', '0', '0', '1']
+                assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
+                calendar_scope.locator('summary').click()
+                calendar_scope.locator('[data-admin-select-value=include]').click()
+                page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'include' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                assert 'skip_existing_events=false' in writes[-1]['url']
                 assert page.locator('#adminCalendarRows article').count() == 6
                 assert 'Date da aggiornare' in page.locator('#adminCalendarRows article').first.inner_text()
                 page.locator('[data-calendar-page="1"]').click()
@@ -1191,13 +1212,17 @@ def main():
                 calendar_preview['matched_event_source_conflicts'] = []
                 calendar_preview['issues'] = []
                 analyze_import()
+                calendar_scope.locator('summary').click()
+                calendar_scope.locator('[data-admin-select-value=skip]').click()
+                page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 page.locator('#adminCommitImport').click()
                 page.locator('dialog[open] [data-confirm]').click()
                 page.locator('.admin-import-heading.is-complete').wait_for()
-                assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['1', '7', '0']
+                assert 'skip_existing_events=true' in writes[-1]['url']
+                assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['0', '7', '0', '1']
                 assert 'year=2026' in writes[-1]['url']
                 page.locator('[data-calendar-details] > summary').click()
-                assert 'Date aggiornate' in page.locator('#adminCalendarRows article').first.inner_text()
+                assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
                 assert 'Gara creata' in page.locator('#adminCalendarRows article').nth(1).inner_text()
         page.evaluate("location.hash = '/admin/review'")
         page.wait_for_timeout(300)

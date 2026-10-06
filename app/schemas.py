@@ -1918,6 +1918,9 @@ class CalendarImportRowPreview(BaseModel):
 class CalendarImportPreview(BaseModel):
     filename: str
     year: Optional[int] = None
+    skip_existing_events: bool = False
+    skipped_existing_events_count: int = 0
+    skipped_existing_rows: int = 0
     create_missing_from_year: int
     parsed_rows: int
     years: list[int]

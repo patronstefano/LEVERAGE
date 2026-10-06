@@ -5856,6 +5856,66 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
     assert duplicate_notify_response.json()["created_notifications"] == 0
 
 
+def test_calendar_import_skip_existing_excludes_conflicts_and_preserves_dates():
+    client.post('/auth/register', json={'email': 'calendar_scope@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('calendar_scope@example.com')}"}
+    existing = client.post('/events/', headers=headers, json={
+        'name': 'Existing Cup', 'year': 2026, 'discipline': 'MAG and WAG',
+        'category': 'senior', 'level': 'International Event',
+        'start_date': '2026-01-01', 'end_date': '2026-01-02',
+    }).json()
+    content = make_calendar_workbook({2026: [('Feb 1-2', 'Existing Cup'),
+        ('Mar 1-2', 'Existing Cup'), ('Apr 1-2', 'New Cup')]})
+    files = {'file': ('Calendar.xlsx', content.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    params = '?year=2026&create_missing_from_year=2026'
+    included = client.post('/imports/calendar/preview' + params, files=files, headers=headers).json()
+    assert included['would_update_events'] == 1
+    assert included['duplicate_source_rows'] and included['matched_event_source_conflicts']
+    assert included['skipped_existing_events_count'] == 0
+    assert client.post('/imports/calendar/commit' + params, files=files, headers=headers).status_code == 409
+    scoped = params + '&skip_existing_events=true'
+    preview = client.post('/imports/calendar/preview' + scoped, files=files, headers=headers).json()
+    assert preview['skip_existing_events'] is True
+    assert preview['parsed_rows'] == 3
+    assert preview['skipped_existing_events_count'] == 1
+    assert preview['skipped_existing_rows'] == 2
+    assert preview['matched_events'] == preview['would_update_events'] == 0
+    assert preview['would_create_events'] == 1
+    assert not preview['duplicate_source_rows'] and not preview['matched_event_source_conflicts']
+    assert [row['event_name'] for row in preview['rows']] == ['New Cup']
+    assert preview['sample_rows'] == preview['rows']
+    # Scope changes are reversible and previews never write.
+    restored = client.post('/imports/calendar/preview' + params, files=files, headers=headers).json()
+    assert restored == included
+    assert len(client.get('/events/').json()) == 1
+    response = client.post('/imports/calendar/commit' + scoped, files=files, headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.json()['updated_events'] == 0
+    assert response.json()['created_events'] == 1
+    saved = client.get(f"/events/{existing['id']}").json()
+    assert saved['start_date'] == '2026-01-01' and saved['end_date'] == '2026-01-02'
+    repeat = client.post('/imports/calendar/commit' + scoped, files=files, headers=headers).json()
+    assert repeat['skipped_existing_events_count'] == 2
+    assert repeat['rows'] == []
+    assert repeat['created_events'] == repeat['updated_events'] == repeat['created_admin_notifications'] == 0
+
+
+def test_calendar_skip_existing_keeps_new_conflicts_and_parse_errors_blocking():
+    client.post('/auth/register', json={'email': 'calendar_scope_errors@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('calendar_scope_errors@example.com')}"}
+    params = '?year=2026&create_missing_from_year=2026&skip_existing_events=true'
+    content = b'YEAR,DATE,EVENT\n2026,Jan 1,New Cup\n2026,Jan 2,New Cup\n'
+    files = {'file': ('Calendar.csv', content, 'text/csv')}
+    preview = client.post('/imports/calendar/preview' + params, files=files, headers=headers).json()
+    assert preview['duplicate_source_rows']
+    assert client.post('/imports/calendar/commit' + params, files=files, headers=headers).status_code == 409
+    files = {'file': ('Calendar.csv', b'YEAR,DATE,EVENT\n2026,Feb 31,Invalid Cup\n', 'text/csv')}
+    response = client.post('/imports/calendar/commit' + params, files=files, headers=headers)
+    assert response.status_code == 400
+    assert response.json()['detail']['issues'][0]['code'] == 'calendar_date_invalid'
+    assert not client.get('/events/').json()
+
+
 def test_calendar_import_selected_year_limits_preview_and_commit():
     client.post('/auth/register', json={'email': 'calendar_year@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('calendar_year@example.com')}"}

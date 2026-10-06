@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Calendar: esclusione degli eventi gia presenti
+
+- Introdotto nell'anteprima Calendar lo stesso selettore Includi/Tralascia di Results, con etichetta "Eventi gia presenti in LEVERAGE" e traduzioni EN/IT/ES/FR. La scelta ricalcola l'anteprima con l'animazione di completamento condivisa e resta nella bozza durante la navigazione.
+- Il parametro API `skip_existing_events` e supportato sia in preview sia in commit Calendar. Il matching esistente nome/anno determina quali righe escludere prima della ricerca di duplicati e periodi discordanti. Gli eventi esclusi non vengono aggiornati; restano solo due conteggi API, eventi distinti e righe escluse, senza nuove liste infinite. La UI mostra il conteggio degli eventi esclusi e disabilita la conferma quando non rimangono righe.
+- Includi resta il valore iniziale e ripristina il normale controllo completo. Gli errori di parsing e i conflitti delle righe nuove restano bloccanti. Le regole sugli eventi storici mancanti non cambiano; nessuna unione automatica introdotta. Il commit ricalcola lo stato del database, rendendo innocua la ripetizione dell'import con Tralascia.
+- Verifica backend: 310 test superati su database temporaneo, inclusi esclusione di conflitti storici, conservazione delle date, reversibilita dell'anteprima, ripetizione senza nuove scritture e blocco dei conflitti nuovi. Controlli UI con API simulate per selettore, riepilogo, ripristino Includi e trasmissione della scelta al commit. Nessun file reale importato per questa modifica.
+
 #### 2026-10-06 - Semplificazione del modulo Calendar
 
 - Rimosso dall'interfaccia il campo "Crea eventi calendario dall'anno", insieme alla relativa gestione del modulo e al parametro esplicito nelle nuove richieste di anteprima. Rimane il selettore Anno per filtrare il file Calendar.
