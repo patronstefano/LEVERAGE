@@ -538,6 +538,14 @@ def main():
                 for width in [1440, 390]:
                     page.set_viewport_size({'width': width, 'height': 1000})
                     download_button.click()
+                    page.wait_for_function('''() => {
+                        const style = getComputedStyle(document.querySelector('[data-export-toggle]'));
+                        return style.backgroundColor === 'rgb(25, 23, 71)' && style.color === 'rgb(255, 255, 255)';
+                    }''')
+                    assert download_button.evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
+                    assert download_button.evaluate('el => getComputedStyle(el).color') == 'rgb(255, 255, 255)'
+                    page.locator('[data-export-format=csv]').hover()
+                    assert download_button.evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
                     download_box = download_button.bounding_box()
                     close_box = page.locator('[data-close-editor-event]').bounding_box()
                     menu_box = page.locator('[data-export-menu]').bounding_box()
@@ -551,6 +559,7 @@ def main():
                     assert page.locator('[data-export-format]').evaluate_all('buttons => buttons.every(b => b.scrollWidth <= b.clientWidth)')
                     page.screenshot(path=f'/tmp/leverage-download-menu-{width}.png', full_page=True)
                     download_button.click()
+                    assert download_button.get_attribute('aria-expanded') == 'false'
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 for file_format in ['csv', 'xlsx']:
                     download_button.click()

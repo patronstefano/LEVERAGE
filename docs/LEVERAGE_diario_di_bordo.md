@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Stato attivo del pulsante Scarica
+
+- Scarica resta pieno blu LEVERAGE con testo bianco finche il menu CSV/XLSX
+  e aperto, anche senza hover. Alla chiusura torna al comportamento normale.
+- Stile associato ad aria-expanded, condiviso da tutte le modalita di chiusura;
+  test browser aggiornato per verificare lo stato aperto e chiuso.
+
 ## 2026-10-06 - Scarica sulla riga di ricerca dell'Editor Risultati
 
 - Spostato Scarica a destra sulla riga Cerca eventi, sopra la X della scheda.

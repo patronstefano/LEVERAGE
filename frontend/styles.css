@@ -4433,6 +4433,7 @@ a:focus-visible > .entity-card-clickable {
 .admin-editor-search-row .analytics-comparison-search-primary { flex: 1; min-width: 0; }
 .admin-editor-download-slot { flex: 0 0 auto; margin-right: var(--card-padding); }
 .admin-editor-download-slot:empty { display: none; }
+.admin-center .admin-editor-download [data-export-toggle][aria-expanded="true"] { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
 
 .admin-editor-search-row::before {
   content: none;
