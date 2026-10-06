@@ -3,9 +3,23 @@ from fastapi import HTTPException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from app import models
+from app import models, schemas
 from app.audit import add_audit_log, model_snapshot
-from app.routers.admin_users import revert_audit_log, restore_entity
+from app.routers.admin_users import list_audit_logs, revert_audit_log, restore_entity
+
+
+def test_audit_exposes_author_and_current_role(insertion):
+    db, admin, entity, log, athlete, event = insertion
+    logs = list_audit_logs(db=db, current_user=admin, entity_type=None,
+        entity_id=None, action=None, review_status=None, limit=100)
+    data = schemas.AuditLogRead.model_validate(logs[0]).model_dump(mode='json')
+    assert data['admin_id'] == admin.id
+    assert data['admin_email'] == admin.email
+    assert data['admin_current_role'] == 'super_admin'
+    log.admin = None
+    db.flush()
+    data = schemas.AuditLogRead.model_validate(log).model_dump()
+    assert data['admin_email'] is None and data['admin_current_role'] is None
 
 
 @pytest.fixture(params=['Athlete', 'Event'])

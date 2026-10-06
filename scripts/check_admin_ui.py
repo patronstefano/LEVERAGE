@@ -71,6 +71,8 @@ def main():
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
                 payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
                 payload.append({**payload[0], 'id': 93, 'action': 'merge'})
+                payload[0].update(admin_email='review@example.test', admin_current_role='admin')
+                payload[1].update(admin_email='super@example.test', admin_current_role='super_admin')
             elif path == "/data-suggestions/":
                 payload = [
                     {"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "status": "pending", "source_title": "World Gymnastics Athlete Profile", "source_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=1"},
@@ -578,6 +580,10 @@ def main():
                 }''')
                 page.locator('#adminAuditForm button[type=submit]').click()
                 page.locator('#adminAudit .account-notification').first.wait_for()
+                authors = page.locator('[data-audit-author]').all_text_contents()
+                assert authors[0] == 'Autore: review@example.test · ID 77 · Ruolo attuale: ADMIN'
+                assert 'super@example.test' in authors[1] and 'SUPER ADMIN' in authors[1]
+                assert authors[2] == 'Autore: ID 77'
                 page.locator('#adminAudit .admin-revision-group > summary').first.click()
                 comparison = page.locator('#adminAudit .admin-audit-comparison').first
                 assert comparison.locator('dd').all_inner_texts() == ['ITA', 'FRA']

@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Autore delle operazioni nell'audit
+
+- Ogni voce di Audit e ripristino mostra email, ID e ruolo attuale dell'autore, distinguendo ADMIN e SUPER ADMIN accanto alle informazioni temporali. Se il profilo non e disponibile, viene conservato l'ID quando presente oppure mostrata un'indicazione esplicita.
+- Esposti nell'API audit i soli campi email e ruolo dell'autore collegato, con caricamento della relazione in un'unica query e accesso sempre riservato al SUPER ADMIN. Nessuna modifica agli snapshot o alle operazioni registrate.
+- Il ruolo e indicato esplicitamente come attuale: non viene ricostruito arbitrariamente il ruolo storico al momento dell'operazione. Test backend su database temporanei e test browser per ADMIN, SUPER ADMIN e dati autore incompleti.
+
 #### 2026-10-06 - Separazione Revisione Duplicati e World Gymnastics
 
 - Rinominata Revisioni in Revisione Duplicati, mantenendo lo slider Atleti / Eventi / Risultati per i soli controlli di duplicazione.

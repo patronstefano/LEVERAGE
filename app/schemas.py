@@ -3,7 +3,7 @@ from typing import Any, Optional
 from enum import Enum
 from urllib.parse import parse_qs, urlparse
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, computed_field, model_validator
+from pydantic import AliasPath, BaseModel, ConfigDict, EmailStr, Field, computed_field, model_validator
 
 
 MAG_APPARATUS = {"FX", "PH", "SR", "VT", "PB", "HB", "AA", "VT AVG"}
@@ -2037,6 +2037,8 @@ class NotificationRead(NotificationBase):
 class AuditLogRead(BaseModel):
     id: int
     admin_id: Optional[int] = None
+    admin_email: Optional[str] = Field(default=None, validation_alias=AliasPath('admin', 'email'))
+    admin_current_role: Optional[RoleEnum] = Field(default=None, validation_alias=AliasPath('admin', 'role'))
     action: str
     entity_type: str
     entity_id: Optional[int] = None

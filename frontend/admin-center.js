@@ -19,6 +19,9 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  auditAuthor: ['Author', 'Autore', 'Autor', 'Auteur'],
+  auditCurrentRole: ['Current role', 'Ruolo attuale', 'Rol actual', 'Rôle actuel'],
+  auditUnknownAuthor: ['Author unavailable', 'Autore non disponibile', 'Autor no disponible', 'Auteur indisponible'],
   reviewResults: ['Results', 'Risultati', 'Resultados', 'Résultats'],
   swapMergeIds: ['Swap IDs', 'Inverti gli ID', 'Intercambiar los ID', 'Inverser les ID'],
   'junior and senior': ['Junior and Senior', 'Junior e Senior', 'Junior y Senior', 'Junior et Senior'],
@@ -753,7 +756,15 @@ export async function renderAdminCenter(host) {
         const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
         for (const [index, log] of logs.entries()) {
-          const summary = root.querySelectorAll('#adminAudit > article')[index]?.querySelector('.admin-revision-group > summary');
+          const article = root.querySelectorAll('#adminAudit > article')[index];
+          const author = document.createElement('p');
+          author.className = 'admin-revision-meta';
+          author.dataset.auditAuthor = '';
+          const identity = [log.admin_email, log.admin_id != null ? `ID ${log.admin_id}` : null].filter(Boolean).join(' · ');
+          const role = log.admin_current_role ? `${text('auditCurrentRole')}: ${String(log.admin_current_role).replaceAll('_', ' ').toUpperCase()}` : '';
+          author.textContent = [identity ? `${text('auditAuthor')}: ${identity}` : text('auditUnknownAuthor'), role].filter(Boolean).join(' · ');
+          article.querySelector('.admin-revision-meta').after(author);
+          const summary = article.querySelector('.admin-revision-group > summary');
           if (summary) summary.textContent = text('compareChanges');
           if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;

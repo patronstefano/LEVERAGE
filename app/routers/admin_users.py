@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import String, case, func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app import models, schemas
 from app.audit import add_audit_log, add_security_alert, model_snapshot
@@ -511,7 +511,7 @@ def list_audit_logs(
     review_status: Optional[models.AuditReviewStatusEnum] = Query(None),
     limit: int = Query(100, ge=1, le=500),
 ):
-    query = db.query(models.AuditLog)
+    query = db.query(models.AuditLog).options(joinedload(models.AuditLog.admin))
     if entity_type:
         query = query.filter(models.AuditLog.entity_type == entity_type)
     if entity_id is not None:
