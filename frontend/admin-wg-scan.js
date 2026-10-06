@@ -14,6 +14,7 @@ const COPY = {
   active: ['Active', 'Attiva', 'Activo', 'Active'],
   paused: ['Paused', 'Sospesa', 'Pausado', 'Suspendue'],
   compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
+  compare: ['Compare details', 'Confronta dettagli', 'Comparar detalles', 'Comparer les détails'],
   note: ['Compatibility is a matching score, not identity verification. No profile data is imported by this scan.', 'La compatibilità è un indice di corrispondenza, non una verifica d’identità. La scansione non importa dati nelle schede.', 'La compatibilidad es un índice de coincidencia, no una verificación de identidad. El escaneo no importa datos en las fichas.', 'La compatibilité est un indice de correspondance, pas une vérification d’identité. La recherche n’importe aucune donnée dans les fiches.'],
   open: ['Review profile', 'Esamina scheda', 'Revisar ficha', 'Examiner la fiche'],
   reject: ['Reject', 'Rifiuta', 'Rechazar', 'Refuser'],
@@ -56,12 +57,16 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
       const next = JSON.stringify(matches.items);
       if (next !== signature) {
         signature = next;
-        const opened = new Set([...root.querySelectorAll('[data-scan-job][open]')].map((el) => el.dataset.scanJob));
+        const opened = new Set([...root.querySelectorAll('[data-scan-job] details[open]')].map((el) => el.closest('[data-scan-job]').dataset.scanJob));
         root.querySelector('[data-scan-matches]').innerHTML = matches.items.map((job) => {
           const href = `#/${job.entity_type === 'athlete' ? 'athletes' : 'events'}/${job.entity_id}?from=admin&admin_tools=1&wg_scan_job=${job.id}&return_to=${encodeURIComponent(route)}`;
-          return `<details class="admin-revision-group" data-scan-job="${job.id}" ${opened.has(String(job.id)) ? 'open' : ''}><summary>${esc(job.entity_name)} <span class="admin-revision-count">${Math.round(Math.max(...job.candidates.map((c) => c.match_score)) * 100)}%</span></summary>
+          const best = job.candidates.reduce((current, candidate) => !current || candidate.match_score > current.match_score ? candidate : current, null);
+          return `<article class="admin-identity-pair admin-wg-match" data-scan-job="${job.id}">
+            <div class="admin-identity-pair-grid"><div class="admin-identity-entity"><a href="${esc(href)}"><strong>${esc(job.entity_name)}</strong></a><p class="admin-revision-meta">LEVERAGE · ID ${esc(job.entity_id)}</p></div><div class="admin-identity-entity">${best ? `<a href="${esc(best.profile_url || best.event_url)}" target="_blank" rel="noopener noreferrer"><strong>${esc(best.title || [best.last_name, best.first_name].filter(Boolean).join(' '))}</strong></a><p class="admin-revision-meta">World Gymnastics · ${esc(best.fig_id || best.event_id)}</p>` : ''}</div></div>
+            <p class="admin-revision-meta">${esc(t('compatibility'))}: ${best ? Math.round(best.match_score * 100) : 0}%</p>
+            <details class="admin-wg-comparison" ${opened.has(String(job.id)) ? 'open' : ''}><summary class="quiet-button outline-command-button">${esc(t('compare'))}</summary>
             <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="${esc(href)}">${esc(t('open'))}</a></div>
-            ${job.candidates.map((c) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(c.title || [c.last_name,c.first_name].filter(Boolean).join(' '))}</strong></p><p>${esc([c.country,c.discipline,(c.disciplines || []).join(' / ')].filter(Boolean).join(' · '))}</p><a href="${esc(c.profile_url || c.event_url)}" target="_blank" rel="noopener noreferrer">World Gymnastics · ${esc(c.fig_id || c.event_id)}</a></div><div class="account-notification-actions"><span>${esc(t('compatibility'))} ${Math.round(c.match_score * 100)}%</span>${button('reject', `data-scan-reject="${job.id}" data-candidate="${esc(c.fig_id || c.event_id)}"`)}</div></article>`).join('')}</details>`;
+            ${job.candidates.map((c) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(c.title || [c.last_name,c.first_name].filter(Boolean).join(' '))}</strong></p><p>${esc([c.country,c.discipline,(c.disciplines || []).join(' / ')].filter(Boolean).join(' · '))}</p><a href="${esc(c.profile_url || c.event_url)}" target="_blank" rel="noopener noreferrer">World Gymnastics · ${esc(c.fig_id || c.event_id)}</a></div><div class="account-notification-actions"><span>${esc(t('compatibility'))} ${Math.round(c.match_score * 100)}%</span>${button('reject', `data-scan-reject="${job.id}" data-candidate="${esc(c.fig_id || c.event_id)}"`)}</div></article>`).join('')}</details></article>`;
         }).join('');
       }
       root.querySelector('[data-scan-more]').hidden = matches.items.length >= matches.total;

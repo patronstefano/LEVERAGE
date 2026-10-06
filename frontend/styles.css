@@ -6035,6 +6035,13 @@ a:focus-visible > .entity-card-clickable {
 #adminWorldGymnasticsScan .admin-stats-note { line-height: 1.6; }
 #adminWorldGymnasticsScan [data-scan-matches]:empty { display: none; }
 #adminWorldGymnasticsScan [data-scan-more] { justify-self: start; }
+#adminWorldGymnasticsScan .admin-wg-match:first-child { padding-top: 0; }
+.admin-wg-comparison > summary { display: inline-flex; list-style: none; min-height: 36px; box-sizing: border-box; padding: 0 13px; font-size: 14px; cursor: pointer; }
+.admin-wg-comparison > summary::-webkit-details-marker { display: none; }
+.admin-center .admin-wg-comparison[open] > summary,
+.admin-center .admin-wg-comparison[open] > summary:hover,
+.admin-center .admin-wg-comparison[open] > summary:focus-visible { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
+.admin-wg-comparison > .admin-center-actions { margin: 18px 0 12px; }
 #adminWorldGymnasticsScan .admin-revision-group + .admin-revision-group { border-top: 1px solid var(--line); }
 #adminWorldGymnasticsScan .admin-revision-group > summary { overflow-wrap: anywhere; }
 #adminWorldGymnasticsScan .admin-revision-count { display: inline-block; white-space: nowrap; }

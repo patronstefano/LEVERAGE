@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riscontri World Gymnastics coerenti con Revisione Duplicati
+
+- Riutilizzati struttura a due colonne, tipografia, spaziature e separatori delle coppie duplicate: entita LEVERAGE a sinistra e candidato WG con compatibilita maggiore a destra. Compatibilita sotto, comando Confronta dettagli con stato blu quando aperto.
+- Nei dettagli rimangono tutti i candidati, link ufficiali, compatibilita individuali, rifiuto ed Esamina scheda. Stato aperto conservato durante gli aggiornamenti della scansione; layout a colonna singola su mobile. Nessuna modifica ai criteri di matching o alla certificazione, nessuna scansione reale avviata.
+
 #### 2026-10-06 - Stato vuoto World Gymnastics non contraddittorio
 
 - Eliminato il messaggio Nessun elemento dalla lista secondaria dei suggerimenti World Gymnastics quando e vuota: il blocco viene nascosto, senza interferire con i riscontri della scansione. Visibilita ricalcolata al cambio Atleti/Eventi e dopo accettazione/rifiuto; contatori, scansione e avviso finale invariati.

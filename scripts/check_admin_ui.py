@@ -719,7 +719,8 @@ def main():
                 assert page.locator('.admin-revisions > .admin-tool-block > .section-header').count() == 0
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
                 assert page.locator('[data-scan-refresh]').count() == 0
-                assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
+                assert '95%' in page.locator('[data-scan-job="51"] > .admin-revision-meta').inner_text()
+                assert page.locator('[data-scan-job="51"] .admin-identity-pair-grid .admin-identity-entity').count() == 2
                 page.locator('[data-scan-job="51"] summary').click()
                 assert 'Compatibilità 95%' in page.locator('[data-scan-job="51"]').inner_text()
                 assert 'wg_scan_job=51' in page.locator('[data-scan-job="51"] .admin-center-actions a').get_attribute('href')
