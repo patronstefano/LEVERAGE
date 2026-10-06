@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=gymternet-preview-scope-20261006";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=import-progress-20261006";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=security-audit-notices-20261006";
@@ -2191,6 +2191,35 @@ async function fetchApi(path, params = {}, options = {}) {
         throw error;
       }
       lastError = error;
+    }
+  }
+  throw lastError || new Error("API unavailable");
+}
+
+async function uploadApi(path, params, body, onProgress, onUploaded) {
+  let lastError = null;
+  for (const base of apiBaseCandidates()) {
+    try {
+      const response = await new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("POST", apiUrl(path, params, base));
+        Object.entries(authHeaders()).forEach(([key, value]) => request.setRequestHeader(key, value));
+        request.upload.addEventListener("progress", (event) => {
+          if (event.lengthComputable && event.total) onProgress(Math.round(event.loaded * 100 / event.total));
+        });
+        request.upload.addEventListener("load", onUploaded);
+        request.addEventListener("load", () => {
+          if (!request.status) reject(new TypeError("API unavailable"));
+          else resolve(new Response(request.status === 204 ? null : request.responseText, { status: request.status }));
+        });
+        request.addEventListener("error", () => reject(new TypeError("API unavailable")));
+        request.send(body);
+      });
+      syncApiBase(base);
+      return response;
+    } catch (error) {
+      lastError = error;
+      onProgress(0);
     }
   }
   throw lastError || new Error("API unavailable");
@@ -12416,7 +12445,7 @@ function render() {
   if (["/forgot-password", "/reset-password", "/resend-verification"].includes(state.route.split("?")[0])) {
     return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
   } else if (/^\/(?:admin|super-admin)(?:\/|$)/.test(state.route)) {
-    return renderAdminCenter({ state, setApp, fetchApi, authHeaders, clearAuth, escapeHtml, authRequiredPage,
+    return renderAdminCenter({ state, setApp, fetchApi, uploadApi, authHeaders, clearAuth, escapeHtml, authRequiredPage,
       renderAdminSelectControl, bindAdminSelectControls, renderHomeCalendar, t, setSearchSuggestionsOpen, setSearchSuggestionsBusy,
       setToken: async (token) => { state.authToken = token; localStorage.setItem(AUTH_TOKEN_KEY, token); await hydrateCurrentUser(); } });
   } else if (state.route.startsWith("/account")) {

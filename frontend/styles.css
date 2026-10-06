@@ -6120,6 +6120,14 @@ a:focus-visible > .entity-card-clickable {
 .admin-file-picker .quiet-button { flex-shrink: 0; height: 36px; white-space: nowrap; }
 .admin-file-picker > span { min-width: 0; color: var(--muted); font-size: 14px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .admin-center .admin-file-picker input[type="file"] { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; pointer-events: none; }
+.admin-import-progress { max-width: 420px; margin: 20px 0 4px; color: var(--ink); font-size: 14px; line-height: 20px; }
+.admin-import-progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 9px; }
+.admin-import-progress-heading strong { color: var(--brand-blue); font-weight: 600; font-variant-numeric: tabular-nums; }
+.admin-import-progress-track { height: 5px; overflow: hidden; border-radius: 4px; background: var(--line); }
+.admin-import-progress-track > span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--brand-blue); transition: width 160ms ease; }
+.admin-import-progress-track.is-analyzing > span { width: 34%; animation: admin-import-analyzing 1.4s ease-in-out infinite; }
+@keyframes admin-import-analyzing { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+@media (prefers-reduced-motion: reduce) { .admin-import-progress-track > span { transition: none; } .admin-import-progress-track.is-analyzing > span { animation: none; width: 100%; opacity: .5; } }
 .admin-workspace-panel .admin-report { margin: 0; }
 .admin-workspace-panel .admin-center-row:last-child { border-bottom: 0; }
 .admin-workspace-panel .admin-center-row > div { overflow-wrap: anywhere; }

@@ -177,6 +177,7 @@ const COPY = {
   importResults: ["Results (The Gymternet)", "Risultati (The Gymternet)", "Resultados (The Gymternet)", "Résultats (The Gymternet)"],
   importCalendar: ["Calendar (The Gymternet)", "Calendario (The Gymternet)", "Calendario (The Gymternet)", "Calendrier (The Gymternet)"],
   importLoading: ["Analyzing the file...", "Analisi del file in corso...", "Analizando el archivo...", "Analyse du fichier en cours..."],
+  importUploading: ["Uploading file", "Caricamento file", "Subiendo archivo", "Envoi du fichier"],
   importNoRows: ["No Gymternet results found. Check the file format, sheet names and year.", "Nessun risultato Gymternet trovato. Controlla formato, nomi dei fogli e anno.", "No se encontraron resultados Gymternet. Revisa el formato, los nombres de las hojas y el año.", "Aucun résultat Gymternet trouvé. Vérifiez le format, les noms des feuilles et l'année."],
   importOnlyDuplicates: ["No new results to import: the file contains results already in LEVERAGE.", "Nessun nuovo risultato da importare: il file contiene risultati già presenti in LEVERAGE.", "No hay resultados nuevos para importar: el archivo contiene resultados ya presentes en LEVERAGE.", "Aucun nouveau résultat à importer : le fichier contient des résultats déjà présents dans LEVERAGE."],
   chooseFile: ["Choose file", "Scegli file", "Elegir archivo", "Choisir un fichier"],
@@ -394,13 +395,15 @@ export async function renderAdminCenter(host) {
     node.className = message ? `admin-center-feedback ${error ? "is-error" : "is-success"}` : "";
     node.textContent = message;
   };
-  const api = async (path, { method = "GET", body, params = {} } = {}) => {
+  const api = async (path, { method = "GET", body, params = {}, onUploadProgress, onUploaded } = {}) => {
     if (!active()) throw new Error("Inactive workspace");
     const multipart = body instanceof FormData;
-    const response = await host.fetchApi(path, params, {
-      method, headers: host.authHeaders(Boolean(body) && !multipart),
-      body: body ? (multipart ? body : JSON.stringify(body)) : undefined,
-    });
+    const response = multipart && onUploadProgress
+      ? await host.uploadApi(path, params, body, onUploadProgress, onUploaded)
+      : await host.fetchApi(path, params, {
+        method, headers: host.authHeaders(Boolean(body) && !multipart),
+        body: body ? (multipart ? body : JSON.stringify(body)) : undefined,
+      });
     const data = response.status === 204 ? null : await response.json();
     if (!response.ok) {
       if (response.status === 401) host.clearAuth();
@@ -869,9 +872,30 @@ export async function renderAdminCenter(host) {
       const file = f.elements.file.files[0];
       const params = v.kind === "calendar" ? { create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000 };
       const body = new FormData(); body.append("file", file);
-      document.getElementById("adminImportOutput").textContent = text("importLoading");
+      const output = document.getElementById("adminImportOutput");
+      output.innerHTML = `<div class="admin-import-progress" role="status" aria-live="polite"><div class="admin-import-progress-heading"><span id="adminImportProgressLabel">${esc(text("importUploading"))}</span><strong id="adminImportProgressValue">0%</strong></div><div id="adminImportProgressTrack" class="admin-import-progress-track" role="progressbar" aria-label="${esc(text("importUploading"))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="adminImportProgressFill"></span></div></div>`;
+      const progressLabel = document.getElementById("adminImportProgressLabel");
+      const progressValue = document.getElementById("adminImportProgressValue");
+      const progressTrack = document.getElementById("adminImportProgressTrack");
+      const progressFill = document.getElementById("adminImportProgressFill");
+      const onUploadProgress = (percent) => {
+        if (!progressTrack.isConnected || progressTrack.classList.contains("is-analyzing")) return;
+        const value = Math.max(0, Math.min(100, percent));
+        progressValue.textContent = `${value}%`;
+        progressTrack.setAttribute("aria-valuenow", String(value));
+        progressFill.style.width = `${value}%`;
+      };
+      const onUploaded = () => {
+        if (!progressTrack.isConnected) return;
+        progressLabel.textContent = text("importLoading");
+        progressValue.textContent = "";
+        progressTrack.classList.add("is-analyzing");
+        progressTrack.setAttribute("aria-label", text("importLoading"));
+        progressTrack.removeAttribute("aria-valuenow");
+        progressFill.style.width = "";
+      };
       try {
-        const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params });
+        const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params, onUploadProgress, onUploaded });
         session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, visible: 25 }; showImport();
       } catch (error) {
         document.getElementById("adminImportOutput").textContent = "";
