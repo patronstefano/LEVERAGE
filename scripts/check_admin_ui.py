@@ -512,10 +512,21 @@ def main():
                 page.locator('[data-scan-job="51"]').wait_for()
                 assert page.locator('[data-scan-job="52"]').count() == 0
                 assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
+                page.locator('[data-scan-job="51"] summary').click()
+                assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 4
+                controls = page.locator('[data-scan-controls]').bounding_box()
+                counters = page.locator('[data-scan-status]').bounding_box()
+                note = page.locator('#adminWorldGymnasticsScan .admin-stats-note').bounding_box()
+                assert counters['y'] - controls['y'] - controls['height'] >= 17
+                assert note['y'] - counters['y'] - counters['height'] >= 17
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})
                 page.wait_for_timeout(100)
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+                assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 2
+                copy = page.locator('[data-scan-job="51"] .account-notification-copy').bounding_box()
+                actions = page.locator('[data-scan-job="51"] .account-notification-actions').bounding_box()
+                assert actions['y'] >= copy['y'] + copy['height'] + 11
                 page.screenshot(path="/tmp/leverage-wg-scan-mobile.png", full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "imports":

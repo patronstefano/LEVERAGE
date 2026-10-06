@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riordino dei riscontri World Gymnastics nelle Revisioni
+
+- Separati visivamente comandi, contatori, nota sulla compatibilita e lista dei riscontri con spaziature uniformi e divisori leggeri, senza aggiungere contenitori decorativi.
+- Griglia dei contatori a quattro colonne desktop e due su mobile; testi a capo senza sovrapposizioni. Percentuali e azioni allineate, con disposizione su una riga separata nei piccoli schermi.
+- Stili limitati al blocco World Gymnastics: invariate le altre sezioni del Centro Admin e le operazioni di revisione. Nessuna scansione avviata e nessuna modifica ai dati.
+
 #### 2026-10-01 - Revisioni distinte per Atleti ed Eventi
 
 - Aggiunto selettore slider Atleti / Eventi nella sezione Revisioni del Centro Admin, con Atleti selezionato inizialmente e stile condiviso con Nuova Entita.

@@ -5946,6 +5946,50 @@ a:focus-visible > .entity-card-clickable {
 .admin-stats-metrics dt { color: var(--muted); font-size: 13px; line-height: 1.5; }
 .admin-stats-metrics dd { margin: 4px 0 0; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .admin-stats-note { margin: 0; color: var(--muted); font-size: 13px; }
+#adminWorldGymnasticsScan {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+#adminWorldGymnasticsScan > * { min-width: 0; }
+#adminWorldGymnasticsScan .admin-stats-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px 24px;
+  padding-block: 16px;
+  border-block: 1px solid var(--line);
+}
+#adminWorldGymnasticsScan .admin-stats-metrics dt,
+#adminWorldGymnasticsScan .admin-stats-metrics dd { overflow-wrap: anywhere; }
+#adminWorldGymnasticsScan .admin-stats-metrics dd { font-size: 18px; line-height: 1.4; }
+#adminWorldGymnasticsScan .admin-stats-note { line-height: 1.6; }
+#adminWorldGymnasticsScan [data-scan-matches]:empty { display: none; }
+#adminWorldGymnasticsScan [data-scan-more] { justify-self: start; }
+#adminWorldGymnasticsScan .admin-revision-group + .admin-revision-group { border-top: 1px solid var(--line); }
+#adminWorldGymnasticsScan .admin-revision-group > summary { overflow-wrap: anywhere; }
+#adminWorldGymnasticsScan .admin-revision-count { display: inline-block; white-space: nowrap; }
+#adminWorldGymnasticsScan .admin-revision-group > .admin-center-actions { margin: 4px 0 14px; }
+#adminWorldGymnasticsScan .account-notification {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 24px;
+  align-items: center;
+}
+#adminWorldGymnasticsScan .account-notification-copy { min-width: 0; overflow-wrap: anywhere; }
+#adminWorldGymnasticsScan .account-notification-copy p { margin: 0 0 6px; line-height: 1.5; }
+#adminWorldGymnasticsScan .account-notification-copy a { font-size: 13px; line-height: 1.5; }
+#adminWorldGymnasticsScan .account-notification-actions { gap: 12px; justify-content: flex-end; }
+#adminWorldGymnasticsScan .account-notification-actions > span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+#adminRevisionSuggestions:not(:empty) { margin-top: 18px; }
+@media (max-width: 700px) {
+  #adminWorldGymnasticsScan .admin-stats-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  #adminWorldGymnasticsScan .account-notification { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #adminWorldGymnasticsScan .account-notification-actions { justify-content: flex-start; }
+}
 .admin-stats-top { margin: 0; padding: 0; list-style: none; }
 .admin-stats-top li { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
 .admin-stats-top li:last-child { border-bottom: 0; }
