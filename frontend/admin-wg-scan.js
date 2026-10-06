@@ -1,5 +1,6 @@
 const COPY = {
-  start: ['Start full scan', 'Avvia scansione completa', 'Iniciar escaneo completo', 'Lancer la recherche complète'],
+  startAthletes: ['Start athlete scan', 'Avvia scansione atleti', 'Iniciar escaneo de atletas', 'Lancer la recherche des athlètes'],
+  startEvents: ['Start event scan', 'Avvia scansione eventi', 'Iniciar escaneo de eventos', 'Lancer la recherche des événements'],
   pause: ['Pause', 'Sospendi', 'Pausar', 'Suspendre'],
   resume: ['Resume', 'Riprendi', 'Reanudar', 'Reprendre'],
   retry: ['Retry failed searches', 'Riprova ricerche fallite', 'Reintentar búsquedas fallidas', 'Réessayer les recherches échouées'],
@@ -39,7 +40,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
       } while (matches.items.length < limit && matches.items.length < matches.total);
       if (!active() || !root.isConnected) return;
       root.querySelector('[data-scan-controls]').innerHTML =
-        button(status.started_at ? status.enabled ? 'pause' : 'resume' : 'start', `data-scan-action="${status.started_at ? status.enabled ? 'pause' : 'resume' : 'start'}"`)
+        button(status.started_at ? status.enabled ? 'pause' : 'resume' : entityType === 'athlete' ? 'startAthletes' : 'startEvents', `data-scan-action="${status.started_at ? status.enabled ? 'pause' : 'resume' : 'start'}"`)
         + (status.counts.error ? button('retry', 'data-scan-action="retry_errors"') : '');
       root.querySelector('[data-scan-status]').innerHTML = `<div><dt>World Gymnastics</dt><dd>${esc(t(status.enabled ? 'active' : 'paused'))}</dd></div>`
         + ['pending', 'running', 'matched', 'no_match', 'error', 'skipped', 'dismissed'].map((key) => `<div><dt>${esc(t(key))}</dt><dd>${status.counts[key] || 0}</dd></div>`).join('');

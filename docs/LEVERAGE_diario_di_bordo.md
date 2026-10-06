@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Etichette esplicite per l'avvio delle scansioni
+
+- Il comando di avvio nelle Revisioni diventa "Avvia scansione atleti" oppure "Avvia scansione eventi" secondo la vista selezionata, con traduzioni EN/IT/ES/FR.
+- Modifica solo testuale: invariati comandi API, indipendenza delle scansioni e stato sospeso.
+
 #### 2026-10-06 - Scansioni World Gymnastics indipendenti per Atleti ed Eventi
 
 - Decisione: la separazione nelle Revisioni non riguarda piu solo i riscontri visualizzati. Atleti ed Eventi hanno controlli persistenti distinti, con avvio, sospensione, ripresa, riprova errori, contatori e cursori indipendenti.
