@@ -176,6 +176,9 @@ const COPY = {
   statistics: ["Site Statistics", "Statistiche Sito", "Estadísticas del sitio", "Statistiques du site"],
   importResults: ["Results (The Gymternet)", "Risultati (The Gymternet)", "Resultados (The Gymternet)", "Résultats (The Gymternet)"],
   importCalendar: ["Calendar (The Gymternet)", "Calendario (The Gymternet)", "Calendario (The Gymternet)", "Calendrier (The Gymternet)"],
+  importLoading: ["Analyzing the file...", "Analisi del file in corso...", "Analizando el archivo...", "Analyse du fichier en cours..."],
+  importNoRows: ["No Gymternet results found. Check the file format, sheet names and year.", "Nessun risultato Gymternet trovato. Controlla formato, nomi dei fogli e anno.", "No se encontraron resultados Gymternet. Revisa el formato, los nombres de las hojas y el año.", "Aucun résultat Gymternet trouvé. Vérifiez le format, les noms des feuilles et l'année."],
+  importOnlyDuplicates: ["No new results to import: the file contains results already in LEVERAGE.", "Nessun nuovo risultato da importare: il file contiene risultati già presenti in LEVERAGE.", "No hay resultados nuevos para importar: el archivo contiene resultados ya presentes en LEVERAGE.", "Aucun nouveau résultat à importer : le fichier contient des résultats déjà présents dans LEVERAGE."],
   chooseFile: ["Choose file", "Scegli file", "Elegir archivo", "Choisir un fichier"],
   noFileSelected: ["No file selected", "Nessun file selezionato", "Ningún archivo seleccionado", "Aucun fichier sélectionné"],
   statsTraffic: ["Traffic", "Traffico", "Tráfico", "Trafic"],
@@ -866,8 +869,14 @@ export async function renderAdminCenter(host) {
       const file = f.elements.file.files[0];
       const params = v.kind === "calendar" ? { create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000 };
       const body = new FormData(); body.append("file", file);
-      const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params });
-      session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, visible: 25 }; showImport();
+      document.getElementById("adminImportOutput").textContent = text("importLoading");
+      try {
+        const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params });
+        session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, visible: 25 }; showImport();
+      } catch (error) {
+        document.getElementById("adminImportOutput").textContent = "";
+        throw error;
+      }
     });
     const importForm = document.getElementById("adminImportForm");
     const chooseFile = document.getElementById("adminChooseFile");
@@ -895,16 +904,21 @@ export async function renderAdminCenter(host) {
   function showImport() {
     if (!active()) return;
     const draft = session.import, output = document.getElementById("adminImportOutput"), p = draft.preview;
+    const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
+    const importStatus = draft.kind !== 'gymternet' ? '' : issueErrors.length ? issueErrors.slice(0, 3).map((issue) => issue.message).join(' ') :
+      p.parsed_rows === 0 ? text('importNoRows') :
+      p.importable_results === 0 && p.duplicates?.length && !p.conflicts?.length ? text('importOnlyDuplicates') : '';
+    const limited = (items) => Array.isArray(items) && items.length > 20 ? { total: items.length, first_20: items.slice(0, 20) } : items;
     const reviewRows = (items, type) => items.slice(0, draft.visible || 25).map((item, index) => {
       const identity = item.problem_type === "possible_athlete_identity_collision";
       const choices = [{ value: "", label: text("unresolved") }, ...(item.suggestions || []).map((s) => ({ value: `suggestion:${s.suggestion_id}`, label: `${text("accept")} · ${s.label || nameOf(s.target_athlete || s.target_result || {})} · ${s.confidence ?? ""}` })),
         ...(type === "orphan" ? [{ value: "discard", label: text("discard") }] : identity ? [{ value: "keep_separate", label: text("separate") }, { value: "merge_as_same_athlete", label: text("same") }] : [{ value: "create_new", label: text("newAthlete") }]), { value: "manual_target", label: text("manual") }];
       return `<article class="admin-import-review" data-review-type="${type}" data-review-index="${index}"><details><summary>${esc(nameOf(item.imported_athlete || item.orphan_dscore || {}))} · ${esc(item.problem_type || item.review_id)}</summary>${report(item)}</details><div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }]) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div></article>`;
     }).join("");
-    output.innerHTML = `<h3>${esc(p.filename)}</h3>${report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
-      <details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: p.issues, conflicts: p.conflicts, duplicates: p.duplicates, rows: p.rows || p.sample_results, duplicate_source_rows: p.duplicate_source_rows, matched_event_source_conflicts: p.matched_event_source_conflicts })}</details>
+    output.innerHTML = `<h3>${esc(p.filename)}</h3>${importStatus ? `<p class="admin-center-feedback ${issueErrors.length || p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}${report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
+      <details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: limited(p.issues), conflicts: limited(p.conflicts), duplicates: limited(p.duplicates), rows: limited(p.rows || p.sample_results), duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts) })}</details>
       ${reviewRows(p.athlete_match_review || [], "athlete")}${reviewRows(p.orphan_dscore_review || [], "orphan")}
-      <div class="admin-center-actions">${button("report", 'id="adminExportImport"')}${!p.committed ? button("commit", 'id="adminCommitImport"') : ""}</div>
+      <div class="admin-center-actions">${button("report", 'id="adminExportImport"')}${!p.committed ? button("commit", `id="adminCommitImport" ${issueErrors.length || p.parsed_rows === 0 ? 'disabled' : ''}`) : ""}</div>
       ${draft.kind === "gymternet" && !p.committed ? `<label><input id="adminPartialImport" type="checkbox">${text("partial")}</label>` : ""}`;
     if (!p.committed) {
       output.insertAdjacentHTML("beforeend", button("preview", 'id="adminReviewPreview"') + button("more", 'id="adminMoreReviews"') + '<div id="adminReviewedReport"></div>');

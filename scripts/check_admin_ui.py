@@ -859,6 +859,16 @@ def main():
                 assert "accept_suggestion" in writes[-1]["body"]
                 assert "s1" in writes[-1]["body"]
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
+                preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "already_present"}] * 1000, athlete_match_review=[])
+                page.locator('#adminImportForm button[type="submit"]').click()
+                page.locator('#adminImportOutput .admin-center-feedback').wait_for()
+                assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#adminImportOutput > details ol li').count() == 20
+                preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
+                page.locator('#adminImportForm button[type="submit"]').click()
+                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")
+                assert 'Nessun risultato Gymternet trovato' in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#adminCommitImport').is_disabled()
         page.evaluate("location.hash = '/admin/review'")
         page.wait_for_timeout(300)
         page.locator('[data-section-nav="home"]').click()

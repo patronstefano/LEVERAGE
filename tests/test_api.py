@@ -6,6 +6,7 @@ import sys
 from datetime import date, datetime, timedelta
 from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Optional
 import pyotp
 from fastapi.testclient import TestClient
@@ -16,6 +17,7 @@ from app.auth_security import hash_email_token
 from app.audit import add_security_alert
 from app.calendar_import import infer_event_level as infer_calendar_event_level
 from app.gymternet_import import infer_event_level as infer_gymternet_event_level
+from app.gymternet_import import build_existing_indexes
 from app.main import app
 from app.database import Base, SessionLocal, engine
 from app.models import RoleEnum, User
@@ -9414,6 +9416,27 @@ def test_gymternet_parser_warns_when_mt_apparatus_profile_is_unexpected():
         "MAG": ["FX", "HB", "PB"],
         "WAG": ["BB", "FX", "UB"],
     }
+
+
+def test_gymternet_existing_result_index_only_loads_file_events():
+    with SessionLocal() as db:
+        athlete = models.Athlete(first_name="Ada", last_name="Test", discipline=models.DisciplineEnum.MAG)
+        first = models.Event(name="First Cup", year=2026, discipline="MAG", category="senior", level="World Cup")
+        second = models.Event(name="Second Cup", year=2026, discipline="MAG", category="senior", level="World Cup")
+        db.add_all([athlete, first, second])
+        db.flush()
+        db.add_all([
+            models.Result(athlete_id=athlete.id, event_id=event.id, discipline="MAG", category="senior",
+                          apparatus="FX", format="individual", round="final", score=13, D_score=5)
+            for event in (first, second)
+        ])
+        db.commit()
+        athletes, events, results = build_existing_indexes(
+            db, [SimpleNamespace(event_name="First Cup", year=2026)]
+        )
+        assert len(athletes) == 1 and len(events) == 2
+        assert {result.event_id for result in results.values()} == {first.id}
+        assert build_existing_indexes(db, include_results=False)[2] == {}
 
 
 def test_gymternet_import_preview_is_admin_only_and_summarizes_csv():

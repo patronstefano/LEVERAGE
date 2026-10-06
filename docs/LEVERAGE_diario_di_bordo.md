@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Diagnosi e correzione dell'anteprima import Gymternet
+
+- Segnalato che un file Gymternet di prova non completava il flusso. Verificato che il server era raggiungibile e che il parser legge il file `Results 2026.xlsx` presente nel progetto (66.016 record). La causa tecnica riscontrata nel percorso di preview era il caricamento indiscriminato di tutti i Result attivi del DB (oltre 819.000 nell'istanza locale), anche per un file di poche righe. La costruzione degli indici di confronto ora carica i Result solo per gli eventi presenti nel file, sia in preview sia in commit; la review dei soli atleti non carica piu alcun Result.
+- La UI mostra un messaggio esplicito per file senza righe Gymternet riconoscibili, errori di parsing e file che contengono solo duplicati gia presenti. Il pulsante Commit e disabilitato se l'anteprima non contiene righe o ha errori; i dettagli enormi di duplicati/conflitti sono limitati nella resa a schermo a 20 esempi con conteggio totale, mentre il report esportabile conserva i dati ricevuti. Aggiunto stato di elaborazione durante la richiesta. Nessun commit di import o modifica ai dati e stato eseguito durante la diagnosi.
+
 #### 2026-10-06 - Avvisi di sicurezza leggibili e riconducibili all'audit
 
 - Le notifiche `security_alert` destinate agli altri SUPER ADMIN attivi non riportano piu stringhe tecniche in inglese con l'email dell'autore. Il messaggio e localizzato nella lingua preferita del destinatario, indica ruolo e ID dell'amministratore che ha operato, descrive l'azione concreta (eliminazione, unione, cambio ruolo, ripristino, annullamento o approvazione legacy) e invita a verificare in Audit e Ripristino. Il link nella notifica apre direttamente tale sezione. Il generatore DEMO usa lo stesso formato con autore fittizio.

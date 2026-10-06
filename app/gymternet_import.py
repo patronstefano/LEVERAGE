@@ -2160,7 +2160,7 @@ def build_automatic_athlete_name_order_merges(
     db: Session,
     records: list[ParsedGymternetResult],
 ) -> tuple[dict[tuple, tuple], dict[tuple, dict], dict]:
-    existing_athletes, _, _ = build_existing_indexes(db)
+    existing_athletes, _, _ = build_existing_indexes(db, include_results=False)
     records_by_identity: dict[tuple, list[ParsedGymternetResult]] = {}
     for record in records:
         records_by_identity.setdefault(athlete_identity_key(record), []).append(record)
@@ -3220,7 +3220,11 @@ def import_duplicate_key(
     )
 
 
-def build_existing_indexes(db: Session) -> tuple[dict, dict, dict]:
+def build_existing_indexes(
+    db: Session,
+    records: Optional[list[ParsedGymternetResult]] = None,
+    include_results: bool = True,
+) -> tuple[dict, dict, dict]:
     athletes = {
         (
             athlete.first_name.lower(),
@@ -3234,6 +3238,12 @@ def build_existing_indexes(db: Session) -> tuple[dict, dict, dict]:
         (event.name.lower(), event.year): event
         for event in db.query(models.Event).filter(models.Event.is_deleted.is_(False)).all()
     }
+    event_ids = None if records is None else {
+        events[key].id for key in {event_lookup_key(record) for record in records} if key in events
+    }
+    result_query = db.query(models.Result).filter(models.Result.is_deleted.is_(False))
+    if event_ids is not None:
+        result_query = result_query.filter(models.Result.event_id.in_(event_ids))
     results = {
         result_identity_key(
             result.athlete_id,
@@ -3246,7 +3256,7 @@ def build_existing_indexes(db: Session) -> tuple[dict, dict, dict]:
             result.format,
             result.round,
         ): result
-        for result in db.query(models.Result).filter(models.Result.is_deleted.is_(False)).all()
+        for result in (result_query.all() if include_results else [])
     }
     return athletes, events, results
 
@@ -3294,7 +3304,7 @@ def summarize_records(
     importable = []
     athlete_keys = set()
     event_keys = set()
-    existing_athletes, existing_events, existing_results = build_existing_indexes(db)
+    existing_athletes, existing_events, existing_results = build_existing_indexes(db, records)
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
     represented_country_overrides = represented_country_overrides or {}
@@ -3467,7 +3477,7 @@ def commit_records(
         "created_admin_notifications": 0,
         "skipped_duplicates": pre_skipped_duplicates,
     }
-    existing_athletes, existing_events, existing_results = build_existing_indexes(db)
+    existing_athletes, existing_events, existing_results = build_existing_indexes(db, records)
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_country_update_ids = athlete_country_update_ids or {}
     athlete_name_update_ids = athlete_name_update_ids or {}
