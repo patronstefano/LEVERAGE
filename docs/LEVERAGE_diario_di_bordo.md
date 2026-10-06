@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Azioni di unione affiancate
+
+- Spostato il comando Unione atleta/evento a destra di Anteprima, nella stessa riga di azioni. Compare solo dopo un'anteprima che consente l'unione e viene rimosso quando si modificano i campi o si richiede una nuova anteprima.
+- Invariati conferma esplicita, controlli backend e token per gli eventi. Test browser con operazioni simulate per entrambe le entita.
+
 #### 2026-10-06 - Conferme compatte in Audit e ripristino
 
 - Uniformati i messaggi verdi del centro amministrativo, compresi quelli di Audit e ripristino, alle conferme di creazione e unione: testo 14px, altezza minima 36px, larghezza adattata al contenuto, bordo e testo verdi su sfondo neutro.

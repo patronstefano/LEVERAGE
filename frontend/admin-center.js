@@ -679,14 +679,19 @@ export async function renderAdminCenter(host) {
         const reviewId = (key) => fromReview && /^[1-9][0-9]*$/.test(reviewParams.get(key) || '') ? reviewParams.get(key) : '';
         document.getElementById('adminMergeContent').innerHTML = form('adminMergeForm', field('source', isEvent ? 'sourceEvent' : 'source', 'number', reviewId('source'), true) + field('target', isEvent ? 'targetEvent' : 'target', 'number', reviewId('target'), true) + field('reason', 'reason'), 'preview') + '<div id="adminMergePreview"></div>';
         const output = document.getElementById('adminMergePreview');
-        document.getElementById('adminMergeForm').addEventListener('input', () => { ++mergeRevision; output.innerHTML = ''; });
+        const mergeForm = document.getElementById('adminMergeForm');
+        const actions = mergeForm.querySelector('.admin-center-actions');
+        const clearCommit = () => actions.querySelector('#adminMergeCommit')?.remove();
+        mergeForm.addEventListener('input', () => { ++mergeRevision; output.innerHTML = ''; clearCommit(); });
         onSubmit('adminMergeForm', async (v) => {
           const revision = ++mergeRevision;
+          clearCommit();
           const payload = { [isEvent ? 'target_event_id' : 'target_athlete_id']: Number(v.target), reason: v.reason || null };
           const result = await api(`/${kind}/${Number(v.source)}/merge-preview`, {method: 'POST', body: payload});
           if (!active() || revision !== mergeRevision) return;
           const {preview_token, ...visiblePreview} = result;
-          output.innerHTML = report(visiblePreview) + (result.can_merge ? button(isEvent ? 'mergeEvent' : 'mergeAthlete', 'id="adminMergeCommit"') : '');
+          output.innerHTML = report(visiblePreview);
+          if (result.can_merge) actions.insertAdjacentHTML('beforeend', button(isEvent ? 'mergeEvent' : 'mergeAthlete', 'id="adminMergeCommit"'));
           document.getElementById('adminMergeCommit')?.addEventListener('click', () => confirm(isEvent ? 'mergeEvent' : 'mergeAthlete', async () => {
             if (!active() || revision !== mergeRevision) return;
             const saved = await api(`/${kind}/${Number(v.source)}/merge`, {method: 'POST', body: {...payload, confirm: true, ...(isEvent ? {preview_token: result.preview_token} : {})}});
