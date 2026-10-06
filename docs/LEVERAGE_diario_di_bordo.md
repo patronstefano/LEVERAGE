@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Rimozione del modulo Ripristina dal Centro Super Admin
+
+- Rimosso da Audit e ripristino il blocco autonomo Ripristina con selezione del tipo di entita e ID, insieme al relativo gestore frontend.
+- Restano disponibili i confronti Prima/Dopo, l'approvazione e l'annullamento delle singole operazioni dell'audit. Nessuna modifica agli endpoint backend di ripristino o ai dati.
+- Test browser aggiornato per verificare l'assenza del modulo e mantenere i controlli sulle azioni dell'audit.
+
 #### 2026-10-06 - Bordo dei comandi nell'Editor Risultati
 
 - Ampliata da 230px a 270px la colonna dei comandi e consentito il ritorno a capo dei pulsanti quando necessario: Annulla modifiche non oltrepassa piu il bordo destro della cella.

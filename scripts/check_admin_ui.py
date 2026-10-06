@@ -592,7 +592,7 @@ def main():
                 undo.click()
                 assert page.locator('dialog[open] h2').inner_text() == 'Annulla inserimento'
                 page.locator('dialog[open] [data-cancel]').click()
-                assert page.locator('#adminRestoreForm').locator('..').get_attribute('class') == 'admin-tool-block'
+                assert page.locator('#adminRestoreForm').count() == 0
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
                 page.screenshot(path='/tmp/leverage-super-audit-mobile.png', full_page=True)
