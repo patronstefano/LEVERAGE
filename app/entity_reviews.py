@@ -48,17 +48,35 @@ def candidates(db, kind):
         model.is_deleted.is_(False)).order_by(model.id).all()
     decisions = {(d.left_id, d.right_id, d.fingerprint) for d in db.query(models.EntityReviewDecision).filter_by(
         entity_type=kind, decision="keep_separate")}
+    deferred = {(d.left_id, d.right_id) for d in db.query(models.EntityReviewDecision).filter_by(
+        entity_type=kind, decision='deferred')}
     memory = build_same_country_decision_memory(REPORTS, 10000) if kind == "athlete" else {}
     # Reuse comparisons only while every identity and reviewed decision is unchanged.
     signature = hashlib.sha256(json.dumps([
         str(db.get_bind().url), [identity(kind, row) for row in rows], sorted(decisions),
-        sorted(memory.items()),
+        sorted(memory.items()), sorted(deferred),
     ], sort_keys=True, default=str).encode()).hexdigest()
     with _cache_lock:
         previous = _cache.get(kind)
         if previous and previous[0] == signature:
             return previous[1]
         result = build_candidates(rows, kind, decisions, memory)
+        by_id = {row.id: row for row in rows}
+        present = {(item['left']['id'], item['right']['id']) for item in result}
+        for left_id, right_id in sorted(deferred - present):
+            left, right = by_id.get(left_id), by_id.get(right_id)
+            if not left or not right:
+                continue
+            fingerprint = pair_fingerprint(kind, left, right)
+            if (left_id, right_id, fingerprint) in decisions:
+                continue
+            similarity = SequenceMatcher(None, normalized_name(kind, left), normalized_name(kind, right)).ratio()
+            result.append({'left': summary(kind, left), 'right': summary(kind, right),
+                'compatibility': round(similarity * 100, 1), 'reasons': ['import_deferred'],
+                'fingerprint': fingerprint, 'prior_decision': None})
+        for item in result:
+            if (item['left']['id'], item['right']['id']) in deferred and 'import_deferred' not in item['reasons']:
+                item['reasons'].append('import_deferred')
         _cache[kind] = (signature, result)
         return result
 

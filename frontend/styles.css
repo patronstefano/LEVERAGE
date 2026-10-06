@@ -147,6 +147,11 @@
 #adminImportOutput [data-pair-details] > .admin-center-actions { margin-top: 12px; }
 .admin-source-comparison + .admin-source-comparison { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
 .admin-import-scope-note { margin: 12px 0; }
+.admin-import-defer-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin: 12px 0 16px; }
+.admin-import-defer-actions .admin-stats-note { margin: 0; flex: 1 1 280px; font-size: 13px; line-height: 1.5; }
+#adminImportOutput .admin-import-event strong { display: block; line-height: 1.5; }
+#adminImportOutput .admin-import-event [data-pair-details] h3 { font-size: 14px; line-height: 1.5; margin: 12px 0 8px; }
+#adminImportOutput .admin-import-event-filters { gap: 8px; margin: 8px 0 12px; }
 #adminImportOutput .admin-calendar-source { font-size: 13px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
 #adminCalendarConflicts > details > .admin-stats-note { margin: 8px 0 12px; }
 #adminImportOutput[data-import-kind="calendar"] { font-size: 14px; line-height: 1.5; }

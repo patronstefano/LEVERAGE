@@ -1974,6 +1974,7 @@ class GymternetImportPreview(BaseModel):
 
 class GymternetImportCommit(GymternetImportPreview):
     committed: bool
+    deferred_duplicate_pairs: int = 0
     allow_partial: bool
     created_athletes: int
     created_events: int

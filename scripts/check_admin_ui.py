@@ -182,6 +182,9 @@ def main():
                         preview['athlete_match_decision_stats']['unresolved'] = 0
                     scoped = parse_qs(urlparse(route.request.url).query).get('skip_existing_events') == ['true']
                     payload = {**preview, **(scope_response if scoped else {})}
+                    if parse_qs(urlparse(route.request.url).query).get('defer_duplicate_reviews') == ['true']:
+                        payload['event_match_decision_stats'] = {'unresolved': 0, 'deferred': len(payload.get('event_match_review', []))}
+                        payload['athlete_match_decision_stats'] = {'unresolved': 0, 'deferred': len(payload.get('athlete_match_review', []))}
                     source_part = re.search(r'name="source_row_decisions"\r\n\r\n([^\r]+)', route.request.post_data)
                     decisions = json.loads(source_part.group(1)) if source_part else []
                     if decisions:
@@ -956,6 +959,19 @@ def main():
                 assert len(set(round(box.bounding_box()['y']) for box in page.locator('#importPart_events .admin-import-metrics dd').all())) == 1
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['1', '1', '0', '2']
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('#adminDeferDuplicates').click()
+                assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
+                page.locator('dialog[open] [data-confirm]').click()
+                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
+                assert 'defer_duplicate_reviews=true' in writes[-1]['url']
+                assert page.locator('[data-import-group=athlete]').count() == 0
+                assert page.locator('[data-import-group=event]').count() == 0
+                assert 'Riprendi revisione duplicati' in page.locator('#adminDeferDuplicates').inner_text()
+                page.locator('#adminDeferDuplicates').click()
+                page.wait_for_function("document.querySelector('[data-import-group=athlete]') && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                assert 'defer_duplicate_reviews=false' in writes[-1]['url']
+                assert page.locator('#adminCommitImport').is_disabled()
                 page.screenshot(path='/tmp/leverage-import-minimal-desktop.png', full_page=True)
                 page.locator('[data-admin-tab=overview]').click()
                 page.locator('.admin-data-overview').wait_for()
@@ -987,6 +1003,14 @@ def main():
                 page.locator('[data-import-part=events]').click()
                 page.locator('[data-import-event-list] > summary').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
+                assert page.locator('.admin-import-event .admin-identity-entity > strong').first.evaluate('el => getComputedStyle(el).fontSize') == '14px'
+                assert page.locator('.admin-import-event .admin-identity-entity > strong a').count() == 0
+                assert page.locator('.admin-import-event .admin-center-actions a').count() == 1
+                for width in [1440, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                    page.screenshot(path=f'/tmp/leverage-import-events-review-{width}.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.locator('[data-import-filter=existing]').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 1
                 assert 'Spring Cup' in page.locator('#adminImportOverview [data-import-events]').inner_text()

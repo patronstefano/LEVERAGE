@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Gare da elaborare e rinvio delle revisioni duplicati
+
+- Uniformata la lista Gare da elaborare alla revisione atleti: nome senza link nel titolo, metadati e stato in grigio, ID/Confronta dettagli a destra, conteggi e campioni nel dettaglio espandibile. Conservati filtri, paginazione e accesso alla scheda evento.
+- Scelta semantica esplicita: "Tralascia tutte le revisioni duplicati" non certifica che i candidati siano diversi e non elimina dati. Dopo conferma, le identita non ancora risolte vengono importate separatamente, senza introdurre associazioni automatiche; le decisioni gia prese restano valide. "Riprendi revisione duplicati" ripristina il controllo prima del commit.
+- Aggiunto `defer_duplicate_reviews` a preview/commit Gymternet e lo stato `deferred` alle decisioni di revisione esistenti, senza nuove tabelle. Le coppie sono persistite nella transazione dell'import, incluse varianti di nazionalita e candidati oltre il limite di risposta della preview. Sono visibili in Revisione Duplicati anche se la ricerca fuzzy non le ritrova; confermare successivamente "mantieni distinti" aggiorna la decisione rinviata. Entita rimosse/unite non vengono riproposte.
+- Il rinvio riguarda solo le identita: conflitti sui punteggi, errori sorgente e D Score orfani continuano a bloccare l'import rigoroso. Nessuna modifica alle regole automatiche gia validate sul nome o al tracciamento delle nazionalita. Audit dell'import conserva flag e casi rinviati; le coppie hanno audit dedicato. Nessun import sul database reale durante lo sviluppo.
+- Test specifici: anteprima senza scritture, persistenza delle coppie indipendente dalla riscoperta fuzzy, limite di risposta zero, successiva risoluzione, varianti di country, ripetizione import, rispetto delle decisioni esplicite e dei blocchi sui punteggi/orfani. Test UI con API simulate per rinvio/ripresa, sblocco della conferma e coerenza tipografica delle gare.
+- Esiti di verifica: 313 test backend superati su database temporaneo; suite browser Centro Admin superata. Preview locale aggiornata senza eseguire importazioni reali.
+
 #### 2026-10-06 - Riordino tipografico dell'anteprima Calendar
 
 - Intervento circoscritto all'anteprima Calendar: riepilogo a tre colonne desktop/due colonne tablet-mobile, etichette da 13 px e valori da 18 px, separati e allineati senza l'altezza minima rigida delle vecchie etichette. I testi lunghi vanno a capo dentro la propria colonna.

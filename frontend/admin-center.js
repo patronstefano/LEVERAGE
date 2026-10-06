@@ -2,11 +2,11 @@ import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-f
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-load-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
-import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=import-dialog-20261006';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=import-dialog-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=deferred-reviews-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -981,12 +981,14 @@ export async function renderAdminCenter(host) {
         </div>
       </div>
       <div id="adminImportScopeStatus" hidden></div>
+      ${draft.kind === 'gymternet' && !p.committed && (p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || draft.params.defer_duplicate_reviews) ? `<div class="admin-import-defer-actions">${button(draft.params.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'id="adminDeferDuplicates"')}${draft.params.defer_duplicate_reviews ? `<p class="admin-stats-note">${esc(text('importDeferredNote'))}</p>` : ''}</div>` : ''}
+      ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${draft.kind === 'calendar' && p.skip_existing_events && !p.committed ? `<p class="admin-stats-note">${esc(text('importCalendarSkipNote'))}</p>` : ''}
       ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
-      ${!p.committed && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
-      ${!p.committed && p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
+      ${!p.committed && !draft.params.defer_duplicate_reviews && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
+      ${!p.committed && !draft.params.defer_duplicate_reviews && p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       ${p.issues?.length ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
@@ -1081,11 +1083,11 @@ export async function renderAdminCenter(host) {
         }
         return body;
       };
-      refreshPreview = async (scope = draft.params.skip_existing_events, dialog = null) => {
+      refreshPreview = async (scope = draft.params.skip_existing_events, dialog = null, defer = draft.params.defer_duplicate_reviews) => {
         if (draft.scopeBusy) return;
         const changingScope = scope !== draft.params.skip_existing_events;
         const changingSource = Boolean(draft.sourceDirty);
-        const params = {...draft.params, skip_existing_events: Boolean(scope)};
+        const params = {...draft.params, skip_existing_events: Boolean(scope), ...(draft.kind === 'gymternet' ? {defer_duplicate_reviews: Boolean(defer)} : {})};
         const revision = draft.decisionRevision || 0;
         draft.scopeBusy = true;
         output.inert = true;
@@ -1123,6 +1125,10 @@ export async function renderAdminCenter(host) {
         }
       };
       document.getElementById("adminReviewPreview").onclick = guard(() => refreshPreview());
+      output.querySelector('#adminDeferDuplicates')?.addEventListener('click', guard(async () => {
+        if (draft.params.defer_duplicate_reviews) await refreshPreview(undefined, null, false);
+        else confirm('importDeferDuplicates', dialog => refreshPreview(undefined, dialog, true), false, text('importDeferConfirm'));
+      }));
       output.querySelector('[name=existing_event_scope]')?.addEventListener('change', guard(event => refreshPreview(event.target.value === 'skip')));
     }
     output.inert = Boolean(draft.scopeBusy);

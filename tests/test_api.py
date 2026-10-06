@@ -9826,6 +9826,7 @@ def test_gymternet_strict_review_requires_orphan_decisions():
     preview = client.post('/imports/gymternet/preview?year_hint=2024', files=files(), headers=headers).json()
     assert preview['orphan_dscore_review_count'] == 1
     assert client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), headers=headers).status_code == 409
+    assert client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true&defer_duplicate_reviews=true', files=files(), headers=headers).status_code == 409
     data = {'orphan_dscore_decisions': json.dumps([{'review_id': preview['orphan_dscore_review'][0]['review_id'], 'action': 'discard'}])}
     response = client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), data=data, headers=headers)
     assert response.status_code == 200, response.text
@@ -9858,6 +9859,94 @@ def test_import_notifies_author_and_active_super_admins_in_their_language(kind, 
             assert f"{'SUPER ADMIN' if actor_super else 'ADMIN'} ID {author_id}" in notification.message
             if user.email == 'super_it@example.com':
                 assert 'Importazione' in notification.message
+
+
+def test_gymternet_deferred_reviews_persist_after_import_and_can_be_resolved(monkeypatch):
+    from app import entity_reviews
+    client.post('/auth/register', json={'email': 'deferred_import@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('deferred_import@example.com')}"}
+    base = {'file': ('results.csv', gymternet_csv_bytes().getvalue(), 'text/csv')}
+    assert client.post('/imports/gymternet/commit?year_hint=2024', files=base, headers=headers).status_code == 200
+    # Exact name, different represented country, and an event name typo.
+    content = gymternet_csv_bytes(country='Italy').getvalue().replace(b'Test Cup', b'Testt Cup')
+    files = {'file': ('updated.csv', content, 'text/csv')}
+    plain = '?year_hint=2024&require_resolved_reviews=true'
+    assert client.post('/imports/gymternet/commit' + plain, files=files, headers=headers).status_code == 409
+    params = plain + '&defer_duplicate_reviews=true&athlete_review_limit=0'
+    preview = client.post('/imports/gymternet/preview' + params, files=files, headers=headers).json()
+    assert preview['athlete_match_decision_stats']['deferred'] == 1
+    assert preview['event_match_decision_stats']['deferred'] == 1
+    assert preview['athlete_match_decision_stats']['unresolved'] == preview['event_match_decision_stats']['unresolved'] == 0
+    assert preview['athlete_match_review'] == []  # Response limits cannot drop pending pairs.
+    with SessionLocal() as db:
+        assert db.query(models.EntityReviewDecision).count() == 0
+    response = client.post('/imports/gymternet/commit' + params, files=files, headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.json()['deferred_duplicate_pairs'] == 2
+    assert response.json()['created_athletes'] == response.json()['created_events'] == response.json()['created_results'] == 1
+    assert {item['country'] for item in client.get('/athletes/').json()} == {'USA', 'ITA'}
+    # The queue does not depend on the fuzzy matcher rediscovering the pairs.
+    monkeypatch.setattr(entity_reviews, 'build_candidates', lambda *args: [])
+    entity_reviews._cache.clear()
+    for kind in ['athlete', 'event']:
+        candidates = client.get('/admin/entity-duplicates', params={'entity_type': kind}, headers=headers).json()
+        assert candidates['total'] == 1
+        pair = candidates['items'][0]
+        assert 'import_deferred' in pair['reasons']
+        response = client.post(f"/admin/entity-duplicates/{kind}/{pair['left']['id']}/{pair['right']['id']}/keep-separate",
+            json={'fingerprint': pair['fingerprint']}, headers=headers)
+        assert response.status_code == 200 and response.json()['decision'] == 'keep_separate'
+        assert client.get('/admin/entity-duplicates', params={'entity_type': kind}, headers=headers).json()['total'] == 0
+    with SessionLocal() as db:
+        assert db.query(models.EntityReviewDecision).count() == 2
+        assert all(item.decision == 'keep_separate' for item in db.query(models.EntityReviewDecision))
+    repeat = client.post('/imports/gymternet/commit' + params, files=files, headers=headers)
+    assert repeat.status_code == 200
+    assert repeat.json()['created_results'] == 0
+
+
+def test_gymternet_deferral_keeps_country_variants_pending_without_merging():
+    client.post('/auth/register', json={'email': 'deferred_countries@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('deferred_countries@example.com')}"}
+    content = ('discipline,athlete,country,event,apparatus,score,d_score\n'
+               'MAG,Unique Testperson,Italy,First Cup 2024 QF,FX,14.1,5.8\n'
+               'MAG,Unique Testperson,France,Second Cup 2024 QF,FX,13.8,5.5\n').encode()
+    files = {'file': ('countries.csv', content, 'text/csv')}
+    params = '?year_hint=2024&defer_duplicate_reviews=true&require_resolved_reviews=true'
+    preview = client.post('/imports/gymternet/preview' + params, files=files, headers=headers).json()
+    assert preview['athlete_match_decision_stats']['deferred'] == 1
+    response = client.post('/imports/gymternet/commit' + params, files=files, headers=headers)
+    assert response.status_code == 200, response.text
+    assert response.json()['created_athletes'] == 2
+    assert response.json()['deferred_duplicate_pairs'] == 1
+    pairs = client.get('/admin/entity-duplicates?entity_type=athlete', headers=headers).json()
+    assert pairs['total'] == 1 and 'import_deferred' in pairs['items'][0]['reasons']
+    with SessionLocal() as db:
+        assert db.query(models.AthleteCountryChange).count() == 0
+        assert {result.represented_country for result in db.query(models.Result)} == {'ITA', 'FRA'}
+
+
+def test_gymternet_deferral_preserves_explicit_matches_and_score_safety():
+    client.post('/auth/register', json={'email': 'deferred_safety@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('deferred_safety@example.com')}"}
+    base = {'file': ('results.csv', gymternet_csv_bytes().getvalue(), 'text/csv')}
+    assert client.post('/imports/gymternet/commit?year_hint=2024', files=base, headers=headers).status_code == 200
+    files = {'file': ('updated.csv', gymternet_csv_bytes().getvalue().replace(b'Test Cup', b'Testt Cup'), 'text/csv')}
+    preview = client.post('/imports/gymternet/preview?year_hint=2024', files=files, headers=headers).json()
+    item = preview['event_match_review'][0]
+    decision = {'review_id': item['review_id'], 'action': 'match_existing', 'event_id': item['suggestions'][0]['event_id']}
+    params = '?year_hint=2024&defer_duplicate_reviews=true&require_resolved_reviews=true'
+    response = client.post('/imports/gymternet/commit' + params, files=files,
+        data={'event_match_decisions': json.dumps([decision])}, headers=headers)
+    assert response.status_code == 200
+    assert response.json()['created_events'] == response.json()['deferred_duplicate_pairs'] == 0
+    conflicts = {'file': ('scores.csv', gymternet_csv_bytes(score=14.2).getvalue(), 'text/csv')}
+    assert client.post('/imports/gymternet/commit' + params, files=conflicts, headers=headers).status_code == 409
+    invalid = {'file': ('scores.csv', gymternet_csv_bytes(score=24.2).getvalue(), 'text/csv')}
+    assert client.post('/imports/gymternet/commit' + params, files=invalid, headers=headers).status_code in (400, 409)
+    with SessionLocal() as db:
+        assert db.query(models.EntityReviewDecision).count() == 0
+        assert db.query(models.Result).count() == 1
 
 
 def test_gymternet_event_identity_requires_explicit_decision_and_recalculates_duplicates():

@@ -12,6 +12,7 @@ const COPY = {
   more: ['Load more pairs', 'Carica altre coppie', 'Cargar más pares', 'Charger plus de paires'],
   compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
   same_name: ['Matching normalized names', 'Nomi normalizzati coincidenti', 'Nombres normalizados coincidentes', 'Noms normalisés identiques'],
+  import_deferred: ['Review deferred during import', 'Revisione rinviata durante l’importazione', 'Revisión aplazada durante la importación', 'Révision reportée lors de l’import'],
   similar_name: ['Similar names', 'Nomi simili', 'Nombres similares', 'Noms similaires'],
   same_year: ['Same year', 'Stesso anno', 'Mismo año', 'Même année'],
   prior_merge: ['Previously recommended merge', 'Unione già indicata nella review storica', 'Unión indicada en revisión previa', 'Fusion indiquée lors d’une révision précédente'],

@@ -4,6 +4,30 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
+Le Gare da elaborare usano la stessa gerarchia della revisione atleti: nome
+da 14 px, metadati/stato in grigio e comandi a destra. ID e Confronta dettagli
+sono separati dal nome; i conteggi per classifica e i campioni di punteggio
+restano nel dettaglio espandibile.
+
+Per Results e disponibile "Tralascia tutte le revisioni duplicati": dopo
+conferma, il parametro `defer_duplicate_reviews` rinvia le identita ancora
+senza decisione di atleti ed eventi. Le decisioni esplicite restano valide.
+Non equivale a confermare che due entita siano diverse: senza nuove unioni
+automatiche, le identita non associate sono importate separatamente con i
+rispettivi risultati. Le regole automatiche di identita gia validate non
+vengono cambiate. L'opzione si annulla con "Riprendi revisione duplicati"
+prima dell'importazione. Non rinvia conflitti di punteggio, errori del file
+o D Score orfani, che mantengono i controlli precedenti.
+
+Al commit le coppie effettive sono salvate come `deferred` nella tabella
+EntityReviewDecision e rese disponibili in Revisione Duplicati, anche se
+il confronto fuzzy ordinario non le ripropone. Il salvataggio avviene nella
+stessa transazione dell'import: l'anteprima non scrive. Le coppie rinviate
+possono essere confrontate, unite con gli strumenti esistenti o confermate
+distinte successivamente. La coda non perde i casi oltre il limite di righe
+della risposta di anteprima. Audit dell'import e delle coppie conserva la
+scelta; il riepilogo finale indica quante coppie sono state salvate.
+
 Caricamento e ricalcoli condividono la barra di avanzamento: upload percentuale
 reale, analisi server indeterminata, completamento animato al 100% solo dopo
 la risposta valida. Correzioni e decisioni mantengono la vecchia anteprima

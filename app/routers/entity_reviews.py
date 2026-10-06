@@ -52,7 +52,15 @@ def keep_separate(kind: Kind, left_id: int, right_id: int, payload: SeparateDeci
         raise HTTPException(409, 'Entity details changed. Reload the review before deciding.')
     existing = db.query(models.EntityReviewDecision).filter_by(entity_type=kind, left_id=left_id,
         right_id=right_id, fingerprint=payload.fingerprint).first()
+    if existing and existing.decision != 'deferred':
+        return {'id': existing.id, 'decision': existing.decision}
     if existing:
+        before = model_snapshot(existing)
+        existing.decision = 'keep_separate'
+        existing.admin_id = admin.id
+        add_audit_log(db, admin, 'update', 'EntityReviewDecision', existing.id,
+                      before=before, after=model_snapshot(existing))
+        db.commit()
         return {'id': existing.id, 'decision': existing.decision}
     decision = models.EntityReviewDecision(entity_type=kind, left_id=left_id, right_id=right_id,
         fingerprint=payload.fingerprint, decision='keep_separate', admin_id=admin.id)

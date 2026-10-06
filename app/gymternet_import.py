@@ -2738,6 +2738,7 @@ def apply_athlete_match_decisions(
     review_items: list[dict],
     decisions: Optional[list[dict]],
     issues: list[dict],
+    defer_duplicate_reviews: bool = False,
 ) -> tuple[
     dict[tuple, int],
     dict[int, dict],
@@ -2753,6 +2754,7 @@ def apply_athlete_match_decisions(
         "confirmed_new": 0,
         "identity_merges": 0,
         "identity_kept_separate": 0,
+        "deferred": 0,
         "country_updates": 0,
         "country_kept": 0,
         "athlete_name_updates": 0,
@@ -2760,8 +2762,14 @@ def apply_athlete_match_decisions(
         "invalid_decisions": 0,
         "unresolved": len(review_items),
     }
-    if not decisions:
+    if not decisions and not defer_duplicate_reviews:
         return {}, {}, {}, {}, {}, {}, stats
+
+    decisions = list(decisions or [])
+    if defer_duplicate_reviews:
+        chosen = {item.get('review_id') for item in decisions}
+        decisions.extend({'review_id': item['review_id'], 'action': 'defer'}
+                         for item in review_items if item['review_id'] not in chosen)
 
     review_by_id = {item["review_id"]: item for item in review_items}
     resolutions: dict[tuple, int] = {}
@@ -2783,6 +2791,12 @@ def apply_athlete_match_decisions(
             continue
 
         action = decision.get("action")
+
+        if action == 'defer':
+            review['deferred'] = True
+            stats['deferred'] += 1
+            resolved_review_ids.add(review['review_id'])
+            continue
 
         if review["problem_type"] == "possible_athlete_identity_collision":
             imported_athlete = review["imported_athlete"]
@@ -3319,7 +3333,7 @@ def exclude_imported_events(db: Session, records: list, orphans: list, issues: l
             sorted(counts.values(), key=lambda row: (row['year'], row['event_name'])))
 
 
-def review_import_events(db: Session, records: list[ParsedGymternetResult], decisions: Optional[list[dict]], issues: list[dict]) -> tuple:
+def review_import_events(db: Session, records: list[ParsedGymternetResult], decisions: Optional[list[dict]], issues: list[dict], defer_duplicate_reviews: bool = False) -> tuple:
     """Review similar event names in the same season before resolving result identities."""
     events = db.query(models.Event).filter(models.Event.is_deleted.is_(False)).all()
     exact = {(event.name.lower(), event.year): event for event in events}
@@ -3338,11 +3352,11 @@ def review_import_events(db: Session, records: list[ParsedGymternetResult], deci
     decisions_by_id = {}
     for item in decisions or []:
         review_id = item.get("review_id")
-        if not isinstance(review_id, str) or review_id in decisions_by_id or item.get("action") not in {"keep_separate", "match_existing"}:
+        if not isinstance(review_id, str) or review_id in decisions_by_id or item.get("action") not in {"keep_separate", "match_existing", "defer"}:
             issues.append({"severity": "error", "message": "Invalid or repeated event review decision"})
             continue
         decisions_by_id[review_id] = item
-    stats = {"unresolved": 0, "matched": 0, "kept_separate": 0}
+    stats = {"unresolved": 0, "matched": 0, "kept_separate": 0, "deferred": 0}
     for key, rows in groups.items():
         if key in exact:
             continue
@@ -3364,8 +3378,11 @@ def review_import_events(db: Session, records: list[ParsedGymternetResult], deci
         review = {"review_id": review_id, "event_name": rows[0].event_name, "year": key[1],
                   "result_count": len(rows), "disciplines": sorted({row.discipline.value for row in rows}),
                   "suggestions": suggestions[:5]}
-        decision = decisions_by_id.get(review_id, {})
-        if decision.get("action") == "keep_separate":
+        decision = decisions_by_id.get(review_id, {'action': 'defer'} if defer_duplicate_reviews else {})
+        if decision.get('action') == 'defer':
+            review['deferred'] = True
+            stats['deferred'] += 1
+        elif decision.get("action") == "keep_separate":
             stats["kept_separate"] += 1
         elif decision.get("action") == "match_existing":
             target = next((event for event in events if event.id == decision.get("event_id")), None)
