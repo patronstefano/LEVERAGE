@@ -7,10 +7,11 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 L'anteprima e stata compattata usando gli stessi caratteri, controlli e
 separazioni di Revisione Duplicati. Dopo l'analisi il form file/parametri
 si chiude ed e riapribile con Cambia file; il file e le opzioni restano in
-memoria anche tornando alla sezione. Il recap numerico usa una riga su
-desktop e tre/due colonne sui viewport piu stretti. Gare, revisioni e
-avvisi sono sezioni apribili; il numero degli errori bloccanti rimane
-visibile anche con gli avvisi chiusi. I comandi Applica decisioni e
+memoria anche tornando alla sezione. Gymternet presenta tre parti selezionabili:
+Revisione Eventi, Revisione Atleti e Revisione Risultati. Ogni parte ha
+un recap dedicato su quattro colonne desktop e due mobile. Il numero delle
+verifiche pendenti e visibile sui relativi pulsanti; cambiare parte non
+sblocca la conferma. I comandi Applica decisioni e
 Conferma importazione sono raccolti in un'unica riga finale.
 
 Il ricalcolo conserva pagina, filtro e apertura delle liste gara, oltre
@@ -39,8 +40,25 @@ Rimosso il banner generico sui dati incoerenti, non le diagnostiche specifiche
 ne i blocchi sui dati invalidi inclusi. Le decisioni pertinenti sono conservate
 al cambio di perimetro; la conferma resta disabilitata durante il ricalcolo.
 
-Il recap distingue risultati esclusi, nuovi candidati e identita da risolvere.
-Gare, conflitti e revisioni sono raccolti in sezioni chiuse, con sei elementi
+Eventi e Atleti distinguono entita gia associate al DB, non ancora associate,
+con o senza incongruenze nei punteggi/avvisi sorgente. Le verifiche di identita
+sono elencate separatamente; assenza di incongruenze numeriche non certifica
+l'identita. Conteggi provvisori fino alle decisioni e al ricalcolo; gli atleti
+sono contati una sola volta per identita risolta, anche su piu gare/attrezzi,
+non a partire dal campione di risultati. I conteggi atleti riguardano il
+perimetro incluso, quelli eventi mostrano anche le gare storiche tralasciate.
+Righe non convertibili in risultati e D-score orfani restano nelle rispettive
+diagnostiche, non sono inventati come nuove entita.
+
+Il collegamento Revisione Duplicati apre direttamente Atleti o Eventi e
+consente di rimandare l'eventuale unione di entita gia presenti; non elude
+le decisioni necessarie per assegnare i risultati dell'import corrente.
+L'anteprima rimane in memoria tornando a Importazione file, non dopo refresh.
+
+Revisione Risultati contiene una sola lista di punteggi da verificare, con
+confronto file/DB e correzioni nello stesso dettaglio. Non esistono piu due
+elenchi paralleli per righe del file e punteggi in conflitto. Seguono D-score
+orfani e Avvisi del file. Gare, atleti, correzioni e avvisi hanno sei elementi
 per pagina. Confronta dettagli apre classifiche, conteggi e un campione di
 massimo 20 nuovi risultati per gara. Gli errori sorgente sicuramente riferiti
 alle gare escluse non bloccano le nuove importazioni; quelli delle gare incluse

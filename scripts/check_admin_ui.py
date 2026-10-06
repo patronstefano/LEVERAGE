@@ -25,8 +25,10 @@ def main():
                                      'suggestions': [{'event_id': 1, 'name': 'Test Cup', 'year': 2026,
                                                       'discipline': 'MAG', 'compatibility': 95}]}]
     preview['event_match_decision_stats'] = {'unresolved': 1}
+    preview['athlete_summaries'] = [{**athlete, 'athlete_id': 1, 'existing_results': 1, 'new_results': 1,
+                                    'conflicting_results': 0, 'source_issues': 0}]
     preview['event_summaries'] = [
-        {'event_name': 'Test Cup', 'year': 2026, 'event_id': 1, 'status': 'additional_results',
+        {'event_name': 'Test Cup', 'year': 2026, 'event_id': None, 'status': 'new_event',
          'file_results': 2, 'existing_results': 1, 'duplicate_file_results': 0, 'new_results': 1, 'conflicting_results': 0,
          'groups': [{'discipline': 'MAG', 'category': 'senior', 'format': 'individual', 'round': 'final', 'apparatus': 'FX', 'existing_results': 1, 'new_results': 1}],
          'new_results_preview': [{'first_name': 'Ada', 'last_name': 'Test', 'discipline': 'MAG', 'category': 'senior', 'format': 'individual', 'round': 'final', 'apparatus': 'FX', 'score': 14.1, 'D_score': 5.8}]},
@@ -888,6 +890,7 @@ def main():
                     assert page.locator('#adminImportForm').is_hidden()
 
                 def open_import_issues():
+                    page.locator('[data-import-part=results]').click()
                     group = page.locator('[data-import-issues]')
                     group.wait_for(state='attached')
                     if group.get_attribute('open') is None:
@@ -912,7 +915,9 @@ def main():
                 assert page.locator('#adminImportFilename').inner_text() == 'test.csv'
                 analyze_import()
                 assert page.locator('#adminImportOutput').bounding_box()['height'] < 650
-                assert len(set(round(box.bounding_box()['y']) for box in page.locator('.admin-import-metrics dd').all())) == 1
+                assert page.locator('[data-import-part]').count() == 3
+                assert len(set(round(box.bounding_box()['y']) for box in page.locator('#importPart_events .admin-import-metrics dd').all())) == 1
+                assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['1', '1', '0', '2']
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
                 page.screenshot(path='/tmp/leverage-import-minimal-desktop.png', full_page=True)
                 page.locator('[data-admin-tab=overview]').click()
@@ -926,7 +931,14 @@ def main():
                 assert page.locator('#adminImportFile').evaluate('input => input.files[0].name') == 'test.csv'
                 page.locator('#adminImportChangeFile').click()
                 assert page.locator('#adminImportForm').is_hidden()
+                page.locator('#importPart_events a[href="#/admin/review?entity_type=event"]').click()
+                page.locator('#adminEntityReviews[data-review-kind="event"]').wait_for()
+                assert page.locator('[data-review-entity=event]').get_attribute('aria-pressed') == 'true'
+                page.locator('[data-admin-tab=imports]').click()
+                page.locator('#adminImportChangeFile').wait_for()
                 row = page.locator("[data-review-type=athlete]")
+                page.locator('[data-import-part=athletes]').click()
+                assert page.locator('#adminImportAthletes .admin-import-metrics dd').all_inner_texts() == ['1', '0', '0', '1']
                 page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
                 assert page.locator('[name=include_existing]').count() == 0
@@ -935,6 +947,7 @@ def main():
                 assert page.locator('#adminExportImport').count() == 0
                 assert page.locator('#adminPartialImport').count() == 0
                 assert 'skip_existing_events=false' in writes[-1]['url']
+                page.locator('[data-import-part=events]').click()
                 page.locator('[data-import-event-list] > summary').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
                 page.locator('[data-import-filter=existing]').click()
@@ -948,6 +961,7 @@ def main():
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.locator('[data-event-review] summary').click()
                 page.locator('[data-event-review] [data-admin-select-value="1"]').click()
+                page.locator('[data-import-part=athletes]').click()
                 row.locator('[data-import-review-toggle]').click()
                 row.locator("[data-admin-select]").first.locator("summary").click()
                 row.locator('[data-admin-select-value="suggestion:s1"]').click()
@@ -957,6 +971,7 @@ def main():
                 assert "s1" in writes[-1]["body"]
                 assert 'match_existing' in writes[-1]['body']
                 assert page.locator('#adminCommitImport').is_enabled()
+                page.locator('[data-import-part=events]').click()
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
                 assert page.locator('[data-import-event-list]').get_attribute('open') is not None
@@ -970,12 +985,21 @@ def main():
                 analyze_import()
                 page.locator('#adminImportOutput .admin-center-feedback').wait_for()
                 assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
-                assert int(page.locator('#adminImportOverview .admin-duplicate-recap dd').nth(1).inner_text().replace('.', '')) == 1000
+                page.locator('[data-import-part=results]').click()
+                assert int(page.locator('#importPart_results .admin-duplicate-recap dd').first.inner_text().replace('.', '')) == 1000
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
                 analyze_import()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")
                 assert 'Nessun risultato Gymternet trovato' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
+                preview['issues'] = [{'severity': 'warning', 'message': f'Warning {i}'} for i in range(7)]
+                analyze_import()
+                open_import_issues()
+                assert page.locator('.admin-import-issues > li').count() == 6
+                page.locator('[data-issue-page="1"]').click()
+                assert page.locator('.admin-import-issues > li').count() == 1
+                assert 'Warning 6' in page.locator('.admin-import-issues').inner_text()
+                assert page.locator('[data-import-part=results]').get_attribute('aria-selected') == 'true'
                 preview.update(parsed_rows=1000, issues=[], importable_results=0,
                     skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
                     'year': 2026, 'results': 100, 'differences': 2, 'source_issues': 1} for i in range(10)])
@@ -1013,7 +1037,7 @@ def main():
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('[name=existing_event_scope]').input_value() == 'skip'
-                assert '1 gara già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
+                assert '1 gara già in LEVERAGE' in page.locator('#adminImportOverview').text_content()
                 assert page.locator('.admin-import-issues').count() == 0
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()
@@ -1026,9 +1050,33 @@ def main():
                 preview['source_review'] = [{'sheet': 'MAG', 'row': 17, 'fingerprint': 'f' * 64,
                     'values': {'Athlete': 'Vault Person', 'Event': 'Vault Cup 2026', 'VT': '1.2', 'VT AVG': '12.85'},
                     'editable_fields': ['VT', 'VT AVG']}]
+                preview['conflicts'] = [{'source_sheet': 'MAG', 'source_row': 17, 'apparatus': 'VT',
+                    'event_name': 'Vault Cup', 'year': 2026, 'first_name': 'Vault', 'last_name': 'Person',
+                    'existing_result_id': 3, 'existing_score': 13.0, 'existing_D_score': 5.5,
+                    'score': 1.2, 'D_score': 5.5, 'reason': 'conflict_existing'}]
                 analyze_import()
+                page.locator('[data-import-part=results]').click()
+                assert page.locator('[data-import-conflict-list]').count() == 0
                 page.locator('[data-source-group] > summary').click()
                 page.locator('[data-source-edit]').click()
+                assert 'Già in LEVERAGE' in page.locator('[data-source-fields]').inner_text()
+                assert page.locator('.admin-source-comparison').count() == 1
+                for width in [1440, 800, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    page.wait_for_timeout(200)
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                    row_bounds = page.locator('.admin-source-row').evaluate('''row => {
+                        const a = row.firstElementChild.getBoundingClientRect();
+                        const b = row.querySelector('.admin-center-actions').getBoundingClientRect();
+                        return b.left >= a.right + 8 || b.top >= a.bottom + 8;
+                    }''')
+                    assert row_bounds, width
+                    grid = page.locator('[data-source-fields] .admin-form-grid').bounding_box()
+                    apply_button = page.locator('[data-source-apply]').bounding_box()
+                    assert apply_button['y'] - grid['y'] - grid['height'] >= 10
+                page.screenshot(path='/tmp/leverage-import-review-results-mobile.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                page.screenshot(path='/tmp/leverage-import-review-results-desktop.png', full_page=True)
                 page.locator('[data-source-fields] input').first.fill('13.0')
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-apply]').click()

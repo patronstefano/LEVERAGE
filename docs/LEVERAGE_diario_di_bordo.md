@@ -3050,6 +3050,18 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Anteprima Gymternet in tre revisioni: Eventi, Atleti, Risultati
+
+- Decisione UX richiesta dall'utente: tre parti selezionabili, con recap specifico e liste apribili paginate a sei elementi, al posto di elenchi sovrapposti. Rimangono Includi/Tralascia per lo storico, applicazione delle scelte, correzioni singole ed esclusioni cumulative esplicite. Il cambio di parte non scrive dati e non aggira i blocchi dell'import; la parte selezionata e conservata dopo il ricalcolo.
+- Revisione Eventi: entita gia in LEVERAGE e non ancora associate, con/senza incongruenze numeriche o avvisi sorgente, classifiche disponibili e possibili corrispondenze di identita. Le gare storiche tralasciate restano sintetizzate con eventuali differenze; nessuna riapertura automatica delle decisioni storiche.
+- Revisione Atleti: stesso recap, con elenco per identita e revisione dei possibili matching. Aggiunto al contratto backend `athlete_summaries`, aggregato sull'intero perimetro analizzato, per ID esistente o chiave candidata dopo le decisioni. Un atleta presente su piu attrezzi o gare viene contato una volta, non una volta per risultato; non si usano conteggi ricavati dal campione UI.
+- Precisione semantica: le incongruenze del recap riguardano punteggi e diagnostiche sorgente; le verifiche di identita sono separate. I candidati non associati non sono ancora nuove entita confermate. I conteggi restano provvisori fino a decisioni e ricalcolo. Le righe non convertibili e i D-score orfani rimangono nelle diagnostiche, senza inventare entita o punteggi.
+- Entrambe le revisioni entita offrono un collegamento alla corrispondente sezione Revisione Duplicati: si puo rimandare l'unione di entita gia presenti, ma non lasciare ambigua l'assegnazione dei risultati dell'import. Nessuna unione automatica o modifica ai dati da questi collegamenti.
+- Revisione Risultati: eliminata la duplicazione tra righe da correggere e punteggi discordanti. Un unico dettaglio per riga sorgente mostra confronto file/DB e campi correggibili; seguono D-score orfani e Avvisi del file. Gli avvisi ora sono paginabili tutti, non limitati ai primi sei. Le correzioni non sovrascrivono il DB: per modificare punteggi gia salvati resta l'Editor Risultati.
+- Spaziatura dedicata tra descrizioni, azioni, confronti e campi; controlli su righe separate quando manca spazio. Testi EN/IT/ES/FR e controlli da tastiera per le tre parti. Nessuna importazione reale o scansione WG eseguita durante il lavoro. Nessuna migrazione dati richiesta.
+- Verifica: 301 test backend superati su database isolato, incluse nuove asserzioni sui riepiloghi atleti esistenti/nuovi e sugli avvisi contati senza moltiplicarli per attrezzo. Collaudo Playwright con API simulate su desktop, tablet e mobile: tre parti, confronto unico, distanze minime tra testi/campi/comandi, stato dopo ricalcolo, blocco/sblocco conferma, navigazione e paginazione. Rigenerata la copia Word del diario.
+
+
 #### 2026-10-06 - Anteprima import compatta e coerente con il Centro Admin
 
 - Richiesta di semplificare l'anteprima senza perdere le funzioni di risoluzione. Dopo l'analisi, il form di caricamento si chiude: Cambia file lo riapre mantenendo file e parametri in memoria, anche dopo navigazione ad altre sottosezioni. Intestazione breve con nome file e selettore Includi/Tralascia; nessun cambiamento del perimetro predefinito.

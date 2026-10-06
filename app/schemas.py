@@ -1957,6 +1957,7 @@ class GymternetImportPreview(BaseModel):
     issues: list[dict]
     sample_results: list[dict]
     event_summaries: list[dict] = []
+    athlete_summaries: list[dict] = []
     event_match_review: list[dict] = []
     event_match_decision_stats: dict = {}
     orphan_dscore_review_count: int = 0

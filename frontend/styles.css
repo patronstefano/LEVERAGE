@@ -130,11 +130,31 @@
 #adminImportOutput .admin-import-table-scroll { max-height: 320px; }
 #adminImportOutput .admin-import-table th, #adminImportOutput .admin-import-table td { padding-block: 7px; }
 #adminImportOutput .admin-import-historical-total { margin: 10px 0; }
+.admin-import-review-tabs { margin: 16px 0; gap: 10px; }
+.admin-import-review-tabs .admin-revision-count { margin-left: 4px; color: inherit; }
+#adminImportOutput .admin-import-review-part .admin-import-metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+#adminImportOutput .admin-import-review-part .admin-import-metrics dt { min-height: 0; }
+.admin-import-duplicate-link { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-top: 16px; }
+.admin-import-duplicate-link > p { flex: 1 1 400px; margin: 0; }
+.admin-import-duplicate-link > a { flex: 0 0 auto; }
+#adminImportOutput .admin-revision-group > .admin-center-actions { margin-block: 12px; }
+#adminImportOutput .admin-identity-pair { column-gap: 24px; row-gap: 12px; }
+#adminImportOutput .admin-identity-pair > .admin-center-actions { gap: 10px; max-width: 100%; }
+#adminImportOutput .admin-identity-pair .quiet-button { white-space: normal; overflow-wrap: anywhere; }
+#adminImportOutput .admin-import-issues .admin-center-actions { margin-top: 10px; }
+#adminImportOutput [data-source-fields] > .admin-form-grid { margin: 12px 0; }
+#adminImportOutput [data-source-fields] > .admin-center-actions,
+#adminImportOutput [data-pair-details] > .admin-center-actions { margin-top: 12px; }
+.admin-source-comparison + .admin-source-comparison { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
+.admin-import-scope-note { margin: 12px 0; }
 @media (max-width: 1000px) {
   #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #adminImportOutput .admin-import-metrics dt { min-height: 0; }
 }
 @media (max-width: 580px) {
+  #adminImportOutput .admin-import-review-part .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-import-review-tabs { display: grid; grid-template-columns: 1fr; }
+  #adminImportOutput .admin-identity-pair > .admin-center-actions { width: auto; justify-content: flex-start; }
   .admin-import-header-actions { width: 100%; }
   .admin-import-header-actions .admin-import-scope-choice { flex: 1 1 180px; }
   .admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 100%; }

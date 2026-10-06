@@ -4,8 +4,8 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=compact-preview-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountCalendarImportRows } from './admin-import-report.js?v=compact-preview-20261006';
+import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows } from './admin-import-report.js?v=three-reviews-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -618,7 +618,7 @@ export async function renderAdminCenter(host) {
         ${block('', duplicates.length ? `<details class="admin-revision-group"><summary>${esc(text("details"))}<span class="admin-revision-count">${duplicates.length}</span></summary>${report(duplicates)}</details>` : empty(), 'adminResultReviews')}
         ${block('', `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
-      let reviewEntity = 'athlete';
+      let reviewEntity = new URLSearchParams(state.route.split('?')[1] || '').get('entity_type') === 'event' ? 'event' : 'athlete';
       const reviewToggle = root.querySelector('.admin-review-toggle');
       reviewToggle.setAttribute('aria-label', text(tab));
       if (wgOnly) {
@@ -997,17 +997,83 @@ export async function renderAdminCenter(host) {
       ${!p.committed && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
       ${!p.committed && p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
-      ${p.issues?.length ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review})}</details>` : ''}
+      ${p.issues?.length ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
       ${draft.kind === 'calendar' ? `<div id="adminCalendarRows"></div>${calendarConflicts ? `<details class="admin-revision-group"><summary>${text('importCalendarConflicts')}<span class="admin-import-blocking">${calendarConflicts}</span></summary>${report({duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts)})}</details>` : ''}` : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button(draft.kind === 'gymternet' ? 'importApplyAll' : 'importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>${draft.kind === 'gymternet' ? `<p class="admin-stats-note admin-import-safety">${esc(text('importReadOnly'))}</p>` : ''} ` : ''}
     `;
+    if (draft.kind === 'gymternet' && !p.committed) {
+      const reviewParts = [
+        ['events', 'importReviewEvents', p.event_match_decision_stats?.unresolved ?? (p.event_match_review?.length || 0)],
+        ['athletes', 'importReviewAthletes', p.athlete_match_decision_stats?.unresolved ?? (p.athlete_match_review?.length || 0)],
+        ['results', 'importReviewResults', (p.conflicts?.length || 0) + issueErrors.length + (p.orphan_dscore_decision_stats?.unresolved ?? (p.orphan_dscore_review?.length || 0))],
+      ];
+      const nav = document.createElement('div');
+      nav.className = 'admin-center-actions admin-import-review-tabs';
+      nav.setAttribute('role', 'tablist');
+      nav.innerHTML = reviewParts.map(([key, label, pending]) => `<button type="button" class="filter-button" role="tab" id="importTab_${key}" aria-controls="importPart_${key}" data-import-part="${key}">${esc(text(label))}${pending ? ` <span class="admin-revision-count">(${pending})</span>` : ''}</button>`).join('');
+      output.querySelector('#adminImportOverview').before(nav);
+      const sections = {};
+      for (const [key] of reviewParts) {
+        const section = document.createElement('section');
+        section.id = `importPart_${key}`;
+        section.className = 'admin-import-review-part';
+        section.setAttribute('role', 'tabpanel');
+        section.setAttribute('aria-labelledby', `importTab_${key}`);
+        sections[key] = section;
+        nav.after(section);
+      }
+      sections.events.append(output.querySelector('#adminImportOverview'));
+      const athleteOverview = document.createElement('div');
+      athleteOverview.id = 'adminImportAthletes';
+      sections.athletes.append(athleteOverview);
+      for (const [key, kind] of [['events', 'event'], ['athletes', 'athlete']]) {
+        const group = output.querySelector(`[data-import-group=${kind}]`);
+        if (group) sections[key].append(group);
+        sections[key].insertAdjacentHTML('beforeend', `<div class="admin-import-duplicate-link"><p class="admin-stats-note">${esc(text('importDuplicateNote'))}</p><a class="quiet-button outline-command-button" href="#/admin/review?entity_type=${kind}">${esc(text('importDuplicateLater'))}</a></div>`);
+      }
+      const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
+      sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', p.conflicts?.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
+      for (const selector of ['#adminImportResolution', '[data-import-group=orphan]', '[data-import-issues]']) {
+        const node = output.querySelector(selector);
+        if (node) sections.results.append(node);
+      }
+      nav.insertAdjacentHTML('beforebegin', `<p class="admin-stats-note admin-import-scope-note">${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p>`);
+      const choosePart = key => {
+        draft.reviewPart = key;
+        for (const [name, section] of Object.entries(sections)) section.hidden = name !== key;
+        nav.querySelectorAll('[data-import-part]').forEach(control => {
+          const selected = control.dataset.importPart === key;
+          control.setAttribute('aria-selected', String(selected));
+          control.setAttribute('aria-pressed', String(selected));
+          control.tabIndex = selected ? 0 : -1;
+        });
+      };
+      nav.querySelectorAll('[data-import-part]').forEach((control, index) => {
+        control.onclick = () => choosePart(control.dataset.importPart);
+        control.onkeydown = event => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const next = event.key === 'Home' ? 0 : event.key === 'End' ? 2 : (index + (event.key === 'ArrowRight' ? 1 : 2)) % 3;
+          const key = reviewParts[next][0];
+          choosePart(key);
+          nav.querySelector(`[data-import-part=${key}]`).focus();
+        };
+      });
+      choosePart(draft.reviewPart || 'events');
+      mountImportAthletes({root: athleteOverview, preview: p, text, esc, language: state.language, route: state.route, viewState: draft.athleteView ||= {}});
+    }
     output.querySelector('#adminImportChangeFile').onclick = event => {
       draft.fileFormOpen = !draft.fileFormOpen;
       importForm.hidden = !draft.fileFormOpen;
       event.currentTarget.setAttribute('aria-expanded', String(draft.fileFormOpen));
       event.currentTarget.textContent = text(draft.fileFormOpen ? 'importHideFile' : 'importChangeFile');
     };
+    output.querySelectorAll('[data-issue-page]').forEach(control => control.onclick = () => {
+      draft.issuePage = Number(control.dataset.issuePage);
+      draft.issuesOpen = true;
+      showImport();
+    });
     const issuesGroup = output.querySelector('[data-import-issues]');
     if (issuesGroup) issuesGroup.ontoggle = () => { if (issuesGroup.isConnected) draft.issuesOpen = issuesGroup.open; };
     if (!p.committed) {
@@ -1083,7 +1149,7 @@ export async function renderAdminCenter(host) {
     };
     if (draft.kind === 'gymternet' && !p.committed) {
       const resolution = !p.committed ? mountImportResolution({
-        root: output.querySelector('#adminImportResolution'), preview: p, draft, text, esc, button, field,
+        root: output.querySelector('#adminImportResolution'), preview: p, draft, text, esc, button, field, report,
         markChanged: () => { draft.sourceDirty = true; markChanged(); }, apply: () => refreshPreview(), confirm, guard,
       }) : null;
       mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report,

@@ -9484,6 +9484,10 @@ def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_resul
            'MAG,Ada Lovelace,USA,Test Cup 2026 QF,HB,13.5,5.5\n'
            'MAG,Ada Lovelace,USA,Spring Invitational 2026 QF,FX,14.0,5.8\n')
     files = lambda content: {'file': ('results.csv', (header + content).encode(), 'text/csv')}
+    initial = client.post('/imports/gymternet/preview?year_hint=2026', files=files(old), headers=headers).json()
+    assert len(initial['athlete_summaries']) == 1
+    assert initial['athlete_summaries'][0]['athlete_id'] is None
+    assert initial['athlete_summaries'][0]['new_results'] == 3
     first = client.post('/imports/gymternet/commit?year_hint=2026', files=files(old), headers=headers)
     assert first.status_code == 200, first.text
     updated = old.replace('HB,13.5,5.5', 'HB,13.8,5.5') + (
@@ -9501,6 +9505,14 @@ def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_resul
     assert events['Autumn Championship 2026']['status'] == 'new_event'
     assert data['importable_results'] == 2
     assert sum(row['file_results'] for row in events.values()) == data['parsed_rows']
+    athletes = data['athlete_summaries']
+    assert len(athletes) == 1  # Same athlete across competitions and apparatus, not result count.
+    assert athletes[0]['athlete_id'] is not None
+    assert athletes[0]['last_name'] == 'Lovelace'
+    assert athletes[0]['existing_results'] == 2
+    assert athletes[0]['new_results'] == 2
+    assert athletes[0]['conflicting_results'] == 1
+    assert athletes[0]['file_results'] == data['parsed_rows']
     assert len(client.get('/results/').json()) == 3
     blocked = client.post('/imports/gymternet/commit?year_hint=2026', files=files(updated), headers=headers)
     assert blocked.status_code == 409
@@ -9666,6 +9678,11 @@ def test_gymternet_source_review_includes_linked_d_score_sheet(monkeypatch):
     files = {'file': ('Results 2026.xlsx', b'fixture', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
     preview = client.post('/imports/gymternet/preview', files=files, headers=headers).json()
     rows = {row['sheet']: row for row in preview['source_review']}
+    assert len(preview['athlete_summaries']) == 1
+    source_issues = sum(issue.get('sheet') == 'MAG' and issue.get('row') == 2 for issue in preview['issues'])
+    assert source_issues > 0
+    assert preview['athlete_summaries'][0]['source_issues'] == source_issues
+    assert preview['event_summaries'][0]['source_issues'] == source_issues
     assert rows['MAG']['related_rows'] == [{'sheet': 'MAG D', 'row': 2}]
     assert rows['MAG D']['editable_fields'] == ['VT', 'VT SUM']
     decisions = [

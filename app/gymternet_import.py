@@ -3519,6 +3519,11 @@ def summarize_records(
     represented_country_overrides = represented_country_overrides or {}
     resolved_athlete_cache: dict[int, models.Athlete] = {}
     event_summaries = {}
+    athlete_summaries = {}
+    source_issue_counts = defaultdict(int)
+    for issue in issues:
+        source_issue_counts[(issue.get("sheet"), issue.get("row"))] += 1
+    entity_issue_rows = defaultdict(set)
 
     def track(record, outcome):
         key = event_lookup_key(record)
@@ -3532,6 +3537,23 @@ def summarize_records(
         })
         entry["file_results"] += 1
         entry[outcome] += 1
+        identity = ("id", athlete.id) if athlete else ("source", athlete_key)
+        athlete_entry = athlete_summaries.setdefault(identity, {
+            "athlete_id": athlete.id if athlete else None,
+            "first_name": athlete.first_name if athlete else record.first_name,
+            "last_name": athlete.last_name if athlete else record.last_name,
+            "country": athlete.country if athlete else record.country,
+            "discipline": record.discipline.value,
+            "file_results": 0, "existing_results": 0, "duplicate_file_results": 0,
+            "new_results": 0, "conflicting_results": 0, "source_issues": 0,
+        })
+        athlete_entry["file_results"] += 1
+        athlete_entry[outcome] += 1
+        source_key = (record.source_sheet, record.source_row)
+        for entity_key, entity in ((('event', key), entry), (('athlete', identity), athlete_entry)):
+            if source_key not in entity_issue_rows[entity_key]:
+                entity["source_issues"] = entity.get("source_issues", 0) + source_issue_counts[source_key]
+                entity_issue_rows[entity_key].add(source_key)
         context = (record.discipline.value, record.category.value, record.format.value,
                    record.round.value, record.apparatus, record.day)
         group = entry["groups"].setdefault(context, dict(zip(
@@ -3623,6 +3645,7 @@ def summarize_records(
         "sample_results": [import_record_payload(record) for record in importable[:20]],
         "importable_records": importable,
         "event_summaries": sorted(event_summaries.values(), key=lambda item: (-item["year"], item["event_name"].casefold())),
+        "athlete_summaries": sorted(athlete_summaries.values(), key=lambda item: (item["last_name"].casefold(), item["first_name"].casefold())),
     }
 
 

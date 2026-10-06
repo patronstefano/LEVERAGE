@@ -118,6 +118,7 @@ def build_import_preview_payload(
         "issues": summary["issues"],
         "sample_results": summary["sample_results"],
         "event_summaries": summary.get("event_summaries", []),
+        "athlete_summaries": summary.get("athlete_summaries", []),
         "event_match_review": summary.get("event_match_review", []),
         "event_match_decision_stats": summary.get("event_match_decision_stats", {}),
         "source_review": summary.get("source_review", []),

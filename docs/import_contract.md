@@ -21,6 +21,16 @@ Gli importer possono avere parser diversi, ma devono convergere sugli stessi con
 
 ## Revisione Gymternet nell'anteprima
 
+L'anteprima separa Eventi, Atleti e Risultati. Il payload espone
+`athlete_summaries` oltre a `event_summaries`: identita risolta (ID esistente
+oppure chiave candidata dopo le decisioni), conteggi di risultati nuovi,
+gia presenti, ripetuti e discordanti. `source_issues` conta gli avvisi sorgente
+una sola volta per riga ed entita, anche quando la riga contiene piu attrezzi.
+Gli atleti sono aggregati sull'intero perimetro incluso, non su `sample_results`.
+I dati esclusi sono riepilogati in `skipped_existing_events`; le review di
+identita rimangono distinte dalle incongruenze numeriche. Nessuna nuova
+scrittura, fusione automatica o scansione del DB e introdotta dal recap.
+
 Dal 6 ottobre 2026 la UI non richiede report scaricabili: permette decisioni
 individuali e applicazione cumulativa delle scelte esplicite, con ricalcolo
 prima del commit. Le correzioni numeriche della sorgente e le esclusioni di
