@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Scelta del perimetro dopo l'anteprima
+
+- Su richiesta dell'utente, rimossa la spunta "Includi anche gare gia importate" dal form di caricamento. Il primo caricamento analizza ora tutto il file (`skip_existing_events=false`); la scelta avviene solo dopo aver ricevuto l'anteprima, tramite il selettore "Gare gia importate: Includi / Tralascia". Questa decisione sostituisce il default UI descritto nella voce precedente, senza cambiare il contratto backend.
+- Cambiare opzione ricalcola automaticamente anteprima, conteggi e revisioni, senza scrivere nel DB e senza ricaricare l'intera pagina. Le decisioni gia prese restano in memoria; sono riapplicate solo se pertinenti al perimetro scelto. Durante il ricalcolo non si puo confermare un'anteprima obsoleta; in caso di errore viene ripristinata l'ultima anteprima valida.
+- Eliminato il banner generico "Il file contiene dati incoerenti...". Restano le segnalazioni specifiche apribili e i blocchi sui dati invalidi effettivamente inclusi nell'importazione. Tralasciare una gara gia popolata conserva i dati validati e riduce le incongruenze storiche a un riepilogo; includerla ripristina i controlli completi.
+- Mantenuti sezioni compatte e paginazione. Collaudo browser con anteprima completa iniziale, assenza della vecchia spunta e del banner, passaggio Includi/Tralascia/Includi con aggiornamento del blocco di conferma, nessuna chiamata di commit e verifica desktop/mobile.
+
 #### 2026-10-06 - Import cumulativo compatto e tutela delle gare gia revisionate
 
 - Decisione dell'utente: il file 2026 aggiornato, e i futuri file Gymternet cumulativi, non devono riproporre come nuove revisioni i conflitti delle gare gia importate e corrette durante il popolamento storico. La UI esclude ora di default le gare riconosciute con lo stesso nome e anno e almeno un Result attivo; mostra "N gare gia in LEVERAGE". Le gare presenti soltanto nel calendario, senza risultati, rimangono da elaborare.

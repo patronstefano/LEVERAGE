@@ -34,6 +34,7 @@ def main():
          'groups': [], 'new_results_preview': []},
     ]
     current_role = ["super_admin"]
+    scope_response = {}
     event_days = [None]
     full_classification_size = [0]
     dismissed_scan_jobs = set()
@@ -142,7 +143,8 @@ def main():
                         preview['event_match_decision_stats']['unresolved'] = 0
                     if 'accept_suggestion' in route.request.post_data:
                         preview['athlete_match_decision_stats']['unresolved'] = 0
-                    route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
+                    scoped = parse_qs(urlparse(route.request.url).query).get('skip_existing_events') == ['true']
+                    route.fulfill(json={**preview, **(scope_response if scoped else {})}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path.startswith('/world-gymnastics/scan/matches/') and path.endswith('/dismiss'):
@@ -872,8 +874,10 @@ def main():
                 row = page.locator("[data-review-type=athlete]")
                 page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
-                assert not page.locator('[name=include_existing]').is_checked()
-                assert 'skip_existing_events=true' in writes[-1]['url']
+                assert page.locator('[name=include_existing]').count() == 0
+                assert page.locator('#adminImportForm [name=existing_event_scope]').count() == 0
+                assert page.locator('#adminImportOutput [name=existing_event_scope]').input_value() == 'include'
+                assert 'skip_existing_events=false' in writes[-1]['url']
                 page.locator('[data-import-event-list] > summary').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
                 page.locator('[data-import-filter=existing]').click()
@@ -940,6 +944,31 @@ def main():
                 assert 'arrotondamento' in page.locator('.admin-import-issues').inner_text()
                 assert 'Skipped derived' not in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
+                assert 'Il file contiene dati incoerenti.' not in page.locator('#adminImportOutput').inner_text()
+                scope_response.update(issues=[], importable_results=1, skipped_existing_results=2,
+                    skipped_existing_events=[{'event_id': 3, 'event_name': 'Vault Cup 2026', 'year': 2026,
+                    'results': 2, 'differences': 1, 'source_issues': 1}])
+                scope = page.locator('[name=existing_event_scope]').locator('..')
+                scope.locator('summary').click()
+                scope.locator('[data-admin-select-value=skip]').click()
+                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
+                assert 'skip_existing_events=true' in writes[-1]['url']
+                assert page.locator('[name=existing_event_scope]').input_value() == 'skip'
+                assert '1 gara già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('.admin-import-issues').count() == 0
+                scope = page.locator('[name=existing_event_scope]').locator('..')
+                scope.locator('summary').click()
+                scope.locator('[data-admin-select-value=include]').click()
+                page.locator('.admin-import-issues').wait_for()
+                assert 'skip_existing_events=false' in writes[-1]['url']
+                assert page.locator('#adminCommitImport').is_disabled()
+                assert not any(w['path'] == '/imports/gymternet/commit' for w in writes)
+                page.evaluate('window.scrollTo(0, 0)')
+                page.screenshot(path='/tmp/leverage-import-scope-desktop.png', full_page=True)
+                page.set_viewport_size({'width': 390, 'height': 844})
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                page.screenshot(path='/tmp/leverage-import-scope-mobile.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
         page.evaluate("location.hash = '/admin/review'")
         page.wait_for_timeout(300)
         page.locator('[data-section-nav="home"]').click()

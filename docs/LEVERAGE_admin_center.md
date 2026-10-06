@@ -4,18 +4,21 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
-L'anteprima dei risultati cumulativi Gymternet esclude di default le gare gia
-popolate: corrispondenza univoca nome/anno e almeno un risultato attivo. Mostra
-"N gare gia in LEVERAGE", con eventuali differenze e avvisi sorgente sintetizzati
-in un riepilogo apribile. I dati gia validati non vengono modificati e non
-generano nuove revisioni di identita. Le gare presenti solo nel calendario,
-senza risultati, restano da importare.
+Il primo caricamento Gymternet mostra l'anteprima dell'intero file. Solo dopo
+l'analisi, il selettore "Gare gia importate" permette di scegliere Includi o
+Tralascia, con ricalcolo automatico del report prima della conferma.
+Non e piu presente una spunta nel form di caricamento.
 
-Per integrare una gara gia popolata (per esempio altri round o attrezzi),
-attivare "Includi anche gare gia importate" prima dell'anteprima: tornano tutti
-i controlli sui risultati di quella gara. Esclusione non significa completezza.
-La UI usa `skip_existing_events=true`; l'API conserva false come default per
-compatibilita con script precedenti. Il commit rivaluta sempre il DB.
+Tralascia esclude le gare gia popolate: corrispondenza univoca nome/anno e
+almeno un risultato attivo. Mostra "N gare gia in LEVERAGE", con differenze e
+avvisi sorgente sintetizzati in un riepilogo apribile, senza riaprire le vecchie
+revisioni. Le gare presenti solo nel calendario restano da importare.
+Includi permette di integrare altri round o attrezzi e mantiene tutti i controlli.
+Esclusione non significa completezza. La UI usa `skip_existing_events=false`
+inizialmente, e true dopo la scelta Tralascia; il commit rivaluta sempre il DB.
+Rimosso il banner generico sui dati incoerenti, non le diagnostiche specifiche
+ne i blocchi sui dati invalidi inclusi. Le decisioni pertinenti sono conservate
+al cambio di perimetro; la conferma resta disabilitata durante il ricalcolo.
 
 Il recap distingue risultati esclusi, nuovi candidati e identita da risolvere.
 Gare, conflitti e revisioni sono raccolti in sezioni chiuse, con sei elementi

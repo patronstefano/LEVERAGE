@@ -4,7 +4,7 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues } from './admin-import-report.js?v=import-cumulative-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues } from './admin-import-report.js?v=import-preview-choice-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -870,11 +870,11 @@ export async function renderAdminCenter(host) {
 
   async function imports() {
     let importRevision = 0;
-    paint(form("adminImportForm", select("kind", "type", [{ value: "gymternet", label: text("importResults") }, { value: "calendar", label: text("importCalendar") }], session.import?.kind || "gymternet") + select("year_hint", "year", [{ value: "", label: "—" }, ...Array.from({ length: new Date().getFullYear() - 1898 }, (_, index) => String(new Date().getFullYear() + 1 - index))], session.import?.params?.year_hint || "") + `<div class="admin-form-field"><span>File</span><div class="admin-file-picker"><input id="adminImportFile" name="file" type="file" accept=".xlsx,.csv" required tabindex="-1" aria-label="${esc(text("chooseFile"))}"><button id="adminChooseFile" type="button" class="quiet-button outline-command-button" aria-controls="adminImportFile" aria-describedby="adminImportFilename">${esc(text("chooseFile"))}</button><span id="adminImportFilename" aria-live="polite">${esc(text("noFileSelected"))}</span></div></div>` + select("csv_discipline", "CSV discipline", [{ value: "", label: "—" }, "MAG", "WAG"]) + select("csv_score_kind", "CSV score", [{ value: "", label: "—" }, "final", "dscore"]) + field("create_missing_from_year", "Create calendar events from year", "number") + `<label class="admin-import-scope"><input name="include_existing" type="checkbox" ${session.import?.params?.skip_existing_events === false ? "checked" : ""}>${esc(text("importIncludeExisting"))}</label>`, "preview") + '<div id="adminImportOutput"></div>');
+    paint(form("adminImportForm", select("kind", "type", [{ value: "gymternet", label: text("importResults") }, { value: "calendar", label: text("importCalendar") }], session.import?.kind || "gymternet") + select("year_hint", "year", [{ value: "", label: "—" }, ...Array.from({ length: new Date().getFullYear() - 1898 }, (_, index) => String(new Date().getFullYear() + 1 - index))], session.import?.params?.year_hint || "") + `<div class="admin-form-field"><span>File</span><div class="admin-file-picker"><input id="adminImportFile" name="file" type="file" accept=".xlsx,.csv" required tabindex="-1" aria-label="${esc(text("chooseFile"))}"><button id="adminChooseFile" type="button" class="quiet-button outline-command-button" aria-controls="adminImportFile" aria-describedby="adminImportFilename">${esc(text("chooseFile"))}</button><span id="adminImportFilename" aria-live="polite">${esc(text("noFileSelected"))}</span></div></div>` + select("csv_discipline", "CSV discipline", [{ value: "", label: "—" }, "MAG", "WAG"]) + select("csv_score_kind", "CSV score", [{ value: "", label: "—" }, "final", "dscore"]) + field("create_missing_from_year", "Create calendar events from year", "number"), "preview") + '<div id="adminImportOutput"></div>');
     onSubmit("adminImportForm", async (v, f) => {
       const revision = ++importRevision;
       const file = f.elements.file.files[0];
-      const params = v.kind === "calendar" ? { create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000, skip_existing_events: !f.elements.include_existing.checked };
+      const params = v.kind === "calendar" ? { create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000, skip_existing_events: false };
       const body = new FormData(); body.append("file", file);
       const output = document.getElementById("adminImportOutput");
       output.innerHTML = `<div class="admin-import-progress" role="status" aria-live="polite"><div class="admin-import-progress-heading"><span id="adminImportProgressLabel">${esc(text("importUploading"))}</span><strong id="adminImportProgressValue">0%</strong></div><div id="adminImportProgressTrack" class="admin-import-progress-track" role="progressbar" aria-label="${esc(text("importUploading"))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="adminImportProgressFill"></span></div></div>`;
@@ -901,7 +901,7 @@ export async function renderAdminCenter(host) {
       try {
         const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params, onUploadProgress, onUploaded });
         if (!active() || !output.isConnected || revision !== importRevision) return;
-        session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, event: {}, visible: 25 }; showImport();
+        session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, event: {} }; showImport();
       } catch (error) {
         if (revision !== importRevision || !output.isConnected) return;
         output.textContent = "";
@@ -918,7 +918,6 @@ export async function renderAdminCenter(host) {
       document.getElementById("adminImportFilename").textContent = importForm.elements.file.files[0]?.name || text("noFileSelected");
       const calendar = importForm.elements.kind.value === "calendar";
       const csv = importForm.elements.file.files[0]?.name.toLowerCase().endsWith(".csv");
-      importForm.elements.include_existing.closest("label").hidden = calendar;
       for (const key of ["csv_discipline", "csv_score_kind", "year_hint", "create_missing_from_year"]) {
         importForm.elements[key].closest("label, .admin-form-field").hidden =
           key === "create_missing_from_year" ? !calendar : key === "year_hint" ? calendar : calendar || !csv;
@@ -946,7 +945,7 @@ export async function renderAdminCenter(host) {
     const start = type => (draft.reviewPages[type] || 0) * pageSize;
     const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))} · ${count}</summary>${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
-    const importStatus = draft.kind !== 'gymternet' ? '' : issueErrors.length ? text('importErrors') :
+    const importStatus = draft.kind !== 'gymternet' || issueErrors.length ? '' :
       p.skipped_existing_events?.length && p.importable_results === 0 && !p.conflicts?.length && !p.athlete_match_review?.length && !p.event_match_review?.length ? text('importHistoricalOnly') :
       p.parsed_rows === 0 ? text('importNoRows') :
       p.importable_results === 0 && p.duplicates?.length && !p.conflicts?.length ? text('importOnlyDuplicates') : '';
@@ -962,7 +961,7 @@ export async function renderAdminCenter(host) {
       return `<article class="admin-identity-pair admin-import-review" data-review-type="${type}" data-review-index="${index}"><div class="admin-identity-pair-grid"><div class="admin-identity-entity"><strong>${esc(nameOf(source))}</strong><p class="admin-revision-meta">${esc([text('importFile'), source.discipline, source.country, source.year].filter(Boolean).join(' · '))}</p></div><div class="admin-identity-entity"><strong>${esc(nameOf(target))}</strong><p class="admin-revision-meta">${esc([target.athlete_id ? `ID ${target.athlete_id}` : '', target.discipline, target.country].filter(Boolean).join(' · '))}</p></div></div><div class="admin-center-actions">${best?.confidence != null ? `<span class="admin-review-compatibility">${esc(text('compatibility'))}: ${Math.round(best.confidence * 100)}%</span>` : ''}${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report(source)}${item.country_variants ? report({country_variants: item.country_variants}) : ''}${item.sample_results ? report({sample_results: item.sample_results}) : ''}</section><section class="admin-audit-side"><h3>${esc(text('importDatabase'))}</h3>${report(item.suggestions || [])}</section></div><div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }]) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div></div></article>`;
     }).join("");
     const eventReviewRows = (p.event_match_review || []).slice(start('event'), start('event') + pageSize).map((item, i) => `<article class="admin-identity-pair admin-import-review" data-event-review="${start('event') + i}"><div class="admin-identity-entity"><strong>${esc(item.event_name)} · ${item.year}</strong><p class="admin-revision-meta">${esc(text('importFileRows'))}: ${item.result_count}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({event_name: item.event_name, year: item.year, discipline: item.disciplines.join(' · '), results_count: item.result_count})}</section><section class="admin-audit-side"><h3>${esc(text('importDatabase'))}</h3>${item.suggestions.map(s => `<p><strong>${esc(s.name)}</strong> · ID ${s.event_id} · ${s.compatibility}%</p>${report({year: s.year, discipline: s.discipline, start_date: s.start_date, end_date: s.end_date})}`).join('')}</section></div>${select('event_action', 'decision', [{value: '', label: text('unresolved')}, ...item.suggestions.map(s => ({value: String(s.event_id), label: `${text('importMatchEvent')} · ${s.name} · ID ${s.event_id}`})), {value: 'keep_separate', label: text('importNewSeparate')}], draft.event[item.review_id]?.selection || '')}</div></article>`).join('');
-    output.innerHTML = `<h3>${esc(p.filename)}</h3>${importStatus ? `<p class="admin-center-feedback ${issueErrors.length || p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}${draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
+    output.innerHTML = `<h3>${esc(p.filename)}</h3>${importStatus ? `<p class="admin-center-feedback ${issueErrors.length || p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}${draft.kind === 'gymternet' ? `${!p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], draft.params.skip_existing_events ? 'skip' : 'include')}<span id="adminImportScopeStatus" class="admin-stats-note" role="status" hidden>${esc(text('importLoading'))}</span></div>` : ''}<div id="adminImportOverview"></div>` : report(Object.fromEntries(Object.entries(p).filter(([,v]) => typeof v !== "object")))}
       ${draft.kind === 'gymternet' ? (p.issues?.length ? `<details class="admin-revision-group" ${issueErrors.length ? 'open' : ''}><summary>${text('importIssueList')} · ${p.issues.length}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language})}</details>` : '') : `<details class="admin-revision-group"><summary>${text("importDetails")}</summary>${report({ issues: limited(p.issues), conflicts: limited(p.conflicts), rows: limited(p.rows), duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts) })}</details>`}
       ${p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
       ${p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
@@ -974,24 +973,59 @@ export async function renderAdminCenter(host) {
       ${draft.kind === "gymternet" && !p.committed ? `<label><input id="adminPartialImport" type="checkbox">${text("partial")}</label>` : ""}`;
     if (!p.committed) {
       output.insertAdjacentHTML("beforeend", `<div class="admin-center-actions admin-import-footer">${button("importRecalculate", 'id="adminReviewPreview"')}</div>`);
-      document.getElementById("adminReviewPreview").onclick = guard(async () => {
-        const revision = draft.decisionRevision || 0;
+      const bodyWithDecisions = (preview, includeIdentities = true) => {
         const body = new FormData(); body.append("file", draft.file);
-        body.append("athlete_match_decisions", JSON.stringify(Object.values(draft.athlete).filter((d) => d.action)));
-        body.append("orphan_dscore_decisions", JSON.stringify(Object.values(draft.orphan).filter((d) => d.action)));
-        body.append("event_match_decisions", JSON.stringify(Object.values(draft.event).filter((d) => d.action)));
-        const result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body, params: draft.params });
-        if (!active() || session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
-        draft.preview = result;
-        draft.needsPreview = false;
-        showImport();
-      });
+        for (const [type, key, items] of [
+          ['athlete', 'athlete_match_decisions', preview.athlete_match_review],
+          ['orphan', 'orphan_dscore_decisions', preview.orphan_dscore_review],
+          ['event', 'event_match_decisions', preview.event_match_review],
+        ]) {
+          const ids = new Set((items || []).map(item => item.review_id));
+          body.append(key, JSON.stringify(Object.values(draft[type]).filter(d => d.action && ids.has(d.review_id) && (includeIdentities || type === 'event'))));
+        }
+        return body;
+      };
+      const refreshPreview = async (scope = draft.params.skip_existing_events) => {
+        if (draft.scopeBusy) return;
+        const changingScope = scope !== draft.params.skip_existing_events;
+        const params = {...draft.params, ...(draft.kind === 'gymternet' ? {skip_existing_events: scope} : {})};
+        const revision = draft.decisionRevision || 0;
+        draft.scopeBusy = true;
+        output.inert = true;
+        output.setAttribute('aria-busy', 'true');
+        output.querySelector('#adminCommitImport')?.setAttribute('disabled', '');
+        output.querySelector('#adminImportScopeStatus')?.removeAttribute('hidden');
+        try {
+          let result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(draft.preview, !changingScope), params });
+          if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
+          // Reapply only decisions that belong to the newly selected scope.
+          if (changingScope && [['athlete', result.athlete_match_review], ['orphan', result.orphan_dscore_review]]
+              .some(([type, items]) => (items || []).some(item => draft[type][item.review_id]?.action))) {
+            result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(result), params });
+          }
+          if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
+          draft.params = params;
+          draft.preview = result;
+          draft.needsPreview = false;
+        } finally {
+          draft.scopeBusy = false;
+          if (output.isConnected) {
+            output.inert = false;
+            output.removeAttribute('aria-busy');
+          }
+          if (active() && session.import === draft) showImport();
+        }
+      };
+      document.getElementById("adminReviewPreview").onclick = guard(() => refreshPreview());
+      output.querySelector('[name=existing_event_scope]')?.addEventListener('change', guard(event => refreshPreview(event.target.value === 'skip')));
     }
+    output.inert = Boolean(draft.scopeBusy);
+    output.setAttribute('aria-busy', String(Boolean(draft.scopeBusy)));
     bind();
     if (draft.kind === 'gymternet') mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report, language: state.language, route: state.route});
     const updateCommit = () => {
       const control = output.querySelector('#adminCommitImport');
-      if (control) control.disabled = Boolean(issueErrors.length || p.parsed_rows === 0 || (p.skipped_existing_events?.length && !p.importable_results) || draft.needsPreview ||
+      if (control) control.disabled = Boolean(draft.scopeBusy || issueErrors.length || p.parsed_rows === 0 || (p.skipped_existing_events?.length && !p.importable_results) || draft.needsPreview ||
         p.athlete_match_decision_stats?.unresolved || p.event_match_decision_stats?.unresolved ||
         (p.conflicts?.length && !output.querySelector('#adminPartialImport')?.checked));
     };
@@ -1078,10 +1112,13 @@ export async function renderAdminCenter(host) {
         markChanged();
       });
     });
-    document.getElementById("adminExportImport").onclick = () => download({ preview: p, athlete_match_decisions: Object.values(draft.athlete), orphan_dscore_decisions: Object.values(draft.orphan), event_match_decisions: Object.values(draft.event) }, `leverage-${draft.kind}-report.json`);
+    document.getElementById("adminExportImport").onclick = () => download({ preview: p, import_options: draft.params, athlete_match_decisions: Object.values(draft.athlete), orphan_dscore_decisions: Object.values(draft.orphan), event_match_decisions: Object.values(draft.event) }, `leverage-${draft.kind}-report.json`);
     document.getElementById("adminCommitImport")?.addEventListener("click", () => confirm("commit", async () => {
       const body = new FormData(); body.append("file", draft.file);
-      for (const [type, key] of [["athlete", "athlete_match_decisions"], ["orphan", "orphan_dscore_decisions"], ["event", "event_match_decisions"]]) body.append(key, JSON.stringify(Object.values(draft[type]).filter((d) => d.action)));
+      for (const [type, key, items] of [["athlete", "athlete_match_decisions", p.athlete_match_review], ["orphan", "orphan_dscore_decisions", p.orphan_dscore_review], ["event", "event_match_decisions", p.event_match_review]]) {
+        const ids = new Set((items || []).map(item => item.review_id));
+        body.append(key, JSON.stringify(Object.values(draft[type]).filter(d => d.action && ids.has(d.review_id))));
+      }
       try {
         const result = await api(`/imports/${draft.kind}/commit`, { method: "POST", body, params: { ...draft.params, ...(draft.kind === "gymternet" ? { allow_partial: document.getElementById("adminPartialImport").checked } : {}) } });
         draft.preview = result; showImport();
