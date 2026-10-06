@@ -600,6 +600,8 @@ Campi suggeribili attuali:
 ## Import Gymternet
 Accanto al data entry manuale, LEVERAGE espone uno strumento admin-only per caricare file Gymternet standardizzati in formato `.xlsx` o `.csv`.
 
+**File cumulativi nella UI:** per default sono escluse le gare gia popolate con risultati attivi, riconosciute univocamente per nome/anno. Il recap mostra quante gare sono gia in LEVERAGE e sintetizza le eventuali incongruenze storiche senza riaprire le vecchie review. Per completare o ricontrollare una gara gia popolata, selezionare **Includi anche gare gia importate**. Le gare presenti solo nel calendario restano importabili. Preview, commit e ricerca target accettano `skip_existing_events`; la UI invia true per default, mentre l'API mantiene false per compatibilita. Le liste dell'anteprima sono raccolte in sezioni apribili con pagine da sei elementi. Gli errori relativi alle gare incluse o non attribuibili rimangono bloccanti; quelli attribuibili alle gare escluse sono riepilogati a titolo informativo. Nessun risultato gia salvato viene sovrascritto.
+
 Il contratto comune che un import parallelo futuro dovra rispettare e documentato in [docs/import_contract.md](docs/import_contract.md). In sintesi: parser diversi sono ammessi, ma tutti gli importer devono convergere sulla stessa preview admin, sugli stessi controlli di atleta/evento/result, sulla stessa logica anti-duplicato, sulle stesse verifiche di country storica e sulle notifiche cumulative.
 
 Il popolamento storico 2018-2025 viene documentato passo passo in [docs/LEVERAGE_popolamento_massivo_diario.md](docs/LEVERAGE_popolamento_massivo_diario.md), con preview, statistiche, scelte admin, commit e controlli post-import per ogni anno.

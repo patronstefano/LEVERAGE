@@ -9514,6 +9514,85 @@ def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_resul
     assert next(row['score'] for row in rows if row['apparatus'] == 'HB') == 13.5
 
 
+def test_gymternet_cumulative_import_preserves_validated_events_and_imports_calendar_only_events():
+    client.post('/auth/register', json={'email': 'cumulative@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('cumulative@example.com')}"}
+    header = 'discipline,athlete,country,event,apparatus,score,d_score\n'
+    files = lambda rows: {'file': ('results.csv', (header + rows).encode(), 'text/csv')}
+    old = 'MAG,Ada Lovelace,USA,Test Cup 2026 QF,FX,14.1,5.8\n'
+    first = client.post('/imports/gymternet/commit?year_hint=2026', files=files(old), headers=headers)
+    assert first.status_code == 200, first.text
+    with SessionLocal() as db:
+        db.add(models.Event(name='Autumn Championship 2026', year=2026,
+                            discipline=models.EventDisciplineEnum.MAG,
+                            category=models.EventCategoryEnum.SENIOR, level=models.LevelEnum.NATIONAL_EVENT))
+        db.commit()
+    # Historical source differences must not undo validated names, countries or scores.
+    updated = ('MAG,Ada Lovelac,ITA,Test Cup 2026 QF,FX,13.1,5.1\n'
+               'MAG,Ada Lovelace,USA,Test Cup 2026 QF,PH,13.2,5.2\n'
+               'MAG,Ada Lovelace,USA,Autumn Championship 2026 QF,FX,14.2,5.9\n')
+    url = '/imports/gymternet/preview?year_hint=2026&skip_existing_events=true'
+    response = client.post(url, files=files(updated), headers=headers)
+    assert response.status_code == 200, response.text
+    preview = response.json()
+    assert preview['parsed_rows'] == 3
+    assert preview['skipped_existing_results'] == 2
+    assert len(preview['skipped_existing_events']) == 1
+    assert preview['skipped_existing_events'][0]['differences'] == 2
+    assert not preview['athlete_match_review']
+    assert not preview['conflicts']
+    assert preview['importable_results'] == 1
+    assert preview['would_create_events'] == 0
+    committed = client.post(url.replace('/preview?', '/commit?'), files=files(updated), headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == 1
+    results = client.get('/results/').json()
+    assert len(results) == 2
+    assert sorted(row['score'] for row in results) == [14.1, 14.2]
+    repeat = client.post(url, files=files(updated), headers=headers).json()
+    assert len(repeat['skipped_existing_events']) == 2
+    assert repeat['importable_results'] == 0
+    explicit = client.post(url.replace('true', 'false'), files=files(updated), headers=headers).json()
+    assert not explicit['skipped_existing_events']
+    assert explicit['athlete_match_review']
+
+
+def test_gymternet_cumulative_import_historical_diagnostics_do_not_block_new_events(monkeypatch):
+    from app.gymternet_import import GymternetParseOutput, parse_pivot_rows
+    client.post('/auth/register', json={'email': 'historic_diagnostics@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('historic_diagnostics@example.com')}"}
+    old = b'discipline,athlete,country,event,apparatus,score,d_score\nMAG,Vault Person,ITA,Old Cup 2026 QF,VT,13,5\n'
+    files = {'file': ('results.csv', old, 'text/csv')}
+    assert client.post('/imports/gymternet/commit', files=files, headers=headers).status_code == 200
+
+    def parsed_file(**kwargs):
+        issues = []
+        records = parse_pivot_rows([
+            {'Athlete': 'Vault Person', 'Country': 'Italy', 'Event': 'Old Cup 2026 QF', 'VT': '1.2', 'VT AVG': '12.85'},
+            {'Athlete': 'Vault Person', 'Country': 'Italy', 'Event': 'Autumn Championships 2026 QF', 'FX': '14'},
+        ], 'MAG', models.DisciplineEnum.MAG, 'final', 2026, issues)
+        orphans = parse_pivot_rows([
+            {'Athlete': 'Vault Person', 'Country': 'Italy', 'Event': 'Old Cup 2026 QF', 'PH': '5'},
+        ], 'MAG D', models.DisciplineEnum.MAG, 'dscore', 2026, issues)
+        return GymternetParseOutput(records, issues, orphans)
+
+    monkeypatch.setattr('app.routers.imports.parse_gymternet_file', parsed_file)
+    preview = client.post('/imports/gymternet/preview?skip_existing_events=true', files=files, headers=headers).json()
+    assert preview['skipped_existing_events'][0]['source_issues'] == 1
+    assert preview['skipped_existing_events'][0]['orphan_dscores'] == 1
+    assert not preview['orphan_dscore_review']
+    assert not any(issue['severity'] == 'error' for issue in preview['issues'])
+    assert preview['importable_results'] == 1
+    # Explicit rechecking still blocks an invalid source calculation.
+    blocked = client.post('/imports/gymternet/commit?skip_existing_events=false', files=files, headers=headers)
+    assert blocked.status_code == 400
+    assert any(issue.get('code') == 'derived_vt_outlier' for issue in blocked.json()['detail']['issues'])
+    parsed = parsed_file()
+    parsed.issues.append({'severity': 'error', 'message': 'Unknown source error'})
+    monkeypatch.setattr('app.routers.imports.parse_gymternet_file', lambda **kwargs: parsed)
+    assert client.post('/imports/gymternet/commit?skip_existing_events=true', files=files, headers=headers).status_code == 400
+
+
 def test_gymternet_event_identity_requires_explicit_decision_and_recalculates_duplicates():
     client.post('/auth/register', json={'email': 'event_review@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('event_review@example.com')}"}
@@ -9534,6 +9613,10 @@ def test_gymternet_event_identity_requires_explicit_decision_and_recalculates_du
     assert resolved['would_create_events'] == 0
     assert resolved['importable_results'] == 0
     assert resolved['event_summaries'][0]['status'] == 'already_imported'
+    skipped = client.post('/imports/gymternet/preview?year_hint=2024&skip_existing_events=true', files=files, data=data, headers=headers).json()
+    assert skipped['skipped_existing_results'] == 1
+    assert skipped['importable_results'] == 0
+    assert not skipped['athlete_match_review']
     assert len(client.get('/events/').json()) == 1
     kept = client.post('/imports/gymternet/preview?year_hint=2024', files=files,
                        data={'event_match_decisions': json.dumps([{**decision, 'action': 'keep_separate'}])}, headers=headers).json()

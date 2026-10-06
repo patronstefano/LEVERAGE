@@ -4,12 +4,25 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
-L'anteprima dei risultati cumulativi Gymternet e organizzata come le liste di
-Revisione Duplicati e Audit e Ripristino. Il recap distingue risultati gia
-presenti, nuovi candidati e identita da risolvere. La lista delle gare mostra
-se ciascuna contiene solo risultati gia importati, nuovi risultati in una gara
-esistente, una nuova gara o conflitti. Confronta dettagli apre classifiche,
-conteggi e un campione di massimo 20 nuovi risultati per gara.
+L'anteprima dei risultati cumulativi Gymternet esclude di default le gare gia
+popolate: corrispondenza univoca nome/anno e almeno un risultato attivo. Mostra
+"N gare gia in LEVERAGE", con eventuali differenze e avvisi sorgente sintetizzati
+in un riepilogo apribile. I dati gia validati non vengono modificati e non
+generano nuove revisioni di identita. Le gare presenti solo nel calendario,
+senza risultati, restano da importare.
+
+Per integrare una gara gia popolata (per esempio altri round o attrezzi),
+attivare "Includi anche gare gia importate" prima dell'anteprima: tornano tutti
+i controlli sui risultati di quella gara. Esclusione non significa completezza.
+La UI usa `skip_existing_events=true`; l'API conserva false come default per
+compatibilita con script precedenti. Il commit rivaluta sempre il DB.
+
+Il recap distingue risultati esclusi, nuovi candidati e identita da risolvere.
+Gare, conflitti e revisioni sono raccolti in sezioni chiuse, con sei elementi
+per pagina. Confronta dettagli apre classifiche, conteggi e un campione di
+massimo 20 nuovi risultati per gara. Gli errori sorgente sicuramente riferiti
+alle gare escluse non bloccano le nuove importazioni; quelli delle gare incluse
+o non attribuibili rimangono bloccanti.
 
 Le possibili corrispondenze di gare nello stesso anno richiedono una decisione
 esplicita: associazione alla gara proposta o conferma di gara distinta. Si

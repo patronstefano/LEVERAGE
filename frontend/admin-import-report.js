@@ -1,12 +1,22 @@
 export const IMPORT_COPY = {
+  importIncludeExisting: ['Include previously imported competitions', 'Includi anche gare già importate', 'Incluir competiciones ya importadas', 'Inclure les compétitions déjà importées'],
+  importHistorical: ['competitions already in LEVERAGE', 'gare già in LEVERAGE', 'competiciones ya en LEVERAGE', 'compétitions déjà dans LEVERAGE'],
+  importHistoricalNote: ['These competitions are excluded. Previously validated data remain unchanged. Enable “Include previously imported competitions” to add or review their results.', 'Queste gare sono escluse: i dati già validati restano invariati. Attiva “Includi anche gare già importate” per integrarne o ricontrollarne i risultati.', 'Estas competiciones se excluyen: los datos validados no cambian. Activa “Incluir competiciones ya importadas” para añadir o revisar sus resultados.', 'Ces compétitions sont exclues : les données validées restent inchangées. Activez « Inclure les compétitions déjà importées » pour compléter ou vérifier leurs résultats.'],
+  importHistoricalDifferences: ['Differences in historical data', 'Incongruenze sui dati già importati', 'Diferencias en datos ya importados', 'Différences dans les données déjà importées'],
+  importHistoricalCaution: ['Differences may reflect previous corrections. They do not reopen identity reviews or change existing data.', 'Le differenze possono dipendere da correzioni già effettuate. Non riaprono le revisioni di identità e non modificano i dati esistenti.', 'Las diferencias pueden deberse a correcciones previas. No reabren revisiones ni cambian datos existentes.', 'Les différences peuvent provenir de corrections antérieures. Elles ne rouvrent pas les vérifications et ne modifient pas les données.'],
+  importDifferences: ['Results to compare', 'Risultati non coincidenti', 'Resultados no coincidentes', 'Résultats non concordants'],
+  importPreviousPage: ['Previous', 'Precedenti', 'Anteriores', 'Précédents'],
+  importNextPage: ['Next', 'Successivi', 'Siguientes', 'Suivants'],
+  importHistoricalOnly: ['No new competitions to import.', 'Nessuna nuova gara da importare.', 'No hay nuevas competiciones que importar.', 'Aucune nouvelle compétition à importer.'],
+  importExcludedResults: ['Excluded results (existing competitions)', 'Risultati esclusi (gare già presenti)', 'Resultados excluidos (competiciones existentes)', 'Résultats exclus (compétitions existantes)'],
   importErrors: ['The file contains inconsistent data. Check the reported rows before confirming the import.', 'Il file contiene dati incoerenti. Controlla le righe segnalate prima di confermare l’importazione.', 'El archivo contiene datos incoherentes. Revisa las filas indicadas antes de confirmar la importación.', 'Le fichier contient des données incohérentes. Vérifiez les lignes indiquées avant de confirmer l’importation.'],
   importVtInvalid: ['The second vault cannot be reconstructed: the calculated score is outside the 0–20 range. Check VT and VT AVG in the file.', 'Il secondo salto non può essere ricostruito: il punteggio calcolato è fuori dall’intervallo 0–20. Controlla VT e VT AVG nel file.', 'No se puede reconstruir el segundo salto: la puntuación calculada está fuera del intervalo 0–20. Revisa VT y VT AVG.', 'Impossible de reconstituer le deuxième saut : le score calculé est hors de l’intervalle 0–20. Vérifiez VT et VT AVG.'],
   importVtRounding: ['The calculation gives a slightly negative score, possibly due to rounding of VT AVG. Verify the source: no second-vault score has been created.', 'Il calcolo dà un punteggio leggermente negativo, compatibile con un arrotondamento di VT AVG. Verifica la fonte: il punteggio del secondo salto non è stato creato.', 'El cálculo da una puntuación ligeramente negativa, posiblemente por redondeo de VT AVG. Verifica la fuente: no se ha creado el segundo salto.', 'Le calcul donne un score légèrement négatif, possiblement dû à l’arrondi de VT AVG. Vérifiez la source : aucun score du deuxième saut n’a été créé.'],
   importSourceSheet: ['Sheet', 'Foglio', 'Hoja', 'Feuille'],
   importSourceRow: ['Row', 'Riga', 'Fila', 'Ligne'],
-  importIssueSample: ['First 20 warnings shown. Download the report for the complete list.', 'Visualizzati i primi 20 avvisi. Scarica il report per l’elenco completo.', 'Se muestran los primeros 20 avisos. Descarga el informe completo.', 'Les 20 premiers avertissements sont affichés. Téléchargez le rapport complet.'],
+  importIssueSample: ['First 6 warnings shown. Download the report for the complete list.', 'Visualizzati i primi 6 avvisi. Scarica il report per l’elenco completo.', 'Se muestran los primeros 6 avisos. Descarga el informe completo.', 'Les 6 premiers avertissements sont affichés. Téléchargez le rapport complet.'],
   compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
-  importEvents: ['Competitions in the file', 'Gare nel file', 'Competiciones del archivo', 'Compétitions du fichier'],
+  importEvents: ['Competitions to process', 'Gare da elaborare', 'Competiciones por procesar', 'Compétitions à traiter'],
   importAllEvents: ['All competitions', 'Tutte le gare', 'Todas las competiciones', 'Toutes les compétitions'],
   importExisting: ['Already imported', 'Già importati', 'Ya importados', 'Déjà importés'],
   importExistingEvents: ['Already imported', 'Già importate', 'Ya importadas', 'Déjà importées'],
@@ -21,7 +31,7 @@ export const IMPORT_COPY = {
   importStatusAdditional: ['New results in an existing competition', 'Nuovi risultati in una gara esistente', 'Nuevos resultados en una competición existente', 'Nouveaux résultats dans une compétition existante'],
   importStatusNew: ['New competition', 'Nuova gara', 'Nueva competición', 'Nouvelle compétition'],
   importStatusConflict: ['Requires review', 'Da verificare', 'Por revisar', 'À vérifier'],
-  importNoRewrite: ['Identical results are skipped. Existing results with different scores require review and are not overwritten.', 'I risultati identici vengono saltati. Quelli già presenti con punteggi diversi richiedono verifica e non vengono sovrascritti.', 'Se omiten los resultados idénticos. Los resultados existentes con puntuaciones diferentes requieren revisión y no se sobrescriben.', 'Les résultats identiques sont ignorés. Les scores existants différents nécessitent une vérification et ne sont pas remplacés.'],
+  importNoRewrite: ['Identity and score checks apply to competitions included in this import. Existing results are never overwritten.', 'I controlli di identità e punteggio riguardano le gare incluse nell’importazione. I risultati esistenti non vengono sovrascritti.', 'Los controles de identidad y puntuación se aplican a las competiciones incluidas. Los resultados existentes no se sobrescriben.', 'Les contrôles d’identité et de score concernent les compétitions incluses. Les résultats existants ne sont pas remplacés.'],
   importCandidatesNote: ['Counts are provisional until identity reviews are resolved and the preview is recalculated.', 'I conteggi sono provvisori fino alla risoluzione dei conflitti di identità e al ricalcolo dell’anteprima.', 'Los recuentos son provisionales hasta resolver las identidades y recalcular la vista previa.', 'Les totaux sont provisoires avant résolution des identités et recalcul de l’aperçu.'],
   importFileDuplicates: ['Repeated rows in the file', 'Righe ripetute nel file', 'Filas repetidas en el archivo', 'Lignes répétées dans le fichier'],
   importGroups: ['Classifications', 'Classifiche', 'Clasificaciones', 'Classements'],
@@ -50,12 +60,12 @@ export const IMPORT_COPY = {
 export function renderImportIssues({issues, text, esc, language}) {
   const ordered = [...issues].sort((a, b) => Number(b.severity === 'error') - Number(a.severity === 'error'));
   const score = value => new Intl.NumberFormat(language, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(value);
-  return `<ul class="admin-import-issues">${ordered.slice(0, 20).map(issue => {
+  return `<ul class="admin-import-issues">${ordered.slice(0, 6).map(issue => {
     const known = issue.code === 'derived_vt_outlier';
     const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
     const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
     return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}</li>`;
-  }).join('')}</ul>${ordered.length > 20 ? `<p class="admin-stats-note">${esc(text('importIssueSample'))}</p>` : ''}`;
+  }).join('')}</ul>${ordered.length > 6 ? `<p class="admin-stats-note">${esc(text('importIssueSample'))}</p>` : ''}`;
 }
 
 export function mountImportReport({root, preview: p, text, esc, report, language, route}) {
@@ -67,18 +77,33 @@ export function mountImportReport({root, preview: p, text, esc, report, language
   const button = (label, attrs) => `<button type="button" class="quiet-button outline-command-button" ${attrs}>${esc(text(label))}</button>`;
   const summary = p.event_summaries || [];
   const pending = (p.athlete_match_decision_stats?.unresolved || 0) + (p.event_match_decision_stats?.unresolved || 0);
-  const existing = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
+  const existing = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length + (p.skipped_existing_results || 0);
+  const skipped = p.skipped_existing_events || [];
+  const historicDifferences = skipped.filter(row => row.differences || row.source_issues);
+  const pagination = (key) => `<div class="admin-import-pagination" data-pagination="${key}">${button('importPreviousPage', `data-prev="${key}"`)}<span data-page-label="${key}"></span>${button('importNextPage', `data-next="${key}"`)}</div>`;
+  const pageSize = 6;
+  const pages = {events: 0, conflicts: 0, historical: 0};
+  const pageItems = (key, items) => {
+    pages[key] = Math.min(pages[key], Math.max(0, Math.ceil(items.length / pageSize) - 1));
+    const start = pages[key] * pageSize;
+    const pager = root.querySelector(`[data-pagination="${key}"]`);
+    pager.hidden = items.length <= pageSize;
+    pager.querySelector('[data-prev]').disabled = start === 0;
+    pager.querySelector('[data-next]').disabled = start + pageSize >= items.length;
+    pager.querySelector('[data-page-label]').textContent = `${start + 1}–${Math.min(start + pageSize, items.length)} / ${count(items.length)}`;
+    return items.slice(start, start + pageSize);
+  };
   root.innerHTML = `<dl class="admin-stats-metrics admin-duplicate-recap">${[
-    ['importFileRows', p.parsed_rows], ['importExisting', existing], ['importNew', p.importable_results],
+    ['importFileRows', p.parsed_rows], [skipped.length ? 'importExcludedResults' : 'importExisting', skipped.length ? p.skipped_existing_results : existing], ['importNew', p.importable_results],
     ['importNewAthletes', p.would_create_athletes], ['importNewEvents', p.would_create_events], ['importPending', pending],
   ].map(([key, value]) => `<div><dt>${esc(text(key))}</dt><dd>${count(value)}</dd></div>`).join('')}</dl>
+    ${skipped.length ? `<p class="admin-stats-note"><strong>${count(skipped.length)} ${esc(text('importHistorical'))}</strong></p><p class="admin-stats-note">${esc(text('importHistoricalNote'))}</p>${historicDifferences.length ? `<details class="admin-revision-group" data-import-historical><summary>${esc(text('importHistoricalDifferences'))} · ${count(historicDifferences.length)}</summary><p class="admin-stats-note">${esc(text('importHistoricalCaution'))}</p><div data-historical-rows></div>${pagination('historical')}</details>` : ''}` : ''}
     <p class="admin-stats-note">${esc(text('importNoRewrite'))}</p>${pending ? `<p class="admin-stats-note">${esc(text('importCandidatesNote'))}</p>` : ''}
-    <h3>${esc(text('importEvents'))} · ${count(summary.length)}</h3><div class="admin-center-actions admin-import-event-filters">${['all', 'existing', 'new', 'conflicts'].map((key, i) => `<button type="button" class="filter-button" data-import-filter="${key}" aria-pressed="${i === 0}">${esc(text(['importAllEvents', 'importExistingEvents', 'importNew', 'importStatusConflict'][i]))}</button>`).join('')}</div><div data-import-events></div>${button('importMoreEvents', 'data-import-more')}
-    ${(p.conflicts || []).length ? `<h3>${esc(text('importConflicts'))} · ${count(p.conflicts.length)}</h3><div data-import-conflicts></div>${button('importMoreConflicts', 'data-import-more-conflicts')}` : ''}`;
-  let filter = 'all', visible = 24, visibleConflicts = 20;
+    <details class="admin-revision-group" data-import-event-list><summary>${esc(text('importEvents'))} · ${count(summary.length)}</summary><div class="admin-center-actions admin-import-event-filters">${['all', 'existing', 'new', 'conflicts'].map((key, i) => `<button type="button" class="filter-button" data-import-filter="${key}" aria-pressed="${i === 0}">${esc(text(['importAllEvents', 'importExistingEvents', 'importNew', 'importStatusConflict'][i]))}</button>`).join('')}</div><div data-import-events></div>${pagination('events')}</details>
+    ${(p.conflicts || []).length ? `<details class="admin-revision-group" data-import-conflict-list><summary>${esc(text('importConflicts'))} · ${count(p.conflicts.length)}</summary><div data-import-conflicts></div>${pagination('conflicts')}</details>` : ''}`;
+  let filter = 'all';
   const list = root.querySelector('[data-import-events]');
-  const more = root.querySelector('[data-import-more]');
-  more.classList.add('admin-review-load-more');
+
   const eventDetails = event => `<h3>${esc(text('importGroups'))}</h3><div class="admin-import-table-scroll"><table class="admin-import-table"><thead><tr><th>${esc(text('importGroups'))}</th>${['importExisting', 'importNew', 'importConflicts', 'importFileDuplicates'].map(key => `<th>${esc(text(key))}</th>`).join('')}</tr></thead><tbody>${event.groups.map(group => `<tr><td>${esc(context(group))}</td>${['existing_results', 'new_results', 'conflicting_results', 'duplicate_file_results'].map(key => `<td>${count(group[key])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${event.new_results_preview.length ? `<h3>${esc(text('importSample'))}</h3><div class="admin-import-table-scroll"><table class="admin-import-table"><thead><tr><th>${esc(text('Athlete'))}</th><th>${esc(text('importGroups'))}</th><th>Final Score</th><th>D Score</th></tr></thead><tbody>${event.new_results_preview.map(row => `<tr><td>${esc(athlete(row))}<span class="admin-revision-meta"> · ${esc(row.country || '')}</span></td><td>${esc(context(row))}</td><td>${score(row.score, 3)}</td><td>${score(row.D_score, 1)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
   const toggle = (button, details, html) => {
     const open = details.hidden;
@@ -88,34 +113,40 @@ export function mountImportReport({root, preview: p, text, esc, report, language
   };
   const renderEvents = () => {
     const events = summary.filter(event => filter === 'all' || (filter === 'existing' ? event.status === 'already_imported' : filter === 'new' ? event.new_results > 0 : event.conflicting_results > 0));
-    list.innerHTML = events.slice(0, visible).map((event, i) => {
+    list.innerHTML = pageItems('events', events).map((event, i) => {
       const title = `${esc(event.event_name)}${event.event_name.includes(String(event.year)) ? '' : ` · ${event.year}`}`;
       return `<article class="admin-identity-pair admin-import-event"><div class="admin-identity-entity"><strong>${event.event_id ? `<a href="#/events/${event.event_id}?from=admin&return_to=${encodeURIComponent(route)}">${title}</a>` : title}</strong><p class="admin-revision-meta">${esc(text({already_imported: 'importStatusExisting', additional_results: 'importStatusAdditional', new_event: 'importStatusNew', conflicts: 'importStatusConflict'}[event.status]))}${event.event_id ? ` · ID ${event.event_id}` : ''}${event.start_date ? ` · ${esc(date(event.start_date))}${event.end_date && event.end_date !== event.start_date ? ` – ${esc(date(event.end_date))}` : ''}` : ''}</p><p class="admin-revision-meta">${[['importExisting', event.existing_results], ['importNew', event.new_results], ['importConflicts', event.conflicting_results], ['importFileDuplicates', event.duplicate_file_results]].filter(([, value]) => value).map(([key, value]) => `${esc(text(key))}: ${count(value)}`).join(' · ')}</p></div><div class="admin-center-actions">${button('importCompare', `data-import-event="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`;
     }).join('') || `<div class="empty-state">${esc(text('empty'))}</div>`;
-    more.hidden = events.length <= visible;
+
     list.querySelectorAll('[data-import-event]').forEach(control => {
-      control.onclick = () => toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => eventDetails(events[Number(control.dataset.importEvent)]));
+      control.onclick = () => toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => eventDetails(events[pages.events * pageSize + Number(control.dataset.importEvent)]));
     });
   };
   root.querySelectorAll('[data-import-filter]').forEach(control => control.onclick = () => {
-    filter = control.dataset.importFilter; visible = 24;
+    filter = control.dataset.importFilter; pages.events = 0;
     root.querySelectorAll('[data-import-filter]').forEach(item => item.setAttribute('aria-pressed', String(item === control)));
     renderEvents();
   });
-  more.onclick = () => { visible += 24; renderEvents(); };
+
   renderEvents();
   const renderConflicts = () => {
     const conflicts = root.querySelector('[data-import-conflicts]');
     if (!conflicts) return;
-    conflicts.innerHTML = p.conflicts.slice(0, visibleConflicts).map((row, i) => `<article class="admin-identity-pair"><div><strong>${esc(athlete(row))}</strong><p class="admin-revision-meta">${esc(row.event_name)} · ${row.year} · ${esc(context(row))}</p><p class="admin-revision-meta">${esc(text(row.reason))}</p></div><div class="admin-center-actions">${button('importCompare', `data-import-conflict="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`).join('');
+    conflicts.innerHTML = pageItems('conflicts', p.conflicts).map((row, i) => `<article class="admin-identity-pair"><div><strong>${esc(athlete(row))}</strong><p class="admin-revision-meta">${esc(row.event_name)} · ${row.year} · ${esc(context(row))}</p><p class="admin-revision-meta">${esc(text(row.reason))}</p></div><div class="admin-center-actions">${button('importCompare', `data-import-conflict="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`).join('');
     conflicts.querySelectorAll('[data-import-conflict]').forEach(control => control.onclick = () => {
-      const row = p.conflicts[Number(control.dataset.importConflict)];
+      const row = p.conflicts[pages.conflicts * pageSize + Number(control.dataset.importConflict)];
       toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => `<div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text(row.existing_result_id ? 'importDatabase' : 'previous'))}</h3>${report({score: row.existing_score, D_score: row.existing_D_score, country: row.existing_country})}</section><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({score: row.score, D_score: row.D_score, country: row.country, source_sheet: row.source_sheet, source_row: row.source_row})}</section></div>`);
     });
-    const moreConflicts = root.querySelector('[data-import-more-conflicts]');
-    moreConflicts.hidden = p.conflicts.length <= visibleConflicts;
-    moreConflicts.classList.add('admin-review-load-more');
-    moreConflicts.onclick = () => { visibleConflicts += 20; renderConflicts(); };
   };
   renderConflicts();
+  const renderHistorical = () => {
+    const rows = root.querySelector('[data-historical-rows]');
+    if (rows) rows.innerHTML = pageItems('historical', historicDifferences).map(row => `<article class="admin-import-historical-row"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(text('importDifferences'))}: ${count(row.differences)} · ${esc(text('importIssueList'))}: ${count(row.source_issues)}</p></article>`).join('');
+  };
+  renderHistorical();
+  root.querySelectorAll('[data-prev], [data-next]').forEach(control => control.onclick = () => {
+    const key = control.dataset.prev || control.dataset.next;
+    pages[key] += control.dataset.prev ? -1 : 1;
+    ({events: renderEvents, conflicts: renderConflicts, historical: renderHistorical})[key]();
+  });
 }

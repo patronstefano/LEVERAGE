@@ -3050,6 +3050,16 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Import cumulativo compatto e tutela delle gare gia revisionate
+
+- Decisione dell'utente: il file 2026 aggiornato, e i futuri file Gymternet cumulativi, non devono riproporre come nuove revisioni i conflitti delle gare gia importate e corrette durante il popolamento storico. La UI esclude ora di default le gare riconosciute con lo stesso nome e anno e almeno un Result attivo; mostra "N gare gia in LEVERAGE". Le gare presenti soltanto nel calendario, senza risultati, rimangono da elaborare.
+- La corrispondenza deve essere univoca. Nomi solo simili richiedono ancora conferma ADMIN; dopo l'associazione esplicita, anche la gara riconosciuta viene esclusa se gia popolata. Non vengono inventati alias ne riapplicate automaticamente le vecchie correzioni di nazionalita a risultati di nuove gare.
+- Per integrare nuovi round, attrezzi o altre righe in una gara gia popolata, ADMIN deve attivare esplicitamente "Includi anche gare gia importate" prima dell'anteprima. La presenza di risultati non certifica che una gara sia completa: l'esclusione e una scelta di perimetro, non un controllo di completezza. Questa modalita aggiorna il comportamento UI descritto nella precedente voce sull'anteprima incrementale.
+- Aggiunto `skip_existing_events` a preview, commit e ricerca target Gymternet. La UI lo invia come true per default; il default API resta false per compatibilita con script e client preesistenti. Il commit ricalcola sempre il perimetro sul DB corrente. Le gare escluse non producono inserimenti, sovrascritture, review atleta o D-score orfani da risolvere.
+- Eventuali differenze di score/identita e diagnostiche sorgente attribuibili alle gare escluse sono conteggiate brevemente per gara in un riepilogo apribile. Possono derivare da correzioni gia deliberate, ma non vengono dichiarate automaticamente risolte. I vecchi errori VT derivati fuori intervallo diventano informativi solo per gare escluse con attribuzione certa; errori relativi alle gare incluse o non attribuibili rimangono bloccanti. Nessun valore viene trasformato automaticamente in zero.
+- Anteprima compatta con sezioni inizialmente chiuse e paginazione di sei gare, conflitti o revisioni alla volta, senza accumulo infinito. Anche gli avvisi mostrano al massimo sei esempi; il report JSON conserva i dati di revisione ricevuti e i riepiloghi storici. Conteggi distinti per risultati esclusi e nuovi candidati; nessuna confusione fra righe escluse e duplicati identici.
+- Verifica: 288 test automatici superati e collaudo browser del Centro Admin su desktop/mobile, con controlli di paginazione, decisioni, riepilogo storico e assenza di overflow. Test su DB isolato e API simulate nel browser: nessun import del file reale aggiornato, nessuna modifica ai risultati reali e nessuna scansione World Gymnastics avviata.
+
 #### 2026-10-06 - Diagnostica dei punteggi VT derivati fuori intervallo
 
 - Segnalati dall'utente tre errori nell'anteprima: VT derivato 21,950 da media 12,200 e salto 2,450; -0,001 da media 5,666 e salto 11,333; 24,500 da media 12,850 e salto 1,200. Il controllo riguarda il secondo salto ricostruito come 2 * VT AVG - VT, non un punteggio gia salvato da questa anteprima.

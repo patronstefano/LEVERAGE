@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from datetime import date
 from typing import Optional
 
@@ -25,6 +26,7 @@ from app.gymternet_import import (
     build_athlete_match_review_items,
     build_orphan_review_items,
     commit_records,
+    exclude_imported_events,
     find_import_target_suggestions,
     parse_gymternet_file,
     review_import_events,
@@ -106,6 +108,8 @@ def build_import_preview_payload(
         "year_hint": year_hint,
         "parsed_rows": summary["parsed_rows"],
         "importable_results": summary["importable_results"],
+        "skipped_existing_events": summary.get("skipped_existing_events", []),
+        "skipped_existing_results": summary.get("skipped_existing_results", 0),
         "would_create_athletes": summary["would_create_athletes"],
         "would_create_events": summary["would_create_events"],
         "duplicates": summary["duplicates"],
@@ -139,6 +143,7 @@ def parse_and_summarize_upload(
     athlete_match_decisions: Optional[list[dict]] = None,
     athlete_review_limit: int = 2000,
     event_match_decisions: Optional[list[dict]] = None,
+    skip_existing_events: bool = False,
 ) -> tuple[str, dict]:
     filename = file.filename or "gymternet_import"
     content = file.file.read()
@@ -190,6 +195,23 @@ def parse_and_summarize_upload(
         summary["athlete_canonical_names"] = {}
         return filename, summary
 
+    skipped_events = []
+    if skip_existing_events:
+        resolved, event_reviews, event_decision_stats = review_import_events(
+            db, parsed.records, event_match_decisions, parsed.issues,
+        )
+        renames = {(old.event_name, old.year): new.event_name
+                   for old, new in zip(parsed.records, resolved) if old.event_name != new.event_name}
+        orphans = [replace(row, event_name=renames.get((row.event_name, row.year), row.event_name))
+                   for row in parsed.orphan_dscore_records or []]
+        # Remap contextual diagnostics only after an explicit event association.
+        for issue in parsed.issues:
+            if (issue.get('event_name'), issue.get('year')) in renames:
+                issue['event_name'] = renames[(issue['event_name'], issue['year'])]
+        parsed.records, parsed.orphan_dscore_records, parsed.issues, skipped_events = exclude_imported_events(
+            db, resolved, orphans, parsed.issues,
+        )
+
     review_items = build_orphan_review_items(
         parsed.orphan_dscore_records or [],
         parsed.records,
@@ -215,7 +237,8 @@ def parse_and_summarize_upload(
         automatic_athlete_canonical_names,
     )
 
-    records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues)
+    if not skip_existing_events:
+        records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues)
     athlete_review_items = build_athlete_match_review_items(db, records)
     (
         athlete_resolution_ids,
@@ -250,6 +273,9 @@ def parse_and_summarize_upload(
         represented_country_overrides=represented_country_overrides,
     )
     summary["orphan_dscore_review_count"] = len(review_items)
+    summary["skipped_existing_events"] = skipped_events
+    summary["skipped_existing_results"] = sum(row['results'] for row in skipped_events)
+    summary["parsed_rows"] += summary["skipped_existing_results"]
     summary["orphan_dscore_review"] = review_items[:orphan_review_limit]
     summary["orphan_dscore_decision_stats"] = decision_stats
     summary["athlete_match_review_count"] = len(athlete_review_items)
@@ -405,6 +431,7 @@ def preview_gymternet_import(
     orphan_dscore_decisions: Optional[str] = Form(None),
     athlete_match_decisions: Optional[str] = Form(None),
     event_match_decisions: Optional[str] = Form(None),
+    skip_existing_events: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -424,6 +451,7 @@ def preview_gymternet_import(
         orphan_review_limit=orphan_review_limit,
         athlete_review_limit=athlete_review_limit,
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
+        skip_existing_events=skip_existing_events,
     )
     return build_import_preview_payload(filename, year_hint, summary)
 
@@ -431,6 +459,7 @@ def preview_gymternet_import(
 @router.post("/gymternet/review-target-suggestions", response_model=schemas.GymternetImportTargetSuggestions)
 def suggest_gymternet_import_review_targets(
     file: UploadFile = File(...),
+    skip_existing_events: bool = Query(False),
     query: Optional[str] = Query(None, description="Search target results by athlete, event, apparatus or context"),
     review_id: Optional[str] = Query(None, description="Optional orphan D-score review_id to rank context matches first"),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
@@ -447,6 +476,7 @@ def suggest_gymternet_import_review_targets(
         csv_discipline,
         csv_score_kind,
         orphan_review_limit=5000,
+        skip_existing_events=skip_existing_events,
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
     if has_error_issues(summary):
@@ -485,6 +515,7 @@ def suggest_gymternet_import_review_targets(
 def commit_gymternet_import(
     file: UploadFile = File(...),
     event_match_decisions: Optional[str] = Form(None),
+    skip_existing_events: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -516,6 +547,7 @@ def commit_gymternet_import(
         athlete_match_decisions=parse_athlete_match_decisions(athlete_match_decisions),
         athlete_review_limit=athlete_review_limit,
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
+        skip_existing_events=skip_existing_events,
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
     if has_error_issues(summary):

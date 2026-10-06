@@ -134,7 +134,7 @@ def main():
             elif path == "/events/1/result-athlete-suggestions":
                 payload = [athlete]
             if route.request.method not in ("GET", "OPTIONS"):
-                writes.append({"path": path, "body": route.request.post_data})
+                writes.append({"path": path, "url": route.request.url, "body": route.request.post_data})
                 if path in ["/results/1/scores", "/results/2/scores"]:
                     route.fulfill(json={"id": int(path.split('/')[2]), **json.loads(route.request.post_data)["values"]}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/imports/gymternet/preview":
@@ -870,7 +870,11 @@ def main():
                 assert page.locator('#adminImportFilename').inner_text() == 'test.csv'
                 page.locator('#adminImportForm button[type="submit"]').click()
                 row = page.locator("[data-review-type=athlete]")
+                page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
+                assert not page.locator('[name=include_existing]').is_checked()
+                assert 'skip_existing_events=true' in writes[-1]['url']
+                page.locator('[data-import-event-list] > summary').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
                 page.locator('[data-import-filter=existing]').click()
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 1
@@ -879,6 +883,7 @@ def main():
                 page.locator('[data-import-event]').click()
                 assert 'Test Ada' in page.locator('.admin-import-table').last.inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-import-group=event] > summary').click()
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.locator('[data-event-review] summary').click()
                 page.locator('[data-event-review] [data-admin-select-value="1"]').click()
@@ -893,6 +898,7 @@ def main():
                 assert page.locator('#adminCommitImport').is_enabled()
                 page.screenshot(path="/tmp/leverage-admin-import.png", full_page=True)
                 page.set_viewport_size({'width': 390, 'height': 844})
+                page.locator('[data-import-event-list] > summary').click()
                 page.locator('[data-import-event]').first.click()
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
                 page.screenshot(path='/tmp/leverage-admin-import-mobile.png', full_page=True)
@@ -908,6 +914,21 @@ def main():
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")
                 assert 'Nessun risultato Gymternet trovato' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
+                preview.update(parsed_rows=1000, issues=[], importable_results=0,
+                    skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
+                    'year': 2026, 'results': 100, 'differences': 2, 'source_issues': 1} for i in range(10)])
+                page.locator('#adminImportForm button[type="submit"]').click()
+                page.locator('[data-import-historical]').wait_for(state='attached')
+                assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
+                assert 'Past Cup' not in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-import-historical] > summary').click()
+                assert page.locator('.admin-import-historical-row').count() == 6
+                page.locator('[data-next=historical]').click()
+                assert page.locator('.admin-import-historical-row').count() == 4
+                assert 'Past Cup 6' in page.locator('[data-historical-rows]').inner_text()
+                page.screenshot(path='/tmp/leverage-import-compact.png', full_page=True)
+                preview.update(skipped_existing_events=[], skipped_existing_results=0)
                 preview.update(parsed_rows=3, issues=[{'severity': 'error', 'code': 'derived_vt_outlier',
                     'message': 'Skipped derived outlier final score for VT', 'first_name': 'Vault', 'last_name': 'Person',
                     'event_name': 'Vault Cup 2026', 'sheet': 'MAG', 'row': 17, 'source_vt': 11.333,

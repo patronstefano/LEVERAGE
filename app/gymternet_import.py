@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from collections import defaultdict
 import hashlib
 import re
 import unicodedata
@@ -622,6 +623,7 @@ def parse_pivot_rows(
         round_value, base_format = suffix_round_format(suffix)
         explicit_day = parse_day(normalized.get("day"))
         record_day = explicit_day if explicit_day is not None else event_day
+        issue_start = len(issues)
         country = normalize_country(
             normalized.get("country"),
             issues,
@@ -821,6 +823,9 @@ def parse_pivot_rows(
                 issues,
                 day=record_day,
             )
+        for issue in issues[issue_start:]:
+            issue.setdefault('event_name', event_name)
+            issue.setdefault('year', year)
     return records
 
 
@@ -3184,6 +3189,55 @@ def identity_country_overrides_from_decision(
 
 def event_lookup_key(record: ParsedGymternetResult) -> tuple:
     return (record.event_name.lower(), record.year)
+
+
+def exclude_imported_events(db: Session, records: list, orphans: list, issues: list) -> tuple:
+    """Keep validated competitions authoritative in a cumulative file import.
+
+    Only an unambiguous exact name/year match with active results is excluded.
+    Source diagnostics are informational only when attributable to that scope.
+    """
+    events_by_key = defaultdict(list)
+    for event in db.query(models.Event).filter(models.Event.is_deleted.is_(False)).all():
+        events_by_key[(event.name.lower(), event.year)].append(event)
+    source_event_keys = {event_lookup_key(r) for r in records + orphans}
+    source_event_keys.update((issue['event_name'].lower(), issue.get('year'))
+                             for issue in issues if issue.get('event_name'))
+    candidate_ids = [items[0].id for key, items in events_by_key.items()
+                     if len(items) == 1 and key in source_event_keys]
+    populated = {row[0] for row in db.query(models.Result.event_id).filter(
+        models.Result.is_deleted.is_(False), models.Result.event_id.in_(candidate_ids),
+    ).distinct()}
+    excluded = {key: items[0] for key, items in events_by_key.items()
+                if len(items) == 1 and items[0].id in populated}
+    historical = [r for r in records if event_lookup_key(r) in excluded]
+    historical_summary = summarize_records(db, historical, []) if historical else {}
+    differences = { (row['event_name'].lower(), row['year']):
+                    row['conflicting_results'] + row['new_results']
+                    for row in historical_summary.get('event_summaries', []) }
+    counts = {key: {'event_id': event.id, 'event_name': event.name, 'year': event.year,
+                    'results': 0, 'orphan_dscores': 0, 'differences': differences.get(key, 0), 'source_issues': 0}
+              for key, event in excluded.items()}
+    source_keys = defaultdict(set)
+    for row in records + orphans:
+        key = event_lookup_key(row)
+        source_keys[(row.source_sheet, row.source_row)].add(key)
+    for rows, count_key in ((records, 'results'), (orphans, 'orphan_dscores')):
+        for row in rows:
+            if event_lookup_key(row) in counts:
+                counts[event_lookup_key(row)][count_key] += 1
+    remaining_issues = []
+    for issue in issues:
+        keys = ({(issue['event_name'].lower(), issue.get('year'))} if issue.get('event_name')
+                else source_keys.get((issue.get('sheet'), issue.get('row')), set()))
+        if keys and keys.issubset(excluded):
+            for key in keys:
+                counts[key]['source_issues'] += 1
+        else:
+            remaining_issues.append(issue)
+    return ([r for r in records if event_lookup_key(r) not in excluded],
+            [r for r in orphans if event_lookup_key(r) not in excluded], remaining_issues,
+            sorted(counts.values(), key=lambda row: (row['year'], row['event_name'])))
 
 
 def review_import_events(db: Session, records: list[ParsedGymternetResult], decisions: Optional[list[dict]], issues: list[dict]) -> tuple:
