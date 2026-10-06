@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Eliminazione logica utenti dal Centro Super Admin
+
+- Aggiunto Elimina utente in Utenti e ruoli, con contorno rosso al passaggio del mouse e conferma che identifica l'email e chiarisce la conservazione dei dati.
+- L'operazione disabilita l'account, incrementa la versione di autenticazione e revoca i token di recupero/verifica. Non cancella fisicamente l'utente, i dati sportivi, i preferiti o l'audit: non costituisce cancellazione dei dati personali.
+- Endpoint riservato al SUPER ADMIN, con blocco dell'autoeliminazione, dell'eliminazione ripetuta e dell'ultimo SUPER ADMIN attivo. I cambi ruolo escludono gli account inattivi e contano solo i SUPER ADMIN attivi. Operazione tracciata in audit e avviso di sicurezza.
+- Test su database temporanei e browser con eliminazione simulata: nessun account reale eliminato.
+
 #### 2026-10-06 - Revisione Duplicati senza titoli ridondanti
 
 - Rimossi i titoli Possibili atleti/eventi/risultati duplicati dalle tre viste interne. Restano il titolo della sezione e lo slider che identifica il tipo di revisione.

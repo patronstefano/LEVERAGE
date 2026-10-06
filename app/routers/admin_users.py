@@ -25,7 +25,7 @@ router = APIRouter()
 
 
 def count_super_admins(db: Session) -> int:
-    return db.query(models.User).filter(models.User.role == models.RoleEnum.SUPER_ADMIN).count()
+    return db.query(models.User).filter(models.User.role == models.RoleEnum.SUPER_ADMIN, models.User.is_active.is_(True)).count()
 
 
 def get_user_or_404(db: Session, user_id: int) -> models.User:
@@ -41,6 +41,8 @@ def ensure_role_change_is_allowed(
     requested_role: models.RoleEnum,
     current_user: models.User,
 ) -> None:
+    if not target_user.is_active:
+        raise HTTPException(status_code=409, detail="Cannot change the role of an inactive account")
     if target_user.role == models.RoleEnum.SUPER_ADMIN and requested_role != models.RoleEnum.SUPER_ADMIN:
         if count_super_admins(db) <= 1:
             raise HTTPException(status_code=400, detail="Cannot remove the last super admin")
@@ -839,6 +841,42 @@ def list_users_for_admin(
     if is_active is not None:
         query = query.filter(models.User.is_active == is_active)
     return query.order_by(models.User.created_at.desc(), models.User.id.desc()).limit(limit).all()
+
+
+@router.delete("/users/{user_id}", response_model=schemas.UserRead)
+def delete_user_account(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_super_admin_user),
+):
+    if user_id == current_user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    if db.bind.dialect.name == 'sqlite':
+        db.connection().exec_driver_sql('BEGIN IMMEDIATE')
+    target = db.query(models.User).filter(models.User.id == user_id).with_for_update().populate_existing().first()
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not target.is_active:
+        raise HTTPException(status_code=409, detail="User account is already inactive")
+    if target.role == models.RoleEnum.SUPER_ADMIN:
+        active_admins = db.query(models.User).filter(
+            models.User.role == models.RoleEnum.SUPER_ADMIN, models.User.is_active.is_(True)
+        ).with_for_update().all()
+        if len(active_admins) <= 1:
+            raise HTTPException(status_code=400, detail="Cannot remove the last active super admin")
+    before = {'email': target.email, 'role': target.role.value, 'is_active': target.is_active}
+    target.is_active = False
+    target.auth_version += 1
+    target.password_reset_token_hash = None
+    target.password_reset_expires_at = None
+    target.email_verification_token_hash = None
+    target.email_verification_expires_at = None
+    add_audit_log(db, current_user, 'deactivate', 'User', target.id, before=before,
+        after={'email': target.email, 'role': target.role.value, 'is_active': False})
+    add_security_alert(db, current_user, f"Security: {current_user.email} deactivated user #{target.id} ({target.email}).")
+    db.commit()
+    db.refresh(target)
+    return target
 
 
 @router.put("/users/{user_id}/role", response_model=schemas.UserRead)

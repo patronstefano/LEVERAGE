@@ -19,6 +19,10 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  deleteUser: ['Delete user', 'Elimina utente', 'Eliminar usuario', 'Supprimer l’utilisateur'],
+  deleteUserWarning: ['The account will be disabled and its sessions revoked. Audit history and linked data will be retained.', 'L’account sarà disabilitato e le sessioni revocate. Lo storico audit e i dati collegati saranno conservati.', 'La cuenta se desactivará y sus sesiones se revocarán. Se conservarán el historial y los datos vinculados.', 'Le compte sera désactivé et ses sessions révoquées. L’historique et les données liées seront conservés.'],
+  userDeleted: ['User deleted', 'Utente eliminato', 'Usuario eliminado', 'Utilisateur supprimé'],
+  deactivate: ['Account deactivated', 'Account disabilitato', 'Cuenta desactivada', 'Compte désactivé'],
   auditAuthor: ['Author', 'Autore', 'Autor', 'Auteur'],
   auditCurrentRole: ['Current role', 'Ruolo attuale', 'Rol actual', 'Rôle actuel'],
   auditUnknownAuthor: ['Author unavailable', 'Autore non disponibile', 'Autor no disponible', 'Auteur indisponible'],
@@ -448,10 +452,11 @@ export async function renderAdminCenter(host) {
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
     const a = document.createElement("a"); a.href = url; a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  const confirm = (label, operation, showSuccess = true) => {
+  const confirm = (label, operation, showSuccess = true, explanation = '') => {
     const dialog = document.createElement("dialog"); dialog.className = "admin-confirm";
     dialog.innerHTML = `<h2>${esc(text(label))}</h2><p>${text("mutation")}</p><div class="admin-center-actions">${button("cancel", 'data-cancel')}${button("confirm", 'data-confirm')}</div>`;
     document.body.append(dialog); dialog.showModal();
+    if (explanation) dialog.querySelector('p').textContent = explanation;
     dialog.querySelector("[data-cancel]").onclick = () => dialog.close();
     const close = () => dialog.close();
     window.addEventListener("hashchange", close, { once: true });
@@ -748,6 +753,22 @@ export async function renderAdminCenter(host) {
         const users = await api("/admin/users", { params }); if (!active()) return;
         document.getElementById("adminUsers").innerHTML = users.map((u) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(u.email)}</strong></p><p class="admin-revision-meta">${esc(u.role.replaceAll('_', ' ').toUpperCase())}</p></div><div class="account-notification-actions admin-user-role-actions">${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div></article>`).join("") || emptyState(); bind();
         root.querySelectorAll("[data-role]").forEach((b) => b.onclick = () => confirm("save", async () => { await api(`/admin/users/${b.dataset.role}/role`, { method: "PUT", body: { role: root.querySelector(`[name="role_${b.dataset.role}"]`).value } }); }));
+        for (const user of users) {
+          const actions = root.querySelector(`[data-role="${user.id}"]`).parentElement;
+          if (user.is_active === false) {
+            actions.innerHTML = `<span class="admin-revision-meta">${esc(text('userDeleted'))}</span>`;
+            continue;
+          }
+          if (user.id === state.currentUser.id) continue;
+          actions.insertAdjacentHTML('beforeend', button('deleteUser', `data-delete-user="${user.id}"`));
+          const remove = actions.querySelector('[data-delete-user]');
+          remove.classList.add('filter-clear-button');
+          remove.onclick = () => confirm('deleteUser', async () => {
+            await api(`/admin/users/${user.id}`, {method: 'DELETE'});
+            if (!active()) return;
+            actions.innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('userDeleted'))}</div>`;
+          }, false, `${user.email} · ${text('deleteUserWarning')}`);
+        }
       });
     }
     if (tab === "audit") {

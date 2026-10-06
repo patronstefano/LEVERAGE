@@ -138,6 +138,8 @@ def main():
                     route.fulfill(status=201, json={"id": 1, **json.loads(route.request.post_data)}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/admin/audit-logs/91/approve':
                     route.fulfill(json={"id": 91, "review_status": "approved"}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/admin/users/77' and route.request.method == 'DELETE':
+                    route.fulfill(json={"id": 77, "is_active": False}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -554,6 +556,16 @@ def main():
                 page.locator('#adminUsers .account-notification').wait_for()
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
                 assert page.locator('.admin-user-role-actions').is_visible()
+                page.locator('[data-delete-user="77"]').click()
+                assert 'review@example.test' in page.locator('dialog[open]').inner_text()
+                assert 'sarà disabilitato' in page.locator('dialog[open]').inner_text()
+                page.locator('dialog[open] [data-cancel]').click()
+                assert page.locator('[data-delete-user="77"]').is_visible()
+                page.locator('[data-delete-user="77"]').click()
+                page.locator('dialog[open] [data-confirm]').click()
+                page.locator('#adminUsers .is-success').wait_for()
+                assert page.locator('#adminUsers .is-success').inner_text() == 'Utente eliminato'
+                assert page.locator('[data-role="77"], [data-delete-user="77"]').count() == 0
             if tab == "audit":
                 assert page.locator('#adminAuditForm [name=entity_id]').locator('..').inner_text() == 'Leverage ID'
                 assert page.evaluate('''async () => {

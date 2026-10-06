@@ -5,7 +5,48 @@ from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.audit import add_audit_log, model_snapshot
-from app.routers.admin_users import list_audit_logs, revert_audit_log, restore_entity
+from app.routers.admin_users import delete_user_account, list_audit_logs, revert_audit_log, restore_entity
+
+
+def test_account_deletion_revokes_access_and_preserves_audit(insertion):
+    db, admin, entity, log, athlete, event = insertion
+    target = models.User(email='delete@example.test', role=models.RoleEnum.ADMIN,
+        is_active=True, auth_version=3, password_reset_token_hash='old-token')
+    db.add(target)
+    db.commit()
+    target_id, admin_id = target.id, admin.id
+    db.rollback()
+    result = delete_user_account(target_id, db, admin)
+    assert not result.is_active and result.auth_version == 4
+    assert result.password_reset_token_hash is None
+    assert db.get(models.Athlete, athlete.id) is not None
+    audit = db.query(models.AuditLog).filter_by(action='deactivate', entity_id=target_id).one()
+    assert audit.admin_id == admin_id and 'password' not in audit.before_json
+    db.rollback()
+    with pytest.raises(HTTPException) as error:
+        delete_user_account(target_id, db, admin)
+    assert error.value.status_code == 409
+
+
+def test_account_deletion_cannot_delete_self(insertion):
+    db, admin, *_ = insertion
+    with pytest.raises(HTTPException) as error:
+        delete_user_account(admin.id, db, admin)
+    assert error.value.status_code == 400
+
+
+def test_account_deletion_protects_last_active_super_admin(insertion):
+    db, admin, *_ = insertion
+    target = models.User(email='last@example.test', role=models.RoleEnum.SUPER_ADMIN, is_active=True)
+    admin.is_active = False
+    db.add(target)
+    db.commit()
+    target_id = target.id
+    db.rollback()
+    with pytest.raises(HTTPException) as error:
+        delete_user_account(target_id, db, admin)
+    assert error.value.status_code == 400
+    assert 'last active super admin' in error.value.detail
 
 
 def test_audit_exposes_author_and_current_role(insertion):
