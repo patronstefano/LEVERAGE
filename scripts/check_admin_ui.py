@@ -134,6 +134,8 @@ def main():
                     route.fulfill(json={"decision": "keep_separate"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ['/athletes/', '/events/']:
                     route.fulfill(status=201, json={"id": 1, **json.loads(route.request.post_data)}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path == '/admin/audit-logs/91/approve':
+                    route.fulfill(json={"id": 91, "review_status": "approved"}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -575,6 +577,15 @@ def main():
                 page.screenshot(path='/tmp/leverage-super-audit-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
                 page.screenshot(path='/tmp/leverage-super-audit-details.png', full_page=True)
+                page.locator('[data-audit="91"][data-action=approve]').click()
+                page.locator('dialog[open] [data-confirm]').click()
+                notice = page.locator('#adminFeedback.is-success')
+                notice.wait_for()
+                assert notice.bounding_box()['height'] == 36
+                assert notice.evaluate('el => getComputedStyle(el).fontSize') == '14px'
+                assert notice.evaluate('el => getComputedStyle(el).backgroundColor') == 'rgba(0, 0, 0, 0)'
+                assert notice.evaluate('el => getComputedStyle(el).color === getComputedStyle(el).borderTopColor')
+                assert page.locator('[data-audit="91"]').count() == 0
             if tab == "statistics":
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'

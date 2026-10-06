@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Conferme compatte in Audit e ripristino
+
+- Uniformati i messaggi verdi del centro amministrativo, compresi quelli di Audit e ripristino, alle conferme di creazione e unione: testo 14px, altezza minima 36px, larghezza adattata al contenuto, bordo e testo verdi su sfondo neutro.
+- Invariati logica delle operazioni, autorizzazioni e messaggi di errore. Verifica browser con approvazione simulata, senza modifiche al database reale.
+
 #### 2026-10-06 - Anteprima Unione Entita compatta e affiancata
 
 - Adottato lo stesso impianto del confronto Revisioni/Audit: a sinistra l'entita da unire, a destra quella da mantenere, sia per atleti sia per eventi. Identita essenziale e conteggio risultati leggibili senza snapshot tecnici; su mobile le colonne si dispongono verticalmente.
