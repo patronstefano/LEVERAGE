@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Ricalcolo automatico al cambio gare gia importate
+
+- Eccezione al flusso cumulativo: cambiare l'opzione Gare gia importate avvia
+  sempre il ricalcolo, sia per risultati sia per calendario, con avanzamento
+  nel popup. Le altre decisioni restano in bozza senza ricalcolo immediato.
+- Il ricalcolo conserva e riconcilia le decisioni compatibili con il nuovo
+  perimetro. In caso di errore la bozza resta pendente e il commit bloccato.
+- Test UI aggiornati per verificare entrambi i cambi di opzione senza clic
+  manuale su Ricalcola anteprima.
+
 ## 2026-10-06 - Intestazione condivisa delle anteprime di importazione
 
 - Aggiunta linea orizzontale grigia sotto il blocco Anteprima/nome file,

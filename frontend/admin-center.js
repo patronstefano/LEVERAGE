@@ -1135,10 +1135,11 @@ export async function renderAdminCenter(host) {
         if (selectedParams.defer_duplicate_reviews) stage();
         else confirm('importDeferDuplicates', stage, false, text('importDeferConfirm'));
       })));
-      output.querySelector('[name=existing_event_scope]')?.addEventListener('change', event => {
+      output.querySelector('[name=existing_event_scope]')?.addEventListener('change', guard(async event => {
         draft.pendingParams = {...draft.pendingParams, skip_existing_events: event.target.value === 'skip'};
         markChanged();
-      });
+        await refreshPreview();
+      }));
     }
     output.inert = Boolean(draft.scopeBusy);
     output.setAttribute('aria-busy', String(Boolean(draft.scopeBusy)));

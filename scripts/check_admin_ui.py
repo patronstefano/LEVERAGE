@@ -1131,7 +1131,6 @@ def main():
                 scope.locator('summary').click()
                 scope.locator('[data-admin-select-value=skip]').click()
                 assert page.locator('#adminCommitImport').is_disabled()
-                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('[name=existing_event_scope]').input_value() == 'skip'
@@ -1140,7 +1139,6 @@ def main():
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()
                 scope.locator('[data-admin-select-value=include]').click()
-                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 open_import_issues()
                 page.locator('.admin-import-issues').wait_for()
@@ -1260,7 +1258,6 @@ def main():
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=skip]').click()
                 assert page.locator('#adminCommitImport').is_disabled()
-                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '0', '0', '7', '0', '0', '1']
@@ -1268,7 +1265,6 @@ def main():
                 assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=include]').click()
-                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'include' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=false' in writes[-1]['url']
                 assert page.locator('#adminCalendarRows article').count() == 6
@@ -1340,7 +1336,6 @@ def main():
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=skip]').click()
                 assert page.locator('#adminCommitImport').is_disabled()
-                page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'skip' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 page.locator('#adminCommitImport').click()
                 page.locator('dialog[open] [data-confirm]').click()
