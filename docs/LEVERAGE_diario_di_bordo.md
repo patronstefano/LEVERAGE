@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riepilogo nella Revisione Duplicati
+
+- Aggiunti contatori sotto lo slider e prima dei record, con tipografia e griglia analoghe a World Gymnastics. Atleti/Eventi: coppie da verificare, visualizzate e da caricare, aggiornate al caricamento e dopo Mantieni separati.
+- Risultati: gruppi caricati e punteggi nei gruppi caricati. Le etichette esplicitano il perimetro della risposta limitata dell'API, senza presentarla come totale del database.
+- Traduzioni EN/IT/ES/FR e test browser dei conteggi iniziali, dello stato vuoto e dell'aggiornamento dopo revisione.
+
 #### 2026-10-06 - Ruolo dell'ultimo SUPER ADMIN bloccato nella UI
 
 - Il backend comunica alla lista utenti se un account e l'ultimo SUPER ADMIN attivo, usando un conteggio globale indipendente da ricerca, filtri e paginazione.

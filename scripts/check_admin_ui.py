@@ -677,10 +677,11 @@ def main():
                 assert page.locator('#adminWorldGymnasticsScan').count() == 0
                 assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
-                first_pair = page.locator('#adminEntityReviews .admin-identity-pair').first.bounding_box()
+                first_pair = page.locator('[data-pair-recap]').bounding_box()
                 review_toggle = page.locator('.admin-review-toggle').bounding_box()
                 assert abs(first_pair['y'] - review_toggle['y'] - review_toggle['height'] - 16) < 1, (first_pair, review_toggle)
                 assert page.locator('#adminEntityReviews [data-pair-feedback]').is_hidden()
+                assert page.locator('[data-pair-recap] dd').all_text_contents() == ['1', '1', '0']
                 assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
                 page.locator('[data-pair-compare]').click()
@@ -704,6 +705,7 @@ def main():
                 assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
                 page.locator('[data-review-entity="result"]').click()
                 assert page.locator('#adminResultReviews').is_visible()
+                assert page.locator('[data-result-recap] dd').all_text_contents() == ['0', '0']
                 assert page.locator('#adminResultReviews h2').count() == 0
                 assert page.locator('#adminEntityReviews').is_hidden()
                 page.wait_for_timeout(700)
@@ -772,6 +774,7 @@ def main():
                 page.locator('#adminEntityReviews[data-review-kind="event"] .admin-identity-pair').wait_for()
                 page.locator('[data-pair-separate]').click()
                 page.locator('#adminEntityReviews .empty-state').wait_for()
+                assert page.locator('[data-pair-recap] dd').all_text_contents() == ['0', '0', '0']
                 assert writes[-1]['path'] == '/admin/entity-duplicates/event/1/2/keep-separate'
                 page.evaluate("location.hash = '/admin/merge?entity_type=event&source=2&target=1'")
                 page.locator('#adminMergeForm').wait_for()

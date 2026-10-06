@@ -3,7 +3,7 @@ import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-f
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
-import { mountEntityReviews } from './admin-entity-reviews.js?v=duplicate-note-bottom-20261006';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=duplicate-recap-20261006';
 import { createAdminReport } from './admin-reports.js?v=compact-merge-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
@@ -19,6 +19,8 @@ export function isWorldGymnasticsReviewSuggestion(suggestion) {
 
 // The admin workspace uses the same API contracts and controls as entity profiles.
 const COPY = {
+  loadedDuplicateGroups: ['Loaded groups', 'Gruppi caricati', 'Grupos cargados', 'Groupes chargés'],
+  involvedResults: ['Results in loaded groups', 'Punteggi nei gruppi caricati', 'Resultados en grupos cargados', 'Résultats des groupes chargés'],
   lastSuperAdmin: ['Last active SUPER ADMIN: role cannot be changed.', 'Ultimo SUPER ADMIN attivo: ruolo non modificabile.', 'Último SUPER ADMIN activo: rol no modificable.', 'Dernier SUPER ADMIN actif : rôle non modifiable.'],
   deleteUser: ['Delete user', 'Elimina utente', 'Eliminar usuario', 'Supprimer l’utilisateur'],
   deleteUserWarning: ['The account will be disabled and its sessions revoked. Audit history and linked data will be retained.', 'L’account sarà disabilitato e le sessioni revocate. Lo storico audit e i dati collegati saranno conservati.', 'La cuenta se desactivará y sus sesiones se revocarán. Se conservarán el historial y los datos vinculados.', 'Le compte sera désactivé et ses sessions révoquées. L’historique et les données liées seront conservés.'],
@@ -622,6 +624,8 @@ export async function renderAdminCenter(host) {
         reviewToggle.classList.remove('admin-review-toggle');
       } else {
         root.querySelector('#adminWorldGymnasticsScan').closest('.admin-tool-block').remove();
+        const count = new Intl.NumberFormat(state.language);
+        root.querySelector('#adminResultReviews').insertAdjacentHTML('afterbegin', `<dl class="admin-stats-metrics admin-duplicate-recap" data-result-recap><div><dt>${esc(text('loadedDuplicateGroups'))}</dt><dd>${count.format(duplicates.length)}</dd></div><div><dt>${esc(text('involvedResults'))}</dt><dd>${count.format(duplicates.reduce((sum, group) => sum + (group.count || 0), 0))}</dd></div></dl>`);
       }
       const updateReviewVisibility = () => {
         const list = root.querySelector('#adminRevisionSuggestions');

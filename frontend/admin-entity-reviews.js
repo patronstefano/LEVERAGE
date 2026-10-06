@@ -1,4 +1,7 @@
 const COPY = {
+  pendingPairs: ['Pairs to review', 'Coppie da verificare', 'Pares por revisar', 'Paires à vérifier'],
+  shownPairs: ['Displayed pairs', 'Coppie visualizzate', 'Pares mostrados', 'Paires affichées'],
+  remainingPairs: ['Pairs to load', 'Coppie da caricare', 'Pares por cargar', 'Paires à charger'],
   athlete: ['Possible duplicate athletes', 'Possibili atleti duplicati', 'Posibles atletas duplicados', 'Athlètes potentiellement en double'],
   event: ['Possible duplicate events', 'Possibili eventi duplicati', 'Posibles eventos duplicados', 'Événements potentiellement en double'],
   note: ['Name similarity is an indicator, not identity verification. No automatic merges.', 'La somiglianza dei nomi è un indicatore, non una verifica d’identità. Nessuna unione automatica.', 'La similitud de nombres es un indicador, no una verificación de identidad. Sin uniones automáticas.', 'La similitude des noms est un indice, pas une vérification d’identité. Aucune fusion automatique.'],
@@ -31,9 +34,14 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
   let offset = 0, total = 0;
   const button = (label, attrs) => `<button type="button" class="quiet-button outline-command-button" ${attrs}>${esc(t(label))}</button>`;
   root.dataset.reviewKind = kind;
-  root.innerHTML = `<div data-pair-feedback role="status"></div><div data-pairs></div>${button('more', 'data-pairs-more hidden')}<p class="admin-stats-note" data-pair-note>${esc(t('note'))}</p>`;
+  root.innerHTML = `<dl class="admin-stats-metrics admin-duplicate-recap" data-pair-recap>${['pendingPairs', 'shownPairs', 'remainingPairs'].map(key => `<div><dt>${esc(t(key))}</dt><dd>—</dd></div>`).join('')}</dl><div data-pair-feedback role="status"></div><div data-pairs></div>${button('more', 'data-pairs-more hidden')}<p class="admin-stats-note" data-pair-note>${esc(t('note'))}</p>`;
   const list = root.querySelector('[data-pairs]');
   const more = root.querySelector('[data-pairs-more]');
+  const updateRecap = () => {
+    const shown = list.querySelectorAll('.admin-identity-pair').length;
+    const counts = [total, shown, Math.max(0, total - shown)];
+    root.querySelectorAll('[data-pair-recap] dd').forEach((node, i) => { node.textContent = new Intl.NumberFormat(language).format(counts[i]); });
+  };
   const failure = (error) => {
     if (alive()) root.querySelector('[data-pair-feedback]').innerHTML = `<p class="admin-center-feedback is-error">${esc(error.message)}</p>`;
   };
@@ -77,11 +85,13 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
             node.remove(); offset = Math.max(0, offset - 1); total--;
             if (!list.children.length) list.innerHTML = `<div class="empty-state">${esc(t('empty'))}</div>`;
             more.hidden = offset >= total;
+            updateRecap();
           } catch (error) { failure(error); button.disabled = false; }
         };
       }
       if (!list.children.length) list.innerHTML = `<div class="empty-state">${esc(t('empty'))}</div>`;
       more.hidden = offset >= total;
+      updateRecap();
     } catch (error) { failure(error); }
     finally { more.disabled = false; }
   };
