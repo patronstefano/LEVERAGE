@@ -15,7 +15,9 @@ Il selettore Anno e disponibile anche per Calendar, nello stesso punto del
 form Risultati. Se valorizzato, limita preview e commit al foglio XLSX o alle
 righe CSV di quell'anno; vuoto mantiene l'intero file. La scelta resta nella
 bozza durante la navigazione. Non cambia la soglia separata di creazione degli
-eventi mancanti. Un anno assente dal file viene segnalato e non e importabile.
+eventi mancanti. Il campo "Crea eventi calendario dall'anno" non e piu esposto
+nel modulo: il backend mantiene come soglia predefinita l'anno corrente.
+Un anno assente dal file viene segnalato e non e importabile.
 
 L'anteprima Calendar non usa piu report tecnici annidati: duplicati e periodi
 discordanti sono righe compatte paginate a sei elementi con nome gara,

@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Semplificazione del modulo Calendar
+
+- Rimosso dall'interfaccia il campo "Crea eventi calendario dall'anno", insieme alla relativa gestione del modulo e al parametro esplicito nelle nuove richieste di anteprima. Rimane il selettore Anno per filtrare il file Calendar.
+- Nessuna modifica alle regole backend: in assenza del parametro opzionale la soglia di creazione degli eventi mancanti resta l'anno corrente. Nessuna importazione o modifica del database reale eseguita.
+- Aggiunti controlli UI sull'assenza del campo e del parametro nelle richieste Calendar.
+
 #### 2026-10-06 - Animazione di completamento dell'analisi import
 
 - Riutilizzato un unico indicatore per il primo caricamento e per i ricalcoli di anteprima Gymternet/Calendar, incluse correzioni, esclusioni, scelte di matching e cambio Includi/Tralascia. Durante i ricalcoli resta la precedente anteprima, temporaneamente non interagibile; la barra di stato rimane visibile anche scorrendo i dettagli.

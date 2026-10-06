@@ -1116,6 +1116,7 @@ def main():
                 page.locator('[data-admin-select-value=calendar]').click()
                 calendar_year = page.locator('#adminImportForm [name=year_hint]').locator('..')
                 assert calendar_year.is_visible()
+                assert page.locator('[name=create_missing_from_year]').count() == 0
                 calendar_year.locator('summary').click()
                 calendar_year.locator('[data-admin-select-value="2026"]').click()
                 page.screenshot(path='/tmp/leverage-calendar-year-desktop.png', full_page=True)
@@ -1128,6 +1129,7 @@ def main():
                 analyze_import()
                 assert 'year=2026' in writes[-1]['url']
                 assert 'year_hint=' not in writes[-1]['url']
+                assert 'create_missing_from_year=' not in writes[-1]['url']
                 page.locator('[data-admin-tab=overview]').click()
                 page.locator('.admin-data-overview').wait_for()
                 page.locator('[data-admin-tab=imports]').click()
