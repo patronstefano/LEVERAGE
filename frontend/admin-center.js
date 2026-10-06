@@ -1,9 +1,9 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
-import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=wg-actions-20261006';
+import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=compatibility-inline-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
-import { mountEntityReviews } from './admin-entity-reviews.js?v=duplicate-recap-20261006';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=compatibility-inline-20261006';
 import { createAdminReport } from './admin-reports.js?v=compact-merge-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {

@@ -62,8 +62,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
           const best = job.candidates.reduce((current, candidate) => !current || candidate.match_score > current.match_score ? candidate : current, null);
           return `<article class="admin-identity-pair admin-wg-match" data-scan-job="${job.id}">
             <div class="admin-identity-pair-grid"><div class="admin-identity-entity"><a href="${esc(href)}"><strong>${esc(job.entity_name)}</strong></a><p class="admin-revision-meta">LEVERAGE · ID ${esc(job.entity_id)}</p></div><div class="admin-identity-entity">${best ? `<a href="${esc(best.profile_url || best.event_url)}" target="_blank" rel="noopener noreferrer"><strong>${esc(best.title || [best.last_name, best.first_name].filter(Boolean).join(' '))}</strong></a><p class="admin-revision-meta">World Gymnastics · ${esc(best.fig_id || best.event_id)}</p>` : ''}</div></div>
-            <p class="admin-revision-meta">${esc(t('compatibility'))}: ${best ? Math.round(best.match_score * 100) : 0}%</p>
-            <div class="admin-center-actions admin-wg-actions">${button('reject', `data-scan-dismiss="${job.id}"`)}<a class="quiet-button outline-command-button" href="${esc(href)}">${esc(t(job.entity_type === 'athlete' ? 'goToAthlete' : 'goToEvent'))}</a></div></article>`;
+            <div class="admin-center-actions admin-wg-actions"><span class="admin-revision-meta admin-review-compatibility">${esc(t('compatibility'))}: ${best ? Math.round(best.match_score * 100) : 0}%</span>${button('reject', `data-scan-dismiss="${job.id}"`)}<a class="quiet-button outline-command-button" href="${esc(href)}">${esc(t(job.entity_type === 'athlete' ? 'goToAthlete' : 'goToEvent'))}</a></div></article>`;
         }).join('');
       }
       root.querySelector('[data-scan-more]').hidden = matches.items.length >= matches.total;

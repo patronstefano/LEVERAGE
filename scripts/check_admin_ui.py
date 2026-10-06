@@ -692,8 +692,12 @@ def main():
                 assert page.locator('[data-pair-recap]').evaluate('el => getComputedStyle(el).borderBottomWidth') == '1px'
                 assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
+                assert page.locator('#adminEntityReviews .admin-review-compatibility').inner_text() == 'Compatibilità: 98%'
+                assert 'Nomi simili' not in page.locator('#adminEntityReviews [data-pairs]').inner_text()
+                assert page.locator('#adminEntityReviews .admin-review-compatibility').bounding_box()['x'] < page.locator('[data-pair-compare]').bounding_box()['x']
                 page.locator('[data-pair-compare]').click()
                 page.locator('.admin-pair-warning').wait_for()
+                assert 'Nomi simili' in page.locator('[data-pair-details]').inner_text()
                 compare = page.locator('[data-pair-compare]')
                 assert compare.get_attribute('aria-expanded') == 'true'
                 compare.hover()
@@ -730,9 +734,10 @@ def main():
                 assert page.locator('.admin-revisions > .admin-tool-block > .section-header').count() == 0
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
                 assert page.locator('[data-scan-refresh]').count() == 0
-                assert '95%' in page.locator('[data-scan-job="51"] > .admin-revision-meta').inner_text()
+                assert page.locator('[data-scan-job="51"] .admin-review-compatibility').inner_text() == 'Compatibilità: 95%'
                 assert page.locator('[data-scan-job="51"] .admin-identity-pair-grid .admin-identity-entity').count() == 2
-                assert page.locator('[data-scan-job="51"] .admin-wg-actions').inner_text() == 'Rifiuta\nVai all’atleta'
+                assert page.locator('[data-scan-job="51"] .admin-wg-actions').inner_text() == 'Compatibilità: 95%\nRifiuta\nVai all’atleta'
+                assert page.locator('[data-scan-job="51"] .admin-review-compatibility').bounding_box()['x'] < page.locator('[data-scan-job="51"] [data-scan-dismiss]').bounding_box()['x']
                 assert 'wg_scan_job=51' in page.locator('[data-scan-job="51"] .admin-wg-actions a').get_attribute('href')
                 page.locator('[data-wg-review-group] > summary').click()
                 assert page.locator('.admin-revisions .account-notification').count() == 1
@@ -746,7 +751,7 @@ def main():
                 page.locator('[data-review-entity="event"]').click()
                 page.locator('[data-scan-job="52"]').wait_for()
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione eventi'
-                assert page.locator('[data-scan-job="52"] .admin-wg-actions').inner_text() == 'Rifiuta\nVai all’evento'
+                assert page.locator('[data-scan-job="52"] .admin-wg-actions').inner_text() == 'Compatibilità: 90%\nRifiuta\nVai all’evento'
                 assert '7' in page.locator('[data-scan-status]').inner_text()
                 assert page.locator('[data-scan-note]').evaluate('el => el === el.parentElement.lastElementChild && el.previousElementSibling.id === "adminRevisionSuggestions"')
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'

@@ -6003,12 +6003,14 @@ a:focus-visible > .entity-card-clickable {
 .admin-identity-pair { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; row-gap: 6px; padding-block: 12px; }
 .admin-identity-pair > .admin-identity-pair-grid { grid-column: 1; grid-row: 1; }
 .admin-identity-pair > .admin-revision-meta { grid-column: 1; grid-row: 2; margin: 0; }
-.admin-identity-pair > .admin-center-actions { grid-column: 2; grid-row: 1 / span 2; justify-content: flex-end; align-self: center; max-width: 440px; }
+.admin-identity-pair > .admin-center-actions { grid-column: 2; grid-row: 1 / span 2; justify-content: flex-end; align-self: center; gap: 8px; width: max-content; max-width: 100%; }
+.admin-review-compatibility { white-space: nowrap; margin-right: 6px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.admin-identity-pair [data-pair-details] > .admin-review-reasons { margin: 0 0 12px; }
 .admin-identity-pair > [data-pair-details] { grid-column: 1 / -1; }
 .admin-identity-pair .admin-identity-entity p { margin: 3px 0 0; }
 @media (max-width: 1000px) {
   .admin-identity-pair { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .admin-identity-pair > .admin-center-actions { grid-column: 1; grid-row: 3; justify-self: end; max-width: 100%; }
+  .admin-identity-pair > .admin-center-actions { grid-column: 1; grid-row: 2; justify-self: end; max-width: 100%; }
 }
 #adminEntityReviews [data-pair-feedback]:empty { display: none; }
 #adminEntityReviews, #adminResultReviews { padding-top: 2px; }

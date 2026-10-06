@@ -10,7 +10,7 @@ const COPY = {
   separate: ['Keep separate', 'Mantieni separati', 'Mantener separados', 'Conserver séparés'],
   merge: ['Review merge', 'Valuta unione', 'Revisar unión', 'Examiner la fusion'],
   more: ['Load more pairs', 'Carica altre coppie', 'Cargar más pares', 'Charger plus de paires'],
-  compatibility: ['Name compatibility', 'Compatibilità dei nomi', 'Compatibilidad de nombres', 'Compatibilité des noms'],
+  compatibility: ['Compatibility', 'Compatibilità', 'Compatibilidad', 'Compatibilité'],
   same_name: ['Matching normalized names', 'Nomi normalizzati coincidenti', 'Nombres normalizados coincidentes', 'Noms normalisés identiques'],
   similar_name: ['Similar names', 'Nomi simili', 'Nombres similares', 'Noms similaires'],
   same_year: ['Same year', 'Stesso anno', 'Mismo año', 'Même année'],
@@ -58,7 +58,7 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
       for (const pair of data.items) {
         const node = document.createElement('article');
         node.className = 'admin-identity-pair';
-        node.innerHTML = `<div class="admin-identity-pair-grid">${card(pair.left)}${card(pair.right)}</div><p class="admin-revision-meta">${esc(t('compatibility'))}: ${pair.compatibility}% · ${esc(pair.reasons.map(t).join(' · '))}</p><div class="admin-center-actions">${button('compare', 'data-pair-compare')}${button('separate', 'data-pair-separate')}<a class="quiet-button outline-command-button" href="#/admin/merge?entity_type=${kind}&source=${pair.right.id}&target=${pair.left.id}">${esc(t('merge'))}</a></div><div data-pair-details hidden></div>`;
+        node.innerHTML = `<div class="admin-identity-pair-grid">${card(pair.left)}${card(pair.right)}</div><div class="admin-center-actions"><span class="admin-revision-meta admin-review-compatibility">${esc(t('compatibility'))}: ${pair.compatibility}%</span>${button('compare', 'data-pair-compare')}${button('separate', 'data-pair-separate')}<a class="quiet-button outline-command-button" href="#/admin/merge?entity_type=${kind}&source=${pair.right.id}&target=${pair.left.id}">${esc(t('merge'))}</a></div><div data-pair-details hidden></div>`;
         list.append(node);
         const path = `/admin/entity-duplicates/${kind}/${pair.left.id}/${pair.right.id}`;
         const details = node.querySelector('[data-pair-details]');
@@ -70,7 +70,7 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
           try {
             const data = await api(path);
             if (!alive()) return;
-            details.innerHTML = `${data.conflicting_scores ? `<p class="admin-pair-warning">${esc(t('conflict'))}</p>` : ''}<div class="admin-identity-pair-grid">${evidence(data.left)}${evidence(data.right)}</div>`;
+            details.innerHTML = `<p class="admin-revision-meta admin-review-reasons">${esc(pair.reasons.map(t).join(' · '))}</p>${data.conflicting_scores ? `<p class="admin-pair-warning">${esc(t('conflict'))}</p>` : ''}<div class="admin-identity-pair-grid">${evidence(data.left)}${evidence(data.right)}</div>`;
             details.hidden = false;
             compare.setAttribute('aria-expanded', 'true');
           } catch (error) { failure(error); }

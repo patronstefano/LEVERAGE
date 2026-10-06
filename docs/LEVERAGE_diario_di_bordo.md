@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Compatibilita accanto ai comandi di revisione
+
+- Nelle liste Revisione Duplicati e World Gymnastics resta visibile soltanto Compatibilita: N%, accanto ai pulsanti di ogni record. I motivi del punteggio duplicati compaiono solo dopo Confronta dettagli, insieme al confronto completo.
+- Nessuna modifica al calcolo della compatibilita, alle decisioni di rifiuto/unione o ai riscontri World Gymnastics.
+
 #### 2026-10-06 - Azioni dirette sui riscontri World Gymnastics
 
 - Ogni riscontro mostra ora Rifiuta e Vai all'atleta (Vai all'evento per gli eventi) sulla destra. Rimossi Confronta dettagli e la relativa lista espandibile; il nome del candidato continua a collegare al profilo ufficiale.
