@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Conferma di creazione delle nuove entita
+
+- In Centro Admin > Nuova Entita, dopo la risposta positiva del salvataggio compare "Nuovo atleta salvato" oppure "Nuovo evento salvato", con lo stile verde condiviso dei messaggi di successo e sfondo neutro.
+- Aggiunto il pulsante esplicito "Vai all'atleta" / "Vai all'evento" verso l'ID restituito dal backend, mantenendo il ritorno al Centro Admin. Rimossa la conferma generica duplicata; aprire un nuovo modulo elimina la precedente conferma.
+- Test browser esteso alle creazioni simulate di entrambi i tipi, testi, stile di successo e destinazione dei link. Nessuna nuova entita reale creata durante il collaudo; invariati backend e controlli di validazione. Testi disponibili in inglese, italiano, spagnolo e francese.
+
 #### 2026-10-06 - Revisione delle identita potenzialmente duplicate
 
 - Problema: "Possibili risultati duplicati" confrontava risultati gia associati allo stesso ID atleta. Non individuava due schede anagrafiche distinte che potevano rappresentare la stessa persona o gara.

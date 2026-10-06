@@ -196,6 +196,10 @@ const COPY = {
   report: ["Download report", "Scarica report", "Descargar informe", "Télécharger le rapport"],
   empty: ["No items.", "Nessun elemento.", "Sin elementos.", "Aucun élément."],
   success: ["Operation completed.", "Operazione completata.", "Operación completada.", "Opération terminée."],
+  athleteSaved: ["New athlete saved", "Nuovo atleta salvato", "Nuevo atleta guardado", "Nouvel athlète enregistré"],
+  eventSaved: ["New event saved", "Nuovo evento salvato", "Nuevo evento guardado", "Nouvel événement enregistré"],
+  goToAthlete: ["Go to athlete", "Vai all’atleta", "Ir al atleta", "Voir l’athlète"],
+  goToEvent: ["Go to event", "Vai all’evento", "Ir al evento", "Voir l’événement"],
   pending: ["Awaiting review", "In attesa di verifica", "Pendiente de revisión", "En attente de vérification"],
   confirm: ["Confirm", "Conferma", "Confirmar", "Confirmer"],
   cancel: ["Cancel", "Annulla", "Cancelar", "Annuler"],
@@ -548,9 +552,9 @@ export async function renderAdminCenter(host) {
         onSubmit("adminCreateForm", async (values) => {
           const created = await api(`/${kind}/`, { method: "POST", body: typed(schema, values) });
           if (!active() || revision !== createRevision) return;
-          document.getElementById("adminCreate").innerHTML = entityLink(kind, created.id);
+          const isAthlete = kind === "athletes";
+          document.getElementById("adminCreate").innerHTML = `<div class="admin-center-feedback is-success" role="status">${esc(text(isAthlete ? "athleteSaved" : "eventSaved"))}</div><div class="admin-center-actions">${entityLink(kind, created.id, text(isAthlete ? "goToAthlete" : "goToEvent"))}</div>`;
           selectCreate(null);
-          feedback(text("success"));
         });
       };
       document.getElementById("adminNewEvent").onclick = guard(() => create("events"));

@@ -121,6 +121,8 @@ def main():
                     route.fulfill(json={"can_merge": True, "preview_token": "a" * 64}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path.startswith('/admin/entity-duplicates/') and path.endswith('/keep-separate'):
                     route.fulfill(json={"decision": "keep_separate"}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path in ['/athletes/', '/events/']:
+                    route.fulfill(status=201, json={"id": 1, **json.loads(route.request.post_data)}, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -255,6 +257,28 @@ def main():
                 assert page.locator('.admin-create-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '0'
                 assert page.locator('[name="event_search"]').count() == 0
                 assert page.locator('#adminEntry').count() == 0
+                for kind, values, message, label in [
+                    ('athletes', {'first_name': 'Ada', 'last_name': 'Test'}, 'Nuovo atleta salvato', 'Vai all’atleta'),
+                    ('events', {'name': 'Test Cup', 'year': '2026'}, 'Nuovo evento salvato', 'Vai all’evento'),
+                ]:
+                    if kind == 'events':
+                        page.locator('#adminNewEvent').click()
+                        page.locator('#adminCreateForm [name=name]').wait_for()
+                    assert page.locator('#adminCreate .is-success').count() == 0
+                    for name, value in values.items():
+                        page.locator(f'#adminCreateForm [name={name}]').fill(value)
+                    for control in page.locator('#adminCreateForm [data-admin-select]').all():
+                        control.locator('summary').click()
+                        control.locator('[data-admin-select-value]:not([disabled])').first.click()
+                    page.locator('#adminCreateForm button[type=submit]').click()
+                    page.locator('#adminCreate [role=status]').wait_for()
+                    assert page.locator('#adminCreate [role=status]').inner_text() == message
+                    assert page.locator('#adminCreate .is-success').count() == 1
+                    link = page.locator('#adminCreate a')
+                    assert link.inner_text() == label
+                    assert link.get_attribute('href').startswith(f'#/{kind}/1?from=admin&')
+                    assert 'return_to=%2Fadmin%2Fentry' in link.get_attribute('href')
+                    assert page.locator('#adminFeedback').inner_text() == ''
             if tab == "merge":
                 previous_writes = len(writes)
                 page.locator('#adminMergeForm button[type=submit]').click()
