@@ -5,6 +5,7 @@ import { bindAuthValidation } from './auth-validation.js?v=admin-validation-2026
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
+import { mountImportProgress } from './admin-import-progress.js?v=import-progress-20261006';
 import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-review-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
@@ -180,6 +181,7 @@ const COPY = {
   importResults: ["Results (The Gymternet)", "Risultati (The Gymternet)", "Resultados (The Gymternet)", "Résultats (The Gymternet)"],
   importCalendar: ["Calendar (The Gymternet)", "Calendario (The Gymternet)", "Calendario (The Gymternet)", "Calendrier (The Gymternet)"],
   importLoading: ["Analyzing the file...", "Analisi del file in corso...", "Analizando el archivo...", "Analyse du fichier en cours..."],
+  importAnalysisComplete: ["Analysis complete", "Analisi completata", "Análisis completado", "Analyse terminée"],
   importUploading: ["Uploading file", "Caricamento file", "Subiendo archivo", "Envoi du fichier"],
   importNoRows: ["No Gymternet results found. Check the file format, sheet names and year.", "Nessun risultato Gymternet trovato. Controlla formato, nomi dei fogli e anno.", "No se encontraron resultados Gymternet. Revisa el formato, los nombres de las hojas y el año.", "Aucun résultat Gymternet trouvé. Vérifiez le format, les noms des feuilles et l'année."],
   importOnlyDuplicates: ["No new results to import: the file contains results already in LEVERAGE.", "Nessun nuovo risultato da importare: il file contiene risultati già presenti in LEVERAGE.", "No hay resultados nuevos para importar: el archivo contiene resultados ya presentes en LEVERAGE.", "Aucun nouveau résultat à importer : le fichier contient des résultats déjà présents dans LEVERAGE."],
@@ -874,35 +876,21 @@ export async function renderAdminCenter(host) {
       const params = v.kind === "calendar" ? { year: v.year_hint, create_missing_from_year: v.create_missing_from_year } : { year_hint: v.year_hint, csv_discipline: v.csv_discipline, csv_score_kind: v.csv_score_kind, orphan_review_limit: 5000, athlete_review_limit: 5000, skip_existing_events: false };
       const body = new FormData(); body.append("file", file);
       const output = document.getElementById("adminImportOutput");
-      output.innerHTML = `<div class="admin-import-progress" role="status" aria-live="polite"><div class="admin-import-progress-heading"><span id="adminImportProgressLabel">${esc(text("importUploading"))}</span><strong id="adminImportProgressValue">0%</strong></div><div id="adminImportProgressTrack" class="admin-import-progress-track" role="progressbar" aria-label="${esc(text("importUploading"))}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="adminImportProgressFill"></span></div></div>`;
-      const progressLabel = document.getElementById("adminImportProgressLabel");
-      const progressValue = document.getElementById("adminImportProgressValue");
-      const progressTrack = document.getElementById("adminImportProgressTrack");
-      const progressFill = document.getElementById("adminImportProgressFill");
-      const onUploadProgress = (percent) => {
-        if (!progressTrack.isConnected || progressTrack.classList.contains("is-analyzing")) return;
-        const value = Math.max(0, Math.min(100, percent));
-        progressValue.textContent = `${value}%`;
-        progressTrack.setAttribute("aria-valuenow", String(value));
-        progressFill.style.width = `${value}%`;
-      };
-      const onUploaded = () => {
-        if (!progressTrack.isConnected) return;
-        progressLabel.textContent = text("importLoading");
-        progressValue.textContent = "";
-        progressTrack.classList.add("is-analyzing");
-        progressTrack.setAttribute("aria-label", text("importLoading"));
-        progressTrack.removeAttribute("aria-valuenow");
-        progressFill.style.width = "";
-      };
+      output.innerHTML = '<div id="adminImportInitialProgress"></div>';
+      const progress = mountImportProgress({root: output.firstElementChild, text, esc, uploading: true});
+      const {onUploadProgress, onUploaded} = progress;
       try {
         const preview = await api(`/imports/${v.kind}/preview`, { method: "POST", body, params, onUploadProgress, onUploaded });
+        if (!active() || !output.isConnected || revision !== importRevision) return;
+        await progress.complete();
         if (!active() || !output.isConnected || revision !== importRevision) return;
         session.import = { kind: v.kind, file, params, preview, athlete: {}, orphan: {}, event: {} }; showImport();
       } catch (error) {
         if (revision !== importRevision || !output.isConnected) return;
         output.textContent = "";
         throw error;
+      } finally {
+        progress.dispose();
       }
     });
     const importForm = document.getElementById("adminImportForm");
@@ -989,7 +977,7 @@ export async function renderAdminCenter(host) {
           ${button(draft.fileFormOpen ? 'importHideFile' : 'importChangeFile', `id="adminImportChangeFile" aria-controls="adminImportForm" aria-expanded="${Boolean(draft.fileFormOpen)}"`)}
         </div>
       </div>
-      <span id="adminImportScopeStatus" class="admin-stats-note" role="status" hidden>${esc(text('importLoading'))}</span>
+      <div id="adminImportScopeStatus" hidden></div>
       ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
@@ -1099,7 +1087,7 @@ export async function renderAdminCenter(host) {
         output.inert = true;
         output.setAttribute('aria-busy', 'true');
         output.querySelector('#adminCommitImport')?.setAttribute('disabled', '');
-        output.querySelector('#adminImportScopeStatus')?.removeAttribute('hidden');
+        const progress = mountImportProgress({root: output.querySelector('#adminImportScopeStatus'), text, esc});
         try {
           let result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(draft.preview, !changingScope && !changingSource, !changingSource), params });
           if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
@@ -1112,17 +1100,22 @@ export async function renderAdminCenter(host) {
             result = await api(`/imports/${draft.kind}/preview`, { method: "POST", body: bodyWithDecisions(result), params });
           }
           if (session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
+          if (!active() || !output.isConnected) return;
+          await progress.complete();
+          if (!active() || !output.isConnected || session.import !== draft || revision !== (draft.decisionRevision || 0)) return;
           draft.params = params;
           draft.preview = result;
           draft.needsPreview = false;
           draft.sourceDirty = false;
         } finally {
+          progress.dispose();
           draft.scopeBusy = false;
           if (output.isConnected) {
             output.inert = false;
             output.removeAttribute('aria-busy');
           }
           if (active() && session.import === draft) showImport();
+          else draft.onRefreshSettled?.();
         }
       };
       document.getElementById("adminReviewPreview").onclick = guard(() => refreshPreview());
@@ -1130,6 +1123,14 @@ export async function renderAdminCenter(host) {
     }
     output.inert = Boolean(draft.scopeBusy);
     output.setAttribute('aria-busy', String(Boolean(draft.scopeBusy)));
+    if (draft.scopeBusy) {
+      mountImportProgress({root: output.querySelector('#adminImportScopeStatus'), text, esc});
+      draft.onRefreshSettled = () => {
+        if (active() && session.import === draft) showImport();
+      };
+    } else {
+      delete draft.onRefreshSettled;
+    }
     bind();
     if (draft.kind === 'calendar') {
       mountCalendarImportRows({root: output.querySelector('#adminCalendarRows'), preview: p,

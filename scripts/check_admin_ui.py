@@ -52,7 +52,7 @@ def main():
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
         page.on("pageerror", lambda e: errors.append(str(e)))
-        page.add_init_script("localStorage.setItem('leverage.authToken', 'test-only'); localStorage.setItem('leverage.language', 'it');")
+        page.add_init_script("if (location.origin === 'http://127.0.0.1:5173') { localStorage.setItem('leverage.authToken', 'test-only'); localStorage.setItem('leverage.language', 'it'); }")
 
         def api(route):
             path = route.request.url.split(":8000", 1)[-1].split("?", 1)[0]
@@ -966,7 +966,11 @@ def main():
                 row.locator("[data-admin-select]").first.locator("summary").click()
                 row.locator('[data-admin-select-value="suggestion:s1"]').click()
                 page.locator("#adminReviewPreview").click()
-                page.wait_for_timeout(200)
+                page.locator('#adminImportScopeStatus .is-complete').wait_for(state='attached')
+                assert page.locator('#adminImportScopeStatus [data-import-progress-label]').inner_text() == 'Analisi completata'
+                assert page.locator('#adminImportScopeStatus [role=progressbar]').get_attribute('aria-valuenow') == '100'
+                assert page.locator('#adminCommitImport').is_disabled()
+                page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert "accept_suggestion" in writes[-1]["body"]
                 assert "s1" in writes[-1]["body"]
                 assert 'match_existing' in writes[-1]['body']
@@ -1259,9 +1263,10 @@ def main():
         assert page.locator('#accountNotifications').is_visible()
         page.screenshot(path="/tmp/leverage-admin-mobile.png", full_page=True)
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "Horizontal overflow"
-        page.evaluate("location.hash = '#/super-admin/audit'")
+        # Start a fresh document so the previous SPA navigation cannot race the role change.
+        page.goto('about:blank')
         current_role[0] = "admin"
-        page.reload()
+        page.goto('http://127.0.0.1:5173/#/super-admin/audit')
         page.locator('[role="alert"]').wait_for()
         assert not page.locator('.admin-center').count()
         page.goto("http://127.0.0.1:5173/#/account")
@@ -1272,7 +1277,8 @@ def main():
         assert not page.locator('.admin-center-nav a[href="#/admin/users"]').count()
         assert not page.locator('.admin-center-nav a[href="#/admin/audit"]').count()
         current_role[0] = "user"
-        page.reload()
+        page.goto('about:blank')
+        page.goto('http://127.0.0.1:5173/#/admin')
         page.locator('[role="alert"]').wait_for()
         assert not page.locator(".admin-center").count()
         assert page.locator('#app').evaluate('el => el.classList.contains("auth-main-view")')

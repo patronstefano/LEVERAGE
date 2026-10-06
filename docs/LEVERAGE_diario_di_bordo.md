@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Animazione di completamento dell'analisi import
+
+- Riutilizzato un unico indicatore per il primo caricamento e per i ricalcoli di anteprima Gymternet/Calendar, incluse correzioni, esclusioni, scelte di matching e cambio Includi/Tralascia. Durante i ricalcoli resta la precedente anteprima, temporaneamente non interagibile; la barra di stato rimane visibile anche scorrendo i dettagli.
+- Il trasferimento iniziale mostra la percentuale reale di upload. L'analisi server usa una barra indeterminata, non una percentuale inventata: gli endpoint non trasmettono avanzamenti intermedi. Solo dopo l'ultima risposta valida la barra si completa al 100% e mostra Analisi completata, quindi viene visualizzata la nuova anteprima.
+- La breve transizione finale dura 380 ms complessivi; la preferenza di movimento ridotto disattiva animazioni e attesa. Gli errori di richiesta non producono un falso completamento e ripristinano i controlli; la navigazione o una bozza sostituita non devono applicare risposte obsolete. Completamento significa analisi conclusa, non importazione riuscita: i conflitti ancora presenti continuano a bloccare il commit.
+- Verifica dedicata browser senza accesso al backend per upload, analisi, completamento, annullamento, movimento ridotto e viewport mobile; test integrato sul ricalcolo con conferma bloccata durante il completamento. Nessuna modifica al database reale, alle regole d'import o alle notifiche.
+- Esiti: 308 test backend superati; superati sia il controllo browser dedicato all'indicatore sia la suite UI del Centro Admin, con API simulate e verifiche desktop/mobile.
+
+
 #### 2026-10-06 - Anteprima Calendar: avvisi tradotti e conflitti compatti
 
 - Rimossa la rappresentazione generica annidata dei duplicati e delle righe con date discordanti. Le segnalazioni diventano righe compatte nello stile delle revisioni: nome gara, tipo di problema, foglio/riga, periodi confrontabili e collegamento Leverage ID quando disponibile. Nessun albero di chiavi tecniche, nessuna lista troncata ai primi venti casi.

@@ -6212,7 +6212,9 @@ a:focus-visible > .entity-card-clickable {
 .admin-import-progress-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 9px; }
 .admin-import-progress-heading strong { color: var(--brand-blue); font-weight: 600; font-variant-numeric: tabular-nums; }
 .admin-import-progress-track { height: 5px; overflow: hidden; border-radius: 4px; background: var(--line); }
-.admin-import-progress-track > span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--brand-blue); transition: width 160ms ease; }
+.admin-import-progress-track > span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--brand-blue); transition: width 240ms ease-out, transform 240ms ease-out; }
+#adminImportScopeStatus:not([hidden]) { position: sticky; top: calc(var(--topbar-height) + 8px); z-index: 10; padding: 12px 0; background: #fff; }
+#adminImportScopeStatus .admin-import-progress { margin: 0; }
 .admin-import-progress-track.is-analyzing > span { width: 34%; animation: admin-import-analyzing 1.4s ease-in-out infinite; }
 @keyframes admin-import-analyzing { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
 @media (prefers-reduced-motion: reduce) { .admin-import-progress-track > span { transition: none; } .admin-import-progress-track.is-analyzing > span { animation: none; width: 100%; opacity: .5; } }

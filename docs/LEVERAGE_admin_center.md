@@ -4,6 +4,13 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Aggiornamento Importazione file - 6 ottobre 2026
 
+Caricamento e ricalcoli condividono la barra di avanzamento: upload percentuale
+reale, analisi server indeterminata, completamento animato al 100% solo dopo
+la risposta valida. Correzioni e decisioni mantengono la vecchia anteprima
+non interagibile fino alla sostituzione. La transizione rispetta il movimento
+ridotto; un errore di rete non viene mostrato come completamento. Il 100%
+indica analisi conclusa, non assenza di conflitti o avvenuta importazione.
+
 Il selettore Anno e disponibile anche per Calendar, nello stesso punto del
 form Risultati. Se valorizzato, limita preview e commit al foglio XLSX o alle
 righe CSV di quell'anno; vuoto mantiene l'intero file. La scelta resta nella
