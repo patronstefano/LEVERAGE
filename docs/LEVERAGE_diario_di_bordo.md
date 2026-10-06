@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Posizione del comando di rinvio duplicati
+
+- Spostato Tralascia tutte le revisioni duplicati al posto del collegamento
+  Revisione Duplicati, rimosso dalle parti Eventi e Atleti dell'anteprima.
+- Eliminato il comando separato sopra la revisione. Entrambe le parti espongono
+  la stessa azione globale, con conferma e successiva possibilita di riprendere
+  la revisione. Invariati persistenza e controlli dell'importazione.
+- Aggiornato il test UI per verificare posizione, assenza del vecchio link e
+  ripresa della revisione dalla scheda Atleti dopo il rinvio dalla scheda Eventi.
+
 ## 2026-10-06 - Contorno dei popup di ricalcolo anteprima
 
 - Uniformati bordo sottile, arrotondamento e ombra dei popup amministrativi di

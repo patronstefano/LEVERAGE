@@ -960,18 +960,22 @@ def main():
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['1', '1', '0', '2']
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
                 assert page.locator('#adminCommitImport').is_disabled()
-                page.locator('#adminDeferDuplicates').click()
+                assert page.locator('.admin-import-duplicate-link a').count() == 0
+                assert page.locator('#importPart_events .admin-import-duplicate-link [data-defer-duplicates]').is_visible()
+                page.locator('[data-defer-duplicates]:visible').click()
                 assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
                 page.locator('dialog[open] [data-confirm]').click()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'defer_duplicate_reviews=true' in writes[-1]['url']
                 assert page.locator('[data-import-group=athlete]').count() == 0
                 assert page.locator('[data-import-group=event]').count() == 0
-                assert 'Riprendi revisione duplicati' in page.locator('#adminDeferDuplicates').inner_text()
-                page.locator('#adminDeferDuplicates').click()
+                page.locator('[data-import-part=athletes]').click()
+                assert 'Riprendi revisione duplicati' in page.locator('[data-defer-duplicates]:visible').inner_text()
+                page.locator('[data-defer-duplicates]:visible').click()
                 page.wait_for_function("document.querySelector('[data-import-group=athlete]') && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'defer_duplicate_reviews=false' in writes[-1]['url']
                 assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-import-part=events]').click()
                 page.screenshot(path='/tmp/leverage-import-minimal-desktop.png', full_page=True)
                 page.locator('[data-admin-tab=overview]').click()
                 page.locator('.admin-data-overview').wait_for()
@@ -984,11 +988,7 @@ def main():
                 assert page.locator('#adminImportFile').evaluate('input => input.files[0].name') == 'test.csv'
                 page.locator('#adminImportChangeFile').click()
                 assert page.locator('#adminImportForm').is_hidden()
-                page.locator('#importPart_events a[href="#/admin/review?entity_type=event"]').click()
-                page.locator('#adminEntityReviews[data-review-kind="event"]').wait_for()
-                assert page.locator('[data-review-entity=event]').get_attribute('aria-pressed') == 'true'
-                page.locator('[data-admin-tab=imports]').click()
-                page.locator('#adminImportChangeFile').wait_for()
+                assert page.locator('#importPart_events a[href="#/admin/review?entity_type=event"]').count() == 0
                 row = page.locator("[data-review-type=athlete]")
                 page.locator('[data-import-part=athletes]').click()
                 assert page.locator('#adminImportAthletes .admin-import-metrics dd').all_inner_texts() == ['1', '0', '0', '1']

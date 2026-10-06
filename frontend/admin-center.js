@@ -981,7 +981,6 @@ export async function renderAdminCenter(host) {
         </div>
       </div>
       <div id="adminImportScopeStatus" hidden></div>
-      ${draft.kind === 'gymternet' && !p.committed && (p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || draft.params.defer_duplicate_reviews) ? `<div class="admin-import-defer-actions">${button(draft.params.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'id="adminDeferDuplicates"')}${draft.params.defer_duplicate_reviews ? `<p class="admin-stats-note">${esc(text('importDeferredNote'))}</p>` : ''}</div>` : ''}
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${draft.kind === 'calendar' && p.skip_existing_events && !p.committed ? `<p class="admin-stats-note">${esc(text('importCalendarSkipNote'))}</p>` : ''}
       ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}
@@ -1023,7 +1022,8 @@ export async function renderAdminCenter(host) {
       for (const [key, kind] of [['events', 'event'], ['athletes', 'athlete']]) {
         const group = output.querySelector(`[data-import-group=${kind}]`);
         if (group) sections[key].append(group);
-        sections[key].insertAdjacentHTML('beforeend', `<div class="admin-import-duplicate-link"><p class="admin-stats-note">${esc(text('importDuplicateNote'))}</p><a class="quiet-button outline-command-button" href="#/admin/review?entity_type=${kind}">${esc(text('importDuplicateLater'))}</a></div>`);
+        const canDefer = p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || draft.params.defer_duplicate_reviews;
+        sections[key].insertAdjacentHTML('beforeend', `<div class="admin-import-duplicate-link"><p class="admin-stats-note">${esc(text(draft.params.defer_duplicate_reviews ? 'importDeferredNote' : 'importDuplicateNote'))}</p>${canDefer ? button(draft.params.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'data-defer-duplicates') : ''}</div>`);
       }
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', p.conflicts?.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
@@ -1125,10 +1125,10 @@ export async function renderAdminCenter(host) {
         }
       };
       document.getElementById("adminReviewPreview").onclick = guard(() => refreshPreview());
-      output.querySelector('#adminDeferDuplicates')?.addEventListener('click', guard(async () => {
+      output.querySelectorAll('[data-defer-duplicates]').forEach(control => control.addEventListener('click', guard(async () => {
         if (draft.params.defer_duplicate_reviews) await refreshPreview(undefined, null, false);
         else confirm('importDeferDuplicates', dialog => refreshPreview(undefined, dialog, true), false, text('importDeferConfirm'));
-      }));
+      })));
       output.querySelector('[name=existing_event_scope]')?.addEventListener('change', guard(event => refreshPreview(event.target.value === 'skip')));
     }
     output.inert = Boolean(draft.scopeBusy);

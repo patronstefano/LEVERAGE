@@ -136,7 +136,7 @@
 #adminImportOutput .admin-import-review-part .admin-import-metrics dt { min-height: 0; }
 .admin-import-duplicate-link { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-top: 16px; }
 .admin-import-duplicate-link > p { flex: 1 1 400px; margin: 0; }
-.admin-import-duplicate-link > a { flex: 0 0 auto; }
+.admin-import-duplicate-link > button { flex: 0 0 auto; }
 #adminImportOutput .admin-revision-group > .admin-center-actions { margin-block: 12px; }
 #adminImportOutput .admin-identity-pair { column-gap: 24px; row-gap: 12px; }
 #adminImportOutput .admin-identity-pair > .admin-center-actions { gap: 10px; max-width: 100%; }
@@ -147,8 +147,6 @@
 #adminImportOutput [data-pair-details] > .admin-center-actions { margin-top: 12px; }
 .admin-source-comparison + .admin-source-comparison { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
 .admin-import-scope-note { margin: 12px 0; }
-.admin-import-defer-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 20px; margin: 12px 0 16px; }
-.admin-import-defer-actions .admin-stats-note { margin: 0; flex: 1 1 280px; font-size: 13px; line-height: 1.5; }
 #adminImportOutput .admin-import-event strong { display: block; line-height: 1.5; }
 #adminImportOutput .admin-import-event [data-pair-details] h3 { font-size: 14px; line-height: 1.5; margin: 12px 0 8px; }
 #adminImportOutput .admin-import-event-filters { gap: 8px; margin: 8px 0 12px; }
