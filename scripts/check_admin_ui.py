@@ -852,6 +852,7 @@ def main():
         page.locator('.admin-activity-details > summary').first.click()
         assert page.locator('#adminActivityPeriod button[type=submit]').count() == 0
         assert page.locator('#adminActivityPeriod').bounding_box()['y'] < page.locator('.admin-data-overview').bounding_box()['y']
+        assert page.locator('#adminActivityPeriod + .admin-data-overview').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
         page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => { node.value = '7'; node.dispatchEvent(new Event('change', {bubbles: true})); }")
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'

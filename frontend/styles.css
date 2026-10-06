@@ -81,6 +81,7 @@
 .admin-lookup-option span { color: var(--muted); }
 .admin-overview-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .admin-data-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+#adminActivityPeriod + .admin-data-overview { border-top: 1px solid rgba(25, 23, 71, 0.08); padding-top: 16px; }
 .admin-data-group { min-width: 0; }
 .admin-data-group + .admin-data-group { border-left: 1px solid var(--line); padding-left: 24px; }
 .admin-workspace-content .admin-data-group h3 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }

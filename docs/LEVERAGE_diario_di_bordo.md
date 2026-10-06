@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Divisore sotto il periodo della Panoramica
+
+- Inserita una linea orizzontale grigia tra Periodo di attivita e i dati della Panoramica SUPER ADMIN, con lo stesso bordo da 1px e spazio interno di 16px dei blocchi Statistiche. Nessuna modifica funzionale o alla Panoramica ADMIN.
+
 #### 2026-10-06 - Riscontri World Gymnastics coerenti con Revisione Duplicati
 
 - Riutilizzati struttura a due colonne, tipografia, spaziature e separatori delle coppie duplicate: entita LEVERAGE a sinistra e candidato WG con compatibilita maggiore a destra. Compatibilita sotto, comando Confronta dettagli con stato blu quando aperto.
