@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Riepiloghi Super Admin e spaziatura liste
+
+- Ridotto lo spazio tra il divisore dei filtri e il primo record in Utenti e ruoli e Audit e ripristino, senza modificare la distanza tra i record successivi.
+- Nella Panoramica Super Admin il totale delle operazioni e mostrato una sola volta; rimossi i totali ripetuti per operazione e per entita. In Statistiche Sito le voci del Traffico pari a zero sono raccolte in una sola riga Altre attivita; rimossa la nota ridondante sul periodo sotto gli account Inattivi. Conteggi e selezione del periodo restano invariati.
+
 #### 2026-10-06 - Pulsanti di caricamento nelle revisioni
 
 - Resi compatti e centrati Carica altre coppie in Revisione Duplicati e Carica altri riscontri in World Gymnastics, coerentemente ai pulsanti Carica altri delle liste pubbliche. Paginazione e contenuto invariati; verificata la geometria in entrambi i casi.

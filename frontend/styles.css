@@ -85,6 +85,11 @@
 #adminStats .admin-site-statistics,
 #adminUsersForm + #adminUsers,
 #adminAuditForm + #adminAudit { border-top: 1px solid rgba(25, 23, 71, 0.08); padding-top: 16px; }
+#adminUsersForm + #adminUsers,
+#adminAuditForm + #adminAudit { padding-top: 4px; }
+#adminActivityPeriod + .admin-activity-overview .admin-data-total { display: block; }
+#adminUsers > .account-notification:first-child,
+#adminAudit > .admin-audit-record:first-child { padding-top: 6px; }
 .admin-data-overview.admin-site-statistics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .admin-data-group { min-width: 0; }
 .admin-data-group + .admin-data-group { border-left: 1px solid var(--line); padding-left: 24px; }

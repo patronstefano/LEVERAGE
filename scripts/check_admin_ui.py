@@ -89,7 +89,7 @@ def main():
             elif path == "/site-analytics/admin/summary":
                 payload = {"start_date": "2026-09-01", "end_date": "2026-09-30", "visitors": 42,
                            "sessions": 50, "page_views": 100, "searches": 20, "athlete_views": 30,
-                           "event_views": 15, "dashboard_views": 5, "total_events": 170,
+                           "event_views": 0, "dashboard_views": 0, "total_events": 170,
                            "average_session_seconds": None,
                            "users": {"registered_users": 10, "verified_users": 8, "unverified_users": 2,
                                      "active_users": 6, "inactive_users": 4, "active_window_days": 30},
@@ -560,7 +560,8 @@ def main():
                 page.locator('#adminScoreRows tbody tr').first.wait_for()
                 assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
             if tab == "users":
-                assert page.locator('#adminUsersForm + #adminUsers').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
+                assert page.locator('#adminUsersForm + #adminUsers').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '4px'")
+                assert page.locator('#adminUsers > .account-notification').first.evaluate("el => getComputedStyle(el).paddingTop === '6px'")
                 search = page.locator('#adminUsersForm [name=search]')
                 search.fill('REVI')
                 page.wait_for_function("document.querySelectorAll('#adminUsers .account-notification').length === 1 && document.querySelector('#adminUsers').textContent.includes('review@example.test')")
@@ -588,7 +589,8 @@ def main():
                 assert page.locator('#adminUsers .is-success').inner_text() == 'Utente eliminato'
                 assert page.locator('[data-role="77"], [data-delete-user="77"]').count() == 0
             if tab == "audit":
-                assert page.locator('#adminAuditForm + #adminAudit').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
+                assert page.locator('#adminAuditForm + #adminAudit').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '4px'")
+                assert page.locator('#adminAudit > .admin-audit-record').first.evaluate("el => getComputedStyle(el).paddingTop === '6px'")
                 assert page.locator('#adminAuditForm [name=entity_id]').locator('..').inner_text() == 'Leverage ID'
                 assert page.evaluate('''async () => {
                     const { createAdminReport } = await import('/admin-reports.js?v=20261006');
@@ -671,7 +673,9 @@ def main():
                 assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'users', 'audit']
                 assert page.locator('[data-admin-tab=statistics]').inner_text() == 'Statistiche Sito'
                 assert page.locator('#adminStats .admin-data-group').count() == 2
-                assert page.locator('#adminStats .admin-data-group dl > div').count() == 14
+                assert page.locator('#adminStats .admin-data-group dl > div').count() == 13
+                assert page.locator('#adminStats .admin-data-group').first.locator('dt').all_inner_texts()[-1] == 'Altre attività'
+                assert 'Attività negli ultimi 30 giorni' not in page.locator('#adminStats').inner_text()
                 assert '42' in page.locator('#adminStats').inner_text()
                 assert page.locator('#adminStats .empty-state, #adminStats .admin-stats-top').count() == 0
                 assert page.locator('#adminStatsForm [name=start_date], #adminStatsForm [name=end_date]').count() == 0
@@ -884,10 +888,12 @@ def main():
         page.locator('#adminActivityPeriod').wait_for()
         assert page.locator('.admin-activity-details').count() == 0
         assert page.locator('#adminWorkspace a[href="#/super-admin/audit"]').count() == 0
-        assert page.locator('.admin-data-total').count() == 3
+        assert page.locator('.admin-data-total').count() == 1
         assert page.locator('#adminActivityPeriod button[type=submit]').count() == 0
         assert page.locator('#adminActivityPeriod').bounding_box()['y'] < page.locator('.admin-data-overview').bounding_box()['y']
         assert page.locator('#adminActivityPeriod + .admin-data-overview').evaluate("el => getComputedStyle(el).borderTopWidth === '1px' && getComputedStyle(el).paddingTop === '16px'")
+        assert page.locator('.admin-activity-overview .admin-data-total').count() == 1
+        assert page.locator('.admin-activity-overview').inner_text().count('Totali') == 0
         page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => { node.value = '7'; node.dispatchEvent(new Event('change', {bubbles: true})); }")
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'

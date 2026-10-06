@@ -178,6 +178,7 @@ const COPY = {
   chooseFile: ["Choose file", "Scegli file", "Elegir archivo", "Choisir un fichier"],
   noFileSelected: ["No file selected", "Nessun file selezionato", "Ningún archivo seleccionado", "Aucun fichier sélectionné"],
   statsTraffic: ["Traffic", "Traffico", "Tráfico", "Trafic"],
+  statsOtherZero: ["Other activity", "Altre attività", "Otras actividades", "Autres activités"],
   statsAccounts: ["Accounts", "Account", "Cuentas", "Comptes"],
   visitors: ["Visitors", "Visitatori", "Visitantes", "Visiteurs"],
   sessions: ["Sessions", "Sessioni", "Sesiones", "Sessions"],
@@ -518,12 +519,12 @@ export async function renderAdminCenter(host) {
           if (!active() || revision !== activityRevision) return;
           const number = new Intl.NumberFormat(state.language);
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
-          const summary = (title, rows) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd>${number.format(data.total)}</dd></div>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
+          const summary = (title, rows, showTotal = false) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl>${showTotal ? `<div class="admin-data-total"><dt class="sr-only">${esc(text(title))}</dt><dd>${number.format(data.total)}</dd></div>` : ""}${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
           paint(`<div id="adminActivityPeriod" class="admin-form-grid">${select("days", "activityPeriod", [
             { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
             { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
-          ], String(session.activityDays ?? 30))}</div><div class="admin-data-overview">
-            ${summary("activityTotal", [[text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
+          ], String(session.activityDays ?? 30))}</div><div class="admin-data-overview admin-activity-overview">
+            ${summary("activityTotal", [[text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]], true)}
             ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
             ${summary("activityEntities", data.by_entity.map((row) => [entity(row.key), row.count]))}
           </div>
@@ -680,6 +681,12 @@ export async function renderAdminCenter(host) {
       ], String(session.statisticsDays ?? 30))}</div><div id="adminStats"></div>`);
       const number = new Intl.NumberFormat(state.language, { maximumFractionDigits: 1 });
       const metrics = (data, keys) => `<dl>${keys.map(([key, label = key], index) => `<div${index === 0 ? ' class="admin-data-total"' : ''}><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
+      const trafficMetrics = (data) => {
+        const keys = ["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"];
+        const shown = keys.filter((key) => data[key] !== 0);
+        const zeroCount = keys.length - shown.length;
+        return `<dl><div class="admin-data-total"><dt>${esc(text("trackedActions"))}</dt><dd>${number.format(data.total_events)}</dd></div>${shown.map((key) => `<div><dt>${esc(text(key))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}${zeroCount ? `<div><dt>${esc(text("statsOtherZero"))}</dt><dd>0</dd></div>` : ""}</dl>`;
+      };
       const block = (title, content) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3>${content}</section>`;
       let statsRevision = 0;
       const load = async () => {
@@ -688,8 +695,8 @@ export async function renderAdminCenter(host) {
         if (!active() || revision !== statsRevision) return;
         document.getElementById("adminStats").innerHTML =
           '<div class="admin-data-overview admin-site-statistics">' +
-          block("statsTraffic", metrics(data, [["total_events", "trackedActions"], ...["visitors", "sessions", "page_views", "searches", "athlete_views", "event_views", "dashboard_views", "average_session_seconds"].map((key) => [key])])) +
-          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-data-note">${esc(session.statisticsDays === 0 ? text("activityAll") : text("statsWindow").replace("{days}", session.statisticsDays ?? 30))}</p>`) + '</div>';
+          block("statsTraffic", trafficMetrics(data)) +
+          block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key]))) + '</div>';
       };
       root.querySelector('#adminStatsForm [name=days]').onchange = async (event) => {
         session.statisticsDays = Number(event.target.value);
