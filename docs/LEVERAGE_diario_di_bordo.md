@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Nuovo ordine del Centro Admin
+
+- Riordinate le sezioni in: Panoramica, World Gymnastics, Revisione Duplicati, Unione Entita, Nuova Entita, Editor Risultati, Importazione File. Percorsi, contenuti e permessi invariati; verificata la navigazione su desktop e mobile.
+
 #### 2026-10-06 - Riepiloghi Super Admin e spaziatura liste
 
 - Ridotto lo spazio tra il divisore dei filtri e il primo record in Utenti e ruoli e Audit e ripristino, senza modificare la distanza tra i record successivi.

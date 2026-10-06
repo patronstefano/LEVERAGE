@@ -328,7 +328,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "statistics", "users", "audit", "notifications"] : ["overview", "review", "entry", "merge", "world-gymnastics", "results", "imports", "notifications"];
+  const tabs = superCenter ? ["overview", "statistics", "users", "audit", "notifications"] : ["overview", "world-gymnastics", "review", "merge", "entry", "results", "imports", "notifications"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit", "statistics"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
