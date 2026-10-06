@@ -11,8 +11,8 @@ const labels = {
   goToAthlete: ["Go to Athlete", "Vai all’Atleta", "Ir al Atleta", "Voir l’Athlète"],
   goToEvent: ["Go to Event", "Vai all’Evento", "Ir al Evento", "Voir l’Événement"],
   demoGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
-  demoAdminGenerator: ["Admin Center notifications (DEMO)", "Notifiche Centro Admin (DEMO)", "Notificaciones Centro Admin (DEMO)", "Notifications Centre Admin (DEMO)"],
-  demoAdminPersonalGenerator: ["Personal Area notifications (DEMO)", "Notifiche Area Personale (DEMO)", "Notificaciones Área Personal (DEMO)", "Notifications Espace Personnel (DEMO)"],
+  demoAdminGenerator: ["Generate ADMIN notifications (DEMO)", "Generatore notifiche ADMIN (DEMO)", "Generar notificaciones ADMIN (DEMO)", "Générer des notifications ADMIN (DEMO)"],
+  demoAdminPersonalGenerator: ["Generate USER notifications (DEMO)", "Generatore notifiche USER (DEMO)", "Generar notificaciones USER (DEMO)", "Générer des notifications USER (DEMO)"],
   demoSuperAdminGenerator: ["Generate SUPER ADMIN notifications (DEMO)", "Generatore notifiche SUPER ADMIN (DEMO)", "Generar notificaciones SUPER ADMIN (DEMO)", "Générer des notifications SUPER ADMIN (DEMO)"],
   demoImport: ["Import completed: 3 new athletes, 2 new events, 24 results; 2 duplicates skipped. Check the new entities’ details.", "Importazione completata: 3 nuovi atleti, 2 nuovi eventi, 24 risultati; 2 duplicati ignorati. Verifica i dati delle nuove entità.", "Importación completada: 3 nuevos atletas, 2 nuevos eventos, 24 resultados; 2 duplicados omitidos. Revisa los datos de las nuevas entidades.", "Import terminé : 3 nouveaux athlètes, 2 nouveaux événements, 24 résultats ; 2 doublons ignorés. Vérifiez les données des nouvelles entités."],
   demoDataEntry: ["Manual entry completed: 12 results and 2 new athletes. Complete the new athletes’ profiles.", "Inserimento manuale completato: 12 risultati e 2 nuovi atleti. Completa le schede dei nuovi atleti.", "Entrada manual completada: 12 resultados y 2 nuevos atletas. Completa los perfiles de los nuevos atletas.", "Saisie manuelle terminée : 12 résultats et 2 nouveaux athlètes. Complétez les profils des nouveaux athlètes."],
@@ -60,6 +60,7 @@ export const accountText = (language, key) => labels[key]?.[["en", "it", "es", "
 // Development-only, in-memory inbox: never writes simulated data to the API.
 const demoInboxes = new Map();
 const adminNotificationTypes = new Set(['import_summary', 'data_entry_summary', 'event_results_reminder', 'security_alert']);
+const demoGroup = (type) => type === 'security_alert' ? 'super_admin' : adminNotificationTypes.has(type) ? 'admin' : 'personal';
 const demoEmails = { user: 'demo.user@leverage-demo.com', admin: 'demo.admin@leverage-demo.com', super_admin: 'demo.superadmin@leverage-demo.com' };
 export const canGenerateDemoNotifications = (user) => ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)
   && Boolean(user && demoEmails[user.role] && user.email === demoEmails[user.role]);
@@ -88,8 +89,8 @@ export function generateDemoNotifications(user, athletes = [], events = [], resu
   const inboxKey = `${user.id}:${user.email}`;
   const previous = demoInboxes.get(inboxKey) || [];
   demoInboxes.set(inboxKey, scope === 'all' ? generated : [
-    ...previous.filter((item) => adminNotificationTypes.has(item.type) !== (scope === 'admin')),
-    ...generated.filter((item) => adminNotificationTypes.has(item.type) === (scope === 'admin')),
+    ...previous.filter((item) => demoGroup(item.type) !== scope),
+    ...generated.filter((item) => demoGroup(item.type) === scope),
   ]);
 }
 
@@ -107,9 +108,9 @@ function context(host) {
     const scope = host.getNotificationScope?.() || host.notificationScope || 'all';
     if (path.startsWith('/notifications/')) params = { ...params, scope };
     const generated = canGenerateDemoNotifications(state.currentUser) && demoInboxes.get(`${state.currentUser.id}:${state.currentUser.email}`);
-    const inbox = generated && generated.filter((item) => scope === 'personal' ? !adminNotificationTypes.has(item.type)
-      : scope === 'admin_only' ? adminNotificationTypes.has(item.type) && item.type !== 'security_alert'
-      : scope === 'super_admin' ? item.type === 'security_alert' : true);
+    const inbox = generated && generated.filter((item) => scope === 'personal' ? demoGroup(item.type) === 'personal'
+      : scope === 'admin_only' ? demoGroup(item.type) === 'admin'
+      : scope === 'super_admin' ? demoGroup(item.type) === 'super_admin' : scope === 'admin' ? demoGroup(item.type) !== 'personal' : true);
     if (inbox && path.startsWith('/notifications/')) {
       if (path === '/notifications/unread-count') return { count: inbox.filter((item) => !item.is_read).length };
       if (path === '/notifications/read-all' && method === 'PUT') inbox.forEach((item) => { item.is_read = true; });

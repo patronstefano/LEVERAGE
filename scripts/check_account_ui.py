@@ -383,9 +383,23 @@ def main():
             user.update(role=role, email=email)
             page.reload()
             page.locator('#' + button_id).wait_for(state='visible')
-            assert page.locator('[data-demo-notifications]:visible').count() == (2 if role == 'admin' else 1)
+            assert page.locator('[data-demo-notifications]:visible').count() == (2 if role == 'admin' else 3)
             write_count = len(writes)
-            page.locator('#' + button_id).click()
+            if role == 'super_admin':
+                for generator_id, expected_count, expected_types in (
+                    ('demoSuperAdminPersonalNotifications', 4, {'new_result', 'new_event', 'admin_promotion', 'admin_demotion'}),
+                    ('demoSuperAdminAdminNotifications', 7, {'import_summary', 'data_entry_summary', 'event_results_reminder'}),
+                    ('demoSuperAdminNotifications', 8, {'security_alert'}),
+                ):
+                    page.locator('#' + generator_id).click()
+                    page.wait_for_timeout(200)
+                    assert page.locator('.account-notification').count() == expected_count
+                    assert expected_types <= set(page.locator('.account-notification').evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))
+                page.locator('#demoSuperAdminPersonalNotifications').click()
+                assert page.locator('.account-notification').count() == 8
+                assert page.locator('#accountUnreadCount').inner_text() == '8'
+            else:
+                page.locator('#' + button_id).click()
             page.wait_for_timeout(200)
             items = page.locator('.account-notification')
             assert items.count() == count, (role, items.count(), page.url, items.evaluate_all('nodes => nodes.map(node => node.dataset.notificationType)'))

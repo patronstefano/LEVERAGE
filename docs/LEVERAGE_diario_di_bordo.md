@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Tre generatori notifiche DEMO per Super Admin
+
+- La downbar del profilo DEMO SUPER ADMIN presenta tre pulsanti distinti: notifiche USER, ADMIN e SUPER ADMIN. Il profilo DEMO ADMIN ne conserva due (USER e ADMIN); DEMO USER ne ha uno. I pulsanti sono strumenti locali di prova, non producono notifiche reali e vanno rimossi prima di un'eventuale esposizione pubblica.
+- Ogni pulsante rigenera solo il proprio gruppo nell'inbox simulata in memoria, lasciando intatti gli altri gruppi e i relativi stati di lettura. Le notifiche restano unite nell'Area Personale e filtrabili per ruolo; un refresh elimina gli esempi. Verificato nel browser anche il nuovo clic su un generatore gia usato, senza duplicazioni o perdita delle altre categorie.
+
 #### 2026-10-06 - Inbox notifiche unica per ruolo
 
 - Rimosse le inbox e le campanelle separate dal Centro Admin e dal Centro Super Admin. Tutte le notifiche autorizzate per l'utente sono raccolte nella sezione Notifiche dell'Area Personale, con un unico contatore complessivo. I vecchi percorsi delle notifiche dei centri reindirizzano a questa sezione.

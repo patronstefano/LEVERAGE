@@ -1,7 +1,7 @@
 import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=unified-notifications-20261006";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
-import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=unified-notifications-20261006";
+import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=split-super-demo-notices-20261006";
 
 const API_BASE_KEY = "leverage.apiBase";
 const LANGUAGE_KEY = "leverage.language";
@@ -2046,7 +2046,10 @@ function updateAuthUi() {
   document.querySelectorAll('[data-demo-notifications]').forEach((button) => {
     const role = button.dataset.demoNotifications;
     button.hidden = !canGenerateDemoNotifications(state.currentUser) || state.currentUser.role !== role;
-    button.textContent = accountText(state.language, button.dataset.demoScope === 'personal' ? 'demoAdminPersonalGenerator' : { user: 'demoGenerator', admin: 'demoAdminGenerator', super_admin: 'demoSuperAdminGenerator' }[role]);
+    button.textContent = accountText(state.language, {
+      personal: 'demoGenerator', admin: 'demoAdminGenerator', super_admin: 'demoSuperAdminGenerator',
+      all: 'demoGenerator',
+    }[button.dataset.demoScope || 'all']);
   });
   const demoAccess = $("#footerDemoAccess");
   if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
@@ -6976,8 +6979,8 @@ function bindDemoLoginButtons() {
     if (button.disabled) return;
     button.disabled = true;
     try {
-      const athletes = scope === 'admin' ? [] : await getJson('/preferences/athletes/followed/details', {}, { auth: true });
-      const events = scope === 'admin' ? [] : await getJson('/preferences/events/saved/details', {}, { auth: true });
+      const athletes = ['admin', 'super_admin'].includes(scope) ? [] : await getJson('/preferences/athletes/followed/details', {}, { auth: true });
+      const events = ['admin', 'super_admin'].includes(scope) ? [] : await getJson('/preferences/events/saved/details', {}, { auth: true });
       const athlete = athletes.find((detail) => detail.athlete?.id)?.athlete;
       const resultEvents = [];
       if (athlete) {
