@@ -2051,6 +2051,12 @@ function updateAuthUi() {
   const demoAccess = $("#footerDemoAccess");
   if (demoAccess) demoAccess.hidden = Boolean(state.currentUser);
   const authLink = $("#authLink");
+  const signOutButton = $("#topbarSignOut");
+  if (signOutButton) {
+    signOutButton.hidden = !state.currentUser;
+    signOutButton.textContent = t("signOut");
+    signOutButton.onclick = signOut;
+  }
   if (!authLink) return;
   if (state.currentUser) {
     authLink.href = '#' + privateNavigationRoute();
@@ -2192,6 +2198,12 @@ function authHeaders(includeJson = false) {
   if (includeJson) headers["Content-Type"] = "application/json";
   if (state.authToken) headers.Authorization = `Bearer ${state.authToken}`;
   return headers;
+}
+
+function signOut() {
+  clearAuth();
+  if (window.location.hash === "#/") render();
+  else window.location.hash = "#/";
 }
 
 function clearAuth() {
@@ -12084,10 +12096,7 @@ async function renderAccount() {
   `);
   bindAccountViewControl();
   mountAccountTools(accountToolsHost());
-  $("#signOutButton").addEventListener("click", () => {
-    clearAuth();
-    window.location.hash = "#/";
-  });
+  $("#signOutButton").addEventListener("click", signOut);
   try {
     const [athletes, events, dashboardViews] = await Promise.all([
       getJson("/preferences/athletes/followed/details", {}, { auth: true }),

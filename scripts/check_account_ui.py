@@ -88,6 +88,10 @@ def main():
         assert page.locator('.account-view-switcher').evaluate("node => getComputedStyle(node, '::after').borderBottomWidth") == '1px'
         assert page.locator('.account-tool-actions button').count() == 2
         assert page.locator('.account-summary').count() == 0
+        auth_box = page.locator('#authLink').bounding_box()
+        signout_box = page.locator('#topbarSignOut').bounding_box()
+        assert signout_box['x'] >= auth_box['x'] + auth_box['width']
+        assert abs(signout_box['height'] - auth_box['height']) < 1
         assert page.locator('.account-view-switcher .account-tool-actions button').count() == 2
         slider = page.locator('.account-view-toggle').bounding_box()
         actions = page.locator('.account-navigation-actions').bounding_box()
@@ -430,6 +434,10 @@ def main():
         page.reload()
         page.locator('.account-notification').first.wait_for()
         assert page.locator('[data-demo-notifications]:visible').count() == 0
+        page.locator('#topbarSignOut').click()
+        page.wait_for_function("location.hash === '#/' && !localStorage.getItem('leverage.authToken')")
+        assert page.locator('#topbarSignOut').is_hidden()
+        assert page.locator('#authLink').get_attribute('href') == '#/login'
         assert not errors, errors
         browser.close()
     print("Account UI passed: notifications, pagination, language, password flows, mobile; API fully mocked.")

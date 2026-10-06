@@ -350,6 +350,8 @@ button {
   gap: 10px;
   min-width: 168px;
 }
+#topbarSignOut[hidden] { display: none; }
+#topbarSignOut { font: inherit; font-size: 14px; flex-shrink: 0; }
 
 .signin-link,
 .search-input,

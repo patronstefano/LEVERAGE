@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Accesso rapido alla disconnessione nella topbar
+
+- Aggiunto il pulsante "Esci" immediatamente a destra di "Area personale", visibile solo con utente autenticato (USER, ADMIN e SUPER ADMIN). Testo localizzato e stile contorno condiviso, altezza 36px.
+- Il comando usa la stessa funzione di disconnessione del pulsante gia presente nell'Area Personale: rimuove il token locale, pulisce lo stato autenticato/preferiti e torna alla Home; aggiorna anche la Home se gia aperta. Nessuna modifica al protocollo di autenticazione backend.
+- Test browser Area Personale esteso a posizione, altezza, disconnessione, rimozione token e scomparsa del pulsante quando non autenticati. API simulate, nessun account reale modificato.
+
 #### 2026-10-06 - Annullamento controllato delle unioni di entita
 
 - Aggiunto "Annulla unione" nell'audit SUPER ADMIN per le unioni di Atleti/Eventi ancora revisionabili, con conferma esplicita e stile rosso condiviso. Il ripristino non consiste nella sola riattivazione della sorgente: ripristina anagrafiche e appartenenza dei dati.
