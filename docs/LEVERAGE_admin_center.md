@@ -10,6 +10,14 @@ righe CSV di quell'anno; vuoto mantiene l'intero file. La scelta resta nella
 bozza durante la navigazione. Non cambia la soglia separata di creazione degli
 eventi mancanti. Un anno assente dal file viene segnalato e non e importabile.
 
+L'anteprima Calendar non usa piu report tecnici annidati: duplicati e periodi
+discordanti sono righe compatte paginate a sei elementi con nome gara,
+foglio/riga, date e link Leverage ID. Il numero dei conflitti e distinto dalle
+righe sorgente consultabili. Avvisi del file e diagnostiche localizzate nelle
+quattro lingue chiudono l'anteprima. Le date sorgente non interpretabili restano
+visibili per riconoscere l'errore. I conflitti bloccano ancora il commit e
+richiedono correzione nel file e nuova analisi; nessuna risoluzione automatica.
+
 L'anteprima e stata compattata usando gli stessi caratteri, controlli e
 separazioni di Revisione Duplicati. Dopo l'analisi il form file/parametri
 si chiude ed e riapribile con Cambia file; il file e le opzioni restano in

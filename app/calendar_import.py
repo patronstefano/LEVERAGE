@@ -190,6 +190,7 @@ def _parse_calendar_xlsx(content: bytes, selected_year: Optional[int] = None) ->
                 "severity": "warning",
                 "sheet": worksheet.title,
                 "message": "Sheet skipped because its name is not a year",
+                "code": "calendar_sheet_year",
             })
             continue
 
@@ -200,6 +201,7 @@ def _parse_calendar_xlsx(content: bytes, selected_year: Optional[int] = None) ->
                 "severity": "error",
                 "sheet": worksheet.title,
                 "message": "Expected headers DATE and EVENT in columns A and B",
+                "code": "calendar_headers",
             })
             continue
 
@@ -214,6 +216,7 @@ def _parse_calendar_xlsx(content: bytes, selected_year: Optional[int] = None) ->
                     "sheet": worksheet.title,
                     "row": row_number,
                     "message": "EVENT is required",
+                    "code": "calendar_event_required",
                 })
                 continue
             try:
@@ -224,6 +227,8 @@ def _parse_calendar_xlsx(content: bytes, selected_year: Optional[int] = None) ->
                     "sheet": worksheet.title,
                     "row": row_number,
                     "event_name": str(event_name).strip(),
+                    "code": "calendar_date_invalid",
+                    "date_label": str(date_label or ""),
                     "message": str(exc),
                 })
                 continue
@@ -249,25 +254,32 @@ def _parse_calendar_csv(content: bytes, selected_year: Optional[int] = None) -> 
         return [], [{
             "severity": "error",
             "message": "CSV calendar import requires DATE, EVENT and YEAR columns",
+            "code": "calendar_csv_headers",
         }]
 
     rows: list[CalendarImportRow] = []
     issues: list[dict] = []
     for row_number, item in enumerate(reader, start=2):
         normalized_item = {key.strip().upper(): value for key, value in item.items() if key}
+        issue_code = "calendar_year_invalid"
         try:
             year = int(str(normalized_item.get("YEAR", "")).strip())
             if selected_year is not None and year != selected_year:
                 continue
             event_name = str(normalized_item.get("EVENT", "")).strip()
             date_label = str(normalized_item.get("DATE", "")).strip()
+            issue_code = "calendar_event_required"
             if not event_name:
                 raise ValueError("EVENT is required")
+            issue_code = "calendar_date_invalid"
             start_date, end_date = parse_calendar_date_label(date_label, year)
         except Exception as exc:
             issues.append({
                 "severity": "error",
                 "row": row_number,
+                "code": issue_code,
+                "event_name": str(normalized_item.get("EVENT") or "").strip(),
+                "date_label": str(normalized_item.get("DATE") or "").strip(),
                 "message": str(exc),
             })
             continue

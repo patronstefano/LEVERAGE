@@ -5,7 +5,7 @@ import { bindAuthValidation } from './auth-validation.js?v=admin-validation-2026
 import { mountEntityReviews } from './admin-entity-reviews.js?v=centered-review-load-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=three-reviews-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows } from './admin-import-report.js?v=calendar-year-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-review-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -962,7 +962,6 @@ export async function renderAdminCenter(host) {
       p.skipped_existing_events?.length && p.importable_results === 0 && !p.conflicts?.length && !p.athlete_match_review?.length && !p.event_match_review?.length ? text('importHistoricalOnly') :
       p.parsed_rows === 0 ? text('importNoRows') :
       p.importable_results === 0 && p.duplicates?.length && !p.conflicts?.length ? text('importOnlyDuplicates') : '';
-    const limited = (items) => Array.isArray(items) && items.length > 20 ? { total: items.length, first_20: items.slice(0, 20) } : items;
     const reviewRows = (items, type) => items.slice(start(type), start(type) + pageSize).map((item, pageIndex) => {
       const index = start(type) + pageIndex;
       const identity = item.problem_type === "possible_athlete_identity_collision";
@@ -998,7 +997,7 @@ export async function renderAdminCenter(host) {
       ${!p.committed && p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       ${p.issues?.length ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
-      ${draft.kind === 'calendar' ? `<div id="adminCalendarRows"></div>${calendarConflicts ? `<details class="admin-revision-group"><summary>${text('importCalendarConflicts')}<span class="admin-import-blocking">${calendarConflicts}</span></summary>${report({duplicate_source_rows: limited(p.duplicate_source_rows), matched_event_source_conflicts: limited(p.matched_event_source_conflicts)})}</details>` : ''}` : ''}
+      ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button(draft.kind === 'gymternet' ? 'importApplyAll' : 'importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>${draft.kind === 'gymternet' ? `<p class="admin-stats-note admin-import-safety">${esc(text('importReadOnly'))}</p>` : ''} ` : ''}
     `;
@@ -1132,8 +1131,13 @@ export async function renderAdminCenter(host) {
     output.inert = Boolean(draft.scopeBusy);
     output.setAttribute('aria-busy', String(Boolean(draft.scopeBusy)));
     bind();
-    if (draft.kind === 'calendar') mountCalendarImportRows({root: output.querySelector('#adminCalendarRows'), preview: p,
-      text, esc, language: state.language, route: state.route, viewState: draft.calendarView ||= {}});
+    if (draft.kind === 'calendar') {
+      mountCalendarImportRows({root: output.querySelector('#adminCalendarRows'), preview: p,
+        text, esc, language: state.language, route: state.route, viewState: draft.calendarView ||= {}});
+      mountCalendarConflicts({root: output.querySelector('#adminCalendarConflicts'), preview: p,
+        text, esc, language: state.language, route: state.route, viewState: draft.calendarConflictView ||= {}});
+      if (issuesGroup) output.querySelector('#adminCalendarConflicts').after(issuesGroup);
+    }
 
     const updateCommit = () => {
       const control = output.querySelector('#adminCommitImport');

@@ -147,6 +147,8 @@
 #adminImportOutput [data-pair-details] > .admin-center-actions { margin-top: 12px; }
 .admin-source-comparison + .admin-source-comparison { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; }
 .admin-import-scope-note { margin: 12px 0; }
+#adminImportOutput .admin-calendar-source { font-size: 13px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+#adminCalendarConflicts > details > .admin-stats-note { margin: 8px 0 12px; }
 @media (max-width: 1000px) {
   #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   #adminImportOutput .admin-import-metrics dt { min-height: 0; }

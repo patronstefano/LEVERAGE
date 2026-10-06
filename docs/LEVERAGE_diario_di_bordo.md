@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Anteprima Calendar: avvisi tradotti e conflitti compatti
+
+- Rimossa la rappresentazione generica annidata dei duplicati e delle righe con date discordanti. Le segnalazioni diventano righe compatte nello stile delle revisioni: nome gara, tipo di problema, foglio/riga, periodi confrontabili e collegamento Leverage ID quando disponibile. Nessun albero di chiavi tecniche, nessuna lista troncata ai primi venti casi.
+- Liste paginate a sei elementi con conservazione di apertura e pagina; le sorgenti che assegnano periodi diversi allo stesso evento sono consultabili senza ulteriori livelli di espansione. Il conteggio dei conflitti resta distinto dal numero delle righe sorgente mostrate. Le voci calendario riportano l'esito previsto e il riferimento originale, con pulsanti coerenti al Centro Admin.
+- Avvisi del file spostati dopo gare e conflitti. Aggiunti codici diagnostici stabili per foglio non annuale, intestazioni errate, nome gara mancante, data/anno invalidi, file vuoto o illeggibile; la UI li traduce in EN/IT/ES/FR mantenendo i riferimenti e il valore della data sorgente. I messaggi tecnici originali restano nel payload API, non sostituiscono le indicazioni localizzate dell'interfaccia.
+- Nessuna modifica al matching, al perimetro anno, alle regole di creazione eventi o ai blocchi del commit. I conflitti Calendar richiedono ancora la correzione del file e una nuova anteprima: questa rifinitura non introduce un editor Calendar. Nessuna importazione reale o scansione eseguita durante lo sviluppo.
+- Collaudo: 308 test backend superati; verificati codici diagnostici XLSX/CSV e mantenimento dei blocchi. Test browser con API simulate superati su desktop/mobile: conflitti senza annidamenti, paginazione completa, avvisi in fondo, traduzioni EN/IT/ES/FR senza diagnostiche inglesi grezze. Aggiornata la copia Word del diario.
+
+
 #### 2026-10-06 - Selettore Anno anche per Calendar
 
 - Il form Importazione file mantiene il selettore Anno anche scegliendo Calendario (The Gymternet), nella stessa posizione e con lo stesso controllo gia usato per Risultati. La scelta e conservata nella bozza tornando alla sezione ed e inviata a preview, ricalcolo e commit.

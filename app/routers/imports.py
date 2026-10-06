@@ -79,7 +79,7 @@ def parse_and_summarize_calendar_upload(
         summary = summarize_calendar_import(
             db,
             [],
-            [{"severity": "error", "message": "Uploaded file is empty"}],
+            [{"severity": "error", "code": "calendar_file_empty", "message": "Uploaded file is empty"}],
             resolved_create_missing_from_year,
         )
         return filename, resolved_create_missing_from_year, summary
@@ -93,7 +93,7 @@ def parse_and_summarize_calendar_upload(
         summary = summarize_calendar_import(
             db,
             [],
-            [{"severity": "error", "message": f"Could not parse calendar upload: {exc}"}],
+            [{"severity": "error", "code": "calendar_file_invalid", "message": f"Could not parse calendar upload: {exc}"}],
             resolved_create_missing_from_year,
         )
         return filename, resolved_create_missing_from_year, summary

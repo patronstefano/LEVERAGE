@@ -5882,6 +5882,30 @@ def test_calendar_import_selected_year_limits_preview_and_commit():
     assert [row['name'] for row in client.get('/events/').json()] == ['Selected Cup']
 
 
+@pytest.mark.parametrize('content,code', [
+    (b'YEAR,DATE\n2026,Jan 2\n', 'calendar_csv_headers'),
+    (b'YEAR,DATE,EVENT\ninvalid,Jan 2,Cup\n', 'calendar_year_invalid'),
+    (b'YEAR,DATE,EVENT\n2026,Jan 2,\n', 'calendar_event_required'),
+    (b'YEAR,DATE,EVENT\n2026,Feb 31,Cup\n', 'calendar_date_invalid'),
+])
+def test_calendar_csv_diagnostics_have_localizable_codes(content, code):
+    from app.calendar_import import parse_calendar_file
+    rows, issues = parse_calendar_file('Calendar.csv', content)
+    assert not rows
+    assert issues[0]['code'] == code
+    assert issues[0]['severity'] == 'error'
+
+
+def test_calendar_xlsx_diagnostics_have_localizable_codes():
+    from app.calendar_import import parse_calendar_file
+    content = make_calendar_workbook({'Notes': [('Jan 1', 'Note')],
+                                     2026: [('Feb 31', 'Cup'), ('Jan 2', None)]})
+    rows, issues = parse_calendar_file('Calendar.xlsx', content.getvalue())
+    assert not rows
+    assert {issue['code'] for issue in issues} == {'calendar_sheet_year', 'calendar_date_invalid', 'calendar_event_required'}
+    assert next(issue for issue in issues if issue['code'] == 'calendar_date_invalid')['date_label'] == 'Feb 31'
+
+
 def test_calendar_csv_selected_year_keeps_unknown_year_errors():
     from app.calendar_import import parse_calendar_file
     content = b'YEAR,DATE,EVENT\n2025,invalid,Excluded\n2026,Jan 2,Selected\ninvalid,Jan 3,Unknown\n'

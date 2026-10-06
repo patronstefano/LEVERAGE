@@ -1145,10 +1145,45 @@ def main():
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.screenshot(path='/tmp/leverage-calendar-import-mobile.png', full_page=True)
                 page.set_viewport_size({'width': 1440, 'height': 1000})
-                calendar_preview['duplicate_source_rows'] = [{'event_name': 'Calendar Cup 1', 'row': 2}]
+                calendar_preview['duplicate_source_rows'] = [{'event_name': f'Calendar Cup {i}', 'sheet': '2026', 'row': i + 8,
+                    'date_label': 'Jan 2-3', 'duplicate_of_sheet': '2026', 'duplicate_of_row': i + 2,
+                    'duplicate_of_date_label': 'Jan 1-2'} for i in range(7)]
+                calendar_preview['matched_event_source_conflicts'] = [{'event_id': 1, 'source_rows': [
+                    {'event_name': 'Calendar Cup', 'sheet': '2026', 'row': 20, 'start_date': '2026-01-01', 'end_date': '2026-01-02'},
+                    {'event_name': 'Calendar Cup', 'sheet': '2026', 'row': 21, 'start_date': '2026-02-01', 'end_date': '2026-02-02'}]}]
+                calendar_preview['issues'] = [{'severity': 'error', 'code': 'calendar_date_invalid', 'sheet': '2026', 'row': 22,
+                    'event_name': 'Invalid Cup', 'date_label': 'Feb 31', 'message': 'day is out of range for month'}]
                 analyze_import()
                 assert page.locator('#adminCommitImport').is_disabled()
+                page.locator('[data-calendar-conflicts] > summary').click()
+                assert page.locator('.admin-calendar-conflict').count() == 6
+                assert page.locator('[data-calendar-conflicts] details').count() == 0
+                assert 'Voce calendario ripetuta' in page.locator('#adminCalendarConflicts').inner_text()
+                page.locator('[data-calendar-conflict-page="1"]').click()
+                assert page.locator('.admin-calendar-conflict').count() == 3
+                assert 'Periodi diversi per lo stesso evento' in page.locator('#adminCalendarConflicts').inner_text()
+                page.locator('[data-import-issues] > summary').click()
+                assert 'Data mancante o non valida.' in page.locator('.admin-import-issues').inner_text()
+                assert 'day is out of range' not in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('[data-import-issues]').bounding_box()['y'] > page.locator('#adminCalendarConflicts').bounding_box()['y']
+                for width in [1440, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    page.wait_for_timeout(150)
+                    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+                    page.screenshot(path=f'/tmp/leverage-calendar-conflicts-{width}.png', full_page=True)
+                page.set_viewport_size({'width': 1440, 'height': 1000})
+                assert page.evaluate('''async () => {
+                    const {IMPORT_COPY, renderImportIssues} = await import('./admin-import-report.js');
+                    const codes = Object.keys(IMPORT_COPY).filter(key => key.startsWith('calendar_'));
+                    return ['en', 'it', 'es', 'fr'].every((language, index) => codes.every(code => {
+                        const output = renderImportIssues({issues: [{severity: 'error', code, message: 'RAW_ENGLISH_DIAGNOSTIC'}],
+                            text: key => IMPORT_COPY[key]?.[index] || key, esc: value => String(value ?? ''), language});
+                        return !output.includes('RAW_ENGLISH_DIAGNOSTIC') && output.includes(IMPORT_COPY[code][index]);
+                    }));
+                }''')
                 calendar_preview['duplicate_source_rows'] = []
+                calendar_preview['matched_event_source_conflicts'] = []
+                calendar_preview['issues'] = []
                 analyze_import()
                 page.locator('#adminCommitImport').click()
                 page.locator('dialog[open] [data-confirm]').click()

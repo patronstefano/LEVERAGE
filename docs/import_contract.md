@@ -29,6 +29,13 @@ sostituisce `create_missing_from_year` e non forza date o anni delle gare.
 Un anno senza voci genera `calendar_year_empty`; il commit lo rifiuta. Gli
 errori CSV con YEAR non interpretabile restano bloccanti anche col filtro.
 
+Le diagnostiche Calendar espongono un `code` stabile (`calendar_sheet_year`,
+`calendar_headers`, `calendar_csv_headers`, `calendar_event_required`,
+`calendar_date_invalid`, `calendar_year_invalid`, `calendar_file_empty`,
+`calendar_file_invalid`) per la traduzione UI. `message` conserva il dettaglio
+tecnico; `date_label`, quando disponibile, conserva il valore da correggere.
+La sola aggiunta dei codici non altera severita, matching o condizioni di commit.
+
 ## Revisione Gymternet nell'anteprima
 
 L'anteprima separa Eventi, Atleti e Risultati. Il payload espone

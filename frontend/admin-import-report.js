@@ -1,4 +1,18 @@
 export const IMPORT_COPY = {
+  calendar_sheet_year: ['Sheet skipped: its name is not a year.', 'Foglio ignorato: il nome non indica un anno.', 'Hoja omitida: el nombre no indica un año.', 'Feuille ignorée : son nom ne correspond pas à une année.'],
+  calendar_headers: ['Columns A and B must be named DATE and EVENT.', 'Le colonne A e B devono avere le intestazioni DATE ed EVENT.', 'Las columnas A y B deben tener los encabezados DATE y EVENT.', 'Les colonnes A et B doivent porter les en-têtes DATE et EVENT.'],
+  calendar_csv_headers: ['The CSV must contain DATE, EVENT and YEAR columns.', 'Il CSV deve contenere le colonne DATE, EVENT e YEAR.', 'El CSV debe contener las columnas DATE, EVENT y YEAR.', 'Le CSV doit contenir les colonnes DATE, EVENT et YEAR.'],
+  calendar_event_required: ['Event name missing.', 'Nome della gara mancante.', 'Falta el nombre de la competición.', 'Nom de la compétition manquant.'],
+  calendar_date_invalid: ['Date missing or invalid. Expected format: Jan 11, Jan 11-15 or Jan 11-Feb 3.', 'Data mancante o non valida. Formato previsto: Jan 11, Jan 11-15 oppure Jan 11-Feb 3.', 'Fecha ausente o no válida. Formato esperado: Jan 11, Jan 11-15 o Jan 11-Feb 3.', 'Date manquante ou incorrecte. Format attendu : Jan 11, Jan 11-15 ou Jan 11-Feb 3.'],
+  calendar_year_invalid: ['YEAR must contain a valid year.', 'La colonna YEAR deve contenere un anno valido.', 'La columna YEAR debe contener un año válido.', 'La colonne YEAR doit contenir une année valide.'],
+  calendar_file_empty: ['The uploaded file is empty.', 'Il file caricato è vuoto.', 'El archivo está vacío.', 'Le fichier importé est vide.'],
+  calendar_file_invalid: ['The file could not be read. Check that it is a valid XLSX, XLSM or CSV calendar.', 'Impossibile leggere il file. Verifica che sia un calendario XLSX, XLSM o CSV valido.', 'No se puede leer el archivo. Comprueba que sea un calendario XLSX, XLSM o CSV válido.', 'Impossible de lire le fichier. Vérifiez qu’il s’agit d’un calendrier XLSX, XLSM ou CSV valide.'],
+  importCalendarDuplicate: ['Repeated calendar entry', 'Voce calendario ripetuta', 'Entrada de calendario repetida', 'Entrée de calendrier répétée'],
+  importCalendarDateConflict: ['Different periods for the same event', 'Periodi diversi per lo stesso evento', 'Periodos distintos para el mismo evento', 'Périodes différentes pour le même événement'],
+  importCalendarFixSource: ['These conflicts block the import. Correct the referenced rows in the file and run the preview again.', 'Questi conflitti bloccano l’importazione. Correggi nel file le righe indicate e ripeti l’anteprima.', 'Estos conflictos bloquean la importación. Corrige las filas indicadas y repite la vista previa.', 'Ces conflits bloquent l’import. Corrigez les lignes indiquées et relancez l’aperçu.'],
+  importCalendarSourceValue: ['Source date', 'Data nel file', 'Fecha del archivo', 'Date du fichier'],
+  importCalendarSources: ['Source entries', 'Voci sorgente', 'Entradas de origen', 'Entrées source'],
+  importCalendarSkipped: ['Not imported: no historical match', 'Non importata: nessuna corrispondenza storica', 'No importada: sin coincidencia histórica', 'Non importée : aucune correspondance historique'],
   importCalendarYearEmpty: ['No calendar entries found for {year}.', 'Nessuna voce calendario trovata per il {year}.', 'No se encontraron eventos de calendario para {year}.', 'Aucune entrée de calendrier trouvée pour {year}.'],
   importReviewEvents: ['Event review', 'Revisione Eventi', 'Revisión de Eventos', 'Révision des Événements'],
   importReviewAthletes: ['Athlete review', 'Revisione Atleti', 'Revisión de Atletas', 'Révision des Athlètes'],
@@ -110,10 +124,10 @@ export function renderImportIssues({issues, text, esc, language, sourceRows = []
   page = Math.min(page, Math.max(0, Math.ceil(ordered.length / 6) - 1));
   return `<ul class="admin-import-issues">${ordered.slice(page * 6, (page + 1) * 6).map(issue => {
     const known = issue.code === 'derived_vt_outlier';
-    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.code === 'calendar_year_empty' ? text('importCalendarYearEmpty').replace('{year}', issue.year) : issue.message;
+    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.code === 'calendar_year_empty' ? text('importCalendarYearEmpty').replace('{year}', issue.year) : issue.code?.startsWith('calendar_') && IMPORT_COPY[issue.code] ? text(issue.code) : issue.message;
     const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
     const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
-    return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(message)}</p>${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}${sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row) ? `<div class="admin-center-actions"><button type="button" class="quiet-button outline-command-button" data-correct-issue-sheet="${esc(issue.sheet)}" data-correct-issue-row="${issue.row}">${esc(text('importEditRow'))}</button></div>` : ''}</li>`;
+    return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(message)}</p>${issue.date_label && issue.code?.startsWith("calendar_") ? `<p class="admin-revision-meta">${esc(text("importCalendarSourceValue"))}: ${esc(issue.date_label)}</p>` : ""}${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}${sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row) ? `<div class="admin-center-actions"><button type="button" class="quiet-button outline-command-button" data-correct-issue-sheet="${esc(issue.sheet)}" data-correct-issue-row="${issue.row}">${esc(text('importEditRow'))}</button></div>` : ''}</li>`;
   }).join('')}</ul>${ordered.length > 6 ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-issue-page="${page - 1}" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * 6 + 1}–${Math.min((page + 1) * 6, ordered.length)} / ${ordered.length}</span><button type="button" class="quiet-button outline-command-button" data-issue-page="${page + 1}" ${(page + 1) * 6 >= ordered.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}`;
 }
 
@@ -151,11 +165,37 @@ export function mountCalendarImportRows({root, preview, text, esc, language, rou
     viewState.page = page;
     root.innerHTML = `<details class="admin-revision-group" data-calendar-details ${viewState.open ? 'open' : ''}><summary>${esc(text('importCalendarRows'))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => {
       const period = [date(row.start_date), row.end_date !== row.start_date ? date(row.end_date) : ''].filter(Boolean).join(' – ');
-      const status = {update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarUnchanged', create_event: preview.committed ? 'importCalendarCreated' : 'importStatusNew', skip_unmatched_historical: 'importCalendarUnmatched'}[row.action];
-      return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p></div><div class="admin-center-actions">${(row.matched_event_ids || []).map(id => `<a class="admin-revision-source" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">ID ${id}</a>`).join('')}</div></article>`;
+      const status = {update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarUnchanged', create_event: preview.committed ? 'importCalendarCreated' : 'importStatusNew', skip_unmatched_historical: 'importCalendarSkipped'}[row.action];
+      const source = [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
+      return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p>${source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}</div><div class="admin-center-actions">${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div></article>`;
     }).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-calendar-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-calendar-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
     root.querySelector('[data-calendar-details]').ontoggle = event => { if (event.target.isConnected) viewState.open = event.target.open; };
     root.querySelectorAll('[data-calendar-page]').forEach(control => control.onclick = () => { page += Number(control.dataset.calendarPage); render(); });
+  };
+  render();
+}
+
+export function mountCalendarConflicts({root, preview, text, esc, language, route, viewState}) {
+  const duplicates = preview.duplicate_source_rows || [];
+  const conflicts = preview.matched_event_source_conflicts || [];
+  const count = duplicates.length + conflicts.length;
+  if (!count) { root.innerHTML = ''; return; }
+  const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '';
+  const source = row => [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row != null ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
+  const period = row => row.start_date ? [date(row.start_date), row.end_date !== row.start_date ? date(row.end_date) : ''].filter(Boolean).join(' – ') : row.date_label || '';
+  const sourceRows = new Map((preview.rows || []).map(row => [`${row.sheet}:${row.row}`, row]));
+  const records = [
+    ...duplicates.map(row => ({...sourceRows.get(`${row.sheet}:${row.row}`), ...row, kind: 'importCalendarDuplicate', original: {
+      ...sourceRows.get(`${row.duplicate_of_sheet}:${row.duplicate_of_row}`),
+      sheet: row.duplicate_of_sheet, row: row.duplicate_of_row, date_label: row.duplicate_of_date_label,
+    }})),
+    ...conflicts.flatMap(conflict => (conflict.source_rows || []).map(row => ({...row, event_id: conflict.event_id, kind: 'importCalendarDateConflict'}))),
+  ];
+  const render = () => {
+    const page = viewState.page = Math.min(viewState.page || 0, Math.max(0, Math.ceil(records.length / 6) - 1));
+    root.innerHTML = `<details class="admin-revision-group" data-calendar-conflicts ${viewState.open ? 'open' : ''}><summary>${esc(text('importCalendarConflicts'))}<span class="admin-import-blocking">${count}</span></summary><p class="admin-stats-note">${esc(text('importCalendarFixSource'))}</p>${records.slice(page * 6, (page + 1) * 6).map(row => `<article class="admin-identity-pair admin-calendar-conflict"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(text(row.kind))}</p><p class="admin-calendar-source">${esc([source(row), period(row)].filter(Boolean).join(' · '))}</p>${row.original ? `<p class="admin-calendar-source">${esc([source(row.original), period(row.original)].filter(Boolean).join(' · '))}</p>` : ''}</div><div class="admin-center-actions">${row.event_id ? `<a class="quiet-button outline-command-button" href="#/events/${row.event_id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${row.event_id}</a>` : ''}</div></article>`).join('')}${records.length > 6 ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-calendar-conflict-page="${page - 1}" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * 6 + 1}–${Math.min((page + 1) * 6, records.length)} / ${records.length} · ${esc(text('importCalendarSources'))}</span><button type="button" class="quiet-button outline-command-button" data-calendar-conflict-page="${page + 1}" ${(page + 1) * 6 >= records.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
+    root.querySelector('[data-calendar-conflicts]').ontoggle = event => { if (event.target.isConnected) viewState.open = event.target.open; };
+    root.querySelectorAll('[data-calendar-conflict-page]').forEach(control => control.onclick = () => { viewState.page = Number(control.dataset.calendarConflictPage); render(); });
   };
   render();
 }
