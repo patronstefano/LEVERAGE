@@ -34,7 +34,7 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
   let offset = 0, total = 0;
   const button = (label, attrs) => `<button type="button" class="quiet-button outline-command-button" ${attrs}>${esc(t(label))}</button>`;
   root.dataset.reviewKind = kind;
-  root.innerHTML = `<dl class="admin-stats-metrics admin-duplicate-recap" data-pair-recap>${['pendingPairs', 'shownPairs', 'remainingPairs'].map(key => `<div><dt>${esc(t(key))}</dt><dd>—</dd></div>`).join('')}</dl><div data-pair-feedback role="status"></div><div data-pairs></div>${button('more', 'data-pairs-more hidden')}<p class="admin-stats-note" data-pair-note>${esc(t('note'))}</p>`;
+  root.innerHTML = `<dl class="admin-stats-metrics admin-duplicate-recap" data-pair-recap>${['pendingPairs', 'shownPairs', 'remainingPairs'].map(key => `<div><dt>${esc(t(key))}</dt><dd>—</dd></div>`).join('')}</dl><div data-pair-feedback role="status"></div><div data-pairs></div><button type="button" class="quiet-button outline-command-button admin-review-load-more" data-pairs-more hidden>${esc(t('more'))}</button><p class="admin-stats-note" data-pair-note>${esc(t('note'))}</p>`;
   const list = root.querySelector('[data-pairs]');
   const more = root.querySelector('[data-pairs-more]');
   const updateRecap = () => {

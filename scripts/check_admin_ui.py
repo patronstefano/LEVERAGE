@@ -698,6 +698,13 @@ def main():
                 assert page.locator('#adminEntityReviews [data-pair-feedback]').is_hidden()
                 assert page.locator('[data-pair-recap] dd').all_text_contents() == ['1', '1', '0']
                 assert page.locator('[data-pair-recap]').evaluate('el => getComputedStyle(el).borderBottomWidth') == '1px'
+                assert page.locator('[data-pairs-more]').evaluate('''button => {
+                    button.hidden = false;
+                    const box = button.getBoundingClientRect();
+                    const parent = button.parentElement.getBoundingClientRect();
+                    button.hidden = true;
+                    return box.width <= 240 && Math.abs(box.left + box.width / 2 - (parent.left + parent.width / 2)) < 1;
+                }''')
                 assert page.locator('#adminEntityReviews h2').count() == 0
                 assert page.locator('[data-pair-note]').evaluate('el => el === el.parentElement.lastElementChild')
                 assert page.locator('#adminEntityReviews .admin-review-compatibility').inner_text() == 'Compatibilità: 98%'
@@ -737,6 +744,13 @@ def main():
                 page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)
                 page.locator('[data-admin-tab="world-gymnastics"]').click()
                 page.locator('[data-scan-job="51"]').wait_for()
+                assert page.locator('[data-scan-more]').evaluate('''button => {
+                    button.hidden = false;
+                    const box = button.getBoundingClientRect();
+                    const parent = button.parentElement.getBoundingClientRect();
+                    button.hidden = true;
+                    return box.width <= 240 && Math.abs(box.left + box.width / 2 - (parent.left + parent.width / 2)) < 1;
+                }''')
                 assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi']
                 assert page.locator('#adminEntityReviews, #adminResultReviews').count() == 0
                 assert page.locator('.admin-revisions > .admin-tool-block > .section-header').count() == 0

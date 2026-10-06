@@ -6015,6 +6015,8 @@ a:focus-visible > .entity-card-clickable {
 #adminEntityReviews [data-pair-feedback]:empty { display: none; }
 #adminEntityReviews, #adminResultReviews { padding-top: 2px; }
 #adminEntityReviews [data-pairs] > .admin-identity-pair:first-child { padding-top: 0; }
+.admin-center .admin-review-load-more { display: block; width: max-content; min-width: 190px; max-width: 100%; margin: 16px auto 4px; }
+.admin-center .admin-review-load-more[hidden] { display: none; }
 #adminResultReviews { border-top: 0; }
 .admin-identity-pair-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
 .admin-identity-pair-grid > div { min-width: 0; overflow-wrap: anywhere; }
@@ -6067,7 +6069,7 @@ a:focus-visible > .entity-card-clickable {
 #adminWorldGymnasticsScan .admin-stats-metrics dd { font-size: 18px; line-height: 1.4; }
 #adminWorldGymnasticsScan .admin-stats-note { line-height: 1.6; }
 #adminWorldGymnasticsScan [data-scan-matches]:empty { display: none; }
-#adminWorldGymnasticsScan [data-scan-more] { justify-self: start; }
+#adminWorldGymnasticsScan [data-scan-more] { justify-self: center; }
 #adminWorldGymnasticsScan .admin-wg-match:first-child { padding-top: 0; }
 #adminWorldGymnasticsScan .admin-revision-group + .admin-revision-group { border-top: 1px solid var(--line); }
 #adminWorldGymnasticsScan .admin-revision-group > summary { overflow-wrap: anywhere; }

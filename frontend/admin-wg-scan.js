@@ -26,7 +26,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
   const t = (key) => COPY[key][index];
   let limit = 30, signature = '', busy = false;
   const button = (key, attr = '') => `<button type="button" class="quiet-button outline-command-button" ${attr}>${esc(t(key))}</button>`;
-  root.innerHTML = `<div class="admin-center-actions" data-scan-controls></div><dl class="admin-stats-metrics" data-scan-status></dl><div data-scan-matches></div>${button('more', 'data-scan-more hidden')}<p class="admin-stats-note" data-scan-note>${esc(t('note'))}</p>`;
+  root.innerHTML = `<div class="admin-center-actions" data-scan-controls></div><dl class="admin-stats-metrics" data-scan-status></dl><div data-scan-matches></div><button type="button" class="quiet-button outline-command-button admin-review-load-more" data-scan-more hidden>${esc(t('more'))}</button><p class="admin-stats-note" data-scan-note>${esc(t('note'))}</p>`;
   const controls = root.querySelector('[data-scan-controls]');
   if (controlsHost !== root) {
     controlsHost.querySelector('[data-scan-controls]')?.remove();

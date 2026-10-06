@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Pulsanti di caricamento nelle revisioni
+
+- Resi compatti e centrati Carica altre coppie in Revisione Duplicati e Carica altri riscontri in World Gymnastics, coerentemente ai pulsanti Carica altri delle liste pubbliche. Paginazione e contenuto invariati; verificata la geometria in entrambi i casi.
+
 #### 2026-10-06 - Record Audit e ripristino riordinati
 
 - Nella lista Audit e ripristino ogni record mostra identita, data, stato e autore a sinistra; Confronta dettagli e le azioni disponibili sono allineati a destra, come nelle altre liste di revisione. Il confronto Prima/Dopo e il campo nota si aprono sotto la riga soltanto su richiesta.
