@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Intestazione condivisa delle anteprime di importazione
+
+- Aggiunta linea orizzontale grigia sotto il blocco Anteprima/nome file,
+  selezione gare esistenti e pulsante file, per risultati e calendario.
+- Uniformati allineamento, caratteri, larghezza del selettore e spaziatura
+  dell'intestazione, anche su mobile; eliminate le deroghe di layout Calendar.
+- Nessun cambiamento al perimetro, alle decisioni o ai controlli di importazione.
+
 ## 2026-10-06 - Elenco gare da elaborare senza filtri locali
 
 - Rimossi i pulsanti Tutte le gare, Gia in LEVERAGE, Non ancora associati e

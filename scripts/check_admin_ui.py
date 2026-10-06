@@ -54,6 +54,19 @@ def main():
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.add_init_script("if (location.origin === 'http://127.0.0.1:5173') { localStorage.setItem('leverage.authToken', 'test-only'); localStorage.setItem('leverage.language', 'it'); }")
 
+        def import_heading_style():
+            return page.locator('.admin-import-heading').evaluate('''heading => {
+                const selectors = [null, 'h3', '.admin-revision-meta', '.admin-form-field > span',
+                    '.admin-custom-select > summary', '#adminImportChangeFile'];
+                const keys = ['fontSize', 'fontWeight', 'lineHeight', 'borderRadius', 'paddingTop',
+                    'paddingBottom', 'marginBottom', 'gap', 'alignItems', 'borderBottomWidth', 'borderBottomColor'];
+                return selectors.map(selector => {
+                    const element = selector ? heading.querySelector(selector) : heading;
+                    const style = getComputedStyle(element);
+                    return Object.fromEntries(keys.map(key => [key, style[key]]));
+                });
+            }''')
+
         def check_calendar_layout():
             problems = page.locator('#adminImportOutput').evaluate('''root => {
                 const errors = [];
@@ -956,6 +969,12 @@ def main():
                 analyze_import()
                 assert page.locator('#adminImportOutput').bounding_box()['height'] < 650
                 assert page.locator('[data-import-part]').count() == 3
+                heading_styles = {}
+                for width in [1440, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    heading_styles[width] = import_heading_style()
+                    assert heading_styles[width][0]['borderBottomWidth'] == '1px'
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 assert len(set(round(box.bounding_box()['y']) for box in page.locator('#importPart_events .admin-import-metrics dd').all())) == 1
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['1', '1', '0', '2']
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
@@ -1224,6 +1243,10 @@ def main():
                 assert 'year=2026' in writes[-1]['url']
                 assert 'year_hint=' not in writes[-1]['url']
                 assert 'create_missing_from_year=' not in writes[-1]['url']
+                for width in [1440, 390]:
+                    page.set_viewport_size({'width': width, 'height': 1000})
+                    assert import_heading_style() == heading_styles[width]
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 page.locator('[data-admin-tab=overview]').click()
                 page.locator('.admin-data-overview').wait_for()
                 page.locator('[data-admin-tab=imports]').click()

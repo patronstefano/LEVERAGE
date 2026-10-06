@@ -103,14 +103,15 @@
 #adminImportOutput [aria-expanded="true"].quiet-button,
 #adminImportOutput [aria-expanded="true"].quiet-button:hover { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
 #adminImportForm[hidden] + #adminImportOutput { margin-top: 0; }
-.admin-import-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 16px; }
+.admin-import-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 16px 24px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--line); font-size: 14px; line-height: 1.5; }
 .admin-import-heading > div:first-child { min-width: 0; flex: 1 1 220px; }
 #adminImportOutput .admin-import-heading h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
 #adminImportOutput .admin-import-heading.is-complete h3 { color: var(--success); }
 .admin-import-heading .admin-revision-meta { margin: 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
-.admin-import-header-actions { display: flex; align-items: end; flex-wrap: wrap; gap: 8px 16px; }
+.admin-import-header-actions { display: flex; align-items: end; flex-wrap: wrap; gap: 12px 16px; min-width: 0; max-width: 100%; }
 .admin-import-header-actions .admin-import-scope-choice { margin: 0; }
-.admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 220px; }
+.admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 260px; min-width: 0; }
+#adminImportOutput .admin-import-heading .admin-form-field > span { font-size: 13px; line-height: 1.5; font-weight: 400; overflow-wrap: anywhere; }
 #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 18px; padding-bottom: 16px; }
 #adminImportOutput .admin-import-metrics dt { min-height: 39px; }
 #adminImportOutput .admin-revision-group { border-bottom: 1px solid var(--line); margin: 0; }
@@ -153,9 +154,6 @@
 #adminImportOutput .admin-calendar-source { font-size: 13px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
 #adminCalendarConflicts > details > .admin-stats-note { margin: 8px 0 12px; }
 #adminImportOutput[data-import-kind="calendar"] { font-size: 14px; line-height: 1.5; }
-#adminImportOutput[data-import-kind="calendar"] .admin-import-heading { align-items: flex-start; gap: 16px 24px; margin-bottom: 20px; }
-#adminImportOutput[data-import-kind="calendar"] .admin-import-header-actions { min-width: 0; max-width: 100%; gap: 12px 16px; }
-#adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice > .admin-form-field { width: 260px; min-width: 0; }
 #adminImportOutput[data-import-kind="calendar"] .admin-form-field > span { font-size: 13px; line-height: 1.5; font-weight: 400; overflow-wrap: anywhere; }
 #adminImportOutput[data-import-kind="calendar"] .admin-import-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 24px; padding-bottom: 20px; }
 #adminImportOutput[data-import-kind="calendar"] .admin-import-metrics > div { display: flex; flex-direction: column; gap: 6px; }
@@ -178,10 +176,10 @@
   #adminImportOutput[data-import-kind="calendar"] .admin-identity-pair > .admin-center-actions { grid-column: 1; grid-row: 2; max-width: 100%; justify-self: start; justify-content: flex-start; }
 }
 @media (max-width: 580px) {
-  #adminImportOutput[data-import-kind="calendar"] .admin-import-heading > div:first-child { flex-basis: 100%; }
-  #adminImportOutput[data-import-kind="calendar"] .admin-import-header-actions { width: 100%; align-items: flex-start; }
-  #adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice { flex-basis: 100%; }
-  #adminImportOutput[data-import-kind="calendar"] .admin-import-scope-choice > .admin-form-field { width: 100%; }
+  .admin-import-heading > div:first-child { flex-basis: 100%; }
+  .admin-import-header-actions { width: 100%; align-items: flex-start; }
+  .admin-import-header-actions .admin-import-scope-choice { flex-basis: 100%; }
+  .admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 100%; }
   #adminImportOutput[data-import-kind="calendar"] .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 }
 @media (max-width: 1000px) {
@@ -192,9 +190,6 @@
   #adminImportOutput .admin-import-review-part .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .admin-import-review-tabs { display: grid; grid-template-columns: 1fr; }
   #adminImportOutput .admin-identity-pair > .admin-center-actions { width: auto; justify-content: flex-start; }
-  .admin-import-header-actions { width: 100%; }
-  .admin-import-header-actions .admin-import-scope-choice { flex: 1 1 180px; }
-  .admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 100%; }
   #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #adminImportOutput .admin-import-actions { justify-content: flex-start; }
 }
