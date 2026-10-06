@@ -106,7 +106,7 @@ const COPY = {
   activity7: ["Last 7 days", "Ultimi 7 giorni", "Últimos 7 días", "7 derniers jours"],
   activity30: ["Last 30 days", "Ultimi 30 giorni", "Últimos 30 días", "30 derniers jours"],
   activity90: ["Last 90 days", "Ultimi 90 giorni", "Últimos 90 días", "90 derniers jours"],
-  activityAll: ["Entire audit history", "Intero storico audit", "Todo el historial", "Tout l’historique"],
+  activityAll: ["Complete history", "Storico completo", "Historial completo", "Historique complet"],
   activityTotal: ["Logged operations", "Operazioni registrate", "Operaciones registradas", "Opérations enregistrées"],
   activityActions: ["By operation", "Per operazione", "Por operación", "Par opération"],
   activityEntities: ["Data involved", "Dati coinvolti", "Datos afectados", "Données concernées"],
@@ -511,32 +511,34 @@ export async function renderAdminCenter(host) {
   try {
     if (tab === "overview") {
       if (superCenter) {
+        let activityRevision = 0;
         const loadActivity = async () => {
+          const revision = ++activityRevision;
           const data = await api("/admin/activity-overview", { params: { days: session.activityDays ?? 30 } });
+          if (!active() || revision !== activityRevision) return;
           const number = new Intl.NumberFormat(state.language);
           const date = (value) => new Intl.DateTimeFormat(state.language, { dateStyle: "short", timeStyle: "short" }).format(new Date(value.endsWith("Z") ? value : `${value}Z`));
           const author = (row) => `${row.email || text("activityUnknown")}${row.admin_id == null ? "" : ` · #${row.admin_id}`}`;
           const entity = (value) => text(({ Athlete: "athlete", Event: "event", Result: "result", User: "users" })[value] || value);
           const summary = (title, rows) => `<section class="admin-data-group" aria-label="${esc(text(title))}"><h3>${esc(text(title))}</h3><dl><div class="admin-data-total"><dt>${esc(text("dataTotal"))}</dt><dd>${number.format(data.total)}</dd></div>${rows.map(([label, count]) => `<div><dt>${esc(label)}</dt><dd>${number.format(count)}</dd></div>`).join("")}</dl></section>`;
           const activityList = (title, headers, rows) => `<details class="admin-activity-details admin-revision-group"><summary>${esc(text(title))}<span class="admin-revision-count">${number.format(rows.length)}</span></summary><div class="admin-revision-list">${rows.length ? rows.map((cells) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(cells[0])}</strong></p><dl class="admin-activity-row-details">${cells.slice(1).map((cell, index) => `<div><dt>${esc(text(headers[index + 1]))}</dt><dd>${esc(cell)}</dd></div>`).join("")}</dl></div></article>`).join("") : emptyState()}</div></details>`;
-          paint(`<div class="admin-data-overview">
+          paint(`<div id="adminActivityPeriod" class="admin-form-grid">${select("days", "activityPeriod", [
+            { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
+            { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
+          ], String(session.activityDays ?? 30))}</div><div class="admin-data-overview">
             ${summary("activityTotal", [[text("pending"), data.pending], [text("approved"), data.approved], [text("reverted"), data.reverted]])}
             ${summary("activityActions", data.by_action.map((row) => [text(row.key), row.count]))}
             ${summary("activityEntities", data.by_entity.map((row) => [entity(row.key), row.count]))}
           </div>
           <p class="admin-data-note">${esc(text("activityNote"))}</p>
-          ${form("adminActivityPeriod", select("days", "activityPeriod", [
-            { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
-            { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
-          ], String(session.activityDays ?? 30)))}
           ${activityList("activityActors", ["activityAuthor", "activityTotal", "pending", "activityLast"], data.actors.map((row) => [author(row), number.format(row.count), number.format(row.pending), date(row.last_activity)]))}
           ${activityList("activityRecent", ["ID", "activityDate", "activityAuthor", "status"], data.recent.map((row) => [`#${row.id} · ${text(row.action)} · ${entity(row.entity_type)}${row.entity_id == null ? "" : ` #${row.entity_id}`}`, date(row.created_at), author(row), text(row.review_status)]))}
           <div class="admin-center-actions"><a class="quiet-button outline-command-button" href="#/super-admin/audit">${esc(text("activityAudit"))}</a></div>`);
           if (!active()) return;
-          document.getElementById("adminActivityPeriod").onsubmit = guard(async (event) => {
-            session.activityDays = Number(new FormData(event.currentTarget).get("days"));
-            await loadActivity();
-          });
+          root.querySelector('#adminActivityPeriod [name=days]').onchange = async (event) => {
+            session.activityDays = Number(event.target.value);
+            try { await loadActivity(); } catch (error) { if (active()) feedback(error.message, true); }
+          };
         };
         await loadActivity();
       } else {
@@ -678,10 +680,10 @@ export async function renderAdminCenter(host) {
       })));
     }
     if (tab === "statistics") {
-      paint(form("adminStatsForm", select("days", "activityPeriod", [
+      paint(`<div id="adminStatsForm" class="admin-form-grid">${select("days", "activityPeriod", [
         { value: "7", label: text("activity7") }, { value: "30", label: text("activity30") },
         { value: "90", label: text("activity90") }, { value: "0", label: text("activityAll") },
-      ], String(session.statisticsDays ?? 30))) + '<div id="adminStats"></div>');
+      ], String(session.statisticsDays ?? 30))}</div><div id="adminStats"></div>`);
       const number = new Intl.NumberFormat(state.language, { maximumFractionDigits: 1 });
       const block = (title, content) => `<section class="admin-tool-block"><div class="section-header compact-section-header"><h2>${esc(text(title))}</h2></div>${content}</section>`;
       const metrics = (data, keys) => `<dl class="admin-stats-metrics">${keys.map(([key, label = key]) => `<div><dt>${esc(text(label))}</dt><dd>${data[key] == null ? "—" : number.format(data[key])}</dd></div>`).join("")}</dl>`;
@@ -695,7 +697,11 @@ export async function renderAdminCenter(host) {
           block("statsAccounts", metrics(data.users || {}, ["registered_users", "verified_users", "unverified_users", "active_users", "inactive_users"].map((key) => [key])) + `<p class="admin-stats-note">${esc(session.statisticsDays === 0 ? text("activityAll") : text("statsWindow").replace("{days}", session.statisticsDays ?? 30))}</p>`) +
           ["top_searches", "top_athletes", "top_events"].map((key) => block(key, data[key]?.length ? `<ol class="admin-stats-top">${data[key].map((item) => `<li><span>${esc(item.label)}</span><strong>${number.format(item.count)}</strong></li>`).join("")}</ol>` : `<div class="empty-state">${esc(text("empty"))}</div>`)).join("");
       };
-      onSubmit("adminStatsForm", async (params) => { session.statisticsDays = Number(params.days); await load(); }); await load();
+      root.querySelector('#adminStatsForm [name=days]').onchange = async (event) => {
+        session.statisticsDays = Number(event.target.value);
+        try { await load(); } catch (error) { if (active()) feedback(error.message, true); }
+      };
+      await load();
     }
     if (tab === "merge") {
       paint(`<div class="admin-center-actions"><div class="segmented-control admin-create-toggle" role="group" aria-label="${esc(text('merge'))}" data-active="true" style="--selected-index: 0"><button type="button" class="segmented-option" id="adminMergeAthlete" aria-pressed="true">${esc(text('mergeAthlete'))}</button><button type="button" class="segmented-option" id="adminMergeEvent" aria-pressed="false">${esc(text('mergeEvent'))}</button><span class="segmented-thumb" aria-hidden="true"></span></div></div><div id="adminMergeContent"></div>`);

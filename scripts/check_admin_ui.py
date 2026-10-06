@@ -653,10 +653,10 @@ def main():
                 assert page.locator('#adminStats .empty-state').count() == 2
                 assert page.locator('#adminStatsForm [name=start_date], #adminStatsForm [name=end_date]').count() == 0
                 assert page.locator('#adminStatsForm [name=days]').input_value() == '30'
+                assert page.locator('#adminStatsForm button[type=submit]').count() == 0
                 for days in ['7', '90', '0', '30']:
-                    page.locator('#adminStatsForm [name=days]').evaluate('(el, value) => el.value = value', days)
                     with page.expect_response(lambda response: '/site-analytics/admin/summary?' in response.url and f'days={days}' in response.url):
-                        page.locator('#adminStatsForm button[type=submit]').click()
+                        page.locator('#adminStatsForm [name=days]').evaluate('(el, value) => { el.value = value; el.dispatchEvent(new Event("change", {bubbles: true})); }', days)
                     page.wait_for_timeout(100)
                     assert page.locator('#adminStatsForm [name=days]').input_value() == days
                 assert 'European Championships' in page.locator('.admin-stats-top').inner_text()
@@ -842,8 +842,9 @@ def main():
         page.locator('.admin-activity-details > summary').first.click()
         assert 'actor@example.test' in page.locator('#adminWorkspace').inner_text()
         page.locator('.admin-activity-details > summary').first.click()
-        page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => node.value = '7'")
-        page.locator('#adminActivityPeriod button[type="submit"]').click()
+        assert page.locator('#adminActivityPeriod button[type=submit]').count() == 0
+        assert page.locator('#adminActivityPeriod').bounding_box()['y'] < page.locator('.admin-data-overview').bounding_box()['y']
+        page.locator('#adminActivityPeriod input[name="days"]').evaluate("node => { node.value = '7'; node.dispatchEvent(new Event('change', {bubbles: true})); }")
         page.wait_for_timeout(300)
         assert page.locator('#adminActivityPeriod input[name="days"]').input_value() == '7'
         page.locator('.admin-activity-details > summary').first.click()

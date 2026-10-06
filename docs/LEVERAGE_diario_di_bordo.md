@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Selettori periodo immediati in Panoramica e Statistiche
+
+- Rinominata l'opzione completa in Storico completo, con traduzioni coerenti EN/IT/ES/FR. Il selettore della Panoramica SUPER ADMIN precede ora i dati, analogamente alle Statistiche.
+- Entrambe le sezioni applicano il periodo al cambio selezione, senza pulsante di ricerca o conferma. Le risposte obsolete non sostituiscono la selezione piu recente; mantenuti i periodi indipendenti delle due sezioni.
+
 #### 2026-10-06 - Comandi scansione accanto allo slider World Gymnastics
 
 - Spostati i comandi Avvia scansione atleti/eventi a destra dello slider Atleti/Eventi, nella stessa barra responsive. Anche pausa, ripresa e ripetizione errori rimangono nella medesima posizione; scansioni distinte e avviso finale invariati. Nessuna scansione reale avviata durante la verifica.
