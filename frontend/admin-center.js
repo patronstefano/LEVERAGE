@@ -5,7 +5,7 @@ import { bindAuthValidation } from './auth-validation.js?v=admin-validation-2026
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=import-dialog-20261006';
-import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-20261006';
+import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
 import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=deferred-reviews-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {

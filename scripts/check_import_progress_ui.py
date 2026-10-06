@@ -63,6 +63,12 @@ def main():
         }''')
         assert page.locator('dialog[open] [role=progressbar]').count() == 1
         assert page.locator('dialog button:disabled').count() == 2
+        for width in (390, 900):
+            page.set_viewport_size({'width': width, 'height': 600})
+            actions = page.locator('dialog .admin-center-actions').bounding_box()
+            progress_box = page.locator('dialog .admin-import-progress').bounding_box()
+            assert progress_box['y'] >= actions['y'] + actions['height'] + 12
+        page.set_viewport_size({'width': 390, 'height': 500})
         page.keyboard.press('Escape')
         assert page.locator('dialog[open]').count() == 1
         page.screenshot(path='/tmp/leverage-import-dialog-mobile.png')

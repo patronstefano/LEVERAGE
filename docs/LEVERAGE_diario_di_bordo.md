@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Avanzamento sotto i comandi di conferma importazione
+
+- Nei popup di revisione importazione, l'indicazione di analisi e la barra di
+  avanzamento sono posizionate sotto Annulla e Conferma, con la spaziatura UI
+  esistente. Restano invariati blocco dei comandi durante l'analisi e completamento animato.
+- Aggiunto controllo browser della posizione su desktop e mobile; nessuna
+  modifica ai dati o alla logica di importazione.
+
 ## 22 settembre 2026 - Prima integrazione del Centro Admin
 
 Avviata la fase amministrativa dopo la milestone delle sezioni pubbliche.

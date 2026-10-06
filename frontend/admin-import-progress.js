@@ -10,7 +10,7 @@ export function mountImportProgressDialog({dialog, text, esc}) {
   const root = document.createElement('div');
   root.dataset.importDialogProgress = '';
   const actions = dialog.querySelector('.admin-center-actions');
-  if (actions) actions.before(root);
+  if (actions) actions.after(root);
   else dialog.append(root);
   const controls = [...dialog.querySelectorAll('button')].map(button => [button, button.disabled]);
   controls.forEach(([button]) => { button.disabled = true; });
