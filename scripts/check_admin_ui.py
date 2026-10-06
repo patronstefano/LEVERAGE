@@ -144,7 +144,7 @@ def main():
         page.route("**:8000/**", api)
         page.goto("http://127.0.0.1:5173/#/admin")
         page.locator(".admin-center").wait_for()
-        assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'review', 'entry', 'merge', 'results', 'imports']
+        assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'review', 'entry', 'merge', 'world-gymnastics', 'results', 'imports']
         back = page.locator('.detail-topbar .detail-back-button')
         assert back.inner_text() == 'Torna all’Area Personale'
         assert back.get_attribute('href') == '#/account'
@@ -650,9 +650,9 @@ def main():
                 page.screenshot(path='/tmp/leverage-admin-statistics-mobile.png', full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
             if tab == "review":
-                assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
-                assert page.locator('[data-scan-refresh]').count() == 0
-                assert page.locator('.admin-revisions > .admin-tool-block').count() == 3
+                assert page.locator('[data-admin-tab="review"]').inner_text() == 'Revisione Duplicati'
+                assert page.locator('#adminWorldGymnasticsScan').count() == 0
+                assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
                 assert 'Possibili atleti duplicati' in page.locator('#adminEntityReviews').inner_text()
                 page.locator('[data-pair-compare]').click()
@@ -670,6 +670,24 @@ def main():
                 compare.click()
                 assert compare.get_attribute('aria-expanded') == 'true'
                 assert 'Valuta unione' in page.locator('#adminEntityReviews').inner_text()
+                page.locator('[data-review-entity="event"]').click()
+                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
+                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
+                page.locator('[data-review-entity="result"]').click()
+                assert page.locator('#adminResultReviews').is_visible()
+                assert page.locator('#adminEntityReviews').is_hidden()
+                page.wait_for_timeout(700)
+                thumb = page.locator('.admin-review-toggle .segmented-thumb').bounding_box()
+                selected = page.locator('[data-review-entity="result"]').bounding_box()
+                assert abs(thumb['x'] - selected['x']) < 1
+                assert abs(thumb['width'] - selected['width']) < 1
+                page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)
+                page.locator('[data-admin-tab="world-gymnastics"]').click()
+                page.locator('[data-scan-job="51"]').wait_for()
+                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi']
+                assert page.locator('#adminEntityReviews, #adminResultReviews').count() == 0
+                assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione atleti'
+                assert page.locator('[data-scan-refresh]').count() == 0
                 assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
                 page.locator('[data-scan-job="51"] summary').click()
                 assert 'Compatibilità 95%' in page.locator('[data-scan-job="51"]').inner_text()
@@ -686,27 +704,10 @@ def main():
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione eventi'
                 assert '7' in page.locator('[data-scan-status]').inner_text()
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
-                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
                 assert page.locator('[data-scan-job="51"]').count() == 0
                 assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
-                assert page.locator('#adminResultReviews').is_hidden()
-                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
-                page.locator('[data-review-entity="result"]').click()
-                assert page.locator('#adminResultReviews').is_visible()
-                assert page.locator('#adminEntityReviews').is_hidden()
-                assert page.locator('#adminWorldGymnasticsScan').is_hidden()
-                assert page.locator('[data-review-entity="result"]').get_attribute('aria-pressed') == 'true'
-                assert page.locator('.admin-review-toggle').evaluate('el => el.style.getPropertyValue("--selected-index")') == '2'
-                page.wait_for_timeout(700)
-                thumb = page.locator('.admin-review-toggle .segmented-thumb').bounding_box()
-                selected = page.locator('[data-review-entity="result"]').bounding_box()
-                assert abs(thumb['x'] - selected['x']) < 1
-                assert abs(thumb['width'] - selected['width']) < 1
-                page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)
                 page.locator('[data-review-entity="athlete"]').click()
                 page.locator('[data-scan-job="51"]').wait_for()
-                assert page.locator('#adminResultReviews').is_hidden()
-                assert page.locator('#adminEntityReviews').is_visible()
                 assert page.locator('[data-scan-job="52"]').count() == 0
                 assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
                 page.locator('[data-scan-job="51"] summary').click()
@@ -734,6 +735,10 @@ def main():
                 page.locator('[data-scan-action="start"]').click()
                 page.wait_for_timeout(200)
                 assert json.loads(writes[-1]['body']) == {'action': 'start', 'entity_type': 'event'}
+                page.locator('[data-admin-tab="review"]').click()
+                page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
+                page.locator('[data-review-entity="event"]').click()
+                page.wait_for_function("document.querySelector('#adminEntityReviews')?.textContent.includes('Possibili eventi duplicati')")
                 page.locator('[data-pair-separate]').click()
                 page.locator('#adminEntityReviews .empty-state').wait_for()
                 assert writes[-1]['path'] == '/admin/entity-duplicates/event/1/2/keep-separate'

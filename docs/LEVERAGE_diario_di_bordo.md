@@ -3050,6 +3050,13 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Separazione Revisione Duplicati e World Gymnastics
+
+- Rinominata Revisioni in Revisione Duplicati, mantenendo lo slider Atleti / Eventi / Risultati per i soli controlli di duplicazione.
+- Spostati scansioni, riscontri e suggerimenti World Gymnastics nella nuova sezione omonima, immediatamente a sinistra di Editor Risultati, con selettori Atleti / Eventi e collegamenti di ritorno alla nuova sezione.
+- Caricamenti separati: la revisione duplicati non interroga scansioni e suggerimenti World Gymnastics; la nuova sezione non carica i gruppi di risultati duplicati. Nessuna nuova scansione reale avviata e nessuna modifica ai dati o alle regole di certificazione.
+- Test browser aggiornati per ordine delle sezioni, separazione dei contenuti, navigazione, accettazione simulata dei suggerimenti e controlli delle scansioni simulate.
+
 #### 2026-10-06 - Etichetta Leverage ID nel filtro audit
 
 - Rinominato ID in Leverage ID per chiarire che il filtro identifica l'entita interessata, non l'operazione di audit. Invariati parametro entity_id e comportamento della ricerca.

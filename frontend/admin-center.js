@@ -159,7 +159,8 @@ const COPY = {
   wgReview: ["World Gymnastics matches", "Riscontri World Gymnastics", "Coincidencias World Gymnastics", "Correspondances World Gymnastics"],
   imports: ["File import", "Importazione file", "Importación de archivos", "Importation de fichiers"],
   calendar: ["Calendar", "Calendario", "Calendario", "Calendrier"],
-  review: ["Review", "Revisioni", "Revisión", "Révision"],
+  review: ["Duplicate Review", "Revisione Duplicati", "Revisión de Duplicados", "Révision des Doublons"],
+  'world-gymnastics': ['World Gymnastics', 'World Gymnastics', 'World Gymnastics', 'World Gymnastics'],
   notifications: ["Notifications", "Notifiche", "Notificaciones", "Notifications"],
   statistics: ["Statistics", "Statistiche", "Estadísticas", "Statistiques"],
   importResults: ["Results (The Gymternet)", "Risultati (The Gymternet)", "Resultados (The Gymternet)", "Résultats (The Gymternet)"],
@@ -316,7 +317,7 @@ export async function renderAdminCenter(host) {
   const run = ++generation;
   const active = () => run === generation && (state.route.split('?')[0] === baseRoute || state.route.startsWith(`${baseRoute}/`));
   const superAdmin = state.currentUser.role === "super_admin";
-  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "statistics", "review", "entry", "merge", "results", "imports", "notifications"];
+  const tabs = superCenter ? ["overview", "users", "audit", "notifications"] : ["overview", "statistics", "review", "entry", "merge", "world-gymnastics", "results", "imports", "notifications"];
   const requested = state.route.split("?")[0].split("/")[2];
   if (!superCenter && superAdmin && ["users", "audit"].includes(requested)) {
     window.location.replace(`#/super-admin/${requested}`);
@@ -574,10 +575,11 @@ export async function renderAdminCenter(host) {
         onSaved: () => { state.globalSearch.payload = null; } });
     }
     if (tab === "imports") await imports();
-    if (tab === "review") {
+    if (tab === "review" || tab === 'world-gymnastics') {
+      const wgOnly = tab === 'world-gymnastics';
       const [suggestions, duplicates] = await Promise.all([
-        api("/data-suggestions/", { params: { status: "pending" } }),
-        api("/admin/result-duplicate-groups"),
+        wgOnly ? api("/data-suggestions/", { params: { status: "pending" } }) : [],
+        wgOnly ? [] : api("/admin/result-duplicate-groups"),
       ]);
       const groups = new Map();
       for (const suggestion of suggestions.filter(isWorldGymnasticsReviewSuggestion)) {
@@ -602,8 +604,19 @@ export async function renderAdminCenter(host) {
         ${block(text("wgReview"), `<div id="adminWorldGymnasticsScan"></div><div id="adminRevisionSuggestions">${reviewGroups.map(({ kind, entity, items }) => `<details class="admin-revision-group" data-wg-review-group data-review-kind="${items[0].entity_type}"><summary>${esc(nameOf(entity))} · ${esc(text(items[0].entity_type))} #${entity.id}</summary><div class="admin-center-actions">${entityLink(kind, entity.id)}</div>${items.map((s) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(text(s.field_name))}</strong></p>${s.evidence ? `<p class="admin-revision-meta">${esc(s.evidence)}</p>` : ""}<a class="admin-revision-source" href="${esc(s.source_url)}" target="_blank" rel="noopener noreferrer">${esc(s.source_title)}</a>${s.entity_type === "athlete" && ["country", "birth_year"].includes(s.field_name) ? select(`suggestion_${s.id}`, "value", athleteFieldOptions(s.field_name, s.suggested_value), String(s.suggested_value ?? "")) : field(`suggestion_${s.id}`, "value", "text", s.suggested_value)}</div><div class="account-notification-actions">${button("accept", `data-accept="${s.id}"`)}${button("reject", `data-reject="${s.id}"`)}</div></article>`).join("")}</details>`).join("") || empty()}</div>`)}
         </div>`);
       let reviewEntity = 'athlete';
+      const reviewToggle = root.querySelector('.admin-review-toggle');
+      reviewToggle.setAttribute('aria-label', text(tab));
+      if (wgOnly) {
+        root.querySelector('#adminEntityReviews').remove();
+        root.querySelector('#adminResultReviews').remove();
+        root.querySelector('[data-review-entity="result"]').remove();
+        reviewToggle.classList.remove('admin-review-toggle');
+      } else {
+        root.querySelector('#adminWorldGymnasticsScan').closest('.admin-tool-block').remove();
+      }
       const updateReviewVisibility = () => {
         const list = root.querySelector('#adminRevisionSuggestions');
+        if (!list) return;
         const groups = [...list.querySelectorAll('[data-wg-review-group]')];
         groups.forEach((group) => { group.hidden = group.dataset.reviewKind !== reviewEntity; });
         list.querySelector('.empty-state')?.remove();
@@ -616,17 +629,21 @@ export async function renderAdminCenter(host) {
           button.parentElement.style.setProperty('--selected-index', String(['athlete', 'event', 'result'].indexOf(kind)));
         });
         const resultsSelected = kind === 'result';
-        root.querySelector('#adminResultReviews').hidden = !resultsSelected;
-        root.querySelector('#adminEntityReviews').hidden = resultsSelected;
-        root.querySelector('#adminWorldGymnasticsScan').closest('.admin-tool-block').hidden = resultsSelected;
+        if (!wgOnly) {
+          root.querySelector('#adminResultReviews').hidden = !resultsSelected;
+          root.querySelector('#adminEntityReviews').hidden = resultsSelected;
+        }
         updateReviewVisibility();
         if (resultsSelected) return;
         const reviewActive = () => active() && reviewEntity === kind;
-        const pairRoot = document.createElement('section');
-        pairRoot.id = 'adminEntityReviews';
-        pairRoot.className = 'admin-tool-block';
-        root.querySelector('#adminEntityReviews').replaceWith(pairRoot);
-        mountEntityReviews({root: pairRoot, kind, api, esc, language: state.language, active: reviewActive, route: state.route});
+        if (!wgOnly) {
+          const pairRoot = document.createElement('section');
+          pairRoot.id = 'adminEntityReviews';
+          pairRoot.className = 'admin-tool-block';
+          root.querySelector('#adminEntityReviews').replaceWith(pairRoot);
+          mountEntityReviews({root: pairRoot, kind, api, esc, language: state.language, active: reviewActive, route: state.route});
+          return;
+        }
         const scanRoot = document.createElement('div');
         scanRoot.id = 'adminWorldGymnasticsScan';
         root.querySelector('#adminWorldGymnasticsScan').replaceWith(scanRoot);
