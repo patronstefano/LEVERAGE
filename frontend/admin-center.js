@@ -1,7 +1,7 @@
 import { mountNotificationInbox } from './account-tools.js?v=live-reminders-20260930';
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
-import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-note-bottom-20261006';
+import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-toolbar-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=duplicate-recap-20261006';
 import { createAdminReport } from './admin-reports.js?v=compact-merge-20261006';
@@ -660,7 +660,7 @@ export async function renderAdminCenter(host) {
         const scanRoot = document.createElement('div');
         scanRoot.id = 'adminWorldGymnasticsScan';
         root.querySelector('#adminWorldGymnasticsScan').replaceWith(scanRoot);
-        await mountWorldGymnasticsScan({ root: scanRoot, api, esc, language: state.language, active: reviewActive, feedback, route: state.route, entityType: kind, noteHost: scanRoot.parentElement });
+        await mountWorldGymnasticsScan({ root: scanRoot, api, esc, language: state.language, active: reviewActive, feedback, route: state.route, entityType: kind, noteHost: scanRoot.parentElement, controlsHost: reviewToggle.parentElement });
       };
       root.querySelectorAll('[data-review-entity]').forEach((button) => {
         button.onclick = () => { if (reviewEntity !== button.dataset.reviewEntity) selectReviewEntity(button.dataset.reviewEntity); };

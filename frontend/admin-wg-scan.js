@@ -20,12 +20,17 @@ const COPY = {
   more: ['Load more matches', 'Carica altri riscontri', 'Cargar más coincidencias', 'Charger plus de correspondances'],
 };
 
-export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType, noteHost = root}) {
+export async function mountWorldGymnasticsScan({root, api, esc, language, active, feedback, route, entityType, noteHost = root, controlsHost = root}) {
   const index = Math.max(0, ['en', 'it', 'es', 'fr'].indexOf(language));
   const t = (key) => COPY[key][index];
   let limit = 30, signature = '', busy = false;
   const button = (key, attr = '') => `<button type="button" class="quiet-button outline-command-button" ${attr}>${esc(t(key))}</button>`;
   root.innerHTML = `<div class="admin-center-actions" data-scan-controls></div><dl class="admin-stats-metrics" data-scan-status></dl><div data-scan-matches></div>${button('more', 'data-scan-more hidden')}<p class="admin-stats-note" data-scan-note>${esc(t('note'))}</p>`;
+  const controls = root.querySelector('[data-scan-controls]');
+  if (controlsHost !== root) {
+    controlsHost.querySelector('[data-scan-controls]')?.remove();
+    controlsHost.append(controls);
+  }
   if (noteHost !== root) {
     [...noteHost.children].filter((element) => element.matches('[data-scan-note]')).forEach((element) => element.remove());
     noteHost.append(root.querySelector('[data-scan-note]'));
@@ -43,7 +48,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
         if (!page.items.length) break;
       } while (matches.items.length < limit && matches.items.length < matches.total);
       if (!active() || !root.isConnected) return;
-      root.querySelector('[data-scan-controls]').innerHTML =
+      controls.innerHTML =
         button(status.started_at ? status.enabled ? 'pause' : 'resume' : entityType === 'athlete' ? 'startAthletes' : 'startEvents', `data-scan-action="${status.started_at ? status.enabled ? 'pause' : 'resume' : 'start'}"`)
         + (status.counts.error ? button('retry', 'data-scan-action="retry_errors"') : '');
       root.querySelector('[data-scan-status]').innerHTML = `<div><dt>World Gymnastics</dt><dd>${esc(t(status.enabled ? 'active' : 'paused'))}</dd></div>`
@@ -60,7 +65,7 @@ export async function mountWorldGymnasticsScan({root, api, esc, language, active
         }).join('');
       }
       root.querySelector('[data-scan-more]').hidden = matches.items.length >= matches.total;
-      root.querySelectorAll('[data-scan-action]').forEach((button) => { button.onclick = async () => {
+      controls.querySelectorAll('[data-scan-action]').forEach((button) => { button.onclick = async () => {
         button.disabled = true;
         try { await api('/world-gymnastics/scan/control', {method:'POST',body:{action:button.dataset.scanAction, entity_type: entityType}}); await refresh(); }
         catch (error) { feedback(error.message,true); button.disabled=false; }

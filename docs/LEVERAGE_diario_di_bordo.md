@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Comandi scansione accanto allo slider World Gymnastics
+
+- Spostati i comandi Avvia scansione atleti/eventi a destra dello slider Atleti/Eventi, nella stessa barra responsive. Anche pausa, ripresa e ripetizione errori rimangono nella medesima posizione; scansioni distinte e avviso finale invariati. Nessuna scansione reale avviata durante la verifica.
+
 #### 2026-10-06 - Utenti e ruoli senza pulsante Carica
 
 - Rimosso il comando Carica dalla ricerca utenti, ormai aggiornata automaticamente durante la digitazione. Mantenuti caricamento iniziale, ricerca parziale e invio da tastiera senza ricaricare la pagina; nessuna modifica a ruoli o autorizzazioni.

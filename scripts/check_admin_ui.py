@@ -741,6 +741,9 @@ def main():
                 page.locator('[data-scan-job="51"] summary').click()
                 assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 4
                 controls = page.locator('[data-scan-controls]').bounding_box()
+                toggle = page.locator('[data-review-entity="athlete"]').locator('..').bounding_box()
+                assert controls['x'] >= toggle['x'] + toggle['width']
+                assert abs(controls['y'] + controls['height'] / 2 - toggle['y'] - toggle['height'] / 2) < 2
                 counters = page.locator('[data-scan-status]').bounding_box()
                 note = page.locator('[data-scan-note]').bounding_box()
                 assert counters['y'] - controls['y'] - controls['height'] >= 17
