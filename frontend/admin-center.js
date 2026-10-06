@@ -753,9 +753,13 @@ export async function renderAdminCenter(host) {
       renderMerge(new URLSearchParams(state.route.split('?')[1] || '').get('entity_type') === 'event' ? 'events' : 'athletes');
     }
     if (tab === "users") {
-      paint(form("adminUsersForm", field("search", "email", "email")) + '<div id="adminUsers" class="admin-revision-list"></div>');
-      onSubmit("adminUsersForm", async (params) => {
-        const users = await api("/admin/users", { params }); if (!active()) return;
+      paint(form("adminUsersForm", field("search", "email", "search")) + '<div id="adminUsers" class="admin-revision-list"></div>');
+      let userSearchRevision = 0, userSearchTimer;
+      const searchInput = root.querySelector('#adminUsersForm [name=search]');
+      const loadUsers = async () => {
+        const revision = ++userSearchRevision;
+        const users = await api("/admin/users", { params: {search: searchInput.value.trim()} });
+        if (!active() || revision !== userSearchRevision) return;
         document.getElementById("adminUsers").innerHTML = users.map((u) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>${esc(u.email)}</strong></p><p class="admin-revision-meta">${esc(u.role.replaceAll('_', ' ').toUpperCase())}</p></div><div class="account-notification-actions admin-user-role-actions">${select(`role_${u.id}`, "role", ["user", "admin", "super_admin"], u.role)}${button("save", `data-role="${u.id}"`)}</div></article>`).join("") || emptyState(); bind();
         root.querySelectorAll("[data-role]").forEach((b) => b.onclick = () => confirm("save", async () => { await api(`/admin/users/${b.dataset.role}/role`, { method: "PUT", body: { role: root.querySelector(`[name="role_${b.dataset.role}"]`).value } }); }));
         for (const user of users) {
@@ -778,7 +782,19 @@ export async function renderAdminCenter(host) {
             actions.innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('userDeleted'))}</div>`;
           }, false, `${user.email} · ${text('deleteUserWarning')}`);
         }
+      };
+      onSubmit('adminUsersForm', async () => { clearTimeout(userSearchTimer); await loadUsers(); });
+      searchInput.addEventListener('input', () => {
+        ++userSearchRevision;
+        clearTimeout(userSearchTimer);
+        userSearchTimer = setTimeout(async () => {
+          if (!active()) return;
+          const revision = userSearchRevision;
+          try { await loadUsers(); }
+          catch (error) { if (active() && userSearchRevision === revision + 1) feedback(error.message, true); }
+        }, 180);
       });
+      await loadUsers();
     }
     if (tab === "audit") {
       paint(form("adminAuditForm", select("entity_type", "entity_type", [{ value: "", label: text("all") }, "Athlete", "Event", "Result"]) + field("entity_id", "Leverage ID", "number") + select("review_status", "status", [{ value: "", label: text("all") }, "pending", "approved", "reverted"])) + '<div id="adminAudit" class="admin-revision-list"></div>');

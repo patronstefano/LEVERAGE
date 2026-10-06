@@ -67,6 +67,8 @@ def main():
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
             elif path == "/admin/users":
                 payload = [{"id": 77, "email": "review@example.test", "role": "admin"}, {"id": 78, "email": "last@example.test", "role": "super_admin", "is_active": True, "is_last_active_super_admin": True}]
+                query = parse_qs(urlparse(route.request.url).query).get('search', [''])[0].strip().lower()
+                payload = [user for user in payload if query in user['email'].lower()]
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
                 payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
@@ -552,6 +554,14 @@ def main():
                 page.locator('#adminScoreRows tbody tr').first.wait_for()
                 assert page.locator('#adminSelectedEvent strong').inner_text() == 'Admin test event'
             if tab == "users":
+                search = page.locator('#adminUsersForm [name=search]')
+                search.fill('REVI')
+                page.wait_for_function("document.querySelectorAll('#adminUsers .account-notification').length === 1 && document.querySelector('#adminUsers').textContent.includes('review@example.test')")
+                assert search.evaluate('el => el.checkValidity()')
+                search.fill('not-found')
+                page.locator('#adminUsers .empty-state').wait_for()
+                search.fill('')
+                page.wait_for_function("document.querySelectorAll('#adminUsers .account-notification').length === 2")
                 page.locator('#adminUsersForm button[type=submit]').click()
                 page.locator('#adminUsers .account-notification').first.wait_for()
                 assert 'review@example.test' in page.locator('#adminUsers').inner_text()
