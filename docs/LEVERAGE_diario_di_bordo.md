@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Conferma audit nel record interessato
+
+- Dopo approvazione o annullamento, il messaggio verde Operazione completata sostituisce i pulsanti del relativo record. Eliminata la conferma globale in cima alla pagina per queste azioni.
+- Il record resta visibile con stato aggiornato, autore e confronto consultabili; la motivazione diventa non modificabile e i comandi non possono essere ripetuti. Una nuova ricerca applica normalmente i filtri di stato.
+- Test browser con approvazione simulata, verifica del messaggio locale e assenza di conferme globali duplicate.
+
 #### 2026-10-06 - Autore delle operazioni nell'audit
 
 - Ogni voce di Audit e ripristino mostra email, ID e ruolo attuale dell'autore, distinguendo ADMIN e SUPER ADMIN accanto alle informazioni temporali. Se il profilo non e disponibile, viene conservato l'ID quando presente oppure mostrata un'indicazione esplicita.

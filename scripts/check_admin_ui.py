@@ -611,13 +611,16 @@ def main():
                 page.screenshot(path='/tmp/leverage-super-audit-details.png', full_page=True)
                 page.locator('[data-audit="91"][data-action=approve]').click()
                 page.locator('dialog[open] [data-confirm]').click()
-                notice = page.locator('#adminFeedback.is-success')
+                notice = page.locator('#adminAudit > article').first.locator('.account-notification-actions .is-success')
                 notice.wait_for()
                 assert notice.bounding_box()['height'] == 36
                 assert notice.evaluate('el => getComputedStyle(el).fontSize') == '14px'
                 assert notice.evaluate('el => getComputedStyle(el).backgroundColor') == 'rgba(0, 0, 0, 0)'
                 assert notice.evaluate('el => getComputedStyle(el).color === getComputedStyle(el).borderTopColor')
                 assert page.locator('[data-audit="91"]').count() == 0
+                assert page.locator('#adminFeedback').inner_text() == ''
+                assert page.locator('#adminAudit > article').count() == 3
+                assert page.locator('#adminAudit [name=note_91]').is_disabled()
             if tab == "statistics":
                 assert page.locator('#adminStats > .admin-tool-block').count() == 5
                 assert page.locator('.admin-stats-metrics dd').first.inner_text() == '42'

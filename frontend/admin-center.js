@@ -773,7 +773,17 @@ export async function renderAdminCenter(host) {
         }
         root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));
-        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.confirmLabel || b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); if (!document.querySelector('#adminAudit article')) document.getElementById('adminAudit').innerHTML = emptyState(); }));
+        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.confirmLabel || b.dataset.action, async () => {
+          const note = root.querySelector(`[name="note_${b.dataset.audit}"]`);
+          await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: note.value || null } });
+          if (!active()) return;
+          const article = b.closest('article');
+          const log = logs.find((item) => String(item.id) === b.dataset.audit);
+          log.review_status = b.dataset.action === 'approve' ? 'approved' : 'reverted';
+          article.querySelector('.admin-revision-meta').textContent = `${new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language)} · ${text(log.review_status)}`;
+          note.disabled = true;
+          article.querySelector('.account-notification-actions').innerHTML = `<div class="admin-center-feedback is-success admin-audit-success" role="status">${esc(text('success'))}</div>`;
+        }, false));
       });
     }
   } catch (error) { feedback(error.message, true); }
