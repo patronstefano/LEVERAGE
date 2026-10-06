@@ -748,6 +748,9 @@ def main():
                 page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)
                 page.locator('[data-admin-tab="world-gymnastics"]').click()
                 page.locator('[data-scan-job="51"]').wait_for()
+                wg_recap = page.locator('[data-scan-status]').bounding_box()
+                wg_toggle = page.locator('[data-review-entity="athlete"]').locator('..').bounding_box()
+                assert abs(wg_recap['y'] - wg_toggle['y'] - wg_toggle['height'] - 16) < 1, (wg_recap, wg_toggle)
                 assert page.locator('[data-scan-more]').evaluate('''button => {
                     button.hidden = false;
                     const box = button.getBoundingClientRect();
@@ -796,7 +799,7 @@ def main():
                 assert abs(controls['y'] + controls['height'] / 2 - toggle['y'] - toggle['height'] / 2) < 2
                 counters = page.locator('[data-scan-status]').bounding_box()
                 note = page.locator('[data-scan-note]').bounding_box()
-                assert counters['y'] - controls['y'] - controls['height'] >= 17
+                assert abs(counters['y'] - controls['y'] - controls['height'] - 16) < 1
                 assert note['y'] - counters['y'] - counters['height'] >= 17
                 page.screenshot(path="/tmp/leverage-admin-revisions.png", full_page=True)
                 page.set_viewport_size({"width": 390, "height": 844})

@@ -3050,6 +3050,10 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Spaziatura del recap World Gymnastics
+
+- Allineata a 16 px la distanza tra lo slider Atleti/Eventi e il recap World Gymnastics, come in Revisione Duplicati. Rimossi i padding superiori cumulativi; restano invariati divisore inferiore, risultati e controlli.
+
 #### 2026-10-06 - Divisore del recap World Gymnastics
 
 - Rimossa la linea grigia sopra il recap nella sezione World Gymnastics del Centro Admin. Resta il divisore inferiore tra recap e riscontri; comportamento e conteggi invariati.
