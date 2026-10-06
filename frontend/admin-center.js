@@ -121,6 +121,8 @@ const COPY = {
   revert_update: ["Update reversal", "Annullamento modifica", "Reversión de cambio", "Annulation de modification"],
   revert_create: ["Insertion reversal", "Annullamento inserimento", "Anulación de inserción", "Annulation de création"],
   undoCreate: ["Undo insertion", "Annulla inserimento", "Anular inserción", "Annuler la création"],
+  undoMerge: ["Undo merge", "Annulla unione", "Anular unión", "Annuler la fusion"],
+  revert_merge: ["Merge reversal", "Annullamento unione", "Anulación de unión", "Annulation de fusion"],
   update_world_gymnastics: ["World Gymnastics update", "Aggiornamento World Gymnastics", "Actualización World Gymnastics", "Mise à jour World Gymnastics"],
   dataAthletes: ["Athletes", "Atleti", "Atletas", "Athlètes"],
   dataEvents: ["Events", "Eventi", "Eventos", "Événements"],
@@ -716,9 +718,10 @@ export async function renderAdminCenter(host) {
         for (const [index, log] of logs.entries()) {
           const summary = root.querySelectorAll('#adminAudit > article')[index]?.querySelector('.admin-revision-group > summary');
           if (summary) summary.textContent = text(log.action === 'create' ? 'insertedData' : 'compareChanges');
-          if (log.action !== 'create' || !['Athlete', 'Event'].includes(log.entity_type)) continue;
+          if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
-          actions?.insertAdjacentHTML('beforeend', button('undoCreate', `data-audit="${log.id}" data-action="revert" data-confirm-label="undoCreate"`));
+          const undoLabel = log.action === 'merge' ? 'undoMerge' : 'undoCreate';
+          actions?.insertAdjacentHTML('beforeend', button(undoLabel, `data-audit="${log.id}" data-action="revert" data-confirm-label="${undoLabel}"`));
         }
         root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));

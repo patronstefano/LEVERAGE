@@ -3050,6 +3050,15 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Annullamento controllato delle unioni di entita
+
+- Aggiunto "Annulla unione" nell'audit SUPER ADMIN per le unioni di Atleti/Eventi ancora revisionabili, con conferma esplicita e stile rosso condiviso. Il ripristino non consiste nella sola riattivazione della sorgente: ripristina anagrafiche e appartenenza dei dati.
+- Le nuove unioni registrano snapshot prima/dopo delle due entita, risultati, preferiti (compresi quelli deduplicati), storico nazionalita oppure calendario/contesti evento, suggerimenti, notifiche coinvolte, viste salvate coinvolte e job World Gymnastics. Il ripristino confronta lo stato corrente con quello successivo all'unione; variazioni dei dati o dei collegamenti bloccano l'operazione. Il riutilizzo di ID di record deduplicati e i conflitti di vincolo bloccano il recupero senza salvataggi parziali.
+- Transazione protetta da serializzazione SQLite/lock dei record; annullamento auditato con azione revert_merge approvata e riferimento all'audit originale, che diventa reverted. Restano i controlli SUPER ADMIN/MFA esistenti. Nessuna scansione avviata.
+- Compatibilita prudente con lo storico: unioni Athlete precedenti prive degli snapshot estesi annullabili solo se tutti i contatori dei trasferimenti accessori sono presenti e pari a zero, gli snapshot anagrafici coincidono, gli insiemi di risultati sono invariati e non vi sono modifiche successive ai risultati nell'audit. I punteggi non vengono riscritti; viene ripristinata la sola appartenenza originale. Unioni legacy con dati insufficienti, incluse quelle Event, richiedono recupero verificato da backup e vengono bloccate.
+- Caso #1584: controllo esclusivamente in lettura di anagrafiche, appartenenza dei risultati e audit successivo; condizioni riscontrate compatibili con il percorso legacy. Nessun annullamento reale eseguito: la scelta resta al SUPER ADMIN.
+- Test isolati per unioni Athlete/Event: ripristino completo con deduplicazioni, suggerimenti, job, calendario e viste, blocco di modifiche successive a punteggi/anagrafiche/preferiti, annullamento ripetuto e storico legacy insufficiente. Test UI con unioni simulate e conferma del nuovo comando.
+
 #### 2026-10-06 - Conferme di unione coerenti con Nuova Entita
 
 - Dopo un'unione riuscita, il modulo e l'anteprima vengono sostituiti dal messaggio verde compatto "Atleti uniti" / "Eventi uniti" e dal pulsante "Vai all'atleta" / "Vai all'evento" verso l'entita mantenuta restituita dal backend.

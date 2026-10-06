@@ -650,8 +650,14 @@ def revert_audit_log(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_super_admin_user),
 ):
-    audit_log = get_audit_log_or_404(db, audit_log_id)
+    from app.merge_reversal import lock_merge_writes, revert_merge
+    lock_merge_writes(db)
+    audit_log = db.query(models.AuditLog).filter(models.AuditLog.id == audit_log_id).populate_existing().with_for_update().first()
+    if audit_log is None:
+        raise HTTPException(404, "Audit log not found")
     ensure_audit_log_can_be_reviewed(audit_log, current_user)
+    if audit_log.action == "merge" and audit_log.entity_type in {"Athlete", "Event"}:
+        return revert_merge(db, audit_log, payload, current_user)
     undo_create = audit_log.action == "create" and audit_log.entity_type in {"Athlete", "Event"}
     if audit_log.action != "update" and not undo_create:
         raise HTTPException(status_code=400, detail="Only updates and athlete/event insertions can be reverted")

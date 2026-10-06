@@ -1,4 +1,5 @@
 const LABELS = {
+  reversal_state: ['Recovery snapshot', 'Dati di ripristino', 'Datos de recuperación', 'Données de restauration'],
   field: ['Field', 'Campo', 'Campo', 'Champ'],
   changes: ['Changed fields', 'Campi modificati', 'Campos modificados', 'Champs modifiés'],
   unchanged: ['Unchanged fields', 'Campi invariati', 'Campos sin cambios', 'Champs inchangés'],

@@ -490,8 +490,11 @@ def merge_athlete_into_target(
     if not payload.confirm:
         raise HTTPException(status_code=400, detail="confirm must be true to merge athletes")
 
+    from app.merge_reversal import capture_merge, lock_merge_writes
+    lock_merge_writes(db)
     source_athlete = get_active_athlete_or_404(db, source_athlete_id)
     target_athlete = get_active_athlete_or_404(db, payload.target_athlete_id)
+    reversal_before = capture_merge(db, 'Athlete', source_athlete.id, target_athlete.id)
     preview = build_athlete_merge_preview(db, source_athlete, target_athlete)
     if not preview.can_merge:
         raise HTTPException(
@@ -571,6 +574,7 @@ def merge_athlete_into_target(
         "Athlete",
         target_athlete.id,
         before={
+            "reversal_state": reversal_before,
             "target_athlete": target_before,
             "source_athlete": source_before,
             "source_result_ids": source_result_ids,
@@ -578,6 +582,7 @@ def merge_athlete_into_target(
             "reason": payload.reason,
         },
         after={
+            "reversal_state": capture_merge(db, 'Athlete', source_athlete.id, target_athlete.id, reversal_before),
             "target_athlete": model_snapshot(target_athlete),
             "source_athlete": model_snapshot(source_athlete),
             "moved_results": moved_results,

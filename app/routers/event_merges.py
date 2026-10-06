@@ -135,6 +135,8 @@ def merge_event(source_event_id: int, payload: EventMergeCommitRequest,
             raise HTTPException(status_code=409, detail=preview)
         if payload.preview_token != preview['preview_token']:
             raise HTTPException(status_code=409, detail='Event merge preview is stale. Generate a new preview.')
+        from app.merge_reversal import capture_merge
+        reversal_before = capture_merge(db, 'Event', source.id, target.id)
         moved = {}
         for model, label in ((models.Result, 'results'), (models.EventCalendarEntry, 'calendar_entries')):
             moved[label] = db.query(model).filter(model.event_id == source.id).update({model.event_id: target.id}, synchronize_session=False)
@@ -205,8 +207,9 @@ def merge_event(source_event_id: int, payload: EventMergeCommitRequest,
                 job.candidates = []
         db.flush()
         add_audit_log(db, admin, 'merge', 'Event', target.id,
-                      before={**before, 'reason': payload.reason},
-                      after={'source_event': model_snapshot(source), 'target_event': model_snapshot(target), 'moved': moved})
+                      before={**before, 'reason': payload.reason, 'reversal_state': reversal_before},
+                      after={'source_event': model_snapshot(source), 'target_event': model_snapshot(target), 'moved': moved,
+                             'reversal_state': capture_merge(db, 'Event', source.id, target.id, reversal_before)})
         add_security_alert(db, admin, f'Security: {admin.email} merged event #{source.id} into #{target.id}.', related_event_id=target.id)
         db.commit()
         return {'merged': True, 'target_event': model_snapshot(target), 'deleted_source_event_id': source.id, 'moved': moved}

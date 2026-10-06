@@ -70,6 +70,7 @@ def main():
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
                 payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
+                payload.append({**payload[0], 'id': 93, 'action': 'merge'})
             elif path == "/data-suggestions/":
                 payload = [
                     {"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "status": "pending", "source_title": "World Gymnastics Athlete Profile", "source_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=1"},
@@ -528,10 +529,15 @@ def main():
                 page.locator('#adminAuditForm button[type=submit]').click()
                 page.locator('#adminAudit .account-notification').first.wait_for()
                 page.locator('#adminAudit .admin-revision-group > summary').first.click()
-                assert page.locator('#adminAudit .admin-comparison [role=cell]').all_inner_texts() == ['ITA', 'FRA']
-                assert page.locator('#adminAudit .admin-comparison-head').inner_text().splitlines() == ['Campo', 'Prima', 'Dopo']
-                assert page.locator('[data-action=approve].admin-accept-button').count() == 2
-                assert page.locator('[data-action=revert].filter-clear-button').count() == 2
+                assert page.locator('#adminAudit .admin-comparison').first.locator('[role=cell]').all_inner_texts() == ['ITA', 'FRA']
+                assert page.locator('#adminAudit .admin-comparison-head').first.inner_text().splitlines() == ['Campo', 'Prima', 'Dopo']
+                assert page.locator('[data-action=approve].admin-accept-button').count() == 3
+                assert page.locator('[data-action=revert].filter-clear-button').count() == 3
+                undo_merge = page.locator('[data-audit="93"][data-action=revert]')
+                assert undo_merge.inner_text() == 'Annulla unione'
+                undo_merge.click()
+                assert page.locator('dialog[open] h2').inner_text() == 'Annulla unione'
+                page.locator('dialog[open] [data-cancel]').click()
                 undo = page.locator('[data-audit="92"][data-action=revert]')
                 assert undo.inner_text() == 'Annulla inserimento'
                 undo.click()
