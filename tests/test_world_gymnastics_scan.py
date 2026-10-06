@@ -241,3 +241,27 @@ def test_api_authorization_percentages_rejection_and_verified_exclusion(scan):
         db.expire_all()
         assert db.get(JOB, job_id).status == 'dismissed'
         assert db.query(models.AuditLog).count() == 1
+
+
+def test_dismiss_match_rejects_all_candidates_with_one_audit_entry(scan):
+    process_next(scan)
+    app = FastAPI(); app.include_router(router, prefix="/scan")
+    with Session(scan) as db:
+        job = db.query(JOB).filter_by(entity_type='athlete').one()
+        second = {**job.candidates[0], 'fig_id': '456', 'match_score': .7}
+        job.candidates = [*job.candidates, second]
+        db.commit()
+        admin = db.get(models.User, 1); admin._token_mfa_verified = True
+        app.dependency_overrides[get_db] = lambda: db
+        app.dependency_overrides[get_current_user] = lambda: admin
+        with TestClient(app) as client:
+            assert len(client.get(f'/scan/matches/{job.id}').json()['candidates']) == 2
+            admin.role = models.RoleEnum.USER
+            assert client.post(f'/scan/matches/{job.id}/dismiss').status_code == 403
+            admin.role = models.RoleEnum.ADMIN
+            assert client.post(f'/scan/matches/{job.id}/dismiss').json() == {'status': 'dismissed'}
+            assert client.get('/scan/matches').json()['total'] == 0
+            assert client.post(f'/scan/matches/{job.id}/dismiss').status_code == 404
+        db.refresh(job)
+        assert job.rejected_ids == ['123', '456']
+        assert db.query(models.AuditLog).filter_by(entity_type='WorldGymnasticsScanJob').count() == 1

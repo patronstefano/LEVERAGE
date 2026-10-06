@@ -21,6 +21,7 @@ def main():
     current_role = ["super_admin"]
     event_days = [None]
     full_classification_size = [0]
+    dismissed_scan_jobs = set()
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
@@ -63,6 +64,8 @@ def main():
                 payload = {"total": 1, "items": [{"id": 51, "entity_type": "athlete", "entity_id": 1, "entity_name": "Test Ada", "candidates": [{"fig_id": "123", "first_name": "Ada", "last_name": "Test", "country": "ITA", "discipline": "WAG", "match_score": .95, "profile_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=123"}]}]}
                 if parse_qs(urlparse(route.request.url).query).get('entity_type') == ['event']:
                     payload = {"total": 1, "items": [{"id": 52, "entity_type": "event", "entity_id": 1, "entity_name": "Admin test event", "candidates": [{"event_id": "456", "title": "Event candidate", "match_score": .9, "event_url": "https://www.gymnastics.sport/site/events/detail.php?id=456"}]}]}
+                payload['items'] = [item for item in payload['items'] if item['id'] not in dismissed_scan_jobs]
+                payload['total'] = len(payload['items'])
             elif path == "/admin/entities-to-complete":
                 payload = {"athletes": [{**athlete, "missing_fields": ["birth_year"]}], "events": [], "total_athletes": 1, "total_events": 0}
             elif path == "/admin/users":
@@ -123,6 +126,9 @@ def main():
                     route.fulfill(json=preview, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path.startswith('/world-gymnastics/scan/matches/') and path.endswith('/dismiss'):
+                    dismissed_scan_jobs.add(int(path.split('/')[4]))
+                    route.fulfill(json={"status": "dismissed"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ["/events/1/merge-preview", "/athletes/1/merge-preview"]:
                     kind = 'event' if path.startswith('/events/') else 'athlete'
                     route.fulfill(json={
@@ -726,11 +732,10 @@ def main():
                 assert page.locator('[data-scan-refresh]').count() == 0
                 assert '95%' in page.locator('[data-scan-job="51"] > .admin-revision-meta').inner_text()
                 assert page.locator('[data-scan-job="51"] .admin-identity-pair-grid .admin-identity-entity').count() == 2
-                page.locator('[data-scan-job="51"] summary').click()
-                assert 'Compatibilità 95%' in page.locator('[data-scan-job="51"]').inner_text()
-                assert 'wg_scan_job=51' in page.locator('[data-scan-job="51"] .admin-center-actions a').get_attribute('href')
+                assert page.locator('[data-scan-job="51"] .admin-wg-actions').inner_text() == 'Rifiuta\nVai all’atleta'
+                assert 'wg_scan_job=51' in page.locator('[data-scan-job="51"] .admin-wg-actions a').get_attribute('href')
                 page.locator('[data-wg-review-group] > summary').click()
-                assert page.locator('.admin-revisions .account-notification').count() == 2
+                assert page.locator('.admin-revisions .account-notification').count() == 1
                 assert page.locator('[data-accept="13"], [data-accept="14"]').count() == 0
                 assert page.locator('[data-accept]').evaluate('el => el.classList.contains("admin-accept-button")')
                 page.locator('[data-accept]').click()
@@ -741,6 +746,7 @@ def main():
                 page.locator('[data-review-entity="event"]').click()
                 page.locator('[data-scan-job="52"]').wait_for()
                 assert page.locator('[data-scan-action="start"]').inner_text() == 'Avvia scansione eventi'
+                assert page.locator('[data-scan-job="52"] .admin-wg-actions').inner_text() == 'Rifiuta\nVai all’evento'
                 assert '7' in page.locator('[data-scan-status]').inner_text()
                 assert page.locator('[data-scan-note]').evaluate('el => el === el.parentElement.lastElementChild && el.previousElementSibling.id === "adminRevisionSuggestions"')
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
@@ -751,7 +757,6 @@ def main():
                 page.locator('[data-scan-job="51"]').wait_for()
                 assert page.locator('[data-scan-job="52"]').count() == 0
                 assert not any(write['path'] == '/world-gymnastics/scan/control' for write in writes)
-                page.locator('[data-scan-job="51"] summary').click()
                 assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 4
                 controls = page.locator('[data-scan-controls]').bounding_box()
                 toggle = page.locator('[data-review-entity="athlete"]').locator('..').bounding_box()
@@ -766,9 +771,8 @@ def main():
                 page.wait_for_timeout(100)
                 assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
                 assert page.locator('[data-scan-status]').evaluate('el => getComputedStyle(el).gridTemplateColumns.split(" ").length') == 2
-                copy = page.locator('[data-scan-job="51"] .account-notification-copy').bounding_box()
-                actions = page.locator('[data-scan-job="51"] .account-notification-actions').bounding_box()
-                assert actions['y'] >= copy['y'] + copy['height'] + 11
+                actions = page.locator('[data-scan-job="51"] .admin-wg-actions').bounding_box()
+                assert actions['x'] + actions['width'] <= 390
                 page.screenshot(path="/tmp/leverage-wg-scan-mobile.png", full_page=True)
                 page.set_viewport_size({"width": 1440, "height": 1000})
                 page.locator('[data-scan-action="start"]').click()
@@ -779,6 +783,9 @@ def main():
                 page.locator('[data-scan-action="start"]').click()
                 page.wait_for_timeout(200)
                 assert json.loads(writes[-1]['body']) == {'action': 'start', 'entity_type': 'event'}
+                page.locator('[data-scan-job="52"] [data-scan-dismiss]').click()
+                page.locator('[data-scan-job="52"]').wait_for(state='detached')
+                assert writes[-1]['path'] == '/world-gymnastics/scan/matches/52/dismiss'
                 page.locator('[data-admin-tab="review"]').click()
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
                 page.locator('[data-review-entity="event"]').click()

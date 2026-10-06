@@ -101,3 +101,22 @@ def reject(job_id: int, payload: RejectCandidate, db: Session = Depends(get_db),
     add_audit_log(db, admin, "update", "WorldGymnasticsScanJob", job.id, before=before, after=model_snapshot(job))
     db.commit()
     return {"status": job.status}
+
+
+@router.post("/matches/{job_id}/dismiss")
+def dismiss(job_id: int, db: Session = Depends(get_db), admin=Depends(get_current_admin_user)):
+    job = available_matches(db).filter(JOB.id == job_id).with_for_update().first()
+    if not job:
+        raise HTTPException(404, "Candidate review not found")
+    before = model_snapshot(job)
+    previous = job.rejected_ids
+    rejected = sorted(set(previous + [str(c.get("fig_id", c.get("event_id"))) for c in job.candidates]))
+    changed = db.query(JOB).filter(JOB.id == job.id, JOB.rejected_ids == previous, JOB.status == "matched").update(
+        {"rejected_ids": rejected, "status": "dismissed"}, synchronize_session=False)
+    if changed != 1:
+        db.rollback()
+        raise HTTPException(409, "Candidate review changed. Reload before retrying.")
+    db.refresh(job)
+    add_audit_log(db, admin, "update", "WorldGymnasticsScanJob", job.id, before=before, after=model_snapshot(job))
+    db.commit()
+    return {"status": job.status}

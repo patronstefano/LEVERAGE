@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Azioni dirette sui riscontri World Gymnastics
+
+- Ogni riscontro mostra ora Rifiuta e Vai all'atleta (Vai all'evento per gli eventi) sulla destra. Rimossi Confronta dettagli e la relativa lista espandibile; il nome del candidato continua a collegare al profilo ufficiale.
+- Il rifiuto agisce sull'intero riscontro, anche con piu candidati, tramite una sola operazione atomica e una voce di audit. La scheda LEVERAGE resta accessibile tramite il nuovo pulsante. Verificati autorizzazione ADMIN, rimozione del record e comportamento su desktop/mobile. Nessuna scansione reale avviata.
+
 #### 2026-10-06 - Allineamento messaggi statici utenti
 
 - Allineati a destra e centrati verticalmente i messaggi statici nell'area azioni di Utenti e ruoli; eliminato il margine residuo sotto il ruolo. Su mobile messaggi a capo allineati a sinistra con l'identita. Tipografia secondaria e protezioni dei ruoli invariate.

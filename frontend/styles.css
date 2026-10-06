@@ -6006,14 +6006,9 @@ a:focus-visible > .entity-card-clickable {
 .admin-identity-pair > .admin-center-actions { grid-column: 2; grid-row: 1 / span 2; justify-content: flex-end; align-self: center; max-width: 440px; }
 .admin-identity-pair > [data-pair-details] { grid-column: 1 / -1; }
 .admin-identity-pair .admin-identity-entity p { margin: 3px 0 0; }
-.admin-wg-match > .admin-wg-comparison { display: contents; }
-.admin-wg-match > .admin-wg-comparison > summary { grid-column: 2; grid-row: 1 / span 2; align-self: center; justify-self: end; }
-.admin-wg-match > .admin-wg-comparison > .admin-center-actions { grid-column: 1 / -1; justify-content: flex-end; margin: 6px 0; }
-.admin-wg-match > .admin-wg-comparison > .account-notification { grid-column: 1 / -1; padding-block: 10px; }
 @media (max-width: 1000px) {
   .admin-identity-pair { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .admin-identity-pair > .admin-center-actions,
-  .admin-wg-match > .admin-wg-comparison > summary { grid-column: 1; grid-row: 3; justify-self: end; max-width: 100%; }
+  .admin-identity-pair > .admin-center-actions { grid-column: 1; grid-row: 3; justify-self: end; max-width: 100%; }
 }
 #adminEntityReviews [data-pair-feedback]:empty { display: none; }
 #adminEntityReviews, #adminResultReviews { padding-top: 2px; }
@@ -6063,12 +6058,6 @@ a:focus-visible > .entity-card-clickable {
 #adminWorldGymnasticsScan [data-scan-matches]:empty { display: none; }
 #adminWorldGymnasticsScan [data-scan-more] { justify-self: start; }
 #adminWorldGymnasticsScan .admin-wg-match:first-child { padding-top: 0; }
-.admin-wg-comparison > summary { display: inline-flex; list-style: none; min-height: 36px; box-sizing: border-box; padding: 0 13px; font-size: 14px; cursor: pointer; }
-.admin-wg-comparison > summary::-webkit-details-marker { display: none; }
-.admin-center .admin-wg-comparison[open] > summary,
-.admin-center .admin-wg-comparison[open] > summary:hover,
-.admin-center .admin-wg-comparison[open] > summary:focus-visible { background: var(--brand-blue); border-color: var(--brand-blue); color: #fff; }
-.admin-wg-comparison > .admin-center-actions { margin: 18px 0 12px; }
 #adminWorldGymnasticsScan .admin-revision-group + .admin-revision-group { border-top: 1px solid var(--line); }
 #adminWorldGymnasticsScan .admin-revision-group > summary { overflow-wrap: anywhere; }
 #adminWorldGymnasticsScan .admin-revision-count { display: inline-block; white-space: nowrap; }
