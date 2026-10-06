@@ -3050,6 +3050,14 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Annullamento controllato degli inserimenti anagrafici
+
+- Aggiunto "Annulla inserimento" in Audit e ripristino del Centro Super Admin per operazioni create di Athlete/Event ancora revisionabili, incluse quelle effettuate da un SUPER ADMIN. Conferma esplicita, stile rosso condiviso e traduzioni EN/IT/ES/FR.
+- Il backend usa lo stesso endpoint di annullamento, ma per create applica una cancellazione logica, senza eliminare fisicamente la scheda. L'audit originale diventa reverted; viene generata una voce revert_create approvata, con snapshot e riferimento all'operazione annullata, oltre all'avviso di sicurezza.
+- Rifiutato l'annullamento se lo snapshot corrente differisce da quello inserito, se la scheda e gia eliminata, oppure se esistono risultati collegati (anche eliminati), storico nazionalita, collegamenti calendario o contesti di inserimento risultati. Nessuna cancellazione a cascata. Preferiti e storico audit restano conservati. Il comando Ripristina esistente puo recuperare la scheda.
+- Non esteso agli inserimenti di singoli Result o ad altre entita: questi richiedono regole dedicate per punteggi aggregati e dipendenze. Restano invariati autorizzazioni SUPER ADMIN e controlli di autenticazione.
+- Test isolati su Athlete/Event: annullamento, tracciamento, ripristino, doppia richiesta, modifiche successive, risultati attivi/eliminati e storico/calendario. Test browser con dati simulati per visibilita, stile e conferma. Nessun annullamento eseguito sul database reale, in particolare l'inserimento #1579 rimane in attesa della scelta dell'utente.
+
 #### 2026-10-06 - Conferma di creazione delle nuove entita
 
 - In Centro Admin > Nuova Entita, dopo la risposta positiva del salvataggio compare "Nuovo atleta salvato" oppure "Nuovo evento salvato", con lo stile verde condiviso dei messaggi di successo e sfondo neutro.

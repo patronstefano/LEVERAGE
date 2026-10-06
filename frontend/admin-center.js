@@ -118,6 +118,8 @@ const COPY = {
   soft_delete: ["Deletion", "Eliminazione", "Eliminación", "Suppression"],
   role_update: ["Role change", "Cambio ruolo", "Cambio de rol", "Changement de rôle"],
   revert_update: ["Update reversal", "Annullamento modifica", "Reversión de cambio", "Annulation de modification"],
+  revert_create: ["Insertion reversal", "Annullamento inserimento", "Anulación de inserción", "Annulation de création"],
+  undoCreate: ["Undo insertion", "Annulla inserimento", "Anular inserción", "Annuler la création"],
   update_world_gymnastics: ["World Gymnastics update", "Aggiornamento World Gymnastics", "Actualización World Gymnastics", "Mise à jour World Gymnastics"],
   dataAthletes: ["Athletes", "Atleti", "Atletas", "Athlètes"],
   dataEvents: ["Events", "Eventi", "Eventos", "Événements"],
@@ -709,9 +711,14 @@ export async function renderAdminCenter(host) {
       onSubmit("adminAuditForm", async (params) => {
         const logs = await api("/admin/audit-logs", { params }); if (!active()) return;
         document.getElementById("adminAudit").innerHTML = logs.map((log) => `<article class="account-notification"><div class="account-notification-copy"><p><strong>#${log.id} · ${esc(text(log.entity_type))} #${log.entity_id} · ${esc(text(log.action))}</strong></p><p class="admin-revision-meta">${esc(new Date(log.created_at.endsWith('Z') ? log.created_at : `${log.created_at}Z`).toLocaleString(state.language))} · ${esc(text(log.review_status))}</p><details class="admin-revision-group"><summary>${text("details")}</summary>${report({ before: log.before_json ? JSON.parse(log.before_json) : null, after: log.after_json ? JSON.parse(log.after_json) : null })}</details>${field(`note_${log.id}`, "reason")}</div>${(log.review_status === "pending" || (log.review_status === "approved" && log.review_note === "Auto-approved super-admin operation.")) ? `<div class="account-notification-actions">${button("approve", `data-audit="${log.id}" data-action="approve"`)}${log.action === "update" && ["Athlete", "Event", "Result"].includes(log.entity_type) ? button("revert", `data-audit="${log.id}" data-action="revert"`) : ""}</div>` : ""}</article>`).join("") || emptyState();
+        for (const log of logs) {
+          if (log.action !== 'create' || !['Athlete', 'Event'].includes(log.entity_type)) continue;
+          const actions = root.querySelector(`[data-audit="${log.id}"][data-action="approve"]`)?.parentElement;
+          actions?.insertAdjacentHTML('beforeend', button('undoCreate', `data-audit="${log.id}" data-action="revert" data-confirm-label="undoCreate"`));
+        }
         root.querySelectorAll('[data-action="approve"]').forEach((b) => b.classList.add('admin-accept-button'));
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));
-        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); if (!document.querySelector('#adminAudit article')) document.getElementById('adminAudit').innerHTML = emptyState(); }));
+        root.querySelectorAll("[data-audit]").forEach((b) => b.onclick = () => confirm(b.dataset.confirmLabel || b.dataset.action, async () => { await api(`/admin/audit-logs/${b.dataset.audit}/${b.dataset.action}`, { method: "POST", body: { note: root.querySelector(`[name="note_${b.dataset.audit}"]`).value || null } }); b.closest("article").remove(); if (!document.querySelector('#adminAudit article')) document.getElementById('adminAudit').innerHTML = emptyState(); }));
       });
       onSubmit("adminRestoreForm", async (v) => confirm("restore", () => api(`/admin/${v.type}/${Number(v.id)}/restore`, { method: "PUT" })));
     }

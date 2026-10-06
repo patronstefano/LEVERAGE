@@ -69,6 +69,7 @@ def main():
                 payload = [{"id": 77, "email": "review@example.test", "role": "admin"}]
             elif path == "/admin/audit-logs":
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
+                payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None})
             elif path == "/data-suggestions/":
                 payload = [
                     {"id": 12, "entity_type": "athlete", "entity_id": 1, "field_name": "birth_year", "suggested_value": "2001", "evidence": "Official profile", "status": "pending", "source_title": "World Gymnastics Athlete Profile", "source_url": "https://www.gymnastics.sport/site/athletes/bio_detail.php?id=1"},
@@ -482,9 +483,14 @@ def main():
                 assert page.locator('.admin-user-role-actions').is_visible()
             if tab == "audit":
                 page.locator('#adminAuditForm button[type=submit]').click()
-                page.locator('#adminAudit .account-notification').wait_for()
-                assert page.locator('[data-action=approve].admin-accept-button').count() == 1
-                assert page.locator('[data-action=revert].filter-clear-button').count() == 1
+                page.locator('#adminAudit .account-notification').first.wait_for()
+                assert page.locator('[data-action=approve].admin-accept-button').count() == 2
+                assert page.locator('[data-action=revert].filter-clear-button').count() == 2
+                undo = page.locator('[data-audit="92"][data-action=revert]')
+                assert undo.inner_text() == 'Annulla inserimento'
+                undo.click()
+                assert page.locator('dialog[open] h2').inner_text() == 'Annulla inserimento'
+                page.locator('dialog[open] [data-cancel]').click()
                 assert page.locator('#adminRestoreForm').locator('..').get_attribute('class') == 'admin-tool-block'
                 page.set_viewport_size({"width": 390, "height": 844})
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')

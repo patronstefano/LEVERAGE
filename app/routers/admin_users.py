@@ -652,8 +652,9 @@ def revert_audit_log(
 ):
     audit_log = get_audit_log_or_404(db, audit_log_id)
     ensure_audit_log_can_be_reviewed(audit_log, current_user)
-    if audit_log.action != "update":
-        raise HTTPException(status_code=400, detail="Only update audit logs can be reverted")
+    undo_create = audit_log.action == "create" and audit_log.entity_type in {"Athlete", "Event"}
+    if audit_log.action != "update" and not undo_create:
+        raise HTTPException(status_code=400, detail="Only updates and athlete/event insertions can be reverted")
 
     model_class = AUDIT_REVERT_MODELS.get(audit_log.entity_type)
     if model_class is None:
@@ -663,11 +664,25 @@ def revert_audit_log(
     if not entity:
         raise HTTPException(status_code=404, detail=f"{audit_log.entity_type} not found")
 
-    snapshot = parse_snapshot(audit_log.before_json)
+    snapshot = None if undo_create else parse_snapshot(audit_log.before_json)
     before_revert = model_snapshot(entity)
     if before_revert != parse_snapshot(audit_log.after_json):
         raise HTTPException(status_code=409, detail="The record has changed since this operation. Review newer changes before reverting.")
-    if audit_log.entity_type == "Result":
+    if undo_create:
+        if entity.is_deleted:
+            raise HTTPException(status_code=409, detail="Entity is already deleted")
+        # Never cascade an insertion reversal into subsequently attached data.
+        links = [(models.Result, "athlete_id" if audit_log.entity_type == "Athlete" else "event_id")]
+        if audit_log.entity_type == "Athlete":
+            links.append((models.AthleteCountryChange, "athlete_id"))
+        else:
+            links.extend([(models.EventCalendarEntry, "event_id"), (models.ResultEntryContext, "event_id")])
+        if any(db.query(model.id).filter(getattr(model, field) == entity.id).first() for model, field in links):
+            raise HTTPException(status_code=409, detail="The entity has linked data. Review its dependencies before undoing the insertion.")
+        entity.is_deleted = True
+        entity.deleted_at = datetime.utcnow()
+        entity.deleted_by_admin_id = current_user.id
+    elif audit_log.entity_type == "Result":
         from app.result_score_corrections import SCORE_FIELDS, linked_total_updates
 
         changed = {key for key in snapshot if snapshot[key] != before_revert.get(key)}
@@ -682,7 +697,8 @@ def revert_audit_log(
                     setattr(total, key, value)
                 add_audit_log(db, current_user, "update", "Result", total.id,
                               before=total_before, after=model_snapshot(total))
-    apply_audit_snapshot(entity, snapshot)
+    if not undo_create:
+        apply_audit_snapshot(entity, snapshot)
     mark_audit_log_reviewed(
         audit_log,
         current_user,
@@ -692,7 +708,7 @@ def revert_audit_log(
     revert_log = add_audit_log(
         db,
         current_user,
-        "revert_update",
+        "revert_create" if undo_create else "revert_update",
         audit_log.entity_type,
         audit_log.entity_id,
         before=before_revert,
