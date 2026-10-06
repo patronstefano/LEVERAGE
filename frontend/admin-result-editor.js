@@ -50,10 +50,13 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
   const selectedEvent = document.createElement('div');
   selectedEvent.id = 'adminSelectedEvent';
   area.before(selectedEvent);
+  const downloadSlot = document.createElement('div');
+  downloadSlot.className = 'admin-editor-download-slot';
+  root.querySelector('.admin-editor-search-row').append(downloadSlot);
   const showError = (error) => { if (active()) feedback(error.message, true); };
   const updateDownload = () => {
     const dirty = exportSelection?.rows.some(row => drafts.has(row.id));
-    const button = selectedEvent.querySelector('[data-export-toggle]');
+    const button = downloadSlot.querySelector('[data-export-toggle]');
     if (button) {
       button.disabled = !exportSelection || dirty || exporting || saving > 0;
       button.setAttribute('aria-label', dirty ? label('exportPending') : label('download'));
@@ -61,20 +64,20 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
     }
   };
   const closeDownload = () => {
-    const menu = selectedEvent.querySelector('[data-export-menu]');
+    const menu = downloadSlot.querySelector('[data-export-menu]');
     if (menu) menu.hidden = true;
-    selectedEvent.querySelector('[data-export-toggle]')?.setAttribute('aria-expanded', 'false');
+    downloadSlot.querySelector('[data-export-toggle]')?.setAttribute('aria-expanded', 'false');
   };
   const dismissDownload = event => {
     if (!root.isConnected) { document.removeEventListener('pointerdown', dismissDownload); return; }
     if (!event.target.closest('.admin-editor-download')) closeDownload();
   };
   document.addEventListener('pointerdown', dismissDownload);
-  selectedEvent.addEventListener('keydown', event => {
-    if (event.key === 'Escape') { closeDownload(); selectedEvent.querySelector('[data-export-toggle]')?.focus(); }
+  downloadSlot.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { closeDownload(); downloadSlot.querySelector('[data-export-toggle]')?.focus(); }
   });
-  selectedEvent.addEventListener('focusout', () => setTimeout(() => {
-    if (!selectedEvent.contains(document.activeElement)) closeDownload();
+  downloadSlot.addEventListener('focusout', () => setTimeout(() => {
+    if (!downloadSlot.contains(document.activeElement)) closeDownload();
   }, 0));
   const loadEvent = async (event, fromLink = false) => {
     const token = ++revision;
@@ -84,12 +87,13 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
     clear.hidden = true;
     area.innerHTML = '';
     selectedEvent.innerHTML = `<article class="analytics-comparison-picker admin-editor-selected-event"><div class="analytics-comparison-selected-athlete"><div><strong>${esc(event.name)}</strong><span>${esc(event.year)} · ID ${esc(event.id)}</span></div><div class="admin-editor-event-actions"><div class="admin-editor-download"><button type="button" data-export-toggle class="quiet-button outline-command-button" aria-expanded="false" aria-controls="adminEditorDownloadOptions" disabled>${esc(label('download'))}</button><div id="adminEditorDownloadOptions" data-export-menu hidden><button type="button" class="quiet-button outline-command-button" data-export-format="csv">CSV</button><button type="button" class="quiet-button outline-command-button" data-export-format="xlsx">XLSX</button></div></div><button type="button" data-close-editor-event class="icon-button analytics-comparison-remove" aria-label="${esc(label('closeEvent'))}"><span aria-hidden="true">&times;</span></button></div></div></article>`;
-    selectedEvent.querySelector('[data-export-toggle]').onclick = event => {
-      const menu = selectedEvent.querySelector('[data-export-menu]');
+    downloadSlot.replaceChildren(selectedEvent.querySelector('.admin-editor-download'));
+    downloadSlot.querySelector('[data-export-toggle]').onclick = event => {
+      const menu = downloadSlot.querySelector('[data-export-menu]');
       menu.hidden = !menu.hidden;
       event.currentTarget.setAttribute('aria-expanded', String(!menu.hidden));
     };
-    selectedEvent.querySelectorAll('[data-export-format]').forEach(button => button.onclick = async () => {
+    downloadSlot.querySelectorAll('[data-export-format]').forEach(button => button.onclick = async () => {
       const selection = exportSelection;
       if (!selection || exporting || saving || selection.rows.some(row => drafts.has(row.id))) return;
       const version = revision, fileFormat = button.dataset.exportFormat;
@@ -110,6 +114,7 @@ export function mountResultEditor({ root, api, select, field, text, esc, bind, s
       exportSelection = null;
       closeSuggestions();
       selectedEvent.innerHTML = '';
+      downloadSlot.replaceChildren();
       area.innerHTML = '';
       feedback('');
       input.focus();

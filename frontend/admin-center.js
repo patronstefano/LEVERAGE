@@ -1,5 +1,5 @@
 import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-field-options.js?v=country-names-20261001';
-import { mountResultEditor } from './admin-result-editor.js?v=classification-export-20261006';
+import { mountResultEditor } from './admin-result-editor.js?v=export-search-row-20261006';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-load-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';

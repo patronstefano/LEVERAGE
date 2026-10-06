@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-06 - Scarica sulla riga di ricerca dell'Editor Risultati
+
+- Spostato Scarica a destra sulla riga Cerca eventi, sopra la X della scheda.
+  Ripristinate dimensioni standard dei pulsanti: altezza 36 px, testo 14 px,
+  arrotondamento control-radius. Menu CSV/XLSX ancora largo quanto il pulsante.
+- Il comando scompare chiudendo l'evento. Invariati controlli sulle modifiche
+  non salvate ed esportazione. Test geometrici desktop/mobile aggiornati.
+
 ## 2026-10-06 - Dimensioni del download Editor Risultati
 
 - Pulsante Scarica alto 28 px come la X adiacente, con arrotondamento coerente.

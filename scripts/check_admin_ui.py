@@ -541,8 +541,11 @@ def main():
                     download_box = download_button.bounding_box()
                     close_box = page.locator('[data-close-editor-event]').bounding_box()
                     menu_box = page.locator('[data-export-menu]').bounding_box()
-                    assert abs(download_box['height'] - close_box['height']) < 1
-                    assert abs(download_box['y'] - close_box['y']) < 1
+                    search_box = page.locator('#adminEventSearchForm').bounding_box()
+                    assert download_box['height'] == 36
+                    assert abs(download_box['y'] - search_box['y']) < 1
+                    assert abs(download_box['x'] + download_box['width'] - close_box['x'] - close_box['width']) < 2
+                    assert download_box['y'] + download_box['height'] < close_box['y']
                     assert abs(menu_box['width'] - download_box['width']) < 1
                     assert abs(menu_box['x'] - download_box['x']) < 1
                     assert page.locator('[data-export-format]').evaluate_all('buttons => buttons.every(b => b.scrollWidth <= b.clientWidth)')
@@ -706,6 +709,7 @@ def main():
                 page.locator('[data-close-editor-event]').click()
                 assert page.locator('#adminClassificationEditor').inner_text() == ''
                 assert page.locator('#adminSelectedEvent').inner_text() == ''
+                assert page.locator('[data-export-toggle]').count() == 0
                 assert page.locator('[name=event_search]').input_value() == ''
                 page.locator('[name=event_search]').fill('Admin')
                 page.locator('#adminEventOptions button').first.click()

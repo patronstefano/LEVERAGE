@@ -4,7 +4,7 @@ Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
 ## Export Editor Risultati - 6 ottobre 2026
 
-Scarica, accanto alla X dell'evento aperto, offre CSV e XLSX della classifica
+Scarica, sulla riga Cerca eventi a destra sopra la X, offre CSV e XLSX della classifica
 selezionata. Il file usa i dati salvati: occorre salvare o annullare le modifiche
 locali prima del download. Sono inclusi tutti i record, non solo la prima pagina.
 
