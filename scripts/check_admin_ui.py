@@ -594,6 +594,18 @@ def main():
                 assert 'Possibili atleti duplicati' in page.locator('#adminEntityReviews').inner_text()
                 page.locator('[data-pair-compare]').click()
                 page.locator('.admin-pair-warning').wait_for()
+                compare = page.locator('[data-pair-compare]')
+                assert compare.get_attribute('aria-expanded') == 'true'
+                compare.hover()
+                page.wait_for_timeout(200)
+                assert compare.evaluate('el => getComputedStyle(el).backgroundColor') == 'rgb(25, 23, 71)'
+                compare.click()
+                assert compare.get_attribute('aria-expanded') == 'false'
+                assert page.locator('[data-pair-details]').is_hidden()
+                page.wait_for_timeout(200)
+                assert compare.evaluate('el => getComputedStyle(el).backgroundColor') != 'rgb(25, 23, 71)'
+                compare.click()
+                assert compare.get_attribute('aria-expanded') == 'true'
                 assert 'Valuta unione' in page.locator('#adminEntityReviews').inner_text()
                 assert '95%' in page.locator('[data-scan-job="51"] summary').inner_text()
                 page.locator('[data-scan-job="51"] summary').click()

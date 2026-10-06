@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Stato attivo del confronto nelle Revisioni
+
+- "Confronta dettagli" mantiene sfondo blu Leverage e testo bianco mentre il pannello e aperto, anche al passaggio del mouse e con focus da tastiera. Richiudendo torna allo stile neutro; stato sincronizzato con aria-expanded, anche alla riapertura dei dettagli gia caricati.
+- Test browser esteso ad apertura, chiusura, riapertura e colore attivo. Nessuna variazione a dati o confronti backend.
+
 #### 2026-10-06 - Tipografia condivisa nella topbar
 
 - Rimossa la dimensione specifica 14px del pulsante Esci: Esci e Area personale condividono ora famiglia, dimensione, peso e interlinea tramite la stessa classe. Invariati posizione, dimensioni esterne e comportamento.

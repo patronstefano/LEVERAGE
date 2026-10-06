@@ -3,7 +3,7 @@ import { athleteFieldOptions as localizedAthleteFieldOptions } from './athlete-f
 import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-20261001';
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
-import { mountEntityReviews } from './admin-entity-reviews.js?v=20261006';
+import { mountEntityReviews } from './admin-entity-reviews.js?v=compare-active-20261006';
 import { createAdminReport } from './admin-reports.js?v=20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {

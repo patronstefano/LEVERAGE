@@ -54,6 +54,7 @@ export async function mountEntityReviews({root, kind, api, esc, language, active
         const path = `/admin/entity-duplicates/${kind}/${pair.left.id}/${pair.right.id}`;
         const details = node.querySelector('[data-pair-details]');
         const compare = node.querySelector('[data-pair-compare]');
+        compare.setAttribute('aria-expanded', 'false');
         compare.onclick = async () => {
           if (details.innerHTML) { details.hidden = !details.hidden; compare.setAttribute('aria-expanded', String(!details.hidden)); return; }
           compare.disabled = true;
