@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Stato vuoto World Gymnastics non contraddittorio
+
+- Eliminato il messaggio Nessun elemento dalla lista secondaria dei suggerimenti World Gymnastics quando e vuota: il blocco viene nascosto, senza interferire con i riscontri della scansione. Visibilita ricalcolata al cambio Atleti/Eventi e dopo accettazione/rifiuto; contatori, scansione e avviso finale invariati.
+- Verificato nel browser che i riscontri restino visibili dopo l'esaurimento dei suggerimenti e nel passaggio agli eventi, senza messaggi di lista vuota fuorvianti. Nessuna scansione reale avviata o interrotta.
+
 #### 2026-10-06 - Audit e ripristino senza pulsante Carica
 
 - Eliminato Carica: lista iniziale automatica, aggiornamento al cambio di entita/stato e durante la digitazione del Leverage ID (180ms). Protezione dalle risposte obsolete e mantenimento dell'invio da tastiera. Nessun cambiamento alle autorizzazioni, approvazioni o annullamenti.

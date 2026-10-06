@@ -635,7 +635,7 @@ export async function renderAdminCenter(host) {
         const groups = [...list.querySelectorAll('[data-wg-review-group]')];
         groups.forEach((group) => { group.hidden = group.dataset.reviewKind !== reviewEntity; });
         list.querySelector('.empty-state')?.remove();
-        if (!groups.some((group) => !group.hidden)) list.insertAdjacentHTML('beforeend', empty());
+        list.hidden = !groups.some((group) => !group.hidden);
       };
       const selectReviewEntity = async (kind) => {
         reviewEntity = kind;

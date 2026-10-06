@@ -728,7 +728,9 @@ def main():
                 assert page.locator('[data-accept="13"], [data-accept="14"]').count() == 0
                 assert page.locator('[data-accept]').evaluate('el => el.classList.contains("admin-accept-button")')
                 page.locator('[data-accept]').click()
-                page.locator('#adminRevisionSuggestions .empty-state').wait_for()
+                page.locator('#adminRevisionSuggestions').wait_for(state='hidden')
+                assert page.locator('#adminRevisionSuggestions .empty-state').count() == 0
+                assert page.locator('[data-scan-job="51"]').is_visible()
                 assert json.loads(writes[-1]['body']) == {'value': '2001'}
                 page.locator('[data-review-entity="event"]').click()
                 page.locator('[data-scan-job="52"]').wait_for()
@@ -737,7 +739,8 @@ def main():
                 assert page.locator('[data-scan-note]').evaluate('el => el === el.parentElement.lastElementChild && el.previousElementSibling.id === "adminRevisionSuggestions"')
                 assert page.locator('[data-review-entity="event"]').get_attribute('aria-pressed') == 'true'
                 assert page.locator('[data-scan-job="51"]').count() == 0
-                assert page.locator('#adminRevisionSuggestions .empty-state').is_visible()
+                assert page.locator('#adminRevisionSuggestions').is_hidden()
+                assert page.locator('#adminRevisionSuggestions .empty-state').count() == 0
                 page.locator('[data-review-entity="athlete"]').click()
                 page.locator('[data-scan-job="51"]').wait_for()
                 assert page.locator('[data-scan-job="52"]').count() == 0
