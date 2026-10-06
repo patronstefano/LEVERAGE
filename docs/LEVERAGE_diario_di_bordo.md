@@ -3050,6 +3050,12 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Anteprima Unione Entita compatta e affiancata
+
+- Adottato lo stesso impianto del confronto Revisioni/Audit: a sinistra l'entita da unire, a destra quella da mantenere, sia per atleti sia per eventi. Identita essenziale e conteggio risultati leggibili senza snapshot tecnici; su mobile le colonne si dispongono verticalmente.
+- Distinzione semantica rispetto all'audit: si confrontano sorgente e destinazione prima dell'unione, non un ipotetico Prima/Dopo. Blocchi sempre espliciti, conflitti consultabili e conseguenze aggiuntive raccolte nei dettagli dell'unione.
+- Nessuna modifica alla logica backend, al token di anteprima, alla conferma o al ripristino. Test browser con API simulate per entrambe le entita; nessuna unione reale effettuata.
+
 #### 2026-10-06 - Audit compatto affiancato come nelle Revisioni
 
 - Sostituita la tabella tecnica dell'audit con due colonne Prima / Dopo nello stesso impianto del confronto nelle Revisioni. Pulsante "Confronta dettagli" con stato aperto blu Leverage; disposizione verticale su mobile.

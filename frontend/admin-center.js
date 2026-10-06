@@ -4,7 +4,7 @@ import { mountResultEditor } from './admin-result-editor.js?v=admin-validation-2
 import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=scan-labels-20261006';
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=compare-active-20261006';
-import { createAdminReport } from './admin-reports.js?v=compact-audit-20261006';
+import { createAdminReport } from './admin-reports.js?v=compact-merge-20261006';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'

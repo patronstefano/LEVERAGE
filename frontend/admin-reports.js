@@ -17,6 +17,12 @@ const LABELS = {
   can_merge: ['Merge allowed', 'Unione consentita', 'Unión permitida', 'Fusion autorisée'],
   blockers: ['Blocking issues', 'Problemi bloccanti', 'Problemas bloqueantes', 'Problèmes bloquants'],
   warnings: ['Warnings', 'Avvisi', 'Avisos', 'Avertissements'],
+  blocking_reasons: ['Blocking issues', 'Problemi bloccanti', 'Problemas bloqueantes', 'Problèmes bloquants'],
+  result_conflicts: ['Conflicting results', 'Risultati in conflitto', 'Resultados en conflicto', 'Résultats en conflit'],
+  merge_effects: ['Merge details', 'Effetti dell’unione', 'Detalles de la unión', 'Détails de la fusion'],
+  metadata_to_copy: ['Data to copy', 'Dati da trasferire', 'Datos que transferir', 'Données à transférer'],
+  metadata_differences: ['Different data', 'Dati differenti', 'Datos diferentes', 'Données différentes'],
+  verification_requires_reconfirmation: ['Verification must be reconfirmed', 'Verifica da riconfermare', 'Verificación por confirmar', 'Vérification à reconfirmer'],
   rows: ['Source rows', 'Righe sorgente', 'Filas de origen', 'Lignes source'],
   id: ['Leverage ID', 'Leverage ID', 'Leverage ID', 'Leverage ID'],
   athlete_id: ['Athlete ID', 'ID atleta', 'ID atleta', 'ID athlète'],
@@ -55,8 +61,26 @@ export function createAdminReport({text, esc, language}) {
   const report = (value, key = '') => {
     if (value == null || typeof value !== 'object') return scalar(value, key);
     if (!Array.isArray(value) && Object.keys(value).length === 2 && 'before' in value && 'after' in value) return comparison(value.before, value.after);
+    if ('can_merge' in value && (value.source_athlete || value.source_event)) return mergePreview(value);
     if (Array.isArray(value)) return value.length ? `<ol class="admin-report-list">${value.map((entry, i) => `<li>${entry && typeof entry === 'object' ? disclosure([entry.name || [entry.last_name, entry.first_name].filter(Boolean).join(' ') || label('item'), entry.id != null ? `#${entry.id}` : i + 1].join(' · '), report(entry)) : report(entry, key)}</li>`).join('')}</ol>` : `<span class="admin-report-muted">${esc(text('empty'))}</span>`;
     return `<dl class="admin-report">${Object.entries(value).map(([field, entry]) => `<div${entry && typeof entry === 'object' ? ' class="admin-report-group"' : ''}>${entry && typeof entry === 'object' ? `<dt>${esc(label(field))}</dt><dd>${disclosure(label(field), report(entry, field), Array.isArray(entry) ? entry.length : null)}</dd>` : `<dt>${esc(label(field))}</dt><dd>${report(entry, field)}</dd>`}</div>`).join('')}</dl>`;
+  };
+  const mergePreview = preview => {
+    const kind = preview.source_athlete ? 'athlete' : 'event';
+    const fields = ['id', 'discipline', 'country', 'birth_date', 'birth_year', 'year', 'category', 'start_date', 'end_date', 'location', 'world_gymnastics_athlete_id', 'world_gymnastics_event_id'];
+    const source = preview[`source_${kind}`], target = preview[`target_${kind}`];
+    const visibleFields = fields.filter(key => [source, target].some(row => row?.[key] != null && row[key] !== ''));
+    const side = (row, role) => {
+      const name = [row?.last_name, row?.first_name].filter(Boolean).join(' ') || row?.name || label('missing');
+      const values = Object.fromEntries(visibleFields.map(key => [key, row?.[key] ?? null]));
+      values.results_count = preview[`${role}_result_count`] ?? null;
+      return `<section class="admin-audit-side"><h3>${esc(label(`${role}_${kind}`))}</h3><div class="admin-audit-entity"><strong>${esc(name)}</strong>${report(values)}</div></section>`;
+    };
+    const omitted = new Set(['source_athlete', 'target_athlete', 'source_event', 'target_event', 'source_result_count', 'target_result_count', 'can_merge', 'preview_token', 'blocking_reasons', 'result_conflicts']);
+    const effects = Object.fromEntries(Object.entries(preview).filter(([key, value]) => !omitted.has(key) && value != null && value !== false && value !== 0 && value !== '' && (typeof value !== 'object' || Object.keys(value).length)));
+    const blockers = preview.blocking_reasons?.length ? `<div class="admin-center-feedback is-error"><strong>${esc(label('blocking_reasons'))}</strong>${report(preview.blocking_reasons)}</div>` : '';
+    const conflicts = preview.result_conflicts?.length ? report({result_conflicts: preview.result_conflicts}) : '';
+    return `<div class="admin-identity-pair-grid admin-audit-comparison">${side(source, 'source')}${side(target, 'target')}</div>${report({can_merge: preview.can_merge})}${blockers}${conflicts}${Object.keys(effects).length ? disclosure(label('merge_effects'), report(effects)) : ''}`;
   };
   const comparison = (before, after) => {
     const technical = new Set(['created_at', 'updated_at', 'deleted_at', 'deleted_by_admin_id', 'world_gymnastics_verified_by_admin_id']);

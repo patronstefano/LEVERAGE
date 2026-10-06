@@ -120,7 +120,13 @@ def main():
                 elif path == "/data-suggestions/12/accept":
                     route.fulfill(json={"id": 12}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ["/events/1/merge-preview", "/athletes/1/merge-preview"]:
-                    route.fulfill(json={"can_merge": True, "preview_token": "a" * 64}, headers={"Access-Control-Allow-Origin": "*"})
+                    kind = 'event' if path.startswith('/events/') else 'athlete'
+                    route.fulfill(json={
+                        "can_merge": True, "preview_token": "a" * 64,
+                        f"source_{kind}": {"id": 1, "name": "Test Cup", "discipline": "MAG", "country": "ITA"},
+                        f"target_{kind}": {"id": 2, "name": "Test Cup", "discipline": "MAG", "country": "ITA"},
+                        "source_result_count": 12, "target_result_count": 24,
+                    }, headers={"Access-Control-Allow-Origin": "*"})
                 elif path in ['/events/1/merge', '/athletes/1/merge']:
                     key = 'target_event' if path.startswith('/events/') else 'target_athlete'
                     route.fulfill(json={"merged": True, key: {"id": 2}}, headers={"Access-Control-Allow-Origin": "*"})
@@ -303,6 +309,14 @@ def main():
                 assert writes[-1]['path'] == '/events/1/merge-preview'
                 assert json.loads(writes[-1]['body'])['target_event_id'] == 2
                 assert 'preview_token' not in page.locator('#adminMergePreview').inner_text()
+                assert page.locator('#adminMergePreview .admin-audit-side h3').all_text_contents() == ['Evento da unire', 'Evento da mantenere']
+                sides = page.locator('#adminMergePreview .admin-audit-side')
+                assert sides.nth(0).bounding_box()['x'] < sides.nth(1).bounding_box()['x']
+                assert '12' in sides.nth(0).inner_text() and '24' in sides.nth(1).inner_text()
+                page.screenshot(path='/tmp/leverage-merge-comparison.png', full_page=True)
+                page.set_viewport_size({"width": 390, "height": 844})
+                assert sides.nth(1).bounding_box()['y'] > sides.nth(0).bounding_box()['y']
+                page.set_viewport_size({"width": 1440, "height": 1000})
                 page.locator('#adminMergeForm [name=target]').fill('3')
                 assert page.locator('#adminMergeCommit').count() == 0
                 page.locator('#adminMergeAthlete').click()
@@ -316,6 +330,8 @@ def main():
                     for name, value in [('source', '1'), ('target', '2')]:
                         page.locator(f'#adminMergeForm [name={name}]').fill(value)
                     page.locator('#adminMergeForm button[type=submit]').click()
+                    page.locator('#adminMergePreview .admin-audit-comparison').wait_for()
+                    assert page.locator('#adminMergePreview .admin-audit-side').count() == 2
                     page.locator('#adminMergeCommit').click()
                     page.locator('dialog[open] [data-confirm]').click()
                     notice = page.locator('#adminMergeContent [role=status]')
@@ -525,6 +541,10 @@ def main():
                         if (node.querySelectorAll('.admin-audit-entity').length !== 4 || node.textContent.includes('reversal') || node.querySelector('details')) return false;
                         node.innerHTML = render({warnings: ['Test'], source_athlete: {id: 1, last_name: 'Test'}});
                         if (node.querySelectorAll('.admin-report-disclosure').length !== 2) return false;
+                        node.innerHTML = render({can_merge: false, source_athlete: {id: 1, first_name: 'Ada', last_name: 'Test'}, target_athlete: {id: 2, first_name: 'Ada', last_name: 'Test'}, source_result_count: 12, target_result_count: 24, blocking_reasons: ['Cannot merge <script>bad</script>'], result_conflicts: [{source_result_id: 10, target_result_id: 11}], preview_token: 'SECRET'});
+                        if (node.querySelectorAll('.admin-audit-side').length !== 2 || node.querySelector('script') || node.textContent.includes('SECRET')) return false;
+                        if (node.querySelector('.is-error').closest('details') || !node.querySelector('.is-error').textContent.includes('Cannot merge')) return false;
+                        if (node.querySelector('.admin-audit-entity strong').textContent !== 'Test Ada') return false;
                     }
                     return true;
                 }''')
