@@ -3050,6 +3050,11 @@ Restano fuori da questa modifica gli ulteriori ampliamenti dell'Area Personale (
 
 ### Rifinitura della navigazione personale
 
+#### 2026-10-06 - Conferme di creazione compatte
+
+- Ridimensionati esclusivamente i messaggi "Nuovo atleta salvato" e "Nuovo evento salvato": carattere 14px come i pulsanti, altezza base 36px, larghezza adattata al testo e spaziatura ridotta. Conservati verde, sfondo neutro e arrotondamento condiviso; nessuna variazione agli altri avvisi o al salvataggio.
+- Controllo browser esteso a dimensione carattere e altezza di entrambe le conferme.
+
 #### 2026-10-06 - Annullamento controllato degli inserimenti anagrafici
 
 - Aggiunto "Annulla inserimento" in Audit e ripristino del Centro Super Admin per operazioni create di Athlete/Event ancora revisionabili, incluse quelle effettuate da un SUPER ADMIN. Conferma esplicita, stile rosso condiviso e traduzioni EN/IT/ES/FR.

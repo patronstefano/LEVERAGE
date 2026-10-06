@@ -277,6 +277,9 @@ def main():
                     assert page.locator('#adminCreate .is-success').count() == 1
                     link = page.locator('#adminCreate a')
                     assert link.inner_text() == label
+                    notice = page.locator('#adminCreate [role=status]')
+                    assert notice.evaluate('el => getComputedStyle(el).fontSize') == link.evaluate('el => getComputedStyle(el).fontSize')
+                    assert notice.bounding_box()['height'] == 36
                     assert link.get_attribute('href').startswith(f'#/{kind}/1?from=admin&')
                     assert 'return_to=%2Fadmin%2Fentry' in link.get_attribute('href')
                     assert page.locator('#adminFeedback').inner_text() == ''
