@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Conflitti calendario senza duplicazioni visive
+
+Le righe con periodi sorgente discordanti gia rappresentate in Eventi presenti con differenze non vengono ripetute in Conflitti sorgente. Il confronto principale conserva una breve indicazione dei periodi discordanti. La corrispondenza richiede foglio, riga e identita collegata (Evento oppure voce calendario senza risultati): non si deduplica per solo nome. Restano visibili i conflitti indipendenti e le righe realmente duplicate nel file. Nessuna modifica ai controlli backend o ai blocchi di conferma importazione. Aggiunti test UI per copertura parziale, completa e voci calendario senza risultati.
+
 ## 2026-10-07 - Collegamenti delle notifiche di sicurezza
 
 Le notifiche security_alert rimandano esclusivamente ad Audit e Ripristino: rimossi i collegamenti alle schede correlate, che in caso di eliminazione non sono piu disponibili. Nessuna modifica ai riferimenti conservati nella notifica o ai collegamenti delle notifiche ordinarie. Aggiunto controllo UI sull'assenza dei link atleta/evento negli avvisi di sicurezza.

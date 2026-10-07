@@ -1752,6 +1752,31 @@ def main():
                 }''')
                 assert page.evaluate('''async () => {
                     const {mountCalendarImportRows} = await import('./admin-import-report.js');
+                    const {mountCalendarConflicts} = await import('./admin-import-report.js');
+                    for (const calendarOnly of [false, true]) {
+                        const source = {sheet: '2026', row: 10, event_name: 'Shared Cup'};
+                        const row = {...source, action: 'update_dates',
+                            [calendarOnly ? 'matched_calendar_entry_ids' : 'matched_event_ids']: [7]};
+                        const conflict = {[calendarOnly ? 'calendar_entry_id' : 'event_id']: 7,
+                            source_rows: [source, {...source, row: 11, event_name: 'Other period'}]};
+                        const preview = {rows: [row], matched_event_source_conflicts: [conflict]};
+                        const options = {preview, text: key => key, esc: value => String(value ?? ''), language: 'it', route: '#/admin/imports', viewState: {}};
+                        const root = document.createElement('div');
+                        mountCalendarImportRows({...options, root});
+                        if (root.querySelectorAll('[data-calendar-source-conflict]').length !== 1) return false;
+                        mountCalendarConflicts({...options, root, viewState: {}});
+                        if (root.textContent.includes('Shared Cup') || !root.textContent.includes('Other period')) return false;
+                        preview.rows.push({...row, row: 11});
+                        mountCalendarConflicts({...options, root, viewState: {}});
+                        if (root.innerHTML) return false;
+                        preview.duplicate_source_rows = [{...source, event_name: 'Real duplicate'}];
+                        mountCalendarConflicts({...options, root, viewState: {}});
+                        if (!root.textContent.includes('Real duplicate')) return false;
+                    }
+                    return true;
+                }''')
+                assert page.evaluate('''async () => {
+                    const {mountCalendarImportRows} = await import('./admin-import-report.js');
                     const root = document.createElement('div');
                     const rows = Array.from({length: 8}, (_, i) => ({event_name: `Review ${i}`, action: 'update_dates'}));
                     rows.unshift({event_name: 'Already identical', action: 'no_change'});

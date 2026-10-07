@@ -282,9 +282,21 @@ export function renderAthleteImportComparison({item, name, text, esc}) {
   return `<div class="admin-import-athlete-comparison"><div class="admin-identity-entity"><strong>${esc(name)}</strong></div><dl class="admin-activity-row-details"><div><dt>${esc(text('importFileCountries'))}</dt><dd>${esc(sourceCountries)}</dd></div><div><dt>${esc(text('importSavedCountries'))}</dt><dd>${esc(savedCountries)}</dd></div></dl></div>`;
 }
 
+function calendarRowHasDifferences(row) {
+  return ['update_dates', 'update_calendar_dates'].includes(row.action)
+    || (row.matched_events || []).some(event => event.name_differs || event.dates_differ);
+}
+
+function calendarConflictMatchesRow(conflict, source, row) {
+  const ids = conflict.event_id != null ? row.matched_event_ids : row.matched_calendar_entry_ids;
+  const id = conflict.event_id ?? conflict.calendar_entry_id;
+  return source.sheet === row.sheet && source.row === row.row
+    && id != null && (ids || []).includes(id);
+}
+
 export function mountCalendarImportRows({root, preview, text, esc, language, route, viewState}) {
   const allRows = preview.rows || [], pageSize = 6;
-  const different = row => ['update_dates', 'update_calendar_dates'].includes(row.action) || (row.matched_events || []).some(event => event.name_differs || event.dates_differ);
+  const different = calendarRowHasDifferences;
   const groups = [
     ['differences', 'importCalendarDifferences', allRows.filter(different)],
     ['new', preview.committed ? 'importCreatedEvents' : 'importCalendarNewEvents', allRows.filter(row => row.action === 'create_event')],
@@ -301,7 +313,9 @@ export function mountCalendarImportRows({root, preview, text, esc, language, rou
         const status = {update_calendar_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarNameOnly', create_event: preview.committed ? 'importCalendarCreated' : 'importCalendarWillCreate', skip_unmatched_historical: 'importCalendarWillSkip'}[row.action];
         const source = [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
         const matches = row.matched_events || [];
-        return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p><p class="admin-revision-meta">${esc(source)}</p></div><div class="admin-center-actions">${matches.length ? `<button type="button" class="quiet-button outline-command-button" data-calendar-compare aria-expanded="false">${esc(text('importCompare'))}</button>` : ''}${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div>${matches.length ? `<div data-calendar-comparison hidden>${matches.map(event => renderImportIdentityComparison({leftName: row.event_name, rightName: event.name, rightId: event.event_id, fields: [['importCalendarEventName', row.event_name, event.name], ['importCalendarStart', date(row.start_date), date(event.start_date)], ['importCalendarEnd', date(row.end_date), date(event.end_date)]], text, esc})).join('')}<p class="admin-stats-note">${esc(text('importCalendarNamePreserved'))}</p></div>` : ''}</article>`;
+        const sourceConflict = (preview.matched_event_source_conflicts || []).some(conflict =>
+          (conflict.source_rows || []).some(source => calendarConflictMatchesRow(conflict, source, row)));
+        return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p><p class="admin-revision-meta">${esc(source)}</p>${sourceConflict ? `<p class="admin-stats-note" data-calendar-source-conflict>${esc(text('importCalendarDateConflict'))}</p>` : ''} </div><div class="admin-center-actions">${matches.length ? `<button type="button" class="quiet-button outline-command-button" data-calendar-compare aria-expanded="false">${esc(text('importCompare'))}</button>` : ''}${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div>${matches.length ? `<div data-calendar-comparison hidden>${matches.map(event => renderImportIdentityComparison({leftName: row.event_name, rightName: event.name, rightId: event.event_id, fields: [['importCalendarEventName', row.event_name, event.name], ['importCalendarStart', date(row.start_date), date(event.start_date)], ['importCalendarEnd', date(row.end_date), date(event.end_date)]], text, esc})).join('')}<p class="admin-stats-note">${esc(text('importCalendarNamePreserved'))}</p></div>` : ''}</article>`;
       }).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-calendar-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-calendar-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
     }).join('')}`;
     if (!groups.some(([, , rows]) => rows.length) && !preview.duplicate_source_rows?.length
@@ -325,7 +339,12 @@ export function mountCalendarImportRows({root, preview, text, esc, language, rou
 
 export function mountCalendarConflicts({root, preview, text, esc, language, route, viewState}) {
   const duplicates = preview.duplicate_source_rows || [];
-  const conflicts = preview.matched_event_source_conflicts || [];
+  const differenceRows = (preview.rows || []).filter(calendarRowHasDifferences);
+  const conflicts = (preview.matched_event_source_conflicts || []).map(conflict => ({
+    ...conflict,
+    source_rows: (conflict.source_rows || []).filter(source =>
+      !differenceRows.some(row => calendarConflictMatchesRow(conflict, source, row))),
+  })).filter(conflict => conflict.source_rows.length);
   const count = duplicates.length + conflicts.length;
   if (!count) { root.innerHTML = ''; return; }
   const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '';
