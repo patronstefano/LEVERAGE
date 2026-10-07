@@ -1186,6 +1186,7 @@ def normalize_country(value, issues: list[dict], source: str, row_number: int) -
         "sheet": source,
         "row": row_number,
         "message": f"Unknown country mapping for '{raw}', using '{fallback}'",
+        "review_scope": "athletes",
     })
     return fallback
 
@@ -3367,7 +3368,7 @@ def review_import_events(db: Session, records: list[ParsedGymternetResult], deci
     for item in decisions or []:
         review_id = item.get("review_id")
         if not isinstance(review_id, str) or review_id in decisions_by_id or item.get("action") not in {"keep_separate", "match_existing", "defer"}:
-            issues.append({"severity": "error", "message": "Invalid or repeated event review decision"})
+            issues.append({"severity": "error", "message": "Invalid or repeated event review decision", "review_scope": "events"})
             continue
         decisions_by_id[review_id] = item
     stats = {"unresolved": 0, "matched": 0, "kept_separate": 0, "deferred": 0}
@@ -3406,14 +3407,14 @@ def review_import_events(db: Session, records: list[ParsedGymternetResult], deci
                 replacements[key] = target.name
                 stats["matched"] += 1
             else:
-                issues.append({"severity": "error", "message": "Invalid event review target", "review_id": review_id})
+                issues.append({"severity": "error", "message": "Invalid event review target", "review_id": review_id, "review_scope": "events"})
                 stats["unresolved"] += 1
         else:
             stats["unresolved"] += 1
         reviews.append(review)
     unknown = set(decisions_by_id) - {item["review_id"] for item in reviews}
     if unknown:
-        issues.append({"severity": "error", "message": "Event review decisions no longer match this file. Run a fresh preview."})
+        issues.append({"severity": "error", "message": "Event review decisions no longer match this file. Run a fresh preview.", "review_scope": "events"})
     resolved = [replace(record, event_name=replacements[event_lookup_key(record)])
                 if event_lookup_key(record) in replacements else record for record in records]
     return resolved, reviews, stats
@@ -3607,6 +3608,7 @@ def summarize_records(
                 "sheet": record.source_sheet,
                 "row": record.source_row,
                 "message": "Missing event year. Provide year_hint or include a year in the file/event name.",
+                "review_scope": "events",
             })
             continue
         record_country = result_represented_country_for_record(record, represented_country_overrides)

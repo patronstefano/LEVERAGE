@@ -2,6 +2,20 @@
 
 Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
+## Separazione delle revisioni import - 7 ottobre 2026
+
+- Eventi: verifiche di identita/associazione e campi evento. Nel calendario
+  comprende date, nomi e associazioni. Nessun confronto punteggio in questa parte.
+- Atleti: anagrafica, identita e nazionalita. Eventuali conflitti di country
+  riportano le nazionalita affiancate, non i punteggi del risultato coinvolto.
+- Risultati: confronti dei punteggi, componenti mancanti, fuori range, D orfani.
+  Le righe dell'editor sorgente sono limitate a questo ambito e alle D collegate.
+- Riepiloghi entita: gia presenti/non associati e verifiche identita
+  pendenti/rinviate, non conteggi di anomalie nei punteggi. Blocchi all'importazione
+  invariati e indipendenti dalla scheda in cui compare l'avviso.
+- Questa regola sostituisce la precedente ripetizione delle incongruenze
+  punteggio nei riepiloghi per atleta o evento.
+
 ## Diagnostica delle gare escluse - 7 ottobre 2026
 
 I contatori di revisione riguardano solo il perimetro attivo. Le differenze

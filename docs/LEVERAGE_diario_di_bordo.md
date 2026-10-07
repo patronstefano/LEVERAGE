@@ -1,5 +1,27 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Separazione semantica delle tre revisioni import
+
+- Decisione dell'utente: Eventi riguarda esclusivamente le entita evento
+  (nome, anno, disciplina, associazioni e date del calendario); Atleti riguarda
+  identita e campi anagrafici, inclusi nome e country. Risultati riguarda
+  punteggi discordanti, componenti mancanti, fuori range e D Score orfani.
+- Superata la precedente scelta di ripetere i confronti punteggio nei riepiloghi
+  evento/atleta: rimosse liste e contatori basati su conflicting_results e
+  source_issues da queste due sezioni. Riepiloghi distinti per gia presenti,
+  non associati, verifiche identita pendenti e rinviate (conteggi di verifiche,
+  non un presunto totale di entita con score errati).
+- Comparazioni anagrafiche limitate ai campi identita, senza tabelle punteggi.
+  Avvisi con scope esplicito instradati una sola volta alla sezione competente;
+  errori anno/associazione evento in Eventi, mappatura country e decisioni
+  atleta in Atleti. Avvisi punteggio e generici di parsing in Risultati.
+- Editor sorgente dei risultati limitato alle righe pertinenti e alle relative
+  righe D collegate. Restano invariati i blocchi di conferma, anche se l'errore
+  compare in una scheda diversa. Nessuna importazione o modifica DB effettuata.
+- Il calendario mantiene le proprie revisioni di date e associazioni evento.
+  Questa modifica non risolve il riutilizzo completo delle decisioni storiche
+  dell'import massivo, che resta un tema distinto gia documentato.
+
 ## 2026-10-07 - Posizione stato import e rinvio duplicati
 
 - Messaggio Nessuna nuova gara da importare spostato a sinistra del selettore

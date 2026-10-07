@@ -259,6 +259,7 @@ def parse_and_summarize_upload(
     if not skip_existing_events:
         records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues, defer_duplicate_reviews)
     athlete_review_items = build_athlete_match_review_items(db, records)
+    athlete_issues_start = len(parsed.issues)
     (
         athlete_resolution_ids,
         athlete_country_update_ids,
@@ -274,6 +275,8 @@ def parse_and_summarize_upload(
         parsed.issues,
         defer_duplicate_reviews,
     )
+    for issue in parsed.issues[athlete_issues_start:]:
+        issue.setdefault('review_scope', 'athletes')
     athlete_merge_keys = {**automatic_athlete_merge_keys, **athlete_merge_keys}
     athlete_canonical_names = {
         **automatic_athlete_canonical_names,

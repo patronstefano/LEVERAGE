@@ -1,12 +1,23 @@
 export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard}) {
-  const rows = preview.source_review || [];
+  const resultIssues = (preview.issues || []).filter(issue => !['events', 'athletes'].includes(issue.review_scope));
+  const sourceKeys = new Set([
+    ...(preview.conflicts || []).map(row => `${row.source_sheet}:${row.source_row}`),
+    ...resultIssues.map(row => `${row.sheet}:${row.row}`),
+    ...Object.keys(draft.source || {}),
+  ]);
+  for (const row of preview.source_review || []) {
+    if (sourceKeys.has(`${row.sheet}:${row.row}`)) {
+      for (const related of row.related_rows || []) sourceKeys.add(`${related.sheet}:${related.row}`);
+    }
+  }
+  const rows = (preview.source_review || []).filter(row => sourceKeys.has(`${row.sheet}:${row.row}`));
   if (!rows.length) { root.innerHTML = `<p class="admin-stats-note">${esc(text('importNoCorrections'))}</p>`; return {focus() {}}; }
   const keyOf = row => `${row.sheet}:${row.row}`;
   const pageSize = 6;
   let page = Math.min(draft.sourcePage || 0, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
   const pendingRows = () => rows.filter(row => draft.source[keyOf(row)]?.action !== 'exclude' && (
     (preview.conflicts || []).some(item => item.source_sheet === row.sheet && item.source_row === row.row) ||
-    (preview.issues || []).some(item => item.severity === 'error' && item.sheet === row.sheet && item.row === row.row)));
+    resultIssues.some(item => item.severity === 'error' && item.sheet === row.sheet && item.row === row.row)));
   const exclude = row => { draft.source[keyOf(row)] = {sheet: row.sheet, row: row.row, fingerprint: row.fingerprint, action: 'exclude'}; };
   const render = () => {
     const pending = pendingRows();

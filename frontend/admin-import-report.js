@@ -1,4 +1,7 @@
 export const IMPORT_COPY = {
+  importEntityChecks: ['Identity checks to resolve', 'Verifiche identità da risolvere', 'Verificaciones de identidad pendientes', 'Vérifications d’identité à résoudre'],
+  importDeferredChecks: ['Deferred identity checks', 'Verifiche identità rinviate', 'Verificaciones de identidad aplazadas', 'Vérifications d’identité reportées'],
+  importCountryChecks: ['Countries to review', 'Nazionalità da verificare', 'Nacionalidades por verificar', 'Nationalités à vérifier'],
   importReloadDetails: ['Recalculate the preview to load the comparison details.', 'Ricalcola l’anteprima per caricare i dettagli del confronto.', 'Recalcula la vista previa para cargar los detalles de comparación.', 'Recalculez l’aperçu pour charger les détails de comparaison.'],
   gymternet_orphan_dscores: ['Unmatched D-score rows in the selected import scope: {n}. Review them before importing.', 'Righe D Score senza un Final Score associato nel perimetro da importare: {n}. Da revisionare prima dell’importazione.', 'Filas D Score sin Final Score asociado en el ámbito a importar: {n}. Revísalas antes de importar.', 'Lignes D Score sans Final Score associé dans le périmètre à importer : {n}. À vérifier avant l’importation.'],
   gymternet_automatic_days: ['The file uses automatically assigned day indices to distinguish multiple performances without an explicit Day column. These are not verified calendar dates.', 'Il file utilizza indici di giorno assegnati automaticamente per distinguere più prestazioni senza una colonna Day esplicita. Non sono date di calendario verificate.', 'El archivo usa índices de día asignados automáticamente para distinguir actuaciones sin columna Day explícita. No son fechas de calendario verificadas.', 'Le fichier utilise des indices de jour attribués automatiquement pour distinguer des performances sans colonne Day explicite. Ce ne sont pas des dates vérifiées.'],
@@ -25,7 +28,7 @@ export const IMPORT_COPY = {
   importNotPresent: ['Not yet matched', 'Non ancora associati', 'Sin asociar', 'Non encore associés'],
   importWithIssues: ['With discrepancies', 'Con incongruenze', 'Con discrepancias', 'Avec incohérences'],
   importWithoutIssues: ['No discrepancies found', 'Senza incongruenze rilevate', 'Sin discrepancias detectadas', 'Sans incohérences détectées'],
-  importReviewScope: ['Counts refer to parsed results in the selected import scope. Discrepancies concern scores and source warnings; identity checks are listed separately.', 'I conteggi riguardano i risultati analizzati nel perimetro scelto. Le incongruenze riguardano punteggi e avvisi sorgente; le verifiche di identità sono elencate separatamente.', 'Los recuentos corresponden a los resultados analizados del ámbito elegido. Las discrepancias se refieren a puntuaciones y avisos; las identidades se revisan por separado.', 'Les totaux concernent les résultats analysés dans le périmètre choisi. Les incohérences portent sur les scores et signalements ; les identités sont vérifiées séparément.'],
+  importReviewScope: ['Events and Athletes concern entity identities and fields. Scores, missing components and score warnings appear only in Results.', 'Eventi e Atleti riguardano identità e campi delle entità. Punteggi, componenti mancanti e relativi avvisi compaiono solo in Risultati.', 'Eventos y Atletas tratan identidades y campos de las entidades. Las puntuaciones, componentes ausentes y avisos asociados aparecen solo en Resultados.', 'Événements et Athlètes concernent les identités et les champs des entités. Les scores, composantes absentes et signalements associés figurent uniquement dans Résultats.'],
   importDuplicateLater: ['Review duplicates', 'Revisione Duplicati', 'Revisión de Duplicados', 'Révision des Doublons'],
   importDuplicateNote: ['Review possible duplicate identities now or defer them to Duplicate Review after import.', 'Verifica ora le possibili identità duplicate oppure rinviale a Revisione Duplicati dopo l’importazione.', 'Revisa las posibles identidades duplicadas ahora o aplázalas hasta después de la importación.', 'Vérifiez les identités potentiellement dupliquées maintenant ou reportez-les après l’import.'],
   importDeferDuplicates: ['Defer all duplicate reviews', 'Tralascia tutte le revisioni duplicati', 'Aplazar todas las revisiones de duplicados', 'Reporter toutes les révisions de doublons'],
@@ -131,6 +134,11 @@ export const IMPORT_COPY = {
   same_context_different_score_after_athlete_merge: ['Athlete association produces conflicting scores', 'L’associazione dell’atleta produce punteggi in conflitto', 'La asociación del atleta produce conflictos', 'L’association de l’athlète produit des scores en conflit'],
 };
 
+export function importIssueScope(issue) {
+  if (['country_conflict_existing', 'country_conflict_in_file'].includes(issue.reason)) return 'athletes';
+  return ['events', 'athletes'].includes(issue.review_scope) ? issue.review_scope : 'results';
+}
+
 export function renderImportIssues({issues, text, esc, language, sourceRows = [], page = 0}) {
   const ordered = [...issues].sort((a, b) => Number(b.severity === 'error') - Number(a.severity === 'error'));
   const score = value => new Intl.NumberFormat(language, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(value);
@@ -149,63 +157,21 @@ export function renderImportMetrics({items, text, esc, language}) {
   return `<dl class="admin-stats-metrics admin-duplicate-recap admin-import-metrics">${items.map(([key, value]) => `<div><dt>${esc(text(key))}</dt><dd>${count(value)}</dd></div>`).join('')}</dl>`;
 }
 
-export function renderEntityImportMetrics({rows, idKey, text, esc, language}) {
-  const inconsistent = rows.filter(row => row.conflicting_results || row.source_issues).length;
+export function renderEntityImportMetrics({rows, idKey, text, esc, language, pending = 0, deferred = 0}) {
   const existing = rows.filter(row => row[idKey] != null).length;
   return renderImportMetrics({text, esc, language, items: [
     ['importPresent', existing], ['importNotPresent', rows.length - existing],
-    ['importWithIssues', inconsistent], ['importWithoutIssues', rows.length - inconsistent],
+    ['importEntityChecks', pending], ['importDeferredChecks', deferred],
   ]});
 }
 
-export function mountImportAthletes({root, preview, text, esc, report, language, route, viewState}) {
-  const summary = preview.athlete_summaries || [], pageSize = 6;
-  const rows = summary.filter(row => row.conflicting_results || row.source_issues);
-  const render = () => {
-    const page = viewState.page = Math.min(viewState.page || 0, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
-    const metrics = renderEntityImportMetrics({rows: summary, idKey: 'athlete_id', text, esc, language});
-    if (!rows.length) { root.innerHTML = metrics; return; }
-    root.innerHTML = metrics +
-      `<details class="admin-revision-group" data-import-athlete-list ${viewState.open ? 'open' : ''}><summary>${esc(text('importAthletesList'))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc([row.last_name, row.first_name].filter(Boolean).join(' '))}</strong><p class="admin-revision-meta">${esc([row.country, row.discipline, text(row.athlete_id ? 'importPresent' : 'importNotPresent')].filter(Boolean).join(' · '))}</p><p class="admin-revision-meta">${esc(text(row.conflicting_results || row.source_issues ? 'importWithIssues' : 'importWithoutIssues'))}</p></div><div class="admin-center-actions">${row.athlete_id ? `<a class="quiet-button outline-command-button" href="#/athletes/${row.athlete_id}?from=admin&return_to=${encodeURIComponent(route)}">ID ${row.athlete_id}</a>` : ''}</div></article>`).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-athlete-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-athlete-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
-    root.querySelector('[data-import-athlete-list]').ontoggle = event => { if (event.target.isConnected) viewState.open = event.target.open; };
-    root.querySelectorAll('article.admin-identity-pair').forEach((article, index) => {
-      const row = rows[page * pageSize + index];
-      const items = [
-        ...(row.conflict_indexes || []).map(i => ({conflict: preview.conflicts?.[i]})).filter(item => item.conflict),
-        ...(row.issue_indexes || []).map(i => ({issue: preview.issues?.[i]})).filter(item => item.issue),
-      ];
-      const control = document.createElement('button');
-      control.type = 'button';
-      control.className = 'quiet-button outline-command-button';
-      control.textContent = text('importCompare');
-      control.setAttribute('aria-expanded', 'false');
-      article.querySelector('.admin-center-actions').append(control);
-      const details = document.createElement('div');
-      details.dataset.pairDetails = '';
-      details.hidden = true;
-      article.append(details);
-      let detailPage = 0;
-      const renderDetails = () => {
-        details.innerHTML = items.slice(detailPage * 6, (detailPage + 1) * 6).map(item => {
-          if (item.issue) return renderImportIssues({issues: [item.issue], text, esc, language});
-          const c = item.conflict;
-          const context = [c.event_name, c.year, c.discipline, text(c.category), text(c.format), text(c.round), c.apparatus, c.day ? `${text('day')} ${c.day}` : '', text(c.reason)].filter(Boolean).join(' · ');
-          return `<div class="admin-source-comparison"><p class="admin-revision-meta">${esc(context)}</p><p class="admin-revision-meta">${esc(c.source_sheet)} · ${esc(text('importSourceRow'))} ${esc(c.source_row)}</p><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text(c.existing_result_id ? 'importDatabase' : 'previous'))}</h3>${report({score: c.existing_score, D_score: c.existing_D_score, country: c.existing_country})}</section><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({score: c.score, D_score: c.D_score, country: c.country})}</section></div></div>`;
-        }).join('') || `<p class="admin-stats-note">${esc(text('importReloadDetails'))}</p>`;
-        if (items.length > 6) {
-          details.insertAdjacentHTML('beforeend', `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-detail-page="-1" ${detailPage === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${detailPage * 6 + 1}–${Math.min((detailPage + 1) * 6, items.length)} / ${items.length}</span><button type="button" class="quiet-button outline-command-button" data-detail-page="1" ${(detailPage + 1) * 6 >= items.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>`);
-          details.querySelectorAll('[data-detail-page]').forEach(button => button.onclick = () => { detailPage += Number(button.dataset.detailPage); renderDetails(); });
-        }
-      };
-      control.onclick = () => {
-        details.hidden = !details.hidden;
-        control.setAttribute('aria-expanded', String(!details.hidden));
-        if (!details.hidden) renderDetails();
-      };
-    });
-    root.querySelectorAll('[data-athlete-page]').forEach(control => control.onclick = () => { viewState.page += Number(control.dataset.athletePage); render(); });
-  };
-  render();
+export function mountImportAthletes({root, preview, text, esc, language}) {
+  const stats = preview.athlete_match_decision_stats || {};
+  root.innerHTML = renderEntityImportMetrics({
+    rows: preview.athlete_summaries || [], idKey: 'athlete_id', text, esc, language,
+    pending: stats.unresolved ?? (preview.athlete_match_review || []).filter(row => !row.deferred).length,
+    deferred: stats.deferred || 0,
+  });
 }
 
 export function mountCalendarImportRows({root, preview, text, esc, language, route, viewState}) {
@@ -251,72 +217,14 @@ export function mountCalendarConflicts({root, preview, text, esc, language, rout
   render();
 }
 
-export function mountImportReport({root, preview: p, text, esc, report, language, route, onCorrect, viewState = {}}) {
-  const count = value => new Intl.NumberFormat(language).format(value || 0);
-  const score = (value, digits) => value == null ? '—' : new Intl.NumberFormat(language, {minimumFractionDigits: digits, maximumFractionDigits: digits}).format(value);
-  const athlete = row => [row.last_name, row.first_name].filter(Boolean).join(' ') || row.athlete_name || '';
-  const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '';
-  const context = row => [row.discipline, text(row.category), text(row.format), text(row.round), row.apparatus, row.day ? `${text('day')} ${row.day}` : ''].filter(Boolean).join(' · ');
-  const button = (label, attrs) => `<button type="button" class="quiet-button outline-command-button" ${attrs}>${esc(text(label))}</button>`;
-  const summary = p.event_summaries || [];
-  const reviewEvents = summary.filter(row => row.event_id == null || row.conflicting_results || row.source_issues);
-  const skipped = p.skipped_existing_events || [];
-  const historicDifferences = skipped.filter(row => row.differences || row.source_issues);
-  const pagination = (key) => `<div class="admin-import-pagination" data-pagination="${key}">${button('importPreviousPage', `data-prev="${key}"`)}<span data-page-label="${key}"></span>${button('importNextPage', `data-next="${key}"`)}</div>`;
-  const pageSize = 6;
-  const pages = viewState.pages ||= {events: 0, conflicts: 0, historical: 0};
-  const pageItems = (key, items) => {
-    pages[key] = Math.min(pages[key], Math.max(0, Math.ceil(items.length / pageSize) - 1));
-    const start = pages[key] * pageSize;
-    const pager = root.querySelector(`[data-pagination="${key}"]`);
-    pager.hidden = items.length <= pageSize;
-    pager.querySelector('[data-prev]').disabled = start === 0;
-    pager.querySelector('[data-next]').disabled = start + pageSize >= items.length;
-    pager.querySelector('[data-page-label]').textContent = `${start + 1}–${Math.min(start + pageSize, items.length)} / ${count(items.length)}`;
-    return items.slice(start, start + pageSize);
-  };
-  root.innerHTML = renderEntityImportMetrics({text, esc, language, idKey: 'event_id', rows: [
-    ...summary,
-  ]}) + `
-    ${skipped.length ? `<p class="admin-stats-note admin-import-historical-total"><strong>${count(skipped.length)} ${esc(text(skipped.length === 1 ? 'importHistoricalSingle' : 'importHistorical'))}</strong></p>${historicDifferences.length ? `<details class="admin-revision-group" data-import-historical><summary>${esc(text('importHistoricalDifferences'))}<span class="admin-revision-count">${count(historicDifferences.length)}</span></summary><p class="admin-stats-note">${esc(text('importHistoricalCaution'))}</p><div data-historical-rows></div>${pagination('historical')}</details>` : ''}` : ''}
-    <details class="admin-revision-group" data-import-event-list><summary>${esc(text('importEvents'))}<span class="admin-revision-count">${count(reviewEvents.length)}</span></summary><div data-import-events></div>${pagination('events')}</details>
-    `;
-  for (const name of ['event-list', 'historical']) {
-    const group = root.querySelector(`[data-import-${name}]`);
-    if (!group) continue;
-    group.open = Boolean(viewState[name]);
-    group.ontoggle = () => { if (group.isConnected) viewState[name] = group.open; };
-  }
-  const list = root.querySelector('[data-import-events]');
-
-  const eventDetails = event => `<h3>${esc(text('importGroups'))}</h3><div class="admin-import-table-scroll"><table class="admin-import-table"><thead><tr><th>${esc(text('importGroups'))}</th>${['importExisting', 'importNew', 'importConflicts', 'importFileDuplicates'].map(key => `<th>${esc(text(key))}</th>`).join('')}</tr></thead><tbody>${event.groups.map(group => `<tr><td>${esc(context(group))}</td>${['existing_results', 'new_results', 'conflicting_results', 'duplicate_file_results'].map(key => `<td>${count(group[key])}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${event.new_results_preview.length ? `<h3>${esc(text('importSample'))}</h3><div class="admin-import-table-scroll"><table class="admin-import-table"><thead><tr><th>${esc(text('Athlete'))}</th><th>${esc(text('importGroups'))}</th><th>Final Score</th><th>D Score</th></tr></thead><tbody>${event.new_results_preview.map(row => `<tr><td>${esc(athlete(row))}<span class="admin-revision-meta"> · ${esc(row.country || '')}</span></td><td>${esc(context(row))}</td><td>${score(row.score, 3)}</td><td>${score(row.D_score, 1)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
-  const toggle = (button, details, html) => {
-    const open = details.hidden;
-    if (open && !details.innerHTML) details.innerHTML = html();
-    details.hidden = !open;
-    button.setAttribute('aria-expanded', String(open));
-  };
-  const renderEvents = () => {
-    const events = reviewEvents;
-    list.innerHTML = pageItems('events', events).map((event, i) => {
-      const title = `${esc(event.event_name)}${event.event_name.includes(String(event.year)) ? '' : ` · ${event.year}`}`;
-      return `<article class="admin-identity-pair admin-import-event"><div class="admin-identity-entity"><strong>${title}</strong><p class="admin-revision-meta">${esc(text(event.event_id ? 'importPresent' : 'importNotPresent'))}${event.start_date ? ` · ${esc(date(event.start_date))}${event.end_date && event.end_date !== event.start_date ? ` – ${esc(date(event.end_date))}` : ''}` : ''}</p><p class="admin-revision-meta">${esc(text(event.conflicting_results || event.source_issues ? 'importWithIssues' : 'importWithoutIssues'))}</p></div><div class="admin-center-actions">${event.event_id ? `<a class="quiet-button outline-command-button" href="#/events/${event.event_id}?from=admin&return_to=${encodeURIComponent(route)}">ID ${event.event_id}</a>` : ''}${button('importCompare', `data-import-event="${i}" aria-expanded="false"`)}</div><div data-pair-details hidden></div></article>`;
-    }).join('') || `<div class="empty-state">${esc(text('empty'))}</div>`;
-
-    list.querySelectorAll('[data-import-event]').forEach(control => {
-      control.onclick = () => toggle(control, control.closest('article').querySelector('[data-pair-details]'), () => eventDetails(events[pages.events * pageSize + Number(control.dataset.importEvent)]));
-    });
-  };
-
-  renderEvents();
-  const renderHistorical = () => {
-    const rows = root.querySelector('[data-historical-rows]');
-    if (rows) rows.innerHTML = pageItems('historical', historicDifferences).map(row => `<article class="admin-import-historical-row"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(text('importDifferences'))}: ${count(row.differences)} · ${esc(text('importIssueList'))}: ${count(row.source_issues)}</p></article>`).join('');
-  };
-  renderHistorical();
-  root.querySelectorAll('[data-prev], [data-next]').forEach(control => control.onclick = () => {
-    const key = control.dataset.prev || control.dataset.next;
-    pages[key] += control.dataset.prev ? -1 : 1;
-    ({events: renderEvents, historical: renderHistorical})[key]();
+export function mountImportReport({root, preview, text, esc, language}) {
+  const stats = preview.event_match_decision_stats || {};
+  root.innerHTML = renderEntityImportMetrics({
+    rows: preview.event_summaries || [], idKey: 'event_id', text, esc, language,
+    pending: stats.unresolved ?? (preview.event_match_review || []).filter(row => !row.deferred).length,
+    deferred: stats.deferred || 0,
   });
+  const skipped = preview.skipped_existing_events || [];
+  if (skipped.length) root.insertAdjacentHTML('beforeend',
+    `<p class="admin-stats-note admin-import-historical-total"><strong>${new Intl.NumberFormat(language).format(skipped.length)} ${esc(text(skipped.length === 1 ? 'importHistoricalSingle' : 'importHistorical'))}</strong></p>`);
 }

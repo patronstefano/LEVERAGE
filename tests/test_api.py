@@ -9418,6 +9418,16 @@ def test_gymternet_parser_skips_dscore_that_creates_invalid_execution_estimate()
     assert any("invalid estimated E score" in issue["message"] for issue in issues)
 
 
+def test_gymternet_identity_warnings_have_entity_scope():
+    from app.gymternet_import import normalize_country, review_import_events
+    issues = []
+    normalize_country('Unmapped country', issues, 'MAG', 2)
+    assert issues[0]['review_scope'] == 'athletes'
+    with SessionLocal() as db:
+        review_import_events(db, [], [{'action': 'invalid'}], issues)
+    assert all(issue['review_scope'] == 'events' for issue in issues[1:])
+
+
 def test_gymternet_country_aliases_cover_results_files():
     from app.gymternet_import import parse_gymternet_file
 
