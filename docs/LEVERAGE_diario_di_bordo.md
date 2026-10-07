@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Presentazione della revisione identita rinviata
+
+Rinvia tutta la revisione duplicati atleta chiude il relativo contenitore e porta il contatore a zero, senza modificare le revisioni nazionalita. Quando non restano revisioni atleta pendenti, Nessun atleta da verificare viene posizionato immediatamente sopra il contenitore identita, mantenendo lo stile condiviso. Riprendi revisione riapre il contenitore. Test UI su chiusura, contatore e ordine del messaggio rispetto alla sezione.
+
 ## 2026-10-07 - Rinvii identita e nazionalita indipendenti
 
 Il rinvio globale delle revisioni duplicati atleta non include piu possible_athlete_country_change e possible_athlete_identity_collision, che appartengono alla revisione nazionalita. Corretto il backend sia per il parametro specifico atleta sia per quello legacy globale. Le decisioni esplicite sulla nazionalita restano valide e indipendenti; il relativo comando collettivo non modifica il rinvio delle identita duplicate. Il frontend mantiene visibile la sezione nazionalita e il suo conteggio anche quando le identita sono rinviate. Il controllo di completamento per il ricalcolo automatico continua a considerare pendenti le nazionalita senza decisione. Nessuna modifica ai dati salvati. Test dei due versi di indipendenza e del conteggio frontend.

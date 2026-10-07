@@ -1086,11 +1086,15 @@ def main():
                     page.locator('dialog[open] [data-confirm]').click()
                     page.locator('dialog[open]').wait_for(state='detached')
                     assert len(writes) == pending_requests
-                    assert 'Riprendi revisione duplicati' in page.locator(f'[data-defer-duplicates={kind}]').inner_text()
+                    assert 'Riprendi revisione duplicati' in page.locator(f'[data-defer-duplicates={kind}]').text_content()
                     if kind == 'event':
                         page.locator('#adminReviewPreview').click()
                     else:
                         assert page.locator('[data-import-empty=athletes]').inner_text() == 'Nessun atleta da verificare.'
+                        identity_group = page.locator('[data-import-group=athlete]')
+                        assert not identity_group.evaluate('el => el.open')
+                        assert identity_group.locator('summary .admin-revision-count').text_content() == '0'
+                        assert page.locator('[data-import-empty=athletes]').evaluate("el => el.nextElementSibling?.dataset.importGroup === 'athlete'")
                         page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                         assert len(writes) == pending_requests + 1
                         page.wait_for_timeout(700)

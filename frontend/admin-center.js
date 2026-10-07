@@ -1027,7 +1027,7 @@ export async function renderAdminCenter(host) {
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
-      ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
+      ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', isDeferred('athlete') ? 0 : athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
       ${!p.committed && athleteCountryReviews.length ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${issueErrors.length && (draft.kind !== 'gymternet' || p.committed) ? `<div data-import-issues>${renderImportIssues({issues: issueErrors, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</div>` : ''}
@@ -1210,6 +1210,7 @@ export async function renderAdminCenter(host) {
         const kind = control.dataset.deferDuplicates;
         const stage = () => {
           draft.pendingParams = {...draft.pendingParams, [`defer_${kind}_reviews`]: !isDeferred(kind)};
+          if (kind === 'athlete') draft.reviewOpen.athlete = isDeferred(kind);
           markChanged(); showImport();
         };
         if (isDeferred(kind)) stage();
@@ -1263,6 +1264,11 @@ export async function renderAdminCenter(host) {
         const message = section?.querySelector(`[data-import-empty=${scope}]`);
         if (pending[scope]) message?.remove();
         else if (section && !message) section.insertAdjacentHTML('beforeend', `<div class="admin-center-feedback" data-import-empty="${scope}" role="status">${esc(text(label))}</div>`);
+        if (scope === 'athletes' && !pending[scope]) {
+          const group = section?.querySelector('[data-import-group=athlete]');
+          const empty = section?.querySelector('[data-import-empty=athletes]');
+          if (group && empty) group.before(empty);
+        }
       }
       clearTimeout(draft.autoPreviewTimer);
       const revision = draft.decisionRevision || 0;
