@@ -5932,6 +5932,64 @@ def test_admin_event_result_reminders_are_admin_only_and_create_notifications_on
     assert duplicate_notify_response.json()["created_notifications"] == 0
 
 
+def test_calendar_import_recognizes_calendar_only_events_without_results():
+    client.post('/auth/register', json={'email': 'calendar_only@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f'Bearer {login_as_admin("calendar_only@example.com")}'}
+    with SessionLocal() as db:
+        entry = models.EventCalendarEntry(name='Ifact Norges Cup 1', year=2026,
+            start_date=date(2026, 4, 18), end_date=date(2026, 4, 19))
+        db.add(entry)
+        db.commit()
+        entry_id = entry.id
+    def upload(dates, endpoint='preview', skip=False):
+        content = make_calendar_workbook({2026: [(dates, 'Ifact Norges Cup 1')]})
+        response = client.post(f'/imports/calendar/{endpoint}?year=2026&skip_existing_events={str(skip).lower()}',
+            headers=headers, files={'file': ('Calendar.xlsx', content.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')})
+        assert response.status_code == 200, response.text
+        return response.json()
+    same = upload('Apr 18-19')
+    assert same['would_create_events'] == 0
+    assert same['already_up_to_date_events'] == 1
+    assert same['rows'][0]['action'] == 'no_change'
+    assert same['rows'][0]['matched_calendar_entry_ids'] == [entry_id]
+    assert upload('Apr 18-19', 'commit')['created_events'] == 0
+    changed = upload('Apr 20-21')
+    assert changed['rows'][0]['action'] == 'update_calendar_dates'
+    assert changed['rows'][0]['matched_events'][0]['start_date'] == '2026-04-18'
+    assert upload('Apr 20-21', 'commit', skip=True)['updated_events'] == 0
+    with SessionLocal() as db:
+        assert db.get(models.EventCalendarEntry, entry_id).start_date == date(2026, 4, 18)
+    assert upload('Apr 20-21', 'commit')['updated_events'] == 1
+    assert upload('Apr 20-21')['already_up_to_date_events'] == 1
+    with SessionLocal() as db:
+        assert db.query(models.Event).count() == 0
+        assert db.query(models.EventCalendarEntry).count() == 1
+        assert db.get(models.EventCalendarEntry, entry_id).event_id is None
+        assert db.query(models.AuditLog).filter_by(entity_type='EventCalendarEntry', entity_id=entry_id).count() == 1
+        log_id = db.query(models.AuditLog).filter_by(entity_type='EventCalendarEntry', entity_id=entry_id).one().id
+    reverted = client.post(f'/admin/audit-logs/{log_id}/revert', json={}, headers=headers)
+    assert reverted.status_code == 200, reverted.text
+    with SessionLocal() as db:
+        assert db.get(models.EventCalendarEntry, entry_id).start_date == date(2026, 4, 18)
+
+
+def test_calendar_import_uses_linked_calendar_alias_without_results():
+    from app.calendar_import import CalendarImportRow, summarize_calendar_import
+    with SessionLocal() as db:
+        event = models.Event(name='Canonical Cup', year=2026, discipline=models.EventDisciplineEnum.MAG,
+            category=models.EventCategoryEnum.SENIOR, level=models.LevelEnum.INTERNATIONAL_EVENT,
+            start_date=date(2026, 1, 1), end_date=date(2026, 1, 2))
+        db.add(event)
+        db.flush()
+        db.add(models.EventCalendarEntry(name='Reviewed source alias', event_id=event.id, year=2026,
+            start_date=event.start_date, end_date=event.end_date))
+        db.commit()
+        row = CalendarImportRow('2026', 2, 2026, 'Jan 1-2', 'Reviewed source alias', event.start_date, event.end_date)
+        summary = summarize_calendar_import(db, [row], [], 2026)
+        assert summary['would_create_events'] == 0
+        assert summary['rows'][0]['matched_event_ids'] == [event.id]
+
+
 def test_calendar_import_skip_existing_excludes_conflicts_and_preserves_dates():
     client.post('/auth/register', json={'email': 'calendar_scope@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('calendar_scope@example.com')}"}

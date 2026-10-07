@@ -1908,6 +1908,7 @@ class CalendarImportRowPreview(BaseModel):
     end_date: Date
     matched_event_ids: list[int] = []
     matched_event_names: list[str] = []
+    matched_calendar_entry_ids: list[int] = []
     matched_events: list[dict] = []
     match_status: str
     action: str

@@ -346,6 +346,16 @@ def summarize_calendar_import(
     skip_existing_events: bool = False,
 ) -> dict:
     event_lookup = _build_event_lookup(db, {row.year for row in rows})
+    calendar_lookup = {}
+    for entry in db.query(models.EventCalendarEntry).filter(
+        models.EventCalendarEntry.is_deleted.is_(False),
+        models.EventCalendarEntry.year.in_({row.year for row in rows}),
+    ).all():
+        for candidate in calendar_event_name_candidates(entry.name, entry.year):
+            if entry.event_id is None:
+                calendar_lookup.setdefault((entry.year, candidate), []).append(entry)
+            elif entry.event and not entry.event.is_deleted and entry.event.year == entry.year:
+                event_lookup.setdefault((entry.year, candidate), []).append(entry.event)
     seen_source_keys: dict[tuple[int, str], CalendarImportRow] = {}
 
     preview_rows = []
@@ -358,12 +368,16 @@ def summarize_calendar_import(
     matched_sources_by_event_id: dict[int, list[CalendarImportRow]] = {}
     skipped_event_ids: set[int] = set()
     skipped_existing_rows = 0
+    matched_calendar_ids, updated_calendar_ids, unchanged_calendar_ids, skipped_calendar_ids = set(), set(), set(), set()
+    calendar_sources = {}
 
     for row in rows:
         matches = _find_existing_events(event_lookup, row)
+        calendar_matches = _find_existing_events(calendar_lookup, row) if not matches else []
         # Excluded existing events must not participate in conflicts or writes.
-        if skip_existing_events and matches:
+        if skip_existing_events and (matches or calendar_matches):
             skipped_event_ids.update(event.id for event in matches)
+            skipped_calendar_ids.update(entry.id for entry in calendar_matches)
             skipped_existing_rows += 1
             continue
         source_key = (row.year, normalize_calendar_event_name(row.event_name))
@@ -372,6 +386,24 @@ def summarize_calendar_import(
             duplicate_source_rows.append(_build_duplicate_source_row(row, duplicate_of))
         else:
             seen_source_keys[source_key] = row
+
+        if calendar_matches:
+            changed = [entry for entry in calendar_matches if entry.start_date != row.start_date or entry.end_date != row.end_date]
+            matched_calendar_ids.update(entry.id for entry in calendar_matches)
+            updated_calendar_ids.update(entry.id for entry in changed)
+            unchanged_calendar_ids.update(entry.id for entry in calendar_matches if entry not in changed)
+            for entry in calendar_matches:
+                calendar_sources.setdefault(entry.id, []).append(row)
+            preview = _row_preview(row, [], 'matched_calendar', 'update_calendar_dates' if changed else 'no_change')
+            preview['matched_calendar_entry_ids'] = [entry.id for entry in calendar_matches]
+            preview['matched_events'] = [{
+                'calendar_entry_id': entry.id, 'name': entry.name,
+                'start_date': entry.start_date, 'end_date': entry.end_date,
+                'name_differs': entry.name != row.event_name,
+                'dates_differ': entry.start_date != row.start_date or entry.end_date != row.end_date,
+            } for entry in calendar_matches]
+            preview_rows.append(preview)
+            continue
 
         matched_ids = [event.id for event in matches]
         matched_event_ids.update(matched_ids)
@@ -404,17 +436,20 @@ def summarize_calendar_import(
     return {
         "parsed_rows": len(rows),
         "skip_existing_events": skip_existing_events,
-        "skipped_existing_events_count": len(skipped_event_ids),
+        "skipped_existing_events_count": len(skipped_event_ids) + len(skipped_calendar_ids),
         "skipped_existing_rows": skipped_existing_rows,
         "years": sorted({row.year for row in rows}),
-        "matched_rows": sum(1 for row in preview_rows if row["matched_event_ids"]),
-        "matched_events": len(matched_event_ids),
-        "would_update_events": len(would_update_event_ids),
-        "already_up_to_date_events": len(already_up_to_date_event_ids - would_update_event_ids),
+        "matched_rows": sum(1 for row in preview_rows if row["matched_event_ids"] or row.get('matched_calendar_entry_ids')),
+        "matched_events": len(matched_event_ids) + len(matched_calendar_ids),
+        "would_update_events": len(would_update_event_ids) + len(updated_calendar_ids),
+        "already_up_to_date_events": len(already_up_to_date_event_ids - would_update_event_ids) + len(unchanged_calendar_ids - updated_calendar_ids),
         "would_create_events": len(would_create_source_keys),
         "unmatched_historical_rows": len(unmatched_historical_rows),
         "duplicate_source_rows": duplicate_source_rows,
-        "matched_event_source_conflicts": _build_matched_event_source_conflicts(matched_sources_by_event_id),
+        "matched_event_source_conflicts": _build_matched_event_source_conflicts(matched_sources_by_event_id) + [
+            {**{key: value for key, value in conflict.items() if key != 'event_id'}, 'calendar_entry_id': conflict['event_id']}
+            for conflict in _build_matched_event_source_conflicts(calendar_sources)
+        ],
         "issues": issues,
         "sample_rows": preview_rows[:25],
         "rows": preview_rows,

@@ -542,6 +542,7 @@ def list_audit_logs(
 
 
 AUDIT_REVERT_MODELS = {
+    "EventCalendarEntry": models.EventCalendarEntry,
     "Athlete": models.Athlete,
     "Event": models.Event,
     "Result": models.Result,

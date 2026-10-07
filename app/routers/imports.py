@@ -402,10 +402,24 @@ def commit_calendar_import(
         raise HTTPException(status_code=409, detail=jsonable_encoder(payload))
 
     updated_event_ids: set[int] = set()
+    updated_calendar_ids: set[int] = set()
     created_events = 0
     seen_created_source_keys: set[tuple[int, str]] = set()
 
     for row in summary["rows"]:
+        if row['action'] == 'update_calendar_dates':
+            for entry_id in row['matched_calendar_entry_ids']:
+                entry = db.query(models.EventCalendarEntry).filter(
+                    models.EventCalendarEntry.id == entry_id,
+                    models.EventCalendarEntry.is_deleted.is_(False),
+                    models.EventCalendarEntry.event_id.is_(None),
+                ).first()
+                if not entry or (entry.start_date == row['start_date'] and entry.end_date == row['end_date']):
+                    continue
+                before = model_snapshot(entry)
+                entry.start_date, entry.end_date = row['start_date'], row['end_date']
+                updated_calendar_ids.add(entry.id)
+                add_audit_log(db, current_user, 'update', 'EventCalendarEntry', entry.id, before=before, after=model_snapshot(entry))
         if row["action"] == "update_dates":
             for event_id in row["matched_event_ids"]:
                 event = db.query(models.Event).filter(
@@ -442,7 +456,7 @@ def commit_calendar_import(
             add_audit_log(db, current_user, "create", "Event", event.id, after=model_snapshot(event))
 
     created_admin_notifications = 0
-    if updated_event_ids or created_events or summary["unmatched_historical_rows"]:
+    if updated_event_ids or updated_calendar_ids or created_events or summary["unmatched_historical_rows"]:
         db.add(models.Notification(
             user_id=current_user.id,
             type=models.NotificationTypeEnum.IMPORT_SUMMARY,
@@ -450,21 +464,21 @@ def commit_calendar_import(
                               role=current_user.role.value.upper().replace('_', ' '), actor_id=current_user.id) + translate(
                 "notification.calendar_import_summary",
                 current_user.preferred_language,
-                updated_events=len(updated_event_ids),
+                updated_events=len(updated_event_ids) + len(updated_calendar_ids),
                 created_events=created_events,
                 skipped_unmatched_historical_rows=summary["unmatched_historical_rows"],
             ),
         ))
         created_admin_notifications = 1
         created_admin_notifications += notify_import_super_admins(db, current_user, 'Calendar', {
-            'updated_events': len(updated_event_ids), 'created_events': created_events,
+            'updated_events': len(updated_event_ids) + len(updated_calendar_ids), 'created_events': created_events,
         })
 
     db.commit()
     return {
         **payload,
         "committed": True,
-        "updated_events": len(updated_event_ids),
+        "updated_events": len(updated_event_ids) + len(updated_calendar_ids),
         "created_events": created_events,
         "skipped_unmatched_historical_rows": summary["unmatched_historical_rows"],
         "created_admin_notifications": created_admin_notifications,

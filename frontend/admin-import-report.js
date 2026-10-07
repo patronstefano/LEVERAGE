@@ -1,4 +1,5 @@
 export const IMPORT_COPY = {
+  EventCalendarEntry: ['Calendar event', 'Evento calendario', 'Evento del calendario', 'Événement du calendrier'],
   importCalendarDifferences: ['Existing events with differences', 'Eventi presenti con differenze', 'Eventos existentes con diferencias', 'Événements existants avec différences'],
   importCalendarNewEvents: ['New events to create', 'Nuovi eventi da creare', 'Nuevos eventos por crear', 'Nouveaux événements à créer'],
   importCalendarSkippedEvents: ['Unmatched events to skip', 'Eventi non associati da tralasciare', 'Eventos sin asociar que se omitirán', 'Événements non associés à ignorer'],
@@ -224,7 +225,7 @@ export function renderImportIdentityComparison({leftName, rightName, rightId, ri
 
 export function mountCalendarImportRows({root, preview, text, esc, language, route, viewState}) {
   const allRows = preview.rows || [], pageSize = 6;
-  const different = row => row.action === 'update_dates' || (row.matched_events || []).some(event => event.name_differs || event.dates_differ);
+  const different = row => ['update_dates', 'update_calendar_dates'].includes(row.action) || (row.matched_events || []).some(event => event.name_differs || event.dates_differ);
   const groups = [
     ['differences', 'importCalendarDifferences', allRows.filter(different)],
     ['new', preview.committed ? 'importCreatedEvents' : 'importCalendarNewEvents', allRows.filter(row => row.action === 'create_event')],
@@ -239,7 +240,7 @@ export function mountCalendarImportRows({root, preview, text, esc, language, rou
       const page = state.page = Math.min(state.page, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
       return `<details class="admin-revision-group" data-calendar-group="${key}" ${state.open ? 'open' : ''}><summary>${esc(text(label))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => {
         const period = [date(row.start_date), row.end_date !== row.start_date ? date(row.end_date) : ''].filter(Boolean).join(' – ');
-        const status = {update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarNameOnly', create_event: preview.committed ? 'importCalendarCreated' : 'importCalendarWillCreate', skip_unmatched_historical: 'importCalendarWillSkip'}[row.action];
+        const status = {update_calendar_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarNameOnly', create_event: preview.committed ? 'importCalendarCreated' : 'importCalendarWillCreate', skip_unmatched_historical: 'importCalendarWillSkip'}[row.action];
         const source = [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
         const matches = row.matched_events || [];
         return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p><p class="admin-revision-meta">${esc(source)}</p></div><div class="admin-center-actions">${matches.length ? `<button type="button" class="quiet-button outline-command-button" data-calendar-compare aria-expanded="false">${esc(text('importCompare'))}</button>` : ''}${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div>${matches.length ? `<div data-calendar-comparison hidden>${matches.map(event => renderImportIdentityComparison({leftName: row.event_name, rightName: event.name, rightId: event.event_id, fields: [['importCalendarEventName', row.event_name, event.name], ['importCalendarStart', date(row.start_date), date(event.start_date)], ['importCalendarEnd', date(row.end_date), date(event.end_date)]], text, esc})).join('')}<p class="admin-stats-note">${esc(text('importCalendarNamePreserved'))}</p></div>` : ''}</article>`;

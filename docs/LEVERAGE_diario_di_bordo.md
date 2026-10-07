@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Matching delle gare gia presenti solo in calendario
+
+- Individuata la causa dei falsi nuovi eventi: l'import interrogava Event ma non EventCalendarEntry, dove sono conservate anche gare senza scheda risultati collegata. Nessun requisito di presenza risultati deve condizionare il matching calendario.
+- Inclusi nel matching per nome/anno gli eventi calendario non collegati e gli alias gia collegati a eventi dello stesso anno. Le schede Event hanno precedenza, senza unioni automatiche o eliminazioni di dati esistenti.
+- Gare calendario identiche non vengono ricreate; date diverse sono confrontate e aggiornate sulla voce calendario, senza creare una scheda Event. Escludi gare gia importate impedisce anche questi aggiornamenti. Gli aggiornamenti sono registrati in audit e annullabili dal SUPER ADMIN.
+- Verifica in sola lettura sul file locale Calendar.xlsx 2026: Ifact Norges Cup 1 e 2 riconosciute nelle voci calendario 290 e 291; Cup 3 riconosciuta nell'evento 1744. Tutte e tre risultano invariate. Nessuna importazione sul database reale.
+
 ## 2026-10-07 - Coerenza dei confronti di revisione import
 
 - Uniformati i confronti Atleti ed Eventi dell'import, comprese nazionalita e calendario, alla struttura a due colonne della Revisione Duplicati: stesse classi per identita, metadati, elenco dettagli e spaziatura.
