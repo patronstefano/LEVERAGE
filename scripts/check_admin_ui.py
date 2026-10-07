@@ -1143,6 +1143,7 @@ def main():
                 assert page.locator('[name=include_existing]').count() == 0
                 assert page.locator('#adminImportForm [name=existing_event_scope]').count() == 0
                 assert page.locator('#adminImportOutput [name=existing_event_scope]').input_value() == 'include'
+                assert 'Gare con risultati già importati' in page.locator('.admin-import-scope-choice').inner_text()
                 assert page.locator('#adminExportImport').count() == 0
                 assert page.locator('#adminPartialImport').count() == 0
                 assert 'skip_existing_events=false' in writes[-1]['url']
@@ -1558,6 +1559,7 @@ def main():
                 assert 'year_hint=' not in writes[-1]['url']
                 assert 'create_missing_from_year=' not in writes[-1]['url']
                 original_calendar = dict(calendar_preview)
+                assert 'Eventi già presenti in LEVERAGE' in page.locator('.admin-import-scope-choice').inner_text()
                 calendar_preview.update(would_create_events=0, would_update_events=0, matched_events=8,
                     rows=[{**row, 'action': 'no_change', 'matched_events': []} for row in original_calendar['rows']])
                 analyze_import()

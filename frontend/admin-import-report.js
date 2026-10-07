@@ -114,7 +114,7 @@ export const IMPORT_COPY = {
   importDiscardOrphans: ['Skip all unmatched D Scores', 'Tralascia tutti i D Score orfani', 'Omitir todos los D Scores sin asociar', 'Exclure tous les D Scores non associés'],
   importDiscardOrphansConfirm: ['Skip all unmatched D Scores in this preview? No scores will be invented.', 'Tralasciare tutti i D Score orfani di questa anteprima? Non verranno inventati punteggi mancanti.', '¿Omitir todos los D Scores sin asociar? No se inventarán puntuaciones.', 'Exclure tous les D Scores non associés ? Aucun score ne sera inventé.'],
   importIssueSample: ['Review source rows below to resolve file issues.', 'Correggi le righe del file qui sotto per risolvere le segnalazioni.', 'Corrige las filas del archivo para resolver las incidencias.', 'Corrigez les lignes du fichier pour résoudre les signalements.'],
-  importExistingScope: ['Previously imported competitions', 'Gare già importate', 'Competiciones ya importadas', 'Compétitions déjà importées'],
+  importExistingScope: ['Events with imported results', 'Gare con risultati già importati', 'Competiciones con resultados importados', 'Compétitions avec résultats importés'],
   importScopeInclude: ['Include', 'Includi', 'Incluir', 'Inclure'],
   importScopeSkip: ['Skip', 'Tralascia', 'Omitir', 'Exclure'],
   importHistorical: ['competitions already in LEVERAGE', 'gare già in LEVERAGE', 'competiciones ya en LEVERAGE', 'compétitions déjà dans LEVERAGE'],

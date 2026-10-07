@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Perimetri distinti di esclusione Results e Calendar
+
+Confermata e verificata la semantica richiesta: nell'import Results, Tralascia esclude soltanto gare gia presenti con risultati attivi; gli eventi senza risultati, anche se gia inseriti dal calendario, restano elaborabili. Risultati eliminati logicamente non qualificano una gara come popolata. Nell'import Calendar, Tralascia esclude tutte le gare gia presenti, con o senza risultati, incluse le voci calendario non ancora collegate a un Event. Il backend gia distingueva i due perimetri: nessuna modifica alle regole di matching o al database. Etichetta Results resa esplicita come Gare con risultati gia importati, con traduzioni aggiornate. Test API comparativo su preview e commit nei tre stati: nessun risultato, risultati attivi, soli risultati eliminati; mantenuti i test sulle voci solo calendario.
+
 ## 2026-10-07 - Scarto obbligatorio dei D Score orfani
 
 Decisione semantica dell'utente: un D Score senza Final Score associabile nel parsing non deve essere conservato come revisione o agganciato tramite suggerimenti. Il flusso web di importazione risultati scarta automaticamente tutti gli orfani nel perimetro selezionato, senza costruire liste di suggerimenti e senza richiedere conferme. Rimosse sezione, contatore delle revisioni e comandi manuali UI. Resta soltanto un riepilogo cumulativo localizzato degli scarti tra gli interventi automatici.

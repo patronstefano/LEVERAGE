@@ -9958,6 +9958,42 @@ def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_resul
     assert next(row['score'] for row in rows if row['apparatus'] == 'HB') == 13.5
 
 
+@pytest.mark.parametrize('result_state', ['none', 'active', 'deleted'])
+def test_results_and_calendar_exclusion_have_distinct_scopes(result_state):
+    client.post('/auth/register', json={'email': 'scope_distinction@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('scope_distinction@example.com')}"}
+    def result_file():
+        return {'file': ('scores.csv', gymternet_csv_bytes(), 'text/csv')}
+    if result_state == 'none':
+        response = client.post('/events/', headers=headers, json={
+            'name': 'Test Cup 2024', 'year': 2024, 'discipline': 'MAG',
+            'category': 'junior', 'level': 'National Event'})
+        assert response.status_code == 200, response.text
+    else:
+        response = client.post('/imports/gymternet/commit?year_hint=2024', files=result_file(), headers=headers)
+        assert response.status_code == 200, response.text
+        if result_state == 'deleted':
+            with SessionLocal() as db:
+                db.query(models.Result).one().is_deleted = True
+                db.commit()
+    calendar = make_calendar_workbook({2024: [('May 1-2', 'Test Cup')]})
+    for endpoint in ['preview', 'commit']:
+        response = client.post(f'/imports/calendar/{endpoint}?year=2024&skip_existing_events=true', headers=headers,
+            files={'file': ('Calendar.xlsx', calendar.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')})
+        assert response.status_code == 200, response.text
+        assert response.json()['skipped_existing_events_count'] == 1
+        assert response.json()['would_update_events'] == 0
+    preview = client.post('/imports/gymternet/preview?year_hint=2024&skip_existing_events=true',
+                          files=result_file(), headers=headers).json()
+    assert len(preview['skipped_existing_events']) == (1 if result_state == 'active' else 0)
+    assert preview['importable_results'] == (0 if result_state == 'active' else 1)
+    assert preview['would_create_events'] == 0
+    committed = client.post('/imports/gymternet/commit?year_hint=2024&skip_existing_events=true',
+                            files=result_file(), headers=headers)
+    assert committed.status_code == 200, committed.text
+    assert committed.json()['created_results'] == (0 if result_state == 'active' else 1)
+
+
 def test_gymternet_cumulative_import_preserves_validated_events_and_imports_calendar_only_events():
     client.post('/auth/register', json={'email': 'cumulative@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('cumulative@example.com')}"}
