@@ -296,6 +296,7 @@ def parse_and_summarize_upload(
         athlete_resolution_ids=athlete_resolution_ids,
         athlete_merge_keys=athlete_merge_keys,
         represented_country_overrides=represented_country_overrides,
+        nationality_reviews=athlete_review_items,
     )
     summary["orphan_dscore_review_count"] = len(review_items)
     summary["skipped_existing_events"] = skipped_events

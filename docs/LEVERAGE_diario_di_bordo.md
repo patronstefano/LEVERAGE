@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Decisioni nazionalita unificate anche per risultati gia salvati
+
+Superato il solo raggruppamento visivo dei casi di nazionalita discordante: anche quando la nazionalita del file coincide con l'anagrafica ma differisce da quella rappresentata in un risultato gia salvato, il backend genera una revisione nazionalita standard. La revisione contiene le nazionalita documentate nei risultati, disponibili nelle scelte e nel confronto compatto. Comandi condivisi: Aggiorna storico nazionalita, Correggi nazionalita registrata, Tralascia revisione. Nessun comando speciale di modifica/esclusione della riga sorgente per questi casi nel nuovo flusso.
+
+La verifica di nazionalita non viene ripetuta come conflitto di punteggio: a parita di contesto, Final Score e D Score, il risultato gia presente resta un duplicato e non viene riscritto. La revisione non decisa impedisce comunque il commit. Storico e correzione applicano le regole anagrafiche gia previste; il rinvio non cambia i dati salvati. I punteggi realmente discordanti restano conflitti della Revisione Risultati, anche dopo una decisione sulla nazionalita. Mantenuta la compatibilita dei vecchi comandi API, che non ricevono implicitamente questa nuova risoluzione.
+
+Test API dedicati a tutte e tre le azioni, alle due nazionalita selezionabili, al blocco senza decisione, alla preview non mutante e alla conservazione del risultato salvato. Test browser del confronto Nunez Zachary PHI/USA con selettori e pulsante di rinvio condivisi. Verifica completata: 366 test backend superati e test UI Admin desktop/mobile superato. Nessuna importazione o modifica al database reale.
+
 ## 2026-10-07 - Nota contestuale revisione identita atleti
 
 Spostata la spiegazione Verifica ora le possibili identita duplicate oppure rinviale a Revisione Duplicati dopo l'importazione dalle note generali al principio della sezione Revisione identita atleti, con lo stesso stile admin-stats-note della revisione nazionalita. Eliminata la ripetizione nel fondo dell'import; mantenuto il messaggio di stato delle revisioni effettivamente rinviate.

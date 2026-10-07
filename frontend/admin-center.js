@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=bulk-country-review-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=unified-country-decisions-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -973,7 +973,7 @@ export async function renderAdminCenter(host) {
         ...(type === "orphan" ? [{ value: "discard", label: text("discard") }] : identity ? [{ value: "keep_separate", label: text("separate") }, { value: "merge_as_same_athlete", label: text("same") }] : [{ value: "create_new", label: text("newAthlete") }]), { value: "manual_target", label: text("manual") }];
       const source = item.imported_athlete || item.orphan_dscore || {};
       const countryOnly = type === 'athlete' && countryReview(item);
-      const countryOptions = [...new Set([source.country, item.existing_athlete?.country, ...(item.country_variants || []).map(v => v.country), ...(item.suggestions || []).map(v => v.target_athlete?.country)].filter(Boolean))].map(value => ({value, label: value}));
+      const countryOptions = [...new Set([source.country, item.existing_athlete?.country, ...(item.saved_result_countries || []), ...(item.country_variants || []).map(v => v.country), ...(item.suggestions || []).map(v => v.target_athlete?.country)].filter(Boolean))].map(value => ({value, label: value}));
       const previousCountry = draft.athlete[item.review_id] || {};
       const ambiguousCountry = new Set((item.suggestions || []).map(s => s.target_athlete?.athlete_id).filter(Boolean)).size > 1;
       const countryControls = `${ambiguousCountry ? `<p class="admin-stats-note">${esc(text('importCountryAmbiguous'))}</p>` : ''}<div class="admin-form-grid admin-country-review-controls">${!ambiguousCountry ? select('country_history_choice', 'importCountryHistoryAction', [{value: '', label: '—'}, ...countryOptions], previousCountry.action === 'country_history' ? previousCountry.canonical_country : '') + select('country_correction_choice', 'importCountryCorrectionAction', [{value: '', label: '—'}, ...countryOptions], previousCountry.action === 'country_correction' ? previousCountry.canonical_country : '') : ''}<div class="admin-center-actions">${button('importCountryDeferAction', `data-country-defer aria-pressed="${previousCountry.action === 'defer'}"`)}</div></div>`;

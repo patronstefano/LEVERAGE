@@ -2533,6 +2533,10 @@ def build_athlete_match_review_items(
         athlete_key = athlete_lookup_key(record)
         existing_athlete = existing_athletes.get(athlete_key)
         if existing_athlete:
+            event = existing_events.get(event_lookup_key(record))
+            result = existing_results.get(result_lookup_key(existing_athlete.id, event.id, record)) if event else None
+            if result and not country_equal(result_represented_country(result), record.country):
+                country_change_groups.setdefault((athlete_key, existing_athlete.id), []).append(record)
             continue
         same_identity_athletes = athletes_by_identity.get(athlete_identity_key(record), [])
         if len(same_identity_athletes) == 1 and athlete_country_differs(record, same_identity_athletes[0]):
@@ -2672,6 +2676,26 @@ def build_athlete_match_review_items(
                 "result context that has a different score."
             )
         review_items.append(review_item)
+
+    # A saved result can represent a different country from the current profile.
+    # Keep that evidence in the same nationality review, not in a second score UI.
+    for review in review_items:
+        if review['problem_type'] not in {'possible_athlete_country_change', 'possible_athlete_identity_collision'}:
+            continue
+        imported = review['imported_athlete']
+        identity = athlete_key_from_imported_payload(imported)[:3]
+        candidates = ([review['existing_athlete']] if review.get('existing_athlete') else
+                      [s['target_athlete'] for s in review.get('suggestions', [])])
+        saved_countries = set()
+        for record in records_by_identity.get(identity, []):
+            event = existing_events.get(event_lookup_key(record))
+            if not event:
+                continue
+            for candidate in candidates:
+                result = existing_results.get(result_lookup_key(candidate['athlete_id'], event.id, record))
+                if result and result_represented_country(result):
+                    saved_countries.add(result_represented_country(result))
+        review['saved_result_countries'] = sorted(saved_countries)
 
     return sorted(
         review_items,
@@ -2824,6 +2848,7 @@ def apply_athlete_match_decisions(
 
         action = decision.get("action")
 
+        review['decision_action'] = action
         if action == 'defer':
             review['deferred'] = True
             stats['deferred'] += 1
@@ -2837,6 +2862,7 @@ def apply_athlete_match_decisions(
                           [item['target_athlete'] for item in review.get('suggestions', []) if item.get('target_athlete')])
             candidates = {item['athlete_id']: item for item in candidates}
             countries = {item.get('country') for item in [*variants, *candidates.values()] if item.get('country')}
+            countries.update(review.get('saved_result_countries', []))
             selected = decision.get('canonical_country')
             if (review['problem_type'] not in {'possible_athlete_country_change', 'possible_athlete_identity_collision'}
                     or selected not in countries or len(candidates) > 1):
@@ -3614,6 +3640,7 @@ def summarize_records(
     athlete_resolution_ids: Optional[dict[tuple, int]] = None,
     athlete_merge_keys: Optional[dict[tuple, tuple]] = None,
     represented_country_overrides: Optional[dict[tuple, str]] = None,
+    nationality_reviews: Optional[list[dict]] = None,
 ) -> dict:
     seen = {}
     duplicates = []
@@ -3625,6 +3652,15 @@ def summarize_records(
     athlete_resolution_ids = athlete_resolution_ids or {}
     athlete_merge_keys = athlete_merge_keys or {}
     represented_country_overrides = represented_country_overrides or {}
+    # Country-only differences belong to identity review. Commit still requires
+    # its decision; duplicate results retain their saved scores and country.
+    nationality_keys = {
+        athlete_key_from_imported_payload({**review['imported_athlete'], 'country': variant.get('country')})
+        for review in (nationality_reviews or [])
+        if review['problem_type'] in {'possible_athlete_country_change', 'possible_athlete_identity_collision'}
+        and review.get('decision_action') in {None, 'country_history', 'country_correction', 'defer'}
+        for variant in (review.get('country_variants') or [review['imported_athlete']])
+    }
     resolved_athlete_cache: dict[int, models.Athlete] = {}
     event_summaries = {}
     athlete_summaries = {}
@@ -3706,7 +3742,7 @@ def summarize_records(
                 represented_country_overrides,
             )
             if final_score_equal(record, existing_in_file.score) and score_equal(existing_in_file.D_score, record.D_score):
-                if not country_equal(existing_country, record_country):
+                if not country_equal(existing_country, record_country) and source_athlete_key not in nationality_keys:
                     conflicts.append(conflict_payload(record, None, "country_conflict_in_file", existing_in_file))
                     track(record, "conflicting_results")
                     continue
@@ -3727,7 +3763,7 @@ def summarize_records(
             result = existing_results.get(result_lookup_key(athlete.id, event.id, record))
             if result:
                 if final_score_equal(record, result.score) and score_equal(result.D_score, record.D_score):
-                    if not country_equal(result_represented_country(result), record_country):
+                    if not country_equal(result_represented_country(result), record_country) and source_athlete_key not in nationality_keys:
                         conflicts.append(conflict_payload(record, result, "country_conflict_existing"))
                         track(record, "conflicting_results")
                         continue

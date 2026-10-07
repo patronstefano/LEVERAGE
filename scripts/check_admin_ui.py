@@ -1236,6 +1236,24 @@ def main():
                 assert 'Country Cup' not in page.locator('#importPart_results').text_content()
                 preview['conflicts'] = []
                 original_athlete_reviews = preview.get('athlete_match_review', [])
+                preview['athlete_match_review'] = [{'review_id': 'saved-country-review',
+                    'problem_type': 'possible_athlete_country_change',
+                    'imported_athlete': {'first_name': 'Zachary', 'last_name': 'Nunez', 'country': 'PHI', 'discipline': 'MAG', 'year': 2026},
+                    'existing_athlete': {'athlete_id': 42, 'first_name': 'Zachary', 'last_name': 'Nunez', 'country': 'PHI', 'discipline': 'MAG'},
+                    'saved_result_countries': ['USA'], 'suggestions': []}]
+                analyze_import()
+                page.locator('[data-import-part=athletes]').click()
+                saved_country = page.locator('[data-import-group=athleteCountry]')
+                saved_country.evaluate('el => el.open = true')
+                saved_country.locator('[data-import-review-toggle]').click()
+                assert saved_country.locator('.admin-import-athlete-comparison dd').all_inner_texts() == ['PHI', 'PHI · USA']
+                assert saved_country.locator('[data-country-fix], [data-country-exclude]').count() == 0
+                assert saved_country.locator('[name=country_history_choice], [name=country_correction_choice]').count() == 2
+                saved_country.locator('[name=country_history_choice]').locator('..').locator('summary').click()
+                saved_country.locator('[name=country_history_choice]').locator('..').locator('[data-admin-select-value=USA]').click()
+                assert saved_country.locator('[name=country_history_choice]').input_value() == 'USA'
+                saved_country.locator('[data-country-defer]').click()
+                assert saved_country.locator('[data-country-defer]').get_attribute('aria-pressed') == 'true'
                 preview['athlete_match_review'] = [{'review_id': 'multi-target',
                     'problem_type': 'possible_existing_athlete_match', 'imported_athlete': athlete,
                     'suggestions': [{'suggestion_id': f'm{i}', 'target_athlete': {**athlete, 'athlete_id': i}} for i in [1, 2]]}]

@@ -10497,6 +10497,52 @@ def test_gymternet_import_flags_existing_duplicate_with_different_represented_co
     assert conflict["D_score"] == 5.8
 
 
+@pytest.mark.parametrize('action,selected', [
+    ('country_history', 'PHI'), ('country_history', 'USA'),
+    ('country_correction', 'PHI'), ('country_correction', 'USA'), ('defer', None),
+])
+def test_saved_result_country_uses_standard_nationality_review(action, selected):
+    client.post('/auth/register', json={'email': 'unified_country@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f'Bearer {login_as_admin("unified_country@example.com")}'}
+
+    def upload(endpoint, country, decisions=None, score=14.1):
+        return client.post('/imports/gymternet/' + endpoint, headers=headers,
+            files={'file': ('country.csv', gymternet_csv_bytes(country=country, score=score), 'text/csv')},
+            data={'athlete_match_decisions': json.dumps(decisions or [])})
+
+    assert upload('commit', 'United States').status_code == 200
+    with SessionLocal() as db:
+        athlete = db.query(models.Athlete).one()
+        athlete.country = 'PHI'
+        athlete_id = athlete.id
+        db.commit()
+    preview = upload('preview', 'Philippines').json()
+    assert not preview['conflicts']
+    assert preview['athlete_match_review_count'] == 1
+    review = preview['athlete_match_review'][0]
+    assert review['problem_type'] == 'possible_athlete_country_change'
+    assert review['imported_athlete']['country'] == 'PHI'
+    assert review['saved_result_countries'] == ['USA']
+    assert upload('commit', 'Philippines').status_code == 409
+    decision = [{'review_id': review['review_id'], 'action': action,
+                 **({'canonical_country': selected} if selected else {})}]
+    recalculated = upload('preview', 'Philippines', decision).json()
+    assert not recalculated['conflicts']
+    assert recalculated['athlete_match_decision_stats']['unresolved'] == 0
+    assert client.get(f'/athletes/{athlete_id}').json()['country'] == 'PHI'
+    # A nationality decision must never suppress a real score discrepancy.
+    different = upload('preview', 'Philippines', decision, score=14.2).json()
+    assert different['conflicts'][0]['reason'] == 'conflict_existing'
+    response = upload('commit', 'Philippines', decision)
+    assert response.status_code == 200, response.text
+    assert response.json()['created_results'] == 0
+    with SessionLocal() as db:
+        result = db.query(models.Result).one()
+        assert result.represented_country == 'USA'
+        assert result.score == 14.1
+        assert db.query(models.Athlete).one().country == (selected or 'PHI')
+
+
 def test_gymternet_import_accepts_final_score_without_d_score_as_partial_result():
     client.post("/auth/register", json={"email": "gymternet_partial@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_partial@example.com")

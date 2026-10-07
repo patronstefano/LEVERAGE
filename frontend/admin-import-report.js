@@ -241,7 +241,7 @@ export function renderImportIdentityComparison({leftName, rightName, rightId, ri
 export function renderAthleteImportComparison({item, name, text, esc}) {
   const countries = values => [...new Set(values.filter(Boolean))].join(' · ') || '—';
   const sourceCountries = countries([item.imported_athlete?.country, ...(item.country_variants || []).map(variant => variant.country)]);
-  const savedCountries = countries([item.existing_athlete?.country, ...(item.suggestions || []).map(suggestion => suggestion.target_athlete?.country)]);
+  const savedCountries = countries([item.existing_athlete?.country, ...(item.saved_result_countries || []), ...(item.suggestions || []).map(suggestion => suggestion.target_athlete?.country)]);
   return `<div class="admin-import-athlete-comparison"><div class="admin-identity-entity"><strong>${esc(name)}</strong></div><dl class="admin-activity-row-details"><div><dt>${esc(text('importFileCountries'))}</dt><dd>${esc(sourceCountries)}</dd></div><div><dt>${esc(text('importSavedCountries'))}</dt><dd>${esc(savedCountries)}</dd></div></dl></div>`;
 }
 
