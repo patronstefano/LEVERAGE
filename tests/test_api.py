@@ -9708,6 +9708,8 @@ def test_gymternet_incremental_preview_groups_existing_new_and_conflicting_resul
     assert athletes[0]['existing_results'] == 2
     assert athletes[0]['new_results'] == 2
     assert athletes[0]['conflicting_results'] == 1
+    assert len(athletes[0]['conflict_indexes']) == 1
+    assert data['conflicts'][athletes[0]['conflict_indexes'][0]]['last_name'] == 'Lovelace'
     assert athletes[0]['file_results'] == data['parsed_rows']
     assert len(client.get('/results/').json()) == 3
     blocked = client.post('/imports/gymternet/commit?year_hint=2026', files=files(updated), headers=headers)
@@ -9903,6 +9905,9 @@ def test_gymternet_source_review_includes_linked_d_score_sheet(monkeypatch):
     source_issues = sum(issue.get('sheet') == 'MAG' and issue.get('row') == 2 for issue in preview['issues'])
     assert source_issues > 0
     assert preview['athlete_summaries'][0]['source_issues'] == source_issues
+    indexes = preview['athlete_summaries'][0]['issue_indexes']
+    assert len(indexes) == source_issues
+    assert all(preview['issues'][i].get('sheet') == 'MAG' and preview['issues'][i].get('row') == 2 for i in indexes)
     assert preview['event_summaries'][0]['source_issues'] == source_issues
     assert rows['MAG']['related_rows'] == [{'sheet': 'MAG D', 'row': 2}]
     assert rows['MAG D']['editable_fields'] == ['VT', 'VT SUM']

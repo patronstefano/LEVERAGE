@@ -1,4 +1,5 @@
 export const IMPORT_COPY = {
+  importReloadDetails: ['Recalculate the preview to load the comparison details.', 'Ricalcola l’anteprima per caricare i dettagli del confronto.', 'Recalcula la vista previa para cargar los detalles de comparación.', 'Recalculez l’aperçu pour charger les détails de comparaison.'],
   gymternet_orphan_dscores: ['Unmatched D-score rows in the selected import scope: {n}. Review them before importing.', 'Righe D Score senza un Final Score associato nel perimetro da importare: {n}. Da revisionare prima dell’importazione.', 'Filas D Score sin Final Score asociado en el ámbito a importar: {n}. Revísalas antes de importar.', 'Lignes D Score sans Final Score associé dans le périmètre à importer : {n}. À vérifier avant l’importation.'],
   gymternet_automatic_days: ['The file uses automatically assigned day indices to distinguish multiple performances without an explicit Day column. These are not verified calendar dates.', 'Il file utilizza indici di giorno assegnati automaticamente per distinguere più prestazioni senza una colonna Day esplicita. Non sono date di calendario verificate.', 'El archivo usa índices de día asignados automáticamente para distinguir actuaciones sin columna Day explícita. No son fechas de calendario verificadas.', 'Le fichier utilise des indices de jour attribués automatiquement pour distinguer des performances sans colonne Day explicite. Ce ne sont pas des dates vérifiées.'],
   gymternet_post_2025_policy: ['Gymternet results from 2026 onward follow the 2025 vault and missing-component rules. Missing E, Penalty and Bonus remain unavailable.', 'I risultati Gymternet dal 2026 seguono le stesse regole del 2025 per volteggio e componenti mancanti. E, Penalty e Bonus assenti restano non disponibili.', 'Los resultados Gymternet desde 2026 siguen las reglas de 2025 para salto y componentes ausentes. E, Penalty y Bonus ausentes siguen sin estar disponibles.', 'Les résultats Gymternet à partir de 2026 suivent les règles de 2025 pour le saut et les composantes manquantes. E, Penalty et Bonus absents restent indisponibles.'],
@@ -157,7 +158,7 @@ export function renderEntityImportMetrics({rows, idKey, text, esc, language}) {
   ]});
 }
 
-export function mountImportAthletes({root, preview, text, esc, language, route, viewState}) {
+export function mountImportAthletes({root, preview, text, esc, report, language, route, viewState}) {
   const summary = preview.athlete_summaries || [], pageSize = 6;
   const rows = summary.filter(row => row.conflicting_results || row.source_issues);
   const render = () => {
@@ -167,6 +168,41 @@ export function mountImportAthletes({root, preview, text, esc, language, route, 
     root.innerHTML = metrics +
       `<details class="admin-revision-group" data-import-athlete-list ${viewState.open ? 'open' : ''}><summary>${esc(text('importAthletesList'))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc([row.last_name, row.first_name].filter(Boolean).join(' '))}</strong><p class="admin-revision-meta">${esc([row.country, row.discipline, text(row.athlete_id ? 'importPresent' : 'importNotPresent')].filter(Boolean).join(' · '))}</p><p class="admin-revision-meta">${esc(text(row.conflicting_results || row.source_issues ? 'importWithIssues' : 'importWithoutIssues'))}</p></div><div class="admin-center-actions">${row.athlete_id ? `<a class="quiet-button outline-command-button" href="#/athletes/${row.athlete_id}?from=admin&return_to=${encodeURIComponent(route)}">ID ${row.athlete_id}</a>` : ''}</div></article>`).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-athlete-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-athlete-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
     root.querySelector('[data-import-athlete-list]').ontoggle = event => { if (event.target.isConnected) viewState.open = event.target.open; };
+    root.querySelectorAll('article.admin-identity-pair').forEach((article, index) => {
+      const row = rows[page * pageSize + index];
+      const items = [
+        ...(row.conflict_indexes || []).map(i => ({conflict: preview.conflicts?.[i]})).filter(item => item.conflict),
+        ...(row.issue_indexes || []).map(i => ({issue: preview.issues?.[i]})).filter(item => item.issue),
+      ];
+      const control = document.createElement('button');
+      control.type = 'button';
+      control.className = 'quiet-button outline-command-button';
+      control.textContent = text('importCompare');
+      control.setAttribute('aria-expanded', 'false');
+      article.querySelector('.admin-center-actions').append(control);
+      const details = document.createElement('div');
+      details.dataset.pairDetails = '';
+      details.hidden = true;
+      article.append(details);
+      let detailPage = 0;
+      const renderDetails = () => {
+        details.innerHTML = items.slice(detailPage * 6, (detailPage + 1) * 6).map(item => {
+          if (item.issue) return renderImportIssues({issues: [item.issue], text, esc, language});
+          const c = item.conflict;
+          const context = [c.event_name, c.year, c.discipline, text(c.category), text(c.format), text(c.round), c.apparatus, c.day ? `${text('day')} ${c.day}` : '', text(c.reason)].filter(Boolean).join(' · ');
+          return `<div class="admin-source-comparison"><p class="admin-revision-meta">${esc(context)}</p><p class="admin-revision-meta">${esc(c.source_sheet)} · ${esc(text('importSourceRow'))} ${esc(c.source_row)}</p><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text(c.existing_result_id ? 'importDatabase' : 'previous'))}</h3>${report({score: c.existing_score, D_score: c.existing_D_score, country: c.existing_country})}</section><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({score: c.score, D_score: c.D_score, country: c.country})}</section></div></div>`;
+        }).join('') || `<p class="admin-stats-note">${esc(text('importReloadDetails'))}</p>`;
+        if (items.length > 6) {
+          details.insertAdjacentHTML('beforeend', `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-detail-page="-1" ${detailPage === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${detailPage * 6 + 1}–${Math.min((detailPage + 1) * 6, items.length)} / ${items.length}</span><button type="button" class="quiet-button outline-command-button" data-detail-page="1" ${(detailPage + 1) * 6 >= items.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>`);
+          details.querySelectorAll('[data-detail-page]').forEach(button => button.onclick = () => { detailPage += Number(button.dataset.detailPage); renderDetails(); });
+        }
+      };
+      control.onclick = () => {
+        details.hidden = !details.hidden;
+        control.setAttribute('aria-expanded', String(!details.hidden));
+        if (!details.hidden) renderDetails();
+      };
+    });
     root.querySelectorAll('[data-athlete-page]').forEach(control => control.onclick = () => { viewState.page += Number(control.dataset.athletePage); render(); });
   };
   render();

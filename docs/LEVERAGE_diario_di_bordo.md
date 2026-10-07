@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Dettagli delle incongruenze per atleta nell'import
+
+- Il riepilogo atleti esponeva il conteggio incongruenze senza un confronto.
+  Aggiunto Confronta dettagli per ogni atleta interessato, con valori file e
+  DB (o precedente riga del file) affiancati, contesto gara e riferimento sorgente.
+- Il backend fornisce riferimenti esatti ai conflitti e agli avvisi associati
+  durante la risoluzione identita: nessuna associazione frontend per nome simile.
+- Avvisi sorgente distinti dai conflitti punteggio; paginazione a sei dettagli.
+  Le revisioni identita restano separate. Nessuna modifica ai dati salvati.
+
 ## 2026-10-07 - Footer informativo delle anteprime import
 
 - Messaggio di stato compatto (14px, altezza minima 36px), larghezza adattata

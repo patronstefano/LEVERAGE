@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=batch-decisions-20261006';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=focused-event-review-20261007';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=athlete-import-details-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1059,7 +1059,7 @@ export async function renderAdminCenter(host) {
         };
       });
       choosePart(draft.reviewPart || 'events');
-      mountImportAthletes({root: athleteOverview, preview: p, text, esc, language: state.language, route: state.route, viewState: draft.athleteView ||= {}});
+      mountImportAthletes({root: athleteOverview, preview: p, text, esc, report, language: state.language, route: state.route, viewState: draft.athleteView ||= {}});
     }
     output.querySelector('#adminImportChangeFile').onclick = event => {
       draft.fileFormOpen = !draft.fileFormOpen;

@@ -1088,6 +1088,25 @@ def main():
                 page.locator('[data-import-part=athletes]').click()
                 assert page.locator('#adminImportAthletes .admin-import-metrics dd').all_inner_texts() == ['1', '0', '0', '1']
                 assert page.locator('#adminImportAthletes [data-import-athlete-list]').count() == 0
+                assert page.evaluate('''async () => {
+                    const {mountImportAthletes} = await import('./admin-import-report.js');
+                    const root = document.createElement('div');
+                    const esc = value => String(value ?? '');
+                    mountImportAthletes({root, preview: {
+                        athlete_summaries: [{first_name: 'Test', last_name: 'Athlete', conflicting_results: 7, source_issues: 1,
+                            conflict_indexes: [0,1,2,3,4,5,6], issue_indexes: [0]}],
+                        conflicts: Array.from({length: 7}, (_, i) => ({event_name: `Cup ${i}`, score: 14, existing_score: 13, existing_result_id: i + 1})),
+                        issues: [{message: 'Source warning', sheet: 'MAG', row: 9}]},
+                        text: key => key, esc, report: data => JSON.stringify(data), language: 'it', route: '', viewState: {}});
+                    const button = root.querySelector('.admin-center-actions button');
+                    button.click();
+                    const details = root.querySelector('[data-pair-details]');
+                    if (details.hidden || !details.textContent.includes('13') || !details.textContent.includes('14') || details.textContent.includes('Cup 6')) return false;
+                    details.querySelector('[data-detail-page="1"]').click();
+                    if (!details.textContent.includes('Cup 6') || !details.textContent.includes('Source warning')) return false;
+                    button.click();
+                    return details.hidden && button.getAttribute('aria-expanded') === 'false';
+                }''')
                 page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
                 assert page.locator('[name=include_existing]').count() == 0

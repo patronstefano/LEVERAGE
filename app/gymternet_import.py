@@ -3552,8 +3552,10 @@ def summarize_records(
     event_summaries = {}
     athlete_summaries = {}
     source_issue_counts = defaultdict(int)
-    for issue in issues:
+    source_issue_indexes = defaultdict(list)
+    for issue_index, issue in enumerate(issues):
         source_issue_counts[(issue.get("sheet"), issue.get("row"))] += 1
+        source_issue_indexes[(issue.get("sheet"), issue.get("row"))].append(issue_index)
     entity_issue_rows = defaultdict(set)
 
     def track(record, outcome):
@@ -3577,10 +3579,15 @@ def summarize_records(
             "discipline": record.discipline.value,
             "file_results": 0, "existing_results": 0, "duplicate_file_results": 0,
             "new_results": 0, "conflicting_results": 0, "source_issues": 0,
+            "conflict_indexes": [], "issue_indexes": [],
         })
         athlete_entry["file_results"] += 1
         athlete_entry[outcome] += 1
+        if outcome == "conflicting_results":
+            athlete_entry["conflict_indexes"].append(len(conflicts) - 1)
         source_key = (record.source_sheet, record.source_row)
+        if source_key not in entity_issue_rows[('athlete', identity)]:
+            athlete_entry["issue_indexes"].extend(source_issue_indexes[source_key])
         for entity_key, entity in ((('event', key), entry), (('athlete', identity), athlete_entry)):
             if source_key not in entity_issue_rows[entity_key]:
                 entity["source_issues"] = entity.get("source_issues", 0) + source_issue_counts[source_key]
