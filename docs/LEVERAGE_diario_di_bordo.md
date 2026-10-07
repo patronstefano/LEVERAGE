@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - MILESTONE: verifica integrita dati tramite Audit e Ripristino conclusa
+
+L'utente conferma verificata anche l'integrita dei dati tramite Audit e Ripristino, chiudendo la fase indicata dopo il collaudo delle importazioni incrementali. Si registra l'accettazione dell'utente del comportamento di controllo e ripristino delle operazioni amministrative. In questo passaggio non sono stati eseguiti nuovi test, modifiche ai dati o ripristini dall'assistente; non vengono attribuiti alla verifica scenari specifici ulteriori rispetto a quanto confermato dall'utente.
+
+Sono quindi concluse, per il percorso MVP privato, sia la fase di collaudo incrementale Results/Calendar sia la verifica d'integrita tramite Audit e Ripristino. Prossimi passi: collaudo trasversale dei percorsi USER, ADMIN e SUPER ADMIN, controllo finale della UI e preparazione della consegna privata con backup SQLite verificato, istruzioni di avvio e tag finale. Questa milestone non dichiara ancora concluso il collaudo end-to-end dell'intero MVP.
+
 ## 2026-10-07 - MILESTONE: collaudo importazione incrementale Results e Calendar concluso
 
 L'utente conferma concluso il collaudo dell'importazione incrementale completa per entrambi i formati The Gymternet: Results e Calendar. Questa milestone registra l'accettazione del flusso da parte dell'utente dopo le prove e le correzioni iterative; non equivale al collaudo finale di tutto il MVP o a una verifica automatica esaustiva del database.
