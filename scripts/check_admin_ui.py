@@ -1140,6 +1140,10 @@ def main():
                     if (pending.athletes || pending.events || pending.results !== 1) return false;
                     draft.sourceConfirmed['MAG:1'] = true;
                     if (Object.values(pendingImportReviews(preview, draft)).some(Boolean)) return false;
+                    preview.athlete_match_review.push({review_id: 'country', problem_type: 'possible_athlete_country_change'});
+                    if (pendingImportReviews(preview, draft).athletes !== 1) return false;
+                    draft.athlete = {country: {action: 'defer'}};
+                    if (pendingImportReviews(preview, draft).athletes !== 0) return false;
                     preview.issues = [{severity: 'error', message: 'Unlocated error'}];
                     return pendingImportReviews(preview, draft).results === 1;
                 }''')

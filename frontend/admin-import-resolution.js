@@ -1,4 +1,4 @@
-import { automaticImportIssueCode, renderImportIssues } from './admin-import-report.js?v=completed-import-review-20261007';
+import { automaticImportIssueCode, renderImportIssues } from './admin-import-report.js?v=independent-review-scopes-20261007';
 
 export function cleanSourceScoreDisplay(value) {
   if (value == null || String(value).trim() === '') return value;

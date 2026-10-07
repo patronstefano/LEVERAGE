@@ -2825,7 +2825,10 @@ def apply_athlete_match_decisions(
     if defer_duplicate_reviews:
         chosen = {item.get('review_id') for item in decisions}
         decisions.extend({'review_id': item['review_id'], 'action': 'defer'}
-                         for item in review_items if item['review_id'] not in chosen)
+                         for item in review_items if item['review_id'] not in chosen
+                         and item.get('problem_type') not in {
+                             'possible_athlete_country_change', 'possible_athlete_identity_collision',
+                         })
 
     review_by_id = {item["review_id"]: item for item in review_items}
     resolutions: dict[tuple, int] = {}

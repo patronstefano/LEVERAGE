@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=completed-import-review-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=independent-review-scopes-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, pendingImportReviews, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=completed-import-review-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, pendingImportReviews, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=independent-review-scopes-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1028,7 +1028,7 @@ export async function renderAdminCenter(host) {
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
       ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
-      ${!p.committed && athleteCountryReviews.length && !isDeferred('athlete') ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
+      ${!p.committed && athleteCountryReviews.length ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${issueErrors.length && (draft.kind !== 'gymternet' || p.committed) ? `<div data-import-issues>${renderImportIssues({issues: issueErrors, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</div>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
@@ -1078,7 +1078,7 @@ export async function renderAdminCenter(host) {
       }
       if (countryReviewGroup) {
         sections.athletes.append(countryReviewGroup);
-        countryReviewGroup.querySelector('.admin-revision-count').textContent = (isDeferred('athlete') ? 0 : athleteCountryReviews.length) + countryConflicts.length;
+        countryReviewGroup.querySelector('.admin-revision-count').textContent = athleteCountryReviews.length + countryConflicts.length;
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-country-review-note>${esc(text('importCountryIdentityNote'))}</p>`);
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDeferAllCountries', 'data-defer-all-countries')}</div>`);
       }

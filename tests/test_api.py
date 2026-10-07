@@ -10256,22 +10256,27 @@ def test_gymternet_deferred_reviews_persist_after_import_and_can_be_resolved(mon
     files = {'file': ('updated.csv', content, 'text/csv')}
     plain = '?year_hint=2024&require_resolved_reviews=true'
     assert client.post('/imports/gymternet/commit' + plain, files=files, headers=headers).status_code == 409
+    country_review = client.post('/imports/gymternet/preview' + plain, files=files, headers=headers).json()['athlete_match_review'][0]
+    country_decision = {'athlete_match_decisions': json.dumps([{'review_id': country_review['review_id'], 'action': 'defer'}])}
     for selected, other in [('event', 'athlete'), ('athlete', 'event')]:
         scoped = plain + f'&defer_{selected}_reviews=true&athlete_review_limit=0'
         scoped_preview = client.post('/imports/gymternet/preview' + scoped, files=files, headers=headers).json()
-        assert scoped_preview[f'{selected}_match_decision_stats']['deferred'] == 1
-        assert scoped_preview[f'{selected}_match_decision_stats']['unresolved'] == 0
+        assert scoped_preview[f'{selected}_match_decision_stats']['deferred'] == (1 if selected == 'event' else 0)
+        assert scoped_preview[f'{selected}_match_decision_stats']['unresolved'] == (0 if selected == 'event' else 1)
         assert scoped_preview[f'{other}_match_decision_stats']['unresolved'] == 1
         assert client.post('/imports/gymternet/commit' + scoped, files=files, headers=headers).status_code == 409
     params = plain + '&defer_duplicate_reviews=true&athlete_review_limit=0'
     preview = client.post('/imports/gymternet/preview' + params, files=files, headers=headers).json()
+    assert preview['athlete_match_decision_stats']['unresolved'] == 1
+    assert client.post('/imports/gymternet/commit' + params, files=files, headers=headers).status_code == 409
+    preview = client.post('/imports/gymternet/preview' + params, files=files, data=country_decision, headers=headers).json()
     assert preview['athlete_match_decision_stats']['deferred'] == 1
     assert preview['event_match_decision_stats']['deferred'] == 1
     assert preview['athlete_match_decision_stats']['unresolved'] == preview['event_match_decision_stats']['unresolved'] == 0
     assert preview['athlete_match_review'] == []  # Response limits cannot drop pending pairs.
     with SessionLocal() as db:
         assert db.query(models.EntityReviewDecision).count() == 0
-    response = client.post('/imports/gymternet/commit' + plain + '&defer_event_reviews=true&defer_athlete_reviews=true&athlete_review_limit=0', files=files, headers=headers)
+    response = client.post('/imports/gymternet/commit' + plain + '&defer_event_reviews=true&defer_athlete_reviews=true&athlete_review_limit=0', files=files, data=country_decision, headers=headers)
     assert response.status_code == 200, response.text
     assert response.json()['deferred_duplicate_pairs'] == 2
     assert response.json()['created_athletes'] == response.json()['created_events'] == response.json()['created_results'] == 1
@@ -10305,8 +10310,11 @@ def test_gymternet_deferral_keeps_country_variants_pending_without_merging():
     files = {'file': ('countries.csv', content, 'text/csv')}
     params = '?year_hint=2024&defer_duplicate_reviews=true&require_resolved_reviews=true'
     preview = client.post('/imports/gymternet/preview' + params, files=files, headers=headers).json()
-    assert preview['athlete_match_decision_stats']['deferred'] == 1
-    response = client.post('/imports/gymternet/commit' + params, files=files, headers=headers)
+    assert preview['athlete_match_decision_stats']['deferred'] == 0
+    assert preview['athlete_match_decision_stats']['unresolved'] == 1
+    assert client.post('/imports/gymternet/commit' + params, files=files, headers=headers).status_code == 409
+    decision = {'athlete_match_decisions': json.dumps([{'review_id': preview['athlete_match_review'][0]['review_id'], 'action': 'defer'}])}
+    response = client.post('/imports/gymternet/commit' + params, files=files, data=decision, headers=headers)
     assert response.status_code == 200, response.text
     assert response.json()['created_athletes'] == 2
     assert response.json()['deferred_duplicate_pairs'] == 1

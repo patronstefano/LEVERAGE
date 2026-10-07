@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Rinvii identita e nazionalita indipendenti
+
+Il rinvio globale delle revisioni duplicati atleta non include piu possible_athlete_country_change e possible_athlete_identity_collision, che appartengono alla revisione nazionalita. Corretto il backend sia per il parametro specifico atleta sia per quello legacy globale. Le decisioni esplicite sulla nazionalita restano valide e indipendenti; il relativo comando collettivo non modifica il rinvio delle identita duplicate. Il frontend mantiene visibile la sezione nazionalita e il suo conteggio anche quando le identita sono rinviate. Il controllo di completamento per il ricalcolo automatico continua a considerare pendenti le nazionalita senza decisione. Nessuna modifica ai dati salvati. Test dei due versi di indipendenza e del conteggio frontend.
+
 ## 2026-10-07 - Calendar distingue Bundesliga senza suffisso da MAG legacy
 
 Corretto il falso conflitto 2nd Bundesliga 2026: il calendario senza suffisso era ancora inferito MAG e WAG e poteva associarsi all'Event MAG storico senza suffisso. Le tappe ordinali Bundesliga senza qualificatore nel calendario sono ora WAG; le indicazioni esplicite MAG restano MAG e le finali generiche non cambiano. Per i vecchi Event con nome senza suffisso rimane autorevole la disciplina gia registrata, senza riclassificarli WAG automaticamente.

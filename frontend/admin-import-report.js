@@ -192,7 +192,8 @@ export function pendingImportReviews(preview, draft) {
   for (const [kind, scope] of [['event', 'events'], ['athlete', 'athletes']]) {
     const deferred = params[`defer_${kind}_reviews`] ?? params.defer_duplicate_reviews;
     for (const item of preview[`${kind}_match_review`] || []) {
-      if (!deferred && !item.deferred && !draft[kind]?.[item.review_id]?.action) counts[scope]++;
+      const countryReview = kind === 'athlete' && ['possible_athlete_country_change', 'possible_athlete_identity_collision'].includes(item.problem_type);
+      if ((!deferred || countryReview) && !item.deferred && !draft[kind]?.[item.review_id]?.action) counts[scope]++;
     }
     if (!deferred) counts[scope] += Math.max(0, (preview[`${kind}_match_decision_stats`]?.unresolved || 0)
       - (preview[`${kind}_match_review`] || []).filter(item => !item.deferred).length);
