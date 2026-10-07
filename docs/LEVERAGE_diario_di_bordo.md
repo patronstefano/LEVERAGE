@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Unica sezione per la revisione delle nazionalita
+
+Eliminata la sezione autonoma Nazionalita da verificare. Le differenze di nazionalita rappresentata sullo stesso risultato sono ora dentro Revisione nazionalita atleti, insieme alle verifiche anagrafiche, con contatore complessivo e una sola nota finale. Conservati gara di riferimento, confronto e comandi specifici per correggere/escludere le righe del file senza sovrascrivere risultati gia salvati. Il raggruppamento appare anche se contiene soltanto questi casi; nessuna modifica alla semantica delle decisioni backend.
+
 ## 2026-10-07 - Messaggio revisione eventi vuota nel calendario
 
 Uniformato Nessun evento da verificare nell'import calendario al feedback compatto dell'import risultati, con stessa classe UI, dimensione e ruolo status. Compare in assenza di gruppi da esaminare, conflitti sorgente ed errori. Test browser sul testo e sugli stili calcolati.

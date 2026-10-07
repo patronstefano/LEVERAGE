@@ -1053,9 +1053,14 @@ export async function renderAdminCenter(host) {
           if (isDeferred(kind)) group.querySelector('.admin-import-pagination')?.remove();
         }
       }
-      const countryReviewGroup = output.querySelector('[data-import-group=athleteCountry]');
+      let countryReviewGroup = output.querySelector('[data-import-group=athleteCountry]');
+      if (!countryReviewGroup && countryConflicts.length) {
+        sections.athletes.insertAdjacentHTML('beforeend', reviewGroup('athleteCountry', 'importAthleteCountryReview', 0, ''));
+        countryReviewGroup = sections.athletes.querySelector('[data-import-group=athleteCountry]');
+      }
       if (countryReviewGroup) {
         sections.athletes.append(countryReviewGroup);
+        countryReviewGroup.querySelector('.admin-revision-count').textContent = (isDeferred('athlete') ? 0 : athleteCountryReviews.length) + countryConflicts.length;
         countryReviewGroup.insertAdjacentHTML('beforeend', `<footer class="admin-stats-note admin-country-review-footer">${esc(text('importCountryActionHelp'))}</footer>`);
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-country-review-note>${esc(text('importCountryIdentityNote'))}</p>`);
       }
@@ -1063,9 +1068,8 @@ export async function renderAdminCenter(host) {
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
       if (countryConflicts.length) {
         const countryPage = draft.countryConflictPage = Math.min(draft.countryConflictPage || 0, Math.max(0, Math.ceil(countryConflicts.length / 6) - 1));
-        sections.athletes.insertAdjacentHTML('beforeend', `<details class="admin-revision-group" data-country-conflicts ${draft.countryConflictsOpen ? 'open' : ''}><summary>${esc(text('importCountryChecks'))}<span class="admin-revision-count">${countryConflicts.length}</span></summary>${countryConflicts.slice(countryPage * 6, (countryPage + 1) * 6).map((c, index) => `<article class="admin-identity-pair"><div><strong>${esc(nameOf(c))}</strong><p class="admin-revision-meta">${esc(c.event_name)} · ${esc(c.year)}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}${button('importUseStoredCountry', `data-country-fix="${countryPage * 6 + index}" ${!c.existing_country ? 'disabled' : ''}`)}${button('importExcludeCountryRow', `data-country-exclude="${countryPage * 6 + index}"`)}</div><p class="admin-stats-note">${esc(text('importCountryCorrectionNote'))}</p><div data-pair-details hidden>${renderImportIdentityComparison({leftName: nameOf(c), rightName: nameOf(c), rightLabel: text(c.existing_result_id ? 'importDatabase' : 'previous'), fields: [['country', c.country, c.existing_country]], text, esc})}</div></article>`).join('')}${countryConflicts.length > 6 ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-country-page="-1" ${countryPage === 0 ? 'disabled' : ''}`)}<span>${countryPage * 6 + 1}–${Math.min((countryPage + 1) * 6, countryConflicts.length)} / ${countryConflicts.length}</span>${button('importNextPage', `data-country-page="1" ${(countryPage + 1) * 6 >= countryConflicts.length ? 'disabled' : ''}`)}</div>` : ''}</details>`);
+        countryReviewGroup.querySelector('.admin-country-review-footer').insertAdjacentHTML('beforebegin', `<div data-country-conflicts>${countryConflicts.slice(countryPage * 6, (countryPage + 1) * 6).map((c, index) => `<article class="admin-identity-pair"><div><strong>${esc(nameOf(c))}</strong><p class="admin-revision-meta">${esc(c.event_name)} · ${esc(c.year)}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}${button('importUseStoredCountry', `data-country-fix="${countryPage * 6 + index}" ${!c.existing_country ? 'disabled' : ''}`)}${button('importExcludeCountryRow', `data-country-exclude="${countryPage * 6 + index}"`)}</div><p class="admin-stats-note">${esc(text('importCountryCorrectionNote'))}</p><div data-pair-details hidden>${renderImportIdentityComparison({leftName: nameOf(c), rightName: nameOf(c), rightLabel: text(c.existing_result_id ? 'importDatabase' : 'previous'), fields: [['country', c.country, c.existing_country]], text, esc})}</div></article>`).join('')}${countryConflicts.length > 6 ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-country-page="-1" ${countryPage === 0 ? 'disabled' : ''}`)}<span>${countryPage * 6 + 1}–${Math.min((countryPage + 1) * 6, countryConflicts.length)} / ${countryConflicts.length}</span>${button('importNextPage', `data-country-page="1" ${(countryPage + 1) * 6 >= countryConflicts.length ? 'disabled' : ''}`)}</div>` : ''}</div>`);
         const group = sections.athletes.querySelector('[data-country-conflicts]');
-        group.ontoggle = () => { if (group.isConnected) draft.countryConflictsOpen = group.open; };
         group.querySelectorAll('[data-country-page]').forEach(control => control.onclick = () => { draft.countryConflictPage += Number(control.dataset.countryPage); showImport(); });
       }
       for (const selector of ['#adminImportResolution', '[data-import-group=orphan]', '[data-import-issues]']) {

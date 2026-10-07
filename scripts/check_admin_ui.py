@@ -1220,7 +1220,9 @@ def main():
                         assert (other in group.inner_text()) == (other == message)
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-import-part=athletes]').click()
-                page.locator('[data-country-conflicts]').evaluate('el => el.open = true')
+                page.locator('[data-import-group=athleteCountry]').evaluate('el => el.open = true')
+                assert page.locator('[data-import-group=athleteCountry] [data-country-conflicts]').count() == 1
+                assert page.locator('summary').get_by_text('Nazionalità da verificare', exact=False).count() == 0
                 page.locator('[data-country-conflicts] [data-import-review-toggle]').click()
                 assert 'ESP' in page.locator('[data-country-conflicts]').inner_text()
                 assert 'ITA' in page.locator('[data-country-conflicts]').inner_text()
@@ -1292,6 +1294,16 @@ def main():
                 assert country_group.locator('[name=country_history_choice]').input_value() == ''
                 country_group.locator('[data-country-defer]').click()
                 assert country_group.locator('[name=country_correction_choice]').input_value() == ''
+                preview['conflicts'] = [{'reason': 'country_conflict_existing', 'first_name': 'Same', 'last_name': 'Athlete',
+                    'country': 'ESP', 'existing_country': 'ITA', 'event_name': 'Country Cup', 'year': 2026}]
+                analyze_import()
+                page.locator('[data-import-part=athletes]').click()
+                assert page.locator('[data-import-group=athleteCountry]').count() == 1
+                assert country_group.locator('summary .admin-revision-count').inner_text() == '2'
+                assert country_group.locator('[data-country-conflicts]').count() == 1
+                assert country_group.locator('.admin-country-review-footer').count() == 1
+                assert page.locator('details[data-country-conflicts]').count() == 0
+                preview['conflicts'] = []
                 preview['athlete_match_review'] = original_athlete_reviews
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
                 analyze_import()
