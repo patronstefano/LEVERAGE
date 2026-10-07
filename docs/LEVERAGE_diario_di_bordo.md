@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Revisione identita gare coerente con gli atleti
+
+La revisione identita gare nell'anteprima risultati adotta gli stessi componenti visivi, dimensioni e spazi della revisione identita atleti. Confronta dettagli mostra una sola coppia file/LEVERAGE con nome, anno e disciplina, senza ripetere tutti i candidati. Comandi affiancati al confronto su desktop e sotto su mobile: Associa a gara esistente, Crea nuova gara, Rinvia revisione. In presenza di piu candidati, il selettore della destinazione appare solo dopo Associa e richiede una scelta esplicita; la scelta aggiorna anche confronto e compatibilita.
+
+Le decisioni restano locali fino al ricalcolo dell'anteprima. Conservate le azioni backend match_existing, keep_separate e defer: associare una gara del file non equivale a unire due Event gia salvati. Nessuna modifica ai punteggi, ai criteri di matching o al database. Test UI su disposizione desktop/mobile, selezione esclusiva dei comandi e assenza di richieste durante le scelte.
+
 ## 2026-10-07 - Perimetri distinti di esclusione Results e Calendar
 
 Confermata e verificata la semantica richiesta: nell'import Results, Tralascia esclude soltanto gare gia presenti con risultati attivi; gli eventi senza risultati, anche se gia inseriti dal calendario, restano elaborabili. Risultati eliminati logicamente non qualificano una gara come popolata. Nell'import Calendar, Tralascia esclude tutte le gare gia presenti, con o senza risultati, incluse le voci calendario non ancora collegate a un Event. Il backend gia distingueva i due perimetri: nessuna modifica alle regole di matching o al database. Etichetta Results resa esplicita come Gare con risultati gia importati, con traduzioni aggiornate. Test API comparativo su preview e commit nei tre stati: nessun risultato, risultati attivi, soli risultati eliminati; mantenuti i test sulle voci solo calendario.

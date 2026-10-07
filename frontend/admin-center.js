@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=distinct-import-scopes-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=event-identity-review-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -984,7 +984,23 @@ export async function renderAdminCenter(host) {
       const identityControls = `<div class="admin-center-actions">${[['accept_suggestion', 'importIdentityMerge'], ['create_new', 'importIdentityCreate'], ['defer', 'importIdentityDefer']].map(([action, label]) => button(label, `data-identity-action="${action}" aria-pressed="${(identityDecision.selection || identityDecision.action) === action}" ${action === 'accept_suggestion' && !identityTargets.length ? 'disabled' : ''}`)).join('')}</div>${identityTargets.length > 1 ? `<div data-identity-target ${(identityDecision.selection || identityDecision.action) === 'accept_suggestion' ? '' : 'hidden'}>${select('identity_target', 'target', [{value: '', label: '—'}, ...identityTargets.map(s => ({value: s.suggestion_id, label: `${nameOf(s.target_athlete)} · ${s.target_athlete.country || '—'} · ID ${s.target_athlete.athlete_id}`}))], identityDecision.suggestion_id || '')}</div>` : ''}`;
       return `<article class="admin-identity-pair admin-import-review" data-review-type="${type}" data-review-index="${index}"><div class="admin-identity-pair-grid"><div class="admin-identity-entity"><strong>${esc(nameOf(source))}</strong><p class="admin-revision-meta">${esc([text('importFile'), source.discipline, source.country, source.year].filter(Boolean).join(' · '))}</p></div><div class="admin-identity-entity"><strong>${esc(nameOf(target))}</strong><p class="admin-revision-meta">${esc([target.athlete_id ? `ID ${target.athlete_id}` : '', target.discipline, target.country].filter(Boolean).join(' · '))}</p></div></div><div class="admin-center-actions">${best?.confidence != null ? `<span class="admin-review-compatibility">${esc(text('compatibility'))}: ${Math.round(best.confidence * 100)}%</span>` : ''}${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden>${type === 'athlete' ? renderAthleteImportComparison({item, name: nameOf(source), text, esc}) : report(source) + report(item.suggestions || [])}${type === 'athlete' ? '<div class="admin-athlete-review-actions">' : ''}${countryOnly ? countryControls : type === 'athlete' ? identityControls : `<div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + (countryChange ? '' : select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }])) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div>`}${type === 'athlete' ? '</div>' : ''}</div></article>`;
     }).join("");
-    const eventReviewRows = (p.event_match_review || []).slice(start('event'), start('event') + pageSize).map((item, i) => `<article class="admin-identity-pair admin-import-review" data-event-review="${start('event') + i}"><div class="admin-identity-entity"><strong>${esc(item.event_name)} · ${item.year}</strong><p class="admin-revision-meta">${esc(text('importFileRows'))}: ${item.result_count}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden>${item.suggestions.map(s => renderImportIdentityComparison({leftName: item.event_name, rightName: s.name, rightId: s.event_id, fields: [['name', item.event_name, s.name], ['year', item.year, s.year], ['discipline', item.disciplines.join(' · '), s.discipline], ['importCalendarStart', null, s.start_date], ['importCalendarEnd', null, s.end_date]], text, esc})).join('')}${select('event_action', 'decision', [{value: '', label: text('unresolved')}, ...item.suggestions.map(s => ({value: String(s.event_id), label: `${text('importMatchEvent')} · ${s.name} · ID ${s.event_id}`})), {value: 'keep_separate', label: text('importNewSeparate')}], draft.event[item.review_id]?.selection || '')}</div></article>`).join('');
+    const eventComparison = (item, target) => `<div class="admin-import-athlete-comparison"><dl class="admin-activity-row-details"><div><dt>${esc(text('importFile'))}</dt><dd>${esc(item.event_name)}<p class="admin-revision-meta">${esc([item.year, ...(item.disciplines || [])].filter(Boolean).join(' · '))}</p></dd></div><div><dt>${esc(text('importDatabase'))}</dt><dd>${esc(target?.name || '—')}<p class="admin-revision-meta">${esc([target?.year, target?.discipline].filter(Boolean).join(' · '))}</p></dd></div></dl></div>`;
+    const eventReviewRows = (p.event_match_review || []).slice(start('event'), start('event') + pageSize).map((item, i) => {
+      const candidates = item.suggestions || [];
+      const decision = draft.event[item.review_id] || {};
+      const selected = decision.selection || decision.action || '';
+      const target = candidates.find(candidate => candidate.event_id === decision.event_id) || candidates[0];
+      return `<article class="admin-identity-pair admin-import-review" data-event-review="${start('event') + i}">
+        <div class="admin-identity-pair-grid">
+          <div class="admin-identity-entity"><strong>${esc(item.event_name)}</strong><p class="admin-revision-meta">${esc([text('importFile'), item.year, ...(item.disciplines || [])].filter(Boolean).join(' · '))}</p></div>
+          <div class="admin-identity-entity"><strong data-event-target-name>${esc(target?.name || '—')}</strong><p class="admin-revision-meta" data-event-target-meta>${esc([target?.event_id ? `ID ${target.event_id}` : '', target?.year, target?.discipline].filter(Boolean).join(' · '))}</p></div>
+        </div>
+        <div class="admin-center-actions"><span class="admin-review-compatibility" data-event-compatibility ${target?.compatibility == null ? 'hidden' : ''}>${esc(text('compatibility'))}: ${target?.compatibility ?? ''}%</span>${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div>
+        <div data-pair-details hidden><div data-event-comparison>${eventComparison(item, target)}</div>
+          <div class="admin-athlete-review-actions"><div class="admin-center-actions">${[['match_existing', 'importEventIdentityMatch'], ['keep_separate', 'importEventIdentityCreate'], ['defer', 'importIdentityDefer']].map(([action, label]) => button(label, `data-event-identity-action="${action}" aria-pressed="${selected === action}" ${action === 'match_existing' && !candidates.length ? 'disabled' : ''}`)).join('')}</div>
+          ${candidates.length > 1 ? `<div data-identity-target ${selected === 'match_existing' ? '' : 'hidden'}>${select('event_target', 'importEventIdentityTarget', [{value: '', label: '—'}, ...candidates.map(candidate => ({value: String(candidate.event_id), label: `${candidate.name} · ${candidate.year} · ${candidate.discipline} · ID ${candidate.event_id}`}))], decision.event_id ? String(decision.event_id) : '')}</div>` : ''}</div>
+        </div></article>`;
+    }).join('');
     const importForm = document.getElementById('adminImportForm');
     importForm.hidden = !draft.fileFormOpen;
     const calendarConflicts = (p.duplicate_source_rows?.length || 0) + (p.matched_event_source_conflicts?.length || 0);
@@ -1296,12 +1312,37 @@ export async function renderAdminCenter(host) {
       details.hidden = !details.hidden;
       control.setAttribute('aria-expanded', String(!details.hidden));
     });
-    output.querySelectorAll('[data-event-review]').forEach(row => row.addEventListener('change', () => {
+    output.querySelectorAll('[data-event-review]').forEach(row => {
       const item = p.event_match_review[Number(row.dataset.eventReview)];
-      const selection = row.querySelector('[name=event_action]').value;
-      draft.event[item.review_id] = {review_id: item.review_id, selection, action: selection === 'keep_separate' ? 'keep_separate' : selection ? 'match_existing' : '', ...(selection && selection !== 'keep_separate' ? {event_id: Number(selection)} : {})};
-      markChanged();
-    }));
+      const candidates = item.suggestions || [];
+      const stageEvent = (action, targetId) => {
+        const target = candidates.find(candidate => candidate.event_id === Number(targetId));
+        draft.event[item.review_id] = {review_id: item.review_id, selection: action,
+          action: action === 'match_existing' && !target ? '' : action,
+          ...(action === 'match_existing' && target ? {event_id: target.event_id} : {})};
+        draft.reviewOpen.event = true;
+        row.querySelectorAll('[data-event-identity-action]').forEach(control => control.setAttribute('aria-pressed', String(control.dataset.eventIdentityAction === action)));
+        const picker = row.querySelector('[data-identity-target]');
+        if (picker) picker.hidden = action !== 'match_existing';
+        if (target) {
+          row.querySelector('[data-event-comparison]').innerHTML = eventComparison(item, target);
+          row.querySelector('[data-event-target-name]').textContent = target.name;
+          row.querySelector('[data-event-target-meta]').textContent = [`ID ${target.event_id}`, target.year, target.discipline].filter(Boolean).join(' · ');
+          const compatibility = row.querySelector('[data-event-compatibility]');
+          compatibility.hidden = target.compatibility == null;
+          compatibility.textContent = `${text('compatibility')}: ${target.compatibility ?? ''}%`;
+        }
+        markChanged();
+      };
+      row.querySelectorAll('[data-event-identity-action]').forEach(control => control.onclick = () => {
+        const action = control.dataset.eventIdentityAction;
+        const targetId = candidates.length === 1 ? candidates[0].event_id : row.querySelector('[name=event_target]')?.value;
+        stageEvent(action, action === 'match_existing' ? targetId : null);
+      });
+      row.addEventListener('change', event => {
+        if (event.target.name === 'event_target') stageEvent('match_existing', event.target.value);
+      });
+    });
     output.querySelectorAll("[data-review-type]").forEach((row) => {
       const type = row.dataset.reviewType, items = type === "athlete" ? p.athlete_match_review : p.orphan_dscore_review, item = items[Number(row.dataset.reviewIndex)];
       if (type === 'athlete' && countryReview(item)) {

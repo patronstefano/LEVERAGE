@@ -1155,8 +1155,17 @@ def main():
                 page.locator('[data-import-group=event] > summary').click()
                 pending_requests = len(writes)
                 page.locator('[data-event-review] [data-import-review-toggle]').click()
-                page.locator('[data-event-review] summary').click()
-                page.locator('[data-event-review] [data-admin-select-value="1"]').click()
+                event_row = page.locator('[data-event-review]')
+                assert event_row.locator('[name=event_action]').count() == 0
+                assert event_row.locator('[data-event-identity-action]').count() == 3
+                assert event_row.locator('[data-event-comparison] dl').count() == 1
+                event_comparison = event_row.locator('[data-event-comparison]').bounding_box()
+                event_actions = event_row.locator('.admin-athlete-review-actions').bounding_box()
+                assert event_actions['x'] >= event_comparison['x'] + event_comparison['width'] + 12
+                for action in ['keep_separate', 'defer', 'match_existing']:
+                    event_row.locator(f'[data-event-identity-action={action}]').click()
+                    assert event_row.locator(f'[data-event-identity-action={action}]').get_attribute('aria-pressed') == 'true'
+                    assert event_row.locator('[data-event-identity-action][aria-pressed=true]').count() == 1
                 page.locator('[data-import-part=athletes]').click()
                 row.locator('[data-import-review-toggle]').click()
                 assert row.locator('[name=action], [name=target_search], [name=canonical_country]').count() == 0
@@ -1197,6 +1206,25 @@ def main():
                 page.screenshot(path='/tmp/leverage-admin-import-mobile.png', full_page=True)
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
                 page.set_viewport_size({'width': 1440, 'height': 1000})
+                preview['event_match_review'][0]['suggestions'].append({'event_id': 2, 'name': 'Test Cup Alternate', 'year': 2026, 'discipline': 'MAG', 'compatibility': 91})
+                analyze_import()
+                page.locator('[data-import-part=events]').click()
+                page.locator('[data-import-group=event] > summary').click()
+                event_row = page.locator('[data-event-review]')
+                event_row.locator('[data-import-review-toggle]').click()
+                pending_requests = len(writes)
+                event_row.locator('[data-event-identity-action=match_existing]').click()
+                assert event_row.locator('[name=event_target]').input_value() == ''
+                event_row.locator('[data-identity-target] summary').click()
+                event_row.locator('[data-admin-select-value="2"]').click()
+                assert event_row.locator('[data-event-target-name]').inner_text() == 'Test Cup Alternate'
+                assert '91%' in event_row.locator('[data-event-compatibility]').inner_text()
+                assert 'Test Cup Alternate' in event_row.locator('[data-event-comparison]').inner_text()
+                assert len(writes) == pending_requests
+                page.locator('#adminReviewPreview').click()
+                page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                assert 'match_existing' in writes[-1]['body']
+                assert '"event_id":2' in writes[-1]['body']
                 preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "duplicate_existing"}] * 1000, athlete_match_review=[], event_match_review=[])
                 analyze_import()
                 page.locator('#adminImportOutput [data-import-status]').wait_for()
