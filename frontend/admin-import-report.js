@@ -1,4 +1,7 @@
 export const IMPORT_COPY = {
+  importIdentityMerge: ['Merge into existing athlete', 'Unisci ad atleta esistente', 'Unir a un atleta existente', 'Fusionner avec un athlète existant'],
+  importIdentityCreate: ['Create new athlete', 'Crea nuovo atleta', 'Crear nuevo atleta', 'Créer un nouvel athlète'],
+  importIdentityDefer: ['Defer review', 'Rinvia revisione', 'Aplazar revisión', 'Reporter la vérification'],
   importFileCountries: ['Nationality in the file', 'Nazionalità nel file', 'Nacionalidad en el archivo', 'Nationalité dans le fichier'],
   importSavedCountries: ['Nationality in LEVERAGE', 'Nazionalità già in LEVERAGE', 'Nacionalidad en LEVERAGE', 'Nationalité dans LEVERAGE'],
   importCountryHistoryAction: ['Update nationality history', 'Aggiorna storico nazionalità', 'Actualizar historial de nacionalidad', 'Actualiser l’historique des nationalités'],

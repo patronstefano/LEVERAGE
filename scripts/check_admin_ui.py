@@ -17,7 +17,7 @@ def main():
     preview = {"filename": "test.csv", "parsed_rows": 1, "importable_results": 1,
                "issues": [], "conflicts": [], "duplicates": [], "sample_results": [],
                "athlete_match_review": [{"review_id": "r1", "problem_type": "possible_existing_athlete_match",
-                 "imported_athlete": athlete, "suggestions": [{"suggestion_id": "s1", "target_athlete": athlete}]}],
+                 "imported_athlete": athlete, "suggestions": [{"suggestion_id": "s1", "target_athlete": {**athlete, "athlete_id": 1}}]}],
                "orphan_dscore_review": []}
     preview['athlete_match_decision_stats'] = {'unresolved': 1}
     preview['event_match_review'] = [{'review_id': 'event:r1', 'event_name': 'Testt Cup', 'year': 2026,
@@ -1142,8 +1142,12 @@ def main():
                 page.locator('[data-event-review] [data-admin-select-value="1"]').click()
                 page.locator('[data-import-part=athletes]').click()
                 row.locator('[data-import-review-toggle]').click()
-                row.locator("[data-admin-select]").first.locator("summary").click()
-                row.locator('[data-admin-select-value="suggestion:s1"]').click()
+                assert row.locator('[name=action], [name=target_search], [name=canonical_country]').count() == 0
+                assert row.locator('[data-identity-action]').count() == 3
+                for action in ['create_new', 'defer', 'accept_suggestion']:
+                    row.locator(f'[data-identity-action={action}]').click()
+                    assert row.locator(f'[data-identity-action={action}]').get_attribute('aria-pressed') == 'true'
+                    assert row.locator('[data-identity-action][aria-pressed=true]').count() == 1
                 assert len(writes) == pending_requests
                 assert page.locator('[data-apply-review]').count() == 0
                 assert page.locator('#adminImportDecisionsNotice').is_visible()
@@ -1205,6 +1209,22 @@ def main():
                 assert 'Country Cup' not in page.locator('#importPart_results').text_content()
                 preview['conflicts'] = []
                 original_athlete_reviews = preview.get('athlete_match_review', [])
+                preview['athlete_match_review'] = [{'review_id': 'multi-target',
+                    'problem_type': 'possible_existing_athlete_match', 'imported_athlete': athlete,
+                    'suggestions': [{'suggestion_id': f'm{i}', 'target_athlete': {**athlete, 'athlete_id': i}} for i in [1, 2]]}]
+                analyze_import()
+                page.locator('[data-import-part=athletes]').click()
+                identity_group = page.locator('[data-import-group=athlete]')
+                identity_group.evaluate('el => el.open = true')
+                identity_group.locator('[data-import-review-toggle]').click()
+                assert identity_group.locator('[data-identity-target]').is_hidden()
+                identity_group.locator('[data-identity-action=accept_suggestion]').click()
+                assert identity_group.locator('[name=identity_target]').input_value() == ''
+                identity_group.locator('[data-identity-target] summary').click()
+                identity_group.locator('[data-admin-select-value=m2]').click()
+                assert identity_group.locator('[name=identity_target]').input_value() == 'm2'
+                identity_group.locator('[data-identity-action=defer]').click()
+                assert identity_group.locator('[data-identity-target]').is_hidden()
                 preview['athlete_match_review'] = [{'review_id': 'country-only-review',
                     'problem_type': 'possible_athlete_identity_collision',
                     'imported_athlete': {'first_name': 'Same', 'last_name': 'Athlete', 'country': None, 'discipline': 'MAG'},

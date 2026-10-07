@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Revisione identita atleti semplificata
+
+Tre comandi sostituiscono i campi tecnici nella revisione identita dell'import: Unisci ad atleta esistente, Crea nuovo atleta, Rinvia revisione. La destinazione e il candidato mostrato; con piu candidati viene richiesta una scelta esplicita. Le decisioni sono alternative e restano in bozza fino al ricalcolo, senza modificare subito il database. La revisione nazionalita mantiene i propri comandi separati. Il rinvio usa il flusso backend esistente di revisione differita.
+
 ## 2026-10-07 - Disposizione comandi revisione nazionalita
 
 Allineato Tralascia revisione a destra del selettore Correggi nazionalita registrata, sulla stessa riga desktop; disposizione verticale su mobile. Nota esplicativa unica in fondo alla sezione, non ripetuta in ciascun record. Ridotti i margini superflui nel confronto aperto senza modificare le decisioni.
