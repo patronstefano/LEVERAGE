@@ -1,0 +1,434 @@
+[
+  {
+    "event_id": 96,
+    "name": "1st Bundesliga",
+    "year": 2018,
+    "status": "planned",
+    "moved_results": 152,
+    "mag_dates": [
+      "2018-03-03",
+      "2018-03-03"
+    ],
+    "wag_dates": [
+      "2018-03-03",
+      "2018-03-04"
+    ]
+  },
+  {
+    "event_id": 99,
+    "name": "2nd Bundesliga",
+    "year": 2018,
+    "status": "planned",
+    "moved_results": 202,
+    "mag_dates": [
+      "2018-03-10",
+      "2018-03-11"
+    ],
+    "wag_dates": [
+      "2018-03-24",
+      "2018-03-25"
+    ]
+  },
+  {
+    "event_id": 111,
+    "name": "4th Bundesliga",
+    "year": 2018,
+    "status": "planned",
+    "moved_results": 200,
+    "mag_dates": [
+      "2018-04-07",
+      "2018-04-07"
+    ],
+    "wag_dates": [
+      "2018-11-17",
+      "2018-11-18"
+    ]
+  },
+  {
+    "event_id": 112,
+    "name": "3rd Bundesliga",
+    "year": 2018,
+    "status": "planned",
+    "moved_results": 200,
+    "mag_dates": [
+      "2018-03-31",
+      "2018-03-31"
+    ],
+    "wag_dates": [
+      "2018-04-14",
+      "2018-04-15"
+    ]
+  },
+  {
+    "event_id": 310,
+    "name": "4th Bundesliga",
+    "year": 2019,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2019-10-19",
+      "2019-10-19"
+    ],
+    "wag_dates": [
+      "2019-11-16",
+      "2019-11-17"
+    ]
+  },
+  {
+    "event_id": 311,
+    "name": "1st Bundesliga",
+    "year": 2019,
+    "status": "planned",
+    "moved_results": 194,
+    "mag_dates": [
+      "2019-03-02",
+      "2019-03-02"
+    ],
+    "wag_dates": [
+      "2019-03-02",
+      "2019-03-03"
+    ]
+  },
+  {
+    "event_id": 312,
+    "name": "3rd Bundesliga",
+    "year": 2019,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2019-04-27",
+      "2019-04-28"
+    ],
+    "wag_dates": [
+      "2019-11-02",
+      "2019-11-03"
+    ]
+  },
+  {
+    "event_id": 313,
+    "name": "2nd Bundesliga",
+    "year": 2019,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2019-03-09",
+      "2019-03-10"
+    ],
+    "wag_dates": [
+      "2019-05-11",
+      "2019-05-12"
+    ]
+  },
+  {
+    "event_id": 478,
+    "name": "1st Bundesliga",
+    "year": 2020,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2020-10-03",
+      "2020-10-03"
+    ],
+    "wag_dates": [
+      "2020-03-07",
+      "2020-03-07"
+    ]
+  },
+  {
+    "event_id": 480,
+    "name": "2nd Bundesliga",
+    "year": 2020,
+    "status": "planned",
+    "moved_results": 148,
+    "mag_dates": [
+      "2020-10-10",
+      "2020-10-10"
+    ],
+    "wag_dates": [
+      "2020-10-10",
+      "2020-10-11"
+    ]
+  },
+  {
+    "event_id": 778,
+    "name": "2nd Bundesliga",
+    "year": 2022,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2022-05-14",
+      "2022-05-14"
+    ],
+    "wag_dates": [
+      "2022-07-02",
+      "2022-07-02"
+    ]
+  },
+  {
+    "event_id": 781,
+    "name": "3rd Bundesliga",
+    "year": 2022,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2022-05-21",
+      "2022-05-21"
+    ],
+    "wag_dates": [
+      "2022-10-01",
+      "2022-10-01"
+    ]
+  },
+  {
+    "event_id": 785,
+    "name": "4th Bundesliga",
+    "year": 2022,
+    "status": "planned",
+    "moved_results": 199,
+    "mag_dates": [
+      "2022-06-04",
+      "2022-06-04"
+    ],
+    "wag_dates": [
+      "2022-11-12",
+      "2022-11-12"
+    ]
+  },
+  {
+    "event_id": 828,
+    "name": "1st Bundesliga",
+    "year": 2022,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2022-05-07",
+      "2022-05-07"
+    ],
+    "wag_dates": [
+      "2022-05-21",
+      "2022-05-21"
+    ]
+  },
+  {
+    "event_id": 997,
+    "name": "1st Bundesliga",
+    "year": 2023,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2023-03-04",
+      "2023-03-04"
+    ],
+    "wag_dates": [
+      "2023-04-30",
+      "2023-04-30"
+    ]
+  },
+  {
+    "event_id": 998,
+    "name": "2nd Bundesliga",
+    "year": 2023,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2023-04-22",
+      "2023-04-23"
+    ],
+    "wag_dates": [
+      "2023-07-01",
+      "2023-07-01"
+    ]
+  },
+  {
+    "event_id": 999,
+    "name": "3rd Bundesliga",
+    "year": 2023,
+    "status": "planned",
+    "moved_results": 196,
+    "mag_dates": [
+      "2023-04-29",
+      "2023-04-30"
+    ],
+    "wag_dates": [
+      "2023-10-14",
+      "2023-10-14"
+    ]
+  },
+  {
+    "event_id": 1026,
+    "name": "4th Bundesliga",
+    "year": 2023,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2023-10-21",
+      "2023-10-21"
+    ],
+    "wag_dates": [
+      "2023-11-11",
+      "2023-11-11"
+    ]
+  },
+  {
+    "event_id": 1238,
+    "name": "2nd Bundesliga",
+    "year": 2024,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2024-10-05",
+      "2024-10-05"
+    ],
+    "wag_dates": [
+      "2024-09-14",
+      "2024-09-14"
+    ]
+  },
+  {
+    "event_id": 1239,
+    "name": "4th Bundesliga",
+    "year": 2024,
+    "status": "planned",
+    "moved_results": 194,
+    "mag_dates": [
+      "2024-10-19",
+      "2024-10-19"
+    ],
+    "wag_dates": [
+      "2024-11-09",
+      "2024-11-09"
+    ]
+  },
+  {
+    "event_id": 1296,
+    "name": "1st Bundesliga",
+    "year": 2024,
+    "status": "planned",
+    "moved_results": 195,
+    "mag_dates": [
+      "2024-09-28",
+      "2024-09-28"
+    ],
+    "wag_dates": [
+      "2024-04-13",
+      "2024-04-13"
+    ]
+  },
+  {
+    "event_id": 1445,
+    "name": "3rd Bundesliga",
+    "year": 2025,
+    "status": "planned",
+    "moved_results": 198,
+    "mag_dates": [
+      "2025-06-07",
+      "2025-06-07"
+    ],
+    "wag_dates": [
+      "2025-10-11",
+      "2025-10-11"
+    ]
+  },
+  {
+    "event_id": 1454,
+    "name": "1st Bundesliga",
+    "year": 2025,
+    "status": "planned",
+    "moved_results": 199,
+    "mag_dates": [
+      "2025-04-12",
+      "2025-04-12"
+    ],
+    "wag_dates": [
+      "2025-04-26",
+      "2025-04-26"
+    ]
+  },
+  {
+    "event_id": 1455,
+    "name": "4th Bundesliga",
+    "year": 2025,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2025-09-06",
+      "2025-09-06"
+    ],
+    "wag_dates": [
+      "2025-11-15",
+      "2025-11-15"
+    ]
+  },
+  {
+    "event_id": 1508,
+    "name": "2nd Bundesliga",
+    "year": 2025,
+    "status": "planned",
+    "moved_results": 199,
+    "mag_dates": [
+      "2025-05-03",
+      "2025-05-03"
+    ],
+    "wag_dates": [
+      "2025-07-05",
+      "2025-07-05"
+    ]
+  },
+  {
+    "event_id": 1659,
+    "name": "1st Bundesliga",
+    "year": 2026,
+    "status": "planned",
+    "moved_results": 199,
+    "mag_dates": [
+      "2026-03-28",
+      "2026-03-29"
+    ],
+    "wag_dates": [
+      "2026-05-16",
+      "2026-05-16"
+    ]
+  },
+  {
+    "event_id": 536,
+    "name": "1st Bundesliga",
+    "year": 2021,
+    "status": "review_extra_calendar_entries"
+  },
+  {
+    "event_id": 535,
+    "name": "2nd Bundesliga",
+    "year": 2021,
+    "status": "review_extra_calendar_entries"
+  },
+  {
+    "event_id": 1683,
+    "name": "3rd Bundesliga",
+    "year": 2026,
+    "status": "planned",
+    "moved_results": 197,
+    "mag_dates": [
+      "2026-04-18",
+      "2026-04-18"
+    ],
+    "wag_dates": [
+      "2026-09-26",
+      "2026-09-26"
+    ]
+  },
+  {
+    "event_id": 1625,
+    "name": "4th Bundesliga",
+    "year": 2026,
+    "status": "planned",
+    "moved_results": 193,
+    "mag_dates": [
+      "2026-04-25",
+      "2026-04-25"
+    ],
+    "wag_dates": [
+      "2026-11-14",
+      "2026-11-14"
+    ]
+  }
+]

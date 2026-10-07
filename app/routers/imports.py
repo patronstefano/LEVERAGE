@@ -28,6 +28,7 @@ from app.gymternet_import import (
     find_import_target_suggestions,
     parse_gymternet_file,
     review_import_events,
+    route_separated_bundesliga_records,
     summarize_records,
 )
 from app.i18n import translate
@@ -214,6 +215,7 @@ def parse_and_summarize_upload(
         summary["athlete_canonical_names"] = {}
         return filename, summary
 
+    route_separated_bundesliga_records(db, parsed)
     skipped_events = []
     if skip_existing_events:
         resolved, event_reviews, event_decision_stats = review_import_events(

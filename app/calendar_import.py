@@ -326,6 +326,12 @@ def infer_event_discipline(event_name: str) -> models.EventDisciplineEnum:
 
 
 def calendar_discipline_matches(row: CalendarImportRow, event) -> bool:
+    # Separate Bundesliga calendar races must not resolve to the men's event
+    # merely because normalization removes its explicit MAG qualifier.
+    if re.fullmatch(r'\d+(?:st|nd|rd|th) bundesliga', row.event_name.strip(), re.I) and re.fullmatch(
+        r'\d+(?:st|nd|rd|th) bundesliga\s*\(MAG\)', event.name.strip(), re.I
+    ):
+        return False
     def sections(discipline):
         value = getattr(discipline, 'value', discipline)
         return {value} if value in {'MAG', 'WAG'} else {'MAG', 'WAG'}

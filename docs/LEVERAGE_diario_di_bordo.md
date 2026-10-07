@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Separazione Bundesliga MAG/WAG con date distinte
+
+Rilevata una conflazione di identita, non una duplicazione fisica dei punteggi: voci calendario Bundesliga e Bundesliga (MAG) puntavano allo stesso Event, esponendo la stessa classifica MAG sotto due date. Applicata separazione a 28 coppie documentate da esattamente due voci calendario: Event originale mantenuto WAG con le date della voce senza suffisso, nuovo Event MAG con le date della voce (MAG). Spostati 5.417 Result MAG mantenendo ID, componenti, rank e contesto; nessun punteggio eliminato o copiato. Le voci calendario sono ricollegate alla rispettiva disciplina. Le finali comuni e i casi senza coppia esplicita non vengono separati per semplice somiglianza del nome.
+
+Backup SQLite coerente prima della transazione: backups/leverage_before_bundesliga_sections_20261007_154035.db. Report prima/dopo in docs/import_reports/bundesliga_sections_preview.json e bundesliga_sections_applied.json. Audit dedicato repair_bundesliga_sections con snapshot degli eventi, delle voci calendario e degli ID risultati spostati; non e una normale operazione di annullamento singolo dalla UI, il recupero completo richiede il backup o gli snapshot. Verifica contro il backup: 819.739 risultati prima/dopo, zero variazioni dei campi dei risultati escluso event_id, nessuna variazione di associazione WAG, quick_check OK. Script con preview predefinita e applicazione esplicita, idempotente sui casi risolti.
+
+Protezione reimport Results: le righe MAG con nome Bundesliga senza suffisso sono instradate al corrispondente Event (MAG) gia separato, prima di esclusione gare gia importate e revisione identita; WAG invariato. Calendar non associa piu una voce Bundesliga senza suffisso a un Event esplicitamente (MAG). Test di separazione, preservazione punteggi, idempotenza e routing, 43 test mirati e 232 test API superati.
+
+Restano volutamente in revisione 1st Bundesliga 2021 (ID 536) e 2nd Bundesliga 2021 (ID 535): contengono anche voci League 2/League 3, per cui una separazione automatica basata soltanto sulla coppia principale rischia di attribuire date o divisioni improprie. Anche gli altri casi non coperti dalla coppia esplicita richiedono evidenza specifica, non una riclassificazione generale di tutte le Bundesliga.
+
 ## 2026-10-07 - Ritorno alla ricerca eventi dalla scheda
 
 Corretto il ritorno dalla Scheda Evento alla Sezione Eventi: le card della lista e i collegamenti del calendario conservano la route completa di provenienza, inclusa la ricerca, attraverso from=events e return_to. Torna agli Eventi ripristina quella route invece della lista senza ricerca. Applicato lo stesso approccio gia usato dalle card atleta, senza cambiare i filtri mantenuti nello stato della sezione. Conservati i contesti Ricerca globale e Centro Admin e la memoria della scheda durante il cambio di sezione. Test di navigazione sulle funzioni reali frontend con ricerca, caratteri speciali, cambio sezione, accesso diretto e provenienze alternative. Nessuna modifica ai dati.

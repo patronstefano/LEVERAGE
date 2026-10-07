@@ -3391,6 +3391,29 @@ def event_lookup_key(record: ParsedGymternetResult) -> tuple:
     return (record.event_name.lower(), record.year)
 
 
+def route_separated_bundesliga_records(db, parsed):
+    """Respect discipline splits already verified against calendar entries."""
+    targets = {(event.name.lower(), event.year): event.name for event in
+               db.query(models.Event).filter(models.Event.is_deleted.is_(False),
+                                            models.Event.discipline == models.EventDisciplineEnum.MAG).all()}
+    def routed(record):
+        if record.discipline != models.DisciplineEnum.MAG:
+            return record
+        target = targets.get((record.event_name.lower() + ' (mag)', record.year))
+        if target and re.fullmatch(r'\d+(?:st|nd|rd|th) Bundesliga', record.event_name, re.I):
+            return replace(record, event_name=target)
+        return record
+    parsed.records = [routed(record) for record in parsed.records]
+    parsed.orphan_dscore_records = [routed(record) for record in parsed.orphan_dscore_records or []]
+    for issue in parsed.issues:
+        if str(issue.get('sheet', '')).upper() not in {'MAG', 'MAG D'}:
+            continue
+        name = issue.get('event_name', '')
+        target = targets.get((name.lower() + ' (mag)', issue.get('year')))
+        if target and re.fullmatch(r'\d+(?:st|nd|rd|th) Bundesliga', name, re.I):
+            issue['event_name'] = target
+
+
 def exclude_imported_events(db: Session, records: list, orphans: list, issues: list) -> tuple:
     """Keep validated competitions authoritative in a cumulative file import.
 
