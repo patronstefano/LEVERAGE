@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Azzeramento visivo della revisione nazionalita tralasciata
+
+Il comando collettivo conservava correttamente le decisioni nella bozza, ma ricostruiva la UI dai casi originali. Ora i casi rinviati e le righe escluse non vengono piu elencati nella revisione nazionalita: contatore zero, gruppo chiuso e nessuna paginazione residua. Il contatore della sezione Atleti usa le verifiche effettivamente pendenti. Le decisioni restano conservate per il ricalcolo manuale, senza interferire con la revisione identita. Test browser esteso al rinvio collettivo di sette casi e righe sorgente collegate.
+
 ## 2026-10-07 - Ricalcolo manuale al completamento delle revisioni Results
 
 Rimosso, su richiesta, il ricalcolo automatico quando Eventi, Atleti e Risultati non hanno piu verifiche pendenti. I messaggi di revisione completata restano aggiornati localmente; le decisioni richiedono il pulsante Ricalcola anteprima prima della conferma importazione. Resta invariato il ricalcolo al cambio dell'opzione sulle gare gia importate. Test UI aggiornato per verificare assenza di richieste automatiche e conferma disabilitata fino al ricalcolo manuale.

@@ -1404,6 +1404,12 @@ def main():
                 assert page.locator('dialog[open] [role=alert]').count() == 0, page.locator('dialog[open]').inner_text()
                 page.locator('dialog[open]').wait_for(state='detached')
                 assert len(writes) == pending
+                assert country_group.locator('summary .admin-revision-count').inner_text() == '0'
+                assert not country_group.evaluate('el => el.open')
+                assert country_group.locator('.admin-identity-pair').count() == 0
+                assert country_group.locator('.admin-import-pagination').count() == 0
+                page.wait_for_timeout(700)
+                assert len(writes) == pending
                 page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert all(f'country-bulk-{i}' in writes[-1]['body'] for i in range(7))

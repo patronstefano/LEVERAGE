@@ -945,7 +945,8 @@ export async function renderAdminCenter(host) {
     draft.reviewOpen ||= {};
     const pageSize = 6;
     const countryReview = item => ['possible_athlete_country_change', 'possible_athlete_identity_collision'].includes(item.problem_type);
-    const athleteCountryReviews = (p.athlete_match_review || []).filter(countryReview);
+    const allAthleteCountryReviews = (p.athlete_match_review || []).filter(countryReview);
+    const athleteCountryReviews = allAthleteCountryReviews.filter(item => draft.athlete?.[item.review_id]?.action !== 'defer');
     const athleteIdentityReviews = (p.athlete_match_review || []).filter(item => !countryReview(item));
     for (const [type, items] of [['athlete', athleteIdentityReviews], ['athleteCountry', athleteCountryReviews], ['event', p.event_match_review], ['orphan', p.orphan_dscore_review]]) {
       draft.reviewPages[type] = Math.min(draft.reviewPages[type] || 0, Math.max(0, Math.ceil((items?.length || 0) / pageSize) - 1));
@@ -958,7 +959,9 @@ export async function renderAdminCenter(host) {
       ? issueErrors.filter(issue => !sourceReviewCoversIssue(issue, p.source_review || [])) : issueErrors;
     const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, standaloneIssues.filter(issue => importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
-    const countryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
+    const allCountryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
+    const countryConflicts = allCountryConflicts.filter(conflict =>
+      draft.source[`${conflict.source_sheet}:${conflict.source_row}`]?.action !== 'exclude');
     const calendarAlreadyImported = draft.kind === 'calendar' && !p.committed && p.parsed_rows > 0
       && p.would_create_events === 0 && p.would_update_events === 0
       && !p.unmatched_historical_rows && !p.duplicate_source_rows?.length && !p.matched_event_source_conflicts?.length;
@@ -1029,7 +1032,7 @@ export async function renderAdminCenter(host) {
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
       ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', isDeferred('athlete') ? 0 : athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
-      ${!p.committed && athleteCountryReviews.length ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
+      ${!p.committed && (allAthleteCountryReviews.length || allCountryConflicts.length) ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${issueErrors.length && (draft.kind !== 'gymternet' || p.committed) ? `<div data-import-issues>${renderImportIssues({issues: issueErrors, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</div>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
@@ -1041,7 +1044,7 @@ export async function renderAdminCenter(host) {
     if (draft.kind === 'gymternet' && !p.committed) {
       const reviewParts = [
         ['events', 'importReviewEvents', (p.event_match_decision_stats?.unresolved ?? (p.event_match_review?.length || 0)) + issuesByScope.events.filter(issue => issue.severity === 'error').length],
-        ['athletes', 'importReviewAthletes', (p.athlete_match_decision_stats?.unresolved ?? (p.athlete_match_review?.length || 0)) + countryConflicts.length + issuesByScope.athletes.filter(issue => issue.severity === 'error').length],
+        ['athletes', 'importReviewAthletes', pendingImportReviews(p, draft).athletes],
         ['results', 'importReviewResults', scoreConflicts.length + issuesByScope.results.filter(issue => issue.severity === 'error').length],
       ];
       const nav = document.createElement('div');
@@ -1286,7 +1289,7 @@ export async function renderAdminCenter(host) {
       for (const item of athleteCountryReviews) draft.athlete[item.review_id] = {review_id: item.review_id, action: 'defer'};
       for (const [key, decision] of exclusions) draft.source[key] = decision;
       if (exclusions.size) draft.sourceDirty = true;
-      draft.reviewOpen.athleteCountry = true;
+      draft.reviewOpen.athleteCountry = false;
       markChanged();
       showImport();
     }, false, text('importDeferAllCountriesConfirm')));
