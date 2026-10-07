@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Copia esterna della consegna verificata
+
+Su indicazione dell'utente, copiato il pacchetto `private_releases/mvp-private-20261007/` in `/Volumes/Disco Esterno/LEVERAGE/mvp-private-20261007/`, in una nuova directory senza sovrascrivere dati preesistenti. Il volume USB disponeva di circa 1,8 TB liberi. Copiati 1.733 file per 1.196.464.964 byte, incluse le copie di ripristino e collaudo, l'archivio del codice `v1.0.0-mvp-private` e i manifest. Non e stato creato un nuovo snapshot del database corrente: e la seconda copia della baseline gia consegnata, commit `2a21a74`.
+
+Verificati SHA-256 e dimensione di ogni file sul disco esterno rispetto alla sorgente, controllata nuovamente l'immutabilita della sorgente e verificati gli artefatti del manifest di release. Ripetuti `integrity_check`, controllo delle chiavi esterne, schema e conteggi sui database `backup/` e `restore-check/` esterni: esito positivo, zero violazioni. La copia `runtime-check/`, gia modificata intenzionalmente dal collaudo, e stata verificata byte per byte rispetto alla corrispondente copia locale, non contro il suo manifest antecedente alle prove.
+
+Ricevuta con inventario e checksum salvata, fuori dal pacchetto immutato, in `private_releases/mvp-private-20261007-external-copy-verification.json` e in `Disco Esterno/LEVERAGE/mvp-private-20261007-external-copy-verification.json`; verificata anche la corrispondenza delle due ricevute. Verifica conclusa alle 18:48 del 7 ottobre 2026, ora italiana. Database operativo, file locali e tag della release non modificati.
+
+Il disco risulta NON cifrato. L'utente e stato informato e ha autorizzato la copia; non sono state modificate cifratura, partizioni o configurazione del supporto. Il backup contiene dati degli account e va custodito fisicamente in modo riservato, espellendo il disco dal Finder prima di scollegarlo. Questa copia esterna completa la precauzione contro il guasto del disco interno; non costituisce protezione da smarrimento/furto del supporto non cifrato e non e un backup automatico delle modifiche future.
+
 ## 2026-10-07 - MILESTONE FINALE: consegna MVP privato v1.0.0
 
 Completata la preparazione tecnica della consegna privata dopo l'accettazione dell'utente dei collaudi incrementali Results/Calendar, dell'integrita tramite Audit e Ripristino e dei percorsi USER/ADMIN/SUPER ADMIN. La baseline di rilascio e identificata dal tag `v1.0.0-mvp-private`. Non si tratta di un rilascio pubblico: accessi DEMO e generatori notifiche sono mantenuti esplicitamente, invio email e autenticazione reale via email restano rinviati.

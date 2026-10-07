@@ -74,6 +74,23 @@ esterno protetto.
 
 ## Verifica e ripristino non distruttivo
 
+### Copia esterna verificata il 7 ottobre 2026
+
+Il pacchetto della release e stato copiato integralmente in
+`/Volumes/Disco Esterno/LEVERAGE/mvp-private-20261007/`.
+Verificati tutti i 1.733 file (1.196.464.964 byte) con SHA-256 e dimensioni;
+integrita SQLite e chiavi esterne nuovamente controllate su `backup/` e
+`restore-check/`, senza errori. La ricevuta completa si trova accanto alla
+cartella, in `LEVERAGE/mvp-private-20261007-external-copy-verification.json`;
+una copia della ricevuta e conservata anche in `private_releases/` sul Mac.
+
+Il supporto NON e cifrato: custodirlo in modo riservato e usare Espelli nel
+Finder prima di scollegarlo. La copia protegge la baseline della release,
+non include automaticamente le modifiche successive del database e non
+sostituisce la protezione dalla perdita o dal furto del supporto.
+
+### Comandi
+
 ```bash
 .venv/bin/python scripts/private_mvp_backup.py verify private_releases/mvp-private-20261007/backup
 .venv/bin/python scripts/private_mvp_backup.py restore private_releases/mvp-private-20261007/backup --output private_releases/nuova-copia
