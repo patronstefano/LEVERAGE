@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Ripristino anteprima import e concorrenza SQLite
+
+Individuati errori HTTP 500 sulle anteprime Results causati da database is locked, mentre il processo API era attivo. Configurate le connessioni SQLite con journal WAL e busy timeout di 30 secondi per consentire letture durante scritture concorrenti. Database in memoria invariati; foreign keys mantenute. Riavviata la preview backend. Test di lettura durante transazione di scrittura e test reminder: 3 superati. Prova autenticata DEMO sull'anteprima del file locale Results 2026.xlsx: HTTP 200 con CORS corretto, 66016 righe analizzate. Nessuna conferma importazione eseguita. I backup a database attivo devono usare l'API SQLite backup, non la sola copia del file .db, poiche WAL puo contenere scritture gia confermate.
+
 ## 2026-10-07 - Posizione del messaggio di revisione eventi completata
 
 Nell'import Results, Nessun evento da verificare viene posizionato prima di Revisione identita gare, con lo stesso comportamento del messaggio relativo agli atleti. Invariati stile, decisioni e ricalcolo manuale. Aggiunta verifica browser della posizione dopo il rinvio delle revisioni eventi.

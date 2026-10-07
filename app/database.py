@@ -6,7 +6,8 @@ from app.config import settings
 
 engine = create_engine(
     settings.database_url,
-    connect_args={"check_same_thread": False},
+    connect_args={"check_same_thread": False, "timeout": 30}
+    if settings.database_url.startswith("sqlite") else {},
 )
 
 
@@ -15,6 +16,11 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     if settings.database_url.startswith("sqlite"):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.execute("PRAGMA busy_timeout=30000")
+        # Readers (including import previews) must not block background writers.
+        mode = cursor.execute("PRAGMA journal_mode").fetchone()[0]
+        if mode not in ("wal", "memory"):
+            cursor.execute("PRAGMA journal_mode=WAL")
         cursor.close()
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
