@@ -525,6 +525,10 @@ const translations = {
     adminAthleteTools: "Admin tools",
     editAthlete: "Edit athlete",
     saveChanges: "Save changes",
+    deleteAthlete: "Delete Athlete",
+    deleteEvent: "Delete Event",
+    deleteEntityWarning: "This will hide the profile and all its associated results. The deletion is recorded in the audit log; data are not permanently erased.",
+    cancelDeletion: "Cancel",
     updateSaved: "Athlete updated.",
     updateError: "Unable to update athlete.",
     verifiedAthleteBadge: "Verified athlete",
@@ -888,6 +892,10 @@ const translations = {
     adminAthleteTools: "Strumenti admin",
     editAthlete: "Modifica atleta",
     saveChanges: "Salva modifiche",
+    deleteAthlete: "Elimina Atleta",
+    deleteEvent: "Elimina Evento",
+    deleteEntityWarning: "La scheda e tutti i risultati associati non saranno più visibili. L’eliminazione è registrata nell’audit; i dati non vengono cancellati definitivamente.",
+    cancelDeletion: "Annulla",
     updateSaved: "Atleta aggiornato.",
     updateError: "Impossibile aggiornare l'atleta.",
     verifiedAthleteBadge: "Atleta verificato",
@@ -1251,6 +1259,10 @@ const translations = {
     adminAthleteTools: "Herramientas admin",
     editAthlete: "Editar atleta",
     saveChanges: "Guardar cambios",
+    deleteAthlete: "Eliminar Atleta",
+    deleteEvent: "Eliminar Evento",
+    deleteEntityWarning: "La ficha y todos sus resultados asociados dejarán de ser visibles. La eliminación queda registrada en la auditoría; los datos no se borran definitivamente.",
+    cancelDeletion: "Cancelar",
     updateSaved: "Atleta actualizado.",
     updateError: "No se pudo actualizar el atleta.",
     verifiedAthleteBadge: "Atleta verificado",
@@ -1614,6 +1626,10 @@ const translations = {
     adminAthleteTools: "Outils admin",
     editAthlete: "Modifier athlete",
     saveChanges: "Enregistrer modifications",
+    deleteAthlete: "Supprimer l’athlète",
+    deleteEvent: "Supprimer l’événement",
+    deleteEntityWarning: "La fiche et tous ses résultats associés ne seront plus visibles. La suppression est enregistrée dans l’audit ; les données ne sont pas effacées définitivement.",
+    cancelDeletion: "Annuler",
     updateSaved: "Athlete mis a jour.",
     updateError: "Impossible de mettre a jour l'athlete.",
     verifiedAthleteBadge: "Athlete verifie",
@@ -10466,7 +10482,10 @@ function renderAthleteAdminForm(athlete) {
         <div>
           <h2>${t("editAthlete")}</h2>
         </div>
-        <button class="quiet-button" type="submit">${t("saveChanges")}</button>
+        <div class="admin-center-actions">
+          <button class="quiet-button filter-clear-button" type="button" data-delete-entity="athletes" data-entity-id="${athlete.id}" data-entity-name="${escapeHtml(athleteProfileDisplayName(athlete))}">${t("deleteAthlete")}</button>
+          <button class="quiet-button" type="submit">${t("saveChanges")}</button>
+        </div>
       </div>
       <div class="admin-form-grid">
         <label>
@@ -10646,9 +10665,54 @@ function renderAthleteAdminPanel(athlete, adminView, adminViewError = null) {
   `;
 }
 
+function bindEntityDeletion(form) {
+  const trigger = form.querySelector('[data-delete-entity]');
+  if (!trigger) return;
+  trigger.onclick = () => {
+    const kind = trigger.dataset.deleteEntity;
+    const id = Number(trigger.dataset.entityId);
+    const label = t(kind === 'athletes' ? 'deleteAthlete' : 'deleteEvent');
+    const dialog = document.createElement('dialog');
+    dialog.className = 'admin-confirm';
+    dialog.innerHTML = `<h2>${label}</h2><p><strong>${escapeHtml(trigger.dataset.entityName)}</strong> · ID ${id}</p><p>${t('deleteEntityWarning')}</p><div class="admin-center-actions"><button type="button" class="quiet-button" data-cancel>${t('cancelDeletion')}</button><button type="button" class="quiet-button filter-clear-button" data-confirm>${label}</button></div><p class="auth-message" role="alert"></p>`;
+    let pending = false;
+    const close = () => dialog.close();
+    dialog.addEventListener('cancel', event => { if (pending) event.preventDefault(); });
+    dialog.addEventListener('close', () => { window.removeEventListener('hashchange', close); dialog.remove(); });
+    window.addEventListener('hashchange', close);
+    dialog.querySelector('[data-cancel]').onclick = close;
+    dialog.querySelector('[data-confirm]').onclick = async () => {
+      if (pending) return;
+      pending = true;
+      dialog.querySelectorAll('button').forEach(button => { button.disabled = true; });
+      try {
+        await sendJson(`/${kind}/${id}`, {method: 'DELETE'});
+        state.globalSearch.payload = null;
+        state.favoritesLoaded = false;
+        (kind === 'athletes' ? state.favoriteAthleteIds : state.favoriteEventIds).delete(id);
+        for (const [section, route] of Object.entries(state.sectionRoutes)) {
+          if (String(route).split('?')[0] === `/${kind}/${id}`) state.sectionRoutes[section] = SECTION_BASE_ROUTES[section];
+        }
+        persistSectionRoutes();
+        close();
+        window.location.hash = `#/${kind}`;
+      } catch (error) {
+        setAdminSuggestionFeedback(dialog.querySelector('[role=alert]'), typeof error.detail === 'string' ? error.detail : error.message, 'danger');
+      } finally {
+        pending = false;
+        dialog.querySelectorAll('button').forEach(button => { button.disabled = false; });
+      }
+    };
+    document.body.append(dialog);
+    dialog.showModal();
+    dialog.querySelector('[data-cancel]').focus();
+  };
+}
+
 function bindAthleteAdminForm(athleteId) {
   const form = $("#athleteAdminForm");
   if (!form) return;
+  bindEntityDeletion(form);
   bindAdminSelectControls(form);
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -11550,7 +11614,10 @@ function renderEventAdminForm(event) {
         <div>
           <h2>${t("editEvent")}</h2>
         </div>
-        <button class="quiet-button" type="submit">${t("saveChanges")}</button>
+        <div class="admin-center-actions">
+          <button class="quiet-button filter-clear-button" type="button" data-delete-entity="events" data-entity-id="${event.id}" data-entity-name="${escapeHtml(event.name || '')}">${t("deleteEvent")}</button>
+          <button class="quiet-button" type="submit">${t("saveChanges")}</button>
+        </div>
       </div>
       <div class="admin-form-grid">
         <label class="admin-form-wide">
@@ -11770,6 +11837,7 @@ function renderEventAdminPanel(event, adminView, adminViewError = null) {
 function bindEventAdminForm(eventId) {
   const form = $("#eventAdminForm");
   if (!form) return;
+  bindEntityDeletion(form);
   bindAdminSelectControls(form);
   form.addEventListener("submit", async (submitEvent) => {
     submitEvent.preventDefault();

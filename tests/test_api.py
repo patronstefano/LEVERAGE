@@ -1667,7 +1667,7 @@ def test_admin_can_audit_existing_result_duplicate_groups():
     assert {result["represented_country"] for result in group["results"]} == {"ITA", "FRA"}
 
 
-def test_super_admin_soft_delete_restore_and_audit_log_for_core_entities():
+def test_admin_soft_delete_and_super_admin_restore_with_audit_for_core_entities():
     client.post("/auth/register", json={"email": "security_super@example.com", "password": TEST_PASSWORD})
     super_token = login_as_admin("security_super@example.com")
     super_headers = {"Authorization": f"Bearer {super_token}"}
@@ -1724,10 +1724,12 @@ def test_super_admin_soft_delete_restore_and_audit_log_for_core_entities():
         headers=admin_headers,
     ).json()
 
-    admin_delete_response = client.delete(f"/athletes/{athlete['id']}", headers=admin_headers)
-    assert admin_delete_response.status_code == 403
-
-    delete_response = client.delete(f"/athletes/{athlete['id']}", headers=super_headers)
+    assert client.delete(f"/athletes/{athlete['id']}").status_code == 401
+    client.post('/auth/register', json={'email': 'delete_regular@example.com', 'password': TEST_PASSWORD})
+    user_headers = {'Authorization': f"Bearer {login_as_user('delete_regular@example.com')}"}
+    assert client.delete(f"/athletes/{athlete['id']}", headers=user_headers).status_code == 403
+    assert client.delete(f"/events/{event['id']}", headers=user_headers).status_code == 403
+    delete_response = client.delete(f"/athletes/{athlete['id']}", headers=admin_headers)
     assert delete_response.status_code == 204
     assert client.get(f"/athletes/{athlete['id']}").status_code == 404
 
@@ -1752,6 +1754,13 @@ def test_super_admin_soft_delete_restore_and_audit_log_for_core_entities():
 
     admin_audit_response = client.get("/admin/audit-logs", headers=admin_headers)
     assert admin_audit_response.status_code == 403
+
+    assert client.delete(f"/events/{event['id']}", headers=admin_headers).status_code == 204
+    assert client.get(f"/events/{event['id']}").status_code == 404
+    assert client.get(f"/results/?event_id={event['id']}").json() == []
+    assert client.put(f"/admin/events/{event['id']}/restore", headers=super_headers).status_code == 200
+    assert client.get(f"/events/{event['id']}").status_code == 200
+    assert client.delete(f"/events/{event['id']}", headers=super_headers).status_code == 204
 
 
 def test_super_admin_can_review_and_revert_admin_update_audit_logs():

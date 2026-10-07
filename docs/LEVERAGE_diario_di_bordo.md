@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Eliminazione schede da strumenti ADMIN
+
+Nelle schede Atleta ed Evento, Elimina Atleta/Elimina Evento precede Salva modifiche e usa lo stile contorno rosso dei comandi distruttivi. Conferma modale con nome, ID e avviso esplicito: anche i risultati associati saranno nascosti. Richieste duplicate bloccate durante l'operazione; errori mostrati nel dialogo. Dopo il successo si torna alla lista e si invalidano memoria della scheda eliminata, cache ricerca globale e preferiti.
+
+Estese le due API DELETE da SUPER ADMIN ad ADMIN con MFA verificata, mantenendo l'eliminazione logica esistente, audit separato per entita e risultati e notifica di sicurezza. USER e anonimi non possono eliminare. Nessuna cancellazione fisica e nessuna modifica ai meccanismi di ripristino riservati al SUPER ADMIN. Test su database isolato, senza eliminare entita reali: suite backend 343 test superati; controlli browser con API simulate per conferma, annullamento e navigazione.
+
 ## 2026-10-07 - Revisione identita atleti semplificata
 
 Tre comandi sostituiscono i campi tecnici nella revisione identita dell'import: Unisci ad atleta esistente, Crea nuovo atleta, Rinvia revisione. La destinazione e il candidato mostrato; con piu candidati viene richiesta una scelta esplicita. Le decisioni sono alternative e restano in bozza fino al ricalcolo, senza modificare subito il database. La revisione nazionalita mantiene i propri comandi separati. Il rinvio usa il flusso backend esistente di revisione differita.

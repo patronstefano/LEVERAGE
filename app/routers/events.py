@@ -47,7 +47,7 @@ from app.routers.results import (
     validate_result_relationships,
     validate_result_scoring_state,
 )
-from app.security import get_current_user, get_current_admin_user, get_current_super_admin_user, get_optional_current_user
+from app.security import get_current_user, get_current_admin_user, get_optional_current_user
 
 router = APIRouter()
 
@@ -1519,7 +1519,7 @@ def upload_event_image(
 def delete_event(
     event_id: int,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_super_admin_user),
+    current_user: models.User = Depends(get_current_admin_user),
 ):
     event = db.query(models.Event).filter(
         models.Event.id == event_id,

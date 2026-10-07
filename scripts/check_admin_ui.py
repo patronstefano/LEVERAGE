@@ -179,6 +179,12 @@ def main():
                 payload = [event]
             elif path == "/events/1":
                 payload = event
+            elif path == '/events/1/profile-view':
+                payload = {'event': event, 'classifications': [], 'warnings': []}
+            elif path == '/events/1/admin-view':
+                payload = {'event': event, 'suggestions': []}
+            elif path == '/athletes/1/admin-view':
+                payload = {'athlete': athlete, 'suggestions': []}
             elif path == "/events/1/result-groups":
                 payload = [{"discipline": discipline, "category": category, "format": "individual", "round": "final", "apparatus": apparatus, "day": day, "count": 1} for discipline, apparatuses in [('MAG', ['AA', 'VT AVG', 'FX', 'HB', 'PB', 'SR', 'VT', 'PH']), ('WAG', ['FX', 'BB', 'VT', 'UB'])] for category in ["senior", "junior"] for apparatus in apparatuses for day in event_days]
             elif path == '/results/export':
@@ -280,6 +286,8 @@ def main():
                     route.fulfill(json={"id": 91, "review_status": "reverted"}, headers={"Access-Control-Allow-Origin": "*"})
                 elif path == '/admin/users/77' and route.request.method == 'DELETE':
                     route.fulfill(json={"id": 77, "is_active": False}, headers={"Access-Control-Allow-Origin": "*"})
+                elif path in ['/athletes/1', '/events/1'] and route.request.method == 'DELETE':
+                    route.fulfill(status=204, headers={"Access-Control-Allow-Origin": "*"})
                 else:
                     route.fulfill(status=403, json={"detail": "Write blocked by UI test"})
             else:
@@ -1662,6 +1670,21 @@ def main():
         page.locator(".admin-center").wait_for()
         assert not page.locator('.admin-center-nav a[href="#/admin/users"]').count()
         assert not page.locator('.admin-center-nav a[href="#/admin/audit"]').count()
+        for kind, form_id, panel_id in [('athletes', 'athleteAdminForm', 'athleteAdminPanel'), ('events', 'eventAdminForm', 'eventAdminPanel')]:
+            page.goto(f'http://127.0.0.1:5173/#/{kind}/1')
+            page.locator(f'[data-admin-tools-toggle={panel_id}]').click()
+            form = page.locator(f'#{form_id}')
+            delete = form.locator('[data-delete-entity]')
+            delete.wait_for(state='visible')
+            assert delete.bounding_box()['x'] < form.locator('[type=submit]').bounding_box()['x']
+            pending = len(writes)
+            delete.click()
+            page.locator('dialog[open] [data-cancel]').click()
+            assert len(writes) == pending
+            delete.click()
+            page.locator('dialog[open] [data-confirm]').click()
+            page.wait_for_url(f'**#/{kind}')
+            assert writes[-1]['path'] == f'/{kind}/1'
         current_role[0] = "user"
         page.goto('about:blank')
         page.goto('http://127.0.0.1:5173/#/admin')

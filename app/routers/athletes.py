@@ -16,7 +16,7 @@ from app.display_names import athlete_display_name, athlete_display_name_from_pa
 from app.gymternet_import import record_athlete_country_change
 from app.result_identity import result_identity_key
 from app.result_ranking import apply_data_quality_filter, result_represented_country
-from app.security import get_current_admin_user, get_current_super_admin_user, get_optional_current_user
+from app.security import get_current_admin_user, get_optional_current_user
 
 router = APIRouter()
 
@@ -1170,7 +1170,7 @@ def upload_athlete_image(
 def delete_athlete(
     athlete_id: int,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_super_admin_user),
+    current_user: models.User = Depends(get_current_admin_user),
 ):
     athlete = db.query(models.Athlete).filter(
         models.Athlete.id == athlete_id,
