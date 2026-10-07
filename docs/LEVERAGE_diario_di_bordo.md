@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Ordine accessi demo nella downbar
+
+Riordinati i pulsanti di accesso demo: SUPER ADMIN, ADMIN, USER. Invariati stile e comportamento degli accessi.
+
 ## 2026-10-07 - Revisione Duplicati limitata alle entita
 
 Rimossa la sottosezione Risultati da Revisione Duplicati nel Centro Admin, inclusa la richiesta API dei gruppi di risultati duplicati. Lo slider mantiene esclusivamente Atleti ed Eventi, con thumb e dimensioni aggiornati a due opzioni. Nessun risultato eliminato, nessuna modifica all'Editor Risultati o alle verifiche nell'importazione. Aggiornato il test browser sulla presenza delle due sole opzioni e sull'allineamento dello slider.
