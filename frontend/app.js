@@ -5910,7 +5910,7 @@ function renderEventList(selector, events, options = {}) {
       eventCardTitle(event, period),
       "",
       eventCardSummaryPills(event),
-      event.id ? `#/events/${event.id}` : "",
+      event.id ? eventSectionProfileHref(event.id) : "",
       favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
     );
   }).join("")}</div>${options.hasMore ? renderLoadMoreButton("events", t("loadMoreEvents")) : ""}`;
@@ -6039,7 +6039,7 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
               <div class="calendar-bars">
                 ${visibleSegments.map((segment) => {
                   const event = segment.event;
-                  const href = event.id ? `#/events/${event.id}` : "";
+                  const href = event.id ? eventSectionProfileHref(event.id) : "";
                   const accessibilityLabel = [
                     event.name,
                     formatDateRange(event),
@@ -6363,6 +6363,12 @@ function renderAthleteResultsPage(athletes, hasMore = false) {
 
 function eventSearchRoute(query) {
   return query ? `/events?search=${encodeURIComponent(query)}` : "/events";
+}
+
+function eventSectionProfileHref(eventId) {
+  if (state.route.split('?')[0] !== '/events') return `#/events/${eventId}`;
+  const params = new URLSearchParams({from: 'events', return_to: state.route});
+  return `#/events/${eventId}?${params.toString()}`;
 }
 
 function syncEventSearchRoute(query) {
@@ -12266,6 +12272,9 @@ function eventDetailBackDestination() {
   if (params.get("from") === "search") {
     const searchRoute = returnRoute.startsWith("/search") ? returnRoute : "/search";
     return { href: `#${searchRoute}`, label: t("backToGlobalSearch") };
+  }
+  if (params.get('from') === 'events' && returnRoute.split('?')[0] === '/events') {
+    return { href: `#${returnRoute}`, label: t('backToEvents') };
   }
   return { href: "#/events", label: t("backToEvents") };
 }

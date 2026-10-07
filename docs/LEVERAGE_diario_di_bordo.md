@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Ritorno alla ricerca eventi dalla scheda
+
+Corretto il ritorno dalla Scheda Evento alla Sezione Eventi: le card della lista e i collegamenti del calendario conservano la route completa di provenienza, inclusa la ricerca, attraverso from=events e return_to. Torna agli Eventi ripristina quella route invece della lista senza ricerca. Applicato lo stesso approccio gia usato dalle card atleta, senza cambiare i filtri mantenuti nello stato della sezione. Conservati i contesti Ricerca globale e Centro Admin e la memoria della scheda durante il cambio di sezione. Test di navigazione sulle funzioni reali frontend con ricerca, caratteri speciali, cambio sezione, accesso diretto e provenienze alternative. Nessuna modifica ai dati.
+
 ## 2026-10-07 - Diagnostica punteggi raccolta nella revisione sorgente
 
 Eliminata la doppia presentazione degli errori dell'import risultati quando esiste gia una riga correggibile in Punteggi da verificare. Gli errori collegati tramite foglio e numero di riga sono mostrati solo nei dettagli di quella riga, senza ripetere identita, posizione nel file o un secondo pulsante Correggi riga. Inclusi gli errori derivati di ricostruzione VT da VT AVG: la formula resta consultabile nello stesso punto della correzione. Segnalazioni identiche deduplicate; errori distinti conservati. Gli errori privi di una riga correggibile restano visibili separatamente. Nessuna soppressione dei controlli backend o dei blocchi di conferma importazione; nessuna modifica al file o ai dati salvati. Test UI con conflitto di punteggio e diagnostica VT ripetuta sulla stessa riga, oltre al caso senza riga correggibile.

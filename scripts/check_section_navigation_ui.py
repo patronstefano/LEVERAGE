@@ -8,6 +8,8 @@ def main():
     source = (Path(__file__).resolve().parents[1] / "frontend/app.js").read_text()
     routes = source[source.index("const SECTION_BASE_ROUTES ="):source.index("const state =")]
     navigation = source[source.index("function persistSectionRoutes("):source.index("function syncNavIndicator(")]
+    event_link = source[source.index('function eventSectionProfileHref('):source.index('function syncEventSearchRoute(')]
+    event_back = source[source.index('function eventDetailBackDestination('):source.index('async function renderAthleteDetail(')]
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
@@ -15,6 +17,7 @@ def main():
         page.set_content('<a class="nav-trigger" data-section-nav="athletes">Athletes</a><a class="nav-trigger" data-section-nav="events">Events</a>')
         page.add_script_tag(content='const SECTION_ROUTE_MEMORY_KEY = "test.sectionRoutes";' + routes
                             + 'const state = {route:"/",sectionRoutes:initialSectionRoutes()};' + navigation)
+        page.add_script_tag(content='const t = key => key; const adminLabel = (language, key) => key;' + event_link + event_back)
         page.evaluate("""() => {
             const check = (value, message) => { if (!value) throw new Error(message); };
             for (const section of ['athletes', 'events']) {
@@ -46,6 +49,25 @@ def main():
                 check(state.sectionRoutes[section] === route, 'Preserve contextual public details');
             }
             sessionStorage.removeItem(SECTION_ROUTE_MEMORY_KEY);
+            for (const listRoute of ['/events', '/events?search=World%20Cup%20Paris%202026', '/events?search=Junior%20%26%20Senior']) {
+                state.route = listRoute;
+                const href = eventSectionProfileHref(42);
+                state.route = href.slice(1);
+                rememberCurrentSectionRoute();
+                state.route = '/athletes';
+                check(sectionNavigationRoute('events') === href.slice(1), 'Preserve event detail on section switch');
+                state.route = href.slice(1);
+                check(eventDetailBackDestination().href === '#' + listRoute, 'Restore exact event search');
+            }
+            for (const [route, expected] of [
+                ['/events/42', '#/events'],
+                ['/events/42?from=events&return_to=%2Fathletes', '#/events'],
+                ['/events/42?from=search&return_to=%2Fsearch%3Fq%3DParis', '#/search?q=Paris'],
+                ['/events/42?from=admin&return_to=%2Fadmin%2Fresults', '#/admin/results']
+            ]) {
+                state.route = route;
+                check(eventDetailBackDestination().href === expected, 'Preserve other event origins');
+            }
         }""")
         browser.close()
     print('Section navigation: admin isolation, stale memory recovery and public contexts passed')
