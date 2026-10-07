@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Recupero navigazione da evento non disponibile
+
+La preview tentava di riaprire Evento 1728, con risposta 404, mostrando impropriamente un errore generale sui dati live. Le richieste GET ora conservano lo status HTTP; su 404 della scheda evento si ripristina la destinazione di provenienza, inclusa la ricerca, e si correggono i riferimenti della memoria sezioni alla scheda non disponibile. Gli altri errori restano segnalati; nessuna modifica al database. Verificati il caso reale e il test browser di navigazione con ID inesistente e ricerca conservata.
+
 ## 2026-10-07 - Conflitti calendario senza duplicazioni visive
 
 Le righe con periodi sorgente discordanti gia rappresentate in Eventi presenti con differenze non vengono ripetute in Conflitti sorgente. Il confronto principale conserva una breve indicazione dei periodi discordanti. La corrispondenza richiede foglio, riga e identita collegata (Evento oppure voce calendario senza risultati): non si deduplica per solo nome. Restano visibili i conflitti indipendenti e le righe realmente duplicate nel file. Nessuna modifica ai controlli backend o ai blocchi di conferma importazione. Aggiunti test UI per copertura parziale, completa e voci calendario senza risultati.

@@ -69,6 +69,9 @@ def main():
                 check(eventDetailBackDestination().href === expected, 'Preserve other event origins');
             }
         }""")
+        page.goto('http://127.0.0.1:5173/?v=missing-event-test#/events/999999999?from=events&return_to=%2Fevents%3Fsearch%3DBundesliga')
+        page.wait_for_url('**#/events?search=Bundesliga', timeout=30000)
+        page.wait_for_function("JSON.parse(sessionStorage.getItem('leverage.sectionRoutes')).events === '/events?search=Bundesliga'")
         browser.close()
     print('Section navigation: admin isolation, stale memory recovery and public contexts passed')
 

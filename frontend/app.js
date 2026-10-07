@@ -2281,7 +2281,9 @@ async function getJson(path, params = {}, options = {}) {
   });
   if (!response.ok) {
     if (options.auth && response.status === 401) clearAuth();
-    throw new Error(`${response.status} ${response.statusText}`);
+    const error = new Error(`${response.status} ${response.statusText}`);
+    error.status = response.status;
+    throw error;
   }
   return response.json();
 }
@@ -12336,6 +12338,7 @@ async function renderAthleteDetail(athleteId) {
 }
 
 async function renderEventDetail(eventId) {
+  const requestedRoute = state.route;
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`<section class="panel">${loadingState()}</section>`);
   try {
@@ -12388,6 +12391,20 @@ async function renderEventDetail(eventId) {
     bindEventWorldGymnasticsTools(eventId);
     bindEventSuggestionActions(eventId);
   } catch (error) {
+    if (state.route !== requestedRoute) return;
+    if (error.status === 404) {
+      const back = eventDetailBackDestination().href;
+      for (const [section, route] of Object.entries(state.sectionRoutes)) {
+        if (String(route).split('?')[0] === `/events/${eventId}`) {
+          const destination = back.slice(1);
+          state.sectionRoutes[section] = routeBelongsToSection(destination, section)
+            ? destination : SECTION_BASE_ROUTES[section];
+        }
+      }
+      persistSectionRoutes();
+      window.location.replace(back);
+      return;
+    }
     setApp(errorState(error));
   }
 }
