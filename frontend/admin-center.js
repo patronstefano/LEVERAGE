@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=import-empty-states-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=automatic-import-notices-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { IMPORT_COPY, importIssueScope, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=import-empty-states-20261007';
+import { IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=automatic-import-notices-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -950,7 +950,7 @@ export async function renderAdminCenter(host) {
     const identityFields = value => Object.fromEntries(Object.entries(value).filter(([key]) => ['athlete_id', 'first_name', 'last_name', 'athlete_name', 'country', 'discipline', 'birth_year', 'date_of_birth', 'country_history'].includes(key)));
     const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${type !== 'orphan' ? `<p class="admin-stats-note">${esc(text('importIdentityNote'))}</p>` : ''}${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
-    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, (p.issues || []).filter(issue => importIssueScope(issue) === scope)]));
+    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, (p.issues || []).filter(issue => !automaticImportIssueCode(issue) && importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
     const countryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
     const importStatus = draft.kind !== 'gymternet' || issueErrors.length ? '' :
@@ -1049,6 +1049,7 @@ export async function renderAdminCenter(host) {
         if (node) sections.results.append(node);
       }
       draft.scopedIssuePages ||= {};
+      sections.results.insertAdjacentHTML('beforeend', renderAutomaticImportIssues({issues: p.issues || [], text, esc, language: state.language}));
       for (const [scope, issues] of Object.entries(issuesByScope)) {
         if (!issues.length) continue;
         sections[scope].insertAdjacentHTML('beforeend', `<details class="admin-revision-group" data-import-issues data-issue-scope="${scope}" ${draft.issuesOpen ? 'open' : ''}><summary>${esc(text('importIssueList'))}<span class="admin-revision-count">${issues.length}</span></summary>${renderImportIssues({issues, text, esc, language: state.language, sourceRows: scope === 'results' ? p.source_review : [], page: draft.scopedIssuePages[scope] || 0})}</details>`);

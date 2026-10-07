@@ -1,4 +1,8 @@
 export const IMPORT_COPY = {
+  importAutomaticProcessing: ['Automatic corrections and exclusions', 'Correzioni ed esclusioni automatiche', 'Correcciones y exclusiones automáticas', 'Corrections et exclusions automatiques'],
+  importAutomaticNote: ['These actions have already been applied to the preview. The source file and saved data are unchanged. Other unresolved issues still require review.', 'Questi interventi sono già applicati all’anteprima. Il file originale e i dati salvati non sono stati modificati. Eventuali altri problemi restano da verificare.', 'Estas acciones ya se aplicaron a la vista previa. El archivo original y los datos guardados no cambiaron. Los demás problemas siguen pendientes.', 'Ces actions sont déjà appliquées à l’aperçu. Le fichier original et les données enregistrées restent inchangés. Les autres problèmes restent à vérifier.'],
+  gymternet_score_corrected: ['Score corrections for apparent decimal-scale errors: {n}.', 'Correzioni di punteggi per apparenti errori di scala decimale: {n}.', 'Correcciones de puntuación por aparentes errores de escala decimal: {n}.', 'Corrections de scores pour erreurs apparentes d’échelle décimale : {n}.'],
+  gymternet_dscore_discarded: ['D Scores excluded because Final Score minus D would produce an estimated E outside 0–10: {n}. Final Scores are retained; these D and estimated E values remain unavailable.', 'D Score esclusi perché Final Score meno D produrrebbe una E stimata fuori dall’intervallo 0–10: {n}. I Final Score sono mantenuti; questi valori D ed E stimata restano non disponibili.', 'D Scores excluidos porque Final Score menos D produciría una E estimada fuera de 0–10: {n}. Los Final Scores se conservan; estos valores D y E estimada no están disponibles.', 'D Scores exclus car Final Score moins D produirait une E estimée hors de 0–10 : {n}. Les Final Scores sont conservés ; ces valeurs D et E estimée restent indisponibles.'],
   importEntityChecks: ['Identity checks to resolve', 'Verifiche identità da risolvere', 'Verificaciones de identidad pendientes', 'Vérifications d’identité à résoudre'],
   importDeferredChecks: ['Deferred identity checks', 'Verifiche identità rinviate', 'Verificaciones de identidad aplazadas', 'Vérifications d’identité reportées'],
   importCountryChecks: ['Countries to review', 'Nazionalità da verificare', 'Nacionalidades por verificar', 'Nationalités à vérifier'],
@@ -143,13 +147,33 @@ export function importIssueScope(issue) {
   return ['events', 'athletes'].includes(issue.review_scope) ? issue.review_scope : 'results';
 }
 
+export function automaticImportIssueCode(issue) {
+  if (issue.severity !== 'warning') return null;
+  if (['gymternet_score_corrected', 'gymternet_dscore_discarded'].includes(issue.code)) return issue.code;
+  // Support previews created before structured codes were added.
+  if (issue.score_kind === 'execution_estimate' && issue.execution_estimate != null && issue.D_score != null) return 'gymternet_dscore_discarded';
+  if (issue.corrected_score != null && issue.original_score != null) return 'gymternet_score_corrected';
+  return null;
+}
+
+export function renderAutomaticImportIssues({issues, text, esc, language}) {
+  const counts = new Map();
+  for (const issue of issues) {
+    const code = automaticImportIssueCode(issue);
+    if (code) counts.set(code, (counts.get(code) || 0) + 1);
+  }
+  if (!counts.size) return '';
+  const number = value => new Intl.NumberFormat(language).format(value);
+  return `<details class="admin-revision-group" data-import-automatic><summary>${esc(text('importAutomaticProcessing'))}<span class="admin-revision-count">${number([...counts.values()].reduce((a, b) => a + b, 0))}</span></summary><p class="admin-stats-note">${esc(text('importAutomaticNote'))}</p><ul class="admin-import-issues">${[...counts].map(([code, count]) => `<li>${esc(text(code).replace('{n}', number(count)))}</li>`).join('')}</ul></details>`;
+}
+
 export function renderImportIssues({issues, text, esc, language, sourceRows = [], page = 0}) {
   const ordered = [...issues].sort((a, b) => Number(b.severity === 'error') - Number(a.severity === 'error'));
   const score = value => new Intl.NumberFormat(language, {minimumFractionDigits: 3, maximumFractionDigits: 3}).format(value);
   page = Math.min(page, Math.max(0, Math.ceil(ordered.length / 6) - 1));
   return `<ul class="admin-import-issues">${ordered.slice(page * 6, (page + 1) * 6).map(issue => {
     const known = issue.code === 'derived_vt_outlier';
-    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.code === 'calendar_year_empty' ? text('importCalendarYearEmpty').replace('{year}', issue.year) : IMPORT_COPY[issue.code] ? text(issue.code).replace('{n}', issue.count ?? '') : issue.message;
+    const message = known ? text(issue.possible_rounding ? 'importVtRounding' : 'importVtInvalid') : issue.code === 'source_correction_invalid' ? text('importInvalidCorrection') : issue.code === 'calendar_year_empty' ? text('importCalendarYearEmpty').replace('{year}', issue.year) : IMPORT_COPY[issue.code] ? text(issue.code).replace('{n}', issue.count ?? 1) : issue.message;
     const identity = [[issue.last_name, issue.first_name].filter(Boolean).join(' '), issue.event_name].filter(Boolean).join(' · ');
     const source = [issue.sheet ? `${text('importSourceSheet')} ${issue.sheet}` : '', issue.row != null ? `${text('importSourceRow')} ${issue.row}` : ''].filter(Boolean).join(' · ');
     return `<li><strong>${esc(identity || source)}</strong>${identity && source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}<p class="${issue.severity === 'error' ? 'admin-import-issue-error' : ''}">${esc(message)}</p>${issue.date_label && issue.code?.startsWith("calendar_") ? `<p class="admin-revision-meta">${esc(text("importCalendarSourceValue"))}: ${esc(issue.date_label)}</p>` : ""}${known ? `<p class="admin-revision-meta">2 × VT AVG ${score(issue.source_vt_avg)} − VT ${score(issue.source_vt)} = ${score(issue.original_score)}</p>` : ''}${sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row) ? `<div class="admin-center-actions"><button type="button" class="quiet-button outline-command-button" data-correct-issue-sheet="${esc(issue.sheet)}" data-correct-issue-row="${issue.row}">${esc(text('importEditRow'))}</button></div>` : ''}</li>`;

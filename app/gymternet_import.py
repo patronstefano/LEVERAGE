@@ -1274,6 +1274,7 @@ def normalize_gymternet_score_value(
                 ),
                 "original_score": score,
                 "corrected_score": candidate,
+                "code": "gymternet_score_corrected",
                 "apparatus": apparatus,
                 "score_kind": score_kind,
             })
@@ -1345,6 +1346,7 @@ def validate_gymternet_execution_estimate(
         "score": record.score,
         "D_score": D_score,
         "execution_estimate": execution_estimate,
+        "code": "gymternet_dscore_discarded",
         "apparatus": record.apparatus,
         "score_kind": "execution_estimate",
     })

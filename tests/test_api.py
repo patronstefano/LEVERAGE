@@ -9416,6 +9416,7 @@ def test_gymternet_parser_skips_dscore_that_creates_invalid_execution_estimate()
     assert ph.D_score is None
     assert orphan_dscores == []
     assert any("invalid estimated E score" in issue["message"] for issue in issues)
+    assert any(issue.get('code') == 'gymternet_dscore_discarded' and issue['severity'] == 'warning' for issue in issues)
 
 
 def test_gymternet_identity_warnings_have_entity_scope():

@@ -1,5 +1,7 @@
+import { automaticImportIssueCode } from './admin-import-report.js?v=automatic-import-notices-20261007';
+
 export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard}) {
-  const resultIssues = (preview.issues || []).filter(issue => !['events', 'athletes'].includes(issue.review_scope));
+  const resultIssues = (preview.issues || []).filter(issue => !automaticImportIssueCode(issue) && !['events', 'athletes'].includes(issue.review_scope));
   const sourceKeys = new Set([
     ...(preview.conflicts || []).map(row => `${row.source_sheet}:${row.source_row}`),
     ...resultIssues.map(row => `${row.sheet}:${row.row}`),

@@ -1,5 +1,21 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Riepilogo degli interventi automatici import
+
+- Introdotta la sezione Correzioni ed esclusioni automatiche in Revisione
+  Risultati. Raggruppa i warning relativi a D scartati per E stimata fuori
+  0-10 e correzioni di scala decimale, con conteggi per tipo e testi tradotti.
+- Le segnalazioni originali rimangono nel payload; nessuna perdita di tracciabilita.
+  I messaggi inglesi ripetuti non sono piu elencati fra gli avvisi operativi.
+- Sono interventi sull'anteprima: file sorgente e DB non vengono modificati.
+  Nei casi D scartato, Final Score viene mantenuto mentre D/E stimata restano
+  non disponibili. Non si inventano componenti o correzioni ulteriori.
+- Raggruppamento limitato ai warning di operazioni automatiche riconosciute.
+  Errori bloccanti (incluso VT derivato fuori range) restano nei casi da risolvere,
+  anche se il testo inglese dice Skipped. Regole di validazione invariate.
+- Gestiti anche payload di preview precedenti tramite campi strutturati,
+  senza riconoscimento basato sulla frase inglese.
+
 ## 2026-10-07 - Stati vuoti delle revisioni import
 
 - Messaggi uniformati al componente empty-state di LEVERAGE: Nessun evento

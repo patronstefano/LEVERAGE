@@ -1225,6 +1225,26 @@ def main():
                 assert page.locator('[data-import-historical]').count() == 0
                 page.screenshot(path='/tmp/leverage-import-compact.png', full_page=True)
                 preview.update(skipped_existing_events=[], skipped_existing_results=0)
+                preview.update(parsed_rows=20, source_review=[], issues=[
+                    {'severity': 'warning', 'code': 'gymternet_dscore_discarded', 'row': i + 2, 'sheet': 'MAG',
+                     'message': 'Skipped D_score because it would produce an invalid estimated E score'} for i in range(20)
+                ] + [{'severity': 'warning', 'code': 'gymternet_score_corrected', 'corrected_score': 14.2,
+                      'original_score': 142, 'message': 'Corrected outlier final score'}])
+                analyze_import()
+                page.locator('[data-import-part=results]').click()
+                page.locator('[data-import-automatic] > summary').click()
+                assert page.locator('[data-import-automatic] li').count() == 2
+                assert '0–10: 20' in page.locator('[data-import-automatic]').inner_text()
+                assert 'scala decimale: 1' in page.locator('[data-import-automatic]').inner_text()
+                assert 'Skipped D_score' not in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('[data-import-issues]').count() == 0
+                assert page.locator('[data-import-empty=results]').is_visible()
+                assert page.evaluate('''async () => {
+                    const {automaticImportIssueCode} = await import('./admin-import-report.js');
+                    return automaticImportIssueCode({severity: 'error', code: 'derived_vt_outlier'}) === null
+                        && automaticImportIssueCode({severity: 'error', code: 'gymternet_dscore_discarded'}) === null
+                        && automaticImportIssueCode({severity: 'warning', score_kind: 'execution_estimate', execution_estimate: -2, D_score: 4}) === 'gymternet_dscore_discarded';
+                }''')
                 preview.update(parsed_rows=3, issues=[{'severity': 'error', 'code': 'derived_vt_outlier',
                     'message': 'Skipped derived outlier final score for VT', 'first_name': 'Vault', 'last_name': 'Person',
                     'event_name': 'Vault Cup 2026', 'sheet': 'MAG', 'row': 17, 'source_vt': 11.333,
