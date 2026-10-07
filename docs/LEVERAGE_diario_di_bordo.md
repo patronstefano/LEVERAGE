@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Ordine generatori notifiche demo
+
+Allineato anche l'ordine dei generatori notifiche nella downbar: SUPER ADMIN, ADMIN, USER, limitatamente ai generatori visibili per il ruolo corrente. Nessuna modifica ai contenuti delle notifiche o alle autorizzazioni.
+
 ## 2026-10-07 - Ordine accessi demo nella downbar
 
 Riordinati i pulsanti di accesso demo: SUPER ADMIN, ADMIN, USER. Invariati stile e comportamento degli accessi.
