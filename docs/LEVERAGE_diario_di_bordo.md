@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Uniformita messaggi di revisione vuota
+
+- Rimosso il messaggio ridondante N gare gia in LEVERAGE.
+- Nessun evento/atleta/punteggio da verificare usa lo stesso componente e
+  le stesse regole di font, colore, bordo, padding e altezza minima del messaggio
+  Nessuna nuova gara da importare. Posizione nelle rispettive revisioni invariata.
+- Test UI confrontano gli stili calcolati, non solo il nome della classe CSS.
+
 ## 2026-10-07 - Riepilogo degli interventi automatici import
 
 - Introdotta la sezione Correzioni ed esclusioni automatiche in Revisione

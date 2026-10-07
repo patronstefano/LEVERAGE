@@ -252,7 +252,4 @@ export function mountImportReport({root, preview, text, esc, language}) {
     pending: stats.unresolved ?? (preview.event_match_review || []).filter(row => !row.deferred).length,
     deferred: stats.deferred || 0,
   });
-  const skipped = preview.skipped_existing_events || [];
-  if (skipped.length) root.insertAdjacentHTML('beforeend',
-    `<p class="admin-stats-note admin-import-historical-total"><strong>${new Intl.NumberFormat(language).format(skipped.length)} ${esc(text(skipped.length === 1 ? 'importHistoricalSingle' : 'importHistorical'))}</strong></p>`);
 }

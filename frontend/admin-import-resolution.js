@@ -1,4 +1,4 @@
-import { automaticImportIssueCode } from './admin-import-report.js?v=automatic-import-notices-20261007';
+import { automaticImportIssueCode } from './admin-import-report.js?v=import-feedback-style-20261007';
 
 export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard}) {
   const resultIssues = (preview.issues || []).filter(issue => !automaticImportIssueCode(issue) && !['events', 'athletes'].includes(issue.review_scope));
@@ -16,7 +16,7 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
   if (!rows.length) {
     const pending = preview.conflicts?.length || preview.orphan_dscore_review_count || preview.orphan_dscore_review?.length ||
       resultIssues.some(issue => issue.severity === 'error' || issue.row != null || issue.code === 'gymternet_orphan_dscores');
-    root.innerHTML = pending ? '' : `<div class="empty-state" data-import-empty="results">${esc(text('importNoCorrections'))}</div>`;
+    root.innerHTML = pending ? '' : `<div class="admin-center-feedback" data-import-empty="results" role="status">${esc(text('importNoCorrections'))}</div>`;
     return {focus() {}};
   }
   const keyOf = row => `${row.sheet}:${row.row}`;

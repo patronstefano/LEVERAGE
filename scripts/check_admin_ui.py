@@ -1158,13 +1158,13 @@ def main():
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 preview.update(parsed_rows=1000, importable_results=0, duplicates=[{"reason": "duplicate_existing"}] * 1000, athlete_match_review=[], event_match_review=[])
                 analyze_import()
-                page.locator('#adminImportOutput .admin-center-feedback').wait_for()
+                page.locator('#adminImportOutput [data-import-status]').wait_for()
                 assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
                 for scope, label in [('events', 'Nessun evento da verificare.'), ('athletes', 'Nessun atleta da verificare.'), ('results', 'Nessun punteggio da verificare.')]:
                     page.locator(f'[data-import-part={scope}]').click()
                     empty = page.locator(f'[data-import-empty={scope}]')
                     assert empty.is_visible() and empty.inner_text() == label
-                    assert 'empty-state' in empty.get_attribute('class')
+                    assert 'admin-center-feedback' in empty.get_attribute('class')
                 page.locator('[data-import-part=results]').click()
                 assert int(page.locator('#importPart_results .admin-duplicate-recap dd').first.inner_text().replace('.', '')) == 1000
                 preview['issues'] = [
@@ -1210,8 +1210,14 @@ def main():
                     skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
                     'year': 2026, 'results': 100, 'differences': 2, 'source_issues': 1} for i in range(10)])
                 analyze_import()
-                page.locator('.admin-import-historical-total').wait_for(state='attached')
-                assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
+                page.locator('[data-import-status]').wait_for()
+                assert page.locator('.admin-import-historical-total').count() == 0
+                assert '10 gare già in LEVERAGE' not in page.locator('#adminImportOutput').inner_text()
+                assert page.evaluate('''() => {
+                    const properties = ['fontSize', 'fontFamily', 'fontWeight', 'lineHeight', 'color', 'backgroundColor', 'borderRadius', 'borderColor', 'borderWidth', 'padding', 'minHeight'];
+                    const reference = getComputedStyle(document.querySelector('[data-import-status]'));
+                    return [...document.querySelectorAll('[data-import-empty]')].every(el => properties.every(key => getComputedStyle(el)[key] === reference[key]));
+                }''')
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['0', '0', '0', '0']
                 status_box = page.locator('[data-import-status]').bounding_box()
                 scope_box = page.locator('.admin-import-scope-choice').bounding_box()
@@ -1268,7 +1274,7 @@ def main():
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('[name=existing_event_scope]').input_value() == 'skip'
-                assert '1 gara già in LEVERAGE' in page.locator('#adminImportOverview').text_content()
+                assert '1 gara già in LEVERAGE' not in page.locator('#adminImportOverview').text_content()
                 assert page.locator('.admin-import-issues').count() == 0
                 scope = page.locator('[name=existing_event_scope]').locator('..')
                 scope.locator('summary').click()

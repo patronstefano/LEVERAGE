@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=automatic-import-notices-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=import-feedback-style-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=automatic-import-notices-20261007';
+import { IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=import-feedback-style-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1057,7 +1057,7 @@ export async function renderAdminCenter(host) {
       const notes = output.querySelector('.admin-import-notes');
       for (const [key, label] of [['events', 'importNoEventReviews'], ['athletes', 'importNoAthleteReviews']]) {
         if (!sections[key].querySelector('[data-import-group], [data-import-issues], [data-country-conflicts]')) {
-          sections[key].insertAdjacentHTML('beforeend', `<div class="empty-state" data-import-empty="${key}">${esc(text(label))}</div>`);
+          sections[key].insertAdjacentHTML('beforeend', `<div class="admin-center-feedback" data-import-empty="${key}" role="status">${esc(text(label))}</div>`);
         }
       }
       if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
