@@ -35,6 +35,8 @@ def main():
         {'event_name': 'Spring Cup', 'year': 2026, 'event_id': 2, 'status': 'already_imported',
          'file_results': 1, 'existing_results': 1, 'duplicate_file_results': 0, 'new_results': 0, 'conflicting_results': 0,
          'groups': [], 'new_results_preview': []},
+        {'event_name': 'Review Cup', 'year': 2026, 'event_id': 3, 'conflicting_results': 1,
+         'groups': [], 'new_results_preview': []},
     ]
     current_role = ["super_admin"]
     scope_response = {}
@@ -1042,7 +1044,7 @@ def main():
                     assert heading_styles[width][0]['borderBottomWidth'] == '1px'
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 assert len(set(round(box.bounding_box()['y']) for box in page.locator('#importPart_events .admin-import-metrics dd').all())) == 1
-                assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['1', '1', '0', '2']
+                assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['2', '1', '1', '2']
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('.admin-import-duplicate-link a').count() == 0
@@ -1085,6 +1087,7 @@ def main():
                 row = page.locator("[data-review-type=athlete]")
                 page.locator('[data-import-part=athletes]').click()
                 assert page.locator('#adminImportAthletes .admin-import-metrics dd').all_inner_texts() == ['1', '0', '0', '1']
+                assert page.locator('#adminImportAthletes [data-import-athlete-list]').count() == 0
                 page.locator('[data-import-group=athlete] > summary').click()
                 row.wait_for()
                 assert page.locator('[name=include_existing]').count() == 0
@@ -1106,7 +1109,8 @@ def main():
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 assert page.locator('[data-import-filter]').count() == 0
                 assert page.locator('#adminImportOverview .admin-import-event').count() == 2
-                assert 'Spring Cup' in page.locator('#adminImportOverview [data-import-events]').inner_text()
+                assert 'Spring Cup' not in page.locator('#adminImportOverview [data-import-events]').inner_text()
+                assert 'Review Cup' in page.locator('#adminImportOverview [data-import-events]').inner_text()
                 page.locator('[data-import-event]').first.click()
                 assert 'Test Ada' in page.locator('.admin-import-table').last.inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
@@ -1396,6 +1400,17 @@ def main():
                             text: key => IMPORT_COPY[key]?.[index] || key, esc: value => String(value ?? ''), language});
                         return !output.includes('RAW_ENGLISH_DIAGNOSTIC') && output.includes(IMPORT_COPY[code][index]);
                     }));
+                }''')
+                assert page.evaluate('''async () => {
+                    const {mountCalendarImportRows} = await import('./admin-import-report.js');
+                    const root = document.createElement('div');
+                    const rows = Array.from({length: 8}, (_, i) => ({event_name: `Review ${i}`, action: 'update_dates'}));
+                    rows.unshift({event_name: 'Already identical', action: 'no_change'});
+                    mountCalendarImportRows({root, preview: {rows}, text: key => key,
+                        esc: value => String(value ?? ''), language: 'it', route: '#/admin/imports', viewState: {}});
+                    if (root.querySelector('.admin-revision-count').textContent !== '8' || root.textContent.includes('Already identical')) return false;
+                    root.querySelector('[data-calendar-page="1"]').click();
+                    return root.querySelectorAll('article').length === 2 && root.textContent.includes('Review 7');
                 }''')
                 calendar_preview['duplicate_source_rows'] = []
                 calendar_preview['matched_event_source_conflicts'] = []

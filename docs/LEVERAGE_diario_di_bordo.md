@@ -1,5 +1,22 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Liste di revisione eventi mirate
+
+- Regola generale richiesta: dettagli concentrati su cio che richiede controllo;
+  dati senza problemi riassunti nei conteggi. Per gli atleti eliminata la lista
+  degli elementi senza incongruenze; mantenuti i flussi separati di decisione
+  sui possibili duplicati e gli avvisi da risolvere.
+- Il riepilogo conserva il totale delle gare incluse gia presenti in LEVERAGE;
+  la lista Results mostra solo eventi nuovi o con conflicting_results/source_issues.
+  Le gare gia associate senza incongruenze non richiedono una revisione evento,
+  anche quando contengono risultati nuovi: questi restano nel flusso risultati.
+- Nel calendario le righe no_change non compaiono nella lista operativa;
+  restano visibili aggiornamenti, nuove gare e casi non associati da valutare.
+  I conflitti sorgente mantengono la loro sezione dedicata.
+- Paginazione e conteggi delle liste applicati al sottoinsieme visibile.
+  Nessuna modifica al payload, alle decisioni, ai dati DB o alle regole di import.
+  Non risolve il limite di riapplicazione delle decisioni storiche documentato sotto.
+
 ## 2026-10-07 - Riprova del file Results 2026 e diagnostica del perimetro
 
 - Analisi in sola lettura (PRAGMA query_only) del file archiviato
