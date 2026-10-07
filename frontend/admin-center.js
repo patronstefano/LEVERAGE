@@ -1271,17 +1271,6 @@ export async function renderAdminCenter(host) {
           if (group && empty) group.before(empty);
         }
       }
-      clearTimeout(draft.autoPreviewTimer);
-      const revision = draft.decisionRevision || 0;
-      if (draft.needsPreview && !draft.scopeBusy && !Object.values(pending).some(Boolean)
-          && draft.autoPreviewRevision !== revision) {
-        draft.autoPreviewTimer = setTimeout(guard(async () => {
-          if (!active() || !output.isConnected || session.import !== draft || draft.scopeBusy || !draft.needsPreview
-              || revision !== (draft.decisionRevision || 0)) return;
-          draft.autoPreviewRevision = revision;
-          await refreshPreview();
-        }), 500);
-      }
     };
     output.querySelector('[data-defer-all-countries]')?.addEventListener('click', () => confirm('importDeferAllCountries', () => {
       const exclusions = new Map();

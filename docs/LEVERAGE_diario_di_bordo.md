@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Ricalcolo manuale al completamento delle revisioni Results
+
+Rimosso, su richiesta, il ricalcolo automatico quando Eventi, Atleti e Risultati non hanno piu verifiche pendenti. I messaggi di revisione completata restano aggiornati localmente; le decisioni richiedono il pulsante Ricalcola anteprima prima della conferma importazione. Resta invariato il ricalcolo al cambio dell'opzione sulle gare gia importate. Test UI aggiornato per verificare assenza di richieste automatiche e conferma disabilitata fino al ricalcolo manuale.
+
 ## 2026-10-07 - Schede consultabili anche per gare solo calendario
 
 Superata la precedente distinzione UI tra Event e voci calendario prive di Event: tutte le card e barre calendario possono aprire una scheda, con lo stesso layout delle informazioni gara e il messaggio localizzato Non sono ancora disponibili classifiche per questo evento. Aggiunto endpoint pubblico di lettura /events/calendar/{id}, con esclusione delle voci eliminate, senza creare entita o risultati. Il collegamento calendario reindirizza alla scheda Event quando viene associata successivamente. Anche l'anteprima import offre Vai all'Evento per queste voci. Nessun falso Leverage ID, preferito o comando di modifica Event viene attribuito alla voce calendario: tali comandi restano legati a vere entita Event. Preservati ritorno alla ricerca e contesto admin. Verificati API, layout desktop/mobile e caso reale Ifact Norges Cup 2.

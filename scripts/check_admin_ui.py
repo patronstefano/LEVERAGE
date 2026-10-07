@@ -1095,9 +1095,11 @@ def main():
                         assert not identity_group.evaluate('el => el.open')
                         assert identity_group.locator('summary .admin-revision-count').text_content() == '0'
                         assert page.locator('[data-import-empty=athletes]').evaluate("el => el.nextElementSibling?.dataset.importGroup === 'athlete'")
-                        page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
-                        assert len(writes) == pending_requests + 1
                         page.wait_for_timeout(700)
+                        assert len(writes) == pending_requests
+                        assert page.locator('#adminCommitImport').is_disabled()
+                        page.locator('#adminReviewPreview').click()
+                        page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
                         assert len(writes) == pending_requests + 1
                     page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                     assert f'defer_{kind}_reviews=true' in writes[-1]['url']
