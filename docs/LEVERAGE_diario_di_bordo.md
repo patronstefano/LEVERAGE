@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Comandi semplificati per la revisione nazionalita
+
+- Due selettori esclusivi con sole nazionalita in esame: Aggiorna storico nazionalita e Correggi nazionalita registrata. Aggiunto Tralascia revisione, che usa il rinvio gia previsto dal backend; eliminate da questi casi le opzioni tecniche e la ricerca manuale di un target.
+- Lo storico conserva i country rappresentati e registra il passaggio alla nazionalita finale scelta, usando l'anno dell'import. La correzione aggiorna la nazionalita della scheda e quella dei risultati importati senza inventare un trasferimento. Non riscrive i risultati gia nel database, come esplicitato nella nota UI.
+- Per nuovi atleti con piu country, la decisione esplicita unifica le varianti nella nazionalita scelta. Se esistono piu entita candidate, e necessario rinviare e risolvere prima le identita; non si sceglie arbitrariamente una scheda da mantenere.
+- Decisioni conservate nell'audit import, preview senza scritture. Test su atleti esistenti, varianti nuove, preservazione dei risultati rappresentati e assenza di storico fittizio nelle correzioni.
+
 ## 2026-10-07 - Stile nota revisione nazionalita
 
 Uniformato il messaggio su stesso nome e nazionalita diverse alla classe admin-stats-note usata per le correzioni automatiche: medesima dimensione, colore e spaziatura. Preservata la nota dalla pulizia degli avvisi generici di identita.

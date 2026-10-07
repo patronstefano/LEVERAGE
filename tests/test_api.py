@@ -11436,6 +11436,45 @@ def test_gymternet_existing_athlete_match_can_update_target_name():
     assert result["athlete_id"] == existing_athlete_id
 
 
+@pytest.mark.parametrize('action', ['country_history', 'country_correction'])
+@pytest.mark.parametrize('selected', ['ITA', 'ALB'])
+def test_simple_country_decisions_preserve_history_semantics(action, selected):
+    client.post('/auth/register', json={'email': 'simple_country@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f'Bearer {login_as_admin("simple_country@example.com")}'}
+    athlete = client.post('/athletes/', headers=headers, json={'first_name': 'Matvei', 'last_name': 'Petrov', 'discipline': 'MAG', 'country': 'ALB'}).json()
+    def upload(endpoint, decisions=None):
+        return client.post('/imports/gymternet/' + endpoint, headers=headers,
+            files={'file': ('country.csv', gymternet_athlete_country_change_csv_bytes(), 'text/csv')},
+            data={'athlete_match_decisions': json.dumps(decisions or [])})
+    review = upload('preview').json()['athlete_match_review'][0]
+    decision = [{'review_id': review['review_id'], 'action': action, 'canonical_country': selected}]
+    assert upload('preview', decision).json()['athlete_match_decision_stats']['unresolved'] == 0
+    assert client.get(f'/athletes/{athlete["id"]}').json()['country'] == 'ALB'
+    response = upload('commit', decision)
+    assert response.status_code == 200, response.text
+    saved = client.get(f'/athletes/{athlete["id"]}').json()
+    assert saved['country'] == selected
+    assert len(saved['country_changes']) == (1 if action == 'country_history' else 0)
+    assert client.get('/results/').json()[0]['represented_country'] == ('ITA' if action == 'country_history' else selected)
+
+
+@pytest.mark.parametrize('action', ['country_history', 'country_correction'])
+def test_simple_country_decisions_for_new_country_variants(action):
+    client.post('/auth/register', json={'email': 'new_country@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f'Bearer {login_as_admin("new_country@example.com")}'}
+    def upload(endpoint, decisions=None):
+        return client.post('/imports/gymternet/' + endpoint, headers=headers,
+            files={'file': ('country.csv', gymternet_same_name_multiple_countries_csv_bytes(), 'text/csv')},
+            data={'athlete_match_decisions': json.dumps(decisions or [])})
+    review = upload('preview').json()['athlete_match_review'][0]
+    response = upload('commit', [{'review_id': review['review_id'], 'action': action, 'canonical_country': 'ITA'}])
+    assert response.status_code == 200, response.text
+    athletes = client.get('/athletes/').json()
+    assert len(athletes) == 1 and athletes[0]['country'] == 'ITA'
+    saved = client.get(f'/athletes/{athletes[0]["id"]}').json()
+    assert len(saved['country_changes']) == (1 if action == 'country_history' else 0)
+
+
 def test_gymternet_import_reviews_existing_athlete_country_change_before_commit():
     client.post("/auth/register", json={"email": "gymternet_country_change@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_country_change@example.com")
@@ -11472,6 +11511,7 @@ def test_gymternet_import_reviews_existing_athlete_country_change_before_commit(
         "keep_existing_country",
         "create_new",
         "manual_target",
+        "country_history", "country_correction", "defer",
     ]
 
     blocked_commit_response = client.post(
@@ -11541,6 +11581,7 @@ def test_gymternet_import_requires_admin_review_for_same_name_multiple_countries
         "keep_separate",
         "accept_suggestion",
         "manual_target",
+        "country_history", "country_correction", "defer",
     ]
     assert {variant["country"] for variant in review["country_variants"]} == {"USA", "ITA"}
 

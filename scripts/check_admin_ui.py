@@ -1220,8 +1220,18 @@ def main():
                 assert country_group.locator('[data-country-review-note]').evaluate('el => getComputedStyle(el).fontSize') == '13px'
                 country_group.locator('[data-import-review-toggle]').click()
                 assert 'ITA' in country_group.inner_text() and 'ESP' in country_group.inner_text()
-                assert country_group.locator('[data-admin-select-value=update_country]').count() == 1
-                assert country_group.locator('[data-admin-select-value=keep_existing_country]').count() == 1
+                assert country_group.locator('[name=country_history_choice]').count() == 1
+                assert country_group.locator('[name=country_correction_choice]').count() == 1
+                assert country_group.locator('[name=action], [name=target_search]').count() == 0
+                history = country_group.locator('[name=country_history_choice]').locator('..')
+                history.locator('summary').click()
+                history.locator('[data-admin-select-value=ESP]').click()
+                correction = country_group.locator('[name=country_correction_choice]').locator('..')
+                correction.locator('summary').click()
+                correction.locator('[data-admin-select-value=ITA]').click()
+                assert country_group.locator('[name=country_history_choice]').input_value() == ''
+                country_group.locator('[data-country-defer]').click()
+                assert country_group.locator('[name=country_correction_choice]').input_value() == ''
                 preview['athlete_match_review'] = original_athlete_reviews
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
                 analyze_import()

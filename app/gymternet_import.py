@@ -2523,6 +2523,7 @@ def build_athlete_match_review_items(
                 "keep_separate",
                 "accept_suggestion",
                 "manual_target",
+                "country_history", "country_correction", "defer",
             ],
         })
 
@@ -2567,6 +2568,7 @@ def build_athlete_match_review_items(
                 "keep_existing_country",
                 "create_new",
                 "manual_target",
+                "country_history", "country_correction", "defer",
             ],
         })
 
@@ -2825,6 +2827,54 @@ def apply_athlete_match_decisions(
         if action == 'defer':
             review['deferred'] = True
             stats['deferred'] += 1
+            resolved_review_ids.add(review['review_id'])
+            continue
+
+        if action in {'country_history', 'country_correction'}:
+            imported = review['imported_athlete']
+            variants = review.get('country_variants') or [imported]
+            candidates = ([review['existing_athlete']] if review.get('existing_athlete') else
+                          [item['target_athlete'] for item in review.get('suggestions', []) if item.get('target_athlete')])
+            candidates = {item['athlete_id']: item for item in candidates}
+            countries = {item.get('country') for item in [*variants, *candidates.values()] if item.get('country')}
+            selected = decision.get('canonical_country')
+            if (review['problem_type'] not in {'possible_athlete_country_change', 'possible_athlete_identity_collision'}
+                    or selected not in countries or len(candidates) > 1):
+                stats['invalid_decisions'] += 1
+                issues.append({'severity': 'error', 'review_scope': 'athletes',
+                               'message': 'Invalid country decision or ambiguous existing athlete. Defer the review.'})
+                continue
+            keys = [athlete_key_from_imported_payload({**imported, 'country': variant.get('country')}) for variant in variants]
+            canonical_key = (*keys[0][:3], selected)
+            year = int(imported.get('year') or max((v.get('year') or 0 for v in variants), default=0))
+            if action == 'country_history' and not year:
+                stats['invalid_decisions'] += 1
+                issues.append({'severity': 'error', 'review_scope': 'athletes', 'message': 'Country history requires a year.'})
+                continue
+            history_from = sorted(countries - {selected})
+            if candidates:
+                athlete_id = next(iter(candidates))
+                prior = country_updates.get(athlete_id)
+                if prior and (prior['to_country'] != selected or prior.get('is_correction', False) != (action == 'country_correction')):
+                    stats['invalid_decisions'] += 1
+                    issues.append({'severity': 'error', 'review_scope': 'athletes',
+                                   'message': 'Conflicting country decisions for the same athlete.'})
+                    continue
+                for key in keys:
+                    resolutions[key] = athlete_id
+                country_updates[athlete_id] = {'to_country': selected, 'change_year': year,
+                    'from_country': candidates[athlete_id].get('country'),
+                    'is_correction': action == 'country_correction', 'history_from': history_from}
+                stats['country_updates'] += 1
+            else:
+                for key in keys:
+                    merge_keys[key] = canonical_key
+                if action == 'country_history':
+                    athlete_canonical_names.setdefault(canonical_key, {}).update(country_history_from=history_from, country_history_year=year)
+                stats['identity_merges'] += 1
+            if action == 'country_correction':
+                represented_country_overrides.update({key: selected for key in keys})
+                stats['represented_country_corrections'] += sum(key[3] != selected for key in keys)
             resolved_review_ids.add(review['review_id'])
             continue
 
@@ -3844,6 +3894,14 @@ def commit_records(
 
     for athlete_id, country_update in athlete_country_update_ids.items():
         athlete = db.query(models.Athlete).filter(models.Athlete.id == athlete_id).first()
+        if athlete and 'is_correction' in country_update:
+            if country_update['is_correction']:
+                athlete.country = country_update['to_country']
+            else:
+                for previous in country_update['history_from']:
+                    record_athlete_country_change(db, athlete, country_update['to_country'], int(country_update['change_year']), previous)
+            stats['updated_athlete_countries'] += 1
+            continue
         if athlete and record_athlete_country_change(
             db,
             athlete,
@@ -3874,6 +3932,8 @@ def commit_records(
             existing_athletes[athlete_key] = athlete
             stats["created_athletes"] += 1
             created_athletes_for_notification.append(athlete)
+            for previous in canonical_name.get('country_history_from', []):
+                record_athlete_country_change(db, athlete, athlete_key[3], canonical_name['country_history_year'], previous)
         elif not athlete.country and record.country:
             athlete.country = record.country
 
