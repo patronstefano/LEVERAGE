@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=identity-review-actions-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=calendar-review-feedback-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=identity-review-actions-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-review-feedback-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'

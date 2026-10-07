@@ -1488,11 +1488,18 @@ def main():
                 assert 'create_missing_from_year=' not in writes[-1]['url']
                 original_calendar = dict(calendar_preview)
                 calendar_preview.update(would_create_events=0, would_update_events=0, matched_events=8,
-                    rows=[{**row, 'action': 'no_change'} for row in original_calendar['rows']])
+                    rows=[{**row, 'action': 'no_change', 'matched_events': []} for row in original_calendar['rows']])
                 analyze_import()
                 status = page.locator('.admin-import-header-actions [data-import-status]')
                 assert status.inner_text() == 'Nessuna nuova gara da importare.'
                 assert status.get_attribute('class') == 'admin-center-feedback'
+                empty_calendar = page.locator('#adminCalendarRows [data-import-empty=events]')
+                assert empty_calendar.inner_text() == 'Nessun evento da verificare.'
+                assert empty_calendar.evaluate('''el => {
+                    const style = getComputedStyle(el);
+                    const reference = getComputedStyle(document.querySelector('[data-import-status]'));
+                    return ['fontSize', 'fontFamily', 'fontWeight', 'color', 'padding', 'borderRadius', 'minHeight'].every(key => style[key] === reference[key]);
+                }''')
                 assert status.bounding_box()['x'] < page.locator('.admin-import-scope-choice').bounding_box()['x']
                 calendar_preview['would_update_events'] = 1
                 analyze_import()

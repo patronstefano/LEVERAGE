@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Messaggio revisione eventi vuota nel calendario
+
+Uniformato Nessun evento da verificare nell'import calendario al feedback compatto dell'import risultati, con stessa classe UI, dimensione e ruolo status. Compare in assenza di gruppi da esaminare, conflitti sorgente ed errori. Test browser sul testo e sugli stili calcolati.
+
 ## 2026-10-07 - Confronti atleti e comandi affiancati nell'import
 
 Nella revisione nazionalita e identita atleti, il confronto aperto dispone nome e nazionalita a sinistra e i relativi comandi a destra. Su schermi stretti il layout torna verticale per evitare sovrapposizioni. Nessuna modifica alle decisioni o al payload di importazione. Aggiunti controlli browser sulle posizioni desktop e mobile.
