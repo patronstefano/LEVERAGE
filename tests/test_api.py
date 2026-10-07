@@ -9988,6 +9988,13 @@ def test_gymternet_deferred_reviews_persist_after_import_and_can_be_resolved(mon
     files = {'file': ('updated.csv', content, 'text/csv')}
     plain = '?year_hint=2024&require_resolved_reviews=true'
     assert client.post('/imports/gymternet/commit' + plain, files=files, headers=headers).status_code == 409
+    for selected, other in [('event', 'athlete'), ('athlete', 'event')]:
+        scoped = plain + f'&defer_{selected}_reviews=true&athlete_review_limit=0'
+        scoped_preview = client.post('/imports/gymternet/preview' + scoped, files=files, headers=headers).json()
+        assert scoped_preview[f'{selected}_match_decision_stats']['deferred'] == 1
+        assert scoped_preview[f'{selected}_match_decision_stats']['unresolved'] == 0
+        assert scoped_preview[f'{other}_match_decision_stats']['unresolved'] == 1
+        assert client.post('/imports/gymternet/commit' + scoped, files=files, headers=headers).status_code == 409
     params = plain + '&defer_duplicate_reviews=true&athlete_review_limit=0'
     preview = client.post('/imports/gymternet/preview' + params, files=files, headers=headers).json()
     assert preview['athlete_match_decision_stats']['deferred'] == 1
@@ -9996,7 +10003,7 @@ def test_gymternet_deferred_reviews_persist_after_import_and_can_be_resolved(mon
     assert preview['athlete_match_review'] == []  # Response limits cannot drop pending pairs.
     with SessionLocal() as db:
         assert db.query(models.EntityReviewDecision).count() == 0
-    response = client.post('/imports/gymternet/commit' + params, files=files, headers=headers)
+    response = client.post('/imports/gymternet/commit' + plain + '&defer_event_reviews=true&defer_athlete_reviews=true&athlete_review_limit=0', files=files, headers=headers)
     assert response.status_code == 200, response.text
     assert response.json()['deferred_duplicate_pairs'] == 2
     assert response.json()['created_athletes'] == response.json()['created_events'] == response.json()['created_results'] == 1

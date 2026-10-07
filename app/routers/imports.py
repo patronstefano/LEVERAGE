@@ -162,6 +162,8 @@ def parse_and_summarize_upload(
     skip_existing_events: bool = False,
     source_row_decisions: Optional[list[dict]] = None,
     defer_duplicate_reviews: bool = False,
+    defer_event_reviews: bool = False,
+    defer_athlete_reviews: bool = False,
 ) -> tuple[str, dict]:
     filename = file.filename or "gymternet_import"
     content = file.file.read()
@@ -217,7 +219,7 @@ def parse_and_summarize_upload(
     skipped_events = []
     if skip_existing_events:
         resolved, event_reviews, event_decision_stats = review_import_events(
-            db, parsed.records, event_match_decisions, parsed.issues, defer_duplicate_reviews,
+            db, parsed.records, event_match_decisions, parsed.issues, defer_duplicate_reviews or defer_event_reviews,
         )
         renames = {(old.event_name, old.year): new.event_name
                    for old, new in zip(parsed.records, resolved) if old.event_name != new.event_name}
@@ -257,7 +259,7 @@ def parse_and_summarize_upload(
     )
 
     if not skip_existing_events:
-        records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues, defer_duplicate_reviews)
+        records, event_reviews, event_decision_stats = review_import_events(db, records, event_match_decisions, parsed.issues, defer_duplicate_reviews or defer_event_reviews)
     athlete_review_items = build_athlete_match_review_items(db, records)
     athlete_issues_start = len(parsed.issues)
     (
@@ -273,7 +275,7 @@ def parse_and_summarize_upload(
         athlete_review_items,
         athlete_match_decisions,
         parsed.issues,
-        defer_duplicate_reviews,
+        defer_duplicate_reviews or defer_athlete_reviews,
     )
     for issue in parsed.issues[athlete_issues_start:]:
         issue.setdefault('review_scope', 'athletes')
@@ -478,6 +480,8 @@ def preview_gymternet_import(
     source_row_decisions: Optional[str] = Form(None),
     skip_existing_events: bool = Query(False),
     defer_duplicate_reviews: bool = Query(False),
+    defer_event_reviews: bool = Query(False),
+    defer_athlete_reviews: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -499,6 +503,8 @@ def preview_gymternet_import(
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
         skip_existing_events=skip_existing_events,
         defer_duplicate_reviews=defer_duplicate_reviews,
+        defer_event_reviews=defer_event_reviews,
+        defer_athlete_reviews=defer_athlete_reviews,
         source_row_decisions=parse_json_decision_list(source_row_decisions, 'source_row_decisions'),
     )
     return build_import_preview_payload(filename, year_hint, summary)
@@ -571,6 +577,8 @@ def commit_gymternet_import(
     require_resolved_reviews: bool = Query(False),
     skip_existing_events: bool = Query(False),
     defer_duplicate_reviews: bool = Query(False),
+    defer_event_reviews: bool = Query(False),
+    defer_athlete_reviews: bool = Query(False),
     year_hint: Optional[int] = Query(None, ge=1900, le=2100),
     csv_discipline: Optional[models.DisciplineEnum] = Query(None),
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
@@ -604,6 +612,8 @@ def commit_gymternet_import(
         event_match_decisions=parse_json_decision_list(event_match_decisions, "event_match_decisions"),
         skip_existing_events=skip_existing_events,
         defer_duplicate_reviews=defer_duplicate_reviews,
+        defer_event_reviews=defer_event_reviews,
+        defer_athlete_reviews=defer_athlete_reviews,
         source_row_decisions=parse_json_decision_list(source_row_decisions, 'source_row_decisions'),
     )
     payload = build_import_preview_payload(filename, year_hint, summary)
@@ -644,6 +654,8 @@ def commit_gymternet_import(
     add_audit_log(db, current_user, 'import', 'GymternetImport', None, after={
         'filename': filename, 'skip_existing_events': skip_existing_events,
         'defer_duplicate_reviews': defer_duplicate_reviews,
+        'defer_event_reviews': defer_event_reviews,
+        'defer_athlete_reviews': defer_athlete_reviews,
         'deferred_athlete_reviews': summary.get('deferred_athlete_reviews', []),
         'deferred_event_reviews': [item for item in summary.get('event_match_review', []) if item.get('deferred')],
         'source_row_decisions': parse_json_decision_list(source_row_decisions, 'source_row_decisions') or [],

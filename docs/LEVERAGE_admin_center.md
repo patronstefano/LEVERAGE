@@ -2,6 +2,15 @@
 
 Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
+## Rinvio duplicati indipendente - 7 ottobre 2026
+
+Il comando Rinvia tutta la revisione duplicati compare all'interno del gruppo
+espanso di revisione identita Eventi o Atleti, non nella riga finale. Ogni tipo
+ha il proprio stato e comando Riprendi. Le scelte restano in bozza fino al
+ricalcolo. Preview e commit accettano defer_event_reviews/defer_athlete_reviews;
+defer_duplicate_reviews resta supportato per compatibilita. Nessun rinvio
+annulla decisioni esplicite o controlli sui punteggi, ne' risolve l'altro tipo.
+
 ## Separazione delle revisioni import - 7 ottobre 2026
 
 - Eventi: verifiche di identita/associazione e campi evento. Nel calendario

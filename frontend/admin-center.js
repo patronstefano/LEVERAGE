@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=semantic-import-reviews-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { IMPORT_COPY, importIssueScope, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=semantic-import-reviews-20261007';
+import { IMPORT_COPY, importIssueScope, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=independent-review-deferral-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -946,6 +946,7 @@ export async function renderAdminCenter(host) {
       draft.reviewPages[type] = Math.min(draft.reviewPages[type] || 0, Math.max(0, Math.ceil((items?.length || 0) / pageSize) - 1));
     }
     const start = type => (draft.reviewPages[type] || 0) * pageSize;
+    const isDeferred = type => Boolean(selectedParams[`defer_${type}_reviews`] ?? selectedParams.defer_duplicate_reviews);
     const identityFields = value => Object.fromEntries(Object.entries(value).filter(([key]) => ['athlete_id', 'first_name', 'last_name', 'athlete_name', 'country', 'discipline', 'birth_year', 'date_of_birth', 'country_history'].includes(key)));
     const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${type !== 'orphan' ? `<p class="admin-stats-note">${esc(text('importIdentityNote'))}</p>` : ''}${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
@@ -991,8 +992,8 @@ export async function renderAdminCenter(host) {
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
-      ${!p.committed && !selectedParams.defer_duplicate_reviews && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
-      ${!p.committed && !selectedParams.defer_duplicate_reviews && p.event_match_review?.length ? reviewGroup('event', 'importEventReview', p.event_match_review.length, eventReviewRows) : ''}
+      ${!p.committed && (p.athlete_match_review_count || p.athlete_match_review?.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review_count || p.athlete_match_review?.length || 0, isDeferred('athlete') ? '' : reviewRows(p.athlete_match_review, "athlete")) : ''}
+      ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       ${p.issues?.length && (draft.kind !== 'gymternet' || p.committed) ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
@@ -1028,10 +1029,12 @@ export async function renderAdminCenter(host) {
       sections.athletes.append(athleteOverview);
       for (const [key, kind] of [['events', 'event'], ['athletes', 'athlete']]) {
         const group = output.querySelector(`[data-import-group=${kind}]`);
-        if (group) sections[key].append(group);
+        if (group) {
+          sections[key].append(group);
+          group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button(isDeferred(kind) ? 'importResumeDuplicates' : 'importDeferDuplicates', `data-defer-duplicates="${kind}"`)}</div>`);
+          if (isDeferred(kind)) group.querySelector('.admin-import-pagination')?.remove();
+        }
       }
-      const canDefer = p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || selectedParams.defer_duplicate_reviews;
-      if (canDefer) output.querySelector('.admin-import-actions').insertAdjacentHTML('afterbegin', button(selectedParams.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'data-defer-duplicates'));
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
       if (countryConflicts.length) {
@@ -1052,7 +1055,7 @@ export async function renderAdminCenter(host) {
       }
       const notes = output.querySelector('.admin-import-notes');
       if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
-      notes.insertAdjacentHTML('beforeend', `<p>${esc(text(selectedParams.defer_duplicate_reviews ? 'importDeferredNote' : 'importDuplicateNote'))}</p>`);
+      notes.insertAdjacentHTML('beforeend', `<p>${esc(text(isDeferred('event') || isDeferred('athlete') ? 'importDeferredNote' : 'importDuplicateNote'))}</p>`);
       output.querySelectorAll('[data-import-group] > .admin-stats-note, .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
       const choosePart = key => {
         draft.reviewPart = key;
@@ -1108,11 +1111,16 @@ export async function renderAdminCenter(host) {
         }
         return body;
       };
-      refreshPreview = async (scope = draft.pendingParams?.skip_existing_events ?? draft.params.skip_existing_events, dialog = null, defer = draft.pendingParams?.defer_duplicate_reviews ?? draft.params.defer_duplicate_reviews) => {
+      refreshPreview = async (scope = draft.pendingParams?.skip_existing_events ?? draft.params.skip_existing_events, dialog = null) => {
         if (draft.scopeBusy) return;
         const changingScope = scope !== draft.params.skip_existing_events;
         const changingSource = Boolean(draft.sourceDirty);
-        const params = {...draft.params, skip_existing_events: Boolean(scope), ...(draft.kind === 'gymternet' ? {defer_duplicate_reviews: Boolean(defer)} : {})};
+        const pending = {...draft.params, ...draft.pendingParams};
+        const params = {...draft.params, skip_existing_events: Boolean(scope), ...(draft.kind === 'gymternet' ? {
+          defer_duplicate_reviews: false,
+          defer_event_reviews: Boolean(pending.defer_event_reviews ?? pending.defer_duplicate_reviews),
+          defer_athlete_reviews: Boolean(pending.defer_athlete_reviews ?? pending.defer_duplicate_reviews),
+        } : {})};
         const revision = draft.decisionRevision || 0;
         draft.scopeBusy = true;
         output.inert = true;
@@ -1152,12 +1160,13 @@ export async function renderAdminCenter(host) {
       };
       document.getElementById("adminReviewPreview").onclick = guard(() => refreshPreview());
       output.querySelectorAll('[data-defer-duplicates]').forEach(control => control.addEventListener('click', guard(async () => {
+        const kind = control.dataset.deferDuplicates;
         const stage = () => {
-          draft.pendingParams = {...draft.pendingParams, defer_duplicate_reviews: !selectedParams.defer_duplicate_reviews};
+          draft.pendingParams = {...draft.pendingParams, [`defer_${kind}_reviews`]: !isDeferred(kind)};
           markChanged(); showImport();
         };
-        if (selectedParams.defer_duplicate_reviews) stage();
-        else confirm('importDeferDuplicates', stage, false, text('importDeferConfirm'));
+        if (isDeferred(kind)) stage();
+        else confirm('importDeferDuplicates', stage, false, text(kind === 'event' ? 'importDeferEventsConfirm' : 'importDeferAthletesConfirm'));
       })));
       output.querySelector('[name=existing_event_scope]')?.addEventListener('change', guard(async event => {
         draft.pendingParams = {...draft.pendingParams, skip_existing_events: event.target.value === 'skip'};

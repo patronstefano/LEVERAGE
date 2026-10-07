@@ -1,5 +1,20 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Rinvio duplicati separato per eventi e atleti
+
+- Eliminato il comando globale dalla riga Ricalcola/Conferma. Ogni gruppo
+  espanso di revisione identita dispone di Rinvia tutta la revisione duplicati;
+  dopo il rinvio mostra Riprendi revisione duplicati nello stesso punto.
+- Aggiunti parametri backend indipendenti defer_event_reviews e
+  defer_athlete_reviews a preview e commit. La precedente opzione globale resta
+  compatibile per altri client. Il frontend utilizza le nuove opzioni separate.
+- Il rinvio riguarda solo il tipo scelto e preserva decisioni esplicite, blocchi
+  punteggi e verifiche dell'altro tipo. Applicato anche oltre i limiti delle
+  liste di preview; le coppie rinviate restano nella coda dopo il commit.
+- Scelte cumulative in bozza: ricalcolo esplicito prima della conferma import.
+  Test API: un solo tipo rinviato non sblocca l'altro; entrambi rinviati
+  mantengono le coppie persistenti anche con athlete_review_limit=0.
+
 ## 2026-10-07 - Separazione semantica delle tre revisioni import
 
 - Decisione dell'utente: Eventi riguarda esclusivamente le entita evento

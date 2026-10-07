@@ -214,9 +214,9 @@ def main():
                         preview['athlete_match_decision_stats']['unresolved'] = 0
                     scoped = parse_qs(urlparse(route.request.url).query).get('skip_existing_events') == ['true']
                     payload = {**preview, **(scope_response if scoped else {})}
-                    if parse_qs(urlparse(route.request.url).query).get('defer_duplicate_reviews') == ['true']:
-                        payload['event_match_decision_stats'] = {'unresolved': 0, 'deferred': len(payload.get('event_match_review', []))}
-                        payload['athlete_match_decision_stats'] = {'unresolved': 0, 'deferred': len(payload.get('athlete_match_review', []))}
+                    for entity in ['event', 'athlete']:
+                        if parse_qs(urlparse(route.request.url).query).get(f'defer_{entity}_reviews') == ['true']:
+                            payload[f'{entity}_match_decision_stats'] = {'unresolved': 0, 'deferred': len(payload.get(f'{entity}_match_review', []))}
                     source_part = re.search(r'name="source_row_decisions"\r\n\r\n([^\r]+)', route.request.post_data)
                     decisions = json.loads(source_part.group(1)) if source_part else []
                     if decisions:
@@ -1048,31 +1048,37 @@ def main():
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('.admin-import-duplicate-link a').count() == 0
-                assert page.locator('.admin-import-actions [data-defer-duplicates]').is_visible()
-                assert page.locator('[data-defer-duplicates]').count() == 1
-                assert page.locator('.admin-import-actions > button').first.get_attribute('data-defer-duplicates') is not None
-                pending_requests = len(writes)
-                page.locator('[data-defer-duplicates]:visible').click()
-                assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
-                page.locator('dialog[open] [data-confirm]').click()
-                page.locator('dialog[open]').wait_for(state='detached')
-                assert len(writes) == pending_requests
-                assert page.locator('#adminCommitImport').is_disabled()
-                assert page.locator('#adminImportDecisionsNotice').is_visible()
-                page.locator('#adminReviewPreview').click()
-                page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
-                assert 'defer_duplicate_reviews=true' in writes[-1]['url']
-                assert page.locator('[data-import-group=athlete]').count() == 0
-                assert page.locator('[data-import-group=event]').count() == 0
-                page.locator('[data-import-part=athletes]').click()
-                assert 'Riprendi revisione duplicati' in page.locator('[data-defer-duplicates]:visible').inner_text()
-                page.locator('[data-defer-duplicates]:visible').click()
-                assert page.locator('#adminCommitImport').is_disabled()
-                page.locator('#adminReviewPreview').click()
-                page.wait_for_function("document.querySelector('[data-import-group=athlete]') && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
-                assert 'defer_duplicate_reviews=false' in writes[-1]['url']
-                assert page.locator('#adminCommitImport').is_disabled()
+                assert page.locator('.admin-import-actions [data-defer-duplicates]').count() == 0
+                assert page.locator('[data-defer-duplicates]').count() == 2
+                for kind, part in [('event', 'events'), ('athlete', 'athletes')]:
+                    page.locator(f'[data-import-part={part}]').click()
+                    page.locator(f'[data-import-group={kind}]').evaluate('el => el.open = true')
+                    pending_requests = len(writes)
+                    page.locator(f'[data-defer-duplicates={kind}]').click()
+                    assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
+                    page.locator('dialog[open] [data-confirm]').click()
+                    page.locator('dialog[open]').wait_for(state='detached')
+                    assert len(writes) == pending_requests
+                    assert 'Riprendi revisione duplicati' in page.locator(f'[data-defer-duplicates={kind}]').inner_text()
+                    page.locator('#adminReviewPreview').click()
+                    page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                    assert f'defer_{kind}_reviews=true' in writes[-1]['url']
+                    if kind == 'event':
+                        assert 'defer_athlete_reviews=false' in writes[-1]['url']
+                        assert page.locator('[data-review-type=athlete]').count() > 0
+                        assert page.locator('#adminCommitImport').is_disabled()
+                assert page.locator('#adminCommitImport').is_enabled()
+                for kind, part in [('athlete', 'athletes'), ('event', 'events')]:
+                    page.locator(f'[data-import-part={part}]').click()
+                    page.locator(f'[data-import-group={kind}]').evaluate('el => el.open = true')
+                    page.locator(f'[data-defer-duplicates={kind}]').click()
+                    assert page.locator('#adminCommitImport').is_disabled()
+                    page.locator('#adminReviewPreview').click()
+                    page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                    assert f'defer_{kind}_reviews=false' in writes[-1]['url']
                 page.locator('[data-import-part=events]').click()
+                page.locator('[data-import-group=event]').evaluate('el => el.open = false')
+                page.locator('[data-import-group=athlete]').evaluate('el => el.open = false')
                 page.screenshot(path='/tmp/leverage-import-minimal-desktop.png', full_page=True)
                 page.locator('[data-admin-tab=overview]').click()
                 page.locator('.admin-data-overview').wait_for()
