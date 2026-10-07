@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Nota contestuale revisione identita atleti
+
+Spostata la spiegazione Verifica ora le possibili identita duplicate oppure rinviale a Revisione Duplicati dopo l'importazione dalle note generali al principio della sezione Revisione identita atleti, con lo stesso stile admin-stats-note della revisione nazionalita. Eliminata la ripetizione nel fondo dell'import; mantenuto il messaggio di stato delle revisioni effettivamente rinviate.
+
 ## 2026-10-07 - Comando complessivo revisione nazionalita
 
 Aggiunto Tralascia tutta la revisione nazionalita subito sotto il titolo della sezione. Conferma esplicita degli effetti: rinvio delle verifiche anagrafiche, esclusione da questo import delle righe sorgente con nazionalita rappresentata discordante e relativi punteggi collegati, senza modifiche ai dati salvati. Opera su tutte le pagine e non sulle revisioni identita/eventi. Decisioni in bozza fino al ricalcolo, senza richiesta API per ogni scelta. Verifica preliminare di tutte le righe sorgente prima di applicare il gruppo di decisioni; se mancano riferimenti, nessuna applicazione parziale. Test browser per annullamento, sette revisioni e righe D collegate.

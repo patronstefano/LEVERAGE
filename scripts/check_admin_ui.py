@@ -1160,6 +1160,12 @@ def main():
                 row.locator('[data-import-review-toggle]').click()
                 assert row.locator('[name=action], [name=target_search], [name=canonical_country]').count() == 0
                 assert row.locator('[data-identity-action]').count() == 3
+                identity_note = page.locator('[data-import-group=athlete] [data-identity-review-note]')
+                assert identity_note.is_visible()
+                assert identity_note.get_attribute('class') == 'admin-stats-note'
+                assert identity_note.evaluate('el => getComputedStyle(el).fontSize') == '13px'
+                assert 'Verifica ora le possibili identità duplicate' in identity_note.inner_text()
+                assert 'Verifica ora le possibili identità duplicate' not in page.locator('.admin-import-notes').inner_text()
                 comparison_box = row.locator('.admin-import-athlete-comparison').bounding_box()
                 actions_box = row.locator('.admin-athlete-review-actions').bounding_box()
                 assert actions_box['x'] >= comparison_box['x'] + comparison_box['width'] + 12

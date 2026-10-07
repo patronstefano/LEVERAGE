@@ -1050,6 +1050,7 @@ export async function renderAdminCenter(host) {
         if (group) {
           sections[key].append(group);
           group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button(isDeferred(kind) ? 'importResumeDuplicates' : 'importDeferDuplicates', `data-defer-duplicates="${kind}"`)}</div>`);
+          if (kind === 'athlete') group.querySelector('.admin-center-actions').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-identity-review-note>${esc(text('importDuplicateNote'))}</p>`);
           if (isDeferred(kind)) group.querySelector('.admin-import-pagination')?.remove();
         }
       }
@@ -1090,8 +1091,8 @@ export async function renderAdminCenter(host) {
         }
       }
       if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
-      notes.insertAdjacentHTML('beforeend', `<p>${esc(text(isDeferred('event') || isDeferred('athlete') ? 'importDeferredNote' : 'importDuplicateNote'))}</p>`);
-      output.querySelectorAll('[data-import-group] > .admin-stats-note:not([data-country-review-note]):not(.admin-country-review-footer), .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
+      if (isDeferred('event') || isDeferred('athlete')) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importDeferredNote'))}</p>`);
+      output.querySelectorAll('[data-import-group] > .admin-stats-note:not([data-country-review-note]):not([data-identity-review-note]):not(.admin-country-review-footer), .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
       const choosePart = key => {
         draft.reviewPart = key;
         for (const [name, section] of Object.entries(sections)) section.hidden = name !== key;
