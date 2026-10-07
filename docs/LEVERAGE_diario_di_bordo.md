@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - MILESTONE: collaudo importazione incrementale Results e Calendar concluso
+
+L'utente conferma concluso il collaudo dell'importazione incrementale completa per entrambi i formati The Gymternet: Results e Calendar. Questa milestone registra l'accettazione del flusso da parte dell'utente dopo le prove e le correzioni iterative; non equivale al collaudo finale di tutto il MVP o a una verifica automatica esaustiva del database.
+
+Baseline concordata: anteprima compatta, separazione delle revisioni Eventi/Atleti/Risultati, confronto dei soli casi da verificare, decisioni individuali e collettive, rinvio delle identita distinto dalla revisione nazionalita, esclusione delle righe con punteggi problematici, messaggi e contatori coerenti. Il ricalcolo dopo le decisioni resta manuale; il cambio del perimetro gare gia importate lo attiva invece automaticamente. Results considera gia importate le gare con risultati; Calendar considera anche quelle senza risultati. Restano le correzioni ed esclusioni automatiche documentate, senza duplicazione degli avvisi derivati.
+
+Le ultime verifiche tecniche includono test UI desktop/mobile, controllo delle decisioni inviate al backend e anteprima reale Results 2026 con risposta HTTP 200 dopo la correzione della concorrenza SQLite. Le prove tecniche dell'assistente non hanno confermato nuove importazioni sul database reale; la dichiarazione di completamento del collaudo complessivo proviene dall'utente.
+
+Prossima fase MVP privato: verificare integrita e reversibilita delle operazioni amministrative (modifica punteggi, unione, eliminazione e annullamento), quindi collaudo end-to-end dei ruoli USER/ADMIN/SUPER ADMIN e preparazione della baseline finale con backup verificato e istruzioni di avvio. Invio email reale e pubblicazione online restano fuori dal perimetro concordato.
+
 ## 2026-10-07 - Esclusione collettiva dei punteggi da verificare
 
 Corretto Tralascia tutte le righe: la scelta riguarda tutte le righe elencate nella revisione punteggi, incluse quelle collegate, non solamente le righe con conflitti o errori bloccanti. Le righe escluse scompaiono subito, il contatore e la paginazione riflettono le righe residue e il gruppo viene chiuso dopo l'esclusione collettiva. Quando non resta nulla compare Nessun punteggio da verificare. Decisioni conservate per il ricalcolo manuale, senza importazione automatica o modifica ai risultati salvati. Aggiornato il test UI del comando.
