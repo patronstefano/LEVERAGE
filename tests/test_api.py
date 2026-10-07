@@ -6111,6 +6111,10 @@ def test_calendar_import_preview_and_commit_update_existing_events_and_create_fu
     actions = {row["event_name"]: row for row in preview["rows"]}
     assert actions["Swiss Cup"]["action"] == "update_dates"
     assert actions["Swiss Cup"]["matched_event_ids"] == [existing_event["id"]]
+    assert actions["Swiss Cup"]["matched_events"] == [{
+        "event_id": existing_event["id"], "name": "Swiss Cup", "start_date": None,
+        "end_date": None, "name_differs": False, "dates_differ": True,
+    }]
     assert actions["Historical Missing Event"]["action"] == "skip_unmatched_historical"
     assert actions["Future World Cup (MAG)"]["action"] == "create_event"
     assert actions["Future World Cup (MAG)"]["start_date"] == "2026-01-31"

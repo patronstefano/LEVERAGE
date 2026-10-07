@@ -1,4 +1,15 @@
 export const IMPORT_COPY = {
+  importCalendarDifferences: ['Existing events with differences', 'Eventi presenti con differenze', 'Eventos existentes con diferencias', 'Événements existants avec différences'],
+  importCalendarNewEvents: ['New events to create', 'Nuovi eventi da creare', 'Nuevos eventos por crear', 'Nouveaux événements à créer'],
+  importCalendarSkippedEvents: ['Unmatched events to skip', 'Eventi non associati da tralasciare', 'Eventos sin asociar que se omitirán', 'Événements non associés à ignorer'],
+  importCalendarIdenticalCount: ['{n} file events already match LEVERAGE: no changes.', '{n} eventi del file già identici a LEVERAGE: nessuna modifica.', '{n} eventos del archivo ya coinciden con LEVERAGE: sin cambios.', '{n} événements du fichier identiques à LEVERAGE : aucune modification.'],
+  importCalendarNameOnly: ['Different name, dates aligned: no changes', 'Nome diverso, date allineate: nessuna modifica', 'Nombre distinto, fechas coincidentes: sin cambios', 'Nom différent, dates identiques : aucune modification'],
+  importCalendarWillCreate: ['Will create a new event', 'Verrà creato un nuovo evento', 'Se creará un nuevo evento', 'Un nouvel événement sera créé'],
+  importCalendarWillSkip: ['No match: will not be imported', 'Nessuna associazione: non verrà importato', 'Sin asociación: no se importará', 'Sans association : ne sera pas importé'],
+  importCalendarEventName: ['Event name', 'Nome evento', 'Nombre del evento', 'Nom de l’événement'],
+  importCalendarStart: ['Start date', 'Data inizio', 'Fecha de inicio', 'Date de début'],
+  importCalendarEnd: ['End date', 'Data fine', 'Fecha de fin', 'Date de fin'],
+  importCalendarNamePreserved: ['Calendar imports update dates only. The saved event name is preserved.', 'L’import calendario aggiorna solo le date. Il nome dell’evento già salvato viene mantenuto.', 'El calendario solo actualiza fechas. Se conserva el nombre guardado.', 'L’import calendrier actualise uniquement les dates. Le nom enregistré est conservé.'],
   importUseStoredCountry: ['Use recorded country', 'Usa nazionalità registrata', 'Usar nacionalidad registrada', 'Utiliser la nationalité enregistrée'],
   importExcludeCountryRow: ['Skip source row', 'Tralascia riga del file', 'Omitir fila del archivo', 'Ignorer la ligne du fichier'],
   importCountryCorrectionNote: ['Applies to all scores on this source row and its linked D Scores. Recalculate the preview to validate. Saved country history is unchanged.', 'La scelta vale per tutti i punteggi della riga e i D Score collegati. Ricalcola l’anteprima per validarla. Lo storico delle nazionalità salvato non cambia.', 'Se aplica a todos los puntos de la fila y sus D Scores. Recalcula la vista previa. El historial guardado no cambia.', 'Concerne tous les scores de la ligne et ses D Scores associés. Recalculez l’aperçu. L’historique enregistré reste inchangé.'],
@@ -55,13 +66,13 @@ export const IMPORT_COPY = {
   importHideFile: ['Close parameters', 'Chiudi parametri', 'Cerrar parámetros', 'Fermer les paramètres'],
   importBlocking: ['To resolve', 'Da risolvere', 'Por resolver', 'À résoudre'],
   importReadOnly: ['Existing scores will not be overwritten.', 'I punteggi già salvati non verranno sovrascritti.', 'Los resultados guardados no se sobrescribirán.', 'Les scores existants ne seront pas remplacés.'],
-  importCalendarRows: ['Calendar entries', 'Voci calendario', 'Entradas del calendario', 'Entrées du calendrier'],
+  importCalendarRows: ['Events in the file', 'Eventi nel file', 'Eventos del archivo', 'Événements du fichier'],
   importCalendarMatched: ['Matched events', 'Gare associate', 'Competiciones asociadas', 'Compétitions associées'],
   importCalendarExistingScope: ['Events already in LEVERAGE', 'Eventi già presenti in LEVERAGE', 'Eventos ya presentes en LEVERAGE', 'Événements déjà présents dans LEVERAGE'],
   importCalendarExcluded: ['Existing events excluded', 'Eventi già presenti esclusi', 'Eventos existentes excluidos', 'Événements existants exclus'],
   importCalendarSkipNote: ['Existing events are excluded from review and their dates will not be updated.', 'Gli eventi già presenti sono esclusi dalla revisione e le loro date non saranno aggiornate.', 'Los eventos existentes se excluyen de la revisión y sus fechas no se actualizarán.', 'Les événements existants sont exclus de la révision et leurs dates ne seront pas mises à jour.'],
   importCalendarUpdate: ['Dates to update', 'Date da aggiornare', 'Fechas por actualizar', 'Dates à actualiser'],
-  importCalendarUnmatched: ['Unmatched historical entries', 'Voci storiche non associate', 'Entradas históricas sin asociar', 'Entrées historiques non associées'],
+  importCalendarUnmatched: ['Historical events to skip', 'Eventi storici da tralasciare', 'Eventos históricos que se omitirán', 'Événements historiques à ignorer'],
   importCalendarConflicts: ['Source conflicts', 'Conflitti sorgente', 'Conflictos de origen', 'Conflits source'],
   importCalendarUnchanged: ['Dates already aligned', 'Date già allineate', 'Fechas ya coincidentes', 'Dates déjà concordantes'],
   importCalendarUpdated: ['Dates updated', 'Date aggiornate', 'Fechas actualizadas', 'Dates actualisées'],
@@ -207,19 +218,39 @@ export function mountImportAthletes({root, preview, text, esc, language}) {
 }
 
 export function mountCalendarImportRows({root, preview, text, esc, language, route, viewState}) {
-  const rows = (preview.rows || []).filter(row => row.action !== 'no_change'), pageSize = 6;
-  let page = Math.min(viewState.page || 0, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
-  const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '';
+  const allRows = preview.rows || [], pageSize = 6;
+  const different = row => row.action === 'update_dates' || (row.matched_events || []).some(event => event.name_differs || event.dates_differ);
+  const groups = [
+    ['differences', 'importCalendarDifferences', allRows.filter(different)],
+    ['new', preview.committed ? 'importCreatedEvents' : 'importCalendarNewEvents', allRows.filter(row => row.action === 'create_event')],
+    ['skipped', 'importCalendarSkippedEvents', allRows.filter(row => row.action === 'skip_unmatched_historical')],
+  ];
+  const unchanged = allRows.filter(row => row.action === 'no_change' && !different(row)).length;
+  const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '—';
+  viewState.groups ||= {};
   const render = () => {
-    viewState.page = page;
-    root.innerHTML = `<details class="admin-revision-group" data-calendar-details ${viewState.open ? 'open' : ''}><summary>${esc(text('importCalendarRows'))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => {
-      const period = [date(row.start_date), row.end_date !== row.start_date ? date(row.end_date) : ''].filter(Boolean).join(' – ');
-      const status = {update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarUnchanged', create_event: preview.committed ? 'importCalendarCreated' : 'importStatusNew', skip_unmatched_historical: 'importCalendarSkipped'}[row.action];
-      const source = [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
-      return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p>${source ? `<p class="admin-revision-meta">${esc(source)}</p>` : ''}</div><div class="admin-center-actions">${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div></article>`;
-    }).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-calendar-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-calendar-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
-    root.querySelector('[data-calendar-details]').ontoggle = event => { if (event.target.isConnected) viewState.open = event.target.open; };
-    root.querySelectorAll('[data-calendar-page]').forEach(control => control.onclick = () => { page += Number(control.dataset.calendarPage); render(); });
+    root.innerHTML = `${unchanged ? `<p class="admin-center-feedback">${esc(text('importCalendarIdenticalCount').replace('{n}', unchanged))}</p>` : ''}${groups.filter(([, , rows]) => rows.length).map(([key, label, rows]) => {
+      const state = viewState.groups[key] ||= {open: Boolean(viewState.open), page: 0};
+      const page = state.page = Math.min(state.page, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
+      return `<details class="admin-revision-group" data-calendar-group="${key}" ${state.open ? 'open' : ''}><summary>${esc(text(label))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => {
+        const period = [date(row.start_date), row.end_date !== row.start_date ? date(row.end_date) : ''].filter(Boolean).join(' – ');
+        const status = {update_dates: preview.committed ? 'importCalendarUpdated' : 'importCalendarUpdate', no_change: 'importCalendarNameOnly', create_event: preview.committed ? 'importCalendarCreated' : 'importCalendarWillCreate', skip_unmatched_historical: 'importCalendarWillSkip'}[row.action];
+        const source = [row.sheet ? `${text('importSourceSheet')} ${row.sheet}` : '', row.row ? `${text('importSourceRow')} ${row.row}` : ''].filter(Boolean).join(' · ');
+        const matches = row.matched_events || [];
+        return `<article class="admin-identity-pair"><div class="admin-identity-entity"><strong>${esc(row.event_name)}</strong><p class="admin-revision-meta">${esc(period)} · ${esc(text(status || 'importStatusConflict'))}</p><p class="admin-revision-meta">${esc(source)}</p></div><div class="admin-center-actions">${matches.length ? `<button type="button" class="quiet-button outline-command-button" data-calendar-compare aria-expanded="false">${esc(text('importCompare'))}</button>` : ''}${(row.matched_event_ids || []).map(id => `<a class="quiet-button outline-command-button" href="#/events/${id}?from=admin&return_to=${encodeURIComponent(route)}">Leverage ID ${id}</a>`).join('')}</div>${matches.length ? `<div data-calendar-comparison hidden>${matches.map(event => `<div class="admin-import-identity-table" role="table"><div role="row"><span></span><strong>${esc(text('importFile'))}</strong><strong>LEVERAGE · ID ${esc(event.event_id)}</strong></div>${[['importCalendarEventName', row.event_name, event.name], ['importCalendarStart', row.start_date, event.start_date], ['importCalendarEnd', row.end_date, event.end_date]].map(([field, incoming, saved], index) => `<div role="row" class="${incoming !== saved ? 'is-different' : ''}"><span>${esc(text(field))}</span><span>${esc(index ? date(incoming) : incoming)}</span><span>${esc(index ? date(saved) : saved)}</span></div>`).join('')}</div>`).join('')}<p class="admin-stats-note">${esc(text('importCalendarNamePreserved'))}</p></div>` : ''}</article>`;
+      }).join('')}${rows.length > pageSize ? `<div class="admin-import-pagination"><button type="button" class="quiet-button outline-command-button" data-calendar-page="-1" ${page === 0 ? 'disabled' : ''}>${esc(text('importPreviousPage'))}</button><span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span><button type="button" class="quiet-button outline-command-button" data-calendar-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}>${esc(text('importNextPage'))}</button></div>` : ''}</details>`;
+    }).join('')}`;
+    root.querySelectorAll('[data-calendar-group]').forEach(group => {
+      const state = viewState.groups[group.dataset.calendarGroup];
+      group.ontoggle = () => { if (group.isConnected) state.open = group.open; };
+      group.querySelectorAll('[data-calendar-page]').forEach(control => control.onclick = () => { state.page += Number(control.dataset.calendarPage); render(); });
+    });
+    root.querySelectorAll('[data-calendar-compare]').forEach(control => control.onclick = () => {
+      const panel = control.closest('article').querySelector('[data-calendar-comparison]');
+      panel.hidden = !panel.hidden;
+      control.setAttribute('aria-expanded', String(!panel.hidden));
+      control.classList.toggle('is-active', !panel.hidden);
+    });
   };
   render();
 }

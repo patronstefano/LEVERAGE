@@ -7471,3 +7471,4 @@ a:focus-visible > .entity-card-clickable {
 .admin-import-identity-table [role="row"] { display: grid; grid-template-columns: minmax(70px, .6fr) repeat(2, minmax(0, 1fr)); gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(25, 23, 71, .1); }
 .admin-import-identity-table span, .admin-import-identity-table strong { overflow-wrap: anywhere; min-width: 0; }
 .admin-import-identity-table .is-different { color: var(--brand, #191747); font-weight: 600; }
+#adminImportOutput [data-calendar-comparison] { grid-column: 1 / -1; min-width: 0; }

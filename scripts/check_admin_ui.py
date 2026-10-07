@@ -46,7 +46,9 @@ def main():
         'duplicate_source_rows': [], 'matched_event_source_conflicts': [], 'issues': [],
         'rows': [{'event_name': f'Calendar Cup {i + 1}', 'start_date': f'2026-01-{i + 1:02d}',
             'end_date': f'2026-01-{i + 2:02d}', 'action': 'update_dates' if i == 0 else 'create_event',
-            'matched_event_ids': [1] if i == 0 else []} for i in range(8)]}
+            'matched_event_ids': [1] if i == 0 else [],
+            'matched_events': [{'event_id': 1, 'name': 'Calendar Cup One', 'start_date': '2026-01-03',
+                'end_date': '2026-01-04', 'name_differs': True, 'dates_differ': True}] if i == 0 else []} for i in range(8)]}
     event_days = [None]
     full_classification_size = [0]
     exports = []
@@ -1398,7 +1400,12 @@ def main():
                 page.locator('#adminImportChangeFile').click()
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['8', '1', '1', '7', '0', '0']
                 assert page.locator('#adminCommitImport').is_enabled()
-                page.locator('[data-calendar-details] > summary').click()
+                page.locator('[data-calendar-group=differences] > summary').click()
+                page.locator('[data-calendar-compare]').click()
+                assert page.locator('[data-calendar-comparison]').is_visible()
+                assert page.locator('[data-calendar-comparison] .is-different').count() == 3
+                assert 'Calendar Cup One' in page.locator('[data-calendar-comparison]').inner_text()
+                page.locator('[data-calendar-group=new] > summary').click()
                 calendar_scope = page.locator('[name=existing_event_scope]').locator('..')
                 calendar_scope.locator('summary').click()
                 calendar_scope.locator('[data-admin-select-value=skip]').click()
@@ -1412,11 +1419,11 @@ def main():
                 calendar_scope.locator('[data-admin-select-value=include]').click()
                 page.wait_for_function("document.querySelector('[name=existing_event_scope]')?.value === 'include' && document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                 assert 'skip_existing_events=false' in writes[-1]['url']
-                assert page.locator('#adminCalendarRows article').count() == 6
+                assert page.locator('#adminCalendarRows article').count() == 7
                 assert 'Date da aggiornare' in page.locator('#adminCalendarRows article').first.inner_text()
                 page.locator('[data-calendar-page="1"]').click()
                 assert page.locator('#adminCalendarRows article').count() == 2
-                assert 'Calendar Cup 7' in page.locator('#adminCalendarRows').inner_text()
+                assert 'Calendar Cup 8' in page.locator('#adminCalendarRows').inner_text()
                 # Stress long event names, filenames and several event links without changing fixtures.
                 page.locator('[data-calendar-page="-1"]').click()
                 page.locator('#adminCalendarRows article strong').first.evaluate("el => el.textContent += ' - International Artistic Gymnastics Championships Junior and Senior MAG and WAG'")
@@ -1499,7 +1506,7 @@ def main():
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['0', '7', '0', '1']
                 assert 'year=2026' in writes[-1]['url']
-                page.locator('[data-calendar-details] > summary').click()
+                page.locator('[data-calendar-group=new] > summary').click()
                 assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
                 assert 'Gara creata' in page.locator('#adminCalendarRows article').nth(1).inner_text()
         page.evaluate("location.hash = '/admin/review'")

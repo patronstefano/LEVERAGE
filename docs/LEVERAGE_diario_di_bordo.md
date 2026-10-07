@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Confronto calendario File e LEVERAGE
+
+- L'anteprima espone nome, data inizio e data fine gia salvati per ogni evento associato, anche nelle associazioni multiple. Confronto affiancato con il file e differenze evidenziate, senza modificare la logica di matching o i dati durante la preview.
+- Separati eventi presenti con differenze, nuovi eventi da creare ed eventi storici non associati da tralasciare. Gli eventi identici sono riassunti senza liste inutili. La dicitura generica Voci calendario diventa Eventi nel file.
+- Esplicitata la semantica: il calendario aggiorna le date, non rinomina le entita gia salvate. Nomi diversi con date uguali restano visibili nel confronto ma non producono aggiornamenti. L'esclusione degli eventi gia presenti continua a impedire qualsiasi aggiornamento delle loro date.
+- Verifiche API e browser sul confronto, comprese date mancanti, nomi diversi e associazioni multiple; nessuna importazione sul database reale.
+
 ## 2026-10-07 - Revisione nazionalita e confronto identita import
 
 - Aggiunti comandi per correggere la nazionalita della riga importata usando quella gia registrata, oppure tralasciare la riga. La scelta comprende i punteggi della riga e i D Score collegati; resta in bozza fino al ricalcolo e non cambia lo storico country nel DB.

@@ -1,4 +1,4 @@
-import { automaticImportIssueCode } from './admin-import-report.js?v=import-country-review-20261007';
+import { automaticImportIssueCode } from './admin-import-report.js?v=calendar-comparison-20261007';
 
 export function cleanSourceScoreDisplay(value) {
   if (value == null || String(value).trim() === '') return value;
