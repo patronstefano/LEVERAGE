@@ -1589,6 +1589,10 @@ def main():
                 assert len(writes) == pending_requests
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('[data-source-exclude-all]').count() == 0
+                assert page.locator('[data-source-group] .admin-revision-count').inner_text() == '0'
+                assert page.locator('[data-source-index]').count() == 0
+                assert not page.locator('[data-source-group]').evaluate('el => el.open')
+                assert page.locator('[data-import-empty=results]').inner_text() == 'Nessun punteggio da verificare.'
                 page.locator('#adminReviewPreview').click()
                 page.locator('dialog[open] .is-complete').wait_for(state='attached')
                 assert 'Ricalcola anteprima' in page.locator('dialog[open] h2').inner_text()

@@ -4,7 +4,7 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=independent-review-scopes-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=exclude-all-score-rows-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
 import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, pendingImportReviews, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-profiles-20261007';
 

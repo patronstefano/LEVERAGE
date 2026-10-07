@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Esclusione collettiva dei punteggi da verificare
+
+Corretto Tralascia tutte le righe: la scelta riguarda tutte le righe elencate nella revisione punteggi, incluse quelle collegate, non solamente le righe con conflitti o errori bloccanti. Le righe escluse scompaiono subito, il contatore e la paginazione riflettono le righe residue e il gruppo viene chiuso dopo l'esclusione collettiva. Quando non resta nulla compare Nessun punteggio da verificare. Decisioni conservate per il ricalcolo manuale, senza importazione automatica o modifica ai risultati salvati. Aggiornato il test UI del comando.
+
 ## 2026-10-07 - Ripristino anteprima import e concorrenza SQLite
 
 Individuati errori HTTP 500 sulle anteprime Results causati da database is locked, mentre il processo API era attivo. Configurate le connessioni SQLite con journal WAL e busy timeout di 30 secondi per consentire letture durante scritture concorrenti. Database in memoria invariati; foreign keys mantenute. Riavviata la preview backend. Test di lettura durante transazione di scrittura e test reminder: 3 superati. Prova autenticata DEMO sull'anteprima del file locale Results 2026.xlsx: HTTP 200 con CORS corretto, 66016 righe analizzate. Nessuna conferma importazione eseguita. I backup a database attivo devono usare l'API SQLite backup, non la sola copia del file .db, poiche WAL puo contenere scritture gia confermate.
