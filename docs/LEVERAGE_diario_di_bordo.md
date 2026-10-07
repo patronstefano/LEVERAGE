@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Coerenza dei confronti di revisione import
+
+- Uniformati i confronti Atleti ed Eventi dell'import, comprese nazionalita e calendario, alla struttura a due colonne della Revisione Duplicati: stesse classi per identita, metadati, elenco dettagli e spaziatura.
+- Eliminata la tabella dedicata introdotta nella revisione import. Nome e campi differenti restano evidenziati, senza blocchi annidati; decisioni e semantica di importazione non cambiano.
+- Aggiunto controllo browser sui valori CSS effettivi di font, dimensione, peso, metadati e distanze, confrontati con la Revisione Duplicati.
+
 ## 2026-10-07 - Confronto calendario File e LEVERAGE
 
 - L'anteprima espone nome, data inizio e data fine gia salvati per ogni evento associato, anche nelle associazioni multiple. Confronto affiancato con il file e differenze evidenziate, senza modificare la logica di matching o i dati durante la preview.

@@ -54,6 +54,14 @@ def main():
     exports = []
     export_error = [False]
     dismissed_scan_jobs = set()
+    import_comparison_styles = []
+    duplicate_comparison_style = None
+    comparison_style = """el => {
+        const name = getComputedStyle(el.querySelector('.admin-identity-entity strong'));
+        const meta = getComputedStyle(el.querySelector('.admin-revision-meta'));
+        const grid = getComputedStyle(el);
+        return [name.fontFamily, name.fontSize, name.fontWeight, meta.fontSize, meta.color, grid.columnGap, grid.rowGap];
+    }"""
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1440, "height": 1000})
@@ -887,6 +895,7 @@ def main():
                 assert page.locator('#adminEntityReviews .admin-review-compatibility').bounding_box()['x'] < page.locator('[data-pair-compare]').bounding_box()['x']
                 page.locator('[data-pair-compare]').click()
                 page.locator('.admin-pair-warning').wait_for()
+                duplicate_comparison_style = page.locator('[data-pair-details] > .admin-identity-pair-grid').evaluate(comparison_style)
                 assert 'Nomi simili' in page.locator('[data-pair-details]').inner_text()
                 compare = page.locator('[data-pair-compare]')
                 assert compare.get_attribute('aria-expanded') == 'true'
@@ -1403,7 +1412,8 @@ def main():
                 page.locator('[data-calendar-group=differences] > summary').click()
                 page.locator('[data-calendar-compare]').click()
                 assert page.locator('[data-calendar-comparison]').is_visible()
-                assert page.locator('[data-calendar-comparison] .is-different').count() == 3
+                import_comparison_styles.append(page.locator('[data-calendar-comparison] > .admin-identity-pair-grid').evaluate(comparison_style))
+                assert page.locator('[data-calendar-comparison] .is-different').count() == 6
                 assert 'Calendar Cup One' in page.locator('[data-calendar-comparison]').inner_text()
                 page.locator('[data-calendar-group=new] > summary').click()
                 calendar_scope = page.locator('[name=existing_event_scope]').locator('..')
@@ -1598,6 +1608,10 @@ def main():
         assert page.locator('.auth-required-actions a').get_attribute('href') == '#/login'
         assert page.locator('#authLink').get_attribute('href') == '#/account'
         assert not errors, errors
+        assert duplicate_comparison_style is not None
+        assert import_comparison_styles
+        for style in import_comparison_styles:
+            assert style == duplicate_comparison_style, (style, duplicate_comparison_style)
         browser.close()
     print("Admin views, creation forms, desktop/mobile layout: passed")
 

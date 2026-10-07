@@ -7467,8 +7467,8 @@ a:focus-visible > .entity-card-clickable {
 .admin-score-table .admin-center-actions { flex-wrap: wrap; margin: 0; }
 .admin-score-table input[name="E_score"]::placeholder { color: #8e8e93; opacity: 1; }
 
-.admin-import-identity-table { margin: 12px 0; font-size: 14px; }
-.admin-import-identity-table [role="row"] { display: grid; grid-template-columns: minmax(70px, .6fr) repeat(2, minmax(0, 1fr)); gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(25, 23, 71, .1); }
-.admin-import-identity-table span, .admin-import-identity-table strong { overflow-wrap: anywhere; min-width: 0; }
-.admin-import-identity-table .is-different { color: var(--brand, #191747); font-weight: 600; }
 #adminImportOutput [data-calendar-comparison] { grid-column: 1 / -1; min-width: 0; }
+#adminImportOutput .admin-import-identity-comparison { margin: 18px 0; gap: 18px 24px; }
+#adminImportOutput .admin-import-identity-comparison .admin-identity-entity > strong { font-size: 15px; font-weight: 700; }
+#adminImportOutput .admin-import-identity-comparison .admin-revision-meta { font-size: 13px; }
+#adminImportOutput .admin-import-identity-comparison .admin-pair-events .is-different span { color: var(--brand-blue); font-weight: 600; }
