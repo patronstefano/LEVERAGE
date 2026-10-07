@@ -889,7 +889,7 @@ def main():
             if tab == "review":
                 assert page.locator('[data-admin-tab="review"]').inner_text() == 'Revisione Duplicati'
                 assert page.locator('#adminWorldGymnasticsScan').count() == 0
-                assert page.locator('.admin-revisions > .admin-tool-block').count() == 2
+                assert page.locator('.admin-revisions > .admin-tool-block').count() == 1
                 page.locator('#adminEntityReviews .admin-identity-pair').wait_for()
                 first_pair = page.locator('[data-pair-recap]').bounding_box()
                 review_toggle = page.locator('.admin-review-toggle').bounding_box()
@@ -929,16 +929,12 @@ def main():
                 page.locator('[data-review-entity="event"]').click()
                 page.locator('#adminEntityReviews[data-review-kind="event"] .admin-identity-pair').wait_for()
                 assert page.locator('#adminEntityReviews h2').count() == 0
-                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi', 'Risultati']
-                page.locator('[data-review-entity="result"]').click()
-                assert page.locator('#adminResultReviews').is_visible()
-                assert page.locator('[data-result-recap] dd').all_text_contents() == ['0', '0']
-                assert page.locator('[data-result-recap]').evaluate('el => getComputedStyle(el).borderBottomWidth') == '1px'
-                assert page.locator('#adminResultReviews h2').count() == 0
-                assert page.locator('#adminEntityReviews').is_hidden()
+                assert page.locator('[data-review-entity]').all_text_contents() == ['Atleti', 'Eventi']
+                assert page.locator('#adminResultReviews, [data-review-entity="result"]').count() == 0
+                assert page.locator('#adminEntityReviews').is_visible()
                 page.wait_for_timeout(700)
                 thumb = page.locator('.admin-review-toggle .segmented-thumb').bounding_box()
-                selected = page.locator('[data-review-entity="result"]').bounding_box()
+                selected = page.locator('[data-review-entity="event"]').bounding_box()
                 assert abs(thumb['x'] - selected['x']) < 1
                 assert abs(thumb['width'] - selected['width']) < 1
                 page.screenshot(path='/tmp/leverage-result-reviews.png', full_page=True)

@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Revisione Duplicati limitata alle entita
+
+Rimossa la sottosezione Risultati da Revisione Duplicati nel Centro Admin, inclusa la richiesta API dei gruppi di risultati duplicati. Lo slider mantiene esclusivamente Atleti ed Eventi, con thumb e dimensioni aggiornati a due opzioni. Nessun risultato eliminato, nessuna modifica all'Editor Risultati o alle verifiche nell'importazione. Aggiornato il test browser sulla presenza delle due sole opzioni e sull'allineamento dello slider.
+
 ## 2026-10-07 - Azzeramento visivo della revisione nazionalita tralasciata
 
 Il comando collettivo conservava correttamente le decisioni nella bozza, ma ricostruiva la UI dai casi originali. Ora i casi rinviati e le righe escluse non vengono piu elencati nella revisione nazionalita: contatore zero, gruppo chiuso e nessuna paginazione residua. Il contatore della sezione Atleti usa le verifiche effettivamente pendenti. Le decisioni restano conservate per il ricalcolo manuale, senza interferire con la revisione identita. Test browser esteso al rinvio collettivo di sette casi e righe sorgente collegate.
