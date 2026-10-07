@@ -6472,6 +6472,32 @@ def test_calendar_import_commit_blocks_conflicting_sources_matching_same_event()
     assert len(commit_response.json()["detail"]["matched_event_source_conflicts"]) == 1
 
 
+@pytest.mark.parametrize('calendar_only', [False, True])
+@pytest.mark.parametrize('name', ['Top 12 Series 2', '2nd Bundesliga'])
+def test_calendar_preview_does_not_review_equivalent_discipline_suffix(name, calendar_only):
+    client.post('/auth/register', json={'email': 'calendar_suffix@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('calendar_suffix@example.com')}"}
+    with SessionLocal() as db:
+        values = dict(name=name, year=2026, discipline=models.EventDisciplineEnum.MAG,
+                      start_date=date(2026, 4, 11), end_date=date(2026, 4, 11))
+        if calendar_only:
+            db.add(models.EventCalendarEntry(**values))
+        else:
+            db.add(models.Event(**values, category=models.EventCategoryEnum.SENIOR,
+                                level=models.LevelEnum.NATIONAL_EVENT))
+        db.commit()
+    workbook = make_calendar_workbook({2026: [('Apr 11', f'{name} (MAG)')]})
+    response = client.post('/imports/calendar/preview?year=2026', headers=headers,
+        files={'file': ('Calendar.xlsx', workbook.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')})
+    assert response.status_code == 200, response.text
+    preview = response.json()
+    assert preview['would_create_events'] == preview['would_update_events'] == 0
+    assert not preview['matched_event_source_conflicts']
+    assert preview['rows'][0]['action'] == 'no_change'
+    assert preview['rows'][0]['matched_events'][0]['name_differs'] is False
+    assert preview['rows'][0]['matched_events'][0]['dates_differ'] is False
+
+
 @pytest.mark.parametrize('word', ['MAG', 'Men', 'Mens', "Men's", 'Men’s'])
 def test_calendar_reimport_preserves_reviewed_discipline_periods(word):
     client.post('/auth/register', json={'email': 'calendar_periods@example.com', 'password': TEST_PASSWORD})

@@ -121,6 +121,19 @@ def calendar_source_name_key(value: str) -> str:
     return re.sub(r'\s+', ' ', re.sub(r'\((mag|wag|mag and wag)\)', r' \1 ', semantic)).strip()
 
 
+def calendar_names_differ(row: CalendarImportRow, event) -> bool:
+    def comparison_name(value: str) -> str:
+        value = _replace_discipline_words(value.strip().lower().replace("’", "'"))
+        value = re.sub(r'\(\s*(?:mag|wag)(?:\s*(?:and|&|/|\+)\s*(?:mag|wag))?\s*\)', ' ', value)
+        value = re.sub(r'\b(?:mag|wag)(?:\s+(?:and|&)\s+(?:mag|wag))?\b', ' ', value)
+        value = re.sub(rf'\s*(?:\({row.year}(?:\s+season)?\)|\b{row.year})\s*$', '', value)
+        return re.sub(r'\s+', ' ', value).strip()
+
+    # Discipline is checked separately: a source MAG row can belong to a mixed
+    # event without its annotation becoming a name discrepancy.
+    return not calendar_discipline_matches(row, event) or comparison_name(row.event_name) != comparison_name(event.name)
+
+
 def parse_calendar_date_label(label: str, year: int) -> tuple[date, date]:
     raw = str(label).strip()
     if not raw:
@@ -427,7 +440,7 @@ def summarize_calendar_import(
             preview['matched_events'] = [{
                 'calendar_entry_id': entry.id, 'name': entry.name,
                 'start_date': entry.start_date, 'end_date': entry.end_date,
-                'name_differs': entry.name != row.event_name,
+                'name_differs': calendar_names_differ(row, entry),
                 'dates_differ': entry.start_date != row.start_date or entry.end_date != row.end_date,
             } for entry in calendar_matches]
             preview_rows.append(preview)
@@ -542,7 +555,7 @@ def _row_preview(
             "name": event.name,
             "start_date": event.start_date,
             "end_date": event.end_date,
-            "name_differs": event.name != row.event_name,
+            "name_differs": calendar_names_differ(row, event),
             "dates_differ": event.start_date != row.start_date or event.end_date != row.end_date,
         } for event in matches],
         "match_status": match_status,

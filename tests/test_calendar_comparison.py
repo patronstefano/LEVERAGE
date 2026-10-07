@@ -2,7 +2,7 @@ from datetime import date
 from types import SimpleNamespace
 
 from app.calendar_import import CalendarImportRow, _row_preview
-from app.calendar_import import _find_existing_events, calendar_event_name_candidates, infer_event_discipline
+from app.calendar_import import _find_existing_events, calendar_event_name_candidates, infer_event_discipline, calendar_names_differ
 import pytest
 
 
@@ -58,3 +58,25 @@ def test_calendar_only_entry_uses_name_when_discipline_missing():
 def test_calendar_mens_suffix_normalized_before_removal(word):
     assert 'cup' in calendar_event_name_candidates(f'Cup ({word})', 2026)
     assert infer_event_discipline(f'Cup ({word})').value == 'MAG'
+
+
+@pytest.mark.parametrize('base', ['Top 12 Series 1', 'Top 12 Series 2', '1st Bundesliga', '2nd Bundesliga'])
+@pytest.mark.parametrize('suffix', ['(MAG)', '(Men)', '(Mens)', "(Men's)", '(Men’s)', 'MAG'])
+def test_discipline_annotation_is_not_a_calendar_name_conflict(base, suffix):
+    row = CalendarImportRow('2026', 2, 2026, 'Jan 1', f'{base} {suffix}', date(2026, 1, 1), date(2026, 1, 1))
+    for discipline in ['MAG', 'MAG and WAG']:
+        event = SimpleNamespace(id=1, name=base, discipline=discipline,
+                                start_date=row.start_date, end_date=row.end_date)
+        match = _row_preview(row, [event], 'matched', 'no_change')['matched_events'][0]
+        assert not match['name_differs'] and not match['dates_differ']
+
+
+def test_calendar_name_comparison_preserves_real_differences():
+    row = CalendarImportRow('2026', 2, 2026, 'Apr 11', '2nd Bundesliga (MAG)', date(2026, 4, 11), date(2026, 4, 11))
+    event = SimpleNamespace(id=1, name='2nd Bundesliga (2026)', discipline='MAG',
+                            start_date=date(2026, 7, 11), end_date=date(2026, 7, 11))
+    match = _row_preview(row, [event], 'matched', 'update_dates')['matched_events'][0]
+    assert not match['name_differs'] and match['dates_differ']
+    for name, discipline in [('3rd Bundesliga', 'MAG'), ('2nd Bundesliga', 'WAG'),
+                             ('2nd Bundesliga (2025)', 'MAG')]:
+        assert calendar_names_differ(row, SimpleNamespace(name=name, discipline=discipline))

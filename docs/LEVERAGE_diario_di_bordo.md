@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Confronto nomi calendario coerente con la disciplina
+
+Riprodotta in sola lettura la falsa incongruenza su Top 12 Series 1/2/4 (MAG): l'associazione era corretta e le date identiche, ma name_differs confrontava ancora letteralmente il nome del file con quello dell'evento. Il confronto ignora ora le annotazioni di disciplina MAG/WAG e Men/Mens/Men's, oltre al suffisso dello stesso anno, mantenendo separata la compatibilita della disciplina. Una riga MAG puo appartenere a un evento MAG e WAG senza diventare una differenza anagrafica. Applicato anche alle voci calendario senza risultati. Conservati nomi originali, numeri di tappa, anni diversi, incompatibilita MAG/WAG e differenze effettive di date.
+
+Verifica sul Calendar.xlsx 2026 della repo: Top 12 e Bundesliga con suffisso MAG non richiedono piu revisione solo per quel suffisso. Resta il conflitto temporale di 2nd Bundesliga tra 11 aprile e 11 luglio, non coperto da un'associazione calendario gia verificata per luglio: non e stato nascosto ne corretto automaticamente. Nessuna modifica al database reale o ai file sorgente. Test unitari delle varianti e test API sia su Event sia su voci calendario senza risultati.
+
 ## 2026-10-07 - Rimozione messaggio eventi calendario identici
 
 Eliminato dall'anteprima calendario il messaggio numerico N eventi del file gia identici a LEVERAGE: nessuna modifica, in tutte le lingue. Rimossi anche il conteggio locale dedicato e la relativa traduzione inutilizzata. Invariati riconoscimento degli eventi esistenti, decisioni, contatori generali e messaggi di assenza di nuove gare o revisioni. Aggiunto controllo UI di non regressione sul calendario senza modifiche.
