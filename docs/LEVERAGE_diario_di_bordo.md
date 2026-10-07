@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Confronto atleti essenziale nell'import
+
+Ridotto il confronto aperto nella Revisione Atleti a nome, nazionalita nel file e nazionalita gia in LEVERAGE. I country delle varianti vengono aggregati e deduplicati: nessun blocco ripetuto per ciascuna variante, nessuna disciplina o campo vuoto derivante da payload parziali. Invariati i comandi decisionali. Test UI con country principale assente e varianti multiple, incluse ripetizioni.
+
 ## 2026-10-07 - Comandi semplificati per la revisione nazionalita
 
 - Due selettori esclusivi con sole nazionalita in esame: Aggiorna storico nazionalita e Correggi nazionalita registrata. Aggiunto Tralascia revisione, che usa il rinvio gia previsto dal backend; eliminate da questi casi le opzioni tecniche e la ricerca manuale di un target.

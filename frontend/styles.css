@@ -7472,3 +7472,6 @@ a:focus-visible > .entity-card-clickable {
 #adminImportOutput .admin-import-identity-comparison .admin-identity-entity > strong { font-size: 15px; font-weight: 700; }
 #adminImportOutput .admin-import-identity-comparison .admin-revision-meta { font-size: 13px; }
 #adminImportOutput .admin-import-identity-comparison .admin-pair-events .is-different span { color: var(--brand-blue); font-weight: 600; }
+#adminImportOutput .admin-import-athlete-comparison { margin: 12px 0; }
+#adminImportOutput .admin-import-athlete-comparison .admin-activity-row-details { margin-top: 8px; }
+#adminImportOutput .admin-import-athlete-comparison dd { color: var(--text); font-weight: 600; }

@@ -1,4 +1,6 @@
 export const IMPORT_COPY = {
+  importFileCountries: ['Nationality in the file', 'Nazionalità nel file', 'Nacionalidad en el archivo', 'Nationalité dans le fichier'],
+  importSavedCountries: ['Nationality in LEVERAGE', 'Nazionalità già in LEVERAGE', 'Nacionalidad en LEVERAGE', 'Nationalité dans LEVERAGE'],
   importCountryHistoryAction: ['Update nationality history', 'Aggiorna storico nazionalità', 'Actualizar historial de nacionalidad', 'Actualiser l’historique des nationalités'],
   importCountryCorrectionAction: ['Correct registered nationality', 'Correggi nazionalità registrata', 'Corregir nacionalidad registrada', 'Corriger la nationalité enregistrée'],
   importCountryDeferAction: ['Defer review', 'Tralascia revisione', 'Aplazar revisión', 'Reporter la vérification'],
@@ -228,6 +230,13 @@ export function mountImportAthletes({root, preview, text, esc, language}) {
 export function renderImportIdentityComparison({leftName, rightName, rightId, rightLabel, fields, text, esc}) {
   const side = (name, index, label) => `<div><div class="admin-identity-entity"><strong>${esc(name || '—')}</strong><p class="admin-revision-meta">${esc(label)}${index && rightId ? ` · ID ${esc(rightId)}` : ''}</p></div><ul class="admin-pair-events">${fields.map(([key, left, right]) => `<li class="${String(left ?? '') !== String(right ?? '') ? 'is-different' : ''}">${esc(text(key))}<span>${esc((index ? right : left) ?? '—')}</span></li>`).join('')}</ul></div>`;
   return `<div class="admin-identity-pair-grid admin-import-identity-comparison">${side(leftName, 0, text('importFile'))}${side(rightName, 1, rightLabel || text('importDatabase'))}</div>`;
+}
+
+export function renderAthleteImportComparison({item, name, text, esc}) {
+  const countries = values => [...new Set(values.filter(Boolean))].join(' · ') || '—';
+  const sourceCountries = countries([item.imported_athlete?.country, ...(item.country_variants || []).map(variant => variant.country)]);
+  const savedCountries = countries([item.existing_athlete?.country, ...(item.suggestions || []).map(suggestion => suggestion.target_athlete?.country)]);
+  return `<div class="admin-import-athlete-comparison"><div class="admin-identity-entity"><strong>${esc(name)}</strong></div><dl class="admin-activity-row-details"><div><dt>${esc(text('importFileCountries'))}</dt><dd>${esc(sourceCountries)}</dd></div><div><dt>${esc(text('importSavedCountries'))}</dt><dd>${esc(savedCountries)}</dd></div></dl></div>`;
 }
 
 export function mountCalendarImportRows({root, preview, text, esc, language, route, viewState}) {

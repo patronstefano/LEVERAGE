@@ -1206,10 +1206,10 @@ def main():
                 preview['conflicts'] = []
                 original_athlete_reviews = preview.get('athlete_match_review', [])
                 preview['athlete_match_review'] = [{'review_id': 'country-only-review',
-                    'problem_type': 'possible_athlete_country_change',
-                    'imported_athlete': {'first_name': 'Same', 'last_name': 'Athlete', 'country': 'ESP', 'discipline': 'MAG'},
-                    'existing_athlete': {'athlete_id': 1, 'first_name': 'Same', 'last_name': 'Athlete', 'country': 'ITA', 'discipline': 'MAG'},
-                    'suggestions': []}]
+                    'problem_type': 'possible_athlete_identity_collision',
+                    'imported_athlete': {'first_name': 'Same', 'last_name': 'Athlete', 'country': None, 'discipline': 'MAG'},
+                    'country_variants': [{'country': 'ESP'}, {'country': 'ITA'}, {'country': 'ESP'}],
+                    'suggestions': [{'target_athlete': {'athlete_id': 1, 'first_name': 'Same', 'last_name': 'Athlete', 'country': 'ITA', 'discipline': 'MAG'}}]}]
                 analyze_import()
                 page.locator('[data-import-part=athletes]').click()
                 assert page.locator('[data-import-group=athlete]').count() == 0
@@ -1219,6 +1219,11 @@ def main():
                 assert country_group.locator('[data-country-review-note]').get_attribute('class') == 'admin-stats-note'
                 assert country_group.locator('[data-country-review-note]').evaluate('el => getComputedStyle(el).fontSize') == '13px'
                 country_group.locator('[data-import-review-toggle]').click()
+                compact = country_group.locator('.admin-import-athlete-comparison')
+                assert compact.locator('strong').count() == 1
+                assert compact.locator('dd').all_inner_texts() == ['ESP · ITA', 'ITA']
+                assert 'MAG' not in compact.inner_text() and '—' not in compact.inner_text()
+                assert compact.locator('details, ul').count() == 0
                 assert 'ITA' in country_group.inner_text() and 'ESP' in country_group.inner_text()
                 assert country_group.locator('[name=country_history_choice]').count() == 1
                 assert country_group.locator('[name=country_correction_choice]').count() == 1
