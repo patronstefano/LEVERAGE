@@ -127,7 +127,11 @@
 #adminImportOutput .admin-identity-pair [data-pair-details] { margin-top: 8px; }
 #adminImportOutput .admin-audit-comparison { margin: 8px 0; }
 #adminImportOutput .admin-import-actions { justify-content: flex-end; gap: 8px; margin-top: 16px; }
-#adminImportOutput .admin-import-safety { margin-top: 10px; }
+#adminImportOutput [data-import-status] { width: fit-content; max-width: 100%; box-sizing: border-box; min-height: 36px; padding: 7px 13px; margin: 10px 0 0 auto; font-size: 14px; line-height: 20px; font-weight: 400; }
+#adminImportOutput .admin-import-notes { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 12px; line-height: 1.6; }
+#adminImportOutput .admin-import-notes:empty { display: none; }
+#adminImportOutput .admin-import-notes p { margin: 0; }
+#adminImportOutput .admin-import-notes p + p { margin-top: 6px; }
 #adminImportOutput .admin-import-table-scroll { max-height: 320px; }
 #adminImportOutput .admin-import-table th, #adminImportOutput .admin-import-table td { padding-block: 7px; }
 #adminImportOutput .admin-import-historical-total { margin: 10px 0; }

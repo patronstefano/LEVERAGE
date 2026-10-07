@@ -1174,6 +1174,13 @@ def main():
                 assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['0', '0', '0', '0']
                 assert page.locator('[data-import-status]').bounding_box()['y'] > page.locator('.admin-import-actions').bounding_box()['y']
+                status_box = page.locator('[data-import-status]').bounding_box()
+                actions_box = page.locator('.admin-import-actions').bounding_box()
+                assert abs(status_box['x'] + status_box['width'] - actions_box['x'] - actions_box['width']) < 2
+                assert status_box['height'] == 36
+                assert page.locator('.admin-import-notes').bounding_box()['y'] >= status_box['y'] + status_box['height']
+                assert 'I conteggi riguardano' in page.locator('.admin-import-notes').inner_text()
+                assert 'I punteggi già salvati' in page.locator('.admin-import-notes').inner_text()
                 assert 'Past Cup' not in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-import-historical] > summary').click()

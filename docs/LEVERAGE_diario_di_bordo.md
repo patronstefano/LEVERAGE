@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Footer informativo delle anteprime import
+
+- Messaggio di stato compatto (14px, altezza minima 36px), larghezza adattata
+  al contenuto e allineamento a destra sotto Ricalcola/Conferma, dentro il box.
+- Note generali su conteggi, identita, duplicati e salvaguardia dei punteggi
+  raccolte in fondo all'anteprima, separate da una linea leggera. Anche la nota
+  di esclusione eventi del calendario segue questa posizione.
+- Avvisi specifici e decisioni pendenti restano nel proprio contesto operativo.
+  Nessuna modifica alle regole di importazione o ai dati.
+
 ## 2026-10-07 - Liste di revisione eventi mirate
 
 - Regola generale richiesta: dettagli concentrati su cio che richiede controllo;

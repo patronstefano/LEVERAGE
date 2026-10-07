@@ -984,7 +984,6 @@ export async function renderAdminCenter(host) {
       </div>
       <div id="adminImportScopeStatus" hidden></div>
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
-      ${draft.kind === 'calendar' && p.skip_existing_events && !p.committed ? `<p class="admin-stats-note">${esc(text('importCalendarSkipNote'))}</p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
       ${!p.committed && !selectedParams.defer_duplicate_reviews && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
@@ -993,8 +992,9 @@ export async function renderAdminCenter(host) {
       ${p.issues?.length ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
-      ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>${draft.kind === 'gymternet' ? `<p class="admin-stats-note admin-import-safety">${esc(text('importReadOnly'))}</p>` : ''} ` : ''}
+      ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>` : ''}
       ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" data-import-status role="status">${esc(importStatus)}</p>` : ''}
+      ${!p.committed ? `<footer class="admin-import-notes admin-stats-note">${draft.kind === 'gymternet' ? `<p>${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p><p>${esc(text('importReadOnly'))}</p>` : p.skip_existing_events ? `<p>${esc(text('importCalendarSkipNote'))}</p>` : ''}</footer>` : ''}
     `;
     if (draft.kind === 'gymternet' && !p.committed) {
       const reviewParts = [
@@ -1033,7 +1033,10 @@ export async function renderAdminCenter(host) {
         const node = output.querySelector(selector);
         if (node) sections.results.append(node);
       }
-      nav.insertAdjacentHTML('beforebegin', `<p class="admin-stats-note admin-import-scope-note">${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p>`);
+      const notes = output.querySelector('.admin-import-notes');
+      if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
+      notes.insertAdjacentHTML('beforeend', `<p>${esc(text(selectedParams.defer_duplicate_reviews ? 'importDeferredNote' : 'importDuplicateNote'))}</p>`);
+      output.querySelectorAll('[data-import-group] > .admin-stats-note, .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
       const choosePart = key => {
         draft.reviewPart = key;
         for (const [name, section] of Object.entries(sections)) section.hidden = name !== key;
