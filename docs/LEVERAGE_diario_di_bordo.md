@@ -1,5 +1,22 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Precisione numerica e arrotondamenti VT AVG
+
+- Normalizzazione import a tre decimali con Decimal/ROUND_HALF_UP; sottrazioni
+  VT SUM e inversione VT AVG eseguite in aritmetica decimale. Eliminati residui
+  binari come 4.0999999999999996 anche nella visualizzazione dei campi sorgente,
+  senza cambiare file, fingerprint o valori inseriti intenzionalmente.
+- Confronti ordinari deterministici alla precisione del millesimo. Solo per
+  VT 2 derivato, riconoscibile dal flag vault_attempt_order_uncertain, tollerato
+  uno scarto massimo di 0.001 dovuto all'inversione della media arrotondata.
+  Non estesa a VT 1, ad altri attrezzi o a differenze maggiori; D e country
+  continuano a essere confrontati. Un duplicato non sovrascrive il DB.
+- VT 2 derivato tra -0.001 e 0 viene tralasciato automaticamente, non trasformato
+  in uno zero inventato: warning cumulativo Correzioni ed esclusioni automatiche.
+  Restano errori bloccanti valori piu negativi o sopra 20, come 21.95 e 24.5.
+- Nessuna correzione massiva del DB reale. Regola documentata e coperta da test
+  di precisione, limiti e reimportazione senza sovrascrittura.
+
 ## 2026-10-07 - Uniformita messaggi di revisione vuota
 
 - Rimosso il messaggio ridondante N gare gia in LEVERAGE.

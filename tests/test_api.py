@@ -9419,6 +9419,49 @@ def test_gymternet_parser_skips_dscore_that_creates_invalid_execution_estimate()
     assert any(issue.get('code') == 'gymternet_dscore_discarded' and issue['severity'] == 'warning' for issue in issues)
 
 
+def test_gymternet_decimal_precision_and_derived_vault_tolerance():
+    from types import SimpleNamespace
+    from app.gymternet_import import normalize_optional_score, score_equal, final_score_equal, validate_derived_gymternet_score_value
+    assert normalize_optional_score('4.0999999999999996') == 4.1
+    assert normalize_optional_score('13.1325') == 13.133
+    assert normalize_optional_score('Infinity') is None
+    assert score_equal(4.0999999999999996, 4.1)
+    assert not score_equal(13.132, 13.133)
+    record = SimpleNamespace(apparatus='VT', vt_attempt=2, vault_attempt_order_uncertain=True, score=13.132)
+    assert final_score_equal(record, 13.133)
+    assert not final_score_equal(record, 13.134)
+    record.vt_attempt = 1
+    assert not final_score_equal(record, 13.133)
+    for score in [-0.001, -0.002, 20.001, 24.5]:
+        issues = []
+        assert validate_derived_gymternet_score_value(score, 'final', 'VT', issues, 'MAG', 2, 'fixture') is None
+        assert issues[0]['severity'] == ('warning' if score == -0.001 else 'error')
+
+
+def test_gymternet_derived_vault_rounding_reimport_does_not_overwrite(monkeypatch):
+    client.post('/auth/register', json={'email': 'vault_precision@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('vault_precision@example.com')}"}
+    monkeypatch.setattr('app.gymternet_import.read_xlsx_workbook', lambda content: {
+        'MAG': [{'Athlete': 'Precision Athlete', 'Country': 'Italy', 'Event': 'Precision Cup 2026 EF', 'VT': 13.333, 'VT AVG': 13.2}],
+    })
+    files = {'file': ('Results.xlsx', b'fixture', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+    first = client.post('/imports/gymternet/commit?year_hint=2026', files=files, headers=headers)
+    assert first.status_code == 200, first.text
+    with SessionLocal() as db:
+        result = db.query(models.Result).filter(models.Result.apparatus == 'VT', models.Result.vt_attempt == 2).one()
+        assert result.score == 13.067
+        result.score = 13.068
+        result_id = result.id
+        db.commit()
+    preview = client.post('/imports/gymternet/preview?year_hint=2026', files=files, headers=headers).json()
+    assert preview['conflicts'] == [] and preview['importable_results'] == 0
+    repeated = client.post('/imports/gymternet/commit?year_hint=2026', files=files, headers=headers)
+    assert repeated.status_code == 200, repeated.text
+    assert repeated.json()['created_results'] == 0
+    with SessionLocal() as db:
+        assert db.get(models.Result, result_id).score == 13.068
+
+
 def test_gymternet_identity_warnings_have_entity_scope():
     from app.gymternet_import import normalize_country, review_import_events
     issues = []
@@ -10542,10 +10585,10 @@ def test_gymternet_pivot_vault_skips_derived_attempt_two_score_outlier(vt, avera
     assert any(record.apparatus == "VT" and record.vt_attempt == 1 and record.score == vt for record in records)
     assert any(record.apparatus == "VT AVG" and record.score == average for record in records)
     assert not any(record.apparatus == "VT" and record.vt_attempt == 2 for record in records)
-    issue = next(issue for issue in issues if issue.get('code') == 'derived_vt_outlier')
+    issue = next(issue for issue in issues if issue.get('code') == ('gymternet_vt_rounding_excluded' if rounding else 'derived_vt_outlier'))
     assert issue['original_score'] == derived
     assert issue['possible_rounding'] is rounding
-    assert issue['severity'] == 'error'
+    assert issue['severity'] == ('warning' if rounding else 'error')
     assert issue['first_name'] == 'Vault'
     assert issue['last_name'] == 'Person'
     assert issue['source_vt'] == vt

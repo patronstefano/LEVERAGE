@@ -1,4 +1,5 @@
 export const IMPORT_COPY = {
+  gymternet_vt_rounding_excluded: ['Derived VT scores omitted because the rounded average produces a value between −0.001 and 0: {n}. The original vault and average are retained; no zero score is invented.', 'Punteggi VT derivati tralasciati perché la media arrotondata produce un valore tra −0,001 e 0: {n}. Il salto originale e la media sono mantenuti, senza inventare uno zero.', 'Puntuaciones VT derivadas omitidas porque la media redondeada produce un valor entre −0,001 y 0: {n}. Se conservan el salto original y la media, sin inventar un cero.', 'Scores VT dérivés omis car la moyenne arrondie produit une valeur entre −0,001 et 0 : {n}. Le saut original et la moyenne sont conservés, sans inventer un zéro.'],
   importAutomaticProcessing: ['Automatic corrections and exclusions', 'Correzioni ed esclusioni automatiche', 'Correcciones y exclusiones automáticas', 'Corrections et exclusions automatiques'],
   importAutomaticNote: ['These actions have already been applied to the preview. The source file and saved data are unchanged. Other unresolved issues still require review.', 'Questi interventi sono già applicati all’anteprima. Il file originale e i dati salvati non sono stati modificati. Eventuali altri problemi restano da verificare.', 'Estas acciones ya se aplicaron a la vista previa. El archivo original y los datos guardados no cambiaron. Los demás problemas siguen pendientes.', 'Ces actions sont déjà appliquées à l’aperçu. Le fichier original et les données enregistrées restent inchangés. Les autres problèmes restent à vérifier.'],
   gymternet_score_corrected: ['Score corrections for apparent decimal-scale errors: {n}.', 'Correzioni di punteggi per apparenti errori di scala decimale: {n}.', 'Correcciones de puntuación por aparentes errores de escala decimal: {n}.', 'Corrections de scores pour erreurs apparentes d’échelle décimale : {n}.'],
@@ -149,7 +150,7 @@ export function importIssueScope(issue) {
 
 export function automaticImportIssueCode(issue) {
   if (issue.severity !== 'warning') return null;
-  if (['gymternet_score_corrected', 'gymternet_dscore_discarded'].includes(issue.code)) return issue.code;
+  if (['gymternet_score_corrected', 'gymternet_dscore_discarded', 'gymternet_vt_rounding_excluded'].includes(issue.code)) return issue.code;
   // Support previews created before structured codes were added.
   if (issue.score_kind === 'execution_estimate' && issue.execution_estimate != null && issue.D_score != null) return 'gymternet_dscore_discarded';
   if (issue.corrected_score != null && issue.original_score != null) return 'gymternet_score_corrected';

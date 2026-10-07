@@ -1247,7 +1247,12 @@ def main():
                 assert page.locator('[data-import-empty=results]').is_visible()
                 assert page.evaluate('''async () => {
                     const {automaticImportIssueCode} = await import('./admin-import-report.js');
+                    const {cleanSourceScoreDisplay} = await import('./admin-import-resolution.js');
                     return automaticImportIssueCode({severity: 'error', code: 'derived_vt_outlier'}) === null
+                        && automaticImportIssueCode({severity: 'warning', code: 'gymternet_vt_rounding_excluded'}) === 'gymternet_vt_rounding_excluded'
+                        && cleanSourceScoreDisplay('4.0999999999999996') === 4.1
+                        && cleanSourceScoreDisplay('13.1234') === '13.1234'
+                        && cleanSourceScoreDisplay('') === ''
                         && automaticImportIssueCode({severity: 'error', code: 'gymternet_dscore_discarded'}) === null
                         && automaticImportIssueCode({severity: 'warning', score_kind: 'execution_estimate', execution_estimate: -2, D_score: 4}) === 'gymternet_dscore_discarded';
                 }''')

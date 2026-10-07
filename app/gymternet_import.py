@@ -9,6 +9,7 @@ import re
 import unicodedata
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field, replace
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from difflib import SequenceMatcher
 from io import BytesIO, StringIO
 from pathlib import Path
@@ -800,7 +801,7 @@ def parse_pivot_rows(
             )
             if derive_vt2_final_score and vt_score is not None and score_kind == "final":
                 derived_vt2_score = validate_derived_gymternet_score_value(
-                    round(vt_avg * 2 - vt_score, 3),
+                    float(Decimal(str(vt_avg)) * 2 - Decimal(str(vt_score))),
                     score_kind,
                     "VT",
                     issues,
@@ -873,7 +874,7 @@ def parse_pivot_rows(
                 2,
                 base_format,
                 round_value,
-                round(vt_sum - vt_score, 3),
+                float(Decimal(str(vt_sum)) - Decimal(str(vt_score))),
                 score_kind,
                 issues,
                 day=record_day,
@@ -1218,12 +1219,12 @@ def normalize_optional_score(value) -> Optional[float]:
     if raw == "" or raw.lower() == "nan":
         return None
     try:
-        score = float(raw)
-    except ValueError:
+        score = Decimal(raw)
+    except InvalidOperation:
         return None
-    if score < 0:
+    if not score.is_finite() or score < 0:
         return None
-    return round(score, 3)
+    return float(score.quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
 
 
 def gymternet_score_upper_bound(score_kind: str, apparatus: str) -> Optional[float]:
@@ -1303,12 +1304,14 @@ def validate_derived_gymternet_score_value(
 ) -> Optional[float]:
     if score is None:
         return None
+    score = float(Decimal(str(score)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP))
     upper_bound = gymternet_score_upper_bound(score_kind, apparatus)
     if upper_bound is None or 0 <= score <= upper_bound:
         return score
+    rounding_only = score_kind == 'final' and apparatus == 'VT' and -0.001 <= score < 0
     issues.append({
-        "severity": "error",
-        "code": "derived_vt_outlier",
+        "severity": "warning" if rounding_only else "error",
+        "code": "gymternet_vt_rounding_excluded" if rounding_only else "derived_vt_outlier",
         "sheet": source,
         "row": row_number,
         "message": (
@@ -1463,7 +1466,18 @@ def score_equal(left: Optional[float], right: Optional[float]) -> bool:
         return True
     if left is None or right is None:
         return False
-    return abs(left - right) < 0.001
+    return Decimal(str(left)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP) == Decimal(str(right)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+
+
+def final_score_equal(record: ParsedGymternetResult, existing_score: Optional[float]) -> bool:
+    if score_equal(record.score, existing_score):
+        return True
+    # Inverting a three-decimal VT average can differ by one thousandth.
+    return bool(record.apparatus == 'VT' and record.vt_attempt == 2
+                and record.vault_attempt_order_uncertain
+                and record.score is not None and existing_score is not None
+                and 0 <= existing_score <= 20 and 0 <= record.score <= 20
+                and abs(Decimal(str(record.score)) - Decimal(str(existing_score))) <= Decimal('0.001'))
 
 
 def score_or_d_score_differs(
@@ -3631,7 +3645,7 @@ def summarize_records(
                 existing_in_file,
                 represented_country_overrides,
             )
-            if score_equal(existing_in_file.score, record.score) and score_equal(existing_in_file.D_score, record.D_score):
+            if final_score_equal(record, existing_in_file.score) and score_equal(existing_in_file.D_score, record.D_score):
                 if not country_equal(existing_country, record_country):
                     conflicts.append(conflict_payload(record, None, "country_conflict_in_file", existing_in_file))
                     track(record, "conflicting_results")
@@ -3652,7 +3666,7 @@ def summarize_records(
         if athlete and event:
             result = existing_results.get(result_lookup_key(athlete.id, event.id, record))
             if result:
-                if score_equal(result.score, record.score) and score_equal(result.D_score, record.D_score):
+                if final_score_equal(record, result.score) and score_equal(result.D_score, record.D_score):
                     if not country_equal(result_represented_country(result), record_country):
                         conflicts.append(conflict_payload(record, result, "country_conflict_existing"))
                         track(record, "conflicting_results")
