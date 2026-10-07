@@ -1087,7 +1087,14 @@ def main():
                     page.locator('dialog[open]').wait_for(state='detached')
                     assert len(writes) == pending_requests
                     assert 'Riprendi revisione duplicati' in page.locator(f'[data-defer-duplicates={kind}]').inner_text()
-                    page.locator('#adminReviewPreview').click()
+                    if kind == 'event':
+                        page.locator('#adminReviewPreview').click()
+                    else:
+                        assert page.locator('[data-import-empty=athletes]').inner_text() == 'Nessun atleta da verificare.'
+                        page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === false")
+                        assert len(writes) == pending_requests + 1
+                        page.wait_for_timeout(700)
+                        assert len(writes) == pending_requests + 1
                     page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
                     assert f'defer_{kind}_reviews=true' in writes[-1]['url']
                     if kind == 'event':
@@ -1123,6 +1130,19 @@ def main():
                 page.locator('[data-import-part=athletes]').click()
                 assert page.locator('#adminImportAthletes .admin-import-metrics dd').all_inner_texts() == ['1', '0', '1', '0']
                 assert page.locator('#adminImportAthletes [data-import-athlete-list]').count() == 0
+                assert page.evaluate('''async () => {
+                    const {pendingImportReviews} = await import('./admin-import-report.js');
+                    const preview = {athlete_match_review: [{review_id: 'a'}], event_match_review: [{review_id: 'e'}],
+                        conflicts: [{source_sheet: 'MAG', source_row: 1}]};
+                    const draft = {pendingParams: {defer_athlete_reviews: true}, event: {e: {action: 'defer'}},
+                        source: {'MAG:1': {action: 'edit'}}, sourceConfirmed: {}};
+                    let pending = pendingImportReviews(preview, draft);
+                    if (pending.athletes || pending.events || pending.results !== 1) return false;
+                    draft.sourceConfirmed['MAG:1'] = true;
+                    if (Object.values(pendingImportReviews(preview, draft)).some(Boolean)) return false;
+                    preview.issues = [{severity: 'error', message: 'Unlocated error'}];
+                    return pendingImportReviews(preview, draft).results === 1;
+                }''')
                 assert page.evaluate('''async () => {
                     const {mountImportAthletes, mountImportReport, importIssueScope} = await import('./admin-import-report.js');
                     const esc = value => String(value ?? '');

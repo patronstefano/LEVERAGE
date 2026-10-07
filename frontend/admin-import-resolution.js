@@ -1,4 +1,4 @@
-import { automaticImportIssueCode, renderImportIssues } from './admin-import-report.js?v=source-issue-review-20261007';
+import { automaticImportIssueCode, renderImportIssues } from './admin-import-report.js?v=completed-import-review-20261007';
 
 export function cleanSourceScoreDisplay(value) {
   if (value == null || String(value).trim() === '') return value;
@@ -58,12 +58,19 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
       article.querySelectorAll('input').forEach((input, i) => {
         input.inputMode = 'decimal';
         input.oninput = () => {
+          draft.sourceConfirmed ||= {};
+          delete draft.sourceConfirmed[keyOf(row)];
           const values = {...draft.source[keyOf(row)]?.values, [row.editable_fields[i]]: input.value};
           draft.source[keyOf(row)] = {sheet: row.sheet, row: row.row, fingerprint: row.fingerprint, action: 'edit', values};
           markChanged();
         };
       });
-      article.querySelector('[data-source-apply]').onclick = render;
+      article.querySelector('[data-source-apply]').onclick = () => {
+        draft.sourceConfirmed ||= {};
+        draft.sourceConfirmed[keyOf(row)] = true;
+        markChanged();
+        render();
+      };
       article.querySelector('[data-source-exclude]').onclick = () => confirm(text('importExcludeRowConfirm'), () => { exclude(row); markChanged(); render(); }, false, text('importSourceNote'));
       article.querySelector('[data-source-undo]')?.addEventListener('click', guard(() => { delete draft.source[keyOf(row)]; markChanged(); render(); }));
     });

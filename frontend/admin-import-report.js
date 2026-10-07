@@ -186,6 +186,31 @@ export function sourceReviewCoversIssue(issue, sourceRows = []) {
     && sourceRows.some(row => row.sheet === issue.sheet && row.row === issue.row);
 }
 
+export function pendingImportReviews(preview, draft) {
+  const params = {...draft.params, ...draft.pendingParams};
+  const counts = {events: 0, athletes: 0, results: 0};
+  for (const [kind, scope] of [['event', 'events'], ['athlete', 'athletes']]) {
+    const deferred = params[`defer_${kind}_reviews`] ?? params.defer_duplicate_reviews;
+    for (const item of preview[`${kind}_match_review`] || []) {
+      if (!deferred && !item.deferred && !draft[kind]?.[item.review_id]?.action) counts[scope]++;
+    }
+    if (!deferred) counts[scope] += Math.max(0, (preview[`${kind}_match_decision_stats`]?.unresolved || 0)
+      - (preview[`${kind}_match_review`] || []).filter(item => !item.deferred).length);
+  }
+  const resolvedSource = (sheet, row) => {
+    if (sheet == null || row == null) return false;
+    const key = `${sheet}:${row}`, decision = draft.source?.[key];
+    return decision?.action === 'exclude' || (decision?.action === 'edit' && draft.sourceConfirmed?.[key]);
+  };
+  for (const conflict of preview.conflicts || []) {
+    if (!resolvedSource(conflict.source_sheet, conflict.source_row)) counts[importIssueScope(conflict)]++;
+  }
+  for (const issue of preview.issues || []) {
+    if (issue.severity === 'error' && !resolvedSource(issue.sheet, issue.row)) counts[importIssueScope(issue)]++;
+  }
+  return counts;
+}
+
 export function automaticImportIssueCode(issue) {
   if (issue.severity !== 'warning') return null;
   if (issue.code === 'gymternet_orphan_dscores_discarded') return issue.code;

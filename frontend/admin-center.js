@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=source-issue-review-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=completed-import-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=source-issue-review-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, pendingImportReviews, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=completed-import-review-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1253,6 +1253,28 @@ export async function renderAdminCenter(host) {
       draft.needsPreview = true;
       output.querySelector('#adminImportDecisionsNotice').hidden = false;
       updateCommit();
+      updateReviewCompletion();
+    };
+    const updateReviewCompletion = () => {
+      if (draft.kind !== 'gymternet' || p.committed) return;
+      const pending = pendingImportReviews(p, draft);
+      for (const [scope, label] of [['events', 'importNoEventReviews'], ['athletes', 'importNoAthleteReviews']]) {
+        const section = output.querySelector(`#importPart_${scope}`);
+        const message = section?.querySelector(`[data-import-empty=${scope}]`);
+        if (pending[scope]) message?.remove();
+        else if (section && !message) section.insertAdjacentHTML('beforeend', `<div class="admin-center-feedback" data-import-empty="${scope}" role="status">${esc(text(label))}</div>`);
+      }
+      clearTimeout(draft.autoPreviewTimer);
+      const revision = draft.decisionRevision || 0;
+      if (draft.needsPreview && !draft.scopeBusy && !Object.values(pending).some(Boolean)
+          && draft.autoPreviewRevision !== revision) {
+        draft.autoPreviewTimer = setTimeout(guard(async () => {
+          if (!active() || !output.isConnected || session.import !== draft || draft.scopeBusy || !draft.needsPreview
+              || revision !== (draft.decisionRevision || 0)) return;
+          draft.autoPreviewRevision = revision;
+          await refreshPreview();
+        }), 500);
+      }
     };
     output.querySelector('[data-defer-all-countries]')?.addEventListener('click', () => confirm('importDeferAllCountries', () => {
       const exclusions = new Map();
@@ -1444,6 +1466,7 @@ export async function renderAdminCenter(host) {
       });
     });
 
+    updateReviewCompletion();
     document.getElementById("adminCommitImport")?.addEventListener("click", () => confirm("commit", async () => {
       const body = new FormData(); body.append("file", draft.file);
       body.append("source_row_decisions", JSON.stringify(Object.values(draft.source)));

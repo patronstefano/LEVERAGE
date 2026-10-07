@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Completamento revisioni e ricalcolo automatico Results
+
+Il messaggio Nessun atleta da verificare dipende dalle decisioni ancora pendenti, non dalla presenza del contenitore Revisione identita atleti nel DOM. Compare anche dopo rinvio globale delle revisioni duplicati e dopo completamento delle singole decisioni. Lo stesso controllo mantiene coerente lo stato vuoto degli eventi. Conteggio condiviso delle revisioni residue nelle tre sezioni, comprendendo conflitti di nazionalita, punteggi, errori bloccanti e revisioni eventualmente non incluse nella lista limitata della risposta.
+
+Quando non restano decisioni pendenti e l'anteprima ha modifiche locali, parte un solo ricalcolo automatico dopo una breve attesa. Nessuna importazione automatica: Conferma importazione rimane esplicita e subordinata alla validazione backend. Nei punteggi la digitazione non completa una revisione: occorre Fine, mentre Tralascia risolve la decisione della riga. Un ricalcolo fallito non viene ripetuto in ciclo; una nuova decisione o il comando manuale consentono di riprovare. Conservato il ricalcolo immediato al cambio del perimetro delle gare gia importate. Test UI sul rinvio globale finale, comparsa del messaggio, singola richiesta automatica e assenza di ripetizioni.
+
 ## 2026-10-07 - Colore delle correzioni automatiche nell'import
 
 I record della sezione Correzioni ed esclusioni automatiche utilizzano il colore warning condiviso della UI. Modifica limitata al testo delle voci: sfondo neutro, titolo, note e altri errori dell'import invariati.
