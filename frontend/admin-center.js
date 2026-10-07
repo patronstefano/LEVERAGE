@@ -957,7 +957,10 @@ export async function renderAdminCenter(host) {
     const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, (p.issues || []).filter(issue => !automaticImportIssueCode(issue) && importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
     const countryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
-    const importStatus = draft.kind !== 'gymternet' || issueErrors.length ? '' :
+    const calendarAlreadyImported = draft.kind === 'calendar' && !p.committed && p.parsed_rows > 0
+      && p.would_create_events === 0 && p.would_update_events === 0
+      && !p.unmatched_historical_rows && !p.duplicate_source_rows?.length && !p.matched_event_source_conflicts?.length;
+    const importStatus = issueErrors.length ? '' : calendarAlreadyImported ? text('importHistoricalOnly') : draft.kind !== 'gymternet' ? '' :
       p.skipped_existing_events?.length && p.importable_results === 0 && !p.conflicts?.length && !p.athlete_match_review?.length && !p.event_match_review?.length ? text('importHistoricalOnly') :
       p.parsed_rows === 0 ? text('importNoRows') :
       p.importable_results === 0 && p.duplicates?.length && !p.conflicts?.length ? text('importOnlyDuplicates') : '';

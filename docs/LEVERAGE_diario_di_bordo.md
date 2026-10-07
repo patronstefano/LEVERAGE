@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Messaggio calendario senza novita da importare
+
+Anche l'anteprima calendario usa Nessuna nuova gara da importare con lo stesso componente, stile e posizione dell'import risultati, a sinistra di Gare gia importate. Compare per un file analizzato non vuoto senza creazioni, aggiornamenti, righe storiche non associate o conflitti/errori da risolvere. Non viene mostrato dopo il commit o per un file vuoto. Verifica browser della condizione e della posizione.
+
 ## 2026-10-07 - Annullamento eliminazione da Audit e Ripristino
 
 Completata l'integrazione mancante tra eliminazione schede e audit: SUPER ADMIN dispone di Annulla eliminazione sulle voci soft_delete di Athlete/Event, anche quando l'autore era SUPER ADMIN. Il comando conserva conferma e feedback coerenti agli altri annullamenti.

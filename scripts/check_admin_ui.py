@@ -1477,6 +1477,24 @@ def main():
                 assert 'year=2026' in writes[-1]['url']
                 assert 'year_hint=' not in writes[-1]['url']
                 assert 'create_missing_from_year=' not in writes[-1]['url']
+                original_calendar = dict(calendar_preview)
+                calendar_preview.update(would_create_events=0, would_update_events=0, matched_events=8,
+                    rows=[{**row, 'action': 'no_change'} for row in original_calendar['rows']])
+                analyze_import()
+                status = page.locator('.admin-import-header-actions [data-import-status]')
+                assert status.inner_text() == 'Nessuna nuova gara da importare.'
+                assert status.get_attribute('class') == 'admin-center-feedback'
+                assert status.bounding_box()['x'] < page.locator('.admin-import-scope-choice').bounding_box()['x']
+                calendar_preview['would_update_events'] = 1
+                analyze_import()
+                assert page.locator('[data-import-status]').count() == 0
+                calendar_preview.update(would_update_events=0, parsed_rows=0)
+                analyze_import()
+                assert page.locator('[data-import-status]').count() == 0
+                calendar_preview.clear()
+                calendar_preview.update(original_calendar)
+                analyze_import()
+                assert page.locator('[data-import-status]').count() == 0
                 for width in [1440, 390]:
                     page.set_viewport_size({'width': width, 'height': 1000})
                     assert import_heading_style() == heading_styles[width]
