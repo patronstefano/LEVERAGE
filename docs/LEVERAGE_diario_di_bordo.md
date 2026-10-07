@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Disposizione comandi revisione nazionalita
+
+Allineato Tralascia revisione a destra del selettore Correggi nazionalita registrata, sulla stessa riga desktop; disposizione verticale su mobile. Nota esplicativa unica in fondo alla sezione, non ripetuta in ciascun record. Ridotti i margini superflui nel confronto aperto senza modificare le decisioni.
+
 ## 2026-10-07 - Compatibilita MAG e WAG nel matching calendario
 
 - La normalizzazione del nome eliminava i suffissi di disciplina senza verificare quella dell'entita candidata: individuati in sola lettura abbinamenti MAG verso WAG per Top 12 Series 3 nel 2024 e 2026.

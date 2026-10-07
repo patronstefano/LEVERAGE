@@ -1228,6 +1228,16 @@ def main():
                 assert country_group.locator('[name=country_history_choice]').count() == 1
                 assert country_group.locator('[name=country_correction_choice]').count() == 1
                 assert country_group.locator('[name=action], [name=target_search]').count() == 0
+                assert country_group.locator('.admin-country-review-footer').count() == 1
+                assert country_group.locator('.admin-country-review-footer').evaluate('el => el === el.parentElement.lastElementChild')
+                assert country_group.locator('article').get_by_text('Storico: scegli', exact=False).count() == 0
+                correction_box = country_group.locator('[name=country_correction_choice]').locator('..').bounding_box()
+                defer_box = country_group.locator('[data-country-defer]').bounding_box()
+                assert defer_box['x'] >= correction_box['x'] + correction_box['width']
+                assert abs(defer_box['y'] + defer_box['height'] - correction_box['y'] - correction_box['height']) < 2
+                page.set_viewport_size({'width': 390, 'height': 1000})
+                assert country_group.locator('.admin-country-review-controls').evaluate('el => el.scrollWidth <= el.clientWidth + 1')
+                page.set_viewport_size({'width': 1440, 'height': 1000})
                 history = country_group.locator('[name=country_history_choice]').locator('..')
                 history.locator('summary').click()
                 history.locator('[data-admin-select-value=ESP]').click()
