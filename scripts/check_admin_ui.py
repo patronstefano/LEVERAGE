@@ -156,6 +156,8 @@ def main():
                 payload = [{"id": 91, "entity_type": "Athlete", "entity_id": 1, "action": "update", "created_at": "2026-09-30T10:00:00", "review_status": "pending", "admin_id": 77, "before_json": '{"country":"ITA"}', "after_json": '{"country":"FRA"}'}]
                 payload.append({**payload[0], 'id': 92, 'action': 'create', 'before_json': None, 'review_status': 'approved'})
                 payload.append({**payload[0], 'id': 93, 'action': 'merge'})
+                payload.append({**payload[0], 'id': 94, 'action': 'soft_delete'})
+                payload.append({**payload[0], 'id': 95, 'action': 'soft_delete', 'entity_type': 'Event'})
                 payload[0].update(admin_email='review@example.test', admin_current_role='admin')
                 payload[1].update(admin_email='super@example.test', admin_current_role='super_admin')
             elif path == "/data-suggestions/":
@@ -825,7 +827,13 @@ def main():
                 after_box = comparison.locator('.admin-audit-side').nth(1).bounding_box()
                 assert before_box['x'] < after_box['x'] and abs(before_box['y'] - after_box['y']) < 1
                 assert page.locator('#adminAudit [data-action=approve]').count() == 0
-                assert page.locator('[data-action=revert].filter-clear-button').count() == 3
+                assert page.locator('[data-action=revert].filter-clear-button').count() == 5
+                for audit_id in [94, 95]:
+                    undo_delete = page.locator(f'[data-audit="{audit_id}"][data-action=revert]')
+                    assert undo_delete.inner_text() == 'Annulla eliminazione'
+                    undo_delete.click()
+                    assert page.locator('dialog[open] h2').inner_text() == 'Annulla eliminazione'
+                    page.locator('dialog[open] [data-cancel]').click()
                 undo_merge = page.locator('[data-audit="93"][data-action=revert]')
                 assert undo_merge.inner_text() == 'Annulla unione'
                 undo_merge.click()
@@ -852,7 +860,7 @@ def main():
                 assert notice.evaluate('el => getComputedStyle(el).color === getComputedStyle(el).borderTopColor')
                 assert page.locator('[data-audit="91"]').count() == 0
                 assert page.locator('#adminFeedback').inner_text() == ''
-                assert page.locator('#adminAudit > article').count() == 3
+                assert page.locator('#adminAudit > article').count() == 5
                 assert page.locator('#adminAudit [name=note_91]').is_disabled()
             if tab == "statistics":
                 assert page.locator('[data-admin-tab]').evaluate_all('tabs => tabs.map(tab => tab.dataset.adminTab)') == ['overview', 'statistics', 'users', 'audit']

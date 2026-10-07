@@ -1763,6 +1763,55 @@ def test_admin_soft_delete_and_super_admin_restore_with_audit_for_core_entities(
     assert client.delete(f"/events/{event['id']}", headers=super_headers).status_code == 204
 
 
+@pytest.mark.parametrize('kind', ['athletes', 'events'])
+@pytest.mark.parametrize('actor_role', ['admin', 'super_admin'])
+@pytest.mark.parametrize('changed', [False, True])
+def test_audit_undo_entity_deletion_restores_only_its_batch(kind, actor_role, changed):
+    client.post('/auth/register', json={'email': 'undo_delete_super@example.com', 'password': TEST_PASSWORD})
+    super_headers = {'Authorization': f"Bearer {login_as_admin('undo_delete_super@example.com')}"}
+    client.post('/auth/register', json={'email': 'undo_delete_actor@example.com', 'password': TEST_PASSWORD})
+    with SessionLocal() as db:
+        actor = db.query(User).filter(User.email == 'undo_delete_actor@example.com').one()
+        actor.role = RoleEnum(actor_role)
+        db.commit()
+    headers = {'Authorization': f"Bearer {login_as_admin('undo_delete_actor@example.com')}"}
+    athlete = client.post('/athletes/', headers=headers, json={'first_name': 'Undo', 'last_name': 'Deletion', 'discipline': 'MAG', 'country': 'ITA'}).json()
+    event = client.post('/events/', headers=headers, json={'name': 'Undo Cup', 'year': 2026, 'discipline': 'MAG', 'category': 'senior', 'level': 'International Event'}).json()
+    results = []
+    for apparatus in ['PH', 'SR']:
+        response = client.post('/results/', headers=headers, json={'athlete_id': athlete['id'], 'event_id': event['id'],
+            'discipline': 'MAG', 'category': 'senior', 'format': 'individual', 'round': 'final',
+            'apparatus': apparatus, 'score': 13.5, 'D_score': 5.0, 'E_score': 8.5})
+        assert response.status_code == 200, response.text
+        results.append(response.json()['id'])
+    assert client.delete(f'/results/{results[0]}', headers=super_headers).status_code == 204
+    entity_id = athlete['id'] if kind == 'athletes' else event['id']
+    entity_type = 'Athlete' if kind == 'athletes' else 'Event'
+    assert client.delete(f'/{kind}/{entity_id}', headers=headers).status_code == 204
+    logs = client.get('/admin/audit-logs?action=soft_delete', headers=super_headers).json()
+    log = next(row for row in logs if row['entity_type'] == entity_type and row['entity_id'] == entity_id)
+    url = f"/admin/audit-logs/{log['id']}/revert"
+    if actor_role == 'admin':
+        assert client.post(url, headers=headers, json={}).status_code == 403
+    if changed:
+        with SessionLocal() as db:
+            db.get(models.Result, results[1]).score = 14.0
+            db.commit()
+    response = client.post(url, headers=super_headers, json={'note': 'Restore accidental deletion'})
+    assert response.status_code == (409 if changed else 200)
+    with SessionLocal() as db:
+        assert db.get(models.Result, results[0]).is_deleted is True
+        assert db.get(models.Result, results[1]).is_deleted is changed
+        model = models.Athlete if kind == 'athletes' else models.Event
+        assert db.get(model, entity_id).is_deleted is changed
+    if not changed:
+        assert response.json()['review_status'] == 'reverted'
+        assert client.post(url, headers=super_headers, json={}).status_code == 400
+        refreshed = client.get('/admin/audit-logs?action=soft_delete', headers=super_headers).json()
+        restored_log = next(row for row in refreshed if row['entity_type'] == 'Result' and row['entity_id'] == results[1])
+        assert restored_log['review_status'] == 'reverted'
+
+
 def test_super_admin_can_review_and_revert_admin_update_audit_logs():
     client.post("/auth/register", json={"email": "audit_review_super@example.com", "password": TEST_PASSWORD})
     super_token = login_as_admin("audit_review_super@example.com")

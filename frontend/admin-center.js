@@ -257,6 +257,8 @@ const COPY = {
   restore: ["Restore", "Ripristina", "Restaurar", "Restaurer"],
   approve: ["Approve", "Approva", "Aprobar", "Approuver"],
   revert: ["Revert change", "Annulla modifica", "Revertir cambio", "Annuler la modification"],
+  undoDelete: ["Undo deletion", "Annulla eliminazione", "Deshacer eliminación", "Annuler la suppression"],
+  revert_delete: ["Deletion reversal", "Annullamento eliminazione", "Anulación de eliminación", "Annulation de suppression"],
   details: ["Details", "Dettagli", "Detalles", "Détails"],
   compareChanges: ["Compare details", "Confronta dettagli", "Comparar detalles", "Comparer les détails"],
   insertedData: ["View inserted data", "Visualizza i dati inseriti", "Ver datos insertados", "Voir les données créées"],
@@ -826,9 +828,9 @@ export async function renderAdminCenter(host) {
           const role = log.admin_current_role ? `${text('auditCurrentRole')}: ${String(log.admin_current_role).replaceAll('_', ' ').toUpperCase()}` : '';
           author.textContent = [identity ? `${text('auditAuthor')}: ${identity}` : text('auditUnknownAuthor'), role].filter(Boolean).join(' · ');
           article.querySelector('.admin-audit-meta').after(author);
-          if (!['create', 'merge'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
+          if (!['create', 'merge', 'soft_delete'].includes(log.action) || !['Athlete', 'Event'].includes(log.entity_type)) continue;
           const actions = article.querySelector('.account-notification-actions');
-          const undoLabel = log.action === 'merge' ? 'undoMerge' : 'undoCreate';
+          const undoLabel = log.action === 'soft_delete' ? 'undoDelete' : log.action === 'merge' ? 'undoMerge' : 'undoCreate';
           if (['pending', 'approved'].includes(log.review_status)) actions.insertAdjacentHTML('beforeend', button(undoLabel, `data-audit="${log.id}" data-action="revert" data-confirm-label="${undoLabel}"`));
         }
         root.querySelectorAll('[data-action="revert"]').forEach((b) => b.classList.add('filter-clear-button'));

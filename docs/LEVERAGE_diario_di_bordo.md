@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Annullamento eliminazione da Audit e Ripristino
+
+Completata l'integrazione mancante tra eliminazione schede e audit: SUPER ADMIN dispone di Annulla eliminazione sulle voci soft_delete di Athlete/Event, anche quando l'autore era SUPER ADMIN. Il comando conserva conferma e feedback coerenti agli altri annullamenti.
+
+Il ripristino audit e atomico e riferito alla specifica eliminazione: verifica lo snapshot attuale, identifica i Result eliminati contestualmente tramite autore, timestamp di eliminazione, relazione e voci audit, recupera gli snapshot precedenti e marca le voci originarie come annullate. Registra nuove voci revert_delete e avviso di sicurezza. Non recupera risultati eliminati precedentemente per altri motivi; blocca modifiche successive, audit incompleto e risultati con l'altra entita ancora eliminata. Nessun ripristino reale eseguito durante lo sviluppo; test isolati coprono atleta/evento, autore ADMIN/SUPER ADMIN, permessi, annullamento ripetuto e conflitti successivi. Gli endpoint legacy di ripristino restano distinti: questa garanzia di corrispondenza alla singola operazione riguarda il comando audit.
+
 ## 2026-10-07 - Reimport calendario e periodi MAG/WAG gia revisionati
 
 Il confronto sorgente considerava solo le date principali di Event e riproponeva come conflitti periodi distinti gia approvati nell'import massivo e conservati in EventCalendarEntry. Ora nome semantico, anno e intervallo esatto riconoscono le voci collegate non eliminate; l'abbinamento revisionato prevale sul matching generico. Queste righe sono gia presenti, non riscrivono le date dell'evento e non generano un conflitto quando tutti i periodi sono gia documentati. I periodi nuovi o modificati continuano a richiedere revisione: nessuna unione automatica delle date e nessuna deduzione che un nome senza MAG sia necessariamente WAG.
