@@ -1048,7 +1048,9 @@ def main():
                 assert page.locator('#adminReviewPreview').bounding_box()['y'] == page.locator('#adminCommitImport').bounding_box()['y']
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('.admin-import-duplicate-link a').count() == 0
-                assert page.locator('#importPart_events .admin-import-duplicate-link [data-defer-duplicates]').is_visible()
+                assert page.locator('.admin-import-actions [data-defer-duplicates]').is_visible()
+                assert page.locator('[data-defer-duplicates]').count() == 1
+                assert page.locator('.admin-import-actions > button').first.get_attribute('data-defer-duplicates') is not None
                 pending_requests = len(writes)
                 page.locator('[data-defer-duplicates]:visible').click()
                 assert 'senza associazioni automatiche' in page.locator('dialog[open]').inner_text()
@@ -1192,10 +1194,9 @@ def main():
                 page.locator('[data-import-historical]').wait_for(state='attached')
                 assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['0', '0', '0', '0']
-                assert page.locator('[data-import-status]').bounding_box()['y'] > page.locator('.admin-import-actions').bounding_box()['y']
                 status_box = page.locator('[data-import-status]').bounding_box()
-                actions_box = page.locator('.admin-import-actions').bounding_box()
-                assert abs(status_box['x'] + status_box['width'] - actions_box['x'] - actions_box['width']) < 2
+                scope_box = page.locator('.admin-import-scope-choice').bounding_box()
+                assert status_box['x'] + status_box['width'] <= scope_box['x']
                 assert status_box['height'] == 36
                 assert page.locator('.admin-import-notes').bounding_box()['y'] >= status_box['y'] + status_box['height']
                 assert 'I conteggi riguardano' in page.locator('.admin-import-notes').inner_text()

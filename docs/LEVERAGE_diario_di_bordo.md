@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Posizione stato import e rinvio duplicati
+
+- Messaggio Nessuna nuova gara da importare spostato a sinistra del selettore
+  Gare gia importate, conservando dimensioni compatte e adattamento mobile.
+- Un solo comando Tralascia tutte le revisioni duplicati nella riga finale,
+  prima di Ricalcola anteprima; stessa posizione per Riprendi revisione duplicati.
+  Note generali confermate nel footer; regole di import invariate.
+
 ## 2026-10-07 - Dettagli delle incongruenze per atleta nell'import
 
 - Il riepilogo atleti esponeva il conteggio incongruenze senza un confronto.

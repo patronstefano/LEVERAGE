@@ -978,6 +978,7 @@ export async function renderAdminCenter(host) {
       <div class="admin-import-heading ${p.committed ? 'is-complete' : ''}">
         <div><h3>${esc(text(p.committed ? 'importCompleted' : 'preview'))}</h3><p class="admin-revision-meta">${esc(p.filename)}</p></div>
         <div class="admin-import-header-actions">
+          ${importStatus === text('importHistoricalOnly') ? `<p class="admin-center-feedback" data-import-status role="status">${esc(importStatus)}</p>` : ''}
           ${!p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', draft.kind === 'calendar' ? 'importCalendarExistingScope' : 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], selectedParams.skip_existing_events ? 'skip' : 'include')}</div>` : ''}
           ${button(draft.fileFormOpen ? 'importHideFile' : 'importChangeFile', `id="adminImportChangeFile" aria-controls="adminImportForm" aria-expanded="${Boolean(draft.fileFormOpen)}"`)}
         </div>
@@ -993,7 +994,7 @@ export async function renderAdminCenter(host) {
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>` : ''}
-      ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" data-import-status role="status">${esc(importStatus)}</p>` : ''}
+      ${importStatus && importStatus !== text('importHistoricalOnly') ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" data-import-status role="status">${esc(importStatus)}</p>` : ''}
       ${!p.committed ? `<footer class="admin-import-notes admin-stats-note">${draft.kind === 'gymternet' ? `<p>${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p><p>${esc(text('importReadOnly'))}</p>` : p.skip_existing_events ? `<p>${esc(text('importCalendarSkipNote'))}</p>` : ''}</footer>` : ''}
     `;
     if (draft.kind === 'gymternet' && !p.committed) {
@@ -1024,9 +1025,9 @@ export async function renderAdminCenter(host) {
       for (const [key, kind] of [['events', 'event'], ['athletes', 'athlete']]) {
         const group = output.querySelector(`[data-import-group=${kind}]`);
         if (group) sections[key].append(group);
-        const canDefer = p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || selectedParams.defer_duplicate_reviews;
-        sections[key].insertAdjacentHTML('beforeend', `<div class="admin-import-duplicate-link"><p class="admin-stats-note">${esc(text(selectedParams.defer_duplicate_reviews ? 'importDeferredNote' : 'importDuplicateNote'))}</p>${canDefer ? button(selectedParams.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'data-defer-duplicates') : ''}</div>`);
       }
+      const canDefer = p.athlete_match_review_count || p.athlete_match_review?.length || p.event_match_review?.length || selectedParams.defer_duplicate_reviews;
+      if (canDefer) output.querySelector('.admin-import-actions').insertAdjacentHTML('afterbegin', button(selectedParams.defer_duplicate_reviews ? 'importResumeDuplicates' : 'importDeferDuplicates', 'data-defer-duplicates'));
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', p.conflicts?.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
       for (const selector of ['#adminImportResolution', '[data-import-group=orphan]', '[data-import-issues]']) {
