@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Rimozione sezione Avvisi del file
+
+Rimossa dall'anteprima risultati e calendario la sezione Avvisi del file, compreso il relativo elenco di warning generici. Restano i controlli backend e i blocchi di importazione: gli errori effettivamente bloccanti sono visibili direttamente nella revisione pertinente, senza sezione richiudibile Avvisi del file, con paginazione e comandi di correzione conservati. Invariato il riepilogo separato degli interventi automatici. Nessuna modifica ai dati importati o alle regole di validazione. Test UI aggiornati per assenza della sezione e permanenza degli errori correggibili.
+
 ## 2026-10-07 - Decisioni nazionalita unificate anche per risultati gia salvati
 
 Superato il solo raggruppamento visivo dei casi di nazionalita discordante: anche quando la nazionalita del file coincide con l'anagrafica ma differisce da quella rappresentata in un risultato gia salvato, il backend genera una revisione nazionalita standard. La revisione contiene le nazionalita documentate nei risultati, disponibili nelle scelte e nel confronto compatto. Comandi condivisi: Aggiorna storico nazionalita, Correggi nazionalita registrata, Tralascia revisione. Nessun comando speciale di modifica/esclusione della riga sorgente per questi casi nel nuovo flusso.

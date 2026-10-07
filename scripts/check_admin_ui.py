@@ -1041,8 +1041,8 @@ def main():
                     page.locator('[data-import-part=results]').click()
                     group = page.locator('[data-import-issues]')
                     group.wait_for(state='attached')
-                    if group.get_attribute('open') is None:
-                        group.locator('summary').click()
+                    assert group.locator('summary').count() == 0
+                    assert 'Avvisi del file' not in page.locator('#adminImportOutput').inner_text()
 
                 previous_writes = len(writes)
                 page.locator('#adminImportForm button[type=submit]').click()
@@ -1209,7 +1209,7 @@ def main():
                 assert int(page.locator('#importPart_results .admin-duplicate-recap dd').first.inner_text().replace('.', '')) == 1000
                 preview['issues'] = [
                     {'severity': 'error', 'review_scope': 'events', 'message': 'EVENT_IDENTITY_ONLY'},
-                    {'severity': 'warning', 'review_scope': 'athletes', 'message': 'ATHLETE_IDENTITY_ONLY'},
+                    {'severity': 'error', 'review_scope': 'athletes', 'message': 'ATHLETE_IDENTITY_ONLY'},
                     {'severity': 'error', 'message': 'SCORE_ONLY'},
                 ]
                 preview['conflicts'] = [{'reason': 'country_conflict_existing', 'first_name': 'Country', 'last_name': 'Check',
@@ -1220,7 +1220,6 @@ def main():
                     page.locator(f'[data-import-part={scope}]').click()
                     group = page.locator(f'#importPart_{scope} [data-import-issues]')
                     assert page.locator(f'[data-import-empty={scope}]').count() == 0
-                    group.evaluate('el => el.open = true')
                     assert message in group.inner_text()
                     for other in ['EVENT_IDENTITY_ONLY', 'ATHLETE_IDENTITY_ONLY', 'SCORE_ONLY']:
                         assert (other in group.inner_text()) == (other == message)
@@ -1361,11 +1360,17 @@ def main():
                 assert page.locator('#adminCommitImport').is_disabled()
                 preview['issues'] = [{'severity': 'warning', 'message': f'Warning {i}'} for i in range(7)]
                 analyze_import()
+                page.locator('[data-import-part=results]').click()
+                assert page.locator('[data-import-issues]').count() == 0
+                assert 'Warning 0' not in page.locator('#adminImportOutput').inner_text()
+                assert 'Avvisi del file' not in page.locator('#adminImportOutput').inner_text()
+                preview['issues'] = [{'severity': 'error', 'message': f'Error {i}'} for i in range(7)]
+                analyze_import()
                 open_import_issues()
                 assert page.locator('.admin-import-issues > li').count() == 6
                 page.locator('[data-issue-page="1"]').click()
                 assert page.locator('.admin-import-issues > li').count() == 1
-                assert 'Warning 6' in page.locator('.admin-import-issues').inner_text()
+                assert 'Error 6' in page.locator('.admin-import-issues').inner_text()
                 assert page.locator('[data-import-part=results]').get_attribute('aria-selected') == 'true'
                 preview.update(parsed_rows=1000, issues=[], importable_results=0, event_summaries=[],
                     skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
@@ -1646,7 +1651,8 @@ def main():
                 page.locator('[data-calendar-conflict-page="1"]').click()
                 assert page.locator('.admin-calendar-conflict').count() == 3
                 assert 'Periodi diversi per lo stesso evento' in page.locator('#adminCalendarConflicts').inner_text()
-                page.locator('[data-import-issues] > summary').click()
+                assert page.locator('[data-import-issues] > summary').count() == 0
+                assert 'Avvisi del file' not in page.locator('#adminImportOutput').inner_text()
                 assert 'Data mancante o non valida.' in page.locator('.admin-import-issues').inner_text()
                 assert 'day is out of range' not in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('[data-import-issues]').bounding_box()['y'] > page.locator('#adminCalendarConflicts').bounding_box()['y']

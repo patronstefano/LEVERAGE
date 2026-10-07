@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=unified-country-decisions-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=unified-country-decisions-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -954,7 +954,7 @@ export async function renderAdminCenter(host) {
     const isDeferred = type => Boolean(selectedParams[`defer_${type}_reviews`] ?? selectedParams.defer_duplicate_reviews);
     const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${type !== 'orphan' ? `<p class="admin-stats-note">${esc(text('importIdentityNote'))}</p>` : ''}${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
-    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, (p.issues || []).filter(issue => !automaticImportIssueCode(issue) && importIssueScope(issue) === scope)]));
+    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, issueErrors.filter(issue => importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
     const countryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
     const calendarAlreadyImported = draft.kind === 'calendar' && !p.committed && p.parsed_rows > 0
@@ -1013,7 +1013,7 @@ export async function renderAdminCenter(host) {
       ${!p.committed && athleteCountryReviews.length && !isDeferred('athlete') ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
-      ${p.issues?.length && (draft.kind !== 'gymternet' || p.committed) ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
+      ${issueErrors.length && (draft.kind !== 'gymternet' || p.committed) ? `<div data-import-issues>${renderImportIssues({issues: issueErrors, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</div>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>` : ''}
@@ -1082,7 +1082,7 @@ export async function renderAdminCenter(host) {
       sections.results.insertAdjacentHTML('beforeend', renderAutomaticImportIssues({issues: p.issues || [], text, esc, language: state.language}));
       for (const [scope, issues] of Object.entries(issuesByScope)) {
         if (!issues.length) continue;
-        sections[scope].insertAdjacentHTML('beforeend', `<details class="admin-revision-group" data-import-issues data-issue-scope="${scope}" ${draft.issuesOpen ? 'open' : ''}><summary>${esc(text('importIssueList'))}<span class="admin-revision-count">${issues.length}</span></summary>${renderImportIssues({issues, text, esc, language: state.language, sourceRows: scope === 'results' ? p.source_review : [], page: draft.scopedIssuePages[scope] || 0})}</details>`);
+        sections[scope].insertAdjacentHTML('beforeend', `<div data-import-issues data-issue-scope="${scope}">${renderImportIssues({issues, text, esc, language: state.language, sourceRows: scope === 'results' ? p.source_review : [], page: draft.scopedIssuePages[scope] || 0})}</div>`);
       }
       const notes = output.querySelector('.admin-import-notes');
       for (const [key, label] of [['events', 'importNoEventReviews'], ['athletes', 'importNoAthleteReviews']]) {
@@ -1127,11 +1127,7 @@ export async function renderAdminCenter(host) {
       const scope = control.closest('[data-issue-scope]')?.dataset.issueScope;
       if (scope) draft.scopedIssuePages[scope] = Number(control.dataset.issuePage);
       else draft.issuePage = Number(control.dataset.issuePage);
-      draft.issuesOpen = true;
       showImport();
-    });
-    output.querySelectorAll('[data-import-issues]').forEach(group => {
-      group.ontoggle = () => { if (group.isConnected) draft.issuesOpen = group.open; };
     });
     if (!p.committed) {
       const bodyWithDecisions = (preview, includeIdentities = true, includeEvents = true) => {
