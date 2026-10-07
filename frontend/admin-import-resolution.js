@@ -1,4 +1,4 @@
-import { automaticImportIssueCode } from './admin-import-report.js?v=import-decimal-precision-20261007';
+import { automaticImportIssueCode } from './admin-import-report.js?v=import-country-review-20261007';
 
 export function cleanSourceScoreDisplay(value) {
   if (value == null || String(value).trim() === '') return value;
@@ -13,7 +13,7 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
   const sourceKeys = new Set([
     ...(preview.conflicts || []).map(row => `${row.source_sheet}:${row.source_row}`),
     ...resultIssues.map(row => `${row.sheet}:${row.row}`),
-    ...Object.keys(draft.source || {}),
+    ...Object.entries(draft.source || {}).filter(([, decision]) => decision.action === 'exclude' || Object.keys(decision.values || {}).some(key => key.toLowerCase().trim() !== 'country')).map(([key]) => key),
   ]);
   for (const row of preview.source_review || []) {
     if (sourceKeys.has(`${row.sheet}:${row.row}`)) {

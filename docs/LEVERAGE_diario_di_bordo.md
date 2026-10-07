@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Revisione nazionalita e confronto identita import
+
+- Aggiunti comandi per correggere la nazionalita della riga importata usando quella gia registrata, oppure tralasciare la riga. La scelta comprende i punteggi della riga e i D Score collegati; resta in bozza fino al ricalcolo e non cambia lo storico country nel DB.
+- Le correzioni sorgente sono protette dal fingerprint del file e dalla validazione backend. Le eventuali correzioni numeriche gia scelte sono preservate. Nessun merge automatico e nessuna sovrascrittura del database durante la preview.
+- Confronto identita atleta reso tabellare: nome, country e disciplina affiancati File/LEVERAGE, valori diversi evidenziati, candidati separati senza cluster annidati.
+- Test mirati su correzione combinata country/score, file originale immutato, fingerprint obsoleto, valori country invalidi e campi non autorizzati.
+
 ## 2026-10-07 - Precisione numerica e arrotondamenti VT AVG
 
 - Normalizzazione import a tre decimali con Decimal/ROUND_HALF_UP; sottrazioni

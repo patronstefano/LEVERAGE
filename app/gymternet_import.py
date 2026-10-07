@@ -299,8 +299,9 @@ def prepare_import_source_rows(sheet, rows, decisions, sources, issues, stats):
         editable = [key for key in row if key is not None and (
             normalize_header(key) in {'score', 'd score'} or
             normalize_header(key).upper() in MAG_APPARATUS | WAG_APPARATUS | AA_ALIASES | VT_AVG_ALIASES | VT_SUM_ALIASES)]
+        country_field = next((key for key in row if normalize_header(key) == 'country'), None)
         source = {'sheet': sheet, 'row': number, 'fingerprint': fingerprint,
-                  'values': row, 'editable_fields': editable}
+                  'values': row, 'editable_fields': editable, 'country_field': country_field}
         sources[(sheet, number)] = source
         decision = by_row.get(number)
         if not decision:
@@ -314,17 +315,26 @@ def prepare_import_source_rows(sheet, rows, decisions, sources, issues, stats):
             stats['excluded'] += 1
         elif action == 'edit' and isinstance(decision.get('values'), dict):
             values = decision['values']
-            if not values or any(key not in editable or isinstance(value, (dict, list, bool)) for key, value in values.items()):
+            allowed = editable + ([country_field] if country_field else [])
+            if not values or any(key not in allowed or isinstance(value, (dict, list, bool)) for key, value in values.items()):
                 issues.append({'severity': 'error', 'message': 'Invalid source score correction'})
                 continue
             try:
-                numeric = {key: float(str(value).strip().replace(',', '.')) for key, value in values.items()}
+                numeric = {key: float(str(value).strip().replace(',', '.')) for key, value in values.items() if key != country_field}
                 if any(not math.isfinite(value) or value < 0 for value in numeric.values()):
                     raise ValueError('Score must be finite and non-negative')
             except (TypeError, ValueError):
                 issues.append({'severity': 'error', 'code': 'source_correction_invalid', 'sheet': sheet, 'row': number,
                                'message': 'Enter a valid non-negative score or explicitly exclude the source row.'})
                 continue
+            if country_field in values:
+                country_issues = []
+                country = normalize_country(values[country_field], country_issues, sheet, number)
+                if not country or country_issues:
+                    issues.append({'severity': 'error', 'review_scope': 'athletes', 'sheet': sheet, 'row': number,
+                                   'message': 'Invalid country correction'})
+                    continue
+                numeric[country_field] = country
             prepared[number - 2] = {**row, **numeric}
             stats['corrected'] += 1
         else:
