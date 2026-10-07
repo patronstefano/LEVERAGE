@@ -1303,6 +1303,31 @@ def main():
                 assert country_group.locator('[data-country-conflicts]').count() == 1
                 assert country_group.locator('.admin-country-review-footer').count() == 1
                 assert page.locator('details[data-country-conflicts]').count() == 0
+                preview['conflicts'][0].update(source_sheet='MAG', source_row=10)
+                preview['source_review'] = [{'sheet': 'MAG', 'row': 10, 'fingerprint': 'country-row', 'values': {'Country': 'ESP'}, 'related_rows': [{'sheet': 'MAG D', 'row': 10}]},
+                    {'sheet': 'MAG D', 'row': 10, 'fingerprint': 'country-d-row', 'values': {'Country': 'ESP'}}]
+                preview['athlete_match_review'] = [{**preview['athlete_match_review'][0], 'review_id': f'country-bulk-{i}'} for i in range(7)]
+                analyze_import()
+                page.locator('[data-import-part=athletes]').click()
+                country_group.evaluate('el => el.open = true')
+                bulk = country_group.locator('[data-defer-all-countries]')
+                assert bulk.inner_text() == 'Tralascia tutta la revisione nazionalità'
+                pending = len(writes)
+                bulk.click()
+                page.locator('dialog[open] [data-cancel]').click()
+                assert len(writes) == pending
+                bulk.click()
+                assert 'escludi da questo import' in page.locator('dialog[open]').inner_text()
+                page.locator('dialog[open] [data-confirm]').click()
+                assert page.locator('dialog[open] [role=alert]').count() == 0, page.locator('dialog[open]').inner_text()
+                page.locator('dialog[open]').wait_for(state='detached')
+                assert len(writes) == pending
+                page.locator('#adminReviewPreview').click()
+                page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
+                assert all(f'country-bulk-{i}' in writes[-1]['body'] for i in range(7))
+                assert 'defer' in writes[-1]['body'] and 'exclude' in writes[-1]['body']
+                assert 'country-d-row' in writes[-1]['body']
+                preview['source_review'] = []
                 preview['conflicts'] = []
                 preview['athlete_match_review'] = original_athlete_reviews
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])

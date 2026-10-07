@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Comando complessivo revisione nazionalita
+
+Aggiunto Tralascia tutta la revisione nazionalita subito sotto il titolo della sezione. Conferma esplicita degli effetti: rinvio delle verifiche anagrafiche, esclusione da questo import delle righe sorgente con nazionalita rappresentata discordante e relativi punteggi collegati, senza modifiche ai dati salvati. Opera su tutte le pagine e non sulle revisioni identita/eventi. Decisioni in bozza fino al ricalcolo, senza richiesta API per ogni scelta. Verifica preliminare di tutte le righe sorgente prima di applicare il gruppo di decisioni; se mancano riferimenti, nessuna applicazione parziale. Test browser per annullamento, sette revisioni e righe D collegate.
+
 ## 2026-10-07 - Unica sezione per la revisione delle nazionalita
 
 Eliminata la sezione autonoma Nazionalita da verificare. Le differenze di nazionalita rappresentata sullo stesso risultato sono ora dentro Revisione nazionalita atleti, insieme alle verifiche anagrafiche, con contatore complessivo e una sola nota finale. Conservati gara di riferimento, confronto e comandi specifici per correggere/escludere le righe del file senza sovrascrivere risultati gia salvati. Il raggruppamento appare anche se contiene soltanto questi casi; nessuna modifica alla semantica delle decisioni backend.

@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=calendar-review-feedback-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-review-feedback-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=bulk-country-review-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1063,6 +1063,7 @@ export async function renderAdminCenter(host) {
         countryReviewGroup.querySelector('.admin-revision-count').textContent = (isDeferred('athlete') ? 0 : athleteCountryReviews.length) + countryConflicts.length;
         countryReviewGroup.insertAdjacentHTML('beforeend', `<footer class="admin-stats-note admin-country-review-footer">${esc(text('importCountryActionHelp'))}</footer>`);
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-country-review-note>${esc(text('importCountryIdentityNote'))}</p>`);
+        countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDeferAllCountries', 'data-defer-all-countries')}</div>`);
       }
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
@@ -1241,6 +1242,24 @@ export async function renderAdminCenter(host) {
       output.querySelector('#adminImportDecisionsNotice').hidden = false;
       updateCommit();
     };
+    output.querySelector('[data-defer-all-countries]')?.addEventListener('click', () => confirm('importDeferAllCountries', () => {
+      const exclusions = new Map();
+      for (const conflict of countryConflicts) {
+        const source = (p.source_review || []).find(row => row.sheet === conflict.source_sheet && row.row === conflict.source_row);
+        if (!source) throw new Error(text('importCountrySourceMissing'));
+        for (const ref of [source, ...(source.related_rows || [])]) {
+          const row = (p.source_review || []).find(item => item.sheet === ref.sheet && item.row === ref.row);
+          if (!row) throw new Error(text('importCountrySourceMissing'));
+          exclusions.set(`${row.sheet}:${row.row}`, {sheet: row.sheet, row: row.row, fingerprint: row.fingerprint, action: 'exclude'});
+        }
+      }
+      for (const item of athleteCountryReviews) draft.athlete[item.review_id] = {review_id: item.review_id, action: 'defer'};
+      for (const [key, decision] of exclusions) draft.source[key] = decision;
+      if (exclusions.size) draft.sourceDirty = true;
+      draft.reviewOpen.athleteCountry = true;
+      markChanged();
+      showImport();
+    }, false, text('importDeferAllCountriesConfirm')));
     output.querySelectorAll('[data-country-fix], [data-country-exclude]').forEach(control => {
       control.onclick = guard(() => {
         const exclude = control.hasAttribute('data-country-exclude');
