@@ -952,7 +952,7 @@ export async function renderAdminCenter(host) {
     }
     const start = type => (draft.reviewPages[type] || 0) * pageSize;
     const isDeferred = type => Boolean(selectedParams[`defer_${type}_reviews`] ?? selectedParams.defer_duplicate_reviews);
-    const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${type !== 'orphan' ? `<p class="admin-stats-note">${esc(text('importIdentityNote'))}</p>` : ''}${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
+    const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
     const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, issueErrors.filter(issue => importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
@@ -1018,7 +1018,7 @@ export async function renderAdminCenter(host) {
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>` : ''}
       ${importStatus && importStatus !== text('importHistoricalOnly') ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" data-import-status role="status">${esc(importStatus)}</p>` : ''}
-      ${!p.committed ? `<footer class="admin-import-notes admin-stats-note">${draft.kind === 'gymternet' ? `<p>${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p><p>${esc(text('importReadOnly'))}</p>` : p.skip_existing_events ? `<p>${esc(text('importCalendarSkipNote'))}</p>` : ''}</footer>` : ''}
+      ${!p.committed ? `<footer class="admin-import-notes admin-stats-note">${draft.kind === 'gymternet' ? `<p>${esc(text('importReviewScope'))} ${esc(text('importCandidatesNote'))}</p>` : p.skip_existing_events ? `<p>${esc(text('importCalendarSkipNote'))}</p>` : ''}</footer>` : ''}
     `;
     if (draft.kind === 'gymternet' && !p.committed) {
       const reviewParts = [
@@ -1062,7 +1062,6 @@ export async function renderAdminCenter(host) {
       if (countryReviewGroup) {
         sections.athletes.append(countryReviewGroup);
         countryReviewGroup.querySelector('.admin-revision-count').textContent = (isDeferred('athlete') ? 0 : athleteCountryReviews.length) + countryConflicts.length;
-        countryReviewGroup.insertAdjacentHTML('beforeend', `<footer class="admin-stats-note admin-country-review-footer">${esc(text('importCountryActionHelp'))}</footer>`);
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-country-review-note>${esc(text('importCountryIdentityNote'))}</p>`);
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDeferAllCountries', 'data-defer-all-countries')}</div>`);
       }
@@ -1070,7 +1069,7 @@ export async function renderAdminCenter(host) {
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
       if (countryConflicts.length) {
         const countryPage = draft.countryConflictPage = Math.min(draft.countryConflictPage || 0, Math.max(0, Math.ceil(countryConflicts.length / 6) - 1));
-        countryReviewGroup.querySelector('.admin-country-review-footer').insertAdjacentHTML('beforebegin', `<div data-country-conflicts>${countryConflicts.slice(countryPage * 6, (countryPage + 1) * 6).map((c, index) => `<article class="admin-identity-pair"><div><strong>${esc(nameOf(c))}</strong><p class="admin-revision-meta">${esc(c.event_name)} · ${esc(c.year)}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}${button('importUseStoredCountry', `data-country-fix="${countryPage * 6 + index}" ${!c.existing_country ? 'disabled' : ''}`)}${button('importExcludeCountryRow', `data-country-exclude="${countryPage * 6 + index}"`)}</div><p class="admin-stats-note">${esc(text('importCountryCorrectionNote'))}</p><div data-pair-details hidden>${renderImportIdentityComparison({leftName: nameOf(c), rightName: nameOf(c), rightLabel: text(c.existing_result_id ? 'importDatabase' : 'previous'), fields: [['country', c.country, c.existing_country]], text, esc})}</div></article>`).join('')}${countryConflicts.length > 6 ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-country-page="-1" ${countryPage === 0 ? 'disabled' : ''}`)}<span>${countryPage * 6 + 1}–${Math.min((countryPage + 1) * 6, countryConflicts.length)} / ${countryConflicts.length}</span>${button('importNextPage', `data-country-page="1" ${(countryPage + 1) * 6 >= countryConflicts.length ? 'disabled' : ''}`)}</div>` : ''}</div>`);
+        countryReviewGroup.insertAdjacentHTML('beforeend', `<div data-country-conflicts>${countryConflicts.slice(countryPage * 6, (countryPage + 1) * 6).map((c, index) => `<article class="admin-identity-pair"><div><strong>${esc(nameOf(c))}</strong><p class="admin-revision-meta">${esc(c.event_name)} · ${esc(c.year)}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}${button('importUseStoredCountry', `data-country-fix="${countryPage * 6 + index}" ${!c.existing_country ? 'disabled' : ''}`)}${button('importExcludeCountryRow', `data-country-exclude="${countryPage * 6 + index}"`)}</div><p class="admin-stats-note">${esc(text('importCountryCorrectionNote'))}</p><div data-pair-details hidden>${renderImportIdentityComparison({leftName: nameOf(c), rightName: nameOf(c), rightLabel: text(c.existing_result_id ? 'importDatabase' : 'previous'), fields: [['country', c.country, c.existing_country]], text, esc})}</div></article>`).join('')}${countryConflicts.length > 6 ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-country-page="-1" ${countryPage === 0 ? 'disabled' : ''}`)}<span>${countryPage * 6 + 1}–${Math.min((countryPage + 1) * 6, countryConflicts.length)} / ${countryConflicts.length}</span>${button('importNextPage', `data-country-page="1" ${(countryPage + 1) * 6 >= countryConflicts.length ? 'disabled' : ''}`)}</div>` : ''}</div>`);
         const group = sections.athletes.querySelector('[data-country-conflicts]');
         group.querySelectorAll('[data-country-page]').forEach(control => control.onclick = () => { draft.countryConflictPage += Number(control.dataset.countryPage); showImport(); });
       }
@@ -1090,9 +1089,8 @@ export async function renderAdminCenter(host) {
           sections[key].insertAdjacentHTML('beforeend', `<div class="admin-center-feedback" data-import-empty="${key}" role="status">${esc(text(label))}</div>`);
         }
       }
-      if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
       if (isDeferred('event') || isDeferred('athlete')) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importDeferredNote'))}</p>`);
-      output.querySelectorAll('[data-import-group] > .admin-stats-note:not([data-country-review-note]):not([data-identity-review-note]):not(.admin-country-review-footer), .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
+      output.querySelectorAll('[data-import-group] > .admin-stats-note:not([data-country-review-note]):not([data-identity-review-note]), .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
       const choosePart = key => {
         draft.reviewPart = key;
         for (const [name, section] of Object.entries(sections)) section.hidden = name !== key;

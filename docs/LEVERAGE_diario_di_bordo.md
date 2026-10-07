@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Semplificazione note dell'anteprima import
+
+Rimossi su richiesta i messaggi sulla non sovrascrittura dei punteggi, sulla compatibilita dei nomi e la spiegazione Storico/Correzione sotto la revisione nazionalita. Eliminato il relativo footer senza lasciare contenitori vuoti; conservati confronti, comandi e regole backend. Aggiornati i test UI per verificare l'assenza dei testi e il funzionamento della revisione anche senza il footer.
+
 ## 2026-10-07 - Confronto nomi calendario coerente con la disciplina
 
 Riprodotta in sola lettura la falsa incongruenza su Top 12 Series 1/2/4 (MAG): l'associazione era corretta e le date identiche, ma name_differs confrontava ancora letteralmente il nome del file con quello dell'evento. Il confronto ignora ora le annotazioni di disciplina MAG/WAG e Men/Mens/Men's, oltre al suffisso dello stesso anno, mantenendo separata la compatibilita della disciplina. Una riga MAG puo appartenere a un evento MAG e WAG senza diventare una differenza anagrafica. Applicato anche alle voci calendario senza risultati. Conservati nomi originali, numeri di tappa, anni diversi, incompatibilita MAG/WAG e differenze effettive di date.

@@ -1292,8 +1292,8 @@ def main():
                 assert country_group.locator('[name=country_history_choice]').count() == 1
                 assert country_group.locator('[name=country_correction_choice]').count() == 1
                 assert country_group.locator('[name=action], [name=target_search]').count() == 0
-                assert country_group.locator('.admin-country-review-footer').count() == 1
-                assert country_group.locator('.admin-country-review-footer').evaluate('el => el === el.parentElement.lastElementChild')
+                assert country_group.locator('.admin-country-review-footer').count() == 0
+                assert 'Storico: scegli la nazionalità finale' not in country_group.inner_text()
                 assert country_group.locator('article').get_by_text('Storico: scegli', exact=False).count() == 0
                 correction_box = country_group.locator('[name=country_correction_choice]').locator('..').bounding_box()
                 comparison_box = country_group.locator('.admin-import-athlete-comparison').bounding_box()
@@ -1324,7 +1324,7 @@ def main():
                 assert page.locator('[data-import-group=athleteCountry]').count() == 1
                 assert country_group.locator('summary .admin-revision-count').inner_text() == '2'
                 assert country_group.locator('[data-country-conflicts]').count() == 1
-                assert country_group.locator('.admin-country-review-footer').count() == 1
+                assert country_group.locator('.admin-country-review-footer').count() == 0
                 assert page.locator('details[data-country-conflicts]').count() == 0
                 preview['conflicts'][0].update(source_sheet='MAG', source_row=10)
                 preview['source_review'] = [{'sheet': 'MAG', 'row': 10, 'fingerprint': 'country-row', 'values': {'Country': 'ESP'}, 'related_rows': [{'sheet': 'MAG D', 'row': 10}]},
@@ -1391,7 +1391,8 @@ def main():
                 assert status_box['height'] == 36
                 assert page.locator('.admin-import-notes').bounding_box()['y'] >= status_box['y'] + status_box['height']
                 assert 'Eventi e Atleti riguardano' in page.locator('.admin-import-notes').inner_text()
-                assert 'I punteggi già salvati' in page.locator('.admin-import-notes').inner_text()
+                assert 'I punteggi già salvati non verranno sovrascritti.' not in page.locator('#adminImportOutput').text_content()
+                assert 'La compatibilità indica la somiglianza dei nomi.' not in page.locator('#adminImportOutput').text_content()
                 assert 'Past Cup' not in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 assert page.locator('[data-import-historical]').count() == 0
