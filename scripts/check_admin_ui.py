@@ -1204,6 +1204,22 @@ def main():
                 assert '14.123' not in page.locator('[data-country-conflicts]').inner_text()
                 assert 'Country Cup' not in page.locator('#importPart_results').text_content()
                 preview['conflicts'] = []
+                original_athlete_reviews = preview.get('athlete_match_review', [])
+                preview['athlete_match_review'] = [{'review_id': 'country-only-review',
+                    'problem_type': 'possible_athlete_country_change',
+                    'imported_athlete': {'first_name': 'Same', 'last_name': 'Athlete', 'country': 'ESP', 'discipline': 'MAG'},
+                    'existing_athlete': {'athlete_id': 1, 'first_name': 'Same', 'last_name': 'Athlete', 'country': 'ITA', 'discipline': 'MAG'},
+                    'suggestions': []}]
+                analyze_import()
+                page.locator('[data-import-part=athletes]').click()
+                assert page.locator('[data-import-group=athlete]').count() == 0
+                country_group = page.locator('[data-import-group=athleteCountry]')
+                country_group.evaluate('el => el.open = true')
+                country_group.locator('[data-import-review-toggle]').click()
+                assert 'ITA' in country_group.inner_text() and 'ESP' in country_group.inner_text()
+                assert country_group.locator('[data-admin-select-value=update_country]').count() == 1
+                assert country_group.locator('[data-admin-select-value=keep_existing_country]').count() == 1
+                preview['athlete_match_review'] = original_athlete_reviews
                 preview.update(parsed_rows=0, duplicates=[], issues=[{"severity": "warning", "message": "No final-score sheet found for MAG"}])
                 analyze_import()
                 page.wait_for_function("document.querySelector('#adminCommitImport')?.disabled === true")

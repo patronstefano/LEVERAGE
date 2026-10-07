@@ -1,4 +1,6 @@
 export const IMPORT_COPY = {
+  importAthleteCountryReview: ['Athlete nationality review', 'Revisione nazionalità atleti', 'Revisión de nacionalidades de atletas', 'Vérification des nationalités des athlètes'],
+  importCountryIdentityNote: ['Same name, different countries: verify country history, source errors or homonyms. No automatic merge.', 'Stesso nome, nazionalità diverse: verifica storico, refusi o omonimi. Nessuna unione automatica.', 'Mismo nombre, países diferentes: verifica historial, errores u homónimos. Sin unión automática.', 'Même nom, pays différents : vérifiez historique, erreurs ou homonymes. Aucune fusion automatique.'],
   EventCalendarEntry: ['Calendar event', 'Evento calendario', 'Evento del calendario', 'Événement du calendrier'],
   importCalendarDifferences: ['Existing events with differences', 'Eventi presenti con differenze', 'Eventos existentes con diferencias', 'Événements existants avec différences'],
   importCalendarNewEvents: ['New events to create', 'Nuovi eventi da creare', 'Nuevos eventos por crear', 'Nouveaux événements à créer'],

@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Distinzione fra identita e nazionalita nelle revisioni atleti
+
+- Separati in Revisione nazionalita atleti i cambi country con identita coincidente e gli stessi nomi presenti con piu nazionalita. I possibili abbinamenti fra nomi differenti restano nella Revisione identita atleti.
+- Ripristinato il confronto con existing_athlete nei cambi country, prima non mostrato per assenza di suggestions. Rese disponibili nella decisione principale le azioni backend update_country e keep_existing_country; rimossa la selezione country_action ridondante per questi casi.
+- Mantenute decisioni esplicite, possibilita di omonimi e distinzione tra storico e refuso. Nessuna deduzione automatica di identita dal solo nome e nessuna modifica ai dati reali.
+
 ## 2026-10-07 - Matching delle gare gia presenti solo in calendario
 
 - Individuata la causa dei falsi nuovi eventi: l'import interrogava Event ma non EventCalendarEntry, dove sono conservate anche gare senza scheda risultati collegata. Nessun requisito di presenza risultati deve condizionare il matching calendario.

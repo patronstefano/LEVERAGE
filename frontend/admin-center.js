@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=calendar-existing-entries-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=athlete-country-groups-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=calendar-existing-entries-20261007';
+import { renderImportIdentityComparison, IMPORT_COPY, importIssueScope, automaticImportIssueCode, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=athlete-country-groups-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -942,7 +942,10 @@ export async function renderAdminCenter(host) {
     draft.reviewPages ||= {};
     draft.reviewOpen ||= {};
     const pageSize = 6;
-    for (const [type, items] of [['athlete', p.athlete_match_review], ['event', p.event_match_review], ['orphan', p.orphan_dscore_review]]) {
+    const countryReview = item => ['possible_athlete_country_change', 'possible_athlete_identity_collision'].includes(item.problem_type);
+    const athleteCountryReviews = (p.athlete_match_review || []).filter(countryReview);
+    const athleteIdentityReviews = (p.athlete_match_review || []).filter(item => !countryReview(item));
+    for (const [type, items] of [['athlete', athleteIdentityReviews], ['athleteCountry', athleteCountryReviews], ['event', p.event_match_review], ['orphan', p.orphan_dscore_review]]) {
       draft.reviewPages[type] = Math.min(draft.reviewPages[type] || 0, Math.max(0, Math.ceil((items?.length || 0) / pageSize) - 1));
     }
     const start = type => (draft.reviewPages[type] || 0) * pageSize;
@@ -962,15 +965,17 @@ export async function renderAdminCenter(host) {
       fields: [['name', nameOf(source), nameOf(target)], ['country', source.country, target.country], ['discipline', source.discipline, target.discipline]],
       text, esc,
     });
-    const reviewRows = (items, type) => items.slice(start(type), start(type) + pageSize).map((item, pageIndex) => {
-      const index = start(type) + pageIndex;
+    const reviewRows = (items, type, pageType = type) => items.slice(start(pageType), start(pageType) + pageSize).map((item, pageIndex) => {
+      const index = type === 'athlete' ? p.athlete_match_review.indexOf(item) : start(type) + pageIndex;
       const identity = item.problem_type === "possible_athlete_identity_collision";
+      const countryChange = item.problem_type === "possible_athlete_country_change";
       const choices = [{ value: "", label: text("unresolved") }, ...(item.suggestions || []).map((s) => ({ value: `suggestion:${s.suggestion_id}`, label: `${text("accept")} · ${s.label || nameOf(s.target_athlete || s.target_result || {})} · ${s.confidence ?? ""}` })),
+        ...(countryChange ? [{value: "update_country", label: text("updateCountry")}, {value: "keep_existing_country", label: text("keepCountry")}] : []),
         ...(type === "orphan" ? [{ value: "discard", label: text("discard") }] : identity ? [{ value: "keep_separate", label: text("separate") }, { value: "merge_as_same_athlete", label: text("same") }] : [{ value: "create_new", label: text("newAthlete") }]), { value: "manual_target", label: text("manual") }];
       const source = item.imported_athlete || item.orphan_dscore || {};
       const best = item.suggestions?.[0];
-      const target = best?.target_athlete || best?.target_result || {};
-      return `<article class="admin-identity-pair admin-import-review" data-review-type="${type}" data-review-index="${index}"><div class="admin-identity-pair-grid"><div class="admin-identity-entity"><strong>${esc(nameOf(source))}</strong><p class="admin-revision-meta">${esc([text('importFile'), source.discipline, source.country, source.year].filter(Boolean).join(' · '))}</p></div><div class="admin-identity-entity"><strong>${esc(nameOf(target))}</strong><p class="admin-revision-meta">${esc([target.athlete_id ? `ID ${target.athlete_id}` : '', target.discipline, target.country].filter(Boolean).join(' · '))}</p></div></div><div class="admin-center-actions">${best?.confidence != null ? `<span class="admin-review-compatibility">${esc(text('compatibility'))}: ${Math.round(best.confidence * 100)}%</span>` : ''}${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden>${type === 'athlete' ? (item.suggestions?.length ? item.suggestions.map(s => compareIdentity(source, s.target_athlete || {})).join('') : report(identityFields(source))) + (item.country_variants || []).map(v => renderImportIdentityComparison({leftName: nameOf(source), rightName: nameOf(v), rightLabel: text('importFile'), fields: [['country', source.country, v.country], ['discipline', source.discipline, v.discipline]], text, esc})).join('') : report(source) + report(item.suggestions || [])}<div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }]) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div></div></article>`;
+      const target = item.existing_athlete || best?.target_athlete || best?.target_result || {};
+      return `<article class="admin-identity-pair admin-import-review" data-review-type="${type}" data-review-index="${index}"><div class="admin-identity-pair-grid"><div class="admin-identity-entity"><strong>${esc(nameOf(source))}</strong><p class="admin-revision-meta">${esc([text('importFile'), source.discipline, source.country, source.year].filter(Boolean).join(' · '))}</p></div><div class="admin-identity-entity"><strong>${esc(nameOf(target))}</strong><p class="admin-revision-meta">${esc([target.athlete_id ? `ID ${target.athlete_id}` : '', target.discipline, target.country].filter(Boolean).join(' · '))}</p></div></div><div class="admin-center-actions">${best?.confidence != null ? `<span class="admin-review-compatibility">${esc(text('compatibility'))}: ${Math.round(best.confidence * 100)}%</span>` : ''}${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden>${type === 'athlete' ? (item.suggestions?.length ? item.suggestions.map(s => compareIdentity(source, s.target_athlete || {})).join('') : item.existing_athlete ? compareIdentity(source, item.existing_athlete) : report(identityFields(source))) + (item.country_variants || []).map(v => renderImportIdentityComparison({leftName: nameOf(source), rightName: nameOf(v), rightLabel: text('importFile'), fields: [['country', source.country, v.country], ['discipline', source.discipline, v.discipline]], text, esc})).join('') : report(source) + report(item.suggestions || [])}<div class="admin-form-grid">${select("action", "decision", choices, draft[type][item.review_id]?.selection || "")}${type === "athlete" ? field("athlete_id", "target", "number") + (countryChange ? '' : select("country_action", "countryStrategy", [{ value: "", label: "—" }, { value: "update_country", label: text("updateCountry") }, { value: "keep_existing_country", label: text("keepCountry") }])) + field("canonical_country", "country") + select("country_strategy", "countryStrategy", [{ value: "preserve_represented_country", label: text("history") }, { value: "correct_all_to_canonical", label: text("correction") }]) : field("target_id", "Target result")}</div></div></article>`;
     }).join("");
     const eventReviewRows = (p.event_match_review || []).slice(start('event'), start('event') + pageSize).map((item, i) => `<article class="admin-identity-pair admin-import-review" data-event-review="${start('event') + i}"><div class="admin-identity-entity"><strong>${esc(item.event_name)} · ${item.year}</strong><p class="admin-revision-meta">${esc(text('importFileRows'))}: ${item.result_count}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}</div><div data-pair-details hidden>${item.suggestions.map(s => renderImportIdentityComparison({leftName: item.event_name, rightName: s.name, rightId: s.event_id, fields: [['name', item.event_name, s.name], ['year', item.year, s.year], ['discipline', item.disciplines.join(' · '), s.discipline], ['importCalendarStart', null, s.start_date], ['importCalendarEnd', null, s.end_date]], text, esc})).join('')}${select('event_action', 'decision', [{value: '', label: text('unresolved')}, ...item.suggestions.map(s => ({value: String(s.event_id), label: `${text('importMatchEvent')} · ${s.name} · ID ${s.event_id}`})), {value: 'keep_separate', label: text('importNewSeparate')}], draft.event[item.review_id]?.selection || '')}</div></article>`).join('');
     const importForm = document.getElementById('adminImportForm');
@@ -997,7 +1002,8 @@ export async function renderAdminCenter(host) {
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
-      ${!p.committed && (p.athlete_match_review_count || p.athlete_match_review?.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review_count || p.athlete_match_review?.length || 0, isDeferred('athlete') ? '' : reviewRows(p.athlete_match_review, "athlete")) : ''}
+      ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
+      ${!p.committed && athleteCountryReviews.length && !isDeferred('athlete') ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
       ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       ${p.issues?.length && (draft.kind !== 'gymternet' || p.committed) ? `<details class="admin-revision-group" data-import-issues ${draft.issuesOpen ? 'open' : ''}><summary>${text('importIssueList')}<span class="admin-revision-count">${p.issues.length}</span>${issueErrors.length ? `<span class="admin-import-blocking">${text('importBlocking')}: ${issueErrors.length}</span>` : ''}</summary>${renderImportIssues({issues: p.issues, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</details>` : ''}
@@ -1039,6 +1045,11 @@ export async function renderAdminCenter(host) {
           group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button(isDeferred(kind) ? 'importResumeDuplicates' : 'importDeferDuplicates', `data-defer-duplicates="${kind}"`)}</div>`);
           if (isDeferred(kind)) group.querySelector('.admin-import-pagination')?.remove();
         }
+      }
+      const countryReviewGroup = output.querySelector('[data-import-group=athleteCountry]');
+      if (countryReviewGroup) {
+        sections.athletes.append(countryReviewGroup);
+        countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-revision-meta">${esc(text('importCountryIdentityNote'))}</p>`);
       }
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
