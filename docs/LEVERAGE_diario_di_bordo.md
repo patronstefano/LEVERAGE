@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Collegamenti schede nell'anteprima calendario
+
+Rinominati i collegamenti dei record calendario in Vai all'Evento, con traduzioni nelle lingue supportate. Le voci calendario senza Event collegato mostrano una breve indicazione esplicita, senza creare link non validi. Verifica in sola lettura: Ifact Norges Cup 2 del 2026 e la voce calendario 291, con event_id nullo; le schede omonime degli anni precedenti non sono destinazioni corrette. Nessuna entita creata o modificata. Test UI sui collegamenti e sulla distinzione delle voci solo calendario.
+
 ## 2026-10-07 - Recupero navigazione da evento non disponibile
 
 La preview tentava di riaprire Evento 1728, con risposta 404, mostrando impropriamente un errore generale sui dati live. Le richieste GET ora conservano lo status HTTP; su 404 della scheda evento si ripristina la destinazione di provenienza, inclusa la ricerca, e si correggono i riferimenti della memoria sezioni alla scheda non disponibile. Gli altri errori restano segnalati; nessuna modifica al database. Verificati il caso reale e il test browser di navigazione con ID inesistente e ricerca conservata.
