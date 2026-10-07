@@ -85,6 +85,7 @@ def calendar_event_name_candidates(value: str, year: int) -> set[str]:
 
 
 def _event_name_semantic_variants(normalized: str) -> set[str]:
+    normalized = _replace_discipline_words(normalized)
     variants = {normalized}
     discipline_suffix_patterns = [
         r"\s*\((?:mag|wag|mag and wag)\)\s*$",
@@ -113,6 +114,11 @@ def _replace_discipline_words(value: str) -> str:
     normalized = re.sub(r"\bmen's\b|\bmens\b|\bmen\b", "mag", value)
     normalized = re.sub(r"\bwomen's\b|\bwomens\b|\bwomen\b", "wag", normalized)
     return re.sub(r"\s+", " ", normalized).strip()
+
+
+def calendar_source_name_key(value: str) -> str:
+    semantic = _replace_discipline_words(normalize_calendar_event_name(value))
+    return re.sub(r'\s+', ' ', re.sub(r'\((mag|wag|mag and wag)\)', r' \1 ', semantic)).strip()
 
 
 def parse_calendar_date_label(label: str, year: int) -> tuple[date, date]:
@@ -358,10 +364,14 @@ def summarize_calendar_import(
 ) -> dict:
     event_lookup = _build_event_lookup(db, {row.year for row in rows})
     calendar_lookup = {}
+    reviewed_calendar_lookup = {}
     for entry in db.query(models.EventCalendarEntry).filter(
         models.EventCalendarEntry.is_deleted.is_(False),
         models.EventCalendarEntry.year.in_({row.year for row in rows}),
     ).all():
+        if entry.event_id is not None and entry.event and not entry.event.is_deleted:
+            key = (entry.year, calendar_source_name_key(entry.name), entry.start_date, entry.end_date)
+            reviewed_calendar_lookup.setdefault(key, []).append(entry)
         for candidate in calendar_event_name_candidates(entry.name, entry.year):
             if entry.event_id is None:
                 calendar_lookup.setdefault((entry.year, candidate), []).append(entry)
@@ -381,9 +391,16 @@ def summarize_calendar_import(
     skipped_existing_rows = 0
     matched_calendar_ids, updated_calendar_ids, unchanged_calendar_ids, skipped_calendar_ids = set(), set(), set(), set()
     calendar_sources = {}
+    reviewed_sources = {}
 
     for row in rows:
         matches = _find_existing_events(event_lookup, row)
+        reviewed_entries = reviewed_calendar_lookup.get(
+            (row.year, calendar_source_name_key(row.event_name), row.start_date, row.end_date), []
+        )
+        reviewed_entries = [entry for entry in reviewed_entries if calendar_discipline_matches(row, entry.event)]
+        if reviewed_entries:
+            matches = list({entry.event_id: entry.event for entry in reviewed_entries}.values())
         calendar_matches = _find_existing_events(calendar_lookup, row) if not matches else []
         # Excluded existing events must not participate in conflicts or writes.
         if skip_existing_events and (matches or calendar_matches):
@@ -420,6 +437,20 @@ def summarize_calendar_import(
         matched_event_ids.update(matched_ids)
         for event in matches:
             matched_sources_by_event_id.setdefault(event.id, []).append(row)
+            if reviewed_entries or (event.start_date == row.start_date and event.end_date == row.end_date):
+                reviewed_sources.setdefault(event.id, set()).add((row.sheet, row.row_number))
+        if reviewed_entries:
+            # Preserve reviewed sub-event periods instead of overwriting the shared Event dates.
+            already_up_to_date_event_ids.update(matched_ids)
+            preview = _row_preview(row, matches, 'matched', 'no_change')
+            preview['matched_calendar_entry_ids'] = [entry.id for entry in reviewed_entries]
+            preview['matched_events'] = [{
+                'event_id': entry.event_id, 'calendar_entry_id': entry.id, 'name': entry.name,
+                'start_date': entry.start_date, 'end_date': entry.end_date,
+                'name_differs': False, 'dates_differ': False,
+            } for entry in reviewed_entries]
+            preview_rows.append(preview)
+            continue
         events_to_update = [
             event for event in matches
             if event.start_date != row.start_date or event.end_date != row.end_date
@@ -457,7 +488,7 @@ def summarize_calendar_import(
         "would_create_events": len(would_create_source_keys),
         "unmatched_historical_rows": len(unmatched_historical_rows),
         "duplicate_source_rows": duplicate_source_rows,
-        "matched_event_source_conflicts": _build_matched_event_source_conflicts(matched_sources_by_event_id) + [
+        "matched_event_source_conflicts": _build_matched_event_source_conflicts(matched_sources_by_event_id, reviewed_sources) + [
             {**{key: value for key, value in conflict.items() if key != 'event_id'}, 'calendar_entry_id': conflict['event_id']}
             for conflict in _build_matched_event_source_conflicts(calendar_sources)
         ],
@@ -540,6 +571,7 @@ def _build_duplicate_source_row(
 
 def _build_matched_event_source_conflicts(
     matched_sources_by_event_id: dict[int, list[CalendarImportRow]],
+    reviewed_sources: Optional[dict[int, set[tuple[str, int]]]] = None,
 ) -> list[dict]:
     conflicts = []
     for event_id, source_rows in matched_sources_by_event_id.items():
@@ -550,6 +582,8 @@ def _build_matched_event_source_conflicts(
             for row in source_rows
         }
         if len(date_ranges) <= 1:
+            continue
+        if all((row.sheet, row.row_number) in (reviewed_sources or {}).get(event_id, set()) for row in source_rows):
             continue
         conflicts.append({
             "event_id": event_id,

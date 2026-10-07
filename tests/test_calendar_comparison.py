@@ -52,3 +52,9 @@ def test_calendar_only_entry_uses_name_when_discipline_missing():
     entry = SimpleNamespace(id=1, name='Cup (WAG)', discipline=None)
     row = CalendarImportRow('2026', 2, 2026, 'Jan 1', 'Cup (MAG)', date(2026, 1, 1), date(2026, 1, 1))
     assert _find_existing_events({(2026, 'cup'): [entry]}, row) == []
+
+
+@pytest.mark.parametrize('word', ['MAG', 'Men', 'Mens', "Men's", 'Men’s'])
+def test_calendar_mens_suffix_normalized_before_removal(word):
+    assert 'cup' in calendar_event_name_candidates(f'Cup ({word})', 2026)
+    assert infer_event_discipline(f'Cup ({word})').value == 'MAG'

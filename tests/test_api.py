@@ -6423,6 +6423,39 @@ def test_calendar_import_commit_blocks_conflicting_sources_matching_same_event()
     assert len(commit_response.json()["detail"]["matched_event_source_conflicts"]) == 1
 
 
+@pytest.mark.parametrize('word', ['MAG', 'Men', 'Mens', "Men's", 'Men’s'])
+def test_calendar_reimport_preserves_reviewed_discipline_periods(word):
+    client.post('/auth/register', json={'email': 'calendar_periods@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('calendar_periods@example.com')}"}
+    event = client.post('/events/', headers=headers, json={
+        'name': 'Example Championships', 'year': 2026, 'discipline': 'MAG and WAG',
+        'category': 'senior', 'level': 'International Event',
+        'start_date': '2026-06-25', 'end_date': '2026-06-28',
+    }).json()
+    with SessionLocal() as db:
+        db.add(models.EventCalendarEntry(event_id=event['id'], name='Example Championships (MAG)',
+            year=2026, start_date=date(2026, 6, 18), end_date=date(2026, 6, 21),
+            discipline=models.EventDisciplineEnum.MAG))
+        db.commit()
+    def upload(endpoint, male_dates='Jun 18-21'):
+        workbook = make_calendar_workbook({2026: [
+            (male_dates, f'Example Championships ({word})'),
+            ('Jun 25-28', 'Example Championships'),
+        ]})
+        return client.post(f'/imports/calendar/{endpoint}?year=2026', headers=headers,
+            files={'file': ('Calendar.xlsx', workbook.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')})
+    preview = upload('preview').json()
+    assert preview['matched_event_source_conflicts'] == []
+    assert preview['would_update_events'] == 0
+    assert preview['would_create_events'] == 0
+    assert all(row['action'] == 'no_change' for row in preview['rows'])
+    assert preview['rows'][0]['matched_calendar_entry_ids']
+    assert upload('commit').status_code == 200
+    assert client.get(f"/events/{event['id']}").json()['start_date'] == '2026-06-25'
+    assert upload('preview', 'Jun 19-22').json()['matched_event_source_conflicts']
+    assert upload('commit', 'Jun 19-22').status_code == 409
+
+
 def test_event_result_groups():
     client.post("/auth/register", json={"email": "admin@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("admin@example.com")

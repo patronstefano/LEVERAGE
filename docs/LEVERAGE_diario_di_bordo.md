@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Reimport calendario e periodi MAG/WAG gia revisionati
+
+Il confronto sorgente considerava solo le date principali di Event e riproponeva come conflitti periodi distinti gia approvati nell'import massivo e conservati in EventCalendarEntry. Ora nome semantico, anno e intervallo esatto riconoscono le voci collegate non eliminate; l'abbinamento revisionato prevale sul matching generico. Queste righe sono gia presenti, non riscrivono le date dell'evento e non generano un conflitto quando tutti i periodi sono gia documentati. I periodi nuovi o modificati continuano a richiedere revisione: nessuna unione automatica delle date e nessuna deduzione che un nome senza MAG sia necessariamente WAG.
+
+Uniformata prima della rimozione dei suffissi la normalizzazione MAG/Men/Mens/Men's e WAG/Women/Womens/Women's, inclusi apostrofi tipografici e parentesi. Controllo locale 2026 in sola lettura: 8 conflitti prima, 1 dopo; sette casi gia risolti non vengono riproposti. Resta 2nd Bundesliga (11 luglio) rispetto a 2nd Bundesliga MAG (11 aprile), senza voce calendario corrispondente gia salvata per luglio. Test di regressione includono reimport senza modifiche, rispetto delle date principali e blocco delle date sorgente realmente cambiate. Nessuna modifica ai dati reali.
+
 ## 2026-10-07 - Eliminazione schede da strumenti ADMIN
 
 Nelle schede Atleta ed Evento, Elimina Atleta/Elimina Evento precede Salva modifiche e usa lo stile contorno rosso dei comandi distruttivi. Conferma modale con nome, ID e avviso esplicito: anche i risultati associati saranno nascosti. Richieste duplicate bloccate durante l'operazione; errori mostrati nel dialogo. Dopo il successo si torna alla lista e si invalidano memoria della scheda eliminata, cache ricerca globale e preferiti.
