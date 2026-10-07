@@ -72,6 +72,22 @@ def main():
         page.goto('http://127.0.0.1:5173/?v=missing-event-test#/events/999999999?from=events&return_to=%2Fevents%3Fsearch%3DBundesliga')
         page.wait_for_url('**#/events?search=Bundesliga', timeout=30000)
         page.wait_for_function("JSON.parse(sessionStorage.getItem('leverage.sectionRoutes')).events === '/events?search=Bundesliga'")
+        page.route('**/events/calendar/999999998', lambda route: route.fulfill(json={
+            'id': None, 'calendar_entry_id': 999999998, 'is_calendar_only': True,
+            'name': 'Calendar-only competition', 'year': 2026,
+            'start_date': '2026-05-09', 'end_date': '2026-05-10',
+            'discipline': 'MAG', 'category': 'senior', 'level': 'National Event',
+            'has_results': False, 'result_count': 0, 'calendar_status': 'completed_no_results',
+        }))
+        for width in [1440, 390]:
+            page.set_viewport_size({'width': width, 'height': 900})
+            page.goto('http://127.0.0.1:5173/#/events/calendar/999999998?from=events&return_to=%2Fevents%3Fsearch%3DCup')
+            page.locator('#eventProfileSummary').wait_for()
+            assert 'Calendar-only competition' in page.locator('#eventProfileSummary').inner_text()
+            assert 'No classifications are available for this event yet.' in page.locator('main').inner_text()
+            assert page.locator('.detail-back-button').get_attribute('href') == '#/events?search=Cup'
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+            page.screenshot(path=f'/tmp/leverage-calendar-only-{width}.png', full_page=True)
         browser.close()
     print('Section navigation: admin isolation, stale memory recovery and public contexts passed')
 

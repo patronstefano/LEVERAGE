@@ -514,6 +514,21 @@ def list_events(
     return ordered_query.offset(offset).limit(limit).all()
 
 
+@router.get("/calendar/{entry_id}", response_model=schemas.EventCalendarItem)
+def get_calendar_entry(entry_id: int, db: Session = Depends(get_db)):
+    entry = db.query(models.EventCalendarEntry).filter(
+        models.EventCalendarEntry.id == entry_id,
+        models.EventCalendarEntry.is_deleted.is_(False),
+    ).first()
+    if not entry or (entry.event and entry.event.is_deleted):
+        raise HTTPException(status_code=404, detail="Calendar entry not found")
+    result_count = db.query(models.Result).filter(
+        models.Result.event_id == entry.event_id,
+        models.Result.is_deleted.is_(False),
+    ).count() if entry.event_id else 0
+    return build_calendar_entry_item(entry, result_count)
+
+
 @router.get("/calendar", response_model=list[schemas.EventCalendarItem])
 def get_events_calendar(
     db: Session = Depends(get_db),

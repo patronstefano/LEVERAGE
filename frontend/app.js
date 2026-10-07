@@ -1,4 +1,4 @@
-import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=calendar-event-links-20261007";
+import { renderAdminCenter, renderAdminMfaSetup, adminLabel } from "./admin-center.js?v=calendar-profiles-20261007";
 import { athleteFieldOptions as localizedAthleteFieldOptions } from "./athlete-field-options.js?v=country-names-20261001";
 import { bindAuthValidation } from "./auth-validation.js?v=password-min-copy-20260930";
 import { accountText, mountAccountTools, renderAccountRecovery, canGenerateDemoNotifications, generateDemoNotifications } from "./account-tools.js?v=security-audit-links-20261007";
@@ -54,13 +54,13 @@ function contextualAthleteSourceSection(route) {
 
 function routeHasGlobalSearchContext(route) {
   const [routePath, query = ""] = String(route || "/").split("?");
-  if (!/^\/(athletes|events)\/\d+$/.test(routePath)) return false;
+  if (!/^\/(?:athletes|events|events\/calendar)\/\d+$/.test(routePath)) return false;
   return new URLSearchParams(query).get("from") === "search";
 }
 
 function activeRouteSection(route) {
   const [path, query = ""] = String(route || "/").split("?");
-  if (/^\/(athletes|events)\/\d+$/.test(path) && new URLSearchParams(query).get("from") === "admin") {
+  if (/^\/(?:athletes|events|events\/calendar)\/\d+$/.test(path) && new URLSearchParams(query).get("from") === "admin") {
     return "";
   }
   if (routeHasGlobalSearchContext(route)) return "home";
@@ -5912,7 +5912,7 @@ function renderEventList(selector, events, options = {}) {
       eventCardTitle(event, period),
       "",
       eventCardSummaryPills(event),
-      event.id ? eventSectionProfileHref(event.id) : "",
+      eventSectionProfileHref(event.id || `calendar/${event.calendar_entry_id}`),
       favoriteButton("event", event.id, state.favoriteEventIds.has(Number(event.id))),
     );
   }).join("")}</div>${options.hasMore ? renderLoadMoreButton("events", t("loadMoreEvents")) : ""}`;
@@ -6041,7 +6041,7 @@ function renderHomeCalendar(selector, events, monthDate = TODAY, options = {}) {
               <div class="calendar-bars">
                 ${visibleSegments.map((segment) => {
                   const event = segment.event;
-                  const href = event.id ? eventSectionProfileHref(event.id) : "";
+                  const href = eventSectionProfileHref(event.id || `calendar/${event.calendar_entry_id}`);
                   const accessibilityLabel = [
                     event.name,
                     formatDateRange(event),
@@ -12337,17 +12337,23 @@ async function renderAthleteDetail(athleteId) {
   }
 }
 
-async function renderEventDetail(eventId) {
+async function renderEventDetail(eventId, calendarOnly = false) {
   const requestedRoute = state.route;
   await ensureFavoritesLoaded().catch(() => {});
   setApp(`<section class="panel">${loadingState()}</section>`);
   try {
-    const profile = await getJson(`/events/${eventId}/profile-view`, { ranking_limit: 60 });
+    const profile = calendarOnly
+      ? {event: await getJson(`/events/calendar/${eventId}`), total_results: 0}
+      : await getJson(`/events/${eventId}/profile-view`, { ranking_limit: 60 });
+    if (calendarOnly && profile.event.id) {
+      window.location.replace(window.location.hash.replace(`/events/calendar/${eventId}`, `/events/${profile.event.id}`));
+      return;
+    }
     prepareEventDetailState(eventId, profile);
     let event = profile.event || await getJson(`/events/${eventId}`);
     let adminView = null;
     let adminViewError = null;
-    if (isAdminUser()) {
+    if (!calendarOnly && isAdminUser()) {
       try {
         adminView = await getJson(`/events/${eventId}/admin-view`, {}, { auth: true });
         event = {
@@ -12376,26 +12382,28 @@ async function renderEventDetail(eventId) {
             <h2>${escapeHtml(event.name)}</h2>
             ${renderEventProfileMeta(event)}
           </div>
-          ${detailProfileActions("event", event.id, state.favoriteEventIds.has(Number(event.id)))}
+          ${calendarOnly ? '' : detailProfileActions("event", event.id, state.favoriteEventIds.has(Number(event.id)))}
         </div>
         ${renderEventDetailsPanel(event, { embedded: true, showHeader: true })}
       </section>
-      ${renderEventAdminPanel(event, adminView, adminViewError)}
+      ${calendarOnly ? '' : renderEventAdminPanel(event, adminView, adminViewError)}
       ${renderEventResultsShell(profile)}
     `);
     bindFavoriteButtons();
     bindAdminToolsToggles();
     bindEventClassificationControls();
     loadEventDetailRanking();
-    bindEventAdminForm(eventId);
-    bindEventWorldGymnasticsTools(eventId);
-    bindEventSuggestionActions(eventId);
+    if (!calendarOnly) {
+      bindEventAdminForm(eventId);
+      bindEventWorldGymnasticsTools(eventId);
+      bindEventSuggestionActions(eventId);
+    }
   } catch (error) {
     if (state.route !== requestedRoute) return;
     if (error.status === 404) {
       const back = eventDetailBackDestination().href;
       for (const [section, route] of Object.entries(state.sectionRoutes)) {
-        if (String(route).split('?')[0] === `/events/${eventId}`) {
+        if (String(route).split('?')[0] === `/events/${calendarOnly ? 'calendar/' : ''}${eventId}`) {
           const destination = back.slice(1);
           state.sectionRoutes[section] = routeBelongsToSection(destination, section)
             ? destination : SECTION_BASE_ROUTES[section];
@@ -12536,6 +12544,7 @@ function render() {
   syncTopbarHeight();
   const athleteDetailMatch = state.route.match(/^\/athletes\/(\d+)/);
   const eventDetailMatch = state.route.match(/^\/events\/(\d+)/);
+  const calendarDetailMatch = state.route.match(/^\/events\/calendar\/(\d+)/);
   if (["/forgot-password", "/reset-password", "/resend-verification"].includes(state.route.split("?")[0])) {
     return renderAccountRecovery(accountToolsHost(), state.route.startsWith("/reset-password") ? "reset" : state.route.startsWith("/resend") ? "resend" : "forgot");
   } else if (/^\/(?:admin|super-admin)(?:\/|$)/.test(state.route)) {
@@ -12546,6 +12555,8 @@ function render() {
     return renderAccount();
   } else if (athleteDetailMatch) {
     return renderAthleteDetail(athleteDetailMatch[1]);
+  } else if (calendarDetailMatch) {
+    return renderEventDetail(calendarDetailMatch[1], true);
   } else if (eventDetailMatch) {
     return renderEventDetail(eventDetailMatch[1]);
   } else if (state.route.startsWith("/athletes")) {

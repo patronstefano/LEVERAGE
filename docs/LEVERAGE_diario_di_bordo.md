@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Schede consultabili anche per gare solo calendario
+
+Superata la precedente distinzione UI tra Event e voci calendario prive di Event: tutte le card e barre calendario possono aprire una scheda, con lo stesso layout delle informazioni gara e il messaggio localizzato Non sono ancora disponibili classifiche per questo evento. Aggiunto endpoint pubblico di lettura /events/calendar/{id}, con esclusione delle voci eliminate, senza creare entita o risultati. Il collegamento calendario reindirizza alla scheda Event quando viene associata successivamente. Anche l'anteprima import offre Vai all'Evento per queste voci. Nessun falso Leverage ID, preferito o comando di modifica Event viene attribuito alla voce calendario: tali comandi restano legati a vere entita Event. Preservati ritorno alla ricerca e contesto admin. Verificati API, layout desktop/mobile e caso reale Ifact Norges Cup 2.
+
 ## 2026-10-07 - Collegamenti schede nell'anteprima calendario
 
 Rinominati i collegamenti dei record calendario in Vai all'Evento, con traduzioni nelle lingue supportate. Le voci calendario senza Event collegato mostrano una breve indicazione esplicita, senza creare link non validi. Verifica in sola lettura: Ifact Norges Cup 2 del 2026 e la voce calendario 291, con event_id nullo; le schede omonime degli anni precedenti non sono destinazioni corrette. Nessuna entita creata o modificata. Test UI sui collegamenti e sulla distinzione delle voci solo calendario.

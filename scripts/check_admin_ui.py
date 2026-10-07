@@ -1765,7 +1765,7 @@ def main():
                         mountCalendarImportRows({...options, root});
                         if (root.querySelectorAll('[data-calendar-source-conflict]').length !== 1) return false;
                         if (calendarOnly) {
-                            if (!root.querySelector('[data-calendar-only]') || root.querySelector('a[href^="#/events/"]')) return false;
+                            if (!root.querySelector('[data-calendar-only][href^="#/events/calendar/7"]')) return false;
                         } else if (root.querySelector('a[href^="#/events/"]').textContent !== 'importGoToEvent') return false;
                         mountCalendarConflicts({...options, root, viewState: {}});
                         if (root.textContent.includes('Shared Cup') || !root.textContent.includes('Other period')) return false;
