@@ -1254,9 +1254,9 @@ export async function renderAdminCenter(host) {
         const message = section?.querySelector(`[data-import-empty=${scope}]`);
         if (pending[scope]) message?.remove();
         else if (section && !message) section.insertAdjacentHTML('beforeend', `<div class="admin-center-feedback" data-import-empty="${scope}" role="status">${esc(text(label))}</div>`);
-        if (scope === 'athletes' && !pending[scope]) {
-          const group = section?.querySelector('[data-import-group=athlete]');
-          const empty = section?.querySelector('[data-import-empty=athletes]');
+        if (!pending[scope]) {
+          const group = section?.querySelector(`[data-import-group=${scope === 'athletes' ? 'athlete' : 'event'}]`);
+          const empty = section?.querySelector(`[data-import-empty=${scope}]`);
           if (group && empty) group.before(empty);
         }
       }

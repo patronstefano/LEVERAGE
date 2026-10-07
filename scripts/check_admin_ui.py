@@ -1084,6 +1084,8 @@ def main():
                     assert len(writes) == pending_requests
                     assert 'Riprendi revisione duplicati' in page.locator(f'[data-defer-duplicates={kind}]').text_content()
                     if kind == 'event':
+                        assert page.locator('[data-import-empty=events]').inner_text() == 'Nessun evento da verificare.'
+                        assert page.locator('[data-import-empty=events]').evaluate("el => el.nextElementSibling?.dataset.importGroup === 'event'")
                         page.locator('#adminReviewPreview').click()
                     else:
                         assert page.locator('[data-import-empty=athletes]').inner_text() == 'Nessun atleta da verificare.'

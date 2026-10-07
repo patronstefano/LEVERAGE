@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Posizione del messaggio di revisione eventi completata
+
+Nell'import Results, Nessun evento da verificare viene posizionato prima di Revisione identita gare, con lo stesso comportamento del messaggio relativo agli atleti. Invariati stile, decisioni e ricalcolo manuale. Aggiunta verifica browser della posizione dopo il rinvio delle revisioni eventi.
+
 ## 2026-10-07 - Ordine generatori notifiche demo
 
 Allineato anche l'ordine dei generatori notifiche nella downbar: SUPER ADMIN, ADMIN, USER, limitatamente ai generatori visibili per il ruolo corrente. Nessuna modifica ai contenuti delle notifiche o alle autorizzazioni.
