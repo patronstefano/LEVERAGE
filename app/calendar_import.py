@@ -314,6 +314,11 @@ def _parse_calendar_csv(content: bytes, selected_year: Optional[int] = None) -> 
     return rows, issues
 
 
+def is_unqualified_bundesliga_round(event_name: str) -> bool:
+    return bool(re.fullmatch(r'\d+(?:st|nd|rd|th) bundesliga(?:\s*\(?\d{4}\)?)?',
+                             normalize_calendar_event_name(event_name), re.I))
+
+
 def infer_event_discipline(event_name: str) -> models.EventDisciplineEnum:
     normalized = _replace_discipline_words(normalize_calendar_event_name(event_name))
     has_mag = bool(re.search(r'\bmag\b', normalized))
@@ -321,6 +326,8 @@ def infer_event_discipline(event_name: str) -> models.EventDisciplineEnum:
     if has_mag and not has_wag:
         return models.EventDisciplineEnum.MAG
     if has_wag and not has_mag:
+        return models.EventDisciplineEnum.WAG
+    if is_unqualified_bundesliga_round(event_name):
         return models.EventDisciplineEnum.WAG
     return models.EventDisciplineEnum.MAG_AND_WAG
 
@@ -338,7 +345,8 @@ def calendar_discipline_matches(row: CalendarImportRow, event) -> bool:
 
     source = sections(infer_event_discipline(row.event_name))
     stored = sections(getattr(event, 'discipline', None))
-    named = sections(infer_event_discipline(event.name))
+    # Legacy result events may lack a name qualifier but already be explicitly MAG.
+    named = stored if is_unqualified_bundesliga_round(event.name) and getattr(event, 'discipline', None) else sections(infer_event_discipline(event.name))
     return bool(source & stored & named)
 
 

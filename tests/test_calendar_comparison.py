@@ -31,6 +31,8 @@ def test_identical_calendar_event_has_no_differences():
 @pytest.mark.parametrize('name,expected', [
     ('Cup (MAG)', 'MAG'), ('Cup WAG', 'WAG'), ("Men’s Cup", 'MAG'),
     ("Women's Cup", 'WAG'), ('Cup (MAG and WAG)', 'MAG and WAG'), ('Cup', 'MAG and WAG'),
+    ('2nd Bundesliga', 'WAG'), ('2nd Bundesliga (2026)', 'WAG'),
+    ('2nd Bundesliga (MAG)', 'MAG'), ('Bundesliga Finals', 'MAG and WAG'),
 ])
 def test_calendar_discipline_detection(name, expected):
     assert infer_event_discipline(name).value == expected
@@ -52,6 +54,15 @@ def test_calendar_only_entry_uses_name_when_discipline_missing():
     entry = SimpleNamespace(id=1, name='Cup (WAG)', discipline=None)
     row = CalendarImportRow('2026', 2, 2026, 'Jan 1', 'Cup (MAG)', date(2026, 1, 1), date(2026, 1, 1))
     assert _find_existing_events({(2026, 'cup'): [entry]}, row) == []
+
+
+def test_bundesliga_bare_calendar_name_does_not_match_legacy_mag_event():
+    male = SimpleNamespace(id=1, name='2nd Bundesliga', year=2026, discipline='MAG')
+    lookup = {(2026, '2nd bundesliga'): [male]}
+    female_row = CalendarImportRow('2026', 2, 2026, 'Jul 11', '2nd Bundesliga', date(2026, 7, 11), date(2026, 7, 11))
+    male_row = CalendarImportRow('2026', 3, 2026, 'Apr 11', '2nd Bundesliga (MAG)', date(2026, 4, 11), date(2026, 4, 11))
+    assert _find_existing_events(lookup, female_row) == []
+    assert _find_existing_events(lookup, male_row) == [male]
 
 
 @pytest.mark.parametrize('word', ['MAG', 'Men', 'Mens', "Men's", 'Men’s'])

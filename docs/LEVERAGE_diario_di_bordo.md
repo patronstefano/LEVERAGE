@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Calendar distingue Bundesliga senza suffisso da MAG legacy
+
+Corretto il falso conflitto 2nd Bundesliga 2026: il calendario senza suffisso era ancora inferito MAG e WAG e poteva associarsi all'Event MAG storico senza suffisso. Le tappe ordinali Bundesliga senza qualificatore nel calendario sono ora WAG; le indicazioni esplicite MAG restano MAG e le finali generiche non cambiano. Per i vecchi Event con nome senza suffisso rimane autorevole la disciplina gia registrata, senza riclassificarli WAG automaticamente.
+
+Verifica read-only su Calendar.xlsx 2026: 11 aprile (MAG) associato a ID 1626 senza differenze, 11 luglio (WAG) proposto come nuovo evento distinto, zero conflitti sorgente. Nessun import calendario eseguito. Rinominato anche ID 1626 in 2nd Bundesliga (MAG), con audit update_event e backup backups/leverage_before_bundesliga_1626_name_20261007.db, per evitare che la futura creazione WAG produca due Event con identico nome/anno e per riutilizzare il routing MAG dei risultati. Punteggi e date invariati. Test aggiunti per inferenza WAG, compatibilita con MAG legacy e mantenimento delle finali miste.
+
 ## 2026-10-07 - Completamento revisioni e ricalcolo automatico Results
 
 Il messaggio Nessun atleta da verificare dipende dalle decisioni ancora pendenti, non dalla presenza del contenitore Revisione identita atleti nel DOM. Compare anche dopo rinvio globale delle revisioni duplicati e dopo completamento delle singole decisioni. Lo stesso controllo mantiene coerente lo stato vuoto degli eventi. Conteggio condiviso delle revisioni residue nelle tre sezioni, comprendendo conflitti di nazionalita, punteggi, errori bloccanti e revisioni eventualmente non incluse nella lista limitata della risposta.
