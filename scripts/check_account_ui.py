@@ -428,6 +428,7 @@ def main():
                 assert 'ADMIN · ID 42' in page.locator('.account-notification-copy p').first.inner_text()
                 assert 'Audit et Restauration' in page.locator('.account-notification-copy p').first.inner_text()
                 assert page.locator('.account-notification a[href="#/super-admin/audit"]').count() == 1
+                assert page.locator('.account-notification a[href^="#/events/"], .account-notification a[href^="#/athletes/"]').count() == 0
                 scope_buttons.first.click()
                 assert page.locator('.account-notification').count() == 7
             page.locator('[data-notification-scope="admin_only"]').click()

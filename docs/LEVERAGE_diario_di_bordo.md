@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Collegamenti delle notifiche di sicurezza
+
+Le notifiche security_alert rimandano esclusivamente ad Audit e Ripristino: rimossi i collegamenti alle schede correlate, che in caso di eliminazione non sono piu disponibili. Nessuna modifica ai riferimenti conservati nella notifica o ai collegamenti delle notifiche ordinarie. Aggiunto controllo UI sull'assenza dei link atleta/evento negli avvisi di sicurezza.
+
 ## 2026-10-07 - Conferma importazione accanto a Cambia file
 
 Il messaggio Operazione completata viene mostrato nell'intestazione dell'import concluso, immediatamente a sinistra di Cambia file, sia per Results sia per Calendar. Conservati lo stile verde compatto dei messaggi di successo e lo sfondo neutro; eliminata la duplicazione nel feedback generale. Test UI sul posizionamento e sull'assenza del secondo messaggio.

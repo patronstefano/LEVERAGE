@@ -245,7 +245,7 @@ export function mountNotificationInbox(host) {
         article.dataset.notificationId = String(item.id);
         article.dataset.notificationType = item.type || '';
         article.className = "account-notification" + (item.is_read ? "" : " is-unread");
-        const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item["related_" + key + "_id"]).map(([key, path]) =>
+        const links = [["athlete", "athletes"], ["event", "events"]].filter(([key]) => item.type !== 'security_alert' && item["related_" + key + "_id"]).map(([key, path]) =>
           '<a class="quiet-button outline-command-button" href="#/' + path + '/' + Number(item["related_" + key + "_id"]) + '">' + esc(t(key === "athlete" ? "goToAthlete" : "goToEvent")) + '</a>').join("") +
           (item.type === 'security_alert' ? '<a class="quiet-button outline-command-button" href="#/super-admin/audit">' + esc(t('goToAudit')) + '</a>' : '');
         const group = demoGroup(item.type);
