@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Stile nota revisione nazionalita
+
+Uniformato il messaggio su stesso nome e nazionalita diverse alla classe admin-stats-note usata per le correzioni automatiche: medesima dimensione, colore e spaziatura. Preservata la nota dalla pulizia degli avvisi generici di identita.
+
 ## 2026-10-07 - Distinzione fra identita e nazionalita nelle revisioni atleti
 
 - Separati in Revisione nazionalita atleti i cambi country con identita coincidente e gli stessi nomi presenti con piu nazionalita. I possibili abbinamenti fra nomi differenti restano nella Revisione identita atleti.

@@ -1049,7 +1049,7 @@ export async function renderAdminCenter(host) {
       const countryReviewGroup = output.querySelector('[data-import-group=athleteCountry]');
       if (countryReviewGroup) {
         sections.athletes.append(countryReviewGroup);
-        countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-revision-meta">${esc(text('importCountryIdentityNote'))}</p>`);
+        countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<p class="admin-stats-note" data-country-review-note>${esc(text('importCountryIdentityNote'))}</p>`);
       }
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
       sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
@@ -1078,7 +1078,7 @@ export async function renderAdminCenter(host) {
       }
       if (p.athlete_match_review?.length || p.event_match_review?.length) notes.insertAdjacentHTML('beforeend', `<p>${esc(text('importIdentityNote'))}</p>`);
       notes.insertAdjacentHTML('beforeend', `<p>${esc(text(isDeferred('event') || isDeferred('athlete') ? 'importDeferredNote' : 'importDuplicateNote'))}</p>`);
-      output.querySelectorAll('[data-import-group] > .admin-stats-note, .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
+      output.querySelectorAll('[data-import-group] > .admin-stats-note:not([data-country-review-note]), .admin-import-duplicate-link > .admin-stats-note').forEach(note => note.remove());
       const choosePart = key => {
         draft.reviewPart = key;
         for (const [name, section] of Object.entries(sections)) section.hidden = name !== key;

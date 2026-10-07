@@ -1215,6 +1215,9 @@ def main():
                 assert page.locator('[data-import-group=athlete]').count() == 0
                 country_group = page.locator('[data-import-group=athleteCountry]')
                 country_group.evaluate('el => el.open = true')
+                assert country_group.locator('[data-country-review-note]').is_visible()
+                assert country_group.locator('[data-country-review-note]').get_attribute('class') == 'admin-stats-note'
+                assert country_group.locator('[data-country-review-note]').evaluate('el => getComputedStyle(el).fontSize') == '13px'
                 country_group.locator('[data-import-review-toggle]').click()
                 assert 'ITA' in country_group.inner_text() and 'ESP' in country_group.inner_text()
                 assert country_group.locator('[data-admin-select-value=update_country]').count() == 1
