@@ -7480,6 +7480,16 @@ a:focus-visible > .entity-card-clickable {
 #adminImportOutput [data-import-group="athleteCountry"] [data-pair-details] { margin-top: 0; }
 #adminImportOutput [data-import-group="athleteCountry"] .admin-import-athlete-comparison { margin: 0 0 12px; }
 .admin-country-review-footer { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+#adminImportOutput [data-review-type="athlete"] > [data-pair-details]:not([hidden]) { display: grid; grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr); gap: 24px; align-items: center; }
+#adminImportOutput [data-review-type="athlete"] .admin-import-athlete-comparison { margin: 0; }
+#adminImportOutput .admin-athlete-review-actions { min-width: 0; }
+#adminImportOutput .admin-athlete-review-actions > .admin-center-actions { justify-content: flex-end; margin: 0; }
+#adminImportOutput .admin-athlete-review-actions .admin-country-review-controls { margin: 0; }
+#adminImportOutput .admin-athlete-review-actions [data-identity-target] { margin-top: 12px; }
+@media (max-width: 1100px) {
+  #adminImportOutput [data-review-type="athlete"] > [data-pair-details]:not([hidden]) { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #adminImportOutput .admin-athlete-review-actions > .admin-center-actions { justify-content: flex-start; }
+}
 @media (max-width: 700px) {
   #adminImportOutput .admin-country-review-controls { grid-template-columns: minmax(0, 1fr); }
 }

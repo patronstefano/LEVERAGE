@@ -1160,6 +1160,9 @@ def main():
                 row.locator('[data-import-review-toggle]').click()
                 assert row.locator('[name=action], [name=target_search], [name=canonical_country]').count() == 0
                 assert row.locator('[data-identity-action]').count() == 3
+                comparison_box = row.locator('.admin-import-athlete-comparison').bounding_box()
+                actions_box = row.locator('.admin-athlete-review-actions').bounding_box()
+                assert actions_box['x'] >= comparison_box['x'] + comparison_box['width'] + 12
                 for action in ['create_new', 'defer', 'accept_suggestion']:
                     row.locator(f'[data-identity-action={action}]').click()
                     assert row.locator(f'[data-identity-action={action}]').get_attribute('aria-pressed') == 'true'
@@ -1268,11 +1271,17 @@ def main():
                 assert country_group.locator('.admin-country-review-footer').evaluate('el => el === el.parentElement.lastElementChild')
                 assert country_group.locator('article').get_by_text('Storico: scegli', exact=False).count() == 0
                 correction_box = country_group.locator('[name=country_correction_choice]').locator('..').bounding_box()
+                comparison_box = country_group.locator('.admin-import-athlete-comparison').bounding_box()
+                actions_box = country_group.locator('.admin-athlete-review-actions').bounding_box()
+                assert actions_box['x'] >= comparison_box['x'] + comparison_box['width'] + 12
                 defer_box = country_group.locator('[data-country-defer]').bounding_box()
                 assert defer_box['x'] >= correction_box['x'] + correction_box['width']
                 assert abs(defer_box['y'] + defer_box['height'] - correction_box['y'] - correction_box['height']) < 2
                 page.set_viewport_size({'width': 390, 'height': 1000})
                 assert country_group.locator('.admin-country-review-controls').evaluate('el => el.scrollWidth <= el.clientWidth + 1')
+                comparison_box = country_group.locator('.admin-import-athlete-comparison').bounding_box()
+                actions_box = country_group.locator('.admin-athlete-review-actions').bounding_box()
+                assert actions_box['y'] >= comparison_box['y'] + comparison_box['height']
                 page.set_viewport_size({'width': 1440, 'height': 1000})
                 history = country_group.locator('[name=country_history_choice]').locator('..')
                 history.locator('summary').click()

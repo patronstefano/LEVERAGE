@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Confronti atleti e comandi affiancati nell'import
+
+Nella revisione nazionalita e identita atleti, il confronto aperto dispone nome e nazionalita a sinistra e i relativi comandi a destra. Su schermi stretti il layout torna verticale per evitare sovrapposizioni. Nessuna modifica alle decisioni o al payload di importazione. Aggiunti controlli browser sulle posizioni desktop e mobile.
+
 ## 2026-10-07 - Messaggio calendario senza novita da importare
 
 Anche l'anteprima calendario usa Nessuna nuova gara da importare con lo stesso componente, stile e posizione dell'import risultati, a sinistra di Gare gia importate. Compare per un file analizzato non vuoto senza creazioni, aggiornamenti, righe storiche non associate o conflitti/errori da risolvere. Non viene mostrato dopo il commit o per un file vuoto. Verifica browser della condizione e della posizione.
