@@ -5973,10 +5973,11 @@ def test_calendar_import_recognizes_calendar_only_events_without_results():
         assert db.get(models.EventCalendarEntry, entry_id).start_date == date(2026, 4, 18)
 
 
-def test_calendar_import_uses_linked_calendar_alias_without_results():
+@pytest.mark.parametrize('event_year', [2026, 2025])
+def test_calendar_import_uses_linked_calendar_alias_without_results(event_year):
     from app.calendar_import import CalendarImportRow, summarize_calendar_import
     with SessionLocal() as db:
-        event = models.Event(name='Canonical Cup', year=2026, discipline=models.EventDisciplineEnum.MAG,
+        event = models.Event(name='Canonical Cup', year=event_year, discipline=models.EventDisciplineEnum.MAG,
             category=models.EventCategoryEnum.SENIOR, level=models.LevelEnum.INTERNATIONAL_EVENT,
             start_date=date(2026, 1, 1), end_date=date(2026, 1, 2))
         db.add(event)

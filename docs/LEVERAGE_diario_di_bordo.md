@@ -1,5 +1,12 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Compatibilita MAG e WAG nel matching calendario
+
+- La normalizzazione del nome eliminava i suffissi di disciplina senza verificare quella dell'entita candidata: individuati in sola lettura abbinamenti MAG verso WAG per Top 12 Series 3 nel 2024 e 2026.
+- Aggiunto vincolo di compatibilita fra disciplina della riga, campo della scheda e disciplina esplicita nel nome salvato. Riconosciuti MAG/WAG, men's/women's e apostrofi tipografici; eventi misti restano compatibili con entrambe le sezioni. Stesso controllo sulle voci presenti solo nel calendario.
+- Conservati i collegamenti calendario-evento gia revisionati anche quando l'anno calendario differisce dall'anno della stagione, come per Top 12. Non e una ricerca automatica su altri anni: viene rispettato il collegamento esplicito gia salvato.
+- Nessuna modifica ai dati reali. Test su discipline singole, miste, mancanti e alias revisionati a cavallo di anni.
+
 ## 2026-10-07 - Confronto atleti essenziale nell'import
 
 Ridotto il confronto aperto nella Revisione Atleti a nome, nazionalita nel file e nazionalita gia in LEVERAGE. I country delle varianti vengono aggregati e deduplicati: nessun blocco ripetuto per ciascuna variante, nessuna disciplina o campo vuoto derivante da payload parziali. Invariati i comandi decisionali. Test UI con country principale assente e varianti multiple, incluse ripetizioni.

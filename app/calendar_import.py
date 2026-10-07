@@ -296,14 +296,25 @@ def _parse_calendar_csv(content: bytes, selected_year: Optional[int] = None) -> 
 
 
 def infer_event_discipline(event_name: str) -> models.EventDisciplineEnum:
-    upper_name = event_name.upper()
-    has_mag = "(MAG)" in upper_name
-    has_wag = "(WAG)" in upper_name
+    normalized = _replace_discipline_words(normalize_calendar_event_name(event_name))
+    has_mag = bool(re.search(r'\bmag\b', normalized))
+    has_wag = bool(re.search(r'\bwag\b', normalized))
     if has_mag and not has_wag:
         return models.EventDisciplineEnum.MAG
     if has_wag and not has_mag:
         return models.EventDisciplineEnum.WAG
     return models.EventDisciplineEnum.MAG_AND_WAG
+
+
+def calendar_discipline_matches(row: CalendarImportRow, event) -> bool:
+    def sections(discipline):
+        value = getattr(discipline, 'value', discipline)
+        return {value} if value in {'MAG', 'WAG'} else {'MAG', 'WAG'}
+
+    source = sections(infer_event_discipline(row.event_name))
+    stored = sections(getattr(event, 'discipline', None))
+    named = sections(infer_event_discipline(event.name))
+    return bool(source & stored & named)
 
 
 def infer_event_category(event_name: str) -> models.EventCategoryEnum:
@@ -354,7 +365,7 @@ def summarize_calendar_import(
         for candidate in calendar_event_name_candidates(entry.name, entry.year):
             if entry.event_id is None:
                 calendar_lookup.setdefault((entry.year, candidate), []).append(entry)
-            elif entry.event and not entry.event.is_deleted and entry.event.year == entry.year:
+            elif entry.event and not entry.event.is_deleted:
                 event_lookup.setdefault((entry.year, candidate), []).append(entry.event)
     seen_source_keys: dict[tuple[int, str], CalendarImportRow] = {}
 
@@ -474,7 +485,8 @@ def _find_existing_events(
     matches_by_id = {}
     for candidate in calendar_event_name_candidates(row.event_name, row.year):
         for event in event_lookup.get((row.year, candidate), []):
-            matches_by_id[event.id] = event
+            if calendar_discipline_matches(row, event):
+                matches_by_id[event.id] = event
     return sorted(matches_by_id.values(), key=lambda event: event.id)
 
 
