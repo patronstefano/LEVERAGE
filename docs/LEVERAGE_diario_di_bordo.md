@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Rimozione messaggio eventi calendario identici
+
+Eliminato dall'anteprima calendario il messaggio numerico N eventi del file gia identici a LEVERAGE: nessuna modifica, in tutte le lingue. Rimossi anche il conteggio locale dedicato e la relativa traduzione inutilizzata. Invariati riconoscimento degli eventi esistenti, decisioni, contatori generali e messaggi di assenza di nuove gare o revisioni. Aggiunto controllo UI di non regressione sul calendario senza modifiche.
+
 ## 2026-10-07 - Rimozione sezione Avvisi del file
 
 Rimossa dall'anteprima risultati e calendario la sezione Avvisi del file, compreso il relativo elenco di warning generici. Restano i controlli backend e i blocchi di importazione: gli errori effettivamente bloccanti sono visibili direttamente nella revisione pertinente, senza sezione richiudibile Avvisi del file, con paginazione e comandi di correzione conservati. Invariato il riepilogo separato degli interventi automatici. Nessuna modifica ai dati importati o alle regole di validazione. Test UI aggiornati per assenza della sezione e permanenza degli errori correggibili.

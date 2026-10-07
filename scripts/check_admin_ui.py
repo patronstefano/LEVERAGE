@@ -1560,6 +1560,8 @@ def main():
                 assert status.inner_text() == 'Nessuna nuova gara da importare.'
                 assert status.get_attribute('class') == 'admin-center-feedback'
                 empty_calendar = page.locator('#adminCalendarRows [data-import-empty=events]')
+                assert 'eventi del file già identici' not in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#adminCalendarRows > .admin-center-feedback:not([data-import-empty])').count() == 0
                 assert empty_calendar.inner_text() == 'Nessun evento da verificare.'
                 assert empty_calendar.evaluate('''el => {
                     const style = getComputedStyle(el);

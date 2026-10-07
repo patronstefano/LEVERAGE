@@ -18,7 +18,6 @@ export const IMPORT_COPY = {
   importCalendarDifferences: ['Existing events with differences', 'Eventi presenti con differenze', 'Eventos existentes con diferencias', 'Événements existants avec différences'],
   importCalendarNewEvents: ['New events to create', 'Nuovi eventi da creare', 'Nuevos eventos por crear', 'Nouveaux événements à créer'],
   importCalendarSkippedEvents: ['Unmatched events to skip', 'Eventi non associati da tralasciare', 'Eventos sin asociar que se omitirán', 'Événements non associés à ignorer'],
-  importCalendarIdenticalCount: ['{n} file events already match LEVERAGE: no changes.', '{n} eventi del file già identici a LEVERAGE: nessuna modifica.', '{n} eventos del archivo ya coinciden con LEVERAGE: sin cambios.', '{n} événements du fichier identiques à LEVERAGE : aucune modification.'],
   importCalendarNameOnly: ['Different name, dates aligned: no changes', 'Nome diverso, date allineate: nessuna modifica', 'Nombre distinto, fechas coincidentes: sin cambios', 'Nom différent, dates identiques : aucune modification'],
   importCalendarWillCreate: ['Will create a new event', 'Verrà creato un nuovo evento', 'Se creará un nuevo evento', 'Un nouvel événement sera créé'],
   importCalendarWillSkip: ['No match: will not be imported', 'Nessuna associazione: non verrà importato', 'Sin asociación: no se importará', 'Sans association : ne sera pas importé'],
@@ -253,11 +252,10 @@ export function mountCalendarImportRows({root, preview, text, esc, language, rou
     ['new', preview.committed ? 'importCreatedEvents' : 'importCalendarNewEvents', allRows.filter(row => row.action === 'create_event')],
     ['skipped', 'importCalendarSkippedEvents', allRows.filter(row => row.action === 'skip_unmatched_historical')],
   ];
-  const unchanged = allRows.filter(row => row.action === 'no_change' && !different(row)).length;
   const date = value => value ? new Intl.DateTimeFormat(language, {dateStyle: 'medium'}).format(new Date(`${value}T00:00:00`)) : '—';
   viewState.groups ||= {};
   const render = () => {
-    root.innerHTML = `${unchanged ? `<p class="admin-center-feedback">${esc(text('importCalendarIdenticalCount').replace('{n}', unchanged))}</p>` : ''}${groups.filter(([, , rows]) => rows.length).map(([key, label, rows]) => {
+    root.innerHTML = `${groups.filter(([, , rows]) => rows.length).map(([key, label, rows]) => {
       const state = viewState.groups[key] ||= {open: Boolean(viewState.open), page: 0};
       const page = state.page = Math.min(state.page, Math.max(0, Math.ceil(rows.length / pageSize) - 1));
       return `<details class="admin-revision-group" data-calendar-group="${key}" ${state.open ? 'open' : ''}><summary>${esc(text(label))}<span class="admin-revision-count">${rows.length}</span></summary>${rows.slice(page * pageSize, (page + 1) * pageSize).map(row => {
