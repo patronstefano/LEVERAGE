@@ -1020,6 +1020,7 @@ export async function renderAdminCenter(host) {
         <div class="admin-import-header-actions">
           ${importStatus === text('importHistoricalOnly') ? `<p class="admin-center-feedback" data-import-status role="status">${esc(importStatus)}</p>` : ''}
           ${!p.committed ? `<div class="admin-import-scope-choice">${select('existing_event_scope', draft.kind === 'calendar' ? 'importCalendarExistingScope' : 'importExistingScope', [{value: 'include', label: text('importScopeInclude')}, {value: 'skip', label: text('importScopeSkip')}], selectedParams.skip_existing_events ? 'skip' : 'include')}</div>` : ''}
+          ${p.committed ? `<div class="admin-center-feedback is-success" data-import-success role="status">${esc(text('success'))}</div>` : ''}
           ${button(draft.fileFormOpen ? 'importHideFile' : 'importChangeFile', `id="adminImportChangeFile" aria-controls="adminImportForm" aria-expanded="${Boolean(draft.fileFormOpen)}"`)}
         </div>
       </div>
@@ -1487,6 +1488,6 @@ export async function renderAdminCenter(host) {
         if (error.detail && typeof error.detail === "object" && Array.isArray(error.detail.issues)) { draft.preview = error.detail; draft.needsPreview = false; showImport(); }
         throw error;
       }
-    }));
+    }, false));
   }
 }

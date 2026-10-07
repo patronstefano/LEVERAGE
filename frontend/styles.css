@@ -41,6 +41,7 @@
 #adminCreate > .admin-center-feedback.is-success,
 .admin-audit-success.admin-center-feedback.is-success,
 #adminFeedback.admin-center-feedback.is-success,
+#adminImportOutput [data-import-success],
 #adminMergeContent > .admin-center-feedback.is-success { width: fit-content; max-width: 100%; box-sizing: border-box; min-height: 36px; padding: 7px 13px; margin: 12px 0; font-size: 14px; line-height: 20px; font-weight: 400; }
 .admin-audit-success.admin-center-feedback.is-success { margin: 0; }
 .admin-report { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin: 12px 0; font-size: 14px; line-height: 1.5; }
@@ -111,6 +112,7 @@
 .admin-import-heading .admin-revision-meta { margin: 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
 .admin-import-header-actions { display: flex; align-items: end; flex-wrap: wrap; gap: 12px 16px; min-width: 0; max-width: 100%; }
 .admin-import-header-actions .admin-import-scope-choice { margin: 0; }
+#adminImportOutput .admin-import-header-actions [data-import-success] { margin: 0; }
 .admin-import-header-actions .admin-import-scope-choice > .admin-form-field { width: 260px; min-width: 0; }
 #adminImportOutput .admin-import-heading .admin-form-field > span { font-size: 13px; line-height: 1.5; font-weight: 400; overflow-wrap: anywhere; }
 #adminImportOutput .admin-import-metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 18px; padding-bottom: 16px; }

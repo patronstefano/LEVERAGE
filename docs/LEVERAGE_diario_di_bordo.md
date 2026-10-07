@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Conferma importazione accanto a Cambia file
+
+Il messaggio Operazione completata viene mostrato nell'intestazione dell'import concluso, immediatamente a sinistra di Cambia file, sia per Results sia per Calendar. Conservati lo stile verde compatto dei messaggi di successo e lo sfondo neutro; eliminata la duplicazione nel feedback generale. Test UI sul posizionamento e sull'assenza del secondo messaggio.
+
 ## 2026-10-07 - Presentazione della revisione identita rinviata
 
 Rinvia tutta la revisione duplicati atleta chiude il relativo contenitore e porta il contatore a zero, senza modificare le revisioni nazionalita. Quando non restano revisioni atleta pendenti, Nessun atleta da verificare viene posizionato immediatamente sopra il contenitore identita, mantenendo lo stile condiviso. Riprendi revisione riapre il contenitore. Test UI su chiusura, contatore e ordine del messaggio rispetto alla sezione.

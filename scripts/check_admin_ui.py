@@ -1600,6 +1600,11 @@ def main():
                 page.locator('.admin-import-heading.is-complete').wait_for()
                 assert page.locator('#adminCommitImport').count() == 0
                 assert page.locator('#adminReviewPreview').count() == 0
+                success = page.locator('[data-import-success]')
+                assert success.inner_text() == 'Operazione completata.'
+                assert success.evaluate("el => el.nextElementSibling?.id === 'adminImportChangeFile'")
+                assert success.bounding_box()['x'] + success.bounding_box()['width'] <= page.locator('#adminImportChangeFile').bounding_box()['x']
+                assert page.locator('#adminFeedback').inner_text() == ''
                 assert page.locator('[data-source-group]').count() == 0
                 assert page.locator('.admin-import-metrics dt').first.inner_text() == 'Risultati importati'
                 assert 'require_resolved_reviews=true' in writes[-1]['url']
@@ -1769,6 +1774,8 @@ def main():
                 page.locator('.admin-import-heading.is-complete').wait_for()
                 assert 'skip_existing_events=true' in writes[-1]['url']
                 assert page.locator('.admin-import-metrics dd').all_inner_texts() == ['0', '7', '0', '1']
+                assert page.locator('[data-import-success]').evaluate("el => el.nextElementSibling?.id === 'adminImportChangeFile'")
+                assert page.locator('#adminFeedback').inner_text() == ''
                 assert 'year=2026' in writes[-1]['url']
                 page.locator('[data-calendar-group=new] > summary').click()
                 assert 'Calendar Cup 1' not in page.locator('#adminCalendarRows').inner_text()
