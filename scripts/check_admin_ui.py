@@ -1162,12 +1162,14 @@ def main():
                 assert page.locator('.admin-import-issues > li').count() == 1
                 assert 'Warning 6' in page.locator('.admin-import-issues').inner_text()
                 assert page.locator('[data-import-part=results]').get_attribute('aria-selected') == 'true'
-                preview.update(parsed_rows=1000, issues=[], importable_results=0,
+                preview.update(parsed_rows=1000, issues=[], importable_results=0, event_summaries=[],
                     skipped_existing_results=1000, skipped_existing_events=[{'event_id': i, 'event_name': f'Past Cup {i}',
                     'year': 2026, 'results': 100, 'differences': 2, 'source_issues': 1} for i in range(10)])
                 analyze_import()
                 page.locator('[data-import-historical]').wait_for(state='attached')
                 assert '10 gare già in LEVERAGE' in page.locator('#adminImportOutput').inner_text()
+                assert page.locator('#importPart_events .admin-import-metrics dd').all_inner_texts() == ['0', '0', '0', '0']
+                assert page.locator('[data-import-status]').bounding_box()['y'] > page.locator('.admin-import-actions').bounding_box()['y']
                 assert 'Past Cup' not in page.locator('#adminImportOutput').inner_text()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-import-historical] > summary').click()

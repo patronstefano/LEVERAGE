@@ -9765,6 +9765,31 @@ def test_gymternet_cumulative_import_preserves_validated_events_and_imports_cale
     assert explicit['athlete_match_review']
 
 
+def test_gymternet_excluded_scope_has_no_stale_global_warnings(monkeypatch):
+    from app.gymternet_import import GymternetParseOutput, parse_pivot_rows, exclude_imported_events
+    client.post('/auth/register', json={'email': 'scopewarnings@example.com', 'password': TEST_PASSWORD})
+    headers = {'Authorization': f"Bearer {login_as_admin('scopewarnings@example.com')}"}
+    source = b'discipline,athlete,country,event,apparatus,score,d_score\nMAG,Test Person,ITA,Old Cup 2026 QF,FX,13,5\n'
+    files = {'file': ('results.csv', source, 'text/csv')}
+    assert client.post('/imports/gymternet/commit', files=files, headers=headers).status_code == 200
+    records = parse_pivot_rows([{'Athlete': 'Test Person', 'Country': 'Italy', 'Event': 'Old Cup 2026 QF', 'FX': '13'}], 'MAG', models.DisciplineEnum.MAG, 'final', 2026, [])
+    orphans = parse_pivot_rows([{'Athlete': 'Test Person', 'Country': 'Italy', 'Event': 'Old Cup 2026 QF', 'PH': '5'}], 'MAG D', models.DisciplineEnum.MAG, 'dscore', 2026, [])
+    issues = [{'severity': 'warning', 'code': code, 'message': 'File-wide warning', 'count': 288} for code in
+        ['gymternet_orphan_dscores', 'gymternet_automatic_days', 'gymternet_post_2025_policy']]
+    monkeypatch.setattr('app.routers.imports.parse_gymternet_file', lambda **kwargs: GymternetParseOutput(records, list(issues), orphans))
+    excluded = client.post('/imports/gymternet/preview?skip_existing_events=true', files=files, headers=headers).json()
+    assert excluded['issues'] == []
+    assert excluded['importable_results'] == excluded['orphan_dscore_review_count'] == 0
+    included = client.post('/imports/gymternet/preview?skip_existing_events=false', files=files, headers=headers).json()
+    assert len(included['issues']) >= 3
+    new_orphans = parse_pivot_rows([{'Athlete': 'Test Person', 'Country': 'Italy', 'Event': 'New Cup 2026 QF', 'PH': '5'}], 'MAG D', models.DisciplineEnum.MAG, 'dscore', 2026, [])
+    with SessionLocal() as db:
+        _, pending, scoped, _ = exclude_imported_events(db, records, orphans + new_orphans, issues + [{'severity': 'error', 'message': 'Unattributed error'}])
+    assert len(pending) == 1
+    assert next(i for i in scoped if i.get('code') == 'gymternet_orphan_dscores')['count'] == 1
+    assert any(i['severity'] == 'error' for i in scoped)
+
+
 def test_gymternet_cumulative_import_historical_diagnostics_do_not_block_new_events(monkeypatch):
     from app.gymternet_import import GymternetParseOutput, parse_pivot_rows
     client.post('/auth/register', json={'email': 'historic_diagnostics@example.com', 'password': TEST_PASSWORD})

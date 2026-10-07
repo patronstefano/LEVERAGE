@@ -1,5 +1,33 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Riprova del file Results 2026 e diagnostica del perimetro
+
+- Analisi in sola lettura (PRAGMA query_only) del file archiviato
+  import_files/Results 2026.xlsx, senza import, modifiche DB o scansioni WG.
+- Escludendo le gare gia importate: 113 gare escluse, 0 risultati importabili,
+  0 nuovi atleti/eventi e 0 D-score orfani da revisionare. I 102 casi mostrati
+  erano confronti sorgente/DB di gare escluse, erroneamente cumulati nei
+  contatori della revisione attiva. Separati dai contatori e mantenuti come
+  confronto storico non bloccante, senza dichiararli automaticamente risolti.
+- I tre avvisi globali (288 orfani, giorni automatici, regole dal 2026)
+  sopravvivevano all'esclusione di tutte le gare. Aggiunti codici strutturati:
+  conteggio orfani limitato al perimetro residuo, avvisi informativi non mostrati
+  quando non restano dati pertinenti. Errori non attribuibili non vengono nascosti.
+- Localizzati i tre avvisi in EN/IT/ES/FR. Confermato che Gymternet 2026 segue
+  le regole del 2025; assenza E/P/B non e un errore che richiede altro formato.
+- Spostato Nessuna nuova gara da importare sotto Ricalcola/Conferma importazione.
+- Con inclusione del file archiviato: 3502 risultati candidati, 351 atleti
+  candidati, 356 revisioni atleta, 2 conflitti e 288 orfani. Questi conteggi NON
+  certificano nuove entita: il percorso web non riapplica integralmente i payload
+  storici del popolamento massivo. Esempio verificato: Zapata BLR/ESP era gia
+  corretto a ESP nel CSV 2026. Anche i controlli punteggio sono cambiati da luglio.
+- Limite aperto: riconciliare in modo verificabile i payload storici e le
+  correzioni successive nella modalita Includi; non applicati automaticamente
+  vecchi ID/suggerimenti senza verificarne validita e contesto. Essere in Revisione
+  Duplicati non equivale a una decisione approvata. Nessuna reinclusione effettuata.
+- Test backend: 316 superati; aggiunta copertura per esclusioni complete,
+  orfani residui, conservazione errori ignoti e diagnosi con inclusione esplicita.
+
 ## 2026-10-06 - Stato attivo del pulsante Scarica
 
 - Scarica resta pieno blu LEVERAGE con testo bianco finche il menu CSV/XLSX

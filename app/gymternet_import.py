@@ -420,6 +420,7 @@ def append_post_2025_policy_warning(
         issues.append({
             "severity": "warning",
             "message": GYMTERNET_POST_2025_COMPONENT_WARNING,
+            "code": "gymternet_post_2025_policy",
         })
 
 
@@ -1060,6 +1061,8 @@ def merge_final_and_dscore(
         issues.append({
             "severity": "warning",
             "message": f"{len(orphan_dscore_records)} D-score rows did not match a final-score row and need admin review",
+            "code": "gymternet_orphan_dscores",
+            "count": len(orphan_dscore_records),
         })
     return merged, orphan_dscore_records
 
@@ -3107,6 +3110,7 @@ def assign_automatic_days(
                 f"{assigned_groups} multi-day result keys without an explicit Day column; "
                 f"{assigned_records} rows received day values up to {max_assigned_day}."
             ),
+            "code": "gymternet_automatic_days",
         })
 
     return updated
@@ -3320,7 +3324,18 @@ def exclude_imported_events(db: Session, records: list, orphans: list, issues: l
             if event_lookup_key(row) in counts:
                 counts[event_lookup_key(row)][count_key] += 1
     remaining_issues = []
+    remaining_records = [r for r in records if event_lookup_key(r) not in excluded]
+    remaining_orphans = [r for r in orphans if event_lookup_key(r) not in excluded]
     for issue in issues:
+        if issue.get('code') == 'gymternet_orphan_dscores':
+            if remaining_orphans:
+                remaining_issues.append({**issue, 'count': len(remaining_orphans),
+                    'message': f'{len(remaining_orphans)} D-score rows did not match a final-score row and need admin review'})
+            continue
+        if issue.get('code') == 'gymternet_post_2025_policy' and not any(r.year > 2025 for r in remaining_records):
+            continue
+        if issue.get('code') == 'gymternet_automatic_days' and not remaining_records:
+            continue
         keys = ({(issue['event_name'].lower(), issue.get('year'))} if issue.get('event_name')
                 else source_keys.get((issue.get('sheet'), issue.get('row')), set()))
         if keys and keys.issubset(excluded):
@@ -3328,8 +3343,7 @@ def exclude_imported_events(db: Session, records: list, orphans: list, issues: l
                 counts[key]['source_issues'] += 1
         else:
             remaining_issues.append(issue)
-    return ([r for r in records if event_lookup_key(r) not in excluded],
-            [r for r in orphans if event_lookup_key(r) not in excluded], remaining_issues,
+    return (remaining_records, remaining_orphans, remaining_issues,
             sorted(counts.values(), key=lambda row: (row['year'], row['event_name'])))
 
 

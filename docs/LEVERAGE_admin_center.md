@@ -2,6 +2,20 @@
 
 Data: 22 settembre 2026. Perimetro: MVP privato locale.
 
+## Diagnostica delle gare escluse - 7 ottobre 2026
+
+I contatori di revisione riguardano solo il perimetro attivo. Le differenze
+sorgente/DB di gare escluse rimangono in un confronto storico separato e non
+sono nuove revisioni bloccanti. Gli avvisi globali per orfani, giorni automatici
+e policy Gymternet sono filtrati rispetto al perimetro residuo e localizzati.
+Nessuna nuova gara da importare appare sotto i pulsanti di ricalcolo/conferma.
+
+Limite verificato nella riprova 2026: Includi rilegge il file con il parser e il
+DB attuali, ma non riapplica integralmente tutti i payload storici del massivo.
+I candidati non vanno considerati automaticamente nuove entita o importati
+senza revisione. Una coppia presente in Revisione Duplicati non costituisce
+di per se una decisione risolta. La riconciliazione storica resta da completare.
+
 ## Export Editor Risultati - 6 ottobre 2026
 
 Scarica, sulla riga Cerca eventi a destra sopra la X, offre CSV e XLSX della classifica

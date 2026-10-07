@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=batch-decisions-20261006';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=event-list-no-filters-20261006';
+import { IMPORT_COPY, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=scoped-import-diagnostics-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -985,7 +985,6 @@ export async function renderAdminCenter(host) {
       <div id="adminImportScopeStatus" hidden></div>
       ${p.committed && p.deferred_duplicate_pairs ? `<p class="admin-stats-note">${esc(text('importDeferredCount').replace('{n}', p.deferred_duplicate_pairs))} <a href="#/admin/review">${esc(text('importDuplicateLater'))}</a></p>` : ''}
       ${draft.kind === 'calendar' && p.skip_existing_events && !p.committed ? `<p class="admin-stats-note">${esc(text('importCalendarSkipNote'))}</p>` : ''}
-      ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" role="status">${esc(importStatus)}</p>` : ''}
       ${p.committed ? metrics(completedMetrics) : draft.kind === 'gymternet' ? '<div id="adminImportOverview"></div>' : metrics(calendarMetrics)}
       ${draft.kind === 'gymternet' && !p.committed ? '<div id="adminImportResolution"></div>' : ''}
       ${!p.committed && !selectedParams.defer_duplicate_reviews && p.athlete_match_review?.length ? reviewGroup('athlete', 'importAthleteReview', p.athlete_match_review.length, reviewRows(p.athlete_match_review, "athlete")) : ''}
@@ -995,6 +994,7 @@ export async function renderAdminCenter(host) {
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
       ${!p.committed ? `<div class="admin-center-actions admin-import-actions">${button('importRecalculate', 'id="adminReviewPreview"')}${button('commit', 'id="adminCommitImport"')}</div>${draft.kind === 'gymternet' ? `<p class="admin-stats-note admin-import-safety">${esc(text('importReadOnly'))}</p>` : ''} ` : ''}
+      ${importStatus ? `<p class="admin-center-feedback ${p.parsed_rows === 0 ? 'is-error' : ''}" data-import-status role="status">${esc(importStatus)}</p>` : ''}
     `;
     if (draft.kind === 'gymternet' && !p.committed) {
       const reviewParts = [
