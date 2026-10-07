@@ -1,4 +1,4 @@
-import { automaticImportIssueCode } from './admin-import-report.js?v=bulk-country-review-20261007';
+import { automaticImportIssueCode, renderImportIssues } from './admin-import-report.js?v=source-issue-review-20261007';
 
 export function cleanSourceScoreDisplay(value) {
   if (value == null || String(value).trim() === '') return value;
@@ -8,7 +8,7 @@ export function cleanSourceScoreDisplay(value) {
   return Math.abs(numeric - rounded) < 1e-9 ? rounded : value;
 }
 
-export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard}) {
+export function mountImportResolution({root, preview, draft, text, esc, button, field, report, markChanged, confirm, guard, language}) {
   const resultIssues = (preview.issues || []).filter(issue => !automaticImportIssueCode(issue) && !['events', 'athletes'].includes(issue.review_scope));
   const sourceKeys = new Set([
     ...(preview.conflicts || []).map(row => `${row.source_sheet}:${row.source_row}`),
@@ -41,8 +41,11 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
       const index = page * pageSize + offset, decision = draft.source[keyOf(row)];
       const identity = Object.entries(row.values).filter(([key]) => ['athlete', 'name', 'event', 'country'].includes(key.toLowerCase())).map(([, value]) => value).join(' · ');
       const conflicts = (preview.conflicts || []).filter(item => item.source_sheet === row.sheet && item.source_row === row.row);
+      const rowIssues = [...new Map(resultIssues.filter(issue => issue.severity === 'error' && issue.sheet === row.sheet && issue.row === row.row)
+        .map(issue => [JSON.stringify([issue.code, issue.apparatus, issue.score_kind, issue.original_score, issue.message]), issue])).values()];
+      const diagnostics = rowIssues.length ? renderImportIssues({issues: rowIssues, text, esc, language, embedded: true}) : '';
       const comparison = conflicts.map(item => `<div class="admin-source-comparison"><p class="admin-revision-meta">${esc([item.event_name, item.year, item.apparatus, text(item.reason)].filter(Boolean).join(' · '))}</p><div class="admin-identity-pair-grid admin-audit-comparison"><section class="admin-audit-side"><h3>${esc(text(item.existing_result_id ? 'importDatabase' : 'previous'))}</h3>${report({score: item.existing_score, D_score: item.existing_D_score, country: item.existing_country})}</section><section class="admin-audit-side"><h3>${esc(text('importFile'))}</h3>${report({score: item.score, D_score: item.D_score, country: item.country})}</section></div></div>`).join('');
-      return `<article class="admin-identity-pair admin-source-row" data-source-index="${index}"><div><strong>${esc(identity)}</strong><p class="admin-revision-meta">${esc(row.sheet)} · ${esc(text('importSourceRow'))} ${row.row}${decision ? ` · ${esc(text(decision.action === 'exclude' ? 'importRowExcluded' : 'importRowCorrected'))}` : ''}</p></div><div class="admin-center-actions">${button('importEditRow', 'data-source-edit aria-expanded="false"')}${button('importExcludeRow', 'data-source-exclude')}${decision ? button('importUndoRow', 'data-source-undo') : ''}</div><div data-source-fields hidden>${comparison}<div class="admin-form-grid">${(row.editable_fields || []).map((key, i) => field(`source_${i}`, key, 'text', cleanSourceScoreDisplay(decision?.values?.[key] ?? row.values[key]))).join('')}</div><div class="admin-center-actions">${button('importApplyDecision', 'data-source-apply')}</div></div></article>`;
+      return `<article class="admin-identity-pair admin-source-row" data-source-index="${index}"><div><strong>${esc(identity)}</strong><p class="admin-revision-meta">${esc(row.sheet)} · ${esc(text('importSourceRow'))} ${row.row}${decision ? ` · ${esc(text(decision.action === 'exclude' ? 'importRowExcluded' : 'importRowCorrected'))}` : ''}</p></div><div class="admin-center-actions">${button('importEditRow', 'data-source-edit aria-expanded="false"')}${button('importExcludeRow', 'data-source-exclude')}${decision ? button('importUndoRow', 'data-source-undo') : ''}</div><div data-source-fields hidden>${comparison}${diagnostics}<div class="admin-form-grid">${(row.editable_fields || []).map((key, i) => field(`source_${i}`, key, 'text', cleanSourceScoreDisplay(decision?.values?.[key] ?? row.values[key]))).join('')}</div><div class="admin-center-actions">${button('importApplyDecision', 'data-source-apply')}</div></div></article>`;
     }).join('')}</div>${rows.length > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-source-page="-1" ${page === 0 ? 'disabled' : ''}`)}<span>${page * pageSize + 1}–${Math.min((page + 1) * pageSize, rows.length)} / ${rows.length}</span>${button('importNextPage', `data-source-page="1" ${(page + 1) * pageSize >= rows.length ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     root.querySelector('[data-source-group]').ontoggle = event => { if (event.target.isConnected) draft.sourceOpen = event.target.open; };
     root.querySelectorAll('[data-source-index]').forEach(article => {

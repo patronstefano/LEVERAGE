@@ -4,9 +4,9 @@ import { mountWorldGymnasticsScan } from './admin-wg-scan.js?v=centered-review-l
 import { bindAuthValidation } from './auth-validation.js?v=admin-validation-20261001';
 import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews-20261006';
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
-import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
+import { mountImportResolution } from './admin-import-resolution.js?v=source-issue-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=event-identity-review-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, sourceReviewCoversIssue, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=source-issue-review-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -954,7 +954,9 @@ export async function renderAdminCenter(host) {
     const isDeferred = type => Boolean(selectedParams[`defer_${type}_reviews`] ?? selectedParams.defer_duplicate_reviews);
     const reviewGroup = (type, title, count, rows) => `<details class="admin-revision-group" data-import-group="${type}" ${draft.reviewOpen[type] ? 'open' : ''}><summary>${esc(text(title))}<span class="admin-revision-count">${count}</span></summary>${rows}${count > pageSize ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-review-page="${type}" data-direction="-1" ${start(type) === 0 ? 'disabled' : ''}`)}<span>${start(type) + 1}–${Math.min(start(type) + pageSize, count)} / ${count}</span>${button('importNextPage', `data-review-page="${type}" data-direction="1" ${start(type) + pageSize >= count ? 'disabled' : ''}`)}</div>` : ''}</details>`;
     const issueErrors = (p.issues || []).filter((issue) => issue.severity === 'error');
-    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, issueErrors.filter(issue => importIssueScope(issue) === scope)]));
+    const standaloneIssues = draft.kind === 'gymternet' && !p.committed
+      ? issueErrors.filter(issue => !sourceReviewCoversIssue(issue, p.source_review || [])) : issueErrors;
+    const issuesByScope = Object.fromEntries(['events', 'athletes', 'results'].map(scope => [scope, standaloneIssues.filter(issue => importIssueScope(issue) === scope)]));
     const scoreConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'results');
     const countryConflicts = (p.conflicts || []).filter(conflict => importIssueScope(conflict) === 'athletes');
     const calendarAlreadyImported = draft.kind === 'calendar' && !p.committed && p.parsed_rows > 0
@@ -1291,7 +1293,7 @@ export async function renderAdminCenter(host) {
     if (draft.kind === 'gymternet' && !p.committed) {
       const resolution = !p.committed ? mountImportResolution({
         root: output.querySelector('#adminImportResolution'), preview: {...p, conflicts: scoreConflicts}, draft, text, esc, button, field, report,
-        markChanged: () => { draft.sourceDirty = true; markChanged(); }, confirm, guard,
+        markChanged: () => { draft.sourceDirty = true; markChanged(); }, confirm, guard, language: state.language,
       }) : null;
       mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report,
         language: state.language, route: state.route, viewState: draft.reportView ||= {}, onCorrect: resolution ? (sheet, row) => resolution.focus(sheet, row) : null});

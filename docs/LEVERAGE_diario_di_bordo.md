@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Diagnostica punteggi raccolta nella revisione sorgente
+
+Eliminata la doppia presentazione degli errori dell'import risultati quando esiste gia una riga correggibile in Punteggi da verificare. Gli errori collegati tramite foglio e numero di riga sono mostrati solo nei dettagli di quella riga, senza ripetere identita, posizione nel file o un secondo pulsante Correggi riga. Inclusi gli errori derivati di ricostruzione VT da VT AVG: la formula resta consultabile nello stesso punto della correzione. Segnalazioni identiche deduplicate; errori distinti conservati. Gli errori privi di una riga correggibile restano visibili separatamente. Nessuna soppressione dei controlli backend o dei blocchi di conferma importazione; nessuna modifica al file o ai dati salvati. Test UI con conflitto di punteggio e diagnostica VT ripetuta sulla stessa riga, oltre al caso senza riga correggibile.
+
 ## 2026-10-07 - Revisione identita gare coerente con gli atleti
 
 La revisione identita gare nell'anteprima risultati adotta gli stessi componenti visivi, dimensioni e spazi della revisione identita atleti. Confronta dettagli mostra una sola coppia file/LEVERAGE con nome, anno e disciplina, senza ripetere tutti i candidati. Comandi affiancati al confronto su desktop e sotto su mobile: Associa a gara esistente, Crea nuova gara, Rinvia revisione. In presenza di piu candidati, il selettore della destinazione appare solo dopo Associa e richiede una scelta esplicita; la scelta aggiorna anche confronto e compatibilita.

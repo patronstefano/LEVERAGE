@@ -1497,11 +1497,17 @@ def main():
                     'event_name': 'Vault Cup', 'year': 2026, 'first_name': 'Vault', 'last_name': 'Person',
                     'existing_result_id': 3, 'existing_score': 13.0, 'existing_D_score': 5.5,
                     'score': 1.2, 'D_score': 5.5, 'reason': 'conflict_existing'}]
+                preview['issues'] = [preview['issues'][0], dict(preview['issues'][0])]
                 analyze_import()
                 page.locator('[data-import-part=results]').click()
                 assert page.locator('[data-import-conflict-list]').count() == 0
+                assert page.locator('[data-import-issues]').count() == 0
+                assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-group] > summary').click()
                 page.locator('[data-source-edit]').click()
+                assert page.locator('[data-source-fields] .admin-import-issues li').count() == 1
+                assert 'arrotondamento' in page.locator('[data-source-fields]').inner_text()
+                assert page.locator('[data-correct-issue-sheet]').count() == 0
                 assert 'Già in LEVERAGE' in page.locator('[data-source-fields]').inner_text()
                 assert page.locator('.admin-source-comparison').count() == 1
                 for width in [1440, 800, 390]:
@@ -1535,7 +1541,9 @@ def main():
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('#adminReviewPreview').click()
                 page.wait_for_function("document.querySelector('#adminImportOutput')?.getAttribute('aria-busy') === 'false'")
-                open_import_issues()
+                page.locator('[data-import-part=results]').click()
+                assert page.locator('[data-import-issues]').count() == 0
+                page.locator('[data-source-edit]').click()
                 page.locator('.admin-import-issues').wait_for()
                 assert page.locator('#adminCommitImport').is_disabled()
                 page.locator('[data-source-exclude-all]').click()
