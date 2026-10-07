@@ -35,6 +35,9 @@ import_files/
 # Generated local uploads
 uploads/
 
+# Private delivery bundles contain the database, source files and account data.
+private_releases/
+
 # OS/editor artifacts
 .DS_Store
 .idea/

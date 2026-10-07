@@ -8,12 +8,21 @@ def submit_with_stable_position(form):
     before_panel, before_button = panel.bounding_box(), button.bounding_box()
     footer = form.page.locator('.footer')
     before_footer = footer.bounding_box()
+    links = form.page.locator('.auth-login-links').bounding_box()
+    remaining_space = max(0, before_footer['y'] - links['y'] - links['height'])
     button.click()
     after_panel, after_button = panel.bounding_box(), button.bounding_box()
     assert abs(after_panel['y'] - before_panel['y']) < 1
     assert abs(after_button['y'] - before_button['y']) < 1
     assert after_panel['height'] > before_panel['height']
-    assert abs(footer.bounding_box()['y'] - before_footer['y']) < 1
+    # A short viewport may exhaust its existing gap; never overlap the links
+    # merely to keep the footer fixed. No extra movement is allowed.
+    expected_growth = max(0, after_panel['height'] - before_panel['height'] - remaining_space)
+    assert abs(footer.bounding_box()['y'] - before_footer['y'] - expected_growth) < 1, {
+        'viewport': form.page.viewport_size, 'before_footer': before_footer,
+        'after_footer': footer.bounding_box(), 'before_panel': before_panel,
+        'after_panel': after_panel, 'scroll_y': form.page.evaluate('scrollY'),
+    }
 
 
 def main():

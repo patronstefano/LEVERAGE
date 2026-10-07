@@ -1,5 +1,19 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - MILESTONE FINALE: consegna MVP privato v1.0.0
+
+Completata la preparazione tecnica della consegna privata dopo l'accettazione dell'utente dei collaudi incrementali Results/Calendar, dell'integrita tramite Audit e Ripristino e dei percorsi USER/ADMIN/SUPER ADMIN. La baseline di rilascio e identificata dal tag `v1.0.0-mvp-private`. Non si tratta di un rilascio pubblico: accessi DEMO e generatori notifiche sono mantenuti esplicitamente, invio email e autenticazione reale via email restano rinviati.
+
+Creato lo strumento `scripts/private_mvp_backup.py`: snapshot tramite API SQLite backup, comprensivo delle scritture WAL confermate; inventario SHA-256, dimensioni dei file, migrazione e conteggi; verifica integrita e chiavi esterne; ripristino esclusivamente in una cartella nuova. Rifiutati sovrascritture, symlink degli asset e backup corrotti. Il database di lavoro non e stato sostituito. La copia non e una transazione unica con il filesystem: durante futuri backup non modificare i file allegati.
+
+Pacchetto locale riservato in `private_releases/mvp-private-20261007/`, escluso da Git: database, uploads, file sorgente, manifest, copia ripristinata, copia collaudata, archivio del codice al tag e versioni delle dipendenze. Snapshot di 575 file, migrazione `0043_entity_reviews`, integrita `ok`, nessuna violazione delle chiavi esterne. Conteggi fisici dello snapshot (incluse eventuali righe eliminate logicamente): 27.924 atleti, 1.790 eventi, 819.739 risultati e 308 voci calendario. Non sono conteggi di sole entita attive.
+
+Eseguito il ripristino in directory isolate, prima con confronto esatto dei checksum e poi con avvio effettivo dell'applicazione via FastAPI TestClient sulla copia. Verificate cinque letture pubbliche, login DEMO dei tre ruoli, preferiti, notifiche e autorizzazioni: USER escluso dall'area amministrativa; ADMIN escluso da utenti/audit Super Admin; SUPER ADMIN autorizzato. Conteggi delle tabelle sportive invariati e nuova verifica d'integrita superata dopo le prove. Scansioni disabilitate solo nella copia di test, non nel database di lavoro. Nessuna nuova importazione confermata durante questo collaudo.
+
+Verifiche finali: 412 test pytest superati, inclusi due nuovi test su WAL, ripristino, corruzione, chiavi esterne e symlink. Superati i cinque script browser `check_admin_ui.py`, `check_account_ui.py`, `check_auth_validation_ui.py`, `check_section_navigation_ui.py`, `check_import_progress_ui.py`. Le prove UI usano API simulate dove previsto e non attestano invio email reale o disponibilita di World Gymnastics. Corretto soltanto il criterio del test sul footer nei viewport bassi: quando il messaggio esaurisce lo spazio libero, e consentito il solo spostamento necessario a evitare sovrapposizioni. Nessuna modifica al layout dell'applicazione per questa verifica.
+
+Aggiornati README e guida `docs/LEVERAGE_MVP_privato_consegna.md` con avvio, backup, ripristino, limiti e cautele. Documentata la differenza tra Python 3.10+ dichiarato nel progetto e Python 3.9.6 effettivamente presente nell'ambiente locale collaudato: non si dichiara validata una nuova macchina o ogni versione Python. Il backup sullo stesso disco va copiato dall'utente anche su un supporto esterno protetto; questa copia esterna non e stata eseguita dall'assistente. GitHub conserva la baseline del codice e della documentazione, non il database privato o i segreti.
+
 ## 2026-10-07 - MILESTONE: collaudo dei tre ruoli concluso e strumenti DEMO mantenuti nel MVP privato
 
 L'utente conferma completato il collaudo trasversale dei ruoli USER, ADMIN e SUPER ADMIN. La conferma chiude questa fase del percorso MVP privato, dopo l'accettazione dell'importazione incrementale Results/Calendar e della verifica d'integrita tramite Audit e Ripristino. In questo passaggio l'assistente registra l'accettazione: non dichiara nuovi test eseguiti o nuove verifiche su accessi reali.

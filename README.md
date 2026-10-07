@@ -10,7 +10,7 @@ missing values and distinguish recorded execution from estimated execution.
 
 Piattaforma full-stack per la raccolta, la governance, la consultazione e l'analisi dei dati della ginnastica artistica.
 
-**Milestone corrente (`v0.6.0-public-sections-complete`)**: concluso lo sviluppo strutturale delle sezioni Home, Athletes, Events, Rankings e Analytics, incluse Scheda Atleta, Scheda Evento, Ricerca globale, navigazione persistente, paginazione progressiva e confronto analitico. La fase successiva riguarda il consolidamento dei flussi autenticati e degli strumenti Admin/Super Admin, il collaudo end-to-end e la preparazione al deploy.
+**MVP privato (`v1.0.0-mvp-private`)**: sezioni pubbliche, Area Personale e centri Admin/Super Admin inclusi; collaudi di importazione incrementale, Audit e Ripristino e tre ruoli accettati dall'utente. Accessi e generatori notifiche DEMO restano disponibili per la consegna privata, non pubblica. Consultare la [guida di consegna, avvio e backup](docs/LEVERAGE_MVP_privato_consegna.md) per la baseline corrente; le sezioni storiche di questo README non sostituiscono la guida di consegna.
 
 ## Stack
 - Python 3.10+
@@ -786,7 +786,7 @@ Regole Gymternet attualmente applicate:
 pytest
 ```
 
-I test usano `test_leverage.db` tramite `DATABASE_URL`, separato dal database locale di sviluppo.
+I test forzano `DATABASE_URL` su un database in una cartella temporanea dedicata e rifiutano il database locale di sviluppo.
 
 Ultimo audit pre-Git locale:
 

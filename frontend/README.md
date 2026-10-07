@@ -1,67 +1,29 @@
 # LEVERAGE Frontend
 
-Minimal dependency-free frontend prototype for the LEVERAGE MVP.
+Interfaccia del MVP privato in HTML, CSS e JavaScript vanilla, senza build
+Node/npm. Include Home, Atleti, Eventi, Rankings, Analytics, Area Personale,
+Centro Admin e Centro Super Admin. Lingue: EN, IT, ES, FR.
 
-The current machine does not have Node/npm installed, so this first UI layer is plain HTML/CSS/JavaScript. It can be served locally with Python and already talks to the public FastAPI endpoints.
+## Avvio locale
 
-## Local Run
-
-Start the API from the project root:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-Start the frontend from this folder:
+Dalla radice della repository, in due terminali separati:
 
 ```bash
-python3 -m http.server 5173
+.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
-
-If port 5173 is already busy, use the local fallback port:
 
 ```bash
-python3 -m http.server 5174
+.venv/bin/python -m http.server 5173 --bind 127.0.0.1 --directory frontend
 ```
 
-Open:
+Aprire <http://127.0.0.1:5173/>. In caso di porta frontend occupata, usare
+5174. Non avviare un secondo backend sullo stesso database per cambiare
+semplicemente la porta della preview. L'API locale predefinita e sulla porta
+8000; il vecchio selettore API nel footer non e piu presente.
 
-```text
-http://localhost:5173
-```
+Gli accessi DEMO e i generatori notifiche nella downbar sono mantenuti
+intenzionalmente per la versione privata. Non esporre la configurazione
+dimostrativa su Internet.
 
-or, when using the fallback port:
-
-```text
-http://localhost:5174
-```
-
-Default API base URL:
-
-```text
-http://localhost:8000
-```
-
-You can change it from the UI footer during local testing.
-
-## Scope
-
-- Unified Admin center at `#/admin`, accessible from the personal area.
-- Manual batches, Gymternet/Calendar review, notifications and data completion.
-- Athlete merges, site statistics, super-admin roles, audit and restore.
-- First-login MFA enrollment and password change.
-
-See [Admin center](../docs/LEVERAGE_admin_center.md) for permissions and validation.
-
-- Public home screen
-- Minimal routing
-- Athlete search
-- Event calendar browser
-- Rankings and official event classifications
-- Interactive athlete profile analytics
-- Two-athlete MAG/WAG comparison with synchronized radar and trend charts
-- Side-by-side and overlaid comparison layouts
-- EN/IT/ES/FR language selector
-- LEVERAGE brand assets
-
-This folder is intentionally light. It can later be migrated to React/Vite once Node is installed, while preserving the visual direction and API contracts.
+La [guida di consegna](../docs/LEVERAGE_MVP_privato_consegna.md) descrive
+configurazione, backup, ripristino isolato, ambiente verificato e limiti.
