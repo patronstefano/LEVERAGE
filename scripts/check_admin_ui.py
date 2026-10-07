@@ -1402,11 +1402,15 @@ def main():
                     {'severity': 'warning', 'code': 'gymternet_dscore_discarded', 'row': i + 2, 'sheet': 'MAG',
                      'message': 'Skipped D_score because it would produce an invalid estimated E score'} for i in range(20)
                 ] + [{'severity': 'warning', 'code': 'gymternet_score_corrected', 'corrected_score': 14.2,
-                      'original_score': 142, 'message': 'Corrected outlier final score'}])
+                      'original_score': 142, 'message': 'Corrected outlier final score'},
+                     {'severity': 'warning', 'code': 'gymternet_orphan_dscores_discarded', 'count': 288}])
                 analyze_import()
                 page.locator('[data-import-part=results]').click()
                 page.locator('[data-import-automatic] > summary').click()
-                assert page.locator('[data-import-automatic] li').count() == 2
+                assert page.locator('[data-import-automatic] li').count() == 3
+                assert 'D Score orfani scartati automaticamente: 288.' in page.locator('[data-import-automatic]').inner_text()
+                assert page.locator('[data-import-group=orphan], [data-discard-orphans]').count() == 0
+                assert 'D Score senza risultato associato' not in page.locator('#adminImportOutput').inner_text()
                 assert '0–10: 20' in page.locator('[data-import-automatic]').inner_text()
                 assert 'scala decimale: 1' in page.locator('[data-import-automatic]').inner_text()
                 assert 'Skipped D_score' not in page.locator('#adminImportOutput').inner_text()

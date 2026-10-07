@@ -1,4 +1,5 @@
 export const IMPORT_COPY = {
+  gymternet_orphan_dscores_discarded: ['Unmatched D Scores automatically discarded: {n}.', 'D Score orfani scartati automaticamente: {n}.', 'D Scores sin resultado asociado descartados automáticamente: {n}.', 'D Scores sans résultat associé écartés automatiquement : {n}.'],
   importDeferAllCountries: ['Skip all nationality reviews', 'Tralascia tutta la revisione nazionalità', 'Omitir toda la revisión de nacionalidades', 'Ignorer toute la révision des nationalités'],
   importDeferAllCountriesConfirm: ['Defer athlete nationality reviews and exclude file rows with conflicting represented countries, including their related scores, from this import. Saved data and other reviews remain unchanged. Recalculate the preview before importing.', 'Rinvia le verifiche sulla nazionalità degli atleti ed escludi da questo import le righe con nazionalità rappresentata discordante e i relativi punteggi. I dati salvati e le altre revisioni restano invariati. Ricalcola l’anteprima prima di importare.', 'Aplaza las revisiones de nacionalidad y excluye de esta importación las filas con nacionalidades representadas en conflicto y sus puntuaciones. Los datos guardados y las demás revisiones no cambian. Recalcula la vista previa antes de importar.', 'Reportez les vérifications de nationalité et excluez de cet import les lignes aux nationalités représentées contradictoires et leurs scores. Les données enregistrées et les autres révisions restent inchangées. Recalculez l’aperçu avant d’importer.'],
   importCountrySourceMissing: ['A source row is unavailable. Recalculate the preview before continuing.', 'Una riga sorgente non è disponibile. Ricalcola l’anteprima prima di continuare.', 'Falta una fila de origen. Recalcula la vista previa antes de continuar.', 'Une ligne source est indisponible. Recalculez l’aperçu avant de continuer.'],
@@ -179,6 +180,7 @@ export function importIssueScope(issue) {
 
 export function automaticImportIssueCode(issue) {
   if (issue.severity !== 'warning') return null;
+  if (issue.code === 'gymternet_orphan_dscores_discarded') return issue.code;
   if (['gymternet_score_corrected', 'gymternet_dscore_discarded', 'gymternet_vt_rounding_excluded'].includes(issue.code)) return issue.code;
   // Support previews created before structured codes were added.
   if (issue.score_kind === 'execution_estimate' && issue.execution_estimate != null && issue.D_score != null) return 'gymternet_dscore_discarded';
@@ -190,7 +192,7 @@ export function renderAutomaticImportIssues({issues, text, esc, language}) {
   const counts = new Map();
   for (const issue of issues) {
     const code = automaticImportIssueCode(issue);
-    if (code) counts.set(code, (counts.get(code) || 0) + 1);
+    if (code) counts.set(code, (counts.get(code) || 0) + (code === 'gymternet_orphan_dscores_discarded' ? issue.count || 0 : 1));
   }
   if (!counts.size) return '';
   const number = value => new Intl.NumberFormat(language).format(value);

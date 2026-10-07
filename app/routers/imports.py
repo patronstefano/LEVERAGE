@@ -21,10 +21,8 @@ from app.database import get_db
 from app.gymternet_import import (
     apply_automatic_athlete_name_order_merges,
     apply_athlete_match_decisions,
-    apply_orphan_dscore_decisions,
     build_automatic_athlete_name_order_merges,
     build_athlete_match_review_items,
-    build_orphan_review_items,
     commit_records,
     exclude_imported_events,
     find_import_target_suggestions,
@@ -233,19 +231,19 @@ def parse_and_summarize_upload(
             db, resolved, orphans, parsed.issues,
         )
 
-    review_items = build_orphan_review_items(
-        parsed.orphan_dscore_records or [],
-        parsed.records,
-    )
-    decision_stats = {}
+    # Unmatched D Scores are never attached by suggestion or manual decision.
+    # Keep only an aggregate count; the source file and saved results are untouched.
+    discarded_orphans = len(parsed.orphan_dscore_records or [])
+    parsed.issues = [issue for issue in parsed.issues if issue.get('code') != 'gymternet_orphan_dscores']
+    if discarded_orphans:
+        parsed.issues.append({
+            'severity': 'warning', 'code': 'gymternet_orphan_dscores_discarded',
+            'count': discarded_orphans,
+            'message': f'{discarded_orphans} unmatched D Scores automatically discarded.',
+        })
+    decision_stats = {'discarded': discarded_orphans, 'unresolved': 0,
+                      'accepted_suggestions': 0, 'manual_corrections': 0, 'invalid_decisions': 0}
     records = parsed.records
-    if orphan_dscore_decisions is not None:
-        records, decision_stats = apply_orphan_dscore_decisions(
-            parsed.records,
-            review_items,
-            orphan_dscore_decisions,
-            parsed.issues,
-        )
 
     (
         automatic_athlete_merge_keys,
@@ -298,11 +296,11 @@ def parse_and_summarize_upload(
         represented_country_overrides=represented_country_overrides,
         nationality_reviews=athlete_review_items,
     )
-    summary["orphan_dscore_review_count"] = len(review_items)
+    summary["orphan_dscore_review_count"] = 0
     summary["skipped_existing_events"] = skipped_events
     summary["skipped_existing_results"] = sum(row['results'] for row in skipped_events)
     summary["parsed_rows"] += summary["skipped_existing_results"]
-    summary["orphan_dscore_review"] = review_items[:orphan_review_limit]
+    summary["orphan_dscore_review"] = []
     summary["orphan_dscore_decision_stats"] = decision_stats
     summary["athlete_match_review_count"] = len(athlete_review_items)
     summary["athlete_match_review"] = athlete_review_items[:athlete_review_limit]
@@ -489,7 +487,7 @@ def commit_calendar_import(
 @router.post("/gymternet/preview", response_model=schemas.GymternetImportPreview)
 def preview_gymternet_import(
     file: UploadFile = File(...),
-    orphan_dscore_decisions: Optional[str] = Form(None),
+    orphan_dscore_decisions: Optional[str] = Form(None, description="Deprecated and ignored: unmatched D Scores are automatically discarded."),
     athlete_match_decisions: Optional[str] = Form(None),
     event_match_decisions: Optional[str] = Form(None),
     source_row_decisions: Optional[str] = Form(None),
@@ -599,7 +597,7 @@ def commit_gymternet_import(
     csv_score_kind: Optional[str] = Query(None, pattern="^(final|dscore)$"),
     orphan_dscore_decisions: Optional[str] = Form(
         None,
-        description="JSON list of admin decisions for orphan D-score review items.",
+        description="Deprecated and ignored: unmatched D Scores are automatically discarded.",
     ),
     athlete_match_decisions: Optional[str] = Form(
         None,
@@ -676,7 +674,9 @@ def commit_gymternet_import(
         'source_row_decisions': parse_json_decision_list(source_row_decisions, 'source_row_decisions') or [],
         'athlete_match_decisions': parse_athlete_match_decisions(athlete_match_decisions) or [],
         'event_match_decisions': parse_json_decision_list(event_match_decisions, 'event_match_decisions') or [],
-        'orphan_dscore_decisions': parse_orphan_dscore_decisions(orphan_dscore_decisions) or [],
+        'orphan_dscore_policy': 'automatic_discard',
+        'orphan_dscore_decisions': [],
+        'orphan_dscore_decision_stats': summary['orphan_dscore_decision_stats'],
         'summary': stats,
     })
     db.commit()

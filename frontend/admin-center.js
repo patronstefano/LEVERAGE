@@ -6,7 +6,7 @@ import { mountEntityReviews } from './admin-entity-reviews.js?v=deferred-reviews
 import { createAdminReport } from './admin-reports.js?v=incremental-import-20261006';
 import { mountImportResolution } from './admin-import-resolution.js?v=bulk-country-review-20261007';
 import { mountImportProgress, mountImportProgressDialog } from './admin-import-progress.js?v=import-dialog-below-actions-20261006';
-import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportIssues, renderImportMetrics, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=no-calendar-identical-message-20261007';
+import { renderAthleteImportComparison, renderImportIdentityComparison, IMPORT_COPY, importIssueScope, renderAutomaticImportIssues, mountImportReport, renderImportMetrics, renderImportIssues, mountImportAthletes, mountCalendarImportRows, mountCalendarConflicts } from './admin-import-report.js?v=discard-orphans-20261007';
 
 export function isWorldGymnasticsReviewSuggestion(suggestion) {
   const title = suggestion.entity_type === 'athlete' ? 'World Gymnastics Athlete Profile'
@@ -1012,7 +1012,6 @@ export async function renderAdminCenter(host) {
       ${!p.committed && (athleteIdentityReviews.length || isDeferred('athlete')) ? reviewGroup('athlete', 'importAthleteReview', athleteIdentityReviews.length, isDeferred('athlete') ? '' : reviewRows(athleteIdentityReviews, "athlete")) : ''}
       ${!p.committed && athleteCountryReviews.length && !isDeferred('athlete') ? reviewGroup('athleteCountry', 'importAthleteCountryReview', athleteCountryReviews.length, reviewRows(athleteCountryReviews, 'athlete', 'athleteCountry')) : ''}
       ${!p.committed && (p.event_match_review?.length || isDeferred('event')) ? reviewGroup('event', 'importEventReview', p.event_match_review?.length || 0, isDeferred('event') ? '' : eventReviewRows) : ''}
-      ${!p.committed && p.orphan_dscore_review?.length ? reviewGroup('orphan', 'importOrphanReview', p.orphan_dscore_review.length, reviewRows(p.orphan_dscore_review, "orphan")) : ''}
       ${issueErrors.length && (draft.kind !== 'gymternet' || p.committed) ? `<div data-import-issues>${renderImportIssues({issues: issueErrors, text, esc, language: state.language, sourceRows: p.committed ? [] : p.source_review, page: draft.issuePage || 0})}</div>` : ''}
       ${draft.kind === 'calendar' ? '<div id="adminCalendarRows"></div><div id="adminCalendarConflicts"></div>' : ''}
       <p class="admin-stats-note" id="adminImportDecisionsNotice" ${draft.needsPreview ? '' : 'hidden'}>${esc(text('importNeedsPreview'))}</p>
@@ -1024,7 +1023,7 @@ export async function renderAdminCenter(host) {
       const reviewParts = [
         ['events', 'importReviewEvents', (p.event_match_decision_stats?.unresolved ?? (p.event_match_review?.length || 0)) + issuesByScope.events.filter(issue => issue.severity === 'error').length],
         ['athletes', 'importReviewAthletes', (p.athlete_match_decision_stats?.unresolved ?? (p.athlete_match_review?.length || 0)) + countryConflicts.length + issuesByScope.athletes.filter(issue => issue.severity === 'error').length],
-        ['results', 'importReviewResults', scoreConflicts.length + issuesByScope.results.filter(issue => issue.severity === 'error').length + (p.orphan_dscore_decision_stats?.unresolved ?? (p.orphan_dscore_review?.length || 0))],
+        ['results', 'importReviewResults', scoreConflicts.length + issuesByScope.results.filter(issue => issue.severity === 'error').length],
       ];
       const nav = document.createElement('div');
       nav.className = 'admin-center-actions admin-import-review-tabs';
@@ -1066,7 +1065,7 @@ export async function renderAdminCenter(host) {
         countryReviewGroup.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDeferAllCountries', 'data-defer-all-countries')}</div>`);
       }
       const existingResults = (p.duplicates || []).filter(row => row.reason === 'duplicate_existing').length;
-      sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length], ['importOrphanReview', p.orphan_dscore_review_count]]);
+      sections.results.innerHTML = metrics([['importExisting', existingResults], ['importNew', p.importable_results], ['importConflicts', scoreConflicts.length]]);
       if (countryConflicts.length) {
         const countryPage = draft.countryConflictPage = Math.min(draft.countryConflictPage || 0, Math.max(0, Math.ceil(countryConflicts.length / 6) - 1));
         countryReviewGroup.insertAdjacentHTML('beforeend', `<div data-country-conflicts>${countryConflicts.slice(countryPage * 6, (countryPage + 1) * 6).map((c, index) => `<article class="admin-identity-pair"><div><strong>${esc(nameOf(c))}</strong><p class="admin-revision-meta">${esc(c.event_name)} · ${esc(c.year)}</p></div><div class="admin-center-actions">${button('importCompare', 'data-import-review-toggle aria-expanded="false"')}${button('importUseStoredCountry', `data-country-fix="${countryPage * 6 + index}" ${!c.existing_country ? 'disabled' : ''}`)}${button('importExcludeCountryRow', `data-country-exclude="${countryPage * 6 + index}"`)}</div><p class="admin-stats-note">${esc(text('importCountryCorrectionNote'))}</p><div data-pair-details hidden>${renderImportIdentityComparison({leftName: nameOf(c), rightName: nameOf(c), rightLabel: text(c.existing_result_id ? 'importDatabase' : 'previous'), fields: [['country', c.country, c.existing_country]], text, esc})}</div></article>`).join('')}${countryConflicts.length > 6 ? `<div class="admin-import-pagination">${button('importPreviousPage', `data-country-page="-1" ${countryPage === 0 ? 'disabled' : ''}`)}<span>${countryPage * 6 + 1}–${Math.min((countryPage + 1) * 6, countryConflicts.length)} / ${countryConflicts.length}</span>${button('importNextPage', `data-country-page="1" ${(countryPage + 1) * 6 >= countryConflicts.length ? 'disabled' : ''}`)}</div>` : ''}</div>`);
@@ -1229,7 +1228,7 @@ export async function renderAdminCenter(host) {
       if (control) control.disabled = Boolean(draft.scopeBusy || issueErrors.length || p.parsed_rows === 0 || (p.skipped_existing_events?.length && !p.importable_results) || draft.needsPreview ||
         (draft.kind === 'calendar' && p.skip_existing_events && !p.rows?.length) ||
         p.athlete_match_decision_stats?.unresolved || p.event_match_decision_stats?.unresolved ||
-        (draft.kind === 'gymternet' && ((p.orphan_dscore_decision_stats?.unresolved ?? p.orphan_dscore_review_count ?? p.orphan_dscore_review?.length ?? 0) || p.orphan_dscore_decision_stats?.invalid_decisions || p.athlete_match_decision_stats?.invalid_decisions)) || p.conflicts?.length || calendarConflicts);
+        (draft.kind === 'gymternet' && p.athlete_match_decision_stats?.invalid_decisions) || p.conflicts?.length || calendarConflicts);
     };
     const markChanged = () => {
       draft.decisionRevision = (draft.decisionRevision || 0) + 1;
@@ -1281,14 +1280,6 @@ export async function renderAdminCenter(host) {
       mountImportReport({root: output.querySelector('#adminImportOverview'), preview: p, text, esc, report,
         language: state.language, route: state.route, viewState: draft.reportView ||= {}, onCorrect: resolution ? (sheet, row) => resolution.focus(sheet, row) : null});
       output.querySelectorAll('[data-correct-issue-sheet]').forEach(control => control.onclick = () => resolution?.focus(control.dataset.correctIssueSheet, Number(control.dataset.correctIssueRow)));
-      if (!p.committed && p.orphan_dscore_review?.length) {
-        const group = output.querySelector('[data-import-group=orphan]');
-        group.querySelector('summary').insertAdjacentHTML('afterend', `<div class="admin-center-actions">${button('importDiscardOrphans', 'data-discard-orphans')}</div>`);
-        group.querySelector('[data-discard-orphans]').onclick = () => confirm('importDiscardOrphansConfirm', () => {
-          for (const item of p.orphan_dscore_review) draft.orphan[item.review_id] = {review_id: item.review_id, action: 'discard', selection: 'discard'};
-          markChanged(); showImport();
-        }, false, text('importSourceNote'));
-      }
     }
     output.querySelectorAll('[data-import-group]').forEach(group => group.ontoggle = () => {
       if (group.isConnected) draft.reviewOpen[group.dataset.importGroup] = group.open;

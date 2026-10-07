@@ -10159,17 +10159,25 @@ def test_gymternet_source_review_includes_linked_d_score_sheet(monkeypatch):
     assert not client.get('/results/').json()
 
 
-def test_gymternet_strict_review_requires_orphan_decisions():
+def test_gymternet_strict_review_automatically_discards_orphans():
     client.post('/auth/register', json={'email': 'strict_orphans@example.com', 'password': TEST_PASSWORD})
     headers = {'Authorization': f"Bearer {login_as_admin('strict_orphans@example.com')}"}
     files = lambda: {'file': ('results.xlsx', gymternet_review_xlsx_bytes(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
     preview = client.post('/imports/gymternet/preview?year_hint=2024', files=files(), headers=headers).json()
-    assert preview['orphan_dscore_review_count'] == 1
-    assert client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), headers=headers).status_code == 409
-    assert client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true&defer_duplicate_reviews=true', files=files(), headers=headers).status_code == 409
-    data = {'orphan_dscore_decisions': json.dumps([{'review_id': preview['orphan_dscore_review'][0]['review_id'], 'action': 'discard'}])}
-    response = client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), data=data, headers=headers)
+    assert preview['orphan_dscore_review_count'] == 0
+    assert preview['orphan_dscore_review'] == []
+    assert preview['orphan_dscore_decision_stats']['discarded'] == 1
+    assert preview['orphan_dscore_decision_stats']['unresolved'] == 0
+    assert not any(i.get('code') == 'gymternet_orphan_dscores' for i in preview['issues'])
+    response = client.post('/imports/gymternet/commit?year_hint=2024&require_resolved_reviews=true', files=files(), headers=headers)
     assert response.status_code == 200, response.text
+    assert response.json()['created_partial_results'] == 1
+    assert client.get('/results/').json()[0]['D_score'] is None
+    with SessionLocal() as db:
+        audit = db.query(models.AuditLog).filter_by(entity_type='GymternetImport').one()
+        snapshot = json.loads(audit.after_json)
+        assert snapshot['orphan_dscore_policy'] == 'automatic_discard'
+        assert snapshot['orphan_dscore_decision_stats']['discarded'] == 1
 
 
 @pytest.mark.parametrize('kind', ['gymternet', 'calendar'])
@@ -11036,7 +11044,8 @@ def test_gymternet_pivot_event_day_marker_sets_result_day():
     assert issues == []
 
 
-def test_gymternet_orphan_dscore_review_accepts_admin_suggestion():
+@pytest.mark.parametrize('action', ['accept_suggestion', 'manual_target', 'discard'])
+def test_gymternet_orphan_dscore_legacy_decisions_cannot_restore_orphans(action):
     client.post("/auth/register", json={"email": "gymternet_review@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_review@example.com")
     headers = {"Authorization": f"Bearer {token}"}
@@ -11049,19 +11058,19 @@ def test_gymternet_orphan_dscore_review_accepts_admin_suggestion():
     assert preview_response.status_code == 200
     preview_payload = preview_response.json()
     assert preview_payload["importable_results"] == 1
-    assert preview_payload["orphan_dscore_review_count"] == 1
-    review_item = preview_payload["orphan_dscore_review"][0]
-    assert review_item["problem_type"] == "possible_athlete_name_typo"
-    assert review_item["orphan_dscore"]["athlete_name"] == "Daiki Hashimoto"
+    assert preview_payload["orphan_dscore_review_count"] == 0
+    assert preview_payload["orphan_dscore_review"] == []
+    from app.gymternet_import import parse_gymternet_file, build_orphan_review_items
+    parsed = parse_gymternet_file('old.xlsx', gymternet_review_xlsx_bytes().getvalue(), year_hint=2024)
+    review_item = build_orphan_review_items(parsed.orphan_dscore_records, parsed.records)[0]
     suggestion = review_item["suggestions"][0]
-    assert suggestion["suggestion_type"] == "athlete_name_correction"
-    assert suggestion["target_result"]["athlete_name"] == "Daiki Hasimoto"
 
     decisions = [
         {
             "review_id": review_item["review_id"],
-            "action": "accept_suggestion",
+            "action": action,
             "suggestion_id": suggestion["suggestion_id"],
+            "target": suggestion["target_result"],
         }
     ]
     commit_response = client.post(
@@ -11073,18 +11082,19 @@ def test_gymternet_orphan_dscore_review_accepts_admin_suggestion():
     assert commit_response.status_code == 200
     commit_payload = commit_response.json()
     assert commit_payload["created_results"] == 1
-    assert commit_payload["created_complete_results"] == 1
-    assert commit_payload["created_partial_results"] == 0
+    assert commit_payload["created_complete_results"] == 0
+    assert commit_payload["created_partial_results"] == 1
     assert commit_payload["orphan_dscore_review_uncommitted"] == 0
-    assert commit_payload["orphan_dscore_decision_stats"]["accepted_suggestions"] == 1
+    assert commit_payload["orphan_dscore_decision_stats"]["accepted_suggestions"] == 0
+    assert commit_payload["orphan_dscore_decision_stats"]["discarded"] == 1
 
     result = client.get("/results/").json()[0]
     assert result["score"] == 14.1
-    assert result["D_score"] == 5.7
-    assert result["execution_estimate"] == pytest.approx(8.4)
+    assert result["D_score"] is None
+    assert result["execution_estimate"] is None
 
 
-def test_gymternet_import_review_target_suggestions_help_manual_dscore_link():
+def test_gymternet_import_does_not_offer_targets_for_discarded_orphans():
     client.post("/auth/register", json={"email": "gymternet_target_suggestions@example.com", "password": TEST_PASSWORD})
     token = login_as_admin("gymternet_target_suggestions@example.com")
     headers = {"Authorization": f"Bearer {token}"}
@@ -11096,27 +11106,17 @@ def test_gymternet_import_review_target_suggestions_help_manual_dscore_link():
     )
     assert preview_response.status_code == 200
     preview_payload = preview_response.json()
-    review_item = preview_payload["orphan_dscore_review"][0]
-    suggested_target = review_item["suggestions"][0]["target_result"]
+    assert preview_payload['orphan_dscore_review'] == []
 
     target_response = client.post(
         (
             "/imports/gymternet/review-target-suggestions"
-            f"?year_hint=2024&review_id={review_item['review_id']}&query=Hasimoto"
+            "?year_hint=2024&review_id=obsolete-orphan-review&query=Hasimoto"
         ),
         files={"file": ("gymternet_review.xlsx", gymternet_review_xlsx_bytes(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
         headers=headers,
     )
-    assert target_response.status_code == 200
-    payload = target_response.json()
-    assert payload["review_id"] == review_item["review_id"]
-    assert payload["query"] == "Hasimoto"
-    assert payload["total_candidates"] == 1
-    assert len(payload["suggestions"]) == 1
-    assert payload["suggestions"][0]["target_id"] == suggested_target["target_id"]
-    assert payload["suggestions"][0]["athlete_name"] == "Daiki Hasimoto"
-    assert payload["suggestions"][0]["event_name"] == suggested_target["event_name"]
-    assert payload["suggestions"][0]["confidence"] > 0
+    assert target_response.status_code == 404
 
 
 def test_gymternet_import_reviews_possible_existing_athlete_match_before_commit():

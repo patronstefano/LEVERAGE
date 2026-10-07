@@ -1,5 +1,11 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Scarto obbligatorio dei D Score orfani
+
+Decisione semantica dell'utente: un D Score senza Final Score associabile nel parsing non deve essere conservato come revisione o agganciato tramite suggerimenti. Il flusso web di importazione risultati scarta automaticamente tutti gli orfani nel perimetro selezionato, senza costruire liste di suggerimenti e senza richiedere conferme. Rimosse sezione, contatore delle revisioni e comandi manuali UI. Resta soltanto un riepilogo cumulativo localizzato degli scarti tra gli interventi automatici.
+
+Preview, ricalcolo e commit applicano la stessa regola. Le richieste legacy orphan_dscore_decisions sono accettate per compatibilita ma ignorate: non possono riassociare un orfano. Audit con policy automatic_discard e conteggio degli scarti effettivi, senza registrare come applicate eventuali vecchie decisioni client. Il commit con revisione rigorosa non viene bloccato dagli orfani; tutti gli altri controlli restano attivi. I Final Score validi restano importabili con D non disponibile; i D Score correttamente associati restano invariati. Nessuna modifica retroattiva al database o al file sorgente. Gli strumenti storici offline e la diagnostica del parser restano disponibili per riproducibilita, ma non sono usati per riassociare orfani nell'import della piattaforma.
+
 ## 2026-10-07 - Semplificazione note dell'anteprima import
 
 Rimossi su richiesta i messaggi sulla non sovrascrittura dei punteggi, sulla compatibilita dei nomi e la spiegazione Storico/Correzione sotto la revisione nazionalita. Eliminato il relativo footer senza lasciare contenitori vuoti; conservati confronti, comandi e regole backend. Aggiornati i test UI per verificare l'assenza dei testi e il funzionamento della revisione anche senza il footer.
