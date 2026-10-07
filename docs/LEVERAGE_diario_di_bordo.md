@@ -1,5 +1,13 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - MILESTONE: collaudo dei tre ruoli concluso e strumenti DEMO mantenuti nel MVP privato
+
+L'utente conferma completato il collaudo trasversale dei ruoli USER, ADMIN e SUPER ADMIN. La conferma chiude questa fase del percorso MVP privato, dopo l'accettazione dell'importazione incrementale Results/Calendar e della verifica d'integrita tramite Audit e Ripristino. In questo passaggio l'assistente registra l'accettazione: non dichiara nuovi test eseguiti o nuove verifiche su accessi reali.
+
+Decisione esplicita di consegna: mantenere, per comodita d'uso e dimostrazione nella versione privata, sia i pulsanti di accesso DEMO sia i generatori di notifiche DEMO nella downbar. Non sono piu elementi da rimuovere per completare questo MVP privato. Questa decisione aggiorna le precedenti indicazioni sulla loro rimozione a fine sviluppo; non autorizza l'esposizione pubblica degli accessi dimostrativi. Prima di un eventuale rilascio pubblico resta necessaria la disabilitazione degli accessi DEMO anche lato backend e la verifica dell'autenticazione reale. L'invio email reale resta rinviato.
+
+Restano la rifinitura finale eventualmente richiesta e la preparazione della consegna privata: backup consistente e verifica del ripristino della copia, istruzioni di avvio e tag finale della versione. Non si confonde la verifica funzionale di Audit e Ripristino gia accettata con il controllo del backup completo di consegna, ancora da eseguire.
+
 ## 2026-10-07 - MILESTONE: verifica integrita dati tramite Audit e Ripristino conclusa
 
 L'utente conferma verificata anche l'integrita dei dati tramite Audit e Ripristino, chiudendo la fase indicata dopo il collaudo delle importazioni incrementali. Si registra l'accettazione dell'utente del comportamento di controllo e ripristino delle operazioni amministrative. In questo passaggio non sono stati eseguiti nuovi test, modifiche ai dati o ripristini dall'assistente; non vengono attribuiti alla verifica scenari specifici ulteriori rispetto a quanto confermato dall'utente.
