@@ -95,6 +95,7 @@
 .admin-import-issues { padding: 0; margin: 0; list-style: none; font-size: 14px; line-height: 1.5; }
 .admin-import-issues > li { padding: 12px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
 .admin-import-issues p { margin: 5px 0 0; }
+#adminImportOutput [data-import-automatic] .admin-import-issues > li { color: var(--warning); }
 .admin-import-issue-error { color: var(--danger); }
 #adminImportDecisionsNotice:not([hidden]) { margin: 14px 0; }
 .admin-import-review .admin-form-grid { margin-top: 16px; }

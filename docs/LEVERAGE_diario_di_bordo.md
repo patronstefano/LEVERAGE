@@ -1,5 +1,9 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Colore delle correzioni automatiche nell'import
+
+I record della sezione Correzioni ed esclusioni automatiche utilizzano il colore warning condiviso della UI. Modifica limitata al testo delle voci: sfondo neutro, titolo, note e altri errori dell'import invariati.
+
 ## 2026-10-07 - Separazione Bundesliga MAG/WAG con date distinte
 
 Rilevata una conflazione di identita, non una duplicazione fisica dei punteggi: voci calendario Bundesliga e Bundesliga (MAG) puntavano allo stesso Event, esponendo la stessa classifica MAG sotto due date. Applicata separazione a 28 coppie documentate da esattamente due voci calendario: Event originale mantenuto WAG con le date della voce senza suffisso, nuovo Event MAG con le date della voce (MAG). Spostati 5.417 Result MAG mantenendo ID, componenti, rank e contesto; nessun punteggio eliminato o copiato. Le voci calendario sono ricollegate alla rispettiva disciplina. Le finali comuni e i casi senza coppia esplicita non vengono separati per semplice somiglianza del nome.
