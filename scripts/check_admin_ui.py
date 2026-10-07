@@ -1160,6 +1160,11 @@ def main():
                 analyze_import()
                 page.locator('#adminImportOutput .admin-center-feedback').wait_for()
                 assert 'Nessun nuovo risultato da importare' in page.locator('#adminImportOutput').inner_text()
+                for scope, label in [('events', 'Nessun evento da verificare.'), ('athletes', 'Nessun atleta da verificare.'), ('results', 'Nessun punteggio da verificare.')]:
+                    page.locator(f'[data-import-part={scope}]').click()
+                    empty = page.locator(f'[data-import-empty={scope}]')
+                    assert empty.is_visible() and empty.inner_text() == label
+                    assert 'empty-state' in empty.get_attribute('class')
                 page.locator('[data-import-part=results]').click()
                 assert int(page.locator('#importPart_results .admin-duplicate-recap dd').first.inner_text().replace('.', '')) == 1000
                 preview['issues'] = [
@@ -1174,6 +1179,7 @@ def main():
                 for scope, message in [('events', 'EVENT_IDENTITY_ONLY'), ('athletes', 'ATHLETE_IDENTITY_ONLY'), ('results', 'SCORE_ONLY')]:
                     page.locator(f'[data-import-part={scope}]').click()
                     group = page.locator(f'#importPart_{scope} [data-import-issues]')
+                    assert page.locator(f'[data-import-empty={scope}]').count() == 0
                     group.evaluate('el => el.open = true')
                     assert message in group.inner_text()
                     for other in ['EVENT_IDENTITY_ONLY', 'ATHLETE_IDENTITY_ONLY', 'SCORE_ONLY']:

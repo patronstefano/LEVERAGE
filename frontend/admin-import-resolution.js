@@ -11,7 +11,12 @@ export function mountImportResolution({root, preview, draft, text, esc, button, 
     }
   }
   const rows = (preview.source_review || []).filter(row => sourceKeys.has(`${row.sheet}:${row.row}`));
-  if (!rows.length) { root.innerHTML = `<p class="admin-stats-note">${esc(text('importNoCorrections'))}</p>`; return {focus() {}}; }
+  if (!rows.length) {
+    const pending = preview.conflicts?.length || preview.orphan_dscore_review_count || preview.orphan_dscore_review?.length ||
+      resultIssues.some(issue => issue.severity === 'error' || issue.row != null || issue.code === 'gymternet_orphan_dscores');
+    root.innerHTML = pending ? '' : `<div class="empty-state" data-import-empty="results">${esc(text('importNoCorrections'))}</div>`;
+    return {focus() {}};
+  }
   const keyOf = row => `${row.sheet}:${row.row}`;
   const pageSize = 6;
   let page = Math.min(draft.sourcePage || 0, Math.max(0, Math.ceil(rows.length / pageSize) - 1));

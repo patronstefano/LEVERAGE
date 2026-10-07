@@ -1,5 +1,15 @@
 # LEVERAGE - Diario di bordo tecnico e progettuale
 
+## 2026-10-07 - Stati vuoti delle revisioni import
+
+- Messaggi uniformati al componente empty-state di LEVERAGE: Nessun evento
+  da verificare, Nessun atleta da verificare, Nessun punteggio da verificare.
+  Traduzioni aggiornate nelle quattro lingue disponibili.
+- Messaggi entita assenti quando sono presenti revisioni, avvisi di competenza
+  o conflitti country. Messaggio punteggi assente con conflitti, D orfani o
+  errori/avvisi su righe sorgente ancora da verificare, anche senza righe editor.
+- Nessuna modifica ai dati o alle decisioni di importazione.
+
 ## 2026-10-07 - Rinvio duplicati separato per eventi e atleti
 
 - Eliminato il comando globale dalla riga Ricalcola/Conferma. Ogni gruppo
